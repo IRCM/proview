@@ -53,6 +53,7 @@
     <javac.version>1.8</javac.version>
     <slf4j.version>1.7.7</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
+    <javax.inject.version>1</javax.inject.version>
     <spring.version>4.2.5.RELEASE</spring.version>
     <validation.version>1.1.0.Final</validation.version>
     <javax.persistence.version>2.1.1</javax.persistence.version>
@@ -62,6 +63,7 @@
     <vaadin.version>7.6.4</vaadin.version>
     <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
     <vaadin-spring.version>1.0.0</vaadin-spring.version>
+    <commons-configuration.version>1.10</commons-configuration.version>
     <junit.version>4.12</junit.version>
     <mockito.version>1.9.0</mockito.version>
     <h2.version>1.4.190</h2.version>
@@ -130,6 +132,11 @@
       <version>${log4j.version}</version>
     </dependency>
     <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>${javax.inject.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
     </dependency>
@@ -162,6 +169,11 @@
       <artifactId>spring-orm</artifactId>
     </dependency>
     <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>${validation.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>javax.persistence</artifactId>
       <version>${javax.persistence.version}</version>
@@ -180,6 +192,16 @@
       <groupId>com.querydsl</groupId>
       <artifactId>querydsl-jpa</artifactId>
       <version>${querydsl.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <version>${shiro.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <version>${shiro.version}</version>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
@@ -205,6 +227,11 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-spring</artifactId>
       <version>${vaadin-spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+      <version>${commons-configuration.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -354,7 +381,7 @@
               <phase>generate-sources</phase>
               <configuration>
                 <outputDirectory>target/generated-sources/querydsl</outputDirectory>
-                <processor>com.query.apt.jpa.JPAAnnotationProcessor</processor>
+                <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
               </configuration>
             </execution>
           </executions>

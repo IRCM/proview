@@ -21,10 +21,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
   version="2.1">
-  <persistence-unit name="proview"
-    transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="proview" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>proview</jta-data-source>
+    <class>ca.qc.ircm.proview.laboratory.Laboratory</class>
+    <class>ca.qc.ircm.proview.user.Address</class>
+    <class>ca.qc.ircm.proview.user.PhoneNumber</class>
+    <class>ca.qc.ircm.proview.user.User</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>

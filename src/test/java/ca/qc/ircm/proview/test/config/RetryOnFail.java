@@ -15,8 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview;
+package ca.qc.ircm.proview.test.config;
 
-public class Empty {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
+/**
+ * Allow test to be tried again on fail.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
+public @interface RetryOnFail {
+  /**
+   * Returns maximum number of allowed retries before test fails.
+   * 
+   * @return maximum number of allowed retries before test fails
+   */
+  public int value();
 }
