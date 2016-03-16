@@ -208,6 +208,10 @@ public class UserServiceDefault implements UserService {
 
   private void registerNewUser(User user, String password, User manager,
       RegisterUserWebContext webContext) {
+    if (!manager.isValid()) {
+      throw new IllegalArgumentException("Cannot add user to a laboratory with an invalid manager");
+    }
+
     setUserPassword(user, password);
     user.setLaboratory(manager.getLaboratory());
     entityManager.persist(user);

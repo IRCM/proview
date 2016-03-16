@@ -477,6 +477,40 @@ public class UserServiceDefaultTest {
   }
 
   @Test
+  public void register_ExistingLaboratory_Invalid() throws Throwable {
+    final User manager = entityManager.find(User.class, 10L);
+    User user = new User();
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.setName("Christian Poitras");
+    user.setLocale(Locale.CANADA_FRENCH);
+    Address address = new Address();
+    address.setAddress("110 av des Pins Ouest");
+    address.setAddress2("2640");
+    address.setTown("Montréal");
+    address.setState("Québec");
+    address.setPostalCode("H2W 1R7");
+    address.setCountry("Canada");
+    List<Address> addresses = new ArrayList<>();
+    addresses.add(address);
+    user.setAddresses(addresses);
+    PhoneNumber phoneNumber = new PhoneNumber();
+    phoneNumber.setType(PhoneNumberType.WORK);
+    phoneNumber.setNumber("514-555-5500");
+    phoneNumber.setExtension("3228");
+    List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    phoneNumbers.add(phoneNumber);
+    user.setPhoneNumbers(phoneNumbers);
+    RegisterUserWebContext webContext = new RegisterUserWebContextDefault();
+
+    try {
+      userServiceDefault.register(user, "password", manager, webContext);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // Success.
+    }
+  }
+
+  @Test
   public void register_NewLaboratory() throws Throwable {
     Laboratory laboratory = new Laboratory();
     laboratory.setOrganization("IRCM");
