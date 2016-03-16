@@ -28,6 +28,7 @@ import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.proview.velocity.BaseVelocityContext;
+import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.apache.commons.mail.EmailException;
 import org.apache.velocity.app.VelocityEngine;
@@ -41,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -241,9 +241,8 @@ public class UserServiceDefault implements UserService {
     // Prepare email content.
     HtmlEmailDefault email = new HtmlEmailDefault();
     email.addReceiver(manager.getEmail());
-    ResourceBundle resourceBundle =
-        ResourceBundle.getBundle(UserServiceDefault.class.getName(), locale);
-    String subject = resourceBundle.getString("email.subject");
+    MessageResource messageResource = new MessageResource(UserServiceDefault.class, locale);
+    String subject = messageResource.message("email.subject");
     email.setSubject(subject);
     BaseVelocityContext velocityContext = new BaseVelocityContext();
     velocityContext.setResourceTool(locale, UserServiceDefault.class);
@@ -304,9 +303,8 @@ public class UserServiceDefault implements UserService {
       final String url = applicationConfiguration.getUrl(webContext.getValidateManagerUrl(locale));
       // Prepare email content.
       HtmlEmailDefault email = new HtmlEmailDefault();
-      ResourceBundle resourceBundle =
-          ResourceBundle.getBundle(UserServiceDefault.class.getName(), locale);
-      String subject = resourceBundle.getString("newLaboratory.email.subject");
+      MessageResource messageResource = new MessageResource(UserServiceDefault.class, locale);
+      String subject = messageResource.message("newLaboratory.email.subject");
       email.setSubject(subject);
       email.addReceiver(proteomicUser.getEmail());
       BaseVelocityContext velocityContext = new BaseVelocityContext();

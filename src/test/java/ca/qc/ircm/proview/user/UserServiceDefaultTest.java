@@ -43,6 +43,7 @@ import ca.qc.ircm.proview.test.config.DatabaseRule;
 import ca.qc.ircm.proview.test.config.RollBack;
 import ca.qc.ircm.proview.test.config.Rules;
 import ca.qc.ircm.proview.velocity.VelocityEngineProvider;
+import ca.qc.ircm.utils.MessageResource;
 import org.apache.velocity.app.VelocityEngine;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -63,7 +64,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -459,9 +459,9 @@ public class UserServiceDefaultTest {
     verify(emailService).sendHtmlEmail(emailCaptor.capture());
     HtmlEmail email = emailCaptor.getValue();
     email.getReceivers().contains("benoit.coulombe@ircm.qc.ca");
-    ResourceBundle resourceBundle =
-        ResourceBundle.getBundle(UserServiceDefault.class.getName(), Locale.CANADA_FRENCH);
-    assertEquals(resourceBundle.getString("email.subject"), email.getSubject());
+    MessageResource messageResource =
+        new MessageResource(UserServiceDefault.class, Locale.CANADA_FRENCH);
+    assertEquals(messageResource.message("email.subject"), email.getSubject());
     email.getHtmlMessage().contains("Christian");
     email.getHtmlMessage().contains("Poitras");
     email.getTextMessage().contains("Christian");
@@ -581,12 +581,12 @@ public class UserServiceDefaultTest {
     verify(emailService, times(2)).sendHtmlEmail(emailCaptor.capture());
     Set<String> receivers = new HashSet<>();
     Set<String> subjects = new HashSet<>();
-    ResourceBundle frenchResourceBundle =
-        ResourceBundle.getBundle(UserServiceDefault.class.getName(), Locale.CANADA_FRENCH);
-    subjects.add(frenchResourceBundle.getString("newLaboratory.email.subject"));
-    ResourceBundle englishResourceBundle =
-        ResourceBundle.getBundle(UserServiceDefault.class.getName(), Locale.CANADA);
-    subjects.add(englishResourceBundle.getString("newLaboratory.email.subject"));
+    MessageResource frenchMessageResource =
+        new MessageResource(UserServiceDefault.class, Locale.CANADA_FRENCH);
+    subjects.add(frenchMessageResource.message("newLaboratory.email.subject"));
+    MessageResource englishMessageResource =
+        new MessageResource(UserServiceDefault.class, Locale.CANADA_FRENCH);
+    subjects.add(englishMessageResource.message("newLaboratory.email.subject"));
     for (HtmlEmail email : emailCaptor.getAllValues()) {
       receivers.addAll(email.getReceivers());
       assertTrue(subjects.contains(email.getSubject()));
