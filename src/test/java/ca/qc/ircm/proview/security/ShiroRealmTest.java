@@ -29,12 +29,10 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.Rules;
 import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.permission.PermissionResolver;
@@ -61,8 +59,6 @@ public class ShiroRealmTest {
   @Mock
   private CacheManager cacheManager;
   @Mock
-  private CredentialsMatcher matcher;
-  @Mock
   private Cache<Object, Object> cache;
   @Mock
   private PermissionResolver permissionResolver;
@@ -84,13 +80,10 @@ public class ShiroRealmTest {
   @Before
   public void beforeTest() {
     when(cacheManager.getCache(any(String.class))).thenReturn(cache);
-    shiroRealm =
-        new ShiroRealm(authenticatingService, cacheManager, matcher, permissionResolver, realmName);
+    shiroRealm = new ShiroRealm(authenticatingService, cacheManager, permissionResolver, realmName);
     authenticationId = 1L;
     when(authenticatingService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
         .thenReturn(authenticationInfo);
-    when(matcher.doCredentialsMatch(any(AuthenticationToken.class), any(AuthenticationInfo.class)))
-        .thenReturn(true);
     permissions = new ArrayList<Permission>() {
       private static final long serialVersionUID = 3384781677869656083L;
 

@@ -156,6 +156,11 @@ public class ApplicationConfigurationBean
   }
 
   @Override
+  public String getCipherKey() {
+    return configuration.getString("shiro.cipherKey");
+  }
+
+  @Override
   public synchronized PasswordVersion getPasswordVersion() {
     updateConfigurationIfChanged();
     if (!passwordVersions.isEmpty()) {
@@ -169,5 +174,25 @@ public class ApplicationConfigurationBean
   public synchronized List<PasswordVersion> getPasswordVersions() {
     updateConfigurationIfChanged();
     return new ArrayList<>(passwordVersions);
+  }
+
+  @Override
+  public boolean isEmailEnabled() {
+    return configuration.getBoolean("mail.enabled");
+  }
+
+  @Override
+  public String getEmailServer() {
+    return configuration.getString("mail.server");
+  }
+
+  @Override
+  public String getEmailSender() {
+    return configuration.getString("mail.sender");
+  }
+
+  @Override
+  public String getEmailErrorReceiver() {
+    return configuration.getString("mail.errorReceiver");
   }
 }

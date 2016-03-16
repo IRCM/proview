@@ -110,6 +110,11 @@ public class ApplicationConfigurationBeanTest {
   }
 
   @Test
+  public void getCipherKey() {
+    assertEquals("aBdYTTi4HFsRvEZlFzMXTQ==", applicationConfigurationBean.getCipherKey());
+  }
+
+  @Test
   public void getPasswordVersion() throws Throwable {
     PasswordVersion passwordVersion = applicationConfigurationBean.getPasswordVersion();
 
@@ -135,6 +140,34 @@ public class ApplicationConfigurationBeanTest {
     assertEquals(2, passwordVersion.getVersion());
     assertEquals("MD5", passwordVersion.getAlgorithm());
     assertEquals(2120, passwordVersion.getIterations());
+  }
+
+  @Test
+  public void isEmailEnabled() throws Throwable {
+    boolean emailEnabled = applicationConfigurationBean.isEmailEnabled();
+
+    assertEquals(true, emailEnabled);
+  }
+
+  @Test
+  public void getEmailServer() throws Throwable {
+    String emailServer = applicationConfigurationBean.getEmailServer();
+
+    assertEquals("myemailserver.com", emailServer);
+  }
+
+  @Test
+  public void getEmailSender() throws Throwable {
+    String emailSender = applicationConfigurationBean.getEmailSender();
+
+    assertEquals("proview@ircm.qc.ca", emailSender);
+  }
+
+  @Test
+  public void getEmailErrorReceiver() throws Throwable {
+    String emailErrorReceiver = applicationConfigurationBean.getEmailErrorReceiver();
+
+    assertEquals("christian.poitras@ircm.qc.ca", emailErrorReceiver);
   }
 
   @Test

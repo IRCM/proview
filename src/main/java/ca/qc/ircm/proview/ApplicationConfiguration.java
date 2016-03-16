@@ -49,6 +49,13 @@ public interface ApplicationConfiguration {
   public String getRealmName();
 
   /**
+   * Returns cipher key for Shiro.
+   *
+   * @return cipher key for Shiro
+   */
+  public String getCipherKey();
+
+  /**
    * Returns password version to use to encode new passwords.
    * <p>
    * The newest password version is the one to use to encode new passwords.
@@ -67,4 +74,32 @@ public interface ApplicationConfiguration {
    * @return all available password versions
    */
   public List<PasswordVersion> getPasswordVersions();
+
+  /**
+   * Returns true if emails are enabled.
+   *
+   * @return true if emails are enabled
+   */
+  public boolean isEmailEnabled();
+
+  /**
+   * Returns email server.
+   *
+   * @return email server
+   */
+  public String getEmailServer();
+
+  /**
+   * Returns email sender.
+   *
+   * @return email sender
+   */
+  public String getEmailSender();
+
+  /**
+   * Returns email receiver for errors.
+   *
+   * @return email receiver for errors
+   */
+  public String getEmailErrorReceiver();
 }

@@ -21,7 +21,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.cache.CacheManager;
@@ -46,16 +46,14 @@ public class ShiroRealm extends org.apache.shiro.realm.AuthorizingRealm {
    *          authentication service
    * @param cacheManager
    *          cache manager
-   * @param matcher
-   *          credential matcher
    * @param permissionResolver
    *          permission resolver
    * @param realmName
    *          realm name
    */
   public ShiroRealm(AuthenticationService authenticationService, CacheManager cacheManager,
-      CredentialsMatcher matcher, PermissionResolver permissionResolver, String realmName) {
-    super(cacheManager, matcher);
+      PermissionResolver permissionResolver, String realmName) {
+    super(cacheManager, new AllowAllCredentialsMatcher());
     this.authenticationService = authenticationService;
     this.setPermissionResolver(permissionResolver);
     this.setAuthorizationCachingEnabled(true);

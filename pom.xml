@@ -65,6 +65,7 @@
     <vaadin-spring.version>1.0.0</vaadin-spring.version>
     <commons-configuration.version>1.10</commons-configuration.version>
     <commons-email.version>1.4</commons-email.version>
+    <servlet.version>3.1.0</servlet.version>
     <velocity.version>1.7</velocity.version>
     <velocity-tools.version>2.0</velocity-tools.version>
     <junit.version>4.12</junit.version>
@@ -250,6 +251,12 @@
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity-tools</artifactId>
       <version>${velocity-tools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>${servlet.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
