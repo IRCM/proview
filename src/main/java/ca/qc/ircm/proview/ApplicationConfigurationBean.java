@@ -145,6 +145,12 @@ public class ApplicationConfigurationBean
   }
 
   @Override
+  public String getUrl(String urlEnd) {
+    String baseUrl = configuration.getString("main.serverUrl");
+    return baseUrl + urlEnd;
+  }
+
+  @Override
   public String getRealmName() {
     return REALM_NAME;
   }

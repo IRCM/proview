@@ -48,6 +48,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -66,6 +67,10 @@ public class AuthenticationServiceDefault implements AuthenticationService {
   private EntityManager entityManager;
   @Inject
   private ApplicationConfiguration applicationConfiguration;
+  /**
+   * Used to generate salt for passwords.
+   */
+  private Random random = new Random();
 
   protected AuthenticationServiceDefault() {
   }
@@ -250,5 +255,18 @@ public class AuthenticationServiceDefault implements AuthenticationService {
 
   private String getRealmName() {
     return applicationConfiguration.getRealmName();
+  }
+
+  @Override
+  public HashedPassword hashPassword(String password) {
+    if (password == null) {
+      return null;
+    }
+    final byte[] salt = new byte[64];
+    random.nextBytes(salt);
+    PasswordVersion passwordVersion = applicationConfiguration.getPasswordVersion();
+    final SimpleHash hash = new SimpleHash(passwordVersion.getAlgorithm(), password, salt,
+        passwordVersion.getIterations());
+    return new HashedPasswordDefault(hash, passwordVersion.getVersion());
   }
 }

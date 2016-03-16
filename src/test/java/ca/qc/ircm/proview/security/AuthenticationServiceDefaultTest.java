@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.security;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -46,6 +47,8 @@ import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.permission.WildcardPermission;
+import org.apache.shiro.codec.Hex;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -75,6 +78,7 @@ public class AuthenticationServiceDefaultTest {
   public RuleChain rules = Rules.defaultRules(this).around(databaseRule);
   private String realmName = "unit_realm";
   private Subject subject;
+  private PasswordVersion passwordVersion;
 
   /**
    * Before test.
@@ -84,8 +88,10 @@ public class AuthenticationServiceDefaultTest {
     authenticationServiceDefault =
         new AuthenticationServiceDefault(databaseRule.getEntityManager(), applicationConfiguration);
     when(applicationConfiguration.getRealmName()).thenReturn(realmName);
+    passwordVersion = SubjectRule.getPasswordVersion();
     when(applicationConfiguration.getPasswordVersions())
-        .thenReturn(Collections.nCopies(1, SubjectRule.getPasswordVersion()));
+        .thenReturn(Collections.nCopies(1, passwordVersion));
+    when(applicationConfiguration.getPasswordVersion()).thenReturn(passwordVersion);
     subject = SecurityUtils.getSubject();
   }
 
@@ -490,5 +496,27 @@ public class AuthenticationServiceDefaultTest {
       }
     }
     return false;
+  }
+
+  @Test
+  public void hashPassword() throws Throwable {
+    HashedPassword hashedPassword = authenticationServiceDefault.hashPassword("password");
+    assertNotNull(hashedPassword.getPassword());
+    assertNotNull(hashedPassword.getSalt());
+    SimpleHash hash = new SimpleHash(passwordVersion.getAlgorithm(), "password",
+        Hex.decode(hashedPassword.getSalt().toCharArray()), passwordVersion.getIterations());
+    assertEquals(hash.toHex(), hashedPassword.getPassword());
+
+    hashedPassword = authenticationServiceDefault.hashPassword("unit_test");
+    assertNotNull(hashedPassword.getPassword());
+    assertNotNull(hashedPassword.getSalt());
+    hash = new SimpleHash(passwordVersion.getAlgorithm(), "unit_test",
+        Hex.decode(hashedPassword.getSalt().toCharArray()), passwordVersion.getIterations());
+    assertEquals(hash.toHex(), hashedPassword.getPassword());
+  }
+
+  @Test
+  public void hashPassword_Null() throws Throwable {
+    assertNull(authenticationServiceDefault.hashPassword(null));
   }
 }

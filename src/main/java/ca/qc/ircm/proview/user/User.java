@@ -25,19 +25,16 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -103,6 +100,11 @@ public class User implements Data, Named, Serializable {
   @Column(name = "passwordVersion")
   private Integer passwordVersion;
   /**
+   * User's prefered locale.
+   */
+  @Column(name = "locale")
+  private Locale locale;
+  /**
    * User's laboratory.
    */
   @ManyToOne
@@ -123,14 +125,6 @@ public class User implements Data, Named, Serializable {
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "userId")
   private List<PhoneNumber> phoneNumbers;
-  /**
-   * User's preferences.
-   */
-  @ElementCollection
-  @CollectionTable(name = "userpreferences", joinColumns = @JoinColumn(name = "userId") )
-  @MapKeyColumn(name = "preferenceKey")
-  @Column(name = "preferenceValue")
-  private Map<String, String> preferences;
 
   public User() {
   }
@@ -245,14 +239,6 @@ public class User implements Data, Named, Serializable {
     this.salt = salt;
   }
 
-  public Map<String, String> getPreferences() {
-    return preferences;
-  }
-
-  public void setPreferences(Map<String, String> preferences) {
-    this.preferences = preferences;
-  }
-
   public Integer getPasswordVersion() {
     return passwordVersion;
   }
@@ -283,5 +269,13 @@ public class User implements Data, Named, Serializable {
 
   public void setProteomic(boolean proteomic) {
     this.proteomic = proteomic;
+  }
+
+  public Locale getLocale() {
+    return locale;
+  }
+
+  public void setLocale(Locale locale) {
+    this.locale = locale;
   }
 }

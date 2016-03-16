@@ -29,6 +29,19 @@ public interface ApplicationConfiguration {
   public Path getLogFile();
 
   /**
+   * Returns urlEnd with prefix that allows to access application from anywhere.
+   * <p>
+   * For example, to obtain the full URL <code>http://myserver.com/proview/myurl?param1=abc</code>,
+   * the urlEnd parameter should be <code>/proview/myurl?param1=abc</code>
+   * </p>
+   *
+   * @param urlEnd
+   *          end portion of URL
+   * @return urlEnd with prefix that allows to access application from anywhere
+   */
+  public String getUrl(String urlEnd);
+
+  /**
    * Returns realm name for Shiro.
    *
    * @return realm name for Shiro

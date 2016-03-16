@@ -99,6 +99,12 @@ public class ApplicationConfigurationBeanTest {
   }
 
   @Test
+  public void getUrl() {
+    assertEquals("http://localhost/myurl/subpath?param1=abc",
+        applicationConfigurationBean.getUrl("/myurl/subpath?param1=abc"));
+  }
+
+  @Test
   public void getRealmName() {
     assertEquals("proview", applicationConfigurationBean.getRealmName());
   }

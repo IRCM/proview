@@ -102,4 +102,13 @@ public interface AuthenticationService {
    * @return user's authorization information
    */
   public AuthorizationInfo getAuthorizationInfo(PrincipalCollection principals);
+
+  /**
+   * Hashes password. This method should be used before inserting password into database.
+   *
+   * @param password
+   *          password as entered by user
+   * @return hashed password
+   */
+  public HashedPassword hashPassword(String password);
 }
