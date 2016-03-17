@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.web;
 
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Widgetset;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.communication.PushMode;
@@ -33,11 +34,12 @@ import javax.inject.Inject;
 /**
  * Main Vaadin UI.
  */
-@Theme("valo")
-@SpringUI(path = "")
+@Theme("proview")
+@SpringUI
 @Push(value = PushMode.AUTOMATIC, transport = Transport.LONG_POLLING)
+@Widgetset("ca.qc.ircm.proview.ProviewWidgetset")
 public class MainUi extends UI {
-  private static final long serialVersionUID = -7400782917472488086L;
+  private static final long serialVersionUID = 5623532890650543834L;
   @Inject
   private SpringViewProvider viewProvider;
 

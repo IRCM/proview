@@ -17,28 +17,57 @@
 
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.security.AuthenticationService;
+import ca.qc.ircm.proview.user.web.RegisterView;
+import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
+import org.apache.shiro.authc.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 /**
  * Main view.
  */
 @SpringView(name = MainView.VIEW_NAME)
-public class MainView extends BaseView {
+public class MainView extends MainDesign implements MessageResourcesView {
   private static final long serialVersionUID = -2537732272999926530L;
   public static final String VIEW_NAME = "";
   private static final Logger logger = LoggerFactory.getLogger(MainView.class);
+  @Inject
+  private AuthenticationService authenticationService;
+  @Inject
+  private UI ui;
 
+  /**
+   * Initialize view.
+   */
   @PostConstruct
   public void init() {
-    content.setSizeFull();
-    content.addComponent(new Label("it works!"));
+    sign.getHeader().setStyleName("h2");
+    sign.addLoginListener(e -> {
+      MessageResource resources = getResources();
+      String username = e.getUserName();
+      String password = e.getPassword();
+      try {
+        authenticationService.sign(username, password, true);
+        //ui.getNavigator().navigateTo(SomeView.VIEW_NAME);
+        Notification.show("Success", Notification.Type.TRAY_NOTIFICATION);
+      } catch (AuthenticationException ae) {
+        Notification.show(resources.message("sign.fail"), Notification.Type.ERROR_MESSAGE);
+      }
+    });
+    forgotPassword.addClickListener(e -> {
+      Notification.show("Forgot password", Notification.Type.TRAY_NOTIFICATION);
+    });
+    register.addClickListener(e -> {
+      ui.getNavigator().navigateTo(RegisterView.VIEW_NAME);
+    });
   }
 
   @Override
@@ -48,10 +77,12 @@ public class MainView extends BaseView {
     MessageResource resources = getResources();
     setCaption(resources.message("title"));
     ui.getPage().setTitle(getCaption());
-  }
-
-  @Override
-  public void enter(ViewChangeEvent event) {
-    //ui.getNavigator().navigateTo(SomeView.VIEW_NAME);
+    header.setValue(resources.message("header"));
+    sign.getHeader().setValue(resources.message("sign"));
+    forgotPasswordHeader.setValue(resources.message("forgotPassword"));
+    email.setCaption(resources.message("forgotPassword.email"));
+    forgotPassword.setCaption(resources.message("forgotPassword.button"));
+    registerHeader.setValue(resources.message("register"));
+    register.setCaption(resources.message("register.button"));
   }
 }

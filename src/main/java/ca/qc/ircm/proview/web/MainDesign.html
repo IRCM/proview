@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;proview&quot;}">
+  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout size-auto="true"> 
+   <ca_qc_ircm_proview_web-menu id="menu" _id="menu"></ca_qc_ircm_proview_web-menu> 
+   <vaadin-vertical-layout primary-style-name="v-verticallayout" spacing="true" size-auto="true" margin="true"> 
+    <vaadin-label style-name="h1" size-auto="true" plain-text="" _id="header">
+      IRCM Proteomics Platform 
+    </vaadin-label> 
+    <ca_qc_ircm_proview_web-login-form-default id="sign" _id="sign"></ca_qc_ircm_proview_web-login-form-default> 
+    <vaadin-form-layout size-auto="true"> 
+     <vaadin-label style-name="h2" size-auto="true" plain-text="" _id="forgotPasswordHeader">
+       Forgot password 
+     </vaadin-label> 
+     <vaadin-text-field caption="Email" id="email" _id="email"></vaadin-text-field> 
+     <vaadin-button id="forgotPassword" plain-text="" _id="forgotPassword">
+       Submit 
+     </vaadin-button> 
+    </vaadin-form-layout> 
+    <vaadin-form-layout size-auto="true"> 
+     <vaadin-label style-name="h2" size-auto="true" plain-text="" _id="registerHeader">
+       If not registered, 
+     </vaadin-label> 
+     <vaadin-button style-name="link" id="register" plain-text="" _id="register">
+       Register 
+     </vaadin-button> 
+    </vaadin-form-layout> 
+   </vaadin-vertical-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

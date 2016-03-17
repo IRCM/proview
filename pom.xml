@@ -63,6 +63,7 @@
     <vaadin.version>7.6.4</vaadin.version>
     <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
     <vaadin-spring.version>1.0.0</vaadin-spring.version>
+    <loginform.version>0.6.2</loginform.version>
     <commons-configuration.version>1.10</commons-configuration.version>
     <commons-email.version>1.4</commons-email.version>
     <servlet.version>3.1.0</servlet.version>
@@ -225,12 +226,17 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-client-compiled</artifactId>
+      <artifactId>vaadin-client</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-spring</artifactId>
       <version>${vaadin-spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>loginform</artifactId>
+      <version>${loginform.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-configuration</groupId>

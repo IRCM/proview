@@ -38,7 +38,7 @@ import javax.inject.Inject;
  */
 @SpringView(name = ErrorView.VIEW_NAME)
 public class ErrorView extends VerticalLayout implements MessageResourcesComponent, View {
-  private static final long serialVersionUID = -4381714226715598245L;
+  private static final long serialVersionUID = 2998062811797958331L;
   private static final Logger logger = LoggerFactory.getLogger(ErrorView.class);
   public static final String VIEW_NAME = "error";
   @Inject

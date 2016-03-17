@@ -19,13 +19,5 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="title">${project.name}</entry>
-  <entry key="header">Institut de recherches cliniques de Montreal Proteomics-MS Core Facility</entry>
-  <entry key="sign">Enter your user information</entry>
-  <entry key="sign.fail">E-mail or password is invalid</entry>
-  <entry key="forgotPassword">If you forgot your password, enter your e-mail address</entry>
-  <entry key="forgotPassword.email">E-mail</entry>
-  <entry key="forgotPassword.button">Submit</entry>
-  <entry key="register">If you are not registered,</entry>
-  <entry key="register.button">Registrer yourself</entry>
+  <entry key="title">Register - ${project.name}</entry>
 </properties>
