@@ -1,0 +1,10 @@
+<html th:inline="text" th:remove="tag">
+[# th:text="#{newLaboratory.header(${user.name}, ${user.laboratory.name})}" th:if="${newLaboratory}" /]
+[# th:text="#{header(${user.name})}" th:unless="${newLaboratory}" /]
+[[#{header2}]]
+
+[[#{message}]]
+[[${url}]]
+
+[[#{footer}]]
+</html>

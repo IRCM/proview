@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.SpringConfiguration;
 import ca.qc.ircm.proview.cache.CacheFlusher;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
@@ -42,9 +43,7 @@ import ca.qc.ircm.proview.security.HashedPasswordDefault;
 import ca.qc.ircm.proview.test.config.DatabaseRule;
 import ca.qc.ircm.proview.test.config.RollBack;
 import ca.qc.ircm.proview.test.config.Rules;
-import ca.qc.ircm.proview.velocity.VelocityEngineProvider;
 import ca.qc.ircm.utils.MessageResource;
-import org.apache.velocity.app.VelocityEngine;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -57,6 +56,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thymeleaf.TemplateEngine;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,7 +73,7 @@ public class UserServiceDefaultTest {
   private static class RegisterUserWebContextDefault implements RegisterUserWebContext {
     @Override
     public String getValidateUserUrl(Locale locale) {
-      return "http://proview.ircm.qc.ca/validate/user";
+      return "/validate/user";
     }
   }
 
@@ -96,7 +96,6 @@ public class UserServiceDefaultTest {
   private ArgumentCaptor<HtmlEmail> emailCaptor;
   @Rule
   public RuleChain rules = Rules.defaultRules(this).around(jpaDatabaseRule);
-  private VelocityEngine velocityEngine;
   private EntityManager entityManager;
   private HashedPassword hashedPassword;
 
@@ -105,15 +104,16 @@ public class UserServiceDefaultTest {
    */
   @Before
   public void beforeTest() {
-    velocityEngine = new VelocityEngineProvider().get();
+    SpringConfiguration springConfiguration = new SpringConfiguration();
+    TemplateEngine templateEngine = springConfiguration.templateEngine();
     userServiceDefault = new UserServiceDefault(jpaDatabaseRule.getEntityManager(),
-        authenticationService, velocityEngine, emailService, cacheFlusher, applicationConfiguration,
+        authenticationService, templateEngine, emailService, cacheFlusher, applicationConfiguration,
         authorizationService);
     entityManager = jpaDatabaseRule.getEntityManager();
     when(applicationConfiguration.getUrl(any(String.class))).thenAnswer(new Answer<String>() {
       @Override
       public String answer(InvocationOnMock invocation) throws Throwable {
-        return "http://proview.ircm.qc.ca/user" + invocation.getArguments()[0];
+        return "http://proview.ircm.qc.ca/proview" + invocation.getArguments()[0];
       }
     });
     hashedPassword = new HashedPasswordDefault("da78f3a74658706", "4ae8470fc73a83f369fed012", 1);
@@ -505,7 +505,7 @@ public class UserServiceDefaultTest {
     HtmlEmail email = emailCaptor.getValue();
     email.getReceivers().contains("benoit.coulombe@ircm.qc.ca");
     MessageResource messageResource =
-        new MessageResource(UserServiceDefault.class, Locale.CANADA_FRENCH);
+        new MessageResource(UserServiceDefault.class.getName() + "_Email", Locale.CANADA_FRENCH);
     assertEquals(messageResource.message("email.subject"), email.getSubject());
     email.getHtmlMessage().contains("Christian");
     email.getHtmlMessage().contains("Poitras");
@@ -627,10 +627,10 @@ public class UserServiceDefaultTest {
     Set<String> receivers = new HashSet<>();
     Set<String> subjects = new HashSet<>();
     MessageResource frenchMessageResource =
-        new MessageResource(UserServiceDefault.class, Locale.CANADA_FRENCH);
+        new MessageResource(UserServiceDefault.class.getName() + "_Email", Locale.CANADA_FRENCH);
     subjects.add(frenchMessageResource.message("newLaboratory.email.subject"));
     MessageResource englishMessageResource =
-        new MessageResource(UserServiceDefault.class, Locale.CANADA_FRENCH);
+        new MessageResource(UserServiceDefault.class.getName() + "_Email", Locale.CANADA_FRENCH);
     subjects.add(englishMessageResource.message("newLaboratory.email.subject"));
     for (HtmlEmail email : emailCaptor.getAllValues()) {
       receivers.addAll(email.getReceivers());

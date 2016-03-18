@@ -68,8 +68,7 @@
     <commons-email.version>1.4</commons-email.version>
     <servlet.version>3.1.0</servlet.version>
     <el.version>2.2.5</el.version>
-    <velocity.version>1.7</velocity.version>
-    <velocity-tools.version>2.0</velocity-tools.version>
+    <thymeleaf.version>3.0.0.BETA02</thymeleaf.version>
     <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
     <junit.version>4.12</junit.version>
     <mockito.version>1.9.0</mockito.version>
@@ -251,14 +250,9 @@
       <version>${commons-email.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.velocity</groupId>
-      <artifactId>velocity</artifactId>
-      <version>${velocity.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.velocity</groupId>
-      <artifactId>velocity-tools</artifactId>
-      <version>${velocity-tools.version}</version>
+      <groupId>org.thymeleaf</groupId>
+      <artifactId>thymeleaf</artifactId>
+      <version>${thymeleaf.version}</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -289,7 +283,8 @@
         <directory>src/main/java</directory>
         <includes>
           <include>**/*.properties</include>
-          <include>**/*.vm</include>
+          <include>**/*.html</include>
+          <include>**/*.txt</include>
         </includes>
       </resource>
       <resource>

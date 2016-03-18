@@ -28,17 +28,16 @@ import ca.qc.ircm.proview.mail.HtmlEmailDefault;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.HashedPassword;
-import ca.qc.ircm.proview.velocity.BaseVelocityContext;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.apache.commons.mail.EmailException;
-import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -63,7 +62,7 @@ public class UserServiceDefault implements UserService {
   @Inject
   private EmailService emailService;
   @Inject
-  private VelocityEngine velocityEngine;
+  private TemplateEngine templateEngine;
   @Inject
   private CacheFlusher cacheFlusher;
   @Inject
@@ -75,13 +74,13 @@ public class UserServiceDefault implements UserService {
   }
 
   protected UserServiceDefault(EntityManager entityManager,
-      AuthenticationService authenticationService, VelocityEngine velocityEngine,
+      AuthenticationService authenticationService, TemplateEngine templateEngine,
       EmailService emailService, CacheFlusher cacheFlusher,
       ApplicationConfiguration applicationConfiguration,
       AuthorizationService authorizationService) {
     this.entityManager = entityManager;
     this.authenticationService = authenticationService;
-    this.velocityEngine = velocityEngine;
+    this.templateEngine = templateEngine;
     this.emailService = emailService;
     this.cacheFlusher = cacheFlusher;
     this.applicationConfiguration = applicationConfiguration;
@@ -269,21 +268,22 @@ public class UserServiceDefault implements UserService {
     // Prepare email content.
     HtmlEmailDefault email = new HtmlEmailDefault();
     email.addReceiver(manager.getEmail());
-    MessageResource messageResource = new MessageResource(UserServiceDefault.class, locale);
+    MessageResource messageResource =
+        new MessageResource(UserServiceDefault.class.getName() + "_Email", locale);
     String subject = messageResource.message("email.subject");
     email.setSubject(subject);
-    BaseVelocityContext velocityContext = new BaseVelocityContext();
-    velocityContext.setResourceTool(locale, UserServiceDefault.class);
-    velocityContext.put("user", user);
-    velocityContext.put("url", url);
-    String htmlTemplate = UserServiceDefault.class.getName().replace(".", "/") + "_HtmlEmail.vm";
-    StringWriter htmlWriter = new StringWriter();
-    velocityEngine.mergeTemplate(htmlTemplate, "UTF-8", velocityContext, htmlWriter);
-    email.setHtmlMessage(htmlWriter.toString());
-    String textTemplate = UserServiceDefault.class.getName().replace(".", "/") + "_TextEmail.vm";
-    StringWriter textWriter = new StringWriter();
-    velocityEngine.mergeTemplate(textTemplate, "UTF-8", velocityContext, textWriter);
-    email.setTextMessage(textWriter.toString());
+    Context context = new Context();
+    context.setVariable("user", user);
+    context.setVariable("newLaboratory", false);
+    context.setVariable("url", url);
+    String htmlTemplateLocation =
+        "/" + UserServiceDefault.class.getName().replace(".", "/") + "_Email.html";
+    String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
+    email.setHtmlMessage(htmlEmail);
+    String textTemplateLocation =
+        "/" + UserServiceDefault.class.getName().replace(".", "/") + "_Email.txt";
+    String textEmail = templateEngine.process(textTemplateLocation, context);
+    email.setTextMessage(textEmail);
 
     emailService.sendHtmlEmail(email);
   }
@@ -331,25 +331,23 @@ public class UserServiceDefault implements UserService {
       final String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(locale));
       // Prepare email content.
       HtmlEmailDefault email = new HtmlEmailDefault();
-      MessageResource messageResource = new MessageResource(UserServiceDefault.class, locale);
+      MessageResource messageResource =
+          new MessageResource(UserServiceDefault.class.getName() + "_Email", locale);
       String subject = messageResource.message("newLaboratory.email.subject");
       email.setSubject(subject);
       email.addReceiver(proteomicUser.getEmail());
-      BaseVelocityContext velocityContext = new BaseVelocityContext();
-      velocityContext.setResourceTool(locale, UserServiceDefault.class);
-      velocityContext.put("user", manager);
-      velocityContext.put("newLaboratory", true);
-      velocityContext.put("url", url);
-      String htmlTemplate =
-          UserServiceDefault.class.getName().replaceAll("\\.", "/") + "_HtmlEmail.vm";
-      final StringWriter htmlWriter = new StringWriter();
-      velocityEngine.mergeTemplate(htmlTemplate, "UTF-8", velocityContext, htmlWriter);
-      email.setHtmlMessage(htmlWriter.toString());
-      String textTemplate =
-          UserServiceDefault.class.getName().replaceAll("\\.", "/") + "_TextEmail.vm";
-      final StringWriter textWriter = new StringWriter();
-      velocityEngine.mergeTemplate(textTemplate, "UTF-8", velocityContext, textWriter);
-      email.setTextMessage(textWriter.toString());
+      Context context = new Context();
+      context.setVariable("user", manager);
+      context.setVariable("newLaboratory", true);
+      context.setVariable("url", url);
+      String htmlTemplateLocation =
+          UserServiceDefault.class.getName().replace(".", "/") + "_Email.html";
+      String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
+      email.setHtmlMessage(htmlEmail);
+      String textTemplateLocation =
+          UserServiceDefault.class.getName().replace(".", "/") + "_Email.txt";
+      String textEmail = templateEngine.process(textTemplateLocation, context);
+      email.setTextMessage(textEmail);
 
       emailService.sendHtmlEmail(email);
     }

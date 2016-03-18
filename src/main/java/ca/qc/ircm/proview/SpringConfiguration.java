@@ -28,6 +28,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
@@ -90,5 +92,17 @@ public class SpringConfiguration {
   @Bean
   public PlatformTransactionManager txManager() {
     return new JpaTransactionManager(entityManagerFactory());
+  }
+
+  /**
+   * Creates Thymeleaf's template engine.
+   *
+   * @return Thymeleaf's template engine
+   */
+  @Bean
+  public TemplateEngine templateEngine() {
+    TemplateEngine templateEngine = new TemplateEngine();
+    templateEngine.setTemplateResolver(new ClassLoaderTemplateResolver());
+    return templateEngine;
   }
 }
