@@ -67,8 +67,10 @@
     <commons-configuration.version>1.10</commons-configuration.version>
     <commons-email.version>1.4</commons-email.version>
     <servlet.version>3.1.0</servlet.version>
+    <el.version>2.2.5</el.version>
     <velocity.version>1.7</velocity.version>
     <velocity-tools.version>2.0</velocity-tools.version>
+    <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
     <junit.version>4.12</junit.version>
     <mockito.version>1.9.0</mockito.version>
     <h2.version>1.4.190</h2.version>
@@ -259,9 +261,20 @@
       <version>${velocity-tools.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${hibernate-validator.version}</version>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>${servlet.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+     <groupId>javax.el</groupId>
+     <artifactId>javax.el-api</artifactId>
+     <version>${el.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

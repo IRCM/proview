@@ -75,8 +75,7 @@ public class MainView extends MainDesign implements MessageResourcesView {
     super.attach();
     logger.debug("Main view");
     MessageResource resources = getResources();
-    setCaption(resources.message("title"));
-    ui.getPage().setTitle(getCaption());
+    ui.getPage().setTitle(resources.message("title"));
     header.setValue(resources.message("header"));
     sign.getHeader().setValue(resources.message("sign"));
     forgotPasswordHeader.setValue(resources.message("forgotPassword"));

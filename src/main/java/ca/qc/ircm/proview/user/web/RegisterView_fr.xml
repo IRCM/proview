@@ -20,4 +20,36 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
   <entry key="title">Inscription - ${project.name}</entry>
+  <entry key="header">Inscription</entry>
+  <entry key="email">Courriel</entry>
+  <entry key="email.invalid">Courriel invalide</entry>
+  <entry key="email.exists">Ce courriel est déjà utilisé</entry>
+  <entry key="name">Nom</entry>
+  <entry key="password">Mot de passe</entry>
+  <entry key="password.notMatch">Mots de passe différents</entry>
+  <entry key="confirmPassword">Repétez mot de passe</entry>
+  <entry key="laboratoryHeader">Laboratoire</entry>
+  <entry key="newLaboratory">Je suis le directeur du laboratoire</entry>
+  <entry key="laboratoryName">Nom du laboratoire</entry>
+  <entry key="organization">Organisme</entry>
+  <entry key="manager">Courriel du directeur du laboratoire</entry>
+  <entry key="manager.invalid">Courriel du directeur invalide</entry>
+  <entry key="manager.notExists">Le courriel n''existe pas ou n''est pas un directeur</entry>
+  <entry key="addressHeader">Adresse</entry>
+  <entry key="address">Adresse</entry>
+  <entry key="addressSecond">Seconde ligne</entry>
+  <entry key="town">Ville</entry>
+  <entry key="state">État/Province</entry>
+  <entry key="country">Pays</entry>
+  <entry key="postalCode">Code postal</entry>
+  <entry key="phoneNumberHeader">Numéro de téléphone</entry>
+  <entry key="phoneNumber">Numéro</entry>
+  <entry key="phoneNumber.invalid">Numéro ne doit contenir que des chiffres et des traits d''union</entry>
+  <entry key="phoneExtension">Extension</entry>
+  <entry key="phoneNumber.invalid">Extension ne doit contenir que des chiffres et des traits d''union</entry>
+  <entry key="registerHeader">Une fois inscrit, un gestionnaire doit vous accepter avant que vous puissiez vous connecter</entry>
+  <entry key="register">Sauvegarder</entry>
+  <entry key="clear">Effacer</entry>
+  <entry key="required">&lt;span class="v-required-field-indicator"&gt;*&lt;/span&gt; Champ requis</entry>
+  <entry key="done">Inscription complétée pour l''usager {0}</entry>
 </properties>

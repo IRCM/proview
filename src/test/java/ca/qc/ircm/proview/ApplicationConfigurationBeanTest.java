@@ -171,6 +171,98 @@ public class ApplicationConfigurationBeanTest {
   }
 
   @Test
+  public void getAddress() throws Throwable {
+    String address = applicationConfigurationBean.getAddress();
+
+    assertEquals("110 avenue des Pins Ouest", address);
+  }
+
+  @Test
+  public void getAddress_Undefined() throws Throwable {
+    Path configuration =
+        Paths.get(getClass().getResource("/test-configuration-noaddress.ini").toURI());
+    replaceConfiguration(configuration);
+
+    String address = applicationConfigurationBean.getAddress();
+
+    assertEquals(null, address);
+  }
+
+  @Test
+  public void getTown() throws Throwable {
+    String town = applicationConfigurationBean.getTown();
+
+    assertEquals("Montréal", town);
+  }
+
+  @Test
+  public void getTown_Undefined() throws Throwable {
+    Path configuration =
+        Paths.get(getClass().getResource("/test-configuration-noaddress.ini").toURI());
+    replaceConfiguration(configuration);
+
+    String town = applicationConfigurationBean.getTown();
+
+    assertEquals(null, town);
+  }
+
+  @Test
+  public void getState() throws Throwable {
+    String state = applicationConfigurationBean.getState();
+
+    assertEquals("Québec", state);
+  }
+
+  @Test
+  public void getState_Undefined() throws Throwable {
+    Path configuration =
+        Paths.get(getClass().getResource("/test-configuration-noaddress.ini").toURI());
+    replaceConfiguration(configuration);
+
+    String state = applicationConfigurationBean.getState();
+
+    assertEquals(null, state);
+  }
+
+  @Test
+  public void getPostalCode() throws Throwable {
+    String postalCode = applicationConfigurationBean.getPostalCode();
+
+    assertEquals("H2W 1R7", postalCode);
+  }
+
+  @Test
+  public void getPostalCode_Undefined() throws Throwable {
+    Path configuration =
+        Paths.get(getClass().getResource("/test-configuration-noaddress.ini").toURI());
+    replaceConfiguration(configuration);
+
+    String postalCode = applicationConfigurationBean.getPostalCode();
+
+    assertEquals(null, postalCode);
+  }
+
+  @Test
+  public void getCountries() throws Throwable {
+    String[] countries = applicationConfigurationBean.getCountries();
+
+    assertEquals(2, countries.length);
+    assertEquals("Canada", countries[0]);
+    assertEquals("USA", countries[1]);
+  }
+
+  @Test
+  public void getCountries_Undefined() throws Throwable {
+    Path configuration =
+        Paths.get(getClass().getResource("/test-configuration-noaddress.ini").toURI());
+    replaceConfiguration(configuration);
+
+    String[] countries = applicationConfigurationBean.getCountries();
+
+    assertEquals(0, countries.length);
+  }
+
+  @Test
   public void noConfiguration() throws Throwable {
     Path configuration = temporaryFolder.getRoot().toPath().resolve(CONFIGURATION_FILE);
     Files.delete(configuration);

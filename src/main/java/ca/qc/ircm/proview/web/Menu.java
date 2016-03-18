@@ -22,12 +22,13 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.util.Locale;
 
 /**
  * Menu.
@@ -39,6 +40,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
   private MenuBar menu = new MenuBar();
   private MenuItem home;
+  private MenuItem changeLanguage;
   private MenuItem help;
 
   /**
@@ -47,6 +49,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   public Menu() {
     setCompositionRoot(menu);
     home = menu.addItem("Home", new ChangeViewCommand(MainView.VIEW_NAME));
+    changeLanguage = menu.addItem("Change language", new ChangeLanguageCommand());
     help = menu.addItem("Help", new ChangeViewCommand(MainView.VIEW_NAME));
   }
 
@@ -55,6 +58,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     super.attach();
     MessageResource resources = getResources();
     home.setText(resources.message("home"));
+    changeLanguage.setText(resources.message("changeLanguage"));
     help.setText(resources.message("help"));
   }
 
@@ -69,7 +73,24 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     @Override
     public void menuSelected(MenuItem selectedItem) {
       logger.debug("Navigate to {}", viewName);
-      UI.getCurrent().getNavigator().navigateTo(viewName);
+      getUI().getNavigator().navigateTo(viewName);
+    }
+  }
+
+  private class ChangeLanguageCommand implements MenuBar.Command {
+    private static final long serialVersionUID = 6785281901439260013L;
+
+    @Override
+    public void menuSelected(MenuItem selectedItem) {
+      Locale newLocale = Locale.ENGLISH;
+      Locale locale = getLocale();
+      if (locale != null && locale.getLanguage().equals("en")) {
+        newLocale = Locale.FRENCH;
+      }
+      logger.debug("Change language from {} to {}", locale, newLocale);
+      getUI().getSession().setLocale(newLocale);
+      getUI().setLocale(newLocale);
+      getUI().getPage().reload();
     }
   }
 }

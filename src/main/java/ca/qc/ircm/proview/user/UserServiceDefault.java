@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user;
 
+import static ca.qc.ircm.proview.laboratory.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QUser.user;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
@@ -104,11 +105,20 @@ public class UserServiceDefault implements UserService {
       return null;
     }
 
+    User ret = noSecurityGet(email);
+    authorizationService.checkUserReadPermission(ret);
+    return ret;
+  }
+
+  private User noSecurityGet(String email) {
+    if (email == null) {
+      return null;
+    }
+
     JPAQuery<User> query = new JPAQuery<>(entityManager);
     query.from(user);
     query.where(user.email.eq(email));
     User ret = query.fetchOne();
-    authorizationService.checkUserReadPermission(ret);
     return ret;
   }
 
@@ -188,6 +198,23 @@ public class UserServiceDefault implements UserService {
   }
 
   @Override
+  public boolean isManager(String email) {
+    if (email == null) {
+      return false;
+    }
+
+    JPAQuery<User> query = new JPAQuery<>(entityManager);
+    query.from(user);
+    query.from(laboratory);
+    query.where(user.valid.eq(true));
+    query.where(user.active.eq(true));
+    query.where(user.proteomic.eq(false));
+    query.where(user.email.eq(email));
+    query.where(laboratory.managers.contains(user));
+    return query.fetchOne() != null;
+  }
+
+  @Override
   public void register(User user, String password, User manager,
       RegisterUserWebContext webContext) {
     if (user.isProteomic()) {
@@ -208,6 +235,7 @@ public class UserServiceDefault implements UserService {
 
   private void registerNewUser(User user, String password, User manager,
       RegisterUserWebContext webContext) {
+    manager = noSecurityGet(manager.getEmail());
     if (!manager.isValid()) {
       throw new IllegalArgumentException("Cannot add user to a laboratory with an invalid manager");
     }
@@ -300,7 +328,7 @@ public class UserServiceDefault implements UserService {
         locale = manager.getLocale();
       }
       // Prepare URL used to validate laboratory.
-      final String url = applicationConfiguration.getUrl(webContext.getValidateManagerUrl(locale));
+      final String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(locale));
       // Prepare email content.
       HtmlEmailDefault email = new HtmlEmailDefault();
       MessageResource messageResource = new MessageResource(UserServiceDefault.class, locale);

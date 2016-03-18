@@ -68,7 +68,7 @@ public class Log4jConfiguration implements ServletContextListener {
     consoleAppender.setLayout(new PatternLayout(PATTERN));
     consoleAppender.activateOptions();
 
-    Logger.getLogger("ca.qc.ircm.proteus").setLevel(Level.DEBUG);
+    Logger.getLogger("ca.qc.ircm.proview").setLevel(Level.DEBUG);
     Logger.getRootLogger().setLevel(Level.WARN);
     Logger.getRootLogger().removeAllAppenders();
     Logger.getRootLogger().addAppender(fileAppender);

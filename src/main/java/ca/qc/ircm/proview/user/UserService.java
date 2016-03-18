@@ -94,6 +94,17 @@ public interface UserService {
   public List<String> usernames();
 
   /**
+   * Returns true if email parameter is the email of a non-proteomic laboratory manager, false
+   * otherwise.
+   *
+   * @param email
+   *          email
+   * @return true if email parameter is the email of a non-proteomic laboratory manager, false
+   *         otherwise
+   */
+  public boolean isManager(String email);
+
+  /**
    * Register a new user in a laboratory.
    *
    * @param user

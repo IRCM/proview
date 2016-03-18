@@ -47,7 +47,7 @@ CREATE TABLE address (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   userId bigint(20) DEFAULT NULL,
   address varchar(150) NOT NULL,
-  address2 varchar(150) DEFAULT NULL,
+  addressSecond varchar(150) DEFAULT NULL,
   town varchar(50) NOT NULL,
   state varchar(50) NOT NULL,
   country varchar(50) NOT NULL,
@@ -92,6 +92,8 @@ INSERT INTO laboratory (id,name,organization)
 VALUES ('3', 'Chromatin and Genomic Expression', 'IRCM');
 INSERT INTO laboratory (id,name,organization)
 VALUES ('4', 'Biochemistry of Epigenetic Inheritance', 'IRCM');
+INSERT INTO laboratory (id,name,organization)
+VALUES ('5', 'Génétique moléculaire et développement', 'IRCM');
 INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
 VALUES ('1', 'proview@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', 'Robot', null, '1', '1', '1', NULL);
 INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
@@ -112,24 +114,28 @@ INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,val
 VALUES ('9', 'robert.williams@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Robert Williams', 'en_US', '1', '1', '0', '2011-07-07 15:48:24');
 INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
 VALUES ('10', 'nicole.francis@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Nicole J. Francis', 'en_US', '0', '0', '0', '2011-07-07 15:48:24');
-INSERT INTO address (id,userId,address,address2,town,state,country,postalCode,billing)
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
+VALUES ('11', 'marie.trudel@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Marie Trudel', 'en_US', '0', '1', '0', '2011-07-07 15:48:24');
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
 VALUES ('1', '2', '110, avenue des Pins Ouest', '1234', 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,address2,town,state,country,postalCode,billing)
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
 VALUES ('2', '3', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,address2,town,state,country,postalCode,billing)
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
 VALUES ('3', '4', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,address2,town,state,country,postalCode,billing)
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
 VALUES ('4', '5', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,address2,town,state,country,postalCode,billing)
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
 VALUES ('5', '6', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,address2,town,state,country,postalCode,billing)
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
 VALUES ('6', '7', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,address2,town,state,country,postalCode,billing)
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
 VALUES ('7', '8', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,address2,town,state,country,postalCode,billing)
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
 VALUES ('8', '9', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,address2,town,state,country,postalCode,billing)
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
 VALUES ('9', '10', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
+INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
+VALUES ('10', '11', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
 INSERT INTO phonenumber (id,userId,type,number,extension)
 VALUES ('1', '2', 'WORK', '514-555-5555', null);
 INSERT INTO phonenumber (id,userId,type,number,extension)
@@ -148,6 +154,8 @@ INSERT INTO phonenumber (id,userId,type,number,extension)
 VALUES ('8', '9', 'WORK', '514-555-5556', null);
 INSERT INTO phonenumber (id,userId,type,number,extension)
 VALUES ('9', '10', 'WORK', '514-555-5558', null);
+INSERT INTO phonenumber (id,userId,type,number,extension)
+VALUES ('10', '11', 'WORK', '514-555-5559', null);
 INSERT INTO laboratoryuser (userId,laboratoryId)
 VALUES ('1', '1');
 INSERT INTO laboratoryuser (userId,laboratoryId)
@@ -168,6 +176,8 @@ INSERT INTO laboratoryuser (userId,laboratoryId)
 VALUES ('9', '2');
 INSERT INTO laboratoryuser (userId,laboratoryId)
 VALUES ('10', '4');
+INSERT INTO laboratoryuser (userId,laboratoryId)
+VALUES ('11', '5');
 INSERT INTO laboratorymanager (userId,laboratoryId)
 VALUES ('1', '1');
 INSERT INTO laboratorymanager (userId,laboratoryId)
@@ -180,3 +190,5 @@ INSERT INTO laboratorymanager (userId,laboratoryId)
 VALUES ('9', '2');
 INSERT INTO laboratorymanager (userId,laboratoryId)
 VALUES ('10', '4');
+INSERT INTO laboratorymanager (userId,laboratoryId)
+VALUES ('11', '5');

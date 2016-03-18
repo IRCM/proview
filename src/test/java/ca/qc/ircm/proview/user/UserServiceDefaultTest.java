@@ -75,11 +75,6 @@ public class UserServiceDefaultTest {
     public String getValidateUserUrl(Locale locale) {
       return "http://proview.ircm.qc.ca/validate/user";
     }
-
-    @Override
-    public String getValidateManagerUrl(Locale locale) {
-      return "http://proview.ircm.qc.ca/validate/manager";
-    }
   }
 
   @SuppressWarnings("unused")
@@ -161,7 +156,7 @@ public class UserServiceDefaultTest {
     assertEquals(1, user.getAddresses().size());
     Address address = user.getAddresses().get(0);
     assertEquals("110, avenue des Pins Ouest", address.getAddress());
-    assertEquals(null, address.getAddress2());
+    assertEquals(null, address.getAddressSecond());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -202,7 +197,7 @@ public class UserServiceDefaultTest {
     assertEquals(1, user.getAddresses().size());
     Address address = user.getAddresses().get(0);
     assertEquals("110, avenue des Pins Ouest", address.getAddress());
-    assertEquals(null, address.getAddress2());
+    assertEquals(null, address.getAddressSecond());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -326,6 +321,55 @@ public class UserServiceDefaultTest {
   }
 
   @Test
+  public void isManager_Robot() throws Throwable {
+    boolean manager = userServiceDefault.isManager("proview@ircm.qc.ca");
+
+    assertEquals(false, manager);
+  }
+
+  @Test
+  public void isManager_Proteomic() throws Throwable {
+    boolean manager = userServiceDefault.isManager("christian.poitras@ircm.qc.ca");
+
+    assertEquals(false, manager);
+  }
+
+  @Test
+  public void isManager_Manager() throws Throwable {
+    boolean manager = userServiceDefault.isManager("benoit.coulombe@ircm.qc.ca");
+
+    assertEquals(true, manager);
+  }
+
+  @Test
+  public void isManager_NonManager() throws Throwable {
+    boolean manager = userServiceDefault.isManager("james.johnson@ircm.qc.ca");
+
+    assertEquals(false, manager);
+  }
+
+  @Test
+  public void isManager_Invalid() throws Throwable {
+    boolean manager = userServiceDefault.isManager("nicole.francis@ircm.qc.ca");
+
+    assertEquals(false, manager);
+  }
+
+  @Test
+  public void isManager_Inactive() throws Throwable {
+    boolean manager = userServiceDefault.isManager("marie.trudel@ircm.qc.ca");
+
+    assertEquals(false, manager);
+  }
+
+  @Test
+  public void isManager_Null() throws Throwable {
+    boolean manager = userServiceDefault.isManager(null);
+
+    assertEquals(false, manager);
+  }
+
+  @Test
   public void register_Proteomic() throws Throwable {
     final User manager = entityManager.find(User.class, 1L);
     when(authorizationService.getCurrentUser()).thenReturn(manager);
@@ -336,7 +380,7 @@ public class UserServiceDefaultTest {
     user.setProteomic(true);
     Address address = new Address();
     address.setAddress("110 av des Pins Ouest");
-    address.setAddress2("2640");
+    address.setAddressSecond("2640");
     address.setTown("Montréal");
     address.setState("Québec");
     address.setPostalCode("H2W 1R7");
@@ -376,7 +420,7 @@ public class UserServiceDefaultTest {
     assertEquals(1, user.getAddresses().size());
     address = user.getAddresses().get(0);
     assertEquals("110 av des Pins Ouest", address.getAddress());
-    assertEquals("2640", address.getAddress2());
+    assertEquals("2640", address.getAddressSecond());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -395,14 +439,15 @@ public class UserServiceDefaultTest {
 
   @Test
   public void register_ExistingLaboratory() throws Throwable {
-    final User manager = entityManager.find(User.class, 3L);
+    final User manager = new User();
+    manager.setEmail("benoit.coulombe@ircm.qc.ca");
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
     user.setLocale(Locale.CANADA_FRENCH);
     Address address = new Address();
     address.setAddress("110 av des Pins Ouest");
-    address.setAddress2("2640");
+    address.setAddressSecond("2640");
     address.setTown("Montréal");
     address.setState("Québec");
     address.setPostalCode("H2W 1R7");
@@ -424,7 +469,7 @@ public class UserServiceDefaultTest {
     entityManager.flush();
     verifyZeroInteractions(authorizationService);
     verify(authenticationService).hashPassword("password");
-    Laboratory laboratory = manager.getLaboratory();
+    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
     entityManager.refresh(laboratory);
     assertEquals(2, laboratory.getManagers().size());
     assertNotNull(find(laboratory.getManagers(), 3L));
@@ -443,7 +488,7 @@ public class UserServiceDefaultTest {
     assertEquals(1, user.getAddresses().size());
     address = user.getAddresses().get(0);
     assertEquals("110 av des Pins Ouest", address.getAddress());
-    assertEquals("2640", address.getAddress2());
+    assertEquals("2640", address.getAddressSecond());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -485,7 +530,7 @@ public class UserServiceDefaultTest {
     user.setLocale(Locale.CANADA_FRENCH);
     Address address = new Address();
     address.setAddress("110 av des Pins Ouest");
-    address.setAddress2("2640");
+    address.setAddressSecond("2640");
     address.setTown("Montréal");
     address.setState("Québec");
     address.setPostalCode("H2W 1R7");
@@ -522,7 +567,7 @@ public class UserServiceDefaultTest {
     user.setLocale(Locale.CANADA);
     Address address = new Address();
     address.setAddress("110 av des Pins Ouest");
-    address.setAddress2("2640");
+    address.setAddressSecond("2640");
     address.setTown("Montréal");
     address.setState("Québec");
     address.setPostalCode("H2W 1R7");
@@ -565,7 +610,7 @@ public class UserServiceDefaultTest {
     assertEquals(1, user.getAddresses().size());
     address = user.getAddresses().get(0);
     assertEquals("110 av des Pins Ouest", address.getAddress());
-    assertEquals("2640", address.getAddress2());
+    assertEquals("2640", address.getAddressSecond());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -594,7 +639,7 @@ public class UserServiceDefaultTest {
       email.getHtmlMessage().contains("Poitras");
       email.getTextMessage().contains("Christian");
       email.getTextMessage().contains("Poitras");
-      String url = applicationConfiguration.getUrl(webContext.getValidateManagerUrl(Locale.CANADA));
+      String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(Locale.CANADA));
       assertTrue(email.getTextMessage().contains(url));
       assertTrue(email.getHtmlMessage().contains(url));
       assertFalse(email.getTextMessage().contains("???"));
@@ -623,7 +668,7 @@ public class UserServiceDefaultTest {
     assertEquals(1, user.getAddresses().size());
     Address address = user.getAddresses().get(0);
     assertEquals("110, avenue des Pins Ouest", address.getAddress());
-    assertEquals(null, address.getAddress2());
+    assertEquals(null, address.getAddressSecond());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -643,7 +688,7 @@ public class UserServiceDefaultTest {
     user.setLocale(Locale.US);
     address = new Address();
     address.setAddress("110 av des Pins West");
-    address.setAddress2("2640");
+    address.setAddressSecond("2640");
     address.setTown("Montreal");
     address.setState("Quebec");
     address.setPostalCode("H2W 1R8");
@@ -683,7 +728,7 @@ public class UserServiceDefaultTest {
     assertEquals(1, user.getAddresses().size());
     address = user.getAddresses().get(0);
     assertEquals("110 av des Pins West", address.getAddress());
-    assertEquals("2640", address.getAddress2());
+    assertEquals("2640", address.getAddressSecond());
     assertEquals("Montreal", address.getTown());
     assertEquals("Quebec", address.getState());
     assertEquals("H2W 1R8", address.getPostalCode());

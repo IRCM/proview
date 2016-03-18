@@ -59,7 +59,7 @@ public class User implements Data, Named, Serializable {
    * Email of User. This is also a unique id.
    */
   @Column(name = "email", unique = true, nullable = false)
-  @Size(max = 100)
+  @Size(max = 255)
   private String email;
   /**
    * First name.

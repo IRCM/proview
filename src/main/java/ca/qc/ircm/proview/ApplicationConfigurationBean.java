@@ -195,4 +195,29 @@ public class ApplicationConfigurationBean
   public String getEmailErrorReceiver() {
     return configuration.getString("mail.errorReceiver");
   }
+
+  @Override
+  public String getAddress() {
+    return configuration.getString("address.address");
+  }
+
+  @Override
+  public String getTown() {
+    return configuration.getString("address.town");
+  }
+
+  @Override
+  public String getState() {
+    return configuration.getString("address.state");
+  }
+
+  @Override
+  public String getPostalCode() {
+    return configuration.getString("address.postalCode");
+  }
+
+  @Override
+  public String[] getCountries() {
+    return configuration.getStringArray("address.country");
+  }
 }

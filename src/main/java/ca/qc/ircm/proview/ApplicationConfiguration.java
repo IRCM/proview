@@ -102,4 +102,39 @@ public interface ApplicationConfiguration {
    * @return email receiver for errors
    */
   public String getEmailErrorReceiver();
+
+  /**
+   * Returns default address.
+   *
+   * @return default address
+   */
+  public String getAddress();
+
+  /**
+   * Returns default town.
+   *
+   * @return default town
+   */
+  public String getTown();
+
+  /**
+   * Returns default state.
+   *
+   * @return default state
+   */
+  public String getState();
+
+  /**
+   * Returns default postal code.
+   *
+   * @return default postal code
+   */
+  public String getPostalCode();
+
+  /**
+   * Returns countries.
+   *
+   * @return countries
+   */
+  public String[] getCountries();
 }

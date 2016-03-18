@@ -28,6 +28,8 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.UI;
 
+import java.util.Locale;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -55,5 +57,9 @@ public class MainUi extends UI {
 
   @Override
   protected void init(VaadinRequest vaadinRequest) {
+    if (getUI().getLocale() == null) {
+      // TODO Use user's locale rather than a default one.
+      getUI().getSession().setLocale(Locale.FRENCH);
+    }
   }
 }

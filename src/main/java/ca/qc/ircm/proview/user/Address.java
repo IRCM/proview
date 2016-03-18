@@ -51,9 +51,9 @@ public class Address implements Serializable {
   /**
    * Second line of address.
    */
-  @Column(name = "address2")
+  @Column(name = "addressSecond")
   @Size(max = 150)
-  private String address2;
+  private String addressSecond;
   /**
    * Town.
    */
@@ -105,12 +105,12 @@ public class Address implements Serializable {
     this.address = address;
   }
 
-  public String getAddress2() {
-    return address2;
+  public String getAddressSecond() {
+    return addressSecond;
   }
 
-  public void setAddress2(String address2) {
-    this.address2 = address2;
+  public void setAddressSecond(String addressSecond) {
+    this.addressSecond = addressSecond;
   }
 
   public String getTown() {

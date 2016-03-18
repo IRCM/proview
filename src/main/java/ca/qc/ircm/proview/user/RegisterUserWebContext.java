@@ -32,14 +32,4 @@ public interface RegisterUserWebContext {
    * @return URL that leads to validate user function
    */
   public String getValidateUserUrl(Locale locale);
-
-  /**
-   * Returns URL that leads to validate manager function. This URL must begin with with a
-   * <code>/</code> and must begin with the context path, if applicable.
-   *
-   * @param locale
-   *          adapt URL to specified locale
-   * @return URL that leads to validate user function
-   */
-  public String getValidateManagerUrl(Locale locale);
 }

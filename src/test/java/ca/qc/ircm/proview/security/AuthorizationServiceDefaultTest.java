@@ -103,7 +103,7 @@ public class AuthorizationServiceDefaultTest {
     assertEquals(1, user.getAddresses().size());
     Address address = user.getAddresses().get(0);
     assertEquals("110, avenue des Pins Ouest", address.getAddress());
-    assertEquals(null, address.getAddress2());
+    assertEquals(null, address.getAddressSecond());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
