@@ -17,39 +17,51 @@
 
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 /**
  * Menu.
  */
-@Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Menu extends CustomComponent implements MessageResourcesComponent {
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
   private MenuBar menu = new MenuBar();
   private MenuItem home;
   private MenuItem changeLanguage;
+  private MenuItem manager;
+  private MenuItem validateUsers;
   private MenuItem help;
+  @Inject
+  private AuthorizationService authorizationService;
 
   /**
    * Creates navigation menu.
    */
   public Menu() {
+    injectBeans();
     setCompositionRoot(menu);
     home = menu.addItem("Home", new ChangeViewCommand(MainView.VIEW_NAME));
     changeLanguage = menu.addItem("Change language", new ChangeLanguageCommand());
+    if (authorizationService.hasManagerRole() || authorizationService.hasProteomicRole()) {
+      manager = menu.addItem("Manager", null);
+      validateUsers =
+          manager.addItem("Validate users", new ChangeViewCommand(ValidateView.VIEW_NAME));
+    }
     help = menu.addItem("Help", new ChangeViewCommand(MainView.VIEW_NAME));
   }
 
@@ -59,7 +71,17 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     MessageResource resources = getResources();
     home.setText(resources.message("home"));
     changeLanguage.setText(resources.message("changeLanguage"));
+    if (authorizationService.hasManagerRole() || authorizationService.hasProteomicRole()) {
+      manager.setText(resources.message("manager"));
+      validateUsers.setText(resources.message("validateUsers"));
+    }
     help.setText(resources.message("help"));
+  }
+
+  private void injectBeans() {
+    WebApplicationContext context = WebApplicationContextUtils
+        .getRequiredWebApplicationContext(VaadinServlet.getCurrent().getServletContext());
+    context.getAutowireCapableBeanFactory().autowireBean(this);
   }
 
   private class ChangeViewCommand implements MenuBar.Command {

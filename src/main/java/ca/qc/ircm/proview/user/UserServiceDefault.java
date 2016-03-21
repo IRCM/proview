@@ -134,69 +134,6 @@ public class UserServiceDefault implements UserService {
   }
 
   @Override
-  public List<User> invalid(Laboratory laboratory) {
-    if (laboratory == null) {
-      return new ArrayList<User>();
-    }
-    authorizationService.checkLaboratoryManagerPermission(laboratory);
-
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.laboratory.eq(laboratory));
-    query.where(user.valid.eq(false));
-    return query.fetch();
-  }
-
-  @Override
-  public List<User> valid(Laboratory laboratory) {
-    if (laboratory == null) {
-      return new ArrayList<User>();
-    }
-    authorizationService.checkLaboratoryManagerPermission(laboratory);
-
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.laboratory.eq(laboratory));
-    query.where(user.valid.eq(true));
-    query.where(user.id.ne(ROBOT_ID));
-    return query.fetch();
-  }
-
-  @Override
-  public List<User> valids() {
-    authorizationService.checkProteomicRole();
-
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.valid.eq(true));
-    query.where(user.id.ne(ROBOT_ID));
-    return query.fetch();
-  }
-
-  @Override
-  public List<User> nonProteomic() {
-    authorizationService.checkProteomicRole();
-
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.proteomic.eq(false));
-    query.where(user.valid.eq(true));
-    query.where(user.id.ne(ROBOT_ID));
-    return query.fetch();
-  }
-
-  @Override
-  public List<String> usernames() {
-    authorizationService.checkProteomicRole();
-
-    JPAQuery<String> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.valid.eq(true));
-    query.where(user.id.ne(ROBOT_ID));
-    return query.select(user.name).fetch();
-  }
-
-  @Override
   public boolean isManager(String email) {
     if (email == null) {
       return false;
@@ -211,6 +148,38 @@ public class UserServiceDefault implements UserService {
     query.where(user.email.eq(email));
     query.where(laboratory.managers.contains(user));
     return query.fetchOne() != null;
+  }
+
+  @Override
+  public List<User> all(SearchUserParameters parameters) {
+    if (parameters == null) {
+      parameters = new SearchUserParametersBuilder();
+    }
+    if (parameters.getLaboratory() == null) {
+      authorizationService.checkProteomicRole();
+    } else {
+      authorizationService.checkLaboratoryManagerPermission(parameters.getLaboratory());
+    }
+
+    JPAQuery<User> query = new JPAQuery<>(entityManager);
+    query.from(user);
+    query.where(user.id.ne(ROBOT_ID));
+    if (parameters.isActive()) {
+      query.where(user.active.eq(true));
+    }
+    if (parameters.isInvalid()) {
+      query.where(user.valid.eq(false));
+    }
+    if (parameters.isValid()) {
+      query.where(user.valid.eq(true));
+    }
+    if (parameters.isNonProteomic()) {
+      query.where(user.proteomic.eq(false));
+    }
+    if (parameters.getLaboratory() != null) {
+      query.where(user.laboratory.eq(parameters.getLaboratory()));
+    }
+    return query.fetch();
   }
 
   @Override

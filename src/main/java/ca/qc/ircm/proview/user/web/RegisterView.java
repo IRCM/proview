@@ -137,7 +137,7 @@ public class RegisterView extends RegisterDesign implements MessageResourcesView
   @Override
   public void attach() {
     super.attach();
-    logger.debug("Register view");
+    logger.debug("Register user view");
     final MessageResource resources = getResources();
     final MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, getLocale());

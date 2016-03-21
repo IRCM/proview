@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user;
 
-import ca.qc.ircm.proview.laboratory.Laboratory;
 import org.apache.shiro.authz.UnauthorizedException;
 
 import java.util.Collection;
@@ -55,45 +54,6 @@ public interface UserService {
   public boolean exists(String email);
 
   /**
-   * Returns all invalid users in laboratory.
-   *
-   * @param laboratory
-   *          Laboratory.
-   * @return all invalid users in laboratory
-   */
-  public List<User> invalid(Laboratory laboratory);
-
-  /**
-   * Returns all valid users in laboratory.
-   *
-   * @param laboratory
-   *          Laboratory.
-   * @return all valid users in laboratory
-   */
-  public List<User> valid(Laboratory laboratory);
-
-  /**
-   * Returns all valid users.
-   *
-   * @return all valid users
-   */
-  public List<User> valids();
-
-  /**
-   * Selects all non-proteomic valid users.
-   *
-   * @return all non-proteomic valid users
-   */
-  public List<User> nonProteomic();
-
-  /**
-   * Selects choices of user names of valid users.
-   *
-   * @return choices of user names of valid users
-   */
-  public List<String> usernames();
-
-  /**
    * Returns true if email parameter is the email of a non-proteomic laboratory manager, false
    * otherwise.
    *
@@ -103,6 +63,21 @@ public interface UserService {
    *         otherwise
    */
   public boolean isManager(String email);
+
+  /**
+   * Returns all users that match parameters.
+   * <p>
+   * Only proteomic users can search users without a laboratory.
+   * </p>
+   * <p>
+   * Only managers can search users with a laboratory.
+   * </p>
+   *
+   * @param parameters
+   *          parameters
+   * @return all users that match parameters
+   */
+  public List<User> all(SearchUserParameters parameters);
 
   /**
    * Register a new user in a laboratory.

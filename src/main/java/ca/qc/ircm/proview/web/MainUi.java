@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
@@ -50,6 +51,7 @@ public class MainUi extends UI {
    */
   @PostConstruct
   public void initialize() {
+    viewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
     Navigator navigator = new Navigator(this, this);
     navigator.addProvider(viewProvider);
     getNavigator().setErrorView(ErrorView.class);

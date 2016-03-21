@@ -246,81 +246,6 @@ public class UserServiceDefaultTest {
   }
 
   @Test
-  public void invalid() throws Throwable {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-
-    List<User> users = userServiceDefault.invalid(laboratory);
-
-    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
-    assertNotNull(find(users, 4));
-    assertNull(find(users, 3));
-    assertNull(find(users, 5));
-  }
-
-  @Test
-  public void invalid_Null() throws Throwable {
-    List<User> users = userServiceDefault.invalid(null);
-
-    assertEquals(0, users.size());
-  }
-
-  @Test
-  public void valid() throws Throwable {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-
-    List<User> users = userServiceDefault.valid(laboratory);
-
-    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
-    assertNull(find(users, 4));
-    assertNotNull(find(users, 3));
-    assertNotNull(find(users, 5));
-  }
-
-  @Test
-  public void valid_Null() throws Throwable {
-    List<User> users = userServiceDefault.valid(null);
-
-    assertEquals(0, users.size());
-  }
-
-  @Test
-  public void valids() throws Throwable {
-    List<User> users = userServiceDefault.valids();
-
-    verify(authorizationService).checkProteomicRole();
-    assertNull(find(users, 4));
-    assertNotNull(find(users, 2));
-    assertNotNull(find(users, 3));
-    assertNotNull(find(users, 5));
-  }
-
-  @Test
-  public void nonProteomic() throws Throwable {
-    List<User> users = userServiceDefault.nonProteomic();
-
-    verify(authorizationService).checkProteomicRole();
-    assertNull(find(users, 4));
-    assertNull(find(users, 2));
-    assertNotNull(find(users, 3));
-    assertNotNull(find(users, 5));
-  }
-
-  @Test
-  public void usernames() throws Throwable {
-    List<String> usernames = userServiceDefault.usernames();
-
-    verify(authorizationService).checkProteomicRole();
-    assertEquals(false, usernames.contains("Robot"));
-    assertEquals(true, usernames.contains("Christian Poitras"));
-    assertEquals(true, usernames.contains("Benoit Coulombe"));
-    assertEquals(false, usernames.contains("Robert St-Louis"));
-    assertEquals(true, usernames.contains("Michel Tremblay"));
-    assertEquals(true, usernames.contains("Christopher Anderson"));
-    assertEquals(true, usernames.contains("François Robert"));
-    assertEquals(false, usernames.contains("Unit Test"));
-  }
-
-  @Test
   public void isManager_Robot() throws Throwable {
     boolean manager = userServiceDefault.isManager("proview@ircm.qc.ca");
 
@@ -367,6 +292,104 @@ public class UserServiceDefaultTest {
     boolean manager = userServiceDefault.isManager(null);
 
     assertEquals(false, manager);
+  }
+
+  @Test
+  public void all_InvalidInLaboratory() throws Throwable {
+    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    parameters = parameters.onlyInvalid().inLaboratory(laboratory);
+
+    List<User> users = userServiceDefault.all(parameters);
+
+    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
+    assertEquals(1, users.size());
+    assertNotNull(find(users, 4));
+  }
+
+  @Test
+  public void all_Invalid() throws Throwable {
+    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    parameters = parameters.onlyInvalid();
+
+    List<User> users = userServiceDefault.all(parameters);
+
+    verify(authorizationService).checkProteomicRole();
+    assertEquals(2, users.size());
+    assertNotNull(find(users, 4));
+    assertNotNull(find(users, 10));
+  }
+
+  @Test
+  public void all_ValidInLaboratory() throws Throwable {
+    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    parameters = parameters.onlyValid().inLaboratory(laboratory);
+
+    List<User> users = userServiceDefault.all(parameters);
+
+    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
+    assertEquals(4, users.size());
+    assertNotNull(find(users, 3));
+    assertNotNull(find(users, 5));
+    assertNotNull(find(users, 8));
+    assertNotNull(find(users, 9));
+  }
+
+  @Test
+  public void all_Valid() throws Throwable {
+    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    parameters = parameters.onlyValid();
+
+    List<User> users = userServiceDefault.all(parameters);
+
+    verify(authorizationService).checkProteomicRole();
+    assertEquals(8, users.size());
+    assertNotNull(find(users, 2));
+    assertNotNull(find(users, 3));
+    assertNotNull(find(users, 5));
+    assertNotNull(find(users, 6));
+    assertNotNull(find(users, 7));
+    assertNotNull(find(users, 8));
+    assertNotNull(find(users, 9));
+    assertNotNull(find(users, 11));
+  }
+
+  @Test
+  public void all_NonProteomic() throws Throwable {
+    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    parameters = parameters.onlyNonProteomic();
+
+    List<User> users = userServiceDefault.all(parameters);
+
+    verify(authorizationService).checkProteomicRole();
+    assertEquals(8, users.size());
+    assertNotNull(find(users, 3));
+    assertNotNull(find(users, 4));
+    assertNotNull(find(users, 5));
+    assertNotNull(find(users, 7));
+    assertNotNull(find(users, 8));
+    assertNotNull(find(users, 9));
+    assertNotNull(find(users, 10));
+    assertNotNull(find(users, 11));
+  }
+
+  @Test
+  public void all_Null() throws Throwable {
+    List<User> users = userServiceDefault.all(null);
+
+    authorizationService.checkProteomicRole();
+    assertEquals(10, users.size());
+    assertNotNull(find(users, 2));
+    assertNotNull(find(users, 3));
+    assertNotNull(find(users, 4));
+    assertNotNull(find(users, 5));
+    assertNotNull(find(users, 6));
+    assertNotNull(find(users, 7));
+    assertNotNull(find(users, 8));
+    assertNotNull(find(users, 9));
+    assertNotNull(find(users, 10));
+    assertNotNull(find(users, 11));
   }
 
   @Test

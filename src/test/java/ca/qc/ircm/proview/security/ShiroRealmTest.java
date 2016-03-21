@@ -80,7 +80,7 @@ public class ShiroRealmTest {
   @Before
   public void beforeTest() {
     when(cacheManager.getCache(any(String.class))).thenReturn(cache);
-    shiroRealm = new ShiroRealm(authenticatingService, cacheManager, permissionResolver, realmName);
+    shiroRealm = new ShiroRealm(authenticatingService, permissionResolver, realmName);
     authenticationId = 1L;
     when(authenticatingService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
         .thenReturn(authenticationInfo);
@@ -173,6 +173,7 @@ public class ShiroRealmTest {
 
   @Test
   public void getAuthenticationInfo_Cache() throws Throwable {
+    shiroRealm.setCacheManager(cacheManager);
     AuthenticationInfo cachedAuthenticationInfo = mock(AuthenticationInfo.class);
     when(cache.get(any(Long.class))).thenReturn(cachedAuthenticationInfo);
     UsernamePasswordToken token = new UsernamePasswordToken("poitrac", "test_password");
@@ -212,6 +213,7 @@ public class ShiroRealmTest {
 
   @Test
   public void getAuthorizationInfo_Cache() {
+    shiroRealm.setCacheManager(cacheManager);
     AuthorizationInfo cachedAuthorizationInfo = mock(AuthorizationInfo.class);
     when(cache.get(any(PrincipalCollection.class))).thenReturn(cachedAuthorizationInfo);
     when(cachedAuthorizationInfo.getObjectPermissions()).thenReturn(permissions);
