@@ -653,7 +653,7 @@ public class UserServiceDefaultTest {
         new MessageResource(UserServiceDefault.class.getName() + "_Email", Locale.CANADA_FRENCH);
     subjects.add(frenchMessageResource.message("newLaboratory.email.subject"));
     MessageResource englishMessageResource =
-        new MessageResource(UserServiceDefault.class.getName() + "_Email", Locale.CANADA_FRENCH);
+        new MessageResource(UserServiceDefault.class.getName() + "_Email", Locale.ENGLISH);
     subjects.add(englishMessageResource.message("newLaboratory.email.subject"));
     for (HtmlEmail email : emailCaptor.getAllValues()) {
       receivers.addAll(email.getReceivers());

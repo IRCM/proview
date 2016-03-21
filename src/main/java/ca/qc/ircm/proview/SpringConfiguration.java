@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview;
 
+import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -103,6 +104,7 @@ public class SpringConfiguration {
   public TemplateEngine templateEngine() {
     TemplateEngine templateEngine = new TemplateEngine();
     templateEngine.setTemplateResolver(new ClassLoaderTemplateResolver());
+    templateEngine.setMessageResolver(new XmlClasspathMessageResolver());
     return templateEngine;
   }
 }

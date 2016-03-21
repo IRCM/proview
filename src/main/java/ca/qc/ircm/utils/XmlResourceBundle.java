@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -43,7 +44,7 @@ public class XmlResourceBundle extends ResourceBundle {
 
   @Override
   public Enumeration<String> getKeys() {
-    Set<String> handleKeys = properties.stringPropertyNames();
+    Set<String> handleKeys = new HashSet<>(properties.stringPropertyNames());
     if (parent != null) {
       handleKeys.addAll(Collections.list(parent.getKeys()));
     }

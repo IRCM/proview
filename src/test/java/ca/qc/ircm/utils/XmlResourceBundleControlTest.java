@@ -18,18 +18,30 @@
 package ca.qc.ircm.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.Rules;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class XmlResourceBundleControlTest {
   @Rule
   public RuleChain rules = Rules.defaultRules(this);
+
+  private Set<String> convertKeys(Enumeration<String> keys) {
+    Set<String> set = new HashSet<String>();
+    while (keys.hasMoreElements()) {
+      set.add(keys.nextElement());
+    }
+    return set;
+  }
 
   @Test
   public void getBundle_Xml() throws Throwable {
@@ -38,6 +50,9 @@ public class XmlResourceBundleControlTest {
 
     assertEquals("Ceci est un test", resources.getString("message"));
     assertEquals("Parent test", resources.getString("parent_message"));
+    Set<String> keys = convertKeys(resources.getKeys());
+    assertTrue(keys.contains("message"));
+    assertTrue(keys.contains("parent_message"));
   }
 
   @Test
@@ -48,6 +63,9 @@ public class XmlResourceBundleControlTest {
 
     assertEquals("Ceci est un test", resources.getString("message"));
     assertEquals("Parent test", resources.getString("parent_message"));
+    Set<String> keys = convertKeys(resources.getKeys());
+    assertTrue(keys.contains("message"));
+    assertTrue(keys.contains("parent_message"));
   }
 
   @Test
@@ -57,6 +75,9 @@ public class XmlResourceBundleControlTest {
 
     assertEquals("Ceci est un test", resources.getString("message"));
     assertEquals("Parent test", resources.getString("parent_message"));
+    Set<String> keys = convertKeys(resources.getKeys());
+    assertTrue(keys.contains("message"));
+    assertTrue(keys.contains("parent_message"));
   }
 
   @Test
@@ -66,5 +87,8 @@ public class XmlResourceBundleControlTest {
 
     assertEquals("Ceci est un test", resources.getString("message"));
     assertEquals("Parent test", resources.getString("parent_message"));
+    Set<String> keys = convertKeys(resources.getKeys());
+    assertTrue(keys.contains("message"));
+    assertTrue(keys.contains("parent_message"));
   }
 }

@@ -550,6 +550,7 @@
             </mapping>
             <excludes>
               <exclude>**/README</exclude>
+              <exclude>**/*.properties</exclude>
               <exclude>**/*.txt</exclude>
               <exclude>**/.*</exclude>
               <exclude>**/*.dtd</exclude>
