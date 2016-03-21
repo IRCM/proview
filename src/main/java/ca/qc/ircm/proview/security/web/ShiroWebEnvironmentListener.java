@@ -22,8 +22,6 @@ import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.ShiroRealm;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.authz.permission.WildcardPermissionResolver;
-import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.env.WebEnvironment;
@@ -73,9 +71,8 @@ public class ShiroWebEnvironmentListener extends EnvironmentLoaderListener {
   }
 
   private Realm createRealm() {
-    CacheManager shiroCacheManager = new MemoryConstrainedCacheManager();
     PermissionResolver permissionResolver = new WildcardPermissionResolver();
-    Realm realm = new ShiroRealm(authenticationService, shiroCacheManager, permissionResolver,
+    Realm realm = new ShiroRealm(authenticationService, permissionResolver,
         applicationConfiguration.getRealmName());
     return realm;
   }

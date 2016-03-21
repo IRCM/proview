@@ -24,7 +24,6 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,16 +43,14 @@ public class ShiroRealm extends org.apache.shiro.realm.AuthorizingRealm {
    *
    * @param authenticationService
    *          authentication service
-   * @param cacheManager
-   *          cache manager
    * @param permissionResolver
    *          permission resolver
    * @param realmName
    *          realm name
    */
-  public ShiroRealm(AuthenticationService authenticationService, CacheManager cacheManager,
+  public ShiroRealm(AuthenticationService authenticationService,
       PermissionResolver permissionResolver, String realmName) {
-    super(cacheManager, new AllowAllCredentialsMatcher());
+    super(new AllowAllCredentialsMatcher());
     this.authenticationService = authenticationService;
     this.setPermissionResolver(permissionResolver);
     this.setAuthorizationCachingEnabled(true);

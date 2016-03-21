@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.security.web;
 
+import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.AbstractRememberMeManager;
 import org.apache.shiro.realm.Realm;
@@ -44,6 +45,7 @@ public class ShiroWebEnvironment extends IniWebEnvironment {
     // Must call super to process main section.
     DefaultWebSecurityManager manager =
         (DefaultWebSecurityManager) super.createWebSecurityManager();
+    manager.setCacheManager(new MemoryConstrainedCacheManager());
     manager.setRealms(realms);
     AbstractRememberMeManager rememberMeManager =
         (AbstractRememberMeManager) manager.getRememberMeManager();
