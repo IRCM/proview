@@ -17,25 +17,17 @@
 
 package ca.qc.ircm.proview.test.config;
 
-import org.junit.rules.RuleChain;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Default test rules.
+ * Indicates that specified test is slow.
  */
-public class Rules {
-  /**
-   * Return default rules to use for unit tests.
-   *
-   * @param target
-   *          test class instance
-   * @return default rules to use for unit tests
-   */
-  public static RuleChain defaultRules(Object target) {
-    RuleChain ruleChain = RuleChain.emptyRuleChain();
-    ruleChain = ruleChain.around(new SlowRule());
-    ruleChain = ruleChain.around(new RetryOnFailRule());
-    ruleChain = ruleChain.around(new SubjectRule());
-    ruleChain = ruleChain.around(new MockitoRule(target));
-    return ruleChain;
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Documented
+public @interface Slow {
 }

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.proview.test.config.IntegrationTestUrlRule;
 import ca.qc.ircm.proview.test.config.Rules;
+import ca.qc.ircm.proview.test.config.Slow;
 import ca.qc.ircm.proview.test.config.TestBenchLicenseRunner;
 import ca.qc.ircm.proview.test.config.TestBenchRule;
 import ca.qc.ircm.proview.user.web.RegisterView;
@@ -33,6 +34,7 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 @RunWith(TestBenchLicenseRunner.class)
+@Slow
 public class MainViewTest extends TestBenchTestCase {
   @ClassRule
   public static IntegrationTestUrlRule integrationTestUrlRule = new IntegrationTestUrlRule();
