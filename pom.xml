@@ -608,6 +608,8 @@
               <exclude>**/*.dat</exclude>
               <exclude>src/main/webapp/WEB-INF/exclusions.list</exclude>
               <exclude>src/main/webapp/VAADIN/themes/**/addons.scss</exclude>
+              <exclude>src/main/java/**/web/**/*Design.java</exclude>
+              <exclude>src/main/java/**/web/**/*Design.html</exclude>
             </excludes>
             <executions>
               <execution>
