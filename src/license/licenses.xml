@@ -22,8 +22,72 @@
   xsi:schemaLocation="http://mojo.codehaus.org/ licenses.xsd">
   <dependencies>
     <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib-nodep</artifactId>
+      <licenses>
+        <license>
+          <name>The Apache Software License, Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+        <license>
+          <name>New BSD License</name>
+          <url>https://opensource.org/licenses/BSD-3-Clause</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <licenses>
+        <license>
+          <name>The Apache Software License, Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>mx4j</groupId>
+      <artifactId>mx4j-tools</artifactId>
+      <licenses>
+        <license>
+          <name>The MX4J License, Version 1.0</name>
+          <url>http://mx4j.sourceforge.net/docs/ch01s06.html</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>net.jcip</groupId>
+      <artifactId>jcip-annotations</artifactId>
+      <licenses>
+        <license>
+          <name>Creative Commons public domain license</name>
+          <url>https://creativecommons.org/licenses/publicdomain/</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>loginform</artifactId>
+      <licenses>
+        <license>
+          <name>Apache License Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>aopalliance</groupId>
+      <artifactId>aopalliance</artifactId>
+      <licenses>
+        <license>
+          <name>Public Domain</name>
+          <url>http://aopalliance.sourceforge.net/</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
       <licenses>
         <license>
           <name>Apache License Version 2.0</name>

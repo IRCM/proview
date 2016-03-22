@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
+import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
@@ -33,6 +34,7 @@ import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 
 /**
  * Main Vaadin UI.
@@ -45,6 +47,8 @@ public class MainUi extends UI {
   private static final long serialVersionUID = 5623532890650543834L;
   @Inject
   private SpringViewProvider viewProvider;
+  @Inject
+  private VaadinUtils vaadinUtils;
 
   /**
    * Initialize navigator.
@@ -63,5 +67,9 @@ public class MainUi extends UI {
       // TODO Use user's locale rather than a default one.
       getUI().getSession().setLocale(Locale.FRENCH);
     }
+  }
+
+  public ServletContext getServletContext() {
+    return vaadinUtils.getServletContext();
   }
 }

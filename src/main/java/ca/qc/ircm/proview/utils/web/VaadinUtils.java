@@ -29,6 +29,8 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
 /**
  * Utilities for Vaadin.
  */
@@ -72,11 +74,11 @@ public class VaadinUtils implements Serializable {
     return message;
   }
 
-  public String getContextPath() {
-    return VaadinServlet.getCurrent().getServletContext().getContextPath();
+  public ServletContext getServletContext() {
+    return VaadinServlet.getCurrent().getServletContext();
   }
 
   public String getUrl(String viewName) {
-    return getContextPath() + "/#!" + viewName;
+    return getServletContext().getContextPath() + "/#!" + viewName;
   }
 }
