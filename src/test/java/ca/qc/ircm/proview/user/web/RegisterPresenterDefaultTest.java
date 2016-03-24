@@ -269,6 +269,11 @@ public class RegisterPresenterDefaultTest {
   }
 
   @Test
+  public void title() {
+    verify(view).setTitle(resources.message("title"));
+  }
+
+  @Test
   public void captions() {
     assertEquals(resources.message("header"), headerLabel.getValue());
     assertEquals(resources.message("email"), emailField.getCaption());
