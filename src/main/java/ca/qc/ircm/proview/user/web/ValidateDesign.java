@@ -22,9 +22,9 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class ValidateDesign extends VerticalLayout {
   protected Menu menu;
-  protected Label header;
-  protected Grid users;
-  protected Button validateSelected;
+  protected Label headerLabel;
+  protected Grid usersGrid;
+  protected Button validateSelectedButton;
 
   public ValidateDesign() {
     Design.read(this);
