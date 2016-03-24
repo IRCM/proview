@@ -32,9 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-/**
- * Registers user.
- */
 @SpringView(name = RegisterView.VIEW_NAME)
 public class RegisterViewDefault extends RegisterDesign implements RegisterView {
   private static final long serialVersionUID = 7586918222688019429L;

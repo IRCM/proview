@@ -29,7 +29,7 @@ import com.vaadin.ui.TextField;
 import java.util.Locale;
 
 /**
- * Registers user.
+ * Registers user view.
  */
 public interface RegisterView extends MessageResourcesView {
   public static final String VIEW_NAME = "user/register";

@@ -32,9 +32,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-/**
- * Registers user presenter.
- */
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RegisterPresenterDefault implements RegisterPresenter {
