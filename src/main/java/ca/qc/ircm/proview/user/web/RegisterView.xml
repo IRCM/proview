@@ -49,7 +49,7 @@
   <entry key="phoneExtension.invalid">Extension must contain only numbers and hyphens</entry>
   <entry key="registerHeader">Once registered, a manager will need to accept you before you can sign in</entry>
   <entry key="register">Save</entry>
-  <entry key="clear">Clear</entry>
+  <entry key="clearAddress">Clear</entry>
   <entry key="required">&lt;span class="v-required-field-indicator"&gt;*&lt;/span&gt; Required field</entry>
   <entry key="done">Registration completed for user {0}</entry>
 </properties>

@@ -8,57 +8,57 @@
   <vaadin-vertical-layout size-auto="true"> 
    <ca_qc_ircm_proview_web-menu></ca_qc_ircm_proview_web-menu> 
    <vaadin-vertical-layout primary-style-name="v-verticallayout" spacing="true" size-auto="true" margin="true"> 
-    <vaadin-label style-name="h1" size-auto="true" plain-text="" _id="header">
+    <vaadin-label style-name="h1" id="headerLabel" size-auto="true" plain-text="" _id="headerLabel">
       Register 
     </vaadin-label> 
     <vaadin-form-layout size-auto="true"> 
-     <vaadin-text-field columns="30" caption="Email" required="true" id="email" null-representation="" immediate="true" _id="email"></vaadin-text-field> 
-     <vaadin-text-field columns="30" caption="Name" required="true" id="name" null-representation="" immediate="true" _id="name"></vaadin-text-field> 
-     <vaadin-password-field caption="Password" required="true" id="password" null-representation="" immediate="true" _id="password"></vaadin-password-field> 
-     <vaadin-password-field caption="Repeat password" required="true" id="confirmPassword" null-representation="" immediate="true" _id="confirmPassword"></vaadin-password-field> 
+     <vaadin-text-field columns="30" caption="Email" required="true" id="email" null-representation="" immediate="true" _id="emailField"></vaadin-text-field> 
+     <vaadin-text-field columns="30" caption="Name" required="true" id="name" null-representation="" immediate="true" _id="nameField"></vaadin-text-field> 
+     <vaadin-password-field caption="Password" required="true" id="password" null-representation="" immediate="true" _id="passwordField"></vaadin-password-field> 
+     <vaadin-password-field caption="Repeat password" required="true" id="confirmPassword" null-representation="" immediate="true" _id="confirmPasswordField"></vaadin-password-field> 
     </vaadin-form-layout> 
     <vaadin-form-layout size-auto="true"> 
-     <vaadin-label style-name="h2" size-auto="true" plain-text="" _id="laboratoryHeader">
+     <vaadin-label style-name="h2" id="laboratoryHeaderLabel" size-auto="true" plain-text="" _id="laboratoryHeaderLabel">
        Lab 
      </vaadin-label> 
-     <vaadin-check-box caption="I am the lab manager" id="newLaboratory" _id="newLaboratory"></vaadin-check-box> 
-     <vaadin-text-field caption="Organization" required="true" id="organization" visible="false" null-representation="" immediate="true" _id="organization"></vaadin-text-field> 
-     <vaadin-text-field caption="Lab name" required="true" id="laboratoryName" visible="false" null-representation="" immediate="true" _id="laboratoryName"></vaadin-text-field> 
-     <vaadin-text-field columns="30" caption="Lab manager email" required="true" id="managerEmail" null-representation="" immediate="true" _id="managerEmail"></vaadin-text-field> 
+     <vaadin-check-box caption="I am the lab manager" id="newLaboratory" _id="newLaboratoryField"></vaadin-check-box> 
+     <vaadin-text-field caption="Organization" required="true" id="organization" visible="false" null-representation="" immediate="true" _id="organizationField"></vaadin-text-field> 
+     <vaadin-text-field caption="Lab name" required="true" id="laboratoryName" visible="false" null-representation="" immediate="true" _id="laboratoryNameField"></vaadin-text-field> 
+     <vaadin-text-field columns="30" caption="Lab manager email" required="true" id="managerEmail" null-representation="" immediate="true" _id="managerEmailField"></vaadin-text-field> 
     </vaadin-form-layout> 
     <vaadin-form-layout size-auto="true"> 
-     <vaadin-label style-name="h2" size-auto="true" plain-text="" _id="addressHeader">
+     <vaadin-label style-name="h2" id="addressHeaderLabel" size-auto="true" plain-text="" _id="addressHeaderLabel">
        Address 
      </vaadin-label> 
-     <vaadin-text-field columns="40" caption="Address" required="true" id="address" null-representation="" immediate="true" _id="address"></vaadin-text-field> 
-     <vaadin-text-field columns="40" caption="Second line" id="addressSecond" null-representation="" _id="addressSecond"></vaadin-text-field> 
-     <vaadin-text-field caption="Town" required="true" id="town" null-representation="" immediate="true" _id="town"></vaadin-text-field> 
-     <vaadin-text-field caption="State/Province" required="true" id="state" null-representation="" immediate="true" _id="state"></vaadin-text-field> 
-     <vaadin-combo-box caption="Country" required="true" id="country" item-caption-mode="id" _id="country"> 
+     <vaadin-text-field columns="40" caption="Address" required="true" id="address" null-representation="" immediate="true" _id="addressField"></vaadin-text-field> 
+     <vaadin-text-field columns="40" caption="Second line" id="addressSecond" null-representation="" _id="addressSecondField"></vaadin-text-field> 
+     <vaadin-text-field caption="Town" required="true" id="town" null-representation="" immediate="true" _id="townField"></vaadin-text-field> 
+     <vaadin-text-field caption="State/Province" required="true" id="state" null-representation="" immediate="true" _id="stateField"></vaadin-text-field> 
+     <vaadin-combo-box caption="Country" required="true" id="country" item-caption-mode="id" _id="countryField"> 
       <option>Canada</option> 
       <option>USA</option> 
      </vaadin-combo-box> 
-     <vaadin-text-field caption="Postal code" required="true" id="postalCode" null-representation="" immediate="true" _id="postalCode"></vaadin-text-field> 
-     <vaadin-button icon="fonticon://FontAwesome/f014" id="clear" plain-text="" _id="clear">
+     <vaadin-text-field caption="Postal code" required="true" id="postalCode" null-representation="" immediate="true" _id="postalCodeField"></vaadin-text-field> 
+     <vaadin-button icon="fonticon://FontAwesome/f014" id="clearAddress" plain-text="" _id="clearAddressButton">
        Clear 
      </vaadin-button> 
     </vaadin-form-layout> 
     <vaadin-form-layout size-auto="true"> 
-     <vaadin-label style-name="h2" size-auto="true" plain-text="" _id="phoneNumberHeader">
+     <vaadin-label style-name="h2" id="phoneNumberHeaderLabel" size-auto="true" plain-text="" _id="phoneNumberHeaderLabel">
        Phone number 
      </vaadin-label> 
-     <vaadin-text-field caption="Phone" required="true" id="phoneNumber" null-representation="" immediate="true" _id="phoneNumber"></vaadin-text-field> 
-     <vaadin-text-field caption="extension" id="phoneExtension" null-representation="" _id="phoneExtension"></vaadin-text-field> 
+     <vaadin-text-field caption="Phone" required="true" id="phoneNumber" null-representation="" immediate="true" _id="phoneNumberField"></vaadin-text-field> 
+     <vaadin-text-field caption="extension" id="phoneExtension" null-representation="" _id="phoneExtensionField"></vaadin-text-field> 
     </vaadin-form-layout> 
     <vaadin-form-layout size-auto="true"> 
-     <vaadin-label icon="fonticon://FontAwesome/f071" style-name="warning" id="registerHeader" size-auto="true" plain-text="" _id="registerHeader">
+     <vaadin-label icon="fonticon://FontAwesome/f071" style-name="warning" id="registerHeaderLabel" size-auto="true" plain-text="" _id="registerHeaderLabel">
        Once registered, a manager will need to accept you before you can sign in 
      </vaadin-label> 
-     <vaadin-button icon="fonticon://FontAwesome/f00c" id="register" plain-text="" _id="register">
+     <vaadin-button icon="fonticon://FontAwesome/f00c" id="register" plain-text="" _id="registerButton">
        Submit 
      </vaadin-button> 
     </vaadin-form-layout> 
-    <vaadin-label size-auto="true" _id="required"> 
+    <vaadin-label id="requiredLabel" size-auto="true" _id="requiredLabel"> 
      <span class="v-required-field-indicator">*</span> Required fields 
     </vaadin-label> 
    </vaadin-vertical-layout> 

@@ -19,6 +19,10 @@ package ca.qc.ircm.proview.test.config;
 
 import org.junit.rules.RuleChain;
 
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
 /**
  * Default test rules.
  */
@@ -37,5 +41,17 @@ public class Rules {
     ruleChain = ruleChain.around(new SubjectRule());
     ruleChain = ruleChain.around(new MockitoRule(target));
     return ruleChain;
+  }
+
+  /**
+   * Returns all valid locales for program.
+   *
+   * @return all valid locales for program
+   */
+  public static Set<Locale> getLocales() {
+    Set<Locale> locales = new HashSet<>();
+    locales.add(Locale.ENGLISH);
+    locales.add(Locale.FRENCH);
+    return locales;
   }
 }

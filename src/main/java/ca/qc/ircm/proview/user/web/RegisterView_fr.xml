@@ -49,7 +49,7 @@
   <entry key="phoneNumber.invalid">Extension ne doit contenir que des chiffres et des traits d''union</entry>
   <entry key="registerHeader">Une fois inscrit, un gestionnaire doit vous accepter avant que vous puissiez vous connecter</entry>
   <entry key="register">Sauvegarder</entry>
-  <entry key="clear">Effacer</entry>
+  <entry key="clearAddress">Effacer</entry>
   <entry key="required">&lt;span class="v-required-field-indicator"&gt;*&lt;/span&gt; Champ requis</entry>
   <entry key="done">Inscription complétée pour l''usager {0}</entry>
 </properties>
