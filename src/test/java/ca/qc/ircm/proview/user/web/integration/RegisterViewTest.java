@@ -27,11 +27,11 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.security.PasswordVersion;
 import ca.qc.ircm.proview.test.config.IntegrationTestConfigurationRule;
 import ca.qc.ircm.proview.test.config.IntegrationTestDatabaseRule;
-import ca.qc.ircm.proview.test.config.IntegrationTestUrlRule;
 import ca.qc.ircm.proview.test.config.Rules;
 import ca.qc.ircm.proview.test.config.Slow;
 import ca.qc.ircm.proview.test.config.TestBenchLicenseRunner;
 import ca.qc.ircm.proview.test.config.TestBenchRule;
+import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
@@ -45,7 +45,6 @@ import com.vaadin.ui.Notification;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -59,9 +58,8 @@ import javax.persistence.EntityManager;
 
 @RunWith(TestBenchLicenseRunner.class)
 @Slow
+@WithSubject(anonymous = true)
 public class RegisterViewTest extends RegisterPageObject {
-  @ClassRule
-  public static IntegrationTestUrlRule integrationTestUrlRule = new IntegrationTestUrlRule();
   public TestBenchRule testBenchRule = new TestBenchRule(this);
   public IntegrationTestConfigurationRule integrationTestConfigurationRule =
       new IntegrationTestConfigurationRule();
@@ -95,7 +93,7 @@ public class RegisterViewTest extends RegisterPageObject {
 
   @Override
   protected String getBaseUrl() {
-    return integrationTestUrlRule.getBaseUrl();
+    return testBenchRule.getBaseUrl();
   }
 
   private User getUser(String email) {
@@ -247,7 +245,7 @@ public class RegisterViewTest extends RegisterPageObject {
 
     clickRegister();
 
-    assertEquals(integrationTestUrlRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
+    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
         getDriver().getCurrentUrl());
     entityManager.getTransaction().commit();
     entityManager.getTransaction().begin();
@@ -295,7 +293,7 @@ public class RegisterViewTest extends RegisterPageObject {
 
     clickRegister();
 
-    assertEquals(integrationTestUrlRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
+    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
         getDriver().getCurrentUrl());
     entityManager.getTransaction().commit();
     entityManager.getTransaction().begin();

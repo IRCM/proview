@@ -19,11 +19,11 @@ package ca.qc.ircm.proview.web.integration;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.test.config.IntegrationTestUrlRule;
 import ca.qc.ircm.proview.test.config.Rules;
 import ca.qc.ircm.proview.test.config.Slow;
 import ca.qc.ircm.proview.test.config.TestBenchLicenseRunner;
 import ca.qc.ircm.proview.test.config.TestBenchRule;
+import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.Menu;
@@ -31,7 +31,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.MenuBarElement;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -42,9 +41,8 @@ import java.util.Locale;
 
 @RunWith(TestBenchLicenseRunner.class)
 @Slow
+@WithSubject(anonymous = true)
 public class MenuViewTest extends TestBenchTestCase {
-  @ClassRule
-  public static IntegrationTestUrlRule integrationTestUrlRule = new IntegrationTestUrlRule();
   public TestBenchRule testBenchRule = new TestBenchRule(this);
   @Rule
   public RuleChain rules = Rules.defaultRules(this).around(testBenchRule);
@@ -56,7 +54,7 @@ public class MenuViewTest extends TestBenchTestCase {
   }
 
   private void openTestUrl(String viewName) {
-    getDriver().get(integrationTestUrlRule.getBaseUrl() + "/#!" + viewName);
+    getDriver().get(testBenchRule.getBaseUrl() + "/#!" + viewName);
   }
 
   private String message(String key, Object... replacements) {
@@ -74,7 +72,7 @@ public class MenuViewTest extends TestBenchTestCase {
       // Thrown because page changes.
     }
 
-    assertEquals(integrationTestUrlRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
+    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
         getDriver().getCurrentUrl());
   }
 }

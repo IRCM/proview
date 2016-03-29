@@ -34,36 +34,39 @@ public class IntegrationTestUrlRule implements TestRule {
   private static final String BASE_URL_PROPERTY = "base.url";
   private static final String BASE_URL_FALLBACK = "http://localhost:8080/proview";
   private static final Pattern CONTEXT_PATH_PATTERN = Pattern.compile("http://[^/]+(/[^/\\?]+).*");
-  private String contextPath;
 
-  @Override
-  public Statement apply(final Statement base, final Description description) {
-    return new Statement() {
-      @Override
-      public void evaluate() throws Throwable {
-        processUrl();
-        base.evaluate();
-      }
-    };
+  public IntegrationTestUrlRule() {
+    initBaseUrl();
   }
 
-  private void processUrl() {
+  private void initBaseUrl() {
     if (System.getProperty(BASE_URL_PROPERTY) == null) {
       logger.warn("{} system property is not defined, fallback to {}", BASE_URL_PROPERTY,
           BASE_URL_FALLBACK);
       System.setProperty(BASE_URL_PROPERTY, BASE_URL_FALLBACK);
     }
-    Matcher matcher = CONTEXT_PATH_PATTERN.matcher(getBaseUrl());
-    if (matcher.matches()) {
-      contextPath = matcher.group(1);
-    }
+  }
+
+  @Override
+  public Statement apply(final Statement base, final Description description) {
+    return base;
   }
 
   public String getBaseUrl() {
     return System.getProperty(BASE_URL_PROPERTY);
   }
 
+  /**
+   * Returns context path of base URL.
+   *
+   * @return context path of base URL
+   */
   public String getContextPath() {
-    return contextPath;
+    Matcher matcher = CONTEXT_PATH_PATTERN.matcher(getBaseUrl());
+    if (matcher.matches()) {
+      return matcher.group(1);
+    } else {
+      return null;
+    }
   }
 }

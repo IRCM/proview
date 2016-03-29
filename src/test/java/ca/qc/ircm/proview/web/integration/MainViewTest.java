@@ -19,15 +19,14 @@ package ca.qc.ircm.proview.web.integration;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.test.config.IntegrationTestUrlRule;
 import ca.qc.ircm.proview.test.config.Rules;
 import ca.qc.ircm.proview.test.config.Slow;
 import ca.qc.ircm.proview.test.config.TestBenchLicenseRunner;
 import ca.qc.ircm.proview.test.config.TestBenchRule;
+import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -35,15 +34,14 @@ import org.junit.runner.RunWith;
 
 @RunWith(TestBenchLicenseRunner.class)
 @Slow
+@WithSubject(anonymous = true)
 public class MainViewTest extends TestBenchTestCase {
-  @ClassRule
-  public static IntegrationTestUrlRule integrationTestUrlRule = new IntegrationTestUrlRule();
   public TestBenchRule testBenchRule = new TestBenchRule(this);
   @Rule
   public RuleChain rules = Rules.defaultRules(this).around(testBenchRule);
 
   private void openTestUrl() {
-    getDriver().get(integrationTestUrlRule.getBaseUrl());
+    getDriver().get(testBenchRule.getBaseUrl());
   }
 
   @Test
@@ -52,7 +50,7 @@ public class MainViewTest extends TestBenchTestCase {
 
     ButtonElement register = $(ButtonElement.class).id("register");
     register.click();
-    assertEquals(integrationTestUrlRule.getBaseUrl() + "/#!" + RegisterView.VIEW_NAME,
+    assertEquals(testBenchRule.getBaseUrl() + "/#!" + RegisterView.VIEW_NAME,
         getDriver().getCurrentUrl());
   }
 }
