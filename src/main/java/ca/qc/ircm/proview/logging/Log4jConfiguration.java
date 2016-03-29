@@ -80,7 +80,7 @@ public class Log4jConfiguration implements ServletContextListener {
     String filename = path.getFileName().toString();
     int dotIndex = filename.indexOf('.');
     if (dotIndex >= 0) {
-      return filename.substring(dotIndex);
+      return filename.substring(0, dotIndex);
     } else {
       return filename;
     }
