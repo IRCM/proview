@@ -24,6 +24,7 @@
   <entry key="viewUser">Voir</entry>
   <entry key="validateUser">Valider</entry>
   <entry key="validateSelected">Valider usagers sélectionnés</entry>
+  <entry key="validateSelected.none">Sélectionnez au moins un usager</entry>
   <entry key="done">{0,choice,1#Usager|2#Usagers} {1} {0,choice,1#a été validé|2#ont été validés}</entry>
   <entry key="userSeparator">{0,choice,0#, |1# et }</entry>
 </properties>

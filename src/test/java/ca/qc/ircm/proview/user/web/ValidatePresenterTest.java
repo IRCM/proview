@@ -11,6 +11,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -210,5 +211,15 @@ public class ValidatePresenterTest {
     verify(userService, times(2)).all(any());
     assertEquals(0, usersGrid.getSelectedRows().size());
     assertEquals(0, usersGrid.getContainerDataSource().getItemIds().size());
+  }
+
+  @Test
+  public void validateMany_NoSelection() {
+    when(userService.all(any())).thenReturn(new ArrayList<>());
+
+    validateSelectedButton.click();
+
+    verify(userService, never()).validate(any());
+    verify(view).showError(any());
   }
 }

@@ -24,6 +24,7 @@
   <entry key="viewUser">View</entry>
   <entry key="validateUser">Validate</entry>
   <entry key="validateSelected">Validate selected users</entry>
+  <entry key="validateSelected.none">Select at least a user</entry>
   <entry key="done">{0,choice,1#User|2#Users} {1} {0,choice,1#was|2#were} validated</entry>
   <entry key="userSeparator">{0,choice,0#, |1# and }</entry>
 </properties>

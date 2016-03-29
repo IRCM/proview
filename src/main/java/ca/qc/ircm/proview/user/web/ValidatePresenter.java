@@ -197,20 +197,25 @@ public class ValidatePresenter {
     for (Object id : ids) {
       selected.add((User) id);
     }
-    logger.debug("Validate users {}", selected);
-    userService.validate(selected);
-    final MessageResource resources = view.getResources();
-    StringBuilder emails = new StringBuilder();
-    for (int i = 0; i < selected.size(); i++) {
-      User user = selected.get(i);
-      emails.append(user.getEmail());
-      if (i == selected.size() - 2) {
-        emails.append(resources.message("userSeparator", 1));
-      } else if (i < selected.size() - 2) {
-        emails.append(resources.message("userSeparator", 0));
+    if (selected.isEmpty()) {
+      final MessageResource resources = view.getResources();
+      view.showError(resources.message("validateSelected.none"));
+    } else {
+      logger.debug("Validate users {}", selected);
+      userService.validate(selected);
+      final MessageResource resources = view.getResources();
+      StringBuilder emails = new StringBuilder();
+      for (int i = 0; i < selected.size(); i++) {
+        User user = selected.get(i);
+        emails.append(user.getEmail());
+        if (i == selected.size() - 2) {
+          emails.append(resources.message("userSeparator", 1));
+        } else if (i < selected.size() - 2) {
+          emails.append(resources.message("userSeparator", 0));
+        }
       }
+      refresh();
+      view.afterSuccessfulValidate(resources.message("done", selected.size(), emails));
     }
-    refresh();
-    view.afterSuccessfulValidate(resources.message("done", selected.size(), emails));
   }
 }
