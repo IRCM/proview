@@ -21,7 +21,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.PasswordVersion;
+import org.apache.shiro.codec.Base64;
+import org.apache.shiro.crypto.AesCipherService;
+import org.apache.shiro.crypto.CipherService;
 import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
 import org.apache.shiro.util.ThreadContext;
@@ -32,6 +37,10 @@ import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 /**
  * Sets Shiro's subject.
  */
@@ -39,6 +48,7 @@ public class SubjectRule implements TestRule {
   public static final int PASSWORD_VERSION = 1;
   public static final String PASSWORD_ALGORITHM = "SHA-256";
   public static final int PASSWORD_ITERATIONS = 1000;
+  public static final String COOKIE_ENCRYPTION = "AcEG7RqLxcP6enoSBJKNjA==";
   private static final Logger logger = LoggerFactory.getLogger(SubjectRule.class);
   private ThreadState threadState;
 
@@ -51,6 +61,7 @@ public class SubjectRule implements TestRule {
       @Override
       public void evaluate() throws Throwable {
         long userId = 1L;
+        boolean anonymous = false;
         WithSubject withSubject = null;
         if (description.getAnnotation(WithSubject.class) != null) {
           withSubject = description.getAnnotation(WithSubject.class);
@@ -59,10 +70,13 @@ public class SubjectRule implements TestRule {
         }
         if (withSubject != null) {
           userId = withSubject.userId();
+          anonymous = withSubject.anonymous();
         }
         logger.debug("Set {} as user", userId);
         Subject subject = mock(Subject.class);
-        when(subject.getPrincipal()).thenReturn(userId);
+        if (!anonymous) {
+          when(subject.getPrincipal()).thenReturn(userId);
+        }
         ThreadContext.bind(new DefaultSecurityManager());
         threadState = new SubjectThreadState(subject);
         try {
@@ -77,7 +91,7 @@ public class SubjectRule implements TestRule {
 
   /**
    * Returns default password version for tests.
-   * 
+   *
    * @return default password version for tests
    */
   public static PasswordVersion getPasswordVersion() {
@@ -86,5 +100,26 @@ public class SubjectRule implements TestRule {
     passwordVersion.setIterations(PASSWORD_ITERATIONS);
     passwordVersion.setVersion(PASSWORD_VERSION);
     return passwordVersion;
+  }
+
+  /**
+   * Returns value of remember me cookie.
+   *
+   * @param userId
+   *          user id
+   * @return value of remember me cookie
+   */
+  public static String rememberCookie(Long userId) {
+    PrincipalCollection principals = new SimplePrincipalCollection(userId, "proview");
+    ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
+    try (ObjectOutputStream output = new ObjectOutputStream(byteArrayOutput)) {
+      output.writeObject(principals);
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
+    CipherService cipherService = new AesCipherService();
+    byte[] encrypted = cipherService
+        .encrypt(byteArrayOutput.toByteArray(), Base64.decode(COOKIE_ENCRYPTION)).getBytes();
+    return Base64.encodeToString(encrypted);
   }
 }

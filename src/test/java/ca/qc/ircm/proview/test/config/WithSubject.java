@@ -34,4 +34,11 @@ public @interface WithSubject {
    * @return user id
    */
   public long userId() default 1L;
+
+  /**
+   * True to ignore user id and use an anonymous user.
+   *
+   * @return ignore user id and use an anonymous user
+   */
+  public boolean anonymous() default false;
 }
