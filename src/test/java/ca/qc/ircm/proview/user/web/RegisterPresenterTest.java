@@ -41,11 +41,11 @@ import org.mockito.Mock;
 import java.util.Collection;
 import java.util.Locale;
 
-public class RegisterPresenterDefaultTest {
+public class RegisterPresenterTest {
   @Rule
   public RuleChain rules = Rules.defaultRules(this);
   @InjectMocks
-  private RegisterPresenterDefault registerPresenterDefault = new RegisterPresenterDefault();
+  private RegisterPresenter registerPresenter = new RegisterPresenter();
   @Mock
   private RegisterView view;
   @Mock
@@ -144,7 +144,7 @@ public class RegisterPresenterDefaultTest {
     when(view.getRequiredLabel()).thenReturn(requiredLabel);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    registerPresenterDefault.init(view);
+    registerPresenter.init(view);
   }
 
   private void setFields() {

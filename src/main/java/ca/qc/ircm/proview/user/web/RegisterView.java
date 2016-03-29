@@ -18,83 +18,150 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Locale;
+import javax.inject.Inject;
 
 /**
  * Registers user view.
  */
-public interface RegisterView extends MessageResourcesView {
+@SpringView(name = RegisterView.VIEW_NAME)
+public class RegisterView extends RegisterDesign implements MessageResourcesView {
   public static final String VIEW_NAME = "user/register";
-
-  public void setTitle(String title);
-
-  public void showError(String message);
-
-  public void afterSuccessfulRegister();
-
-  public Label getHeaderLabel();
-
-  public TextField getEmailField();
-
-  public TextField getNameField();
-
-  public PasswordField getPasswordField();
-
-  public PasswordField getConfirmPasswordField();
-
-  public Label getLaboratoryHeaderLabel();
-
-  public CheckBox getNewLaboratoryField();
-
-  public TextField getOrganizationField();
-
-  public TextField getLaboratoryNameField();
-
-  public TextField getManagerEmailField();
-
-  public Label getAddressHeaderLabel();
-
-  public TextField getAddressField();
-
-  public TextField getAddressSecondField();
-
-  public TextField getTownField();
-
-  public TextField getStateField();
-
-  public ComboBox getCountryField();
-
-  public TextField getPostalCodeField();
-
-  public Button getClearAddressButton();
-
-  public Label getPhoneNumberHeaderLabel();
-
-  public TextField getPhoneNumberField();
-
-  public TextField getPhoneExtensionField();
-
-  public Label getRegisterHeaderLabel();
-
-  public Button getRegisterButton();
-
-  public Label getRequiredLabel();
+  private static final long serialVersionUID = 7586918222688019429L;
+  private static final Logger logger = LoggerFactory.getLogger(RegisterView.class);
+  @Inject
+  private RegisterPresenter presenter;
 
   @Override
-  default MessageResource getResources() {
-    return MessageResourcesView.super.getResources(RegisterView.class);
+  public void attach() {
+    logger.debug("Register user view");
+    super.attach();
+    presenter.init(this);
   }
 
-  @Override
-  default MessageResource getResources(Locale locale) {
-    return MessageResourcesView.super.getResources(RegisterView.class, locale);
+  public void setTitle(String title) {
+    getUI().getPage().setTitle(title);
+  }
+
+  public void showError(String message) {
+    Notification.show(message, Notification.Type.ERROR_MESSAGE);
+  }
+
+  /**
+   * Redirect to {@link MainView}.
+   */
+  public void afterSuccessfulRegister() {
+    final MessageResource resources = getResources();
+    Notification.show(resources.message("done", emailField.getValue()),
+        Notification.Type.TRAY_NOTIFICATION);
+    getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
+  }
+
+  public TextField getEmailField() {
+    return emailField;
+  }
+
+  public TextField getNameField() {
+    return nameField;
+  }
+
+  public PasswordField getPasswordField() {
+    return passwordField;
+  }
+
+  public PasswordField getConfirmPasswordField() {
+    return confirmPasswordField;
+  }
+
+  public CheckBox getNewLaboratoryField() {
+    return newLaboratoryField;
+  }
+
+  public TextField getOrganizationField() {
+    return organizationField;
+  }
+
+  public TextField getLaboratoryNameField() {
+    return laboratoryNameField;
+  }
+
+  public TextField getManagerEmailField() {
+    return managerEmailField;
+  }
+
+  public TextField getAddressField() {
+    return addressField;
+  }
+
+  public TextField getAddressSecondField() {
+    return addressSecondField;
+  }
+
+  public TextField getTownField() {
+    return townField;
+  }
+
+  public TextField getStateField() {
+    return stateField;
+  }
+
+  public ComboBox getCountryField() {
+    return countryField;
+  }
+
+  public TextField getPostalCodeField() {
+    return postalCodeField;
+  }
+
+  public Button getClearAddressButton() {
+    return clearAddressButton;
+  }
+
+  public TextField getPhoneNumberField() {
+    return phoneNumberField;
+  }
+
+  public TextField getPhoneExtensionField() {
+    return phoneExtensionField;
+  }
+
+  public Button getRegisterButton() {
+    return registerButton;
+  }
+
+  public Label getHeaderLabel() {
+    return headerLabel;
+  }
+
+  public Label getAddressHeaderLabel() {
+    return addressHeaderLabel;
+  }
+
+  public Label getPhoneNumberHeaderLabel() {
+    return phoneNumberHeaderLabel;
+  }
+
+  public Label getRegisterHeaderLabel() {
+    return registerHeaderLabel;
+  }
+
+  public Label getRequiredLabel() {
+    return requiredLabel;
+  }
+
+  public Label getLaboratoryHeaderLabel() {
+    return laboratoryHeaderLabel;
   }
 }
