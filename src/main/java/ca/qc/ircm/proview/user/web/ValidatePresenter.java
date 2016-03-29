@@ -158,7 +158,6 @@ public class ValidatePresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    logger.debug("set title to {}", resources.message("title"));
     view.setTitle(resources.message("title"));
     headerLabel.setValue(resources.message("header"));
     validateSelectedButton.setCaption(resources.message("validateSelected"));
