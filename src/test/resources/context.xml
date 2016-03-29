@@ -19,6 +19,7 @@
 -->
 <Context>
   <WatchedResource>WEB-INF/web.xml</WatchedResource>
+  <Manager pathname="" />
   <Environment name="vaadin-debug" type="java.lang.Boolean" value="true"/>
   <Resource name="proview" url="${database.url}"
     username="sa" password="" validationQuery="SELECT 1"
