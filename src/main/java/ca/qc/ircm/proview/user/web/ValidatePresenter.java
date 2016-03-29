@@ -35,6 +35,8 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.ButtonRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -64,6 +66,7 @@ public class ValidatePresenter {
   public static final String VALIDATE = "validateUser";
   private static final String[] COLUMNS =
       { EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, VIEW, VALIDATE };
+  private static final Logger logger = LoggerFactory.getLogger(ValidatePresenter.class);
   private ValidateView view;
   private BeanItemContainer<User> container;
   private GeneratedPropertyContainer gridContainer;
@@ -155,6 +158,7 @@ public class ValidatePresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
+    logger.debug("set title to {}", resources.message("title"));
     view.setTitle(resources.message("title"));
     headerLabel.setValue(resources.message("header"));
     validateSelectedButton.setCaption(resources.message("validateSelected"));
@@ -181,6 +185,7 @@ public class ValidatePresenter {
   }
 
   private void validateUser(User user) {
+    logger.debug("Validate user {}", user);
     userService.validate(Collections.nCopies(1, user));
     refresh();
     final MessageResource resources = view.getResources();
@@ -193,6 +198,7 @@ public class ValidatePresenter {
     for (Object id : ids) {
       selected.add((User) id);
     }
+    logger.debug("Validate users {}", selected);
     userService.validate(selected);
     final MessageResource resources = view.getResources();
     StringBuilder emails = new StringBuilder();
