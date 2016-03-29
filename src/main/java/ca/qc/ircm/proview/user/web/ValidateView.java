@@ -19,40 +19,61 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
-import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Locale;
+import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
 
 /**
  * Validate users view.
  */
-public interface ValidateView extends MessageResourcesView {
+@SpringView(name = ValidateView.VIEW_NAME)
+@RolesAllowed({ "PROTEOMIC", "MANAGER" })
+public class ValidateView extends ValidateDesign implements MessageResourcesView {
   public static final String VIEW_NAME = "user/validate";
-
-  public void setTitle(String title);
-
-  public void showError(String message);
-
-  public void viewUser(User user);
-
-  public void afterSuccessfulValidate(String message);
-
-  public Label getHeaderLabel();
-
-  public Grid getUsersGrid();
-
-  public Button getValidateSelectedButton();
+  private static final long serialVersionUID = -1956061543048432065L;
+  private static final Logger logger = LoggerFactory.getLogger(ValidateView.class);
+  @Inject
+  private ValidatePresenter presenter;
 
   @Override
-  default MessageResource getResources() {
-    return MessageResourcesView.super.getResources(ValidateView.class);
+  public void attach() {
+    logger.debug("Validate users view");
+    super.attach();
+    presenter.init(this);
   }
 
-  @Override
-  default MessageResource getResources(Locale locale) {
-    return MessageResourcesView.super.getResources(ValidateView.class, locale);
+  public void setTitle(String title) {
+    getUI().getPage().setTitle(title);
+  }
+
+  public void showError(String message) {
+    Notification.show(message, Notification.Type.ERROR_MESSAGE);
+  }
+
+  public void viewUser(User user) {
+    Notification.show("View user clicked for user " + user.getEmail());
+  }
+
+  public void afterSuccessfulValidate(String message) {
+    Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
+  }
+
+  public Label getHeaderLabel() {
+    return headerLabel;
+  }
+
+  public Grid getUsersGrid() {
+    return usersGrid;
+  }
+
+  public Button getValidateSelectedButton() {
+    return validateSelectedButton;
   }
 }

@@ -50,13 +50,13 @@ import java.util.Locale;
 
 import javax.persistence.EntityManager;
 
-public class ValidatePresenterDefaultTest {
+public class ValidatePresenterTest {
   @ClassRule
   public static DatabaseRule jpaDatabaseRule = new DatabaseRule();
   @Rule
   public RuleChain rules = Rules.defaultRules(this).around(jpaDatabaseRule);
   @InjectMocks
-  private ValidatePresenterDefault validatePresenterDefault = new ValidatePresenterDefault();
+  private ValidatePresenter validatePresenter = new ValidatePresenter();
   @Mock
   private ValidateView view;
   @Mock
@@ -94,7 +94,7 @@ public class ValidatePresenterDefaultTest {
     when(view.getValidateSelectedButton()).thenReturn(validateSelectedButton);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    validatePresenterDefault.init(view);
+    validatePresenter.init(view);
   }
 
   private User find(Collection<User> users, long id) {
