@@ -19,6 +19,7 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
+  <entry key="title">Error - ${project.name}</entry>
   <entry key="label">The page you've requested does not exists</entry>
   <entry key="button">Back to the main page</entry>
 </properties>
