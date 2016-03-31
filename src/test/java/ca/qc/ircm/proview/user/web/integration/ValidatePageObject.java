@@ -17,14 +17,16 @@
 
 package ca.qc.ircm.proview.user.web.integration;
 
+import ca.qc.ircm.proview.user.web.ValidatePresenter;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.LabelElement;
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,10 +36,25 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public abstract class ValidatePageObject extends TestBenchTestCase {
+  private static final Logger logger = LoggerFactory.getLogger(ValidatePageObject.class);
+  private static final int SELECT_COLUMN = 0;
+  private static final int EMAIL_COLUMN = gridColumnIndex(ValidatePresenter.EMAIL);
+  private static final int VALIDATE_COLUMN = gridColumnIndex(ValidatePresenter.VALIDATE);
+
   protected abstract String getBaseUrl();
 
   protected void open() {
     getDriver().get(getBaseUrl() + "/#!" + ValidateView.VIEW_NAME);
+  }
+
+  private static int gridColumnIndex(String property) {
+    String[] columns = ValidatePresenter.getColumns();
+    for (int i = 0; i < columns.length; i++) {
+      if (property.equals(columns[i])) {
+        return i + 1; // +1 because of select column.
+      }
+    }
+    return -1;
   }
 
   protected LabelElement headerLabel() {
@@ -63,12 +80,17 @@ public abstract class ValidatePageObject extends TestBenchTestCase {
   }
 
   protected void clickValidateUser(String email) {
+    logger.debug("clickValidateUser for user {}", email);
     GridElement usersGrid = usersGrid();
     processUsersGridRows(row -> {
-      GridCellElement emailCell = usersGrid.getCell(row++, 1);
-      if (email.equals(emailCell.getText())) {
-        GridCellElement buttonCell = usersGrid.getCell(row++, 5);
-        buttonCell.click();
+      GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
+      try {
+        if (email.equals(emailCell.getText())) {
+          GridCellElement buttonCell = usersGrid.getCell(row, VALIDATE_COLUMN);
+          buttonCell.click();
+        }
+      } catch (RuntimeException e) {
+        throw e;
       }
     });
   }
@@ -77,10 +99,10 @@ public abstract class ValidatePageObject extends TestBenchTestCase {
     Set<String> emailsSet = new HashSet<>(Arrays.asList(emails));
     GridElement usersGrid = usersGrid();
     processUsersGridRows(row -> {
-      GridCellElement emailCell = usersGrid.getCell(row++, 1);
+      GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
       if (emailsSet.contains(emailCell.getText())) {
-        GridCellElement checkboxCell = usersGrid.getCell(row++, 0);
-        checkboxCell.findElement(By.tagName("input")).click();
+        GridCellElement checkboxCell = usersGrid.getCell(row, SELECT_COLUMN);
+        checkboxCell.click();
       }
     });
   }
@@ -89,7 +111,7 @@ public abstract class ValidatePageObject extends TestBenchTestCase {
     GridElement usersGrid = usersGrid();
     List<String> selectedFiles = new ArrayList<>();
     processUsersGridRows(row -> {
-      GridCellElement cell = usersGrid.getCell(row++, 1);
+      GridCellElement cell = usersGrid.getCell(row, EMAIL_COLUMN);
       selectedFiles.add(cell.getText());
     });
     return selectedFiles;

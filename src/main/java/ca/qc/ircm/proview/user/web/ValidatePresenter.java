@@ -218,4 +218,8 @@ public class ValidatePresenter {
       view.afterSuccessfulValidate(resources.message("done", selected.size(), emails));
     }
   }
+
+  public static String[] getColumns() {
+    return COLUMNS.clone();
+  }
 }

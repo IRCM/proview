@@ -53,6 +53,7 @@ import javax.persistence.EntityManager;
 @Slow
 @WithSubject
 public class ValidateViewTest extends ValidatePageObject {
+  @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewTest.class);
   public TestBenchRule testBenchRule = new TestBenchRule(this);
   public IntegrationTestDatabaseRule integrationTestDatabaseRule =
@@ -88,7 +89,6 @@ public class ValidateViewTest extends ValidatePageObject {
     for (Locale locale : locales) {
       titles.add(new MessageResource(ValidateView.class, locale).message("title"));
     }
-    logger.debug("title = {}, expected titles {}", getDriver().getTitle(), titles);
     assertTrue(titles.contains(getDriver().getTitle()));
   }
 
@@ -157,8 +157,6 @@ public class ValidateViewTest extends ValidatePageObject {
     open();
     String email = "robert.stlouis@ircm.qc.ca";
     selectUsers(email);
-
-    Thread.sleep(5000);
 
     clickValidateSelected();
 
