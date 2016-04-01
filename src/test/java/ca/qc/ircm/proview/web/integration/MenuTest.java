@@ -40,7 +40,7 @@ import java.util.Locale;
 @RunWith(TestBenchLicenseRunner.class)
 @Slow
 @WithSubject(anonymous = true)
-public class MenuViewTest extends MenuPageObject {
+public class MenuTest extends MenuPageObject {
   public TestBenchRule testBenchRule = new TestBenchRule(this);
   @Rule
   public RuleChain rules = Rules.defaultRules(this).around(testBenchRule);
