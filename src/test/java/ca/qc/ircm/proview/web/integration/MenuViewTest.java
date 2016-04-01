@@ -25,52 +25,83 @@ import ca.qc.ircm.proview.test.config.TestBenchLicenseRunner;
 import ca.qc.ircm.proview.test.config.TestBenchRule;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.RegisterView;
+import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.web.MainView;
-import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.testbench.TestBenchTestCase;
-import com.vaadin.testbench.elements.MenuBarElement;
-import org.junit.Before;
+import com.vaadin.testbench.elements.LabelElement;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.StaleElementReferenceException;
 
 import java.util.Locale;
 
 @RunWith(TestBenchLicenseRunner.class)
 @Slow
 @WithSubject(anonymous = true)
-public class MenuViewTest extends TestBenchTestCase {
+public class MenuViewTest extends MenuPageObject {
   public TestBenchRule testBenchRule = new TestBenchRule(this);
   @Rule
   public RuleChain rules = Rules.defaultRules(this).around(testBenchRule);
-  private MessageResource resources;
 
-  @Before
-  public void beforeTest() {
-    resources = new Menu().getResources(Locale.getDefault());
+  private MessageResource getMainViewResources(Locale locale) {
+    return new MessageResource(MainView.class, locale);
   }
 
-  private void openTestUrl(String viewName) {
-    getDriver().get(testBenchRule.getBaseUrl() + "/#!" + viewName);
-  }
-
-  private String message(String key, Object... replacements) {
-    return resources.message(key, replacements);
+  @Override
+  protected String getBaseUrl() {
+    return testBenchRule.getBaseUrl();
   }
 
   @Test
   public void home() throws Throwable {
-    openTestUrl(RegisterView.VIEW_NAME);
-    MenuBarElement menu = $(MenuBarElement.class).first();
+    open(RegisterView.VIEW_NAME);
 
-    try {
-      menu.clickItem(message("home"));
-    } catch (StaleElementReferenceException e) {
-      // Thrown because page changes.
+    clickHome();
+
+    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
+        getDriver().getCurrentUrl());
+  }
+
+  @Test
+  public void changeLanguage() throws Throwable {
+    open();
+    Locale currentLocale = Locale.ENGLISH;
+    if ($(LabelElement.class).id("header").getText()
+        .equals(getMainViewResources(Locale.FRENCH).message("header"))) {
+      currentLocale = Locale.FRENCH;
     }
+
+    clickChangeLanguage();
+
+    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
+        getDriver().getCurrentUrl());
+    Locale newLocale = Locale.FRENCH;
+    if (currentLocale == Locale.FRENCH) {
+      newLocale = Locale.ENGLISH;
+    }
+    assertEquals(getMainViewResources(newLocale).message("header"),
+        $(LabelElement.class).id("header").getText());
+  }
+
+  @Test
+  @WithSubject
+  public void validateUsers() throws Throwable {
+    open();
+
+    clickValidateUsers();
+
+    assertEquals(testBenchRule.getBaseUrl() + "/#!" + ValidateView.VIEW_NAME,
+        getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @Ignore("not programmed yet")
+  public void help() throws Throwable {
+    open();
+
+    clickHelp();
 
     assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
         getDriver().getCurrentUrl());
