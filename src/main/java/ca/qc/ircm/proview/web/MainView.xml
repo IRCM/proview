@@ -22,10 +22,16 @@
   <entry key="title">${project.name}</entry>
   <entry key="header">Institut de recherches cliniques de Montreal Proteomics-MS Core Facility</entry>
   <entry key="sign">Enter your user information</entry>
+  <entry key="sign.username">Email</entry>
+  <entry key="sign.password">Password</entry>
+  <entry key="sign.button">Sign in</entry>
+  <entry key="sign.email.invalid">Invalid email</entry>
   <entry key="sign.fail">Email or password is invalid</entry>
   <entry key="forgotPassword">If you forgot your password, enter your e-mail address</entry>
   <entry key="forgotPassword.email">Email</entry>
+  <entry key="forgotPassword.email.invalid">Invalid email</entry>
   <entry key="forgotPassword.button">Submit</entry>
+  <entry key="forgotPassword.done">If your email is known, you will receive an email that will allow you to update your password</entry>
   <entry key="register">If you are not registered,</entry>
   <entry key="register.button">Registrer yourself</entry>
 </properties>

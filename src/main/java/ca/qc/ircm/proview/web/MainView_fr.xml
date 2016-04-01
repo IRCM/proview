@@ -22,10 +22,16 @@
   <entry key="title">${project.name}</entry>
   <entry key="header">Plateau protéomique-MS de l'Institut de recherches cliniques de Montréal</entry>
   <entry key="sign">Entrez vos informations</entry>
+  <entry key="sign.username">Courriel</entry>
+  <entry key="sign.password">Mot de passe</entry>
+  <entry key="sign.button">Connexion</entry>
+  <entry key="sign.email.invalid">Courriel invalide</entry>
   <entry key="sign.fail">Courriel ou mot de passe invalide</entry>
   <entry key="forgotPassword">Mot de passe oublié? Veuillez entrer votre adresse électronique</entry>
-  <entry key="forgotPassword.email">Courriel</entry>
+  <entry key="forgotPassword.email">Courriel invalide</entry>
+  <entry key="forgotPassword.email.invalid">Invalid email</entry>
   <entry key="forgotPassword.button">Soumettre</entry>
+  <entry key="forgotPassword.done">Si nous connaissons votre courriel, vous recevrez un message vous permettant de mettre à jour votre mot de passe</entry>
   <entry key="register">Si vous n'êtes pas encore inscrit,</entry>
   <entry key="register.button">Inscrivez-vous</entry>
 </properties>

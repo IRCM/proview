@@ -17,18 +17,17 @@
 
 package ca.qc.ircm.proview.web;
 
-import ca.qc.ircm.proview.security.AuthenticationService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
-import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
-import org.apache.shiro.authc.AuthenticationException;
+import com.vaadin.ui.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -40,48 +39,70 @@ public class MainView extends MainDesign implements MessageResourcesView {
   public static final String VIEW_NAME = "";
   private static final Logger logger = LoggerFactory.getLogger(MainView.class);
   @Inject
-  private AuthenticationService authenticationService;
+  private MainPresenter presenter;
   @Inject
-  private UI ui;
-
-  /**
-   * Initialize view.
-   */
-  @PostConstruct
-  public void init() {
-    sign.getHeader().setStyleName("h2");
-    sign.addLoginListener(e -> {
-      MessageResource resources = getResources();
-      String username = e.getUserName();
-      String password = e.getPassword();
-      try {
-        authenticationService.sign(username, password, true);
-        //ui.getNavigator().navigateTo(SomeView.VIEW_NAME);
-        Notification.show("Success", Notification.Type.TRAY_NOTIFICATION);
-      } catch (AuthenticationException ae) {
-        Notification.show(resources.message("sign.fail"), Notification.Type.ERROR_MESSAGE);
-      }
-    });
-    forgotPassword.addClickListener(e -> {
-      Notification.show("Forgot password", Notification.Type.TRAY_NOTIFICATION);
-    });
-    register.addClickListener(e -> {
-      ui.getNavigator().navigateTo(RegisterView.VIEW_NAME);
-    });
-  }
+  private AuthorizationService authorizationService;
 
   @Override
   public void attach() {
-    super.attach();
     logger.debug("Main view");
-    MessageResource resources = getResources();
-    ui.getPage().setTitle(resources.message("title"));
-    header.setValue(resources.message("header"));
-    sign.getHeader().setValue(resources.message("sign"));
-    forgotPasswordHeader.setValue(resources.message("forgotPassword"));
-    email.setCaption(resources.message("forgotPassword.email"));
-    forgotPassword.setCaption(resources.message("forgotPassword.button"));
-    registerHeader.setValue(resources.message("register"));
-    register.setCaption(resources.message("register.button"));
+    super.attach();
+    presenter.init(this);
+  }
+
+  public void setTitle(String title) {
+    getUI().getPage().setTitle(title);
+  }
+
+  public void showError(String error) {
+    Notification.show(error, Notification.Type.ERROR_MESSAGE);
+  }
+
+  /**
+   * User signed successfully.
+   */
+  public void afterSuccessfulSign() {
+    // TODO Replace by actual views.
+    if (authorizationService.hasProteomicRole()) {
+      getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
+    } else {
+      getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
+    }
+  }
+
+  public void afterSuccessfulForgotPassword(String message) {
+    Notification.show(message, Notification.Type.WARNING_MESSAGE);
+  }
+
+  public void navigateToRegister() {
+    getUI().getNavigator().navigateTo(RegisterView.VIEW_NAME);
+  }
+
+  public Label getHeader() {
+    return header;
+  }
+
+  public LoginFormDefault getSignForm() {
+    return signForm;
+  }
+
+  public Label getForgotPasswordHeader() {
+    return forgotPasswordHeader;
+  }
+
+  public TextField getForgotPasswordEmailField() {
+    return forgotPasswordEmailField;
+  }
+
+  public Button getForgotPasswordButton() {
+    return forgotPasswordButton;
+  }
+
+  public Label getRegisterHeader() {
+    return registerHeader;
+  }
+
+  public Button getRegisterButton() {
+    return registerButton;
   }
 }
