@@ -26,6 +26,4 @@
   <entry key="state">État/Province</entry>
   <entry key="country">Pays</entry>
   <entry key="postalCode">Code postal</entry>
-  <entry key="save">Sauvegarder</entry>
-  <entry key="cancel">Annuler</entry>
 </properties>

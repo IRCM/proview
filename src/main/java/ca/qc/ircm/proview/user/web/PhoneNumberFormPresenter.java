@@ -8,11 +8,12 @@ import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.RegexpValidator;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -28,12 +29,7 @@ public class PhoneNumberFormPresenter {
       QPhoneNumber.phoneNumber.number.getMetadata().getName();
   public static final String EXTENSION_PROPERTY =
       QPhoneNumber.phoneNumber.extension.getMetadata().getName();
-  private static final String ID_SEPARATOR = "-";
-  private static final String TYPE_FIELD_ID = "type";
-  private static final String NUMBER_FIELD_ID = "number";
-  private static final String EXTENSION_FIELD_ID = "extension";
-  private static final String SAVE_BUTTON_ID = "save";
-  private static final String CANCEL_BUTTON_ID = "cancel";
+  private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup =
       new BeanFieldGroup<>(PhoneNumber.class);
   private PhoneNumberForm view;
@@ -41,8 +37,6 @@ public class PhoneNumberFormPresenter {
   private ComboBox typeField;
   private TextField numberField;
   private TextField extensionField;
-  private Button saveButton;
-  private Button cancelButton;
 
   /**
    * Initializes presenter.
@@ -55,6 +49,7 @@ public class PhoneNumberFormPresenter {
     view.setPresenter(this);
     setFields();
     bindFields();
+    addFieldListeners();
   }
 
   /**
@@ -70,8 +65,6 @@ public class PhoneNumberFormPresenter {
     typeField = view.getTypeField();
     numberField = view.getNumberField();
     extensionField = view.getExtensionField();
-    saveButton = view.getSaveButton();
-    cancelButton = view.getCancelButton();
   }
 
   private void bindFields() {
@@ -79,6 +72,10 @@ public class PhoneNumberFormPresenter {
     phoneNumberFieldGroup.bind(typeField, TYPE_PROPERTY);
     phoneNumberFieldGroup.bind(numberField, NUMBER_PROPERTY);
     phoneNumberFieldGroup.bind(extensionField, EXTENSION_PROPERTY);
+  }
+
+  private void addFieldListeners() {
+    editableProperty.addValueChangeListener(e -> updateEditable());
   }
 
   private void setTypeValues() {
@@ -94,8 +91,6 @@ public class PhoneNumberFormPresenter {
     typeField.setCaption(resources.message("type"));
     numberField.setCaption(resources.message("number"));
     extensionField.setCaption(resources.message("extension"));
-    saveButton.setCaption(resources.message("save"));
-    cancelButton.setCaption(resources.message("cancel"));
   }
 
   /**
@@ -108,27 +103,22 @@ public class PhoneNumberFormPresenter {
         .addValidator(new RegexpValidator("[\\d\\-]*", resources.message("extension.invalid")));
   }
 
+  private void updateEditable() {
+    boolean editable = editableProperty.getValue();
+    typeField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    typeField.setReadOnly(!editable);
+    numberField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    numberField.setReadOnly(!editable);
+    extensionField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    extensionField.setReadOnly(!editable);
+  }
+
   public void commit() throws CommitException {
     phoneNumberFieldGroup.commit();
   }
 
   public boolean isValid() {
     return phoneNumberFieldGroup.isValid();
-  }
-
-  /**
-   * Sets id prefix for view.
-   *
-   * @param idPrefix
-   *          id prefix
-   */
-  public void setId(String idPrefix) {
-    String subId = idPrefix == null || idPrefix.isEmpty() ? "" : idPrefix + ID_SEPARATOR;
-    typeField.setId(subId + TYPE_FIELD_ID);
-    numberField.setId(subId + NUMBER_FIELD_ID);
-    extensionField.setId(subId + EXTENSION_FIELD_ID);
-    saveButton.setId(subId + SAVE_BUTTON_ID);
-    cancelButton.setId(subId + CANCEL_BUTTON_ID);
   }
 
   public Item getItemDataSource() {

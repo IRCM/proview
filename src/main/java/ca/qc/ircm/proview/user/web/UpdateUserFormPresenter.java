@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.web.LaboratoryForm;
 import ca.qc.ircm.proview.laboratory.web.LaboratoryFormPresenter;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.QUser;
@@ -53,6 +54,8 @@ public class UpdateUserFormPresenter {
   private AddressFormPresenter addressPresenter;
   @Inject
   private PhoneNumberFormPresenter phoneNumberPresenter;
+  @Inject
+  private AuthorizationService authorizationService;
 
   /**
    * Initializes presenter.
@@ -68,7 +71,6 @@ public class UpdateUserFormPresenter {
     laboratoryPresenter.init(laboratoryForm);
     addressPresenter.init(addressForm);
     phoneNumberPresenter.init(phoneNumberForm);
-    updateEditable();
   }
 
   /**
@@ -108,43 +110,12 @@ public class UpdateUserFormPresenter {
     // TODO Program method.
   }
 
-  private void updateEditable() {
-    /*
-    boolean editable = editableProperty.getValue();
-    emailField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    emailField.setReadOnly(!editable);
-    nameField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    nameField.setReadOnly(!editable);
-    passwordField.setVisible(editable);
-    confirmPasswordField.setVisible(editable);
-    laboratoryForm.getOrganizationField()
-        .setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    laboratoryForm.getOrganizationField().setReadOnly(!editable);
-    laboratoryForm.getNameField().setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    laboratoryForm.getNameField().setReadOnly(!editable);
-    addressForm.getAddressField().setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    addressForm.getAddressField().setReadOnly(!editable);
-    addressForm.getAddressSecondField()
-        .setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    addressForm.getAddressSecondField().setReadOnly(!editable);
-    addressForm.getTownField().setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    addressForm.getTownField().setReadOnly(!editable);
-    addressForm.getStateField().setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    addressForm.getStateField().setReadOnly(!editable);
-    addressForm.getCountryField().setStyleName(editable ? "" : ValoTheme.COMBOBOX_BORDERLESS);
-    addressForm.getCountryField().setReadOnly(!editable);
-    addressForm.getPostalCodeField().setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    addressForm.getPostalCodeField().setReadOnly(!editable);
-    phoneNumberForm.getTypeField().setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    phoneNumberForm.getTypeField().setReadOnly(!editable);
-    phoneNumberForm.getNumberField().setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    phoneNumberForm.getNumberField().setReadOnly(!editable);
-    phoneNumberForm.getExtensionField()
-        .setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    phoneNumberForm.getExtensionField().setReadOnly(!editable);
-    */
-  }
-
+  /**
+   * Sets user.
+   *
+   * @param user
+   *          user
+   */
   public void setUser(User user) {
     userFormPresenter.setItemDataSource(new BeanItem<>(user, User.class));
     laboratoryPresenter.setItemDataSource(new BeanItem<>(user.getLaboratory(), Laboratory.class));

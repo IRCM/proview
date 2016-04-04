@@ -25,6 +25,4 @@
   <entry key="number.invalid">Numéro ne doit contenir que des chiffres et des traits d''union</entry>
   <entry key="extension">Extension</entry>
   <entry key="extension.invalid">Extension ne doit contenir que des chiffres et des traits d''union</entry>
-  <entry key="save">Sauvegarder</entry>
-  <entry key="cancel">Annuler</entry>
 </properties>

@@ -6,24 +6,16 @@
  <body> 
   <vaadin-vertical-layout size-auto> 
    <vaadin-form-layout size-auto> 
-    <vaadin-label style-name="h2" id="header" size-auto plain-text _id="header">
+    <vaadin-label style-name="h2" size-auto plain-text _id="header">
       Phone Number 
     </vaadin-label> 
-    <vaadin-combo-box caption="Type" id="typeField" item-caption-mode="id" _id="typeField"> 
+    <vaadin-combo-box caption="Type" item-caption-mode="id" _id="typeField"> 
      <option>Option 1</option> 
      <option>Option 2</option> 
      <option>Option 3</option> 
     </vaadin-combo-box> 
-    <vaadin-text-field caption="Phone" id="numberField" null-representation="" _id="numberField"></vaadin-text-field> 
-    <vaadin-text-field caption="Extension" id="extensionField" null-representation="" _id="extensionField"></vaadin-text-field> 
-    <vaadin-horizontal-layout spacing _id="buttonsLayout"> 
-     <vaadin-button icon="fonticon://FontAwesome/f00c" id="saveButton" plain-text _id="saveButton">
-       Save 
-     </vaadin-button> 
-     <vaadin-button icon="fonticon://FontAwesome/f00d" id="cancelButton" plain-text _id="cancelButton">
-       Cancel 
-     </vaadin-button> 
-    </vaadin-horizontal-layout> 
+    <vaadin-text-field caption="Phone" null-representation="" _id="numberField"></vaadin-text-field> 
+    <vaadin-text-field caption="Extension" null-representation="" _id="extensionField"></vaadin-text-field> 
    </vaadin-form-layout> 
   </vaadin-vertical-layout>  
  </body>

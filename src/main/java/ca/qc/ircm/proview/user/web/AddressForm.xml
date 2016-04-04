@@ -26,6 +26,4 @@
   <entry key="state">State/Province</entry>
   <entry key="country">Country</entry>
   <entry key="postalCode">Postal code</entry>
-  <entry key="save">Save</entry>
-  <entry key="cancel">Cancel</entry>
 </properties>

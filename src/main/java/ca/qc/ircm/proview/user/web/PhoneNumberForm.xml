@@ -25,6 +25,4 @@
   <entry key="number.invalid">Number must contain only numbers and hyphens</entry>
   <entry key="extension">Extension</entry>
   <entry key="extension.invalid">Extension must contain only numbers and hyphens</entry>
-  <entry key="save">Save</entry>
-  <entry key="cancel">Cancel</entry>
 </properties>

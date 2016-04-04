@@ -1,9 +1,7 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
@@ -50,17 +48,5 @@ public class AddressForm extends AddressFormDesign implements MessageResourcesCo
 
   public TextField getPostalCodeField() {
     return postalCodeField;
-  }
-
-  public HorizontalLayout getButtonsLayout() {
-    return buttonsLayout;
-  }
-
-  public Button getSaveButton() {
-    return saveButton;
-  }
-
-  public Button getCancelButton() {
-    return cancelButton;
   }
 }

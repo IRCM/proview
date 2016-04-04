@@ -7,9 +7,10 @@ import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Button;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -23,18 +24,12 @@ public class LaboratoryFormPresenter {
   public static final String NAME_PROPERTY = QLaboratory.laboratory.name.getMetadata().getName();
   public static final String ORGANIZATION_PROPERTY =
       QLaboratory.laboratory.organization.getMetadata().getName();
-  private static final String ID_SEPARATOR = "-";
-  private static final String NAME_FIELD_ID = "name";
-  private static final String ORGANIZATION_FIELD_ID = "organization";
-  private static final String SAVE_BUTTON_ID = "save";
-  private static final String CANCEL_BUTTON_ID = "cancel";
+  private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<Laboratory> laboratoryFieldGroup = new BeanFieldGroup<>(Laboratory.class);
   private LaboratoryForm view;
   private Label header;
   private TextField organizationField;
   private TextField nameField;
-  private Button saveButton;
-  private Button cancelButton;
 
   /**
    * Initializes presenter.
@@ -47,6 +42,7 @@ public class LaboratoryFormPresenter {
     view.setPresenter(this);
     setFields();
     bindFields();
+    addFieldListeners();
   }
 
   /**
@@ -60,8 +56,6 @@ public class LaboratoryFormPresenter {
     header = view.getHeader();
     organizationField = view.getOrganizationField();
     nameField = view.getNameField();
-    saveButton = view.getSaveButton();
-    cancelButton = view.getCancelButton();
   }
 
   private void bindFields() {
@@ -70,13 +64,15 @@ public class LaboratoryFormPresenter {
     laboratoryFieldGroup.bind(organizationField, ORGANIZATION_PROPERTY);
   }
 
+  private void addFieldListeners() {
+    editableProperty.addValueChangeListener(e -> updateEditable());
+  }
+
   private void setCaptions() {
     MessageResource resources = view.getResources();
     header.setValue(resources.message("header"));
     organizationField.setCaption(resources.message("organization"));
     nameField.setCaption(resources.message("name"));
-    saveButton.setCaption(resources.message("save"));
-    cancelButton.setCaption(resources.message("cancel"));
   }
 
   public void commit() throws CommitException {
@@ -87,18 +83,12 @@ public class LaboratoryFormPresenter {
     return laboratoryFieldGroup.isValid();
   }
 
-  /**
-   * Sets id prefix for view.
-   *
-   * @param idPrefix
-   *          id prefix
-   */
-  public void setId(String idPrefix) {
-    String subId = idPrefix == null || idPrefix.isEmpty() ? "" : idPrefix + ID_SEPARATOR;
-    nameField.setId(subId + NAME_FIELD_ID);
-    organizationField.setId(subId + ORGANIZATION_FIELD_ID);
-    saveButton.setId(subId + SAVE_BUTTON_ID);
-    cancelButton.setId(subId + CANCEL_BUTTON_ID);
+  private void updateEditable() {
+    boolean editable = editableProperty.getValue();
+    organizationField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    organizationField.setReadOnly(!editable);
+    nameField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    nameField.setReadOnly(!editable);
   }
 
   public Item getItemDataSource() {
@@ -107,5 +97,13 @@ public class LaboratoryFormPresenter {
 
   public void setItemDataSource(Item item) {
     laboratoryFieldGroup.setItemDataSource(item);
+  }
+
+  public boolean isEditable() {
+    return editableProperty.getValue();
+  }
+
+  public void setEditable(boolean editable) {
+    editableProperty.setValue(editable);
   }
 }

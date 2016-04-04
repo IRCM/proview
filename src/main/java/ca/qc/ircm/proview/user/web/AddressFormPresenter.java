@@ -8,10 +8,11 @@ import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Button;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -32,15 +33,7 @@ public class AddressFormPresenter {
   public static final String COUNTRY_PROPERTY = QAddress.address1.country.getMetadata().getName();
   public static final String POSTAL_CODE_PROPERTY =
       QAddress.address1.postalCode.getMetadata().getName();
-  private static final String ID_SEPARATOR = "-";
-  private static final String ADDRESS_FIELD_ID = "type";
-  private static final String ADDRESS_SECOND_FIELD_ID = "type";
-  private static final String TOWN_FIELD_ID = "town";
-  private static final String STATE_FIELD_ID = "state";
-  private static final String COUNTRY_FIELD_ID = "country";
-  private static final String POSTAL_CODE_FIELD_ID = "postalCode";
-  private static final String SAVE_BUTTON_ID = "save";
-  private static final String CANCEL_BUTTON_ID = "cancel";
+  private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<Address> addressFieldGroup = new BeanFieldGroup<>(Address.class);
   private AddressForm view;
   private Label header;
@@ -50,8 +43,6 @@ public class AddressFormPresenter {
   private TextField stateField;
   private ComboBox countryField;
   private TextField postalCodeField;
-  private Button saveButton;
-  private Button cancelButton;
   @Inject
   private ApplicationConfiguration applicationConfiguration;
 
@@ -66,6 +57,7 @@ public class AddressFormPresenter {
     view.setPresenter(this);
     setFields();
     bindFields();
+    addFieldListeners();
     setCountryValues();
     setDefaultAddress();
   }
@@ -85,8 +77,6 @@ public class AddressFormPresenter {
     stateField = view.getStateField();
     countryField = view.getCountryField();
     postalCodeField = view.getPostalCodeField();
-    saveButton = view.getSaveButton();
-    cancelButton = view.getCancelButton();
   }
 
   private void bindFields() {
@@ -99,6 +89,10 @@ public class AddressFormPresenter {
     addressFieldGroup.bind(postalCodeField, POSTAL_CODE_PROPERTY);
   }
 
+  private void addFieldListeners() {
+    editableProperty.addValueChangeListener(e -> updateEditable());
+  }
+
   private void setCaptions() {
     MessageResource resources = view.getResources();
     header.setValue(resources.message("header"));
@@ -108,8 +102,6 @@ public class AddressFormPresenter {
     stateField.setCaption(resources.message("state"));
     countryField.setCaption(resources.message("country"));
     postalCodeField.setCaption(resources.message("postalCode"));
-    saveButton.setCaption(resources.message("save"));
-    cancelButton.setCaption(resources.message("cancel"));
   }
 
   private void setCountryValues() {
@@ -141,30 +133,28 @@ public class AddressFormPresenter {
         .setValue(getDefaultCountry());
   }
 
+  private void updateEditable() {
+    boolean editable = editableProperty.getValue();
+    addressField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    addressField.setReadOnly(!editable);
+    addressSecondField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    addressSecondField.setReadOnly(!editable);
+    townField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    townField.setReadOnly(!editable);
+    stateField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    stateField.setReadOnly(!editable);
+    countryField.setStyleName(editable ? "" : ValoTheme.COMBOBOX_BORDERLESS);
+    countryField.setReadOnly(!editable);
+    postalCodeField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    postalCodeField.setReadOnly(!editable);
+  }
+
   public void commit() throws CommitException {
     addressFieldGroup.commit();
   }
 
   public boolean isValid() {
     return addressFieldGroup.isValid();
-  }
-
-  /**
-   * Sets id prefix for view.
-   *
-   * @param idPrefix
-   *          id prefix
-   */
-  public void setId(String idPrefix) {
-    String subId = idPrefix == null || idPrefix.isEmpty() ? "" : idPrefix + ID_SEPARATOR;
-    addressField.setId(subId + ADDRESS_FIELD_ID);
-    addressSecondField.setId(subId + ADDRESS_SECOND_FIELD_ID);
-    townField.setId(subId + TOWN_FIELD_ID);
-    stateField.setId(subId + STATE_FIELD_ID);
-    countryField.setId(subId + COUNTRY_FIELD_ID);
-    postalCodeField.setId(subId + POSTAL_CODE_FIELD_ID);
-    saveButton.setId(subId + SAVE_BUTTON_ID);
-    cancelButton.setId(subId + CANCEL_BUTTON_ID);
   }
 
   public Item getItemDataSource() {
