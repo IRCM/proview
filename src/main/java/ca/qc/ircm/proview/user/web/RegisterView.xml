@@ -35,7 +35,7 @@
   <entry key="manager">Lab manager email</entry>
   <entry key="manager.invalid">Invalid lab manager email</entry>
   <entry key="manager.notExists">Email does not exists or is not a lab manager</entry>
-  <entry key="addressHeader">Adress</entry>
+  <entry key="addressHeader">Address</entry>
   <entry key="address">Address</entry>
   <entry key="addressSecond">Second line</entry>
   <entry key="town">Town</entry>

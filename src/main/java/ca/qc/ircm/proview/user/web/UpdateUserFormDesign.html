@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+ <head>   
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;proview&quot;}">
+  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_laboratory_web:ca.qc.ircm.proview.laboratory.web">
+  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_user_web:ca.qc.ircm.proview.user.web">
+  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout spacing size-auto margin> 
+   <ca_qc_ircm_proview_user_web-user-form id="user" _id="userForm"></ca_qc_ircm_proview_user_web-user-form> 
+   <ca_qc_ircm_proview_laboratory_web-laboratory-form id="laboratory" _id="laboratoryForm"></ca_qc_ircm_proview_laboratory_web-laboratory-form> 
+   <vaadin-horizontal-layout spacing> 
+    <vaadin-label style-name="h2" id="addressesHeader" size-auto plain-text _id="addressesHeader">
+      Addresses 
+    </vaadin-label> 
+    <vaadin-button icon="fonticon://FontAwesome/f13a" style-name="borderless" id="toggleAddressesButton" plain-text icon-alt="Show" _id="toggleAddressesButton"></vaadin-button> 
+   </vaadin-horizontal-layout> 
+   <ca_qc_ircm_proview_user_web-address-form _id="addressForm"></ca_qc_ircm_proview_user_web-address-form> 
+   <vaadin-button icon="fonticon://FontAwesome/f067" id="addAddressButton" plain-text _id="addAddressButton">
+     Add another address 
+   </vaadin-button> 
+   <vaadin-horizontal-layout spacing> 
+    <vaadin-label style-name="h2" id="phoneNumbersHeader" size-auto plain-text _id="phoneNumbersHeader">
+      Phone Numbers 
+    </vaadin-label> 
+    <vaadin-button icon="fonticon://FontAwesome/f13a" style-name="borderless" id="togglePhoneNumbersButton" plain-text icon-alt="Show" _id="togglePhoneNumbersButton"></vaadin-button> 
+   </vaadin-horizontal-layout> 
+   <ca_qc_ircm_proview_user_web-phone-number-form _id="phoneNumberForm"></ca_qc_ircm_proview_user_web-phone-number-form> 
+   <vaadin-button icon="fonticon://FontAwesome/f067" id="addPhoneNumberButton" plain-text _id="addPhoneNumberButton">
+     Add another phone number 
+   </vaadin-button> 
+   <vaadin-horizontal-layout spacing> 
+    <vaadin-button icon="fonticon://FontAwesome/f00c" id="saveButton" plain-text _id="saveButton">
+      Save 
+    </vaadin-button> 
+    <vaadin-button icon="fonticon://FontAwesome/f00d" id="cancelButton" plain-text _id="cancelButton">
+      Cancel 
+    </vaadin-button> 
+   </vaadin-horizontal-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

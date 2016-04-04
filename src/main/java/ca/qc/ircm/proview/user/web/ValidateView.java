@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Validate users view.
@@ -41,6 +42,8 @@ public class ValidateView extends ValidateDesign implements MessageResourcesView
   private static final Logger logger = LoggerFactory.getLogger(ValidateView.class);
   @Inject
   private ValidatePresenter presenter;
+  @Inject
+  private Provider<UserWindow> userWindowProvider;
 
   @Override
   public void attach() {
@@ -57,8 +60,17 @@ public class ValidateView extends ValidateDesign implements MessageResourcesView
     Notification.show(message, Notification.Type.ERROR_MESSAGE);
   }
 
+  /**
+   * Open view user window.
+   *
+   * @param user
+   *          user to view
+   */
   public void viewUser(User user) {
-    Notification.show("View user clicked for user " + user.getEmail());
+    UserWindow userWindow = userWindowProvider.get();
+    userWindow.center();
+    getUI().addWindow(userWindow);
+    userWindow.setUser(user);
   }
 
   public void afterSuccessfulValidate(String message) {

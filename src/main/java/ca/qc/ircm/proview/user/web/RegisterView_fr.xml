@@ -46,7 +46,7 @@
   <entry key="phoneNumber">Numéro</entry>
   <entry key="phoneNumber.invalid">Numéro ne doit contenir que des chiffres et des traits d''union</entry>
   <entry key="phoneExtension">Extension</entry>
-  <entry key="phoneNumber.invalid">Extension ne doit contenir que des chiffres et des traits d''union</entry>
+  <entry key="phoneExtension.invalid">Extension ne doit contenir que des chiffres et des traits d''union</entry>
   <entry key="registerHeader">Une fois inscrit, un gestionnaire doit vous accepter avant que vous puissiez vous connecter</entry>
   <entry key="register">Sauvegarder</entry>
   <entry key="clearAddress">Effacer</entry>

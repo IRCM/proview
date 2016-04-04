@@ -17,9 +17,18 @@
 
 package ca.qc.ircm.proview.user;
 
+import ca.qc.ircm.utils.MessageResource;
+
+import java.util.Locale;
+
 /**
  * Phone number type.
  */
 public enum PhoneNumberType {
-  WORK, MOBILE, FAX
+  WORK, MOBILE, FAX;
+
+  public String getLabel(Locale locale) {
+    MessageResource resource = new MessageResource(PhoneNumberType.class, locale);
+    return resource.message(name());
+  }
 }
