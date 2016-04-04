@@ -19,7 +19,11 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="header">Address</entry>
-  <entry key="save">Save</entry>
-  <entry key="cancel">Cancel</entry>
+  <entry key="header">Adresse</entry>
+  <entry key="address">Adresse</entry>
+  <entry key="addressSecond">Seconde ligne</entry>
+  <entry key="town">Ville</entry>
+  <entry key="state">État/Province</entry>
+  <entry key="country">Pays</entry>
+  <entry key="postalCode">Code postal</entry>
 </properties>

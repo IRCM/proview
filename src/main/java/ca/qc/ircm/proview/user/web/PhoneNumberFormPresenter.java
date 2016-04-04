@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * Phone number form.
+ * Phone number form presenter.
  */
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -127,5 +127,13 @@ public class PhoneNumberFormPresenter {
 
   public void setItemDataSource(Item item) {
     phoneNumberFieldGroup.setItemDataSource(item);
+  }
+
+  public boolean isEditable() {
+    return editableProperty.getValue();
+  }
+
+  public void setEditable(boolean editable) {
+    editableProperty.setValue(editable);
   }
 }

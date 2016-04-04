@@ -21,7 +21,11 @@
 <properties>
   <entry key="title">Usager</entry>
   <entry key="addressesHeader">Adresses</entry>
+  <entry key="addressesVisible.false">Montrer</entry>
+  <entry key="addressesVisible.true">Cacher</entry>
   <entry key="addAddress">Ajouter une nouvelle adresse</entry>
+  <entry key="addAddress.title">Ajouter adresse</entry>
+  <entry key="addAddress.done">Adresse {0} sauvegardée</entry>
   <entry key="phoneNumbersHeader">Numéros de téléphone</entry>
   <entry key="addPhoneNumber">Ajouter un nouveau numéro de téléphone</entry>
   <entry key="save">Sauvegarder</entry>

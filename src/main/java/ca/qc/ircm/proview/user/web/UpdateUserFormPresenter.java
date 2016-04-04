@@ -6,20 +6,34 @@ import ca.qc.ircm.proview.laboratory.web.LaboratoryFormPresenter;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.PhoneNumber;
+import ca.qc.ircm.proview.user.QAddress;
 import ca.qc.ircm.proview.user.QUser;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.Item;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.vaadin.teemu.VaadinIcons;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * User form.
@@ -33,12 +47,26 @@ public class UpdateUserFormPresenter {
   public static final String ADDRESSES_PROPERTY = QUser.user.addresses.getMetadata().getName();
   public static final String PHONE_NUMBERS_PROPERTY =
       QUser.user.phoneNumbers.getMetadata().getName();
+  public static final String ADDRESS_PROPERTY = QAddress.address1.address.getMetadata().getName();
+  public static final String ADDRESS_SECOND_PROPERTY =
+      QAddress.address1.addressSecond.getMetadata().getName();
+  public static final String TOWN_PROPERTY = QAddress.address1.town.getMetadata().getName();
+  public static final String STATE_PROPERTY = QAddress.address1.state.getMetadata().getName();
+  public static final String COUNTRY_PROPERTY = QAddress.address1.country.getMetadata().getName();
+  public static final String POSTAL_CODE_PROPERTY =
+      QAddress.address1.postalCode.getMetadata().getName();
+  public static final Object[] ADDRESS_COLUMNS =
+      new Object[] { ADDRESS_PROPERTY, ADDRESS_SECOND_PROPERTY, TOWN_PROPERTY, STATE_PROPERTY,
+          COUNTRY_PROPERTY, POSTAL_CODE_PROPERTY };
+  private static final Logger logger = LoggerFactory.getLogger(UpdateUserFormPresenter.class);
+  private User user = new User();
+  private ObjectProperty<Boolean> addressesVisibleProperty = new ObjectProperty<>(false);
   private UpdateUserForm view;
   private UserForm userForm;
   private LaboratoryForm laboratoryForm;
   private Label addressesHeader;
-  private Button toggleAddressesButton;
-  private AddressForm addressForm;
+  private Button addressesVisibleButton;
+  private Grid addressesGrid;
   private Button addAddressButton;
   private Label phoneNumbersHeader;
   private Button togglePhoneNumbersButton;
@@ -49,13 +77,17 @@ public class UpdateUserFormPresenter {
   @Inject
   private UserFormPresenter userFormPresenter;
   @Inject
-  private LaboratoryFormPresenter laboratoryPresenter;
-  @Inject
-  private AddressFormPresenter addressPresenter;
+  private LaboratoryFormPresenter laboratoryFormPresenter;
   @Inject
   private PhoneNumberFormPresenter phoneNumberPresenter;
   @Inject
+  private UserService userService;
+  @Inject
   private AuthorizationService authorizationService;
+  @Inject
+  private Provider<AddressWindow> addressWindowProvider;
+  @Inject
+  private VaadinUtils vaadinUtils;
 
   /**
    * Initializes presenter.
@@ -67,26 +99,19 @@ public class UpdateUserFormPresenter {
     this.view = view;
     view.setPresenter(this);
     setFields();
+    initGrids();
+    addFieldListeners();
     userFormPresenter.init(userForm);
-    laboratoryPresenter.init(laboratoryForm);
-    addressPresenter.init(addressForm);
+    laboratoryFormPresenter.init(laboratoryForm);
     phoneNumberPresenter.init(phoneNumberForm);
-  }
-
-  /**
-   * Called when view gets attached.
-   */
-  public void attach() {
-    setCaptions();
-    addValidators();
   }
 
   private void setFields() {
     userForm = view.getUserForm();
     laboratoryForm = view.getLaboratoryForm();
     addressesHeader = view.getAddressesHeader();
-    toggleAddressesButton = view.getToggleAddressesButton();
-    addressForm = view.getAddressForm();
+    addressesVisibleButton = view.getAddressesVisibleButton();
+    addressesGrid = view.getAddressesGrid();
     addAddressButton = view.getAddAddressButton();
     phoneNumbersHeader = view.getPhoneNumbersHeader();
     togglePhoneNumbersButton = view.getTogglePhoneNumbersButton();
@@ -96,9 +121,38 @@ public class UpdateUserFormPresenter {
     cancelButton = view.getCancelButton();
   }
 
+  private void initGrids() {
+    addressesGrid.setColumns(ADDRESS_COLUMNS);
+  }
+
+  private void addFieldListeners() {
+    addressesVisibleProperty.addValueChangeListener(e -> setAddressesVisibility());
+    addAddressButton.addClickListener(e -> addAddress());
+    addressesVisibleButton.addClickListener(
+        e -> addressesVisibleProperty.setValue(!addressesVisibleProperty.getValue()));
+    addressesGrid.addItemClickListener(e -> {
+      if (e.isDoubleClick()) {
+        editAddress(e.getItem());
+      }
+    });
+  }
+
+  /**
+   * Called when view gets attached.
+   */
+  public void attach() {
+    setCaptions();
+    addValidators();
+    setAddressesVisibility();
+  }
+
   private void setCaptions() {
     MessageResource resources = view.getResources();
     addressesHeader.setValue(resources.message("addressesHeader"));
+    MessageResource addressResources = view.getResources(Address.class);
+    for (Column column : addressesGrid.getColumns()) {
+      column.setHeaderCaption(addressResources.message((String) column.getPropertyId()));
+    }
     addAddressButton.setCaption(resources.message("addAddress"));
     phoneNumbersHeader.setValue(resources.message("phoneNumbersHeader"));
     addPhoneNumberButton.setCaption(resources.message("addPhoneNumber"));
@@ -110,6 +164,47 @@ public class UpdateUserFormPresenter {
     // TODO Program method.
   }
 
+  private void setAddressesVisibility() {
+    boolean visible = addressesVisibleProperty.getValue();
+    addressesGrid.setVisible(visible);
+    addAddressButton.setVisible(visible);
+    MessageResource resources = view.getResources();
+    addressesVisibleButton.setIcon(
+        visible ? VaadinIcons.CHEVRON_CIRCLE_UP : VaadinIcons.CHEVRON_CIRCLE_DOWN,
+        resources.message("addressesVisible." + visible));
+  }
+
+  private void addAddress() {
+    final MessageResource resources = view.getResources();
+    AddressWindow window = addressWindowProvider.get();
+    window.center();
+    window.setModal(true);
+    window.setCaption(resources.message("addAddress.title"));
+    AddressFormPresenter presenter = window.getPresenter();
+    Address address = new Address();
+    presenter.setItemDataSource(new BeanItem<>(address));
+    presenter.addSaveClickListener(e -> saveNewAddress(presenter, address));
+    view.showWindow(window);
+  }
+
+  private void saveNewAddress(AddressFormPresenter presenter, Address address) {
+    try {
+      presenter.commit();
+      user.getAddresses().add(address);
+      userService.update(user, null);
+      final MessageResource resources = view.getResources();
+      view.afterSuccessfulUpdate(resources.message("addAddress.done", address.getAddress()));
+    } catch (CommitException e) {
+      String message = vaadinUtils.getFieldMessage(e, view.getLocale());
+      logger.debug("Validation failed with message {}", message);
+      view.showError(message);
+    }
+  }
+
+  private void editAddress(Item item) {
+    Notification.show("Edit address clicked for item " + item);
+  }
+
   /**
    * Sets user.
    *
@@ -117,15 +212,17 @@ public class UpdateUserFormPresenter {
    *          user
    */
   public void setUser(User user) {
+    this.user = user;
     userFormPresenter.setItemDataSource(new BeanItem<>(user, User.class));
-    laboratoryPresenter.setItemDataSource(new BeanItem<>(user.getLaboratory(), Laboratory.class));
+    laboratoryFormPresenter
+        .setItemDataSource(new BeanItem<>(user.getLaboratory(), Laboratory.class));
     List<Address> addresses = user.getAddresses();
     if (addresses == null || addresses.isEmpty()) {
       addresses = new ArrayList<>();
       addresses.add(new Address());
       user.setAddresses(addresses);
     }
-    addressPresenter.setItemDataSource(new BeanItem<>(addresses.get(0), Address.class));
+    addressesGrid.setContainerDataSource(new BeanItemContainer<>(Address.class, addresses));
     List<PhoneNumber> phoneNumbers = user.getPhoneNumbers();
     if (phoneNumbers == null || phoneNumbers.isEmpty()) {
       phoneNumbers = new ArrayList<>();
