@@ -21,7 +21,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -132,7 +132,7 @@ public class UpdateUserFormPresenter {
         e -> addressesVisibleProperty.setValue(!addressesVisibleProperty.getValue()));
     addressesGrid.addItemClickListener(e -> {
       if (e.isDoubleClick()) {
-        editAddress(e.getItem());
+        editAddress(e.getItem(), (Address) e.getItemId());
       }
     });
   }
@@ -183,15 +183,16 @@ public class UpdateUserFormPresenter {
     AddressFormPresenter presenter = window.getPresenter();
     Address address = new Address();
     presenter.setItemDataSource(new BeanItem<>(address));
-    presenter.addSaveClickListener(e -> saveNewAddress(presenter, address));
+    presenter.addSaveClickListener(e -> saveNewAddress(window, presenter, address));
     view.showWindow(window);
   }
 
-  private void saveNewAddress(AddressFormPresenter presenter, Address address) {
+  private void saveNewAddress(Window window, AddressFormPresenter presenter, Address address) {
     try {
       presenter.commit();
       user.getAddresses().add(address);
       userService.update(user, null);
+      window.close();
       final MessageResource resources = view.getResources();
       view.afterSuccessfulUpdate(resources.message("addAddress.done", address.getAddress()));
     } catch (CommitException e) {
@@ -201,8 +202,30 @@ public class UpdateUserFormPresenter {
     }
   }
 
-  private void editAddress(Item item) {
-    Notification.show("Edit address clicked for item " + item);
+  private void editAddress(Item item, Address address) {
+    final MessageResource resources = view.getResources();
+    AddressWindow window = addressWindowProvider.get();
+    window.center();
+    window.setModal(true);
+    window.setCaption(resources.message("addAddress.title"));
+    AddressFormPresenter presenter = window.getPresenter();
+    presenter.setItemDataSource(item);
+    presenter.addSaveClickListener(e -> saveAddress(window, presenter, address));
+    view.showWindow(window);
+  }
+
+  private void saveAddress(Window window, AddressFormPresenter presenter, Address address) {
+    try {
+      presenter.commit();
+      userService.update(user, null);
+      window.close();
+      final MessageResource resources = view.getResources();
+      view.afterSuccessfulUpdate(resources.message("addAddress.done", address.getAddress()));
+    } catch (CommitException e) {
+      String message = vaadinUtils.getFieldMessage(e, view.getLocale());
+      logger.debug("Validation failed with message {}", message);
+      view.showError(message);
+    }
   }
 
   /**
