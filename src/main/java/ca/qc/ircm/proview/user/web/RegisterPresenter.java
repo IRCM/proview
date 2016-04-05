@@ -354,8 +354,7 @@ public class RegisterPresenter {
   private void registerUser() {
     if (validate()) {
       logger.debug("Register user {}", user);
-      user.setAddresses(new ArrayList<>());
-      user.getAddresses().add(userAddress);
+      user.setAddress(userAddress);
       user.setPhoneNumbers(new ArrayList<>());
       userPhoneNumber.setType(PhoneNumberType.WORK);
       user.getPhoneNumbers().add(userPhoneNumber);

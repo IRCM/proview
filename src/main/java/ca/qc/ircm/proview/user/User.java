@@ -110,15 +110,15 @@ public class User implements Data, Named, Serializable {
   @ManyToOne
   @JoinTable(
       name = "laboratoryuser",
-      joinColumns = @JoinColumn(name = "userId") ,
-      inverseJoinColumns = @JoinColumn(name = "laboratoryId") )
+      joinColumns = @JoinColumn(name = "userId"),
+      inverseJoinColumns = @JoinColumn(name = "laboratoryId"))
   private Laboratory laboratory;
   /**
-   * Phone numbers.
+   * Address.
    */
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "userId")
-  private List<Address> addresses;
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "addressId")
+  private Address address;
   /**
    * Phone numbers.
    */
@@ -255,12 +255,12 @@ public class User implements Data, Named, Serializable {
     this.phoneNumbers = phoneNumbers;
   }
 
-  public List<Address> getAddresses() {
-    return addresses;
+  public Address getAddress() {
+    return address;
   }
 
-  public void setAddresses(List<Address> addresses) {
-    this.addresses = addresses;
+  public void setAddress(Address address) {
+    this.address = address;
   }
 
   public boolean isProteomic() {

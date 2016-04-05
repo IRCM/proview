@@ -445,9 +445,8 @@ public class RegisterPresenterTest {
     assertNull(user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(organization, user.getLaboratory().getOrganization());
-    assertNotNull(user.getAddresses());
-    assertEquals(1, user.getAddresses().size());
-    Address address = user.getAddresses().get(0);
+    assertNotNull(user.getAddress());
+    Address address = user.getAddress();
     assertEquals(this.address, address.getAddress());
     assertEquals(addressSecond, address.getAddressSecond());
     assertEquals(town, address.getTown());
@@ -486,9 +485,8 @@ public class RegisterPresenterTest {
     assertEquals(false, user.isValid());
     assertEquals(false, user.isProteomic());
     assertNull(user.getLaboratory());
-    assertNotNull(user.getAddresses());
-    assertEquals(1, user.getAddresses().size());
-    Address address = user.getAddresses().get(0);
+    assertNotNull(user.getAddress());
+    Address address = user.getAddress();
     assertEquals(this.address, address.getAddress());
     assertEquals(addressSecond, address.getAddressSecond());
     assertEquals(town, address.getTown());

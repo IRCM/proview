@@ -18,14 +18,24 @@
 DROP TABLE laboratorymanager IF EXISTS;
 DROP TABLE laboratoryuser IF EXISTS;
 DROP TABLE phonenumber IF EXISTS;
-DROP TABLE address IF EXISTS;
 DROP TABLE users IF EXISTS;
+DROP TABLE address IF EXISTS;
 DROP TABLE laboratory IF EXISTS;
 
 CREATE TABLE laboratory (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(255) NOT NULL,
   organization varchar(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+CREATE TABLE address (
+  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  address varchar(150) NOT NULL,
+  addressSecond varchar(150) DEFAULT NULL,
+  town varchar(50) NOT NULL,
+  state varchar(50) NOT NULL,
+  country varchar(50) NOT NULL,
+  postalCode varchar(50) NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE TABLE users (
@@ -36,25 +46,14 @@ CREATE TABLE users (
   salt varchar(255) DEFAULT NULL,
   passwordVersion int(10) DEFAULT NULL,
   locale varchar(50) DEFAULT NULL,
+  addressId bigint(20) DEFAULT NULL,
   active tinyint(1) NOT NULL DEFAULT '0',
   valid tinyint(1) NOT NULL DEFAULT '0',
   proteomic tinyint(1) NOT NULL DEFAULT '0',
   registerTime datetime DEFAULT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY email (email)
-);
-CREATE TABLE address (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  userId bigint(20) DEFAULT NULL,
-  address varchar(150) NOT NULL,
-  addressSecond varchar(150) DEFAULT NULL,
-  town varchar(50) NOT NULL,
-  state varchar(50) NOT NULL,
-  country varchar(50) NOT NULL,
-  postalCode varchar(50) NOT NULL,
-  billing tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (id),
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+  UNIQUE KEY email (email),
+  FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 CREATE TABLE phonenumber (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
@@ -94,48 +93,48 @@ INSERT INTO laboratory (id,name,organization)
 VALUES ('4', 'Biochemistry of Epigenetic Inheritance', 'IRCM');
 INSERT INTO laboratory (id,name,organization)
 VALUES ('5', 'Génétique moléculaire et développement', 'IRCM');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('1', 'proview@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', 'Robot', null, '1', '1', '1', NULL);
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('2', 'christian.poitras@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', 'Christian Poitras', 	'fr_CA', '1', '1', '1', '2008-08-11 13:43:51');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('3', 'benoit.coulombe@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Benoit Coulombe', 'fr_CA', '1', '1', '0', '2009-10-02 10:56:19');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('4', 'robert.stlouis@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Robert St-Louis', 'fr_CA', '0', '0', '0', '2010-01-25 15:48:24');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('5', 'michel.tremblay@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Michel Tremblay', 'fr_CA', '0', '1', '0', '2011-07-07 15:48:24');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('6', 'christopher.anderson@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Christopher Anderson', 'en_US', '1', '1', '1', '2011-11-11 09:45:26');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('7', 'francois.robert@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'François Robert', 'fr_CA', '1', '1', '0', '2014-10-06 11:35:45');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('8', 'james.johnson@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'James R. Johnson', 'en_US', '1', '1', '0', '2011-07-07 15:48:24');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('9', 'robert.williams@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Robert Williams', 'en_US', '1', '1', '0', '2011-07-07 15:48:24');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('10', 'nicole.francis@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Nicole J. Francis', 'en_US', '0', '0', '0', '2011-07-07 15:48:24');
-INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,active,valid,proteomic,registerTime)
-VALUES ('11', 'marie.trudel@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Marie Trudel', 'en_US', '0', '1', '0', '2011-07-07 15:48:24');
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('1', '2', '110, avenue des Pins Ouest', '1234', 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('2', '3', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('3', '4', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('4', '5', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('5', '6', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('6', '7', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('7', '8', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('8', '9', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('9', '10', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
-INSERT INTO address (id,userId,address,addressSecond,town,state,country,postalCode,billing)
-VALUES ('10', '11', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7', true);
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('1', '110, avenue des Pins Ouest', '1234', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('2', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('3', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('4', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('5', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('6', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('7', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('8', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('9', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,address,addressSecond,town,state,country,postalCode)
+VALUES ('10', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('1', 'proview@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', 'Robot', null, null, '1', '1', '1', NULL);
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('2', 'christian.poitras@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', 'Christian Poitras', 	'fr_CA', 1, '1', '1', '1', '2008-08-11 13:43:51');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('3', 'benoit.coulombe@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Benoit Coulombe', 'fr_CA', 2, '1', '1', '0', '2009-10-02 10:56:19');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('4', 'robert.stlouis@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Robert St-Louis', 'fr_CA', 3, '0', '0', '0', '2010-01-25 15:48:24');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('5', 'michel.tremblay@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Michel Tremblay', 'fr_CA', 4, '0', '1', '0', '2011-07-07 15:48:24');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('6', 'christopher.anderson@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Christopher Anderson', 'en_US', 5, '1', '1', '1', '2011-11-11 09:45:26');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('7', 'francois.robert@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'François Robert', 'fr_CA', 6, '1', '1', '0', '2014-10-06 11:35:45');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('8', 'james.johnson@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'James R. Johnson', 'en_US', 7, '1', '1', '0', '2011-07-07 15:48:24');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('9', 'robert.williams@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Robert Williams', 'en_US', 8, '1', '1', '0', '2011-07-07 15:48:24');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('10', 'nicole.francis@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Nicole J. Francis', 'en_US', 9, '0', '0', '0', '2011-07-07 15:48:24');
+INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,proteomic,registerTime)
+VALUES ('11', 'marie.trudel@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', 'Marie Trudel', 'en_US', 10, '0', '1', '0', '2011-07-07 15:48:24');
 INSERT INTO phonenumber (id,userId,type,number,extension)
 VALUES ('1', '2', 'WORK', '514-555-5555', null);
 INSERT INTO phonenumber (id,userId,type,number,extension)

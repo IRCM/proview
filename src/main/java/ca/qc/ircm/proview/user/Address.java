@@ -32,8 +32,9 @@ import javax.validation.constraints.Size;
  * User's address.
  */
 @Entity
-@Table(name = "address")
+@Table(name = Address.TABLE_NAME)
 public class Address implements Serializable {
+  public static final String TABLE_NAME = "address";
   private static final long serialVersionUID = 6036866850504348215L;
   /**
    * Database identifier.
@@ -78,11 +79,6 @@ public class Address implements Serializable {
   @Column(name = "postalCode", nullable = false)
   @Size(max = 50)
   private String postalCode;
-  /**
-   * True if address is billing address.
-   */
-  @Column(name = "billing", nullable = false)
-  private boolean billing;
 
   @Override
   public String toString() {
@@ -143,13 +139,5 @@ public class Address implements Serializable {
 
   public void setPostalCode(String postalCode) {
     this.postalCode = postalCode;
-  }
-
-  public boolean isBilling() {
-    return billing;
-  }
-
-  public void setBilling(boolean billing) {
-    this.billing = billing;
   }
 }

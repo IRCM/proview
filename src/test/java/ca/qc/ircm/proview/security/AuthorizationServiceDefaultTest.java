@@ -100,15 +100,13 @@ public class AuthorizationServiceDefaultTest {
     assertEquals((Integer) 1, user.getPasswordVersion());
     assertEquals((Long) 2L, user.getLaboratory().getId());
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
-    assertEquals(1, user.getAddresses().size());
-    Address address = user.getAddresses().get(0);
+    Address address = user.getAddress();
     assertEquals("110, avenue des Pins Ouest", address.getAddress());
     assertEquals(null, address.getAddressSecond());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
     assertEquals("Canada", address.getCountry());
-    assertEquals(true, address.isBilling());
     assertEquals(1, user.getPhoneNumbers().size());
     PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());

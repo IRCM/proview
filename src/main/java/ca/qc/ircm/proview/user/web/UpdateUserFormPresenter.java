@@ -44,7 +44,7 @@ public class UpdateUserFormPresenter {
   public static final String EMAIL_PROPERTY = QUser.user.email.getMetadata().getName();
   public static final String NAME_PROPERTY = QUser.user.name.getMetadata().getName();
   public static final String LABORATORY_PROPERTY = QUser.user.laboratory.getMetadata().getName();
-  public static final String ADDRESSES_PROPERTY = QUser.user.addresses.getMetadata().getName();
+  public static final String ADDRESSES_PROPERTY = QUser.user.address.getMetadata().getName();
   public static final String PHONE_NUMBERS_PROPERTY =
       QUser.user.phoneNumbers.getMetadata().getName();
   public static final String ADDRESS_PROPERTY = QAddress.address1.address.getMetadata().getName();
@@ -127,7 +127,6 @@ public class UpdateUserFormPresenter {
 
   private void addFieldListeners() {
     addressesVisibleProperty.addValueChangeListener(e -> setAddressesVisibility());
-    addAddressButton.addClickListener(e -> addAddress());
     addressesVisibleButton.addClickListener(
         e -> addressesVisibleProperty.setValue(!addressesVisibleProperty.getValue()));
     addressesGrid.addItemClickListener(e -> {
@@ -174,34 +173,6 @@ public class UpdateUserFormPresenter {
         resources.message("addressesVisible." + visible));
   }
 
-  private void addAddress() {
-    final MessageResource resources = view.getResources();
-    AddressWindow window = addressWindowProvider.get();
-    window.center();
-    window.setModal(true);
-    window.setCaption(resources.message("addAddress.title"));
-    AddressFormPresenter presenter = window.getPresenter();
-    Address address = new Address();
-    presenter.setItemDataSource(new BeanItem<>(address));
-    presenter.addSaveClickListener(e -> saveNewAddress(window, presenter, address));
-    view.showWindow(window);
-  }
-
-  private void saveNewAddress(Window window, AddressFormPresenter presenter, Address address) {
-    try {
-      presenter.commit();
-      user.getAddresses().add(address);
-      userService.update(user, null);
-      window.close();
-      final MessageResource resources = view.getResources();
-      view.afterSuccessfulUpdate(resources.message("addAddress.done", address.getAddress()));
-    } catch (CommitException e) {
-      String message = vaadinUtils.getFieldMessage(e, view.getLocale());
-      logger.debug("Validation failed with message {}", message);
-      view.showError(message);
-    }
-  }
-
   private void editAddress(Item item, Address address) {
     final MessageResource resources = view.getResources();
     AddressWindow window = addressWindowProvider.get();
@@ -239,12 +210,8 @@ public class UpdateUserFormPresenter {
     userFormPresenter.setItemDataSource(new BeanItem<>(user, User.class));
     laboratoryFormPresenter
         .setItemDataSource(new BeanItem<>(user.getLaboratory(), Laboratory.class));
-    List<Address> addresses = user.getAddresses();
-    if (addresses == null || addresses.isEmpty()) {
-      addresses = new ArrayList<>();
-      addresses.add(new Address());
-      user.setAddresses(addresses);
-    }
+    List<Address> addresses = new ArrayList<>();
+    addresses.add(user.getAddress());
     addressesGrid.setContainerDataSource(new BeanItemContainer<>(Address.class, addresses));
     List<PhoneNumber> phoneNumbers = user.getPhoneNumbers();
     if (phoneNumbers == null || phoneNumbers.isEmpty()) {

@@ -263,8 +263,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals(hash.toHex(), user.getHashedPassword());
     assertEquals((Integer) passwordVersion.getVersion(), user.getPasswordVersion());
     assertNotNull(user.getLocale());
-    assertEquals(1, user.getAddresses().size());
-    Address userAddress = user.getAddresses().get(0);
+    Address userAddress = user.getAddress();
     assertEquals(address, userAddress.getAddress());
     assertEquals(addressSecond, userAddress.getAddressSecond());
     assertEquals(town, userAddress.getTown());
@@ -313,8 +312,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals(hash.toHex(), user.getHashedPassword());
     assertEquals((Integer) passwordVersion.getVersion(), user.getPasswordVersion());
     assertNotNull(user.getLocale());
-    assertEquals(1, user.getAddresses().size());
-    Address userAddress = user.getAddresses().get(0);
+    Address userAddress = user.getAddress();
     assertEquals(address, userAddress.getAddress());
     assertEquals(addressSecond, userAddress.getAddressSecond());
     assertEquals(town, userAddress.getTown());

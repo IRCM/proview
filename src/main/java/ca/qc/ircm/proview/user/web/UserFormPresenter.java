@@ -25,7 +25,7 @@ public class UserFormPresenter {
   public static final String EMAIL_PROPERTY = QUser.user.email.getMetadata().getName();
   public static final String NAME_PROPERTY = QUser.user.name.getMetadata().getName();
   public static final String LABORATORY_PROPERTY = QUser.user.laboratory.getMetadata().getName();
-  public static final String ADDRESSES_PROPERTY = QUser.user.addresses.getMetadata().getName();
+  public static final String ADDRESSES_PROPERTY = QUser.user.address.getMetadata().getName();
   public static final String PHONE_NUMBERS_PROPERTY =
       QUser.user.phoneNumbers.getMetadata().getName();
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
