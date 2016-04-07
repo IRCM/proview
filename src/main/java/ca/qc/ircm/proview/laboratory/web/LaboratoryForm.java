@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.laboratory.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
 /**
@@ -19,10 +18,6 @@ public class LaboratoryForm extends LaboratoryFormDesign implements MessageResou
   public void attach() {
     super.attach();
     presenter.attach();
-  }
-
-  public Label getHeader() {
-    return header;
   }
 
   public TextField getOrganizationField() {

@@ -19,7 +19,6 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="header">Numéro de téléphone</entry>
   <entry key="type">Type</entry>
   <entry key="number">Numéro</entry>
   <entry key="number.invalid">Numéro ne doit contenir que des chiffres et des traits d''union</entry>

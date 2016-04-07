@@ -11,7 +11,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -33,7 +32,6 @@ public class PhoneNumberFormPresenter {
   private BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup =
       new BeanFieldGroup<>(PhoneNumber.class);
   private PhoneNumberForm view;
-  private Label header;
   private ComboBox typeField;
   private TextField numberField;
   private TextField extensionField;
@@ -50,6 +48,7 @@ public class PhoneNumberFormPresenter {
     setFields();
     bindFields();
     addFieldListeners();
+    updateEditable();
   }
 
   /**
@@ -61,7 +60,6 @@ public class PhoneNumberFormPresenter {
   }
 
   private void setFields() {
-    header = view.getHeader();
     typeField = view.getTypeField();
     numberField = view.getNumberField();
     extensionField = view.getExtensionField();
@@ -87,10 +85,9 @@ public class PhoneNumberFormPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    header.setValue(resources.message("header"));
-    typeField.setCaption(resources.message("type"));
-    numberField.setCaption(resources.message("number"));
-    extensionField.setCaption(resources.message("extension"));
+    typeField.setCaption(resources.message(TYPE_PROPERTY));
+    numberField.setCaption(resources.message(NUMBER_PROPERTY));
+    extensionField.setCaption(resources.message(EXTENSION_PROPERTY));
   }
 
   /**
@@ -98,9 +95,10 @@ public class PhoneNumberFormPresenter {
    */
   public void addDefaultRegexpValidators() {
     MessageResource resources = view.getResources();
-    numberField.addValidator(new RegexpValidator("[\\d\\-]*", resources.message("number.invalid")));
-    extensionField
-        .addValidator(new RegexpValidator("[\\d\\-]*", resources.message("extension.invalid")));
+    numberField.addValidator(
+        new RegexpValidator("[\\d\\-]*", resources.message(NUMBER_PROPERTY + ".invalid")));
+    extensionField.addValidator(
+        new RegexpValidator("[\\d\\-]*", resources.message(EXTENSION_PROPERTY + ".invalid")));
   }
 
   private void updateEditable() {

@@ -10,11 +10,7 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -40,16 +36,12 @@ public class AddressFormPresenter {
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<Address> addressFieldGroup = new BeanFieldGroup<>(Address.class);
   private AddressForm view;
-  private Label header;
   private TextField addressField;
   private TextField addressSecondField;
   private TextField townField;
   private TextField stateField;
   private ComboBox countryField;
   private TextField postalCodeField;
-  private HorizontalLayout buttonsLayout;
-  private Button saveButton;
-  private Button cancelButton;
   @Inject
   private ApplicationConfiguration applicationConfiguration;
 
@@ -67,6 +59,36 @@ public class AddressFormPresenter {
     addFieldListeners();
     setCountryValues();
     setDefaultAddress();
+    updateEditable();
+  }
+
+  private void setFields() {
+    addressField = view.getAddressField();
+    addressSecondField = view.getAddressSecondField();
+    townField = view.getTownField();
+    stateField = view.getStateField();
+    countryField = view.getCountryField();
+    postalCodeField = view.getPostalCodeField();
+  }
+
+  private void bindFields() {
+    addressFieldGroup.setItemDataSource(new BeanItem<>(new Address()));
+    addressFieldGroup.bind(addressField, ADDRESS_PROPERTY);
+    addressFieldGroup.bind(addressSecondField, ADDRESS_SECOND_PROPERTY);
+    addressFieldGroup.bind(townField, TOWN_PROPERTY);
+    addressFieldGroup.bind(stateField, STATE_PROPERTY);
+    addressFieldGroup.bind(countryField, COUNTRY_PROPERTY);
+    addressFieldGroup.bind(postalCodeField, POSTAL_CODE_PROPERTY);
+  }
+
+  private void addFieldListeners() {
+    editableProperty.addValueChangeListener(e -> updateEditable());
+  }
+
+  private void setCountryValues() {
+    for (String country : applicationConfiguration.getCountries()) {
+      countryField.addItem(country);
+    }
   }
 
   private String getDefaultCountry() {
@@ -92,39 +114,6 @@ public class AddressFormPresenter {
         .setValue(getDefaultCountry());
   }
 
-  private void setFields() {
-    header = view.getHeader();
-    addressField = view.getAddressField();
-    addressSecondField = view.getAddressSecondField();
-    townField = view.getTownField();
-    stateField = view.getStateField();
-    countryField = view.getCountryField();
-    postalCodeField = view.getPostalCodeField();
-    buttonsLayout = view.getButtonsLayout();
-    saveButton = view.getSaveButton();
-    cancelButton = view.getCancelButton();
-  }
-
-  private void bindFields() {
-    addressFieldGroup.setItemDataSource(new BeanItem<>(new Address()));
-    addressFieldGroup.bind(addressField, ADDRESS_PROPERTY);
-    addressFieldGroup.bind(addressSecondField, ADDRESS_SECOND_PROPERTY);
-    addressFieldGroup.bind(townField, TOWN_PROPERTY);
-    addressFieldGroup.bind(stateField, STATE_PROPERTY);
-    addressFieldGroup.bind(countryField, COUNTRY_PROPERTY);
-    addressFieldGroup.bind(postalCodeField, POSTAL_CODE_PROPERTY);
-  }
-
-  private void addFieldListeners() {
-    editableProperty.addValueChangeListener(e -> updateEditable());
-  }
-
-  private void setCountryValues() {
-    for (String country : applicationConfiguration.getCountries()) {
-      countryField.addItem(country);
-    }
-  }
-
   /**
    * Called when view gets attached.
    */
@@ -135,16 +124,12 @@ public class AddressFormPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    header.setValue(resources.message("header"));
-    MessageResource addressResources = view.getResources(Address.class);
-    addressField.setCaption(addressResources.message(ADDRESS_PROPERTY));
-    addressSecondField.setCaption(addressResources.message(ADDRESS_SECOND_PROPERTY));
-    townField.setCaption(addressResources.message(TOWN_PROPERTY));
-    stateField.setCaption(addressResources.message(STATE_PROPERTY));
-    countryField.setCaption(addressResources.message(COUNTRY_PROPERTY));
-    postalCodeField.setCaption(addressResources.message(POSTAL_CODE_PROPERTY));
-    saveButton.setCaption(resources.message("save"));
-    cancelButton.setCaption(resources.message("cancel"));
+    addressField.setCaption(resources.message(ADDRESS_PROPERTY));
+    addressSecondField.setCaption(resources.message(ADDRESS_SECOND_PROPERTY));
+    townField.setCaption(resources.message(TOWN_PROPERTY));
+    stateField.setCaption(resources.message(STATE_PROPERTY));
+    countryField.setCaption(resources.message(COUNTRY_PROPERTY));
+    postalCodeField.setCaption(resources.message(POSTAL_CODE_PROPERTY));
   }
 
   private void setRequired() {
@@ -177,7 +162,6 @@ public class AddressFormPresenter {
     countryField.setReadOnly(!editable);
     postalCodeField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
     postalCodeField.setReadOnly(!editable);
-    buttonsLayout.setVisible(editable);
   }
 
   public void commit() throws CommitException {
@@ -186,14 +170,6 @@ public class AddressFormPresenter {
 
   public boolean isValid() {
     return addressFieldGroup.isValid();
-  }
-
-  public void addSaveClickListener(ClickListener listener) {
-    saveButton.addClickListener(listener);
-  }
-
-  public void addCancelClickListener(ClickListener listener) {
-    cancelButton.addClickListener(listener);
   }
 
   public Item getItemDataSource() {

@@ -8,7 +8,6 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -27,7 +26,6 @@ public class LaboratoryFormPresenter {
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<Laboratory> laboratoryFieldGroup = new BeanFieldGroup<>(Laboratory.class);
   private LaboratoryForm view;
-  private Label header;
   private TextField organizationField;
   private TextField nameField;
 
@@ -43,6 +41,7 @@ public class LaboratoryFormPresenter {
     setFields();
     bindFields();
     addFieldListeners();
+    updateEditable();
   }
 
   /**
@@ -53,7 +52,6 @@ public class LaboratoryFormPresenter {
   }
 
   private void setFields() {
-    header = view.getHeader();
     organizationField = view.getOrganizationField();
     nameField = view.getNameField();
   }
@@ -70,9 +68,8 @@ public class LaboratoryFormPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    header.setValue(resources.message("header"));
-    organizationField.setCaption(resources.message("organization"));
-    nameField.setCaption(resources.message("name"));
+    nameField.setCaption(resources.message(NAME_PROPERTY));
+    organizationField.setCaption(resources.message(ORGANIZATION_PROPERTY));
   }
 
   public void commit() throws CommitException {

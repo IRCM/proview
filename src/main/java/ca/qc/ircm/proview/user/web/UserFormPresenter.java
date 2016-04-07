@@ -8,7 +8,6 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
@@ -24,6 +23,8 @@ import org.springframework.stereotype.Component;
 public class UserFormPresenter {
   public static final String EMAIL_PROPERTY = QUser.user.email.getMetadata().getName();
   public static final String NAME_PROPERTY = QUser.user.name.getMetadata().getName();
+  public static final String PASSWORD_PROPERTY = "password";
+  public static final String CONFIRM_PASSWORD_PROPERTY = "confirmPassword";
   public static final String LABORATORY_PROPERTY = QUser.user.laboratory.getMetadata().getName();
   public static final String ADDRESSES_PROPERTY = QUser.user.address.getMetadata().getName();
   public static final String PHONE_NUMBERS_PROPERTY =
@@ -31,7 +32,6 @@ public class UserFormPresenter {
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<User> userFieldGroup = new BeanFieldGroup<>(User.class);
   private UserForm view;
-  private Label header;
   private TextField emailField;
   private TextField nameField;
   private PasswordField passwordField;
@@ -61,7 +61,6 @@ public class UserFormPresenter {
   }
 
   private void setFields() {
-    header = view.getHeader();
     emailField = view.getEmailField();
     nameField = view.getNameField();
     passwordField = view.getPasswordField();
@@ -81,9 +80,10 @@ public class UserFormPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    header.setValue(resources.message("header"));
-    emailField.setCaption(resources.message("email"));
-    nameField.setCaption(resources.message("name"));
+    emailField.setCaption(resources.message(EMAIL_PROPERTY));
+    nameField.setCaption(resources.message(NAME_PROPERTY));
+    passwordField.setCaption(resources.message(PASSWORD_PROPERTY));
+    confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD_PROPERTY));
   }
 
   private void addValidators() {

@@ -19,7 +19,6 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="header">Lab</entry>
-  <entry key="organization">Organization</entry>
   <entry key="name">Name</entry>
+  <entry key="organization">Organization</entry>
 </properties>

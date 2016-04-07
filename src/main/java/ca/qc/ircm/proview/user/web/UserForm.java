@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
@@ -20,10 +19,6 @@ public class UserForm extends UserFormDesign implements MessageResourcesComponen
   public void attach() {
     super.attach();
     presenter.attach();
-  }
-
-  public Label getHeader() {
-    return header;
   }
 
   public TextField getEmailField() {

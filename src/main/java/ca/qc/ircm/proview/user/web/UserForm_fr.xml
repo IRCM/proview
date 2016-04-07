@@ -19,11 +19,10 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="header">Usager</entry>
+  <entry key="name">Nom</entry>
   <entry key="email">Courriel</entry>
   <entry key="email.invalid">Courriel invalide</entry>
   <entry key="email.exists">Ce courriel est déjà utilisé</entry>
-  <entry key="name">Nom</entry>
   <entry key="password">Mot de passe</entry>
   <entry key="password.notMatch">Mots de passe différents</entry>
   <entry key="confirmPassword">Repétez mot de passe</entry>

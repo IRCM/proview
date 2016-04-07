@@ -12,28 +12,20 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Item;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.Panel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.vaadin.teemu.VaadinIcons;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 /**
  * User form.
@@ -60,14 +52,13 @@ public class UpdateUserFormPresenter {
           COUNTRY_PROPERTY, POSTAL_CODE_PROPERTY };
   private static final Logger logger = LoggerFactory.getLogger(UpdateUserFormPresenter.class);
   private User user = new User();
-  private ObjectProperty<Boolean> addressesVisibleProperty = new ObjectProperty<>(false);
   private UpdateUserForm view;
+  private Panel userPanel;
   private UserForm userForm;
+  private Panel laboratoryPanel;
   private LaboratoryForm laboratoryForm;
-  private Label addressesHeader;
-  private Button addressesVisibleButton;
-  private Grid addressesGrid;
-  private Button addAddressButton;
+  private Panel addressPanel;
+  private AddressForm addressForm;
   private Label phoneNumbersHeader;
   private Button togglePhoneNumbersButton;
   private PhoneNumberForm phoneNumberForm;
@@ -79,13 +70,13 @@ public class UpdateUserFormPresenter {
   @Inject
   private LaboratoryFormPresenter laboratoryFormPresenter;
   @Inject
+  private AddressFormPresenter addressFormPresenter;
+  @Inject
   private PhoneNumberFormPresenter phoneNumberPresenter;
   @Inject
   private UserService userService;
   @Inject
   private AuthorizationService authorizationService;
-  @Inject
-  private Provider<AddressWindow> addressWindowProvider;
   @Inject
   private VaadinUtils vaadinUtils;
 
@@ -99,20 +90,20 @@ public class UpdateUserFormPresenter {
     this.view = view;
     view.setPresenter(this);
     setFields();
-    initGrids();
     addFieldListeners();
     userFormPresenter.init(userForm);
     laboratoryFormPresenter.init(laboratoryForm);
+    addressFormPresenter.init(addressForm);
     phoneNumberPresenter.init(phoneNumberForm);
   }
 
   private void setFields() {
+    userPanel = view.getUserPanel();
     userForm = view.getUserForm();
+    laboratoryPanel = view.getLaboratoryPanel();
     laboratoryForm = view.getLaboratoryForm();
-    addressesHeader = view.getAddressesHeader();
-    addressesVisibleButton = view.getAddressesVisibleButton();
-    addressesGrid = view.getAddressesGrid();
-    addAddressButton = view.getAddAddressButton();
+    addressPanel = view.getAddressPanel();
+    addressForm = view.getAddressForm();
     phoneNumbersHeader = view.getPhoneNumbersHeader();
     togglePhoneNumbersButton = view.getTogglePhoneNumbersButton();
     phoneNumberForm = view.getPhoneNumberForm();
@@ -121,19 +112,7 @@ public class UpdateUserFormPresenter {
     cancelButton = view.getCancelButton();
   }
 
-  private void initGrids() {
-    addressesGrid.setColumns(ADDRESS_COLUMNS);
-  }
-
   private void addFieldListeners() {
-    addressesVisibleProperty.addValueChangeListener(e -> setAddressesVisibility());
-    addressesVisibleButton.addClickListener(
-        e -> addressesVisibleProperty.setValue(!addressesVisibleProperty.getValue()));
-    addressesGrid.addItemClickListener(e -> {
-      if (e.isDoubleClick()) {
-        editAddress(e.getItem(), (Address) e.getItemId());
-      }
-    });
   }
 
   /**
@@ -142,17 +121,13 @@ public class UpdateUserFormPresenter {
   public void attach() {
     setCaptions();
     addValidators();
-    setAddressesVisibility();
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    addressesHeader.setValue(resources.message("addressesHeader"));
-    MessageResource addressResources = view.getResources(Address.class);
-    for (Column column : addressesGrid.getColumns()) {
-      column.setHeaderCaption(addressResources.message((String) column.getPropertyId()));
-    }
-    addAddressButton.setCaption(resources.message("addAddress"));
+    userPanel.setCaption(resources.message("userHeader"));
+    laboratoryPanel.setCaption(resources.message("laboratoryHeader"));
+    addressPanel.setCaption(resources.message("addressHeader"));
     phoneNumbersHeader.setValue(resources.message("phoneNumbersHeader"));
     addPhoneNumberButton.setCaption(resources.message("addPhoneNumber"));
     saveButton.setCaption(resources.message("save"));
@@ -161,42 +136,6 @@ public class UpdateUserFormPresenter {
 
   private void addValidators() {
     // TODO Program method.
-  }
-
-  private void setAddressesVisibility() {
-    boolean visible = addressesVisibleProperty.getValue();
-    addressesGrid.setVisible(visible);
-    addAddressButton.setVisible(visible);
-    MessageResource resources = view.getResources();
-    addressesVisibleButton.setIcon(
-        visible ? VaadinIcons.CHEVRON_CIRCLE_UP : VaadinIcons.CHEVRON_CIRCLE_DOWN,
-        resources.message("addressesVisible." + visible));
-  }
-
-  private void editAddress(Item item, Address address) {
-    final MessageResource resources = view.getResources();
-    AddressWindow window = addressWindowProvider.get();
-    window.center();
-    window.setModal(true);
-    window.setCaption(resources.message("addAddress.title"));
-    AddressFormPresenter presenter = window.getPresenter();
-    presenter.setItemDataSource(item);
-    presenter.addSaveClickListener(e -> saveAddress(window, presenter, address));
-    view.showWindow(window);
-  }
-
-  private void saveAddress(Window window, AddressFormPresenter presenter, Address address) {
-    try {
-      presenter.commit();
-      userService.update(user, null);
-      window.close();
-      final MessageResource resources = view.getResources();
-      view.afterSuccessfulUpdate(resources.message("addAddress.done", address.getAddress()));
-    } catch (CommitException e) {
-      String message = vaadinUtils.getFieldMessage(e, view.getLocale());
-      logger.debug("Validation failed with message {}", message);
-      view.showError(message);
-    }
   }
 
   /**
@@ -210,9 +149,7 @@ public class UpdateUserFormPresenter {
     userFormPresenter.setItemDataSource(new BeanItem<>(user, User.class));
     laboratoryFormPresenter
         .setItemDataSource(new BeanItem<>(user.getLaboratory(), Laboratory.class));
-    List<Address> addresses = new ArrayList<>();
-    addresses.add(user.getAddress());
-    addressesGrid.setContainerDataSource(new BeanItemContainer<>(Address.class, addresses));
+    addressFormPresenter.setItemDataSource(new BeanItem<>(user.getAddress(), Address.class));
     List<PhoneNumber> phoneNumbers = user.getPhoneNumbers();
     if (phoneNumbers == null || phoneNumbers.isEmpty()) {
       phoneNumbers = new ArrayList<>();

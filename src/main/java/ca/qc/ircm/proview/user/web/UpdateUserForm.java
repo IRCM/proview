@@ -3,9 +3,9 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.laboratory.web.LaboratoryForm;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 
 /**
@@ -37,12 +37,28 @@ public class UpdateUserForm extends UpdateUserFormDesign implements MessageResou
     Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
   }
 
+  public Panel getUserPanel() {
+    return userPanel;
+  }
+
   public UserForm getUserForm() {
     return userForm;
   }
 
+  public Panel getLaboratoryPanel() {
+    return laboratoryPanel;
+  }
+
   public LaboratoryForm getLaboratoryForm() {
     return laboratoryForm;
+  }
+
+  public Panel getAddressPanel() {
+    return addressPanel;
+  }
+
+  public AddressForm getAddressForm() {
+    return addressForm;
   }
 
   public Label getPhoneNumbersHeader() {
@@ -67,21 +83,5 @@ public class UpdateUserForm extends UpdateUserFormDesign implements MessageResou
 
   public Button getCancelButton() {
     return cancelButton;
-  }
-
-  public Label getAddressesHeader() {
-    return addressesHeader;
-  }
-
-  public Button getAddressesVisibleButton() {
-    return addressesVisibleButton;
-  }
-
-  public Grid getAddressesGrid() {
-    return addressesGrid;
-  }
-
-  public Button getAddAddressButton() {
-    return addAddressButton;
   }
 }

@@ -24,12 +24,13 @@ public class UserWindow extends Window {
   protected void init() {
     presenter.init(view);
     setContent(view);
+    setWidth("30em");
   }
 
   @Override
   public void attach() {
     super.attach();
-    getUI().getPage().setTitle(view.getResources().message("title"));
+    setCaption(view.getResources().message("title"));
   }
 
   public void setUser(User user) {

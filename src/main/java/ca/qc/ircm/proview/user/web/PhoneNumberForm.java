@@ -2,7 +2,6 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
 /**
@@ -21,14 +20,6 @@ public class PhoneNumberForm extends PhoneNumberFormDesign implements MessageRes
   public void attach() {
     super.attach();
     presenter.attach();
-  }
-
-  public Label getHeader() {
-    return header;
-  }
-
-  public void setHeader(Label header) {
-    this.header = header;
   }
 
   public ComboBox getTypeField() {

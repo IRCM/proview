@@ -4,30 +4,13 @@
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;proview&quot;}">
  </head> 
  <body> 
-  <vaadin-vertical-layout size-auto> 
-   <vaadin-form-layout size-auto> 
-    <vaadin-label style-name="h2" size-auto plain-text _id="header">
-      Address 
-    </vaadin-label> 
-    <vaadin-text-field caption="Address" null-representation="" _id="addressField"></vaadin-text-field> 
-    <vaadin-text-field caption="Second line" null-representation="" _id="addressSecondField"></vaadin-text-field> 
-    <vaadin-text-field caption="Town" null-representation="" _id="townField"></vaadin-text-field> 
-    <vaadin-text-field caption="State" null-representation="" _id="stateField"></vaadin-text-field> 
-    <vaadin-combo-box caption="Country" item-caption-mode="id" _id="countryField"> 
-     <option>Option 1</option> 
-     <option>Option 2</option> 
-     <option>Option 3</option> 
-    </vaadin-combo-box> 
-    <vaadin-text-field caption="Postal code" null-representation="" _id="postalCodeField"></vaadin-text-field> 
-    <vaadin-horizontal-layout spacing _id="buttonsLayout"> 
-     <vaadin-button plain-text _id="saveButton">
-       Save 
-     </vaadin-button> 
-     <vaadin-button plain-text _id="cancelButton">
-       Cancel 
-     </vaadin-button> 
-    </vaadin-horizontal-layout> 
-   </vaadin-form-layout> 
-  </vaadin-vertical-layout>  
+  <vaadin-form-layout size-auto margin> 
+   <vaadin-text-field caption="Address" null-representation="" _id="addressField"></vaadin-text-field> 
+   <vaadin-text-field caption="Second line" null-representation="" _id="addressSecondField"></vaadin-text-field> 
+   <vaadin-text-field caption="Town" null-representation="" _id="townField"></vaadin-text-field> 
+   <vaadin-text-field caption="State" null-representation="" _id="stateField"></vaadin-text-field> 
+   <vaadin-combo-box caption="Country" item-caption-mode="id" _id="countryField"></vaadin-combo-box> 
+   <vaadin-text-field caption="Postal code" null-representation="" _id="postalCodeField"></vaadin-text-field> 
+  </vaadin-form-layout>  
  </body>
 </html>
