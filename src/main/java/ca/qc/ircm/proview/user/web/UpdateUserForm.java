@@ -3,9 +3,9 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.laboratory.web.LaboratoryForm;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 /**
@@ -61,16 +61,12 @@ public class UpdateUserForm extends UpdateUserFormDesign implements MessageResou
     return addressForm;
   }
 
-  public Label getPhoneNumbersHeader() {
-    return phoneNumbersHeader;
+  public Panel getPhoneNumbersPanel() {
+    return phoneNumbersPanel;
   }
 
-  public Button getTogglePhoneNumbersButton() {
-    return togglePhoneNumbersButton;
-  }
-
-  public PhoneNumberForm getPhoneNumberForm() {
-    return phoneNumberForm;
+  public VerticalLayout getPhoneNumbersLayout() {
+    return phoneNumbersLayout;
   }
 
   public Button getAddPhoneNumberButton() {

@@ -6,6 +6,7 @@ import ca.qc.ircm.proview.laboratory.web.LaboratoryFormPresenter;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.PhoneNumber;
+import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.QAddress;
 import ca.qc.ircm.proview.user.QUser;
 import ca.qc.ircm.proview.user.User;
@@ -14,8 +15,8 @@ import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * User form.
@@ -59,9 +61,8 @@ public class UpdateUserFormPresenter {
   private LaboratoryForm laboratoryForm;
   private Panel addressPanel;
   private AddressForm addressForm;
-  private Label phoneNumbersHeader;
-  private Button togglePhoneNumbersButton;
-  private PhoneNumberForm phoneNumberForm;
+  private Panel phoneNumbersPanel;
+  private VerticalLayout phoneNumbersLayout;
   private Button addPhoneNumberButton;
   private Button saveButton;
   private Button cancelButton;
@@ -72,7 +73,7 @@ public class UpdateUserFormPresenter {
   @Inject
   private AddressFormPresenter addressFormPresenter;
   @Inject
-  private PhoneNumberFormPresenter phoneNumberPresenter;
+  private Provider<PhoneNumberFormPresenter> phoneNumberPresenterProvider;
   @Inject
   private UserService userService;
   @Inject
@@ -94,7 +95,6 @@ public class UpdateUserFormPresenter {
     userFormPresenter.init(userForm);
     laboratoryFormPresenter.init(laboratoryForm);
     addressFormPresenter.init(addressForm);
-    phoneNumberPresenter.init(phoneNumberForm);
   }
 
   private void setFields() {
@@ -104,9 +104,8 @@ public class UpdateUserFormPresenter {
     laboratoryForm = view.getLaboratoryForm();
     addressPanel = view.getAddressPanel();
     addressForm = view.getAddressForm();
-    phoneNumbersHeader = view.getPhoneNumbersHeader();
-    togglePhoneNumbersButton = view.getTogglePhoneNumbersButton();
-    phoneNumberForm = view.getPhoneNumberForm();
+    phoneNumbersPanel = view.getPhoneNumbersPanel();
+    phoneNumbersLayout = view.getPhoneNumbersLayout();
     addPhoneNumberButton = view.getAddPhoneNumberButton();
     saveButton = view.getSaveButton();
     cancelButton = view.getCancelButton();
@@ -128,7 +127,7 @@ public class UpdateUserFormPresenter {
     userPanel.setCaption(resources.message("userHeader"));
     laboratoryPanel.setCaption(resources.message("laboratoryHeader"));
     addressPanel.setCaption(resources.message("addressHeader"));
-    phoneNumbersHeader.setValue(resources.message("phoneNumbersHeader"));
+    phoneNumbersPanel.setCaption(resources.message("phoneNumbersHeader"));
     addPhoneNumberButton.setCaption(resources.message("addPhoneNumber"));
     saveButton.setCaption(resources.message("save"));
     cancelButton.setCaption(resources.message("cancel"));
@@ -150,12 +149,21 @@ public class UpdateUserFormPresenter {
     laboratoryFormPresenter
         .setItemDataSource(new BeanItem<>(user.getLaboratory(), Laboratory.class));
     addressFormPresenter.setItemDataSource(new BeanItem<>(user.getAddress(), Address.class));
+    phoneNumbersLayout.removeAllComponents();
     List<PhoneNumber> phoneNumbers = user.getPhoneNumbers();
     if (phoneNumbers == null || phoneNumbers.isEmpty()) {
       phoneNumbers = new ArrayList<>();
-      phoneNumbers.add(new PhoneNumber());
+      PhoneNumber empty = new PhoneNumber();
+      empty.setType(PhoneNumberType.WORK);
+      phoneNumbers.add(empty);
       user.setPhoneNumbers(phoneNumbers);
     }
-    phoneNumberPresenter.setItemDataSource(new BeanItem<>(phoneNumbers.get(0), PhoneNumber.class));
+    for (PhoneNumber phoneNumber : phoneNumbers) {
+      PhoneNumberForm form = new PhoneNumberForm();
+      PhoneNumberFormPresenter presenter = phoneNumberPresenterProvider.get();
+      presenter.init(form);
+      phoneNumbersLayout.addComponent(form);
+      presenter.setItemDataSource(new BeanItem<>(phoneNumber, PhoneNumber.class));
+    }
   }
 }

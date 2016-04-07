@@ -77,6 +77,7 @@ public class PhoneNumberFormPresenter {
   }
 
   private void setTypeValues() {
+    typeField.removeAllItems();
     for (PhoneNumberType type : PhoneNumberType.values()) {
       typeField.addItem(type);
       typeField.setItemCaption(type, type.getLabel(view.getLocale()));

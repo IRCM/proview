@@ -86,6 +86,7 @@ public class AddressFormPresenter {
   }
 
   private void setCountryValues() {
+    countryField.removeAllItems();
     for (String country : applicationConfiguration.getCountries()) {
       countryField.addItem(country);
     }
