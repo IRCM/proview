@@ -22,16 +22,6 @@
   xsi:schemaLocation="http://mojo.codehaus.org/ licenses.xsd">
   <dependencies>
     <dependency>
-      <groupId>ant</groupId>
-      <artifactId>ant-launcher</artifactId>
-      <licenses>
-        <license>
-          <name>Apache License, Version 2.0</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-nodep</artifactId>
       <licenses>
@@ -76,38 +66,8 @@
       </licenses>
     </dependency>
     <dependency>
-      <groupId>org.jdesktop</groupId>
-      <artifactId>swing-worker</artifactId>
-      <licenses>
-        <license>
-          <name>LGPL, version 2.1</name>
-          <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</url>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>loginform</artifactId>
-      <licenses>
-        <license>
-          <name>Apache License, Version 2.0</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <licenses>
-        <license>
-          <name>Apache License, Version 2.0</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpmime</artifactId>
       <licenses>
         <license>
           <name>Apache License, Version 2.0</name>

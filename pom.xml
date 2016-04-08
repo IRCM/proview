@@ -270,11 +270,6 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-client-compiler</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
       <artifactId>vaadin-spring</artifactId>
       <version>${vaadin-spring.version}</version>
     </dependency>
@@ -315,9 +310,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-     <groupId>javax.el</groupId>
-     <artifactId>javax.el-api</artifactId>
-     <version>${el.version}</version>
+      <groupId>javax.el</groupId>
+      <artifactId>javax.el-api</artifactId>
+      <version>${el.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -522,6 +517,13 @@
               </goals>
             </execution>
           </executions>
+          <dependencies>
+            <dependency>
+              <groupId>com.vaadin</groupId>
+              <artifactId>vaadin-client-compiler</artifactId>
+              <version>${vaadin.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
