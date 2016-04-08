@@ -13,10 +13,14 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -34,7 +38,7 @@ import javax.inject.Provider;
  */
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class UpdateUserFormPresenter {
+public class ViewUserFormPresenter {
   public static final String EMAIL_PROPERTY = QUser.user.email.getMetadata().getName();
   public static final String NAME_PROPERTY = QUser.user.name.getMetadata().getName();
   public static final String LABORATORY_PROPERTY = QUser.user.laboratory.getMetadata().getName();
@@ -52,9 +56,11 @@ public class UpdateUserFormPresenter {
   public static final Object[] ADDRESS_COLUMNS =
       new Object[] { ADDRESS_PROPERTY, ADDRESS_SECOND_PROPERTY, TOWN_PROPERTY, STATE_PROPERTY,
           COUNTRY_PROPERTY, POSTAL_CODE_PROPERTY };
-  private static final Logger logger = LoggerFactory.getLogger(UpdateUserFormPresenter.class);
+  private static final Logger logger = LoggerFactory.getLogger(ViewUserFormPresenter.class);
+  private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
+  private List<DeletablePhoneNumberFormPresenter> phoneNumberFormPresenters = new ArrayList<>();
   private User user = new User();
-  private UpdateUserForm view;
+  private ViewUserForm view;
   private Panel userPanel;
   private UserForm userForm;
   private Panel laboratoryPanel;
@@ -73,7 +79,9 @@ public class UpdateUserFormPresenter {
   @Inject
   private AddressFormPresenter addressFormPresenter;
   @Inject
-  private Provider<PhoneNumberFormPresenter> phoneNumberPresenterProvider;
+  private Provider<DeletablePhoneNumberFormPresenter> deletablePhoneNumberPresenterProvider;
+  @Inject
+  private Provider<AddPhoneNumberWindow> addPhoneNumberWindowProvider;
   @Inject
   private UserService userService;
   @Inject
@@ -87,7 +95,7 @@ public class UpdateUserFormPresenter {
    * @param view
    *          view
    */
-  public void init(UpdateUserForm view) {
+  public void init(ViewUserForm view) {
     this.view = view;
     view.setPresenter(this);
     setFields();
@@ -112,6 +120,23 @@ public class UpdateUserFormPresenter {
   }
 
   private void addFieldListeners() {
+    editableProperty.addValueChangeListener(e -> updateEditable());
+    addPhoneNumberButton.addClickListener(e -> addPhoneNumber());
+    saveButton.addClickListener(e -> save());
+    cancelButton.addClickListener(e -> refresh());
+  }
+
+  private void updateEditable() {
+    boolean editable = editableProperty.getValue();
+    userFormPresenter.setEditable(editable);
+    laboratoryFormPresenter.setEditable(editable);
+    addressFormPresenter.setEditable(editable);
+    for (DeletablePhoneNumberFormPresenter phoneNumberFormPresenter : phoneNumberFormPresenters) {
+      phoneNumberFormPresenter.setEditable(editable);
+    }
+    addPhoneNumberButton.setVisible(editable);
+    saveButton.setVisible(editable);
+    cancelButton.setVisible(editable);
   }
 
   /**
@@ -137,6 +162,54 @@ public class UpdateUserFormPresenter {
     // TODO Program method.
   }
 
+  private void addPhoneNumber() {
+    AddPhoneNumberWindow window = addPhoneNumberWindowProvider.get();
+    window.center();
+    window.setModal(true);
+    AddPhoneNumberFormPresenter presenter = window.getPresenter();
+    PhoneNumber phoneNumber = new PhoneNumber();
+    phoneNumber.setType(PhoneNumberType.values()[0]);
+    presenter.setItemDataSource(new BeanItem<>(phoneNumber));
+    presenter.addSaveClickListener(e -> saveNewPhoneNumber(window, presenter, phoneNumber));
+    view.showWindow(window);
+  }
+
+  private void saveNewPhoneNumber(Window window, AddPhoneNumberFormPresenter presenter,
+      PhoneNumber phoneNumber) {
+    try {
+      presenter.commit();
+      user.getPhoneNumbers().add(phoneNumber);
+      userService.update(user, null);
+      window.close();
+      refresh();
+      final MessageResource resources = view.getResources();
+      view.afterSuccessfulUpdate(resources.message("addPhoneNumber.done", phoneNumber.getNumber(),
+          phoneNumber.getExtension() != null ? 1 : 0, phoneNumber.getExtension()));
+    } catch (CommitException e) {
+      String message = vaadinUtils.getFieldMessage(e, view.getLocale());
+      logger.debug("Validation failed with message {}", message);
+      view.showError(message);
+    }
+  }
+
+  private void removePhoneNumber(PhoneNumber phoneNumber) {
+    user.getPhoneNumbers().remove(phoneNumber);
+    userService.update(user, null);
+    refresh();
+    final MessageResource resources = view.getResources();
+    view.afterSuccessfulUpdate(resources.message("removePhoneNumber.done", phoneNumber.getNumber(),
+        phoneNumber.getExtension() != null ? 1 : 0, phoneNumber.getExtension()));
+  }
+
+  private void save() {
+    // TODO Program method.
+  }
+
+  private void refresh() {
+    user = userService.get(user.getId());
+    setUser(user);
+  }
+
   /**
    * Sets user.
    *
@@ -145,11 +218,13 @@ public class UpdateUserFormPresenter {
    */
   public void setUser(User user) {
     this.user = user;
+    editableProperty.setValue(authorizationService.hasUserWritePermission(user));
     userFormPresenter.setItemDataSource(new BeanItem<>(user, User.class));
     laboratoryFormPresenter
         .setItemDataSource(new BeanItem<>(user.getLaboratory(), Laboratory.class));
     addressFormPresenter.setItemDataSource(new BeanItem<>(user.getAddress(), Address.class));
     phoneNumbersLayout.removeAllComponents();
+    phoneNumberFormPresenters.clear();
     List<PhoneNumber> phoneNumbers = user.getPhoneNumbers();
     if (phoneNumbers == null || phoneNumbers.isEmpty()) {
       phoneNumbers = new ArrayList<>();
@@ -159,11 +234,22 @@ public class UpdateUserFormPresenter {
       user.setPhoneNumbers(phoneNumbers);
     }
     for (PhoneNumber phoneNumber : phoneNumbers) {
-      PhoneNumberForm form = new PhoneNumberForm();
-      PhoneNumberFormPresenter presenter = phoneNumberPresenterProvider.get();
+      DeletablePhoneNumberForm form = new DeletablePhoneNumberForm();
+      DeletablePhoneNumberFormPresenter presenter = deletablePhoneNumberPresenterProvider.get();
       presenter.init(form);
+      phoneNumberFormPresenters.add(presenter);
+      presenter.addDeleteClickListener(e -> removePhoneNumber(phoneNumber));
+      presenter.setEditable(editableProperty.getValue());
       phoneNumbersLayout.addComponent(form);
       presenter.setItemDataSource(new BeanItem<>(phoneNumber, PhoneNumber.class));
     }
+  }
+
+  public void addCancelClickListener(ClickListener listener) {
+    cancelButton.addClickListener(listener);
+  }
+
+  public void removeCancelClickListener(ClickListener listener) {
+    cancelButton.removeClickListener(listener);
   }
 }

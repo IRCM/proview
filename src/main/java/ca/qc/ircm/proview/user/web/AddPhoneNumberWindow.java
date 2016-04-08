@@ -1,6 +1,5 @@
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.user.User;
 import com.vaadin.ui.Window;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -10,30 +9,30 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
- * View/Update user window.
+ * Add phone number form.
  */
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class UserWindow extends Window {
-  private static final long serialVersionUID = 9032686080431923743L;
-  private UpdateUserForm view = new UpdateUserForm();
+public class AddPhoneNumberWindow extends Window {
+  private static final long serialVersionUID = -2176758855631601065L;
+  private AddPhoneNumberForm view = new AddPhoneNumberForm();
   @Inject
-  private UpdateUserFormPresenter presenter;
+  private AddPhoneNumberFormPresenter presenter;
 
   @PostConstruct
   protected void init() {
     presenter.init(view);
     setContent(view);
-    setWidth("30em");
+    presenter.addCancelClickListener(e -> close());
   }
 
   @Override
   public void attach() {
     super.attach();
-    setCaption(view.getResources().message("title"));
+    setCaption(view.getResources().message(AddPhoneNumberFormPresenter.HEADER_PROPERTY));
   }
 
-  public void setUser(User user) {
-    presenter.setUser(user);
+  public AddPhoneNumberFormPresenter getPresenter() {
+    return presenter;
   }
 }

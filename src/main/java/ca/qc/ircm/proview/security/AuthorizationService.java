@@ -131,6 +131,15 @@ public interface AuthorizationService {
   public void checkUserReadPermission(User user);
 
   /**
+   * Returns true if current user can write user, false otherwise.
+   *
+   * @param user
+   *          user
+   * @return true if current user can write user, false otherwise
+   */
+  public boolean hasUserWritePermission(User user);
+
+  /**
    * Checks that current user can write user.
    *
    * @param user

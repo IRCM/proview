@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.laboratory.web;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.QLaboratory;
+import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -44,13 +45,6 @@ public class LaboratoryFormPresenter {
     updateEditable();
   }
 
-  /**
-   * Called when view gets attached.
-   */
-  public void attach() {
-    setCaptions();
-  }
-
   private void setFields() {
     organizationField = view.getOrganizationField();
     nameField = view.getNameField();
@@ -66,10 +60,36 @@ public class LaboratoryFormPresenter {
     editableProperty.addValueChangeListener(e -> updateEditable());
   }
 
+  private void updateEditable() {
+    boolean editable = editableProperty.getValue();
+    organizationField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    organizationField.setReadOnly(!editable);
+    nameField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    nameField.setReadOnly(!editable);
+  }
+
+  /**
+   * Called when view gets attached.
+   */
+  public void attach() {
+    setCaptions();
+    setRequired();
+  }
+
   private void setCaptions() {
     MessageResource resources = view.getResources();
     nameField.setCaption(resources.message(NAME_PROPERTY));
     organizationField.setCaption(resources.message(ORGANIZATION_PROPERTY));
+  }
+
+  private void setRequired() {
+    final MessageResource generalResources =
+        new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
+    nameField.setRequired(true);
+    nameField.setRequiredError(generalResources.message("required", nameField.getCaption()));
+    organizationField.setRequired(true);
+    organizationField
+        .setRequiredError(generalResources.message("required", organizationField.getCaption()));
   }
 
   public void commit() throws CommitException {
@@ -78,14 +98,6 @@ public class LaboratoryFormPresenter {
 
   public boolean isValid() {
     return laboratoryFieldGroup.isValid();
-  }
-
-  private void updateEditable() {
-    boolean editable = editableProperty.getValue();
-    organizationField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    organizationField.setReadOnly(!editable);
-    nameField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    nameField.setReadOnly(!editable);
   }
 
   public Item getItemDataSource() {

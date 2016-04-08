@@ -177,14 +177,26 @@ public class AuthorizationServiceDefault implements AuthorizationService {
   }
 
   @Override
+  public boolean hasUserWritePermission(User user) {
+    if (user != null) {
+      user = getUser(user.getId());
+      if (getSubject().hasRole(USER)) {
+        boolean permitted = getSubject().hasRole(PROTEOMIC);
+        permitted |= getSubject().isPermitted("laboratory:manager:" + user.getLaboratory().getId());
+        permitted |= getSubject().isPermitted("user:write:" + user.getId());
+        return permitted;
+      }
+    }
+    return false;
+  }
+
+  @Override
   public void checkUserWritePermission(User user) {
     if (user != null) {
       user = getUser(user.getId());
       getSubject().checkRole(USER);
-      if (!getSubject().hasRole(PROTEOMIC)) {
-        if (!getSubject().isPermitted("laboratory:manager:" + user.getLaboratory().getId())) {
-          getSubject().checkPermission("user:write:" + user.getId());
-        }
+      if (!hasUserWritePermission(user)) {
+        getSubject().checkPermission("user:write:" + user.getId());
       }
     }
   }

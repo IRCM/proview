@@ -11,11 +11,11 @@ import com.vaadin.ui.Window;
 /**
  * User view.
  */
-public class UpdateUserForm extends UpdateUserFormDesign implements MessageResourcesComponent {
+public class ViewUserForm extends ViewUserFormDesign implements MessageResourcesComponent {
   private static final long serialVersionUID = -4585597583437283309L;
-  private UpdateUserFormPresenter presenter;
+  private ViewUserFormPresenter presenter;
 
-  public void setPresenter(UpdateUserFormPresenter presenter) {
+  public void setPresenter(ViewUserFormPresenter presenter) {
     this.presenter = presenter;
   }
 
@@ -23,6 +23,7 @@ public class UpdateUserForm extends UpdateUserFormDesign implements MessageResou
   public void attach() {
     super.attach();
     presenter.attach();
+    addressForm.setMargin(false);
   }
 
   public void showError(String message) {

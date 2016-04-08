@@ -18,6 +18,8 @@
 package ca.qc.ircm.proview.security;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -597,6 +599,87 @@ public class AuthorizationServiceDefaultTest {
   }
 
   @Test
+  public void hasUserWritePermission_Proteomic() {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    User user = new User(8L);
+    user.setLaboratory(new Laboratory(2L));
+
+    boolean value = authorizationServiceDefault.hasUserWritePermission(user);
+
+    assertTrue(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  public void hasUserWritePermission_NotUser() {
+    doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
+    User user = new User(8L);
+    user.setLaboratory(new Laboratory(2L));
+
+    boolean value = authorizationServiceDefault.hasUserWritePermission(user);
+
+    assertFalse(value);
+    verify(subject).hasRole("USER");
+  }
+
+  @Test
+  public void hasUserWritePermission_LaboratoryManager() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.isPermitted(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    User user = new User(8L);
+    user.setLaboratory(new Laboratory(2L));
+
+    boolean value = authorizationServiceDefault.hasUserWritePermission(user);
+
+    assertTrue(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).isPermitted("laboratory:manager:2");
+  }
+
+  @Test
+  public void hasUserWritePermission_CanWrite() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.isPermitted("user:write:8")).thenReturn(true);
+    User user = new User(8L);
+    user.setLaboratory(new Laboratory(2L));
+
+    boolean value = authorizationServiceDefault.hasUserWritePermission(user);
+
+    assertTrue(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).isPermitted("laboratory:manager:2");
+    verify(subject).isPermitted("user:write:8");
+  }
+
+  @Test
+  public void hasUserWritePermission_CannotWrite() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    User user = new User(8L);
+    user.setLaboratory(new Laboratory(2L));
+
+    boolean value = authorizationServiceDefault.hasUserWritePermission(user);
+
+    assertFalse(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).isPermitted("laboratory:manager:2");
+    verify(subject).isPermitted("user:write:8");
+  }
+
+  @Test
+  public void hasUserWritePermission_Null() {
+    boolean value = authorizationServiceDefault.hasUserWritePermission(null);
+
+    assertFalse(value);
+  }
+
+  @Test
   public void checkUserWritePermission_Proteomic() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -627,6 +710,7 @@ public class AuthorizationServiceDefaultTest {
 
   @Test
   public void checkUserWritePermission_LaboratoryManager() {
+    when(subject.hasRole("USER")).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     User user = new User(8L);
@@ -641,6 +725,8 @@ public class AuthorizationServiceDefaultTest {
 
   @Test
   public void checkUserWritePermission_CanWrite() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.isPermitted("user:write:8")).thenReturn(true);
     User user = new User(8L);
     user.setLaboratory(new Laboratory(2L));
 
@@ -649,11 +735,12 @@ public class AuthorizationServiceDefaultTest {
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
     verify(subject).isPermitted("laboratory:manager:2");
-    verify(subject).checkPermission("user:write:8");
+    verify(subject).isPermitted("user:write:8");
   }
 
   @Test
   public void checkUserWritePermission_CannotWrite() {
+    when(subject.hasRole("USER")).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     User user = new User(8L);
     user.setLaboratory(new Laboratory(2L));

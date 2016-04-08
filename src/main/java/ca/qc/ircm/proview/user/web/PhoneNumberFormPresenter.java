@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.QPhoneNumber;
+import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -48,15 +49,8 @@ public class PhoneNumberFormPresenter {
     setFields();
     bindFields();
     addFieldListeners();
-    updateEditable();
-  }
-
-  /**
-   * Called when view gets attached.
-   */
-  public void attach() {
     setTypeValues();
-    setCaptions();
+    updateEditable();
   }
 
   private void setFields() {
@@ -77,29 +71,12 @@ public class PhoneNumberFormPresenter {
   }
 
   private void setTypeValues() {
+    typeField.setNullSelectionAllowed(false);
+    typeField.setNewItemsAllowed(false);
     typeField.removeAllItems();
     for (PhoneNumberType type : PhoneNumberType.values()) {
       typeField.addItem(type);
-      typeField.setItemCaption(type, type.getLabel(view.getLocale()));
     }
-  }
-
-  private void setCaptions() {
-    MessageResource resources = view.getResources();
-    typeField.setCaption(resources.message(TYPE_PROPERTY));
-    numberField.setCaption(resources.message(NUMBER_PROPERTY));
-    extensionField.setCaption(resources.message(EXTENSION_PROPERTY));
-  }
-
-  /**
-   * Add default regular expression validators.
-   */
-  public void addDefaultRegexpValidators() {
-    MessageResource resources = view.getResources();
-    numberField.addValidator(
-        new RegexpValidator("[\\d\\-]*", resources.message(NUMBER_PROPERTY + ".invalid")));
-    extensionField.addValidator(
-        new RegexpValidator("[\\d\\-]*", resources.message(EXTENSION_PROPERTY + ".invalid")));
   }
 
   private void updateEditable() {
@@ -110,6 +87,42 @@ public class PhoneNumberFormPresenter {
     numberField.setReadOnly(!editable);
     extensionField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
     extensionField.setReadOnly(!editable);
+  }
+
+  /**
+   * Called when view gets attached.
+   */
+  public void attach() {
+    setCaptions();
+    setRequired();
+    addValidators();
+  }
+
+  private void setCaptions() {
+    MessageResource resources = view.getResources();
+    typeField.setCaption(resources.message(TYPE_PROPERTY));
+    numberField.setCaption(resources.message(NUMBER_PROPERTY));
+    extensionField.setCaption(resources.message(EXTENSION_PROPERTY));
+    for (PhoneNumberType type : PhoneNumberType.values()) {
+      typeField.setItemCaption(type, type.getLabel(view.getLocale()));
+    }
+  }
+
+  private void setRequired() {
+    final MessageResource generalResources =
+        new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
+    typeField.setRequired(true);
+    typeField.setRequiredError(generalResources.message("required", typeField.getCaption()));
+    numberField.setRequired(true);
+    numberField.setRequiredError(generalResources.message("required", numberField.getCaption()));
+  }
+
+  private void addValidators() {
+    MessageResource resources = view.getResources();
+    numberField.addValidator(
+        new RegexpValidator("[\\d\\-]*", resources.message(NUMBER_PROPERTY + ".invalid")));
+    extensionField.addValidator(
+        new RegexpValidator("[\\d\\-]*", resources.message(EXTENSION_PROPERTY + ".invalid")));
   }
 
   public void commit() throws CommitException {

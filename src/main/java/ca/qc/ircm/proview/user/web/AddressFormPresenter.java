@@ -115,6 +115,22 @@ public class AddressFormPresenter {
         .setValue(getDefaultCountry());
   }
 
+  private void updateEditable() {
+    boolean editable = editableProperty.getValue();
+    addressField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    addressField.setReadOnly(!editable);
+    addressSecondField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    addressSecondField.setReadOnly(!editable);
+    townField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    townField.setReadOnly(!editable);
+    stateField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    stateField.setReadOnly(!editable);
+    countryField.setStyleName(editable ? "" : ValoTheme.COMBOBOX_BORDERLESS);
+    countryField.setReadOnly(!editable);
+    postalCodeField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    postalCodeField.setReadOnly(!editable);
+  }
+
   /**
    * Called when view gets attached.
    */
@@ -147,22 +163,6 @@ public class AddressFormPresenter {
     postalCodeField.setRequired(true);
     postalCodeField
         .setRequiredError(generalResources.message("required", postalCodeField.getCaption()));
-  }
-
-  private void updateEditable() {
-    boolean editable = editableProperty.getValue();
-    addressField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    addressField.setReadOnly(!editable);
-    addressSecondField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    addressSecondField.setReadOnly(!editable);
-    townField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    townField.setReadOnly(!editable);
-    stateField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    stateField.setReadOnly(!editable);
-    countryField.setStyleName(editable ? "" : ValoTheme.COMBOBOX_BORDERLESS);
-    countryField.setReadOnly(!editable);
-    postalCodeField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    postalCodeField.setReadOnly(!editable);
   }
 
   public void commit() throws CommitException {

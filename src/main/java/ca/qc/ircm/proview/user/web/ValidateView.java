@@ -43,7 +43,7 @@ public class ValidateView extends ValidateDesign implements MessageResourcesView
   @Inject
   private ValidatePresenter presenter;
   @Inject
-  private Provider<UserWindow> userWindowProvider;
+  private Provider<ViewUserWindow> userWindowProvider;
 
   @Override
   public void attach() {
@@ -67,7 +67,7 @@ public class ValidateView extends ValidateDesign implements MessageResourcesView
    *          user to view
    */
   public void viewUser(User user) {
-    UserWindow userWindow = userWindowProvider.get();
+    ViewUserWindow userWindow = userWindowProvider.get();
     userWindow.center();
     getUI().addWindow(userWindow);
     userWindow.setUser(user);
