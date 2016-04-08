@@ -22,7 +22,6 @@ import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -92,7 +91,7 @@ public class RegisterPresenter {
   private TextField addressSecondField;
   private TextField townField;
   private TextField stateField;
-  private ComboBox countryField;
+  private TextField countryField;
   private TextField postalCodeField;
   private Button clearAddressButton;
   private Label phoneNumberHeaderLabel;
@@ -119,7 +118,6 @@ public class RegisterPresenter {
     setFields();
     setDefaultAddress();
     bindFields();
-    setFieldValues();
     addFieldListeners();
     setCaptions();
     setRequired();
@@ -177,13 +175,6 @@ public class RegisterPresenter {
     phoneNumberFieldGroup.bind(phoneExtensionField, phoneExtensionProperty);
   }
 
-  private void setFieldValues() {
-    String[] countries = applicationConfiguration.getCountries();
-    for (String country : countries) {
-      countryField.addItem(country);
-    }
-  }
-
   private void addFieldListeners() {
     newLaboratoryField.addValueChangeListener(e -> {
       boolean value = (boolean) e.getProperty().getValue();
@@ -204,7 +195,7 @@ public class RegisterPresenter {
       townField.setValue("");
       stateField.setValue("");
       postalCodeField.setValue("");
-      countryField.setValue(getDefaultCountry());
+      countryField.setValue("");
     });
     passwordField.addValueChangeListener(e -> validatePasswordsMatch());
     confirmPasswordField.addValueChangeListener(e -> validatePasswordsMatch());
@@ -221,21 +212,12 @@ public class RegisterPresenter {
     }
   }
 
-  private String getDefaultCountry() {
-    String[] countries = applicationConfiguration.getCountries();
-    if (countries.length > 0) {
-      return countries[0];
-    } else {
-      return null;
-    }
-  }
-
   private void setDefaultAddress() {
     userAddress.setAddress(applicationConfiguration.getAddress());
     userAddress.setTown(applicationConfiguration.getTown());
     userAddress.setState(applicationConfiguration.getState());
     userAddress.setPostalCode(applicationConfiguration.getPostalCode());
-    userAddress.setCountry(getDefaultCountry());
+    userAddress.setCountry(applicationConfiguration.getCountry());
   }
 
   private void setCaptions() {

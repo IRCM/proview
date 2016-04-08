@@ -94,7 +94,7 @@ public class PhoneNumberFormPresenter {
    */
   public void attach() {
     setCaptions();
-    setRequired();
+    setRequiredErrors();
     addValidators();
   }
 
@@ -108,12 +108,10 @@ public class PhoneNumberFormPresenter {
     }
   }
 
-  private void setRequired() {
+  private void setRequiredErrors() {
     final MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
-    typeField.setRequired(true);
     typeField.setRequiredError(generalResources.message("required", typeField.getCaption()));
-    numberField.setRequired(true);
     numberField.setRequiredError(generalResources.message("required", numberField.getCaption()));
   }
 

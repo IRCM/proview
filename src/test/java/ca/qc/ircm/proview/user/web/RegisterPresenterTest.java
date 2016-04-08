@@ -24,7 +24,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field.ValueChangeEvent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
@@ -38,7 +37,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Collection;
 import java.util.Locale;
 
 public class RegisterPresenterTest {
@@ -75,7 +73,7 @@ public class RegisterPresenterTest {
   private TextField addressSecondField = new TextField();
   private TextField townField = new TextField();
   private TextField stateField = new TextField();
-  private ComboBox countryField = new ComboBox();
+  private TextField countryField = new TextField();
   private TextField postalCodeField = new TextField();
   private Button clearAddressButton = new Button();
   private Label phoneNumberHeaderLabel = new Label();
@@ -84,11 +82,11 @@ public class RegisterPresenterTest {
   private Label registerHeaderLabel = new Label();
   private Button registerButton = new Button();
   private Label requiredLabel = new Label();
-  private String[] countries = new String[] { "Canada", "USA" };
   private String defaultAddress = "110 avenue des Pins Ouest";
   private String defaultTown = "Montreal";
   private String defaultState = "Quebec";
   private String defaultPostalCode = "H2W 1R7";
+  private String defaultCountry = "Canada";
   private String email = "unit.test@ircm.qc.ca";
   private String name = "Unit Test";
   private String password = "unittestpassword";
@@ -113,11 +111,11 @@ public class RegisterPresenterTest {
    */
   @Before
   public void beforeTest() {
-    when(applicationConfiguration.getCountries()).thenReturn(countries);
     when(applicationConfiguration.getAddress()).thenReturn(defaultAddress);
     when(applicationConfiguration.getTown()).thenReturn(defaultTown);
     when(applicationConfiguration.getState()).thenReturn(defaultState);
     when(applicationConfiguration.getPostalCode()).thenReturn(defaultPostalCode);
+    when(applicationConfiguration.getCountry()).thenReturn(defaultCountry);
     when(view.getHeaderLabel()).thenReturn(headerLabel);
     when(view.getEmailField()).thenReturn(emailField);
     when(view.getNameField()).thenReturn(nameField);
@@ -182,17 +180,6 @@ public class RegisterPresenterTest {
   }
 
   @Test
-  public void countryValues() {
-    ComboBox comboBox = view.getCountryField();
-
-    Collection<?> items = comboBox.getItemIds();
-    assertEquals(countries.length, items.size());
-    for (String country : countries) {
-      assertTrue(items.contains(country));
-    }
-  }
-
-  @Test
   public void newLaboratoryVisibleFields_True() {
     newLaboratoryField.setValue(true);
     newLaboratoryField.valueChange(new ValueChangeEvent(newLaboratoryField));
@@ -218,7 +205,7 @@ public class RegisterPresenterTest {
     assertEquals(defaultTown, townField.getValue());
     assertEquals(defaultState, stateField.getValue());
     assertEquals(defaultPostalCode, postalCodeField.getValue());
-    assertEquals(countries[0], countryField.getValue());
+    assertEquals(defaultCountry, countryField.getValue());
   }
 
   @Test
@@ -231,7 +218,7 @@ public class RegisterPresenterTest {
     assertEquals("", townField.getValue());
     assertEquals("", stateField.getValue());
     assertEquals("", postalCodeField.getValue());
-    assertEquals(countries[0], countryField.getValue());
+    assertEquals("", countryField.getValue());
   }
 
   @Test

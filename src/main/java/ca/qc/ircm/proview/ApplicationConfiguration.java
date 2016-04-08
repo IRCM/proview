@@ -132,9 +132,9 @@ public interface ApplicationConfiguration {
   public String getPostalCode();
 
   /**
-   * Returns countries.
+   * Returns default country.
    *
-   * @return countries
+   * @return default country
    */
-  public String[] getCountries();
+  public String getCountry();
 }

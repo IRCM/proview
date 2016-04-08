@@ -17,20 +17,15 @@
 
 package ca.qc.ircm.proview.user.web.integration;
 
-import static com.vaadin.testbench.By.vaadin;
 import static org.openqa.selenium.By.tagName;
 
 import ca.qc.ircm.proview.user.web.RegisterView;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.CheckBoxElement;
-import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PasswordFieldElement;
 import com.vaadin.testbench.elements.TextFieldElement;
-import org.openqa.selenium.WebElement;
-
-import java.util.Optional;
 
 public abstract class RegisterPageObject extends TestBenchTestCase {
   protected abstract String getBaseUrl();
@@ -218,31 +213,16 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
     stateField().setValue(value);
   }
 
-  protected ComboBoxElement countryField() {
-    return $(ComboBoxElement.class).id("country");
+  protected TextFieldElement countryField() {
+    return $(TextFieldElement.class).id("country");
   }
 
   protected String getCountry() {
     return countryField().getValue();
   }
 
-  /**
-   * Sets country.<br>
-   * Export format must be a country defined in proview.ini file or field will not change.
-   *
-   * @param value
-   *          country
-   */
   protected void setCountry(String value) {
-    ComboBoxElement field = countryField();
-    field.openPopup();
-    WebElement popup = field.findElement(vaadin("#popup"));
-    Optional<WebElement> valueField =
-        popup.findElements(tagName("td")).stream().map(td -> td.findElement(tagName("span")))
-            .filter(span -> value.equals(span.getText())).findFirst();
-    if (valueField.isPresent()) {
-      valueField.get().click();
-    }
+    countryField().setValue(value);
   }
 
   protected TextFieldElement postalCodeField() {

@@ -217,7 +217,7 @@ public class ApplicationConfigurationBean
   }
 
   @Override
-  public String[] getCountries() {
-    return configuration.getStringArray("address.country");
+  public String getCountry() {
+    return configuration.getString("address.country");
   }
 }

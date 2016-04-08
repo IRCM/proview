@@ -23,7 +23,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
@@ -117,7 +116,7 @@ public class RegisterView extends RegisterDesign implements MessageResourcesView
     return stateField;
   }
 
-  public ComboBox getCountryField() {
+  public TextField getCountryField() {
     return countryField;
   }
 

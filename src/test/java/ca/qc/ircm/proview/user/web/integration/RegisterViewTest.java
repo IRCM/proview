@@ -203,7 +203,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals(applicationConfiguration.getTown(), getTown());
     assertEquals(applicationConfiguration.getState(), getState());
     assertEquals(applicationConfiguration.getPostalCode(), getPostalCode());
-    assertEquals(applicationConfiguration.getCountries()[0], getCountry());
+    assertEquals(applicationConfiguration.getCountry(), getCountry());
   }
 
   private void setFields() {

@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.TextField;
 
 /**
@@ -37,7 +36,7 @@ public class AddressForm extends AddressFormDesign implements MessageResourcesCo
     return stateField;
   }
 
-  public ComboBox getCountryField() {
+  public TextField getCountryField() {
     return countryField;
   }
 

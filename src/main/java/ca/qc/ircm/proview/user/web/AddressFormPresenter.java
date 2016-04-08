@@ -10,7 +10,6 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -40,7 +39,7 @@ public class AddressFormPresenter {
   private TextField addressSecondField;
   private TextField townField;
   private TextField stateField;
-  private ComboBox countryField;
+  private TextField countryField;
   private TextField postalCodeField;
   @Inject
   private ApplicationConfiguration applicationConfiguration;
@@ -57,7 +56,6 @@ public class AddressFormPresenter {
     setFields();
     bindFields();
     addFieldListeners();
-    setCountryValues();
     setDefaultAddress();
     updateEditable();
   }
@@ -85,22 +83,6 @@ public class AddressFormPresenter {
     editableProperty.addValueChangeListener(e -> updateEditable());
   }
 
-  private void setCountryValues() {
-    countryField.removeAllItems();
-    for (String country : applicationConfiguration.getCountries()) {
-      countryField.addItem(country);
-    }
-  }
-
-  private String getDefaultCountry() {
-    String[] countries = applicationConfiguration.getCountries();
-    if (countries.length > 0) {
-      return countries[0];
-    } else {
-      return null;
-    }
-  }
-
   @SuppressWarnings("unchecked")
   private void setDefaultAddress() {
     addressFieldGroup.getItemDataSource().getItemProperty(ADDRESS_PROPERTY)
@@ -112,7 +94,7 @@ public class AddressFormPresenter {
     addressFieldGroup.getItemDataSource().getItemProperty(POSTAL_CODE_PROPERTY)
         .setValue(applicationConfiguration.getPostalCode());
     addressFieldGroup.getItemDataSource().getItemProperty(COUNTRY_PROPERTY)
-        .setValue(getDefaultCountry());
+        .setValue(applicationConfiguration.getCountry());
   }
 
   private void updateEditable() {

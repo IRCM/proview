@@ -243,23 +243,21 @@ public class ApplicationConfigurationBeanTest {
   }
 
   @Test
-  public void getCountries() throws Throwable {
-    String[] countries = applicationConfigurationBean.getCountries();
+  public void getCountry() throws Throwable {
+    String country = applicationConfigurationBean.getCountry();
 
-    assertEquals(2, countries.length);
-    assertEquals("Canada", countries[0]);
-    assertEquals("USA", countries[1]);
+    assertEquals("Canada", country);
   }
 
   @Test
-  public void getCountries_Undefined() throws Throwable {
+  public void getCountry_Undefined() throws Throwable {
     Path configuration =
         Paths.get(getClass().getResource("/test-configuration-noaddress.ini").toURI());
     replaceConfiguration(configuration);
 
-    String[] countries = applicationConfigurationBean.getCountries();
+    String country = applicationConfigurationBean.getCountry();
 
-    assertEquals(0, countries.length);
+    assertEquals(null, country);
   }
 
   @Test
