@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
+import ca.qc.ircm.proview.laboratory.LaboratoryService;
 import ca.qc.ircm.proview.laboratory.web.LaboratoryForm;
 import ca.qc.ircm.proview.laboratory.web.LaboratoryFormPresenter;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -85,6 +86,8 @@ public class ViewUserFormPresenter {
   @Inject
   private UserService userService;
   @Inject
+  private LaboratoryService laboratoryService;
+  @Inject
   private AuthorizationService authorizationService;
   @Inject
   private VaadinUtils vaadinUtils;
@@ -129,7 +132,8 @@ public class ViewUserFormPresenter {
   private void updateEditable() {
     boolean editable = editableProperty.getValue();
     userFormPresenter.setEditable(editable);
-    laboratoryFormPresenter.setEditable(editable);
+    laboratoryFormPresenter.setEditable(
+        editable && authorizationService.hasLaboratoryManagerPermission(user.getLaboratory()));
     addressFormPresenter.setEditable(editable);
     for (DeletablePhoneNumberFormPresenter phoneNumberFormPresenter : phoneNumberFormPresenters) {
       phoneNumberFormPresenter.setEditable(editable);
@@ -144,7 +148,6 @@ public class ViewUserFormPresenter {
    */
   public void attach() {
     setCaptions();
-    addValidators();
   }
 
   private void setCaptions() {
@@ -156,10 +159,6 @@ public class ViewUserFormPresenter {
     addPhoneNumberButton.setCaption(resources.message("addPhoneNumber"));
     saveButton.setCaption(resources.message("save"));
     cancelButton.setCaption(resources.message("cancel"));
-  }
-
-  private void addValidators() {
-    // TODO Program method.
   }
 
   private void addPhoneNumber() {
@@ -202,7 +201,25 @@ public class ViewUserFormPresenter {
   }
 
   private void save() {
-    // TODO Program method.
+    try {
+      userFormPresenter.commit();
+      laboratoryFormPresenter.commit();
+      addressFormPresenter.commit();
+      for (DeletablePhoneNumberFormPresenter phoneNumberFormPresenter : phoneNumberFormPresenters) {
+        phoneNumberFormPresenter.commit();
+      }
+      userService.update(user, null);
+      if (laboratoryFormPresenter.isEditable()) {
+        laboratoryService.update(user.getLaboratory());
+      }
+      refresh();
+      final MessageResource resources = view.getResources();
+      view.afterSuccessfulUpdate(resources.message("save.done", user.getEmail()));
+    } catch (CommitException e) {
+      String message = vaadinUtils.getFieldMessage(e, view.getLocale());
+      logger.debug("Validation failed with message {}", message);
+      view.showError(message);
+    }
   }
 
   private void refresh() {

@@ -28,5 +28,6 @@
   <entry key="addPhoneNumber.done">Numéro de téléphone {0}{1,choice,0#|1# ext:{2}} sauvegardé</entry>
   <entry key="removePhoneNumber.done">Numéro de téléphone {0}{1,choice,0#|1# ext:{2}} retiré</entry>
   <entry key="save">Sauvegarder</entry>
+  <entry key="save.done">Usager {0} sauvegardé</entry>
   <entry key="cancel">Annuler</entry>
 </properties>
