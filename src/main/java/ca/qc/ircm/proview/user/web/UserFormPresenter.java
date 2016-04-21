@@ -8,11 +8,11 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.server.UserError;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
@@ -39,6 +39,7 @@ public class UserFormPresenter {
       QUser.user.phoneNumbers.getMetadata().getName();
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<User> userFieldGroup = new BeanFieldGroup<>(User.class);
+  private FieldGroup passwordFieldGroup = new FieldGroup();
   private Long userId;
   private UserForm view;
   private TextField emailField;
@@ -74,23 +75,16 @@ public class UserFormPresenter {
     userFieldGroup.setItemDataSource(new BeanItem<>(new User()));
     userFieldGroup.bind(emailField, EMAIL_PROPERTY);
     userFieldGroup.bind(nameField, NAME_PROPERTY);
+    passwordFieldGroup.bind(passwordField, PASSWORD_PROPERTY);
+    passwordFieldGroup.bind(confirmPasswordField, CONFIRM_PASSWORD_PROPERTY);
   }
 
   private void addFieldListeners() {
     editableProperty.addValueChangeListener(e -> updateEditable());
-    passwordField.addValueChangeListener(e -> validatePasswordsMatch());
-    confirmPasswordField.addValueChangeListener(e -> validatePasswordsMatch());
-  }
-
-  private void validatePasswordsMatch() {
-    passwordField.setComponentError(null);
-    String password = passwordField.getValue();
-    String confirmPassword = confirmPasswordField.getValue();
-    if (password != null && !password.isEmpty() && confirmPassword != null
-        && !confirmPassword.isEmpty() && !password.equals(confirmPassword)) {
-      final MessageResource resources = view.getResources();
-      passwordField.setComponentError(new UserError(resources.message("password.notMatch")));
-    }
+    confirmPasswordField.addValueChangeListener(e -> {
+      passwordField.isValid();
+      passwordField.markAsDirty();
+    });
   }
 
   private void updateEditable() {
@@ -145,14 +139,29 @@ public class UserFormPresenter {
         throw new InvalidValueException(resources.message("email.exists"));
       }
     });
+    passwordField.addValidator((value) -> {
+      String password = passwordField.getValue();
+      String confirmPassword = confirmPasswordField.getValue();
+      if (password != null && !password.isEmpty() && confirmPassword != null
+          && !confirmPassword.isEmpty() && !password.equals(confirmPassword)) {
+        throw new InvalidValueException(resources.message("password.notMatch"));
+      }
+    });
   }
 
+  /**
+   * Commits all changes done to the bound fields.
+   *
+   * @throws CommitException
+   *           if the commit was aborted
+   */
   public void commit() throws CommitException {
     userFieldGroup.commit();
+    passwordFieldGroup.commit();
   }
 
   public boolean isValid() {
-    return userFieldGroup.isValid();
+    return userFieldGroup.isValid() && passwordFieldGroup.isValid();
   }
 
   public Item getItemDataSource() {
@@ -169,6 +178,20 @@ public class UserFormPresenter {
     userFieldGroup.setItemDataSource(item);
     userId = (Long) item.getItemProperty(ID_PROPERTY).getValue();
     setRequired();
+  }
+
+  public Item getPasswordItemDataSource() {
+    return passwordFieldGroup.getItemDataSource();
+  }
+
+  /**
+   * Sets password property.
+   *
+   * @param passwordProperty
+   *          password property
+   */
+  public void setPasswordItemDataSource(Item item) {
+    passwordFieldGroup.setItemDataSource(item);
   }
 
   public boolean isEditable() {

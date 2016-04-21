@@ -17,6 +17,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Panel;
@@ -59,6 +60,8 @@ public class ViewUserFormPresenter {
           COUNTRY_PROPERTY, POSTAL_CODE_PROPERTY };
   private static final Logger logger = LoggerFactory.getLogger(ViewUserFormPresenter.class);
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
+  private ObjectProperty<String> passwordProperty = new ObjectProperty<>(null, String.class);
+  private PropertysetItem passwordItem = new PropertysetItem();
   private List<DeletablePhoneNumberFormPresenter> phoneNumberFormPresenters = new ArrayList<>();
   private User user = new User();
   private ViewUserForm view;
@@ -102,10 +105,11 @@ public class ViewUserFormPresenter {
     this.view = view;
     view.setPresenter(this);
     setFields();
-    addFieldListeners();
     userFormPresenter.init(userForm);
     laboratoryFormPresenter.init(laboratoryForm);
     addressFormPresenter.init(addressForm);
+    bindFields();
+    addFieldListeners();
   }
 
   private void setFields() {
@@ -120,6 +124,12 @@ public class ViewUserFormPresenter {
     addPhoneNumberButton = view.getAddPhoneNumberButton();
     saveButton = view.getSaveButton();
     cancelButton = view.getCancelButton();
+  }
+
+  private void bindFields() {
+    passwordItem.addItemProperty(UserFormPresenter.PASSWORD_PROPERTY, passwordProperty);
+    passwordItem.addItemProperty(UserFormPresenter.CONFIRM_PASSWORD_PROPERTY, passwordProperty);
+    userFormPresenter.setPasswordItemDataSource(passwordItem);
   }
 
   private void addFieldListeners() {
@@ -208,7 +218,11 @@ public class ViewUserFormPresenter {
       for (DeletablePhoneNumberFormPresenter phoneNumberFormPresenter : phoneNumberFormPresenters) {
         phoneNumberFormPresenter.commit();
       }
-      userService.update(user, null);
+      String password = null;
+      if (passwordProperty.getValue() != null && !passwordProperty.getValue().isEmpty()) {
+        password = passwordProperty.getValue();
+      }
+      userService.update(user, password);
       if (laboratoryFormPresenter.isEditable()) {
         laboratoryService.update(user.getLaboratory());
       }
