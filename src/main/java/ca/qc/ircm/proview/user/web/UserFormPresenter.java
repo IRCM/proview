@@ -185,10 +185,10 @@ public class UserFormPresenter {
   }
 
   /**
-   * Sets password property.
+   * Sets password item.
    *
-   * @param passwordProperty
-   *          password property
+   * @param item
+   *          password item
    */
   public void setPasswordItemDataSource(Item item) {
     passwordFieldGroup.setItemDataSource(item);
