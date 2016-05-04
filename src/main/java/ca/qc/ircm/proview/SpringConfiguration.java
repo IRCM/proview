@@ -53,7 +53,7 @@ public class SpringConfiguration {
   @Bean(name = "configuration")
   public String configuration() {
     JndiObjectFactoryBean factory = new JndiObjectFactoryBean();
-    factory.setJndiName("proteus.configuration");
+    factory.setJndiName("proview.configuration");
     factory.setResourceRef(true);
     try {
       factory.afterPropertiesSet();
