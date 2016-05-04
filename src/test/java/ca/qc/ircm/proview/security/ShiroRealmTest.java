@@ -72,7 +72,7 @@ public class ShiroRealmTest {
   public RuleChain rules = Rules.defaultRules(this);
   private Long authenticationId;
   private List<Permission> permissions;
-  private String realmName = "proteus";
+  private String realmName = "proview";
 
   /**
    * Before test.
