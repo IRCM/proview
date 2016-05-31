@@ -28,7 +28,7 @@ public enum UserRole {
          * Laboratory manager.
          */
   MANAGER, /**
-            * Member of proteomic laboratory.
+            * Administartor.
             */
-  PROTEOMIC
+  ADMIN
 }

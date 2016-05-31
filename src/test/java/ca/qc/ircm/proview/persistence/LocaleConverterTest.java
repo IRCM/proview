@@ -19,18 +19,13 @@ package ca.qc.ircm.proview.persistence;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.test.config.Rules;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 
 import java.util.Locale;
 
 public class LocaleConverterTest {
   private LocaleConverter localeConverter;
-  @Rule
-  public RuleChain rules = Rules.defaultRules(this);
 
   @Before
   public void beforeTest() {

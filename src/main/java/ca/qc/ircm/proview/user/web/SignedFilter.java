@@ -24,7 +24,6 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 
 import javax.inject.Inject;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -34,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Set signed user in request.
  */
-public class SignedFilter extends GenericFilterBean implements Filter {
+public class SignedFilter extends GenericFilterBean {
   public static final String BEAN_NAME = "SignedFilter";
   @Inject
   private Signed signed;

@@ -54,20 +54,19 @@ public interface UserService {
   public boolean exists(String email);
 
   /**
-   * Returns true if email parameter is the email of a non-proteomic laboratory manager, false
+   * Returns true if email parameter is the email of a non-admin laboratory manager, false
    * otherwise.
    *
    * @param email
    *          email
-   * @return true if email parameter is the email of a non-proteomic laboratory manager, false
-   *         otherwise
+   * @return true if email parameter is the email of a non-admin laboratory manager, false otherwise
    */
   public boolean isManager(String email);
 
   /**
    * Returns all users that match parameters.
    * <p>
-   * Only proteomic users can search users without a laboratory.
+   * Only admin users can search users without a laboratory.
    * </p>
    * <p>
    * Only managers can search users with a laboratory.
@@ -89,7 +88,7 @@ public interface UserService {
    * @param manager
    *          user's manager
    * @param webContext
-   *          web context used to send email to managers or proteomics users
+   *          web context used to send email to managers or admin users
    */
   public void register(User user, String password, User manager, RegisterUserWebContext webContext);
 

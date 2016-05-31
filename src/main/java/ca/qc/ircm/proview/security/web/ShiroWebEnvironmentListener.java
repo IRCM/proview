@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.security.web;
 
-import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.security.AuthenticationService;
+import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.ShiroRealm;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.authz.permission.WildcardPermissionResolver;
@@ -42,7 +42,7 @@ public class ShiroWebEnvironmentListener extends EnvironmentLoaderListener {
   @Inject
   private AuthenticationService authenticationService;
   @Inject
-  private ApplicationConfiguration applicationConfiguration;
+  private SecurityConfiguration securityConfiguration;
 
   @Override
   public void contextInitialized(ServletContextEvent sce) {
@@ -67,13 +67,12 @@ public class ShiroWebEnvironmentListener extends EnvironmentLoaderListener {
     }
 
     ((ShiroWebEnvironment) environment).setRealm(realm);
-    ((ShiroWebEnvironment) environment).setCipherKey(applicationConfiguration.getCipherKey());
+    ((ShiroWebEnvironment) environment).setCipherKey(securityConfiguration.getCipherKey());
   }
 
   private Realm createRealm() {
     PermissionResolver permissionResolver = new WildcardPermissionResolver();
-    Realm realm = new ShiroRealm(authenticationService, permissionResolver,
-        applicationConfiguration.getRealmName());
+    Realm realm = new ShiroRealm(authenticationService, permissionResolver);
     return realm;
   }
 }

@@ -17,21 +17,37 @@
 
 package ca.qc.ircm.proview.user.web.integration;
 
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.ADDRESS_FORM_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.CLEAR_ADDRESS_BUTTON_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.HEADER_LABEL_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.LABORATORY_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.LABORATORY_NAME_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.MANAGER_EMAIL_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.NEW_LABORATORY_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.ORGANIZATION_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.PHONE_NUMBER_FORM_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.REGISTER_BUTTON_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.REGISTER_HEADER_LABEL_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.REQUIRED_LABEL_ID;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.USER_FORM_ID;
 import static org.openqa.selenium.By.tagName;
 
+import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.user.web.AddressFormPresenter;
+import ca.qc.ircm.proview.user.web.PhoneNumberFormPresenter;
 import ca.qc.ircm.proview.user.web.RegisterView;
-import com.vaadin.testbench.TestBenchTestCase;
+import ca.qc.ircm.proview.user.web.UserFormPresenter;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.LabelElement;
+import com.vaadin.testbench.elements.PanelElement;
 import com.vaadin.testbench.elements.PasswordFieldElement;
 import com.vaadin.testbench.elements.TextFieldElement;
+import org.openqa.selenium.WebElement;
 
-public abstract class RegisterPageObject extends TestBenchTestCase {
-  protected abstract String getBaseUrl();
-
+public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   protected void open() {
-    getDriver().get(getBaseUrl() + "/#!" + RegisterView.VIEW_NAME);
+    openView(RegisterView.VIEW_NAME);
   }
 
   private boolean getCheckBoxValue(CheckBoxElement field) {
@@ -46,11 +62,20 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected LabelElement headerLabel() {
-    return $(LabelElement.class).id("headerLabel");
+    return $(LabelElement.class).id(HEADER_LABEL_ID);
+  }
+
+  protected PanelElement userPanel() {
+    return $(PanelElement.class).id(USER_FORM_ID);
+  }
+
+  private WebElement userFormElement(String className) {
+    return findElement(org.openqa.selenium.By.id(USER_FORM_ID))
+        .findElement(org.openqa.selenium.By.className(className));
   }
 
   protected TextFieldElement emailField() {
-    return $(TextFieldElement.class).id("email");
+    return wrap(TextFieldElement.class, userFormElement(UserFormPresenter.EMAIL_PROPERTY));
   }
 
   protected String getEmail() {
@@ -62,7 +87,7 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected TextFieldElement nameField() {
-    return $(TextFieldElement.class).id("name");
+    return wrap(TextFieldElement.class, userFormElement(UserFormPresenter.NAME_PROPERTY));
   }
 
   protected String getName() {
@@ -74,7 +99,7 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected PasswordFieldElement passwordField() {
-    return $(PasswordFieldElement.class).id("password");
+    return wrap(PasswordFieldElement.class, userFormElement(UserFormPresenter.PASSWORD_PROPERTY));
   }
 
   protected String getPassword() {
@@ -86,7 +111,8 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected PasswordFieldElement confirmPasswordField() {
-    return $(PasswordFieldElement.class).id("confirmPassword");
+    return wrap(PasswordFieldElement.class,
+        userFormElement(UserFormPresenter.CONFIRM_PASSWORD_PROPERTY));
   }
 
   protected String getConfirmPassword() {
@@ -97,12 +123,12 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
     confirmPasswordField().setValue(value);
   }
 
-  protected LabelElement laboratoryHeaderLabel() {
-    return $(LabelElement.class).id("laboratoryHeaderLabel");
+  protected PanelElement laboratoryPanel() {
+    return $(PanelElement.class).id(LABORATORY_ID);
   }
 
   protected CheckBoxElement newLaboratoryField() {
-    return $(CheckBoxElement.class).id("newLaboratory");
+    return $(CheckBoxElement.class).id(NEW_LABORATORY_ID);
   }
 
   protected boolean isNewLaboratory() {
@@ -114,7 +140,7 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected TextFieldElement organizationField() {
-    return $(TextFieldElement.class).id("organization");
+    return $(TextFieldElement.class).id(ORGANIZATION_ID);
   }
 
   protected String getOrganization() {
@@ -130,7 +156,7 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected TextFieldElement laboratoryNameField() {
-    return $(TextFieldElement.class).id("laboratoryName");
+    return $(TextFieldElement.class).id(LABORATORY_NAME_ID);
   }
 
   protected String getLaboratoryName() {
@@ -146,7 +172,7 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected TextFieldElement managerEmailField() {
-    return $(TextFieldElement.class).id("managerEmail");
+    return $(TextFieldElement.class).id(MANAGER_EMAIL_ID);
   }
 
   protected String getManagerEmail() {
@@ -161,36 +187,42 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
     managerEmailField().setValue(value);
   }
 
-  protected LabelElement addressHeaderLabel() {
-    return $(LabelElement.class).id("addressHeaderLabel");
+  protected PanelElement addressPanel() {
+    return $(PanelElement.class).id(ADDRESS_FORM_ID);
   }
 
-  protected TextFieldElement addressField() {
-    return $(TextFieldElement.class).id("address");
+  private WebElement addressFormElement(String className) {
+    return findElement(org.openqa.selenium.By.id(ADDRESS_FORM_ID))
+        .findElement(org.openqa.selenium.By.className(className));
   }
 
-  protected String getAddress() {
-    return addressField().getValue();
+  protected TextFieldElement addressLineField() {
+    return wrap(TextFieldElement.class, addressFormElement(AddressFormPresenter.LINE_PROPERTY));
   }
 
-  protected void setAddress(String value) {
-    addressField().setValue(value);
+  protected String getAddressLine() {
+    return addressLineField().getValue();
   }
 
-  protected TextFieldElement addressSecondField() {
-    return $(TextFieldElement.class).id("addressSecond");
+  protected void setAddressLine(String value) {
+    addressLineField().setValue(value);
   }
 
-  protected String getAddressSecond() {
-    return addressSecondField().getValue();
+  protected TextFieldElement addressSecondLineField() {
+    return wrap(TextFieldElement.class,
+        addressFormElement(AddressFormPresenter.SECOND_LINE_PROPERTY));
   }
 
-  protected void setAddressSecond(String value) {
-    addressSecondField().setValue(value);
+  protected String getAddressSecondLine() {
+    return addressSecondLineField().getValue();
+  }
+
+  protected void setAddressSecondLine(String value) {
+    addressSecondLineField().setValue(value);
   }
 
   protected TextFieldElement townField() {
-    return $(TextFieldElement.class).id("town");
+    return wrap(TextFieldElement.class, addressFormElement(AddressFormPresenter.TOWN_PROPERTY));
   }
 
   protected String getTown() {
@@ -202,7 +234,7 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected TextFieldElement stateField() {
-    return $(TextFieldElement.class).id("state");
+    return wrap(TextFieldElement.class, addressFormElement(AddressFormPresenter.STATE_PROPERTY));
   }
 
   protected String getState() {
@@ -214,7 +246,7 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected TextFieldElement countryField() {
-    return $(TextFieldElement.class).id("country");
+    return wrap(TextFieldElement.class, addressFormElement(AddressFormPresenter.COUNTRY_PROPERTY));
   }
 
   protected String getCountry() {
@@ -226,7 +258,8 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected TextFieldElement postalCodeField() {
-    return $(TextFieldElement.class).id("postalCode");
+    return wrap(TextFieldElement.class,
+        addressFormElement(AddressFormPresenter.POSTAL_CODE_PROPERTY));
   }
 
   protected String getPostalCode() {
@@ -238,19 +271,38 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected ButtonElement clearAddressButton() {
-    return $(ButtonElement.class).id("clearAddress");
+    return $(ButtonElement.class).id(CLEAR_ADDRESS_BUTTON_ID);
   }
 
   protected void clickClearAddress() {
     clearAddressButton().click();
   }
 
-  protected LabelElement phoneNumberHeaderLabel() {
-    return $(LabelElement.class).id("phoneNumberHeaderLabel");
+  protected PanelElement phoneNumberPanel() {
+    return $(PanelElement.class).id(PHONE_NUMBER_FORM_ID);
+  }
+
+  private WebElement phoneNumberFormElement(String className) {
+    return findElement(org.openqa.selenium.By.id(PHONE_NUMBER_FORM_ID))
+        .findElement(org.openqa.selenium.By.className(className));
+  }
+
+  protected TextFieldElement phoneTypeField() {
+    return wrap(TextFieldElement.class,
+        phoneNumberFormElement(PhoneNumberFormPresenter.TYPE_PROPERTY));
+  }
+
+  protected String getPhoneType() {
+    return phoneNumberField().getValue();
+  }
+
+  protected void setPhoneType(String value) {
+    phoneNumberField().setValue(value);
   }
 
   protected TextFieldElement phoneNumberField() {
-    return $(TextFieldElement.class).id("phoneNumber");
+    return wrap(TextFieldElement.class,
+        phoneNumberFormElement(PhoneNumberFormPresenter.NUMBER_PROPERTY));
   }
 
   protected String getPhoneNumber() {
@@ -262,7 +314,8 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected TextFieldElement phoneExtensionField() {
-    return $(TextFieldElement.class).id("phoneExtension");
+    return wrap(TextFieldElement.class,
+        phoneNumberFormElement(PhoneNumberFormPresenter.EXTENSION_PROPERTY));
   }
 
   protected String getPhoneExtension() {
@@ -274,11 +327,11 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected LabelElement registerHeaderLabel() {
-    return $(LabelElement.class).id("registerHeaderLabel");
+    return $(LabelElement.class).id(REGISTER_HEADER_LABEL_ID);
   }
 
   protected ButtonElement registerButton() {
-    return $(ButtonElement.class).id("register");
+    return $(ButtonElement.class).id(REGISTER_BUTTON_ID);
   }
 
   protected void clickRegister() {
@@ -286,6 +339,6 @@ public abstract class RegisterPageObject extends TestBenchTestCase {
   }
 
   protected LabelElement requiredLabel() {
-    return $(LabelElement.class).id("requiredLabel");
+    return $(LabelElement.class).id(REQUIRED_LABEL_ID);
   }
 }

@@ -20,11 +20,8 @@ package ca.qc.ircm.proview.thymeleaf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.test.config.Rules;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 import org.thymeleaf.templateresource.ClassLoaderTemplateResource;
 import org.thymeleaf.templateresource.ITemplateResource;
 
@@ -33,8 +30,6 @@ import java.util.Map;
 
 public class XmlClasspathMessageResolverTest {
   private XmlClasspathMessageResolver xmlMessageResolver;
-  @Rule
-  public RuleChain rules = Rules.defaultRules(this);
 
   @Before
   public void beforeTest() {

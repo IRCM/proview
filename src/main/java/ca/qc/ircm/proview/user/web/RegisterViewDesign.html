@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+ <head>  
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;proview&quot;}">
+  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_user_web:ca.qc.ircm.proview.user.web">
+  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout size-auto> 
+   <ca_qc_ircm_proview_web-menu></ca_qc_ircm_proview_web-menu> 
+   <vaadin-vertical-layout spacing size-auto margin> 
+    <vaadin-label style-name="h1" id="headerLabel" size-auto plain-text _id="headerLabel">
+      Register 
+    </vaadin-label> 
+    <vaadin-panel size-auto _id="userPanel"> 
+     <vaadin-vertical-layout spacing size-auto margin> 
+      <ca_qc_ircm_proview_user_web-user-form _id="userForm"></ca_qc_ircm_proview_user_web-user-form> 
+     </vaadin-vertical-layout> 
+    </vaadin-panel> 
+    <vaadin-panel caption="Lab" size-auto _id="laboratoryPanel"> 
+     <vaadin-vertical-layout spacing size-auto margin> 
+      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
+       <vaadin-check-box caption="I am the lab manager" id="newLaboratory" _id="newLaboratoryField"></vaadin-check-box> 
+       <vaadin-text-field caption="Organization" required id="organization" visible="false" null-representation="" immediate _id="organizationField"></vaadin-text-field> 
+       <vaadin-text-field caption="Lab name" required id="laboratoryName" visible="false" null-representation="" immediate _id="laboratoryNameField"></vaadin-text-field> 
+       <vaadin-text-field columns="30" caption="Lab manager email" required id="managerEmail" null-representation="" immediate _id="managerEmailField"></vaadin-text-field> 
+      </vaadin-form-layout> 
+     </vaadin-vertical-layout> 
+    </vaadin-panel> 
+    <vaadin-panel caption="Address" size-auto _id="addressPanel"> 
+     <vaadin-vertical-layout spacing size-auto margin> 
+      <ca_qc_ircm_proview_user_web-address-form _id="addressForm"></ca_qc_ircm_proview_user_web-address-form> 
+      <vaadin-button plain-text _id="clearAddressButton">
+        Clear 
+      </vaadin-button> 
+     </vaadin-vertical-layout> 
+    </vaadin-panel> 
+    <vaadin-panel caption="Phone number" size-auto _id="phoneNumberPanel"> 
+     <vaadin-vertical-layout spacing size-auto margin> 
+      <ca_qc_ircm_proview_user_web-phone-number-form _id="phoneNumberForm"></ca_qc_ircm_proview_user_web-phone-number-form> 
+     </vaadin-vertical-layout> 
+    </vaadin-panel> 
+    <vaadin-form-layout size-auto> 
+     <vaadin-label icon="fonticon://FontAwesome/f071" style-name="warning" id="registerHeaderLabel" size-auto plain-text _id="registerHeaderLabel">
+       Once registered, a manager will need to accept you before you can sign in 
+     </vaadin-label> 
+     <vaadin-button icon="fonticon://FontAwesome/f00c" id="register" plain-text _id="registerButton">
+       Submit 
+     </vaadin-button> 
+    </vaadin-form-layout> 
+    <vaadin-label id="requiredLabel" size-auto _id="requiredLabel"> 
+     <span class="v-required-field-indicator">*</span> Required fields 
+    </vaadin-label> 
+   </vaadin-vertical-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

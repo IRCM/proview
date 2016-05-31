@@ -78,10 +78,10 @@ public class User implements Data, Named, Serializable {
   @Column(name = "active", nullable = false)
   private boolean active = false;
   /**
-   * True if User is a proteomic user.
+   * True if User is an admin user.
    */
-  @Column(name = "proteomic", nullable = false)
-  private boolean proteomic = false;
+  @Column(name = "admin", nullable = false)
+  private boolean admin = false;
   /**
    * Hashed password.
    */
@@ -110,8 +110,8 @@ public class User implements Data, Named, Serializable {
   @ManyToOne
   @JoinTable(
       name = "laboratoryuser",
-      joinColumns = @JoinColumn(name = "userId"),
-      inverseJoinColumns = @JoinColumn(name = "laboratoryId"))
+      joinColumns = @JoinColumn(name = "userId") ,
+      inverseJoinColumns = @JoinColumn(name = "laboratoryId") )
   private Laboratory laboratory;
   /**
    * Address.
@@ -263,12 +263,12 @@ public class User implements Data, Named, Serializable {
     this.address = address;
   }
 
-  public boolean isProteomic() {
-    return proteomic;
+  public boolean isAdmin() {
+    return admin;
   }
 
-  public void setProteomic(boolean proteomic) {
-    this.proteomic = proteomic;
+  public void setAdmin(boolean admin) {
+    this.admin = admin;
   }
 
   public Locale getLocale() {

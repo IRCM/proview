@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+ <head> 
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;proview&quot;}">
+  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout> 
+   <ca_qc_ircm_proview_web-menu id="menu" _id="menu"></ca_qc_ircm_proview_web-menu> 
+   <vaadin-vertical-layout spacing margin> 
+    <vaadin-label style-name="h1" id="headerLabel" size-auto plain-text _id="headerLabel">
+      Validate users 
+    </vaadin-label> 
+    <vaadin-grid id="usersGrid" width-full _id="usersGrid"></vaadin-grid> 
+    <vaadin-horizontal-layout> 
+     <vaadin-button id="validateSelectedButton" plain-text _id="validateSelectedButton">
+       Validate selected users 
+     </vaadin-button> 
+    </vaadin-horizontal-layout> 
+   </vaadin-vertical-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

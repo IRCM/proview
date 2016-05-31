@@ -22,7 +22,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -30,7 +30,7 @@ import javax.inject.Inject;
 /**
  * View/Update user window.
  */
-@Component
+@Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ViewUserWindow extends Window {
   private static final long serialVersionUID = 9032686080431923743L;

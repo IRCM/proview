@@ -31,5 +31,5 @@ public interface SearchUserParameters {
 
   public boolean isValid();
 
-  public boolean isNonProteomic();
+  public boolean isNonAdmin();
 }

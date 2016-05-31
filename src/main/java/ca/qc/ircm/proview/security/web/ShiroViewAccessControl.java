@@ -24,7 +24,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ import javax.inject.Inject;
 /**
  * ViewAccessControl for Shiro.
  */
-@Component
+@Controller
 public class ShiroViewAccessControl implements ViewAccessControl {
   private static final Logger logger = LoggerFactory.getLogger(ShiroViewAccessControl.class);
   @Inject
@@ -41,19 +41,20 @@ public class ShiroViewAccessControl implements ViewAccessControl {
   @Override
   public boolean isAccessGranted(UI ui, String beanName) {
     Class<?> beanClass = applicationContext.getType(beanName);
+    Subject subject = getSubject();
     if (beanClass.isAnnotationPresent(RolesAllowed.class)) {
       RolesAllowed rolesAllowed = beanClass.getAnnotation(RolesAllowed.class);
       String[] roles = rolesAllowed.value();
       boolean hasAnyRole = false;
-      Subject subject = getSubject();
       for (String role : roles) {
         hasAnyRole |= subject.hasRole(role);
       }
-      logger.debug("Access to view {} granted, {}", beanName, hasAnyRole);
+      logger.debug("Access to view {} granted to user {}, {}", beanName, subject.getPrincipal(),
+          hasAnyRole);
       return hasAnyRole;
     } else {
-      logger.debug("Access to view {} automatically granted, no {}", beanName,
-          RolesAllowed.class.getName());
+      logger.debug("Access to view {} automatically granted to user {}, no {}", beanName,
+          subject.getPrincipal(), RolesAllowed.class.getName());
       return true;
     }
   }

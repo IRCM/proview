@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.user.web.integration;
 
-import ca.qc.ircm.proview.user.web.ValidatePresenter;
+import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.ValidateView;
-import com.vaadin.testbench.TestBenchTestCase;
+import ca.qc.ircm.proview.user.web.ValidateViewPresenter;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
@@ -35,20 +35,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public abstract class ValidatePageObject extends TestBenchTestCase {
+public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   private static final Logger logger = LoggerFactory.getLogger(ValidatePageObject.class);
   private static final int SELECT_COLUMN = 0;
-  private static final int EMAIL_COLUMN = gridColumnIndex(ValidatePresenter.EMAIL);
-  private static final int VALIDATE_COLUMN = gridColumnIndex(ValidatePresenter.VALIDATE);
-
-  protected abstract String getBaseUrl();
+  private static final int EMAIL_COLUMN = gridColumnIndex(ValidateViewPresenter.EMAIL);
+  private static final int VALIDATE_COLUMN = gridColumnIndex(ValidateViewPresenter.VALIDATE);
 
   protected void open() {
-    getDriver().get(getBaseUrl() + "/#!" + ValidateView.VIEW_NAME);
+    openView(ValidateView.VIEW_NAME);
   }
 
   private static int gridColumnIndex(String property) {
-    String[] columns = ValidatePresenter.getColumns();
+    String[] columns = ValidateViewPresenter.getColumns();
     for (int i = 0; i < columns.length; i++) {
       if (property.equals(columns[i])) {
         return i + 1; // +1 because of select column.

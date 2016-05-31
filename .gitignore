@@ -4,6 +4,7 @@
 /.project
 /.checkstyle
 /.designer
+/*.log
 /*.launch
 styles.scss.cache
 .DS_Store

@@ -38,6 +38,7 @@ import javax.inject.Inject;
  * Menu.
  */
 public class Menu extends CustomComponent implements MessageResourcesComponent {
+  public static final String CHANGE_PROJECT_STYLE = "changeProject";
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
   private MenuBar menu = new MenuBar();
@@ -66,18 +67,26 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   @Override
   public void attach() {
     super.attach();
+    setStyles();
+    setCaptions();
+    injectBeans();
+    if (authorizationService != null) {
+      if (authorizationService.hasManagerRole() || authorizationService.hasAdminRole()) {
+        manager.setVisible(true);
+      }
+    }
+  }
+
+  private void setStyles() {
+  }
+
+  private void setCaptions() {
     MessageResource resources = getResources();
     home.setText(resources.message("home"));
     changeLanguage.setText(resources.message("changeLanguage"));
     manager.setText(resources.message("manager"));
     validateUsers.setText(resources.message("validateUsers"));
     help.setText(resources.message("help"));
-    injectBeans();
-    if (authorizationService != null) {
-      if (authorizationService.hasManagerRole() || authorizationService.hasProteomicRole()) {
-        manager.setVisible(true);
-      }
-    }
   }
 
   private void injectBeans() {

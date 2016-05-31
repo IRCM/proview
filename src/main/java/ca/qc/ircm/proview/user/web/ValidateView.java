@@ -35,13 +35,13 @@ import javax.inject.Provider;
  * Validate users view.
  */
 @SpringView(name = ValidateView.VIEW_NAME)
-@RolesAllowed({ "PROTEOMIC", "MANAGER" })
-public class ValidateView extends ValidateDesign implements MessageResourcesView {
+@RolesAllowed({ "ADMIN", "MANAGER" })
+public class ValidateView extends ValidateViewDesign implements MessageResourcesView {
   public static final String VIEW_NAME = "user/validate";
   private static final long serialVersionUID = -1956061543048432065L;
   private static final Logger logger = LoggerFactory.getLogger(ValidateView.class);
   @Inject
-  private ValidatePresenter presenter;
+  private ValidateViewPresenter presenter;
   @Inject
   private Provider<ViewUserWindow> userWindowProvider;
 

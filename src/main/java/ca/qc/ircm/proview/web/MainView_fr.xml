@@ -20,7 +20,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
   <entry key="title">${project.name}</entry>
-  <entry key="header">Plateau protéomique-MS de l'Institut de recherches cliniques de Montréal</entry>
+  <entry key="header">Institut de recherches cliniques de Montréal</entry>
   <entry key="sign">Entrez vos informations</entry>
   <entry key="sign.username">Courriel</entry>
   <entry key="sign.password">Mot de passe</entry>

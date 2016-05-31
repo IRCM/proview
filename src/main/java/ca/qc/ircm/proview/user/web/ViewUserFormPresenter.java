@@ -44,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ import javax.inject.Provider;
 /**
  * User form.
  */
-@Component
+@Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ViewUserFormPresenter {
   public static final String EMAIL_PROPERTY = QUser.user.email.getMetadata().getName();
@@ -64,17 +64,16 @@ public class ViewUserFormPresenter {
   public static final String ADDRESSES_PROPERTY = QUser.user.address.getMetadata().getName();
   public static final String PHONE_NUMBERS_PROPERTY =
       QUser.user.phoneNumbers.getMetadata().getName();
-  public static final String ADDRESS_PROPERTY = QAddress.address1.address.getMetadata().getName();
-  public static final String ADDRESS_SECOND_PROPERTY =
-      QAddress.address1.addressSecond.getMetadata().getName();
-  public static final String TOWN_PROPERTY = QAddress.address1.town.getMetadata().getName();
-  public static final String STATE_PROPERTY = QAddress.address1.state.getMetadata().getName();
-  public static final String COUNTRY_PROPERTY = QAddress.address1.country.getMetadata().getName();
+  public static final String LINE_PROPERTY = QAddress.address.line.getMetadata().getName();
+  public static final String SECOND_LINE_PROPERTY =
+      QAddress.address.secondLine.getMetadata().getName();
+  public static final String TOWN_PROPERTY = QAddress.address.town.getMetadata().getName();
+  public static final String STATE_PROPERTY = QAddress.address.state.getMetadata().getName();
+  public static final String COUNTRY_PROPERTY = QAddress.address.country.getMetadata().getName();
   public static final String POSTAL_CODE_PROPERTY =
-      QAddress.address1.postalCode.getMetadata().getName();
-  public static final Object[] ADDRESS_COLUMNS =
-      new Object[] { ADDRESS_PROPERTY, ADDRESS_SECOND_PROPERTY, TOWN_PROPERTY, STATE_PROPERTY,
-          COUNTRY_PROPERTY, POSTAL_CODE_PROPERTY };
+      QAddress.address.postalCode.getMetadata().getName();
+  public static final Object[] ADDRESS_COLUMNS = new Object[] { LINE_PROPERTY, SECOND_LINE_PROPERTY,
+      TOWN_PROPERTY, STATE_PROPERTY, COUNTRY_PROPERTY, POSTAL_CODE_PROPERTY };
   private static final Logger logger = LoggerFactory.getLogger(ViewUserFormPresenter.class);
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private ObjectProperty<String> passwordProperty = new ObjectProperty<>(null, String.class);

@@ -17,16 +17,14 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.web.ErrorView;
-import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.LabelElement;
 
-public abstract class ErrorPageObject extends TestBenchTestCase {
-  protected abstract String getBaseUrl();
-
+public abstract class ErrorPageObject extends AbstractTestBenchTestCase {
   protected void open() {
-    getDriver().get(getBaseUrl() + "#!" + ErrorView.VIEW_NAME);
+    openView(ErrorView.VIEW_NAME);
   }
 
   protected LabelElement errorLabel() {

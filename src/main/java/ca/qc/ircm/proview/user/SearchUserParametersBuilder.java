@@ -24,7 +24,7 @@ public class SearchUserParametersBuilder implements SearchUserParameters {
   private boolean active;
   private boolean invalid;
   private boolean valid;
-  private boolean nonProteomic;
+  private boolean nonAdmin;
 
   @Override
   public Laboratory getLaboratory() {
@@ -67,12 +67,12 @@ public class SearchUserParametersBuilder implements SearchUserParameters {
   }
 
   @Override
-  public boolean isNonProteomic() {
-    return nonProteomic;
+  public boolean isNonAdmin() {
+    return nonAdmin;
   }
 
-  public SearchUserParametersBuilder onlyNonProteomic() {
-    this.nonProteomic = true;
+  public SearchUserParametersBuilder onlyNonAdmin() {
+    this.nonAdmin = true;
     return this;
   }
 }

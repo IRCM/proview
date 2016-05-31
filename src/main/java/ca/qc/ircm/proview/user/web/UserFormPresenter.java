@@ -35,14 +35,14 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
 /**
  * User form.
  */
-@Component
+@Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserFormPresenter {
   public static final String ID_PROPERTY = QUser.user.id.getMetadata().getName();
@@ -76,9 +76,6 @@ public class UserFormPresenter {
     this.view = view;
     view.setPresenter(this);
     setFields();
-    bindFields();
-    addFieldListeners();
-    updateEditable();
   }
 
   private void setFields() {
@@ -86,6 +83,26 @@ public class UserFormPresenter {
     nameField = view.getNameField();
     passwordField = view.getPasswordField();
     confirmPasswordField = view.getConfirmPasswordField();
+  }
+
+  /**
+   * Called when view gets attached.
+   */
+  public void attach() {
+    setStyles();
+    bindFields();
+    addFieldListeners();
+    updateEditable();
+    setCaptions();
+    setRequired();
+    addValidators();
+  }
+
+  private void setStyles() {
+    emailField.setStyleName(EMAIL_PROPERTY);
+    nameField.setStyleName(NAME_PROPERTY);
+    passwordField.setStyleName(PASSWORD_PROPERTY);
+    confirmPasswordField.setStyleName(CONFIRM_PASSWORD_PROPERTY);
   }
 
   private void bindFields() {
@@ -106,21 +123,16 @@ public class UserFormPresenter {
 
   private void updateEditable() {
     boolean editable = editableProperty.getValue();
-    emailField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    emailField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    nameField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    if (!editable) {
+      emailField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      nameField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    }
     emailField.setReadOnly(!editable);
-    nameField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
     nameField.setReadOnly(!editable);
     passwordField.setVisible(editable);
     confirmPasswordField.setVisible(editable);
-  }
-
-  /**
-   * Called when view gets attached.
-   */
-  public void attach() {
-    setCaptions();
-    setRequired();
-    addValidators();
   }
 
   private void setCaptions() {
@@ -148,12 +160,12 @@ public class UserFormPresenter {
 
   private void addValidators() {
     MessageResource resources = view.getResources();
-    emailField.addValidator(new EmailValidator(resources.message("email.invalid")));
+    emailField.addValidator(new EmailValidator(resources.message(EMAIL_PROPERTY + ".invalid")));
     emailField.addValidator((value) -> {
       String email = emailField.getValue();
-      if (userService.exists(email) && userId != null
-          && !userService.get(userId).getEmail().equals(email)) {
-        throw new InvalidValueException(resources.message("email.exists"));
+      if (userService.exists(email)
+          && (userId == null || !userService.get(userId).getEmail().equals(email))) {
+        throw new InvalidValueException(resources.message(EMAIL_PROPERTY + ".exists"));
       }
     });
     passwordField.addValidator((value) -> {
@@ -161,7 +173,7 @@ public class UserFormPresenter {
       String confirmPassword = confirmPasswordField.getValue();
       if (password != null && !password.isEmpty() && confirmPassword != null
           && !confirmPassword.isEmpty() && !password.equals(confirmPassword)) {
-        throw new InvalidValueException(resources.message("password.notMatch"));
+        throw new InvalidValueException(resources.message(PASSWORD_PROPERTY + ".notMatch"));
       }
     });
   }

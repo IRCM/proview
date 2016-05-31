@@ -19,13 +19,10 @@ package ca.qc.ircm.proview.utils.web;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.test.config.Rules;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.TextField;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 
 import java.util.Locale;
 
@@ -37,8 +34,6 @@ public class MessageResourcesComponentTest {
   private String frenchMessage = "Ceci est un test";
   private String classMessage = "Class - This is a test";
   private String frenchClassMessage = "Class - Ceci est un test";
-  @Rule
-  public RuleChain rules = Rules.defaultRules(this);
 
   @Before
   public void beforeTest() {

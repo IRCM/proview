@@ -19,16 +19,13 @@ package ca.qc.ircm.proview.utils.web;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.test.config.Rules;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.fieldgroup.FieldGroup.FieldGroupInvalidValueException;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -36,8 +33,6 @@ import java.util.Map;
 
 public class VaadinUtilsTest {
   private VaadinUtils vaadinUtils;
-  @Rule
-  public RuleChain rules = Rules.defaultRules(this);
   private Locale locale = Locale.getDefault();
   private String localeDefaultMessage = "Please fix the errors in red fields";
   private String defaultMessage = "default message";
