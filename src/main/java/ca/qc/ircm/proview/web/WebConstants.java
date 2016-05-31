@@ -17,9 +17,25 @@
 
 package ca.qc.ircm.proview.web;
 
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
 /**
  * Constants for Web.
  */
 public class WebConstants {
   public static final String GENERAL_MESSAGES = "VaadinMessages";
+
+  /**
+   * Returns all valid locales for program.
+   *
+   * @return all valid locales for program
+   */
+  public static Set<Locale> getLocales() {
+    Set<Locale> locales = new HashSet<>();
+    locales.add(Locale.ENGLISH);
+    locales.add(Locale.FRENCH);
+    return locales;
+  }
 }

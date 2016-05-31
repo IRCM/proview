@@ -50,51 +50,49 @@
     <url>https://bitbucket.org/ircm/proview-2/issues</url>
   </issueManagement>
   <properties>
+    <start-class>ca.qc.ircm.proview.Main</start-class>
     <javac.version>1.8</javac.version>
-    <slf4j.version>1.7.7</slf4j.version>
-    <log4j.version>1.2.17</log4j.version>
     <javax.inject.version>1</javax.inject.version>
     <jsr250-api.version>1.0</jsr250-api.version>
-    <spring.version>4.2.5.RELEASE</spring.version>
+    <spring-boot.version>1.3.5.RELEASE</spring-boot.version>
     <validation.version>1.1.0.Final</validation.version>
     <javax.persistence.version>2.1.1</javax.persistence.version>
     <eclipselink.version>2.6.2</eclipselink.version>
     <querydsl.version>4.0.9</querydsl.version>
     <shiro.version>1.2.3</shiro.version>
+    <vaadin-spring-boot.version>1.0.0</vaadin-spring-boot.version>
     <vaadin.version>7.6.4</vaadin.version>
-    <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
     <vaadin-spring.version>1.0.0</vaadin-spring.version>
     <vaadin-icons.version>1.0.1</vaadin-icons.version>
     <loginform.version>0.6.2</loginform.version>
-    <commons-configuration.version>1.10</commons-configuration.version>
     <commons-email.version>1.4</commons-email.version>
-    <servlet.version>3.1.0</servlet.version>
     <el.version>2.2.5</el.version>
     <thymeleaf.version>3.0.0.BETA02</thymeleaf.version>
-    <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
-    <junit.version>4.12</junit.version>
-    <mockito.version>1.9.0</mockito.version>
-    <h2.version>1.4.190</h2.version>
     <vaadin.testbench.version>4.1.0.alpha1</vaadin.testbench.version>
     <selenium.version>2.49.1</selenium.version>
     <staticweave-maven-plugin.version>1.0.0</staticweave-maven-plugin.version>
     <apt-maven-plugin.version>1.1.3</apt-maven-plugin.version>
+    <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
+    <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
+    <build-helper-maven-plugin.version>1.10</build-helper-maven-plugin.version>
     <exec-maven-plugin.version>1.4.0</exec-maven-plugin.version>
-    <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
     <mojolicense-maven-plugin.version>1.8</mojolicense-maven-plugin.version>
     <h2.port>9092</h2.port>
-    <tomcat.port>8080</tomcat.port>
     <java.executable>${java.home}/bin/java</java.executable>
-    <integration.user.home>${basedir}/target/test-classes/integration</integration.user.home>
     <database.url>jdbc:h2:tcp://localhost:${h2.port}/mem:proview;DB_CLOSE_DELAY=-1</database.url>
     <integration-database.mainclass>ca.qc.ircm.proview.test.config.IntegrationTestDatabase</integration-database.mainclass>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>${spring.version}</version>
+        <groupId>org.thymeleaf</groupId>
+        <artifactId>thymeleaf</artifactId>
+        <version>${thymeleaf.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -111,19 +109,21 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>${h2.version}</version>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -157,19 +157,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -214,6 +208,26 @@
       <artifactId>spring-orm</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
       <version>${validation.version}</version>
@@ -247,6 +261,11 @@
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-web</artifactId>
       <version>${shiro.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-spring-boot-starter</artifactId>
+      <version>${vaadin-spring-boot.version}</version>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
@@ -284,11 +303,6 @@
       <version>${loginform.version}</version>
     </dependency>
     <dependency>
-      <groupId>commons-configuration</groupId>
-      <artifactId>commons-configuration</artifactId>
-      <version>${commons-configuration.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email</artifactId>
       <version>${commons-email.version}</version>
@@ -296,17 +310,14 @@
     <dependency>
       <groupId>org.thymeleaf</groupId>
       <artifactId>thymeleaf</artifactId>
-      <version>${thymeleaf.version}</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>${hibernate-validator.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>${servlet.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -355,18 +366,6 @@
       </testResource>
       <testResource>
         <directory>src/test/resources</directory>
-        <excludes>
-          <exclude>**/*.xml</exclude>
-          <exclude>integration/**/*.ini</exclude>
-        </excludes>
-      </testResource>
-      <testResource>
-        <directory>src/test/resources</directory>
-        <includes>
-          <include>**/*.xml</include>
-          <include>integration/**/*.ini</include>
-        </includes>
-        <filtering>true</filtering>
       </testResource>
     </testResources>
     <pluginManagement>
@@ -408,9 +407,8 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <configuration>
             <systemPropertyVariables>
-              <base.url>http://localhost:${tomcat.port}/${project.artifactId}</base.url>
-              <database.url>${database.url}</database.url>
-              <integration.user.home>${integration.user.home}</integration.user.home>
+              <base.url>http://localhost:${tomcat.http.port}</base.url>
+              <spring.datasource.url>${database.url}</spring.datasource.url>
               <slow-tests.skip>${slow-tests.skip}</slow-tests.skip>
             </systemPropertyVariables>
             <includes>
@@ -527,6 +525,61 @@
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${build-helper-maven-plugin.version}</version>
+          <executions>
+            <execution>
+              <id>reserve-network-ports</id>
+              <goals>
+                <goal>reserve-network-port</goal>
+              </goals>
+              <phase>process-resources</phase>
+              <configuration>
+                <portNames>
+                  <portName>tomcat.http.port</portName>
+                </portNames>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot-maven-plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>start-server</id>
+              <phase>pre-integration-test</phase>
+              <goals>
+                <goal>start</goal>
+              </goals>
+              <configuration>
+                <arguments>
+                  <argument>--server.port=${tomcat.http.port}</argument>
+                  <argument>--spring.profiles.active=integration-test</argument>
+                  <argument>--spring.datasource.url=${database.url}</argument>
+                </arguments>
+              </configuration>
+            </execution>
+            <execution>
+              <id>stop-server</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>stop</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <mainClass>${start-class}</mainClass>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>${exec-maven-plugin.version}</version>
           <executions>
@@ -562,44 +615,6 @@
               </configuration>
             </execution>
           </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat7-maven-plugin</artifactId>
-          <version>${tomcat7-maven-plugin.version}</version>
-          <configuration>
-            <contextFile>${basedir}/target/test-classes/context.xml</contextFile>
-            <port>${tomcat.port}</port>
-            <systemProperties>
-              <user.home>${basedir}/target/test-classes/integration</user.home>
-            </systemProperties>
-          </configuration>
-          <executions>
-            <execution>
-              <id>start-tomcat</id>
-              <phase>pre-integration-test</phase>
-              <goals>
-                <goal>run-war</goal>
-              </goals>
-              <configuration>
-                <fork>true</fork>
-              </configuration>
-            </execution>
-            <execution>
-              <id>stop-tomcat</id>
-              <phase>post-integration-test</phase>
-              <goals>
-                <goal>shutdown</goal>
-              </goals>
-            </execution>
-          </executions>
-          <dependencies>
-            <dependency>
-              <groupId>com.h2database</groupId>
-              <artifactId>h2</artifactId>
-              <version>${h2.version}</version>
-            </dependency>
-          </dependencies>
         </plugin>
         <plugin>
           <groupId>com.mycila</groupId>
@@ -686,12 +701,16 @@
         <artifactId>vaadin-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>com.mycila</groupId>

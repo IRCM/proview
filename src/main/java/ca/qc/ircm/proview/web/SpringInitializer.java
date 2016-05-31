@@ -18,8 +18,7 @@
 package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.SpringConfiguration;
-import ca.qc.ircm.proview.logging.Log4jConfiguration;
-import ca.qc.ircm.proview.logging.NdcFilter;
+import ca.qc.ircm.proview.logging.MdcFilter;
 import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
 import ca.qc.ircm.proview.user.SignedProvider;
 import ca.qc.ircm.proview.user.web.SignedFilter;
@@ -63,7 +62,6 @@ public class SpringInitializer extends AbstractAnnotationConfigDispatcherServlet
   @Override
   public void onStartup(ServletContext servletContext) throws ServletException {
     servletContext.addListener(IntrospectorCleanupListener.class);
-    servletContext.addListener(Log4jConfiguration.class);
 
     super.onStartup(servletContext);
 
@@ -74,7 +72,7 @@ public class SpringInitializer extends AbstractAnnotationConfigDispatcherServlet
         .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
     registerServletFilter(servletContext, new DelegatingFilterProxy(SignedFilter.BEAN_NAME))
         .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
-    servletContext.addFilter(NdcFilter.class.getSimpleName(), NdcFilter.class)
+    servletContext.addFilter(MdcFilter.class.getSimpleName(), MdcFilter.class)
         .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
   }
 

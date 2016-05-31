@@ -17,29 +17,77 @@
 
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.logging.MdcFilter;
+import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
+import ca.qc.ircm.proview.user.SignedImpl;
+import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.SignedFilter;
-import com.vaadin.spring.annotation.EnableVaadin;
+import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.spring.annotation.ViewScope;
+import org.apache.shiro.web.servlet.ShiroFilter;
+import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.util.IntrospectorCleanupListener;
+
+import javax.inject.Inject;
 
 /**
  * Enable Spring Web MVC for REST services.
  */
-@EnableWebMvc
-@EnableVaadin
 @Configuration
 @ComponentScan(
     basePackages = { "ca.qc.ircm.proview", "ca.qc.ircm.proview.*" },
     useDefaultFilters = false,
-    includeFilters = @Filter(Controller.class) )
+    includeFilters = @Filter({ Controller.class, UIScope.class, ViewScope.class }) )
 public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
+  public static final String SHIRO_FILTER_NAME = "ShiroFilter";
+  @Inject
+  private UserService userService;
+
+  @Bean(name = SHIRO_FILTER_NAME)
+  public ShiroFilter shiroFilter() {
+    return new ShiroFilter();
+  }
+
   @Bean(name = SignedFilter.BEAN_NAME)
   public SignedFilter signedFilter() {
     return new SignedFilter();
+  }
+
+  @Bean(name = MdcFilter.BEAN_NAME)
+  public MdcFilter ndcFilter() {
+    return new MdcFilter();
+  }
+
+  @Bean
+  public ServletListenerRegistrationBean<IntrospectorCleanupListener>
+      introspectorCleanupListener() {
+    return new ServletListenerRegistrationBean<>(new IntrospectorCleanupListener());
+  }
+
+  @Bean
+  public ServletListenerRegistrationBean<RequestContextListener> requestContextListener() {
+    return new ServletListenerRegistrationBean<>(new RequestContextListener());
+  }
+
+  @Bean
+  public ServletListenerRegistrationBean<ShiroWebEnvironmentListener>
+      shiroWebEnvironmentListener() {
+    return new ServletListenerRegistrationBean<>(new ShiroWebEnvironmentListener());
+  }
+
+  @Bean
+  @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.INTERFACES)
+  public SignedImpl getSigned() {
+    return new SignedImpl(userService);
   }
 }

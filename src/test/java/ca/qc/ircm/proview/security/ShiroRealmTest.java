@@ -27,7 +27,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.Rules;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -42,16 +42,18 @@ import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ServiceTestAnnotations
 public class ShiroRealmTest {
   private ShiroRealm shiroRealm;
   @Mock
@@ -68,11 +70,9 @@ public class ShiroRealmTest {
   private AuthorizationInfo authorizationInfo;
   @Captor
   private ArgumentCaptor<AuthenticationInfo> authenticationInfoCaptor;
-  @Rule
-  public RuleChain rules = Rules.defaultRules(this);
   private Long authenticationId;
   private List<Permission> permissions;
-  private String realmName = "proview";
+  private String realmName = ShiroRealm.REALM_NAME;
 
   /**
    * Before test.
@@ -80,7 +80,7 @@ public class ShiroRealmTest {
   @Before
   public void beforeTest() {
     when(cacheManager.getCache(any(String.class))).thenReturn(cache);
-    shiroRealm = new ShiroRealm(authenticatingService, permissionResolver, realmName);
+    shiroRealm = new ShiroRealm(authenticatingService, permissionResolver);
     authenticationId = 1L;
     when(authenticatingService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
         .thenReturn(authenticationInfo);

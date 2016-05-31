@@ -19,8 +19,8 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="address">Adresse</entry>
-  <entry key="addressSecond">Seconde ligne</entry>
+  <entry key="line">Adresse</entry>
+  <entry key="secondLine">Seconde ligne</entry>
   <entry key="town">Ville</entry>
   <entry key="state">État/Province</entry>
   <entry key="country">Pays</entry>

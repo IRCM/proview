@@ -18,12 +18,12 @@
 package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
+import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.spring.annotation.ViewScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
-import org.springframework.jndi.JndiObjectFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Controller;
@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import javax.naming.NamingException;
+import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -42,9 +42,12 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(
     basePackages = { "ca.qc.ircm.proview", "ca.qc.ircm.proview.*" },
-    excludeFilters = @Filter(Controller.class) )
+    excludeFilters = @Filter({ Controller.class, UIScope.class, ViewScope.class }) )
 @EnableTransactionManagement
 public class SpringConfiguration {
+  @Inject
+  private DataSource dataSource;
+
   /**
    * Returns configuration file location, if any.
    *
@@ -52,28 +55,7 @@ public class SpringConfiguration {
    */
   @Bean(name = "configuration")
   public String configuration() {
-    JndiObjectFactoryBean factory = new JndiObjectFactoryBean();
-    factory.setJndiName("proview.configuration");
-    factory.setResourceRef(true);
-    try {
-      factory.afterPropertiesSet();
-      return (String) factory.getObject();
-    } catch (IllegalArgumentException | NamingException e) {
-      return null;
-    }
-  }
-
-  /**
-   * Creates data source.
-   *
-   * @return data source
-   */
-  @Bean
-  public DataSource dataSource() {
-    JndiDataSourceLookup lookup = new JndiDataSourceLookup();
-    lookup.setResourceRef(true);
-    DataSource dataSource = lookup.getDataSource("proview");
-    return dataSource;
+    return null;
   }
 
   /**
@@ -85,7 +67,7 @@ public class SpringConfiguration {
   public EntityManagerFactory entityManagerFactory() {
     LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
     factory.setPersistenceUnitName("proview");
-    factory.setDataSource(dataSource());
+    factory.setDataSource(dataSource);
     factory.afterPropertiesSet();
     return factory.getObject();
   }

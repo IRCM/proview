@@ -19,10 +19,7 @@ package ca.qc.ircm.proview.web.integration;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.test.config.Rules;
-import ca.qc.ircm.proview.test.config.Slow;
-import ca.qc.ircm.proview.test.config.TestBenchLicenseRunner;
-import ca.qc.ircm.proview.test.config.TestBenchRule;
+import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.ValidateView;
@@ -30,38 +27,26 @@ import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.LabelElement;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
 
-@RunWith(TestBenchLicenseRunner.class)
-@Slow
-@WithSubject(anonymous = true)
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestBenchTestAnnotations
 public class MenuTest extends MenuPageObject {
-  public TestBenchRule testBenchRule = new TestBenchRule(this);
-  @Rule
-  public RuleChain rules = Rules.defaultRules(this).around(testBenchRule);
-
   private MessageResource getMainViewResources(Locale locale) {
     return new MessageResource(MainView.class, locale);
   }
 
-  @Override
-  protected String getBaseUrl() {
-    return testBenchRule.getBaseUrl();
-  }
-
   @Test
   public void home() throws Throwable {
-    open(RegisterView.VIEW_NAME);
+    openView(RegisterView.VIEW_NAME);
 
     clickHome();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
-        getDriver().getCurrentUrl());
+    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
@@ -75,8 +60,7 @@ public class MenuTest extends MenuPageObject {
 
     clickChangeLanguage();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
-        getDriver().getCurrentUrl());
+    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
     Locale newLocale = Locale.FRENCH;
     if (currentLocale == Locale.FRENCH) {
       newLocale = Locale.ENGLISH;
@@ -92,8 +76,7 @@ public class MenuTest extends MenuPageObject {
 
     clickValidateUsers();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + ValidateView.VIEW_NAME,
-        getDriver().getCurrentUrl());
+    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
@@ -103,7 +86,6 @@ public class MenuTest extends MenuPageObject {
 
     clickHelp();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
-        getDriver().getCurrentUrl());
+    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

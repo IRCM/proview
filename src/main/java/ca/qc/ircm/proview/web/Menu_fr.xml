@@ -20,6 +20,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
   <entry key="home">Accueil</entry>
+  <entry key="changeProject">Changer de projet</entry>
   <entry key="changeLanguage">English</entry>
   <entry key="manager">Responsable</entry>
   <entry key="validateUsers">Validation usagers</entry>

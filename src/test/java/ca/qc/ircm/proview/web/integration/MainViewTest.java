@@ -21,44 +21,30 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.test.config.Rules;
-import ca.qc.ircm.proview.test.config.Slow;
-import ca.qc.ircm.proview.test.config.TestBenchLicenseRunner;
-import ca.qc.ircm.proview.test.config.TestBenchRule;
-import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-@RunWith(TestBenchLicenseRunner.class)
-@Slow
-@WithSubject(anonymous = true)
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestBenchTestAnnotations
 public class MainViewTest extends MainPageObject {
-  public TestBenchRule testBenchRule = new TestBenchRule(this);
-  @Rule
-  public RuleChain rules = Rules.defaultRules(this).around(testBenchRule);
-
-  @Override
-  protected String getBaseUrl() {
-    return testBenchRule.getBaseUrl();
-  }
-
   @Test
   public void title() throws Throwable {
     open();
 
-    Set<Locale> locales = Rules.getLocales();
+    Set<Locale> locales = WebConstants.getLocales();
     Set<String> titles = new HashSet<>();
     for (Locale locale : locales) {
       titles.add(new MessageResource(MainView.class, locale).message("title"));
@@ -118,15 +104,14 @@ public class MainViewTest extends MainPageObject {
 
   @Test
   @Ignore("not programmed yet")
-  public void sign_Proteomic() throws Throwable {
+  public void sign_Admin() throws Throwable {
     open();
     setSignFormUsername("proview@ircm.qc.ca");
     setSignFormPassword("password");
 
     clickSignFormSignButton();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
-        getDriver().getCurrentUrl());
+    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
@@ -138,8 +123,7 @@ public class MainViewTest extends MainPageObject {
 
     clickSignFormSignButton();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
-        getDriver().getCurrentUrl());
+    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
@@ -172,7 +156,6 @@ public class MainViewTest extends MainPageObject {
 
     clickRegisterButton();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + RegisterView.VIEW_NAME,
-        getDriver().getCurrentUrl());
+    assertEquals(viewUrl(RegisterView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

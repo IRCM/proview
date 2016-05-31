@@ -22,53 +22,44 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.security.PasswordVersion;
-import ca.qc.ircm.proview.test.config.IntegrationTestConfigurationRule;
-import ca.qc.ircm.proview.test.config.IntegrationTestDatabaseRule;
-import ca.qc.ircm.proview.test.config.Rules;
-import ca.qc.ircm.proview.test.config.Slow;
-import ca.qc.ircm.proview.test.config.TestBenchLicenseRunner;
-import ca.qc.ircm.proview.test.config.TestBenchRule;
-import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.security.SecurityConfiguration;
+import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
+import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-@RunWith(TestBenchLicenseRunner.class)
-@Slow
-@WithSubject(anonymous = true)
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestBenchTestAnnotations
 public class RegisterViewTest extends RegisterPageObject {
-  public TestBenchRule testBenchRule = new TestBenchRule(this);
-  public IntegrationTestConfigurationRule integrationTestConfigurationRule =
-      new IntegrationTestConfigurationRule();
-  public IntegrationTestDatabaseRule integrationTestDatabaseRule =
-      new IntegrationTestDatabaseRule();
-  @Rule
-  public RuleChain rules = Rules.defaultRules(this).around(testBenchRule)
-      .around(integrationTestConfigurationRule).around(integrationTestDatabaseRule);
-  private ApplicationConfiguration applicationConfiguration;
+  @Inject
+  private SecurityConfiguration securityConfiguration;
+  @Inject
+  private DefaultAddressConfiguration defaultAddressConfiguration;
+  @PersistenceContext
   private EntityManager entityManager;
   private String email = "unit.test@ircm.qc.ca";
   private String name = "Unit Test";
@@ -76,25 +67,14 @@ public class RegisterViewTest extends RegisterPageObject {
   private String managerEmail = "benoit.coulombe@ircm.qc.ca";
   private String laboratoryName = "Test lab";
   private String organization = "IRCM";
-  private String address = "123 Papineau";
-  private String addressSecond = "2640";
+  private String addressLine = "123 Papineau";
+  private String addressSecondLine = "2640";
   private String town = "Laval";
   private String state = "Ontario";
   private String country = "USA";
   private String postalCode = "12345";
   private String phoneNumber = "514-555-5555";
   private String phoneExtension = "234";
-
-  @Before
-  public void beforeTest() throws Throwable {
-    applicationConfiguration = integrationTestConfigurationRule.getApplicationConfiguration();
-    entityManager = integrationTestDatabaseRule.getEntityManager();
-  }
-
-  @Override
-  protected String getBaseUrl() {
-    return testBenchRule.getBaseUrl();
-  }
 
   private User getUser(String email) {
     JPAQuery<User> query = new JPAQuery<>(entityManager);
@@ -107,7 +87,7 @@ public class RegisterViewTest extends RegisterPageObject {
   public void title() throws Throwable {
     open();
 
-    Set<Locale> locales = Rules.getLocales();
+    Set<Locale> locales = WebConstants.getLocales();
     Set<String> titles = new HashSet<>();
     for (Locale locale : locales) {
       titles.add(new MessageResource(RegisterView.class, locale).message("title"));
@@ -124,6 +104,9 @@ public class RegisterViewTest extends RegisterPageObject {
     current = headerLabel().getLocation().y;
     assertTrue(previous < current);
     previous = current;
+    current = userPanel().getLocation().y;
+    assertTrue(previous < current);
+    previous = current;
     current = emailField().getLocation().y;
     assertTrue(previous < current);
     previous = current;
@@ -136,7 +119,7 @@ public class RegisterViewTest extends RegisterPageObject {
     current = confirmPasswordField().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = laboratoryHeaderLabel().getLocation().y;
+    current = laboratoryPanel().getLocation().y;
     assertTrue(previous < current);
     previous = current;
     current = newLaboratoryField().getLocation().y;
@@ -151,13 +134,13 @@ public class RegisterViewTest extends RegisterPageObject {
     current = laboratoryNameField().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = addressHeaderLabel().getLocation().y;
+    current = addressPanel().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = addressField().getLocation().y;
+    current = addressLineField().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = addressSecondField().getLocation().y;
+    current = addressSecondLineField().getLocation().y;
     assertTrue(previous < current);
     previous = current;
     current = townField().getLocation().y;
@@ -175,7 +158,7 @@ public class RegisterViewTest extends RegisterPageObject {
     current = clearAddressButton().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = phoneNumberHeaderLabel().getLocation().y;
+    current = phoneNumberPanel().getLocation().y;
     assertTrue(previous < current);
     previous = current;
     current = phoneNumberField().getLocation().y;
@@ -199,11 +182,11 @@ public class RegisterViewTest extends RegisterPageObject {
   public void defaultAddress() throws Throwable {
     open();
 
-    assertEquals(applicationConfiguration.getAddress(), getAddress());
-    assertEquals(applicationConfiguration.getTown(), getTown());
-    assertEquals(applicationConfiguration.getState(), getState());
-    assertEquals(applicationConfiguration.getPostalCode(), getPostalCode());
-    assertEquals(applicationConfiguration.getCountry(), getCountry());
+    assertEquals(defaultAddressConfiguration.getAddress(), getAddressLine());
+    assertEquals(defaultAddressConfiguration.getTown(), getTown());
+    assertEquals(defaultAddressConfiguration.getState(), getState());
+    assertEquals(defaultAddressConfiguration.getPostalCode(), getPostalCode());
+    assertEquals(defaultAddressConfiguration.getCountry(), getCountry());
   }
 
   private void setFields() {
@@ -217,8 +200,8 @@ public class RegisterViewTest extends RegisterPageObject {
     } else {
       setManagerEmail(managerEmail);
     }
-    setAddress(address);
-    setAddressSecond(addressSecond);
+    setAddressLine(addressLine);
+    setAddressSecondLine(addressSecondLine);
     setTown(town);
     setState(state);
     setCountry(country);
@@ -245,10 +228,7 @@ public class RegisterViewTest extends RegisterPageObject {
 
     clickRegister();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
-        getDriver().getCurrentUrl());
-    entityManager.getTransaction().commit();
-    entityManager.getTransaction().begin();
+    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = getUser(email);
     assertNotNull(user);
     assertNotNull(user.getId());
@@ -256,7 +236,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals(name, user.getName());
     Laboratory laboratory = user.getLaboratory();
     assertEquals((Long) 2L, laboratory.getId());
-    PasswordVersion passwordVersion = applicationConfiguration.getPasswordVersion();
+    PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
     assertNotNull(user.getSalt());
     SimpleHash hash = new SimpleHash(passwordVersion.getAlgorithm(), password,
         Hex.decode(user.getSalt()), passwordVersion.getIterations());
@@ -264,8 +244,8 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals((Integer) passwordVersion.getVersion(), user.getPasswordVersion());
     assertNotNull(user.getLocale());
     Address userAddress = user.getAddress();
-    assertEquals(address, userAddress.getAddress());
-    assertEquals(addressSecond, userAddress.getAddressSecond());
+    assertEquals(addressLine, userAddress.getLine());
+    assertEquals(addressSecondLine, userAddress.getSecondLine());
     assertEquals(town, userAddress.getTown());
     assertEquals(state, userAddress.getState());
     assertEquals(postalCode, userAddress.getPostalCode());
@@ -277,7 +257,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals(phoneExtension, userPhoneNumber.getExtension());
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
-    assertEquals(false, user.isProteomic());
+    assertEquals(false, user.isAdmin());
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
     assertNotNull(notification.getCaption());
@@ -292,10 +272,7 @@ public class RegisterViewTest extends RegisterPageObject {
 
     clickRegister();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + MainView.VIEW_NAME,
-        getDriver().getCurrentUrl());
-    entityManager.getTransaction().commit();
-    entityManager.getTransaction().begin();
+    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = getUser(email);
     assertNotNull(user);
     assertNotNull(user.getId());
@@ -305,7 +282,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertNotNull(laboratory.getId());
     assertEquals(laboratoryName, laboratory.getName());
     assertEquals(organization, laboratory.getOrganization());
-    PasswordVersion passwordVersion = applicationConfiguration.getPasswordVersion();
+    PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
     assertNotNull(user.getSalt());
     SimpleHash hash = new SimpleHash(passwordVersion.getAlgorithm(), password,
         Hex.decode(user.getSalt()), passwordVersion.getIterations());
@@ -313,8 +290,8 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals((Integer) passwordVersion.getVersion(), user.getPasswordVersion());
     assertNotNull(user.getLocale());
     Address userAddress = user.getAddress();
-    assertEquals(address, userAddress.getAddress());
-    assertEquals(addressSecond, userAddress.getAddressSecond());
+    assertEquals(addressLine, userAddress.getLine());
+    assertEquals(addressSecondLine, userAddress.getSecondLine());
     assertEquals(town, userAddress.getTown());
     assertEquals(state, userAddress.getState());
     assertEquals(postalCode, userAddress.getPostalCode());
@@ -326,7 +303,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals(phoneExtension, userPhoneNumber.getExtension());
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
-    assertEquals(false, user.isProteomic());
+    assertEquals(false, user.isAdmin());
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
     assertNotNull(notification.getCaption());

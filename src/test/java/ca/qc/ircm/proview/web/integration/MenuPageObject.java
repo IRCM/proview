@@ -17,31 +17,29 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.MenuBarElement;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 
 import java.util.Locale;
 
-public abstract class MenuPageObject extends TestBenchTestCase {
+public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   private Locale[] locales = new Locale[] { Locale.ENGLISH, Locale.FRENCH };
 
-  protected abstract String getBaseUrl();
-
   protected void open() {
-    getDriver().get(getBaseUrl() + "#!" + MainView.VIEW_NAME);
-  }
-
-  protected void open(String view) {
-    getDriver().get(getBaseUrl() + "#!" + view);
+    openView(MainView.VIEW_NAME);
   }
 
   private MessageResource getResources(Locale locale) {
     return new MessageResource(Menu.class, locale);
+  }
+
+  private void clickMenuItemByStyle(String className) {
+    menu().findElement(org.openqa.selenium.By.className("v-menubar-menuitem-" + className)).click();
   }
 
   private void clickMenuItem(String itemKey) {
@@ -50,6 +48,7 @@ public abstract class MenuPageObject extends TestBenchTestCase {
         String item = getResources(locale).message(itemKey);
         try {
           menu().clickItem(item);
+          break;
         } catch (NoSuchElementException e) {
           // Wrong locale.
         }

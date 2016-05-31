@@ -17,9 +17,6 @@
 
 package ca.qc.ircm.proview.test;
 
-import static ca.qc.ircm.proview.test.config.SubjectRule.PASSWORD_ALGORITHM;
-import static ca.qc.ircm.proview.test.config.SubjectRule.PASSWORD_ITERATIONS;
-
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -27,6 +24,8 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import java.util.Random;
 
 public class GeneratePassword {
+  public static final String PASSWORD_ALGORITHM = "SHA-256";
+  public static final int PASSWORD_ITERATIONS = 1000;
 
   /**
    * Generates random passwords.

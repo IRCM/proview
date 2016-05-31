@@ -48,11 +48,11 @@ public interface AuthorizationService {
   public boolean isRunAs();
 
   /**
-   * Returns true if user has proteomic role, false otherwise.
+   * Returns true if user has admin role, false otherwise.
    *
-   * @return true if user has proteomic role, false otherwise
+   * @return true if user has admin role, false otherwise
    */
-  public boolean hasProteomicRole();
+  public boolean hasAdminRole();
 
   /**
    * Returns true if user has manager role, false otherwise.
@@ -78,14 +78,9 @@ public interface AuthorizationService {
   public boolean hasUserRole();
 
   /**
-   * Checks that current user has proteomic role.
+   * Checks that current user has admin role.
    */
-  public void checkProteomicRole();
-
-  /**
-   * Checks that current user has proteomic and manager role.
-   */
-  public void checkProteomicManagerRole();
+  public void checkAdminRole();
 
   /**
    * Checks that current user has user role.

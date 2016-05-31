@@ -17,18 +17,16 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.web.MainView;
-import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.FormElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
-public abstract class MainPageObject extends TestBenchTestCase {
-  protected abstract String getBaseUrl();
-
+public abstract class MainPageObject extends AbstractTestBenchTestCase {
   protected void open() {
-    getDriver().get(getBaseUrl() + "#!" + MainView.VIEW_NAME);
+    openView(MainView.VIEW_NAME);
   }
 
   protected LabelElement header() {

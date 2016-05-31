@@ -25,14 +25,14 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
 /**
  * Add phone number form presenter.
  */
-@Component
+@Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddPhoneNumberFormPresenter {
   public static final String HEADER_PROPERTY = "header";

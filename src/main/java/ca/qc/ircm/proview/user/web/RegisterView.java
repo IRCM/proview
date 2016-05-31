@@ -19,35 +19,36 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import ca.qc.ircm.proview.web.MainView;
-import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
  * Registers user view.
  */
 @SpringView(name = RegisterView.VIEW_NAME)
-public class RegisterView extends RegisterDesign implements MessageResourcesView {
+public class RegisterView extends RegisterViewDesign implements MessageResourcesView {
   public static final String VIEW_NAME = "user/register";
   private static final long serialVersionUID = 7586918222688019429L;
-  private static final Logger logger = LoggerFactory.getLogger(RegisterView.class);
   @Inject
-  private RegisterPresenter presenter;
+  private RegisterViewPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    presenter.init(this);
+  }
 
   @Override
   public void attach() {
-    logger.debug("Register user view");
     super.attach();
-    presenter.init(this);
+    presenter.attach();
   }
 
   public void setTitle(String title) {
@@ -60,28 +61,17 @@ public class RegisterView extends RegisterDesign implements MessageResourcesView
 
   /**
    * Redirect to {@link MainView}.
+   *
+   * @param message
+   *          message to show in notification
    */
-  public void afterSuccessfulRegister() {
-    final MessageResource resources = getResources();
-    Notification.show(resources.message("done", emailField.getValue()),
-        Notification.Type.TRAY_NOTIFICATION);
+  public void afterSuccessfulRegister(String message) {
+    Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
     getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
   }
 
-  public TextField getEmailField() {
-    return emailField;
-  }
-
-  public TextField getNameField() {
-    return nameField;
-  }
-
-  public PasswordField getPasswordField() {
-    return passwordField;
-  }
-
-  public PasswordField getConfirmPasswordField() {
-    return confirmPasswordField;
+  public Panel getLaboratoryPanel() {
+    return laboratoryPanel;
   }
 
   public CheckBox getNewLaboratoryField() {
@@ -100,56 +90,12 @@ public class RegisterView extends RegisterDesign implements MessageResourcesView
     return managerEmailField;
   }
 
-  public TextField getAddressField() {
-    return addressField;
-  }
-
-  public TextField getAddressSecondField() {
-    return addressSecondField;
-  }
-
-  public TextField getTownField() {
-    return townField;
-  }
-
-  public TextField getStateField() {
-    return stateField;
-  }
-
-  public TextField getCountryField() {
-    return countryField;
-  }
-
-  public TextField getPostalCodeField() {
-    return postalCodeField;
-  }
-
-  public Button getClearAddressButton() {
-    return clearAddressButton;
-  }
-
-  public TextField getPhoneNumberField() {
-    return phoneNumberField;
-  }
-
-  public TextField getPhoneExtensionField() {
-    return phoneExtensionField;
-  }
-
   public Button getRegisterButton() {
     return registerButton;
   }
 
   public Label getHeaderLabel() {
     return headerLabel;
-  }
-
-  public Label getAddressHeaderLabel() {
-    return addressHeaderLabel;
-  }
-
-  public Label getPhoneNumberHeaderLabel() {
-    return phoneNumberHeaderLabel;
   }
 
   public Label getRegisterHeaderLabel() {
@@ -160,7 +106,31 @@ public class RegisterView extends RegisterDesign implements MessageResourcesView
     return requiredLabel;
   }
 
-  public Label getLaboratoryHeaderLabel() {
-    return laboratoryHeaderLabel;
+  public Panel getUserPanel() {
+    return userPanel;
+  }
+
+  public UserForm getUserForm() {
+    return userForm;
+  }
+
+  public Panel getAddressPanel() {
+    return addressPanel;
+  }
+
+  public AddressForm getAddressForm() {
+    return addressForm;
+  }
+
+  public Button getClearAddressButton() {
+    return clearAddressButton;
+  }
+
+  public Panel getPhoneNumberPanel() {
+    return phoneNumberPanel;
+  }
+
+  public PhoneNumberForm getPhoneNumberForm() {
+    return phoneNumberForm;
   }
 }

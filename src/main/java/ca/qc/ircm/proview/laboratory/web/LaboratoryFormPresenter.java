@@ -30,12 +30,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 /**
  * Laboratory form presenter.
  */
-@Component
+@Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class LaboratoryFormPresenter {
   public static final String NAME_PROPERTY = QLaboratory.laboratory.name.getMetadata().getName();
@@ -57,14 +57,22 @@ public class LaboratoryFormPresenter {
     this.view = view;
     view.setPresenter(this);
     setFields();
-    bindFields();
-    addFieldListeners();
-    updateEditable();
   }
 
   private void setFields() {
     organizationField = view.getOrganizationField();
     nameField = view.getNameField();
+  }
+
+  /**
+   * Called when view gets attached.
+   */
+  public void attach() {
+    bindFields();
+    addFieldListeners();
+    updateEditable();
+    setCaptions();
+    setRequired();
   }
 
   private void bindFields() {
@@ -83,14 +91,6 @@ public class LaboratoryFormPresenter {
     organizationField.setReadOnly(!editable);
     nameField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
     nameField.setReadOnly(!editable);
-  }
-
-  /**
-   * Called when view gets attached.
-   */
-  public void attach() {
-    setCaptions();
-    setRequired();
   }
 
   private void setCaptions() {

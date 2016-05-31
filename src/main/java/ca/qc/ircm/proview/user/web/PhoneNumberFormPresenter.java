@@ -33,12 +33,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 /**
  * Phone number form presenter.
  */
-@Component
+@Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PhoneNumberFormPresenter {
   public static final String TYPE_PROPERTY = QPhoneNumber.phoneNumber.type.getMetadata().getName();
@@ -64,16 +64,32 @@ public class PhoneNumberFormPresenter {
     this.view = view;
     view.setPresenter(this);
     setFields();
-    bindFields();
-    addFieldListeners();
-    setTypeValues();
-    updateEditable();
   }
 
   private void setFields() {
     typeField = view.getTypeField();
     numberField = view.getNumberField();
     extensionField = view.getExtensionField();
+  }
+
+  /**
+   * Called when view gets attached.
+   */
+  public void attach() {
+    setStyles();
+    bindFields();
+    addFieldListeners();
+    setTypeValues();
+    updateEditable();
+    setCaptions();
+    setRequiredErrors();
+    addValidators();
+  }
+
+  private void setStyles() {
+    typeField.setStyleName(TYPE_PROPERTY);
+    numberField.setStyleName(NUMBER_PROPERTY);
+    extensionField.setStyleName(EXTENSION_PROPERTY);
   }
 
   private void bindFields() {
@@ -97,22 +113,18 @@ public class PhoneNumberFormPresenter {
   }
 
   private void updateEditable() {
-    boolean editable = editableProperty.getValue();
-    typeField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    final boolean editable = editableProperty.getValue();
+    typeField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    numberField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    extensionField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    if (!editable) {
+      typeField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      numberField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      extensionField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    }
     typeField.setReadOnly(!editable);
-    numberField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
     numberField.setReadOnly(!editable);
-    extensionField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
     extensionField.setReadOnly(!editable);
-  }
-
-  /**
-   * Called when view gets attached.
-   */
-  public void attach() {
-    setCaptions();
-    setRequiredErrors();
-    addValidators();
   }
 
   private void setCaptions() {

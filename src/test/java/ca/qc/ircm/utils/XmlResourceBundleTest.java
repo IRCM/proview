@@ -21,22 +21,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.test.config.Rules;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.mockito.Mock;
 
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.ResourceBundle;
 
 public class XmlResourceBundleTest {
-  @Rule
-  public RuleChain rules = Rules.defaultRules(this);
-  @Mock
-  private ResourceBundle parent;
-
   @Test
   public void getString() throws Throwable {
     InputStream input = getClass().getResourceAsStream("/utils/XmlResourceBundleTest.xml");

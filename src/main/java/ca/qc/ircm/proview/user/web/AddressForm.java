@@ -37,12 +37,12 @@ public class AddressForm extends AddressFormDesign implements MessageResourcesCo
     presenter.attach();
   }
 
-  public TextField getAddressField() {
-    return addressField;
+  public TextField getLineField() {
+    return lineField;
   }
 
-  public TextField getAddressSecondField() {
-    return addressSecondField;
+  public TextField getSecondLineField() {
+    return secondLineField;
   }
 
   public TextField getTownField() {

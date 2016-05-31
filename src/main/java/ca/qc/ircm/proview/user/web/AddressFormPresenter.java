@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.user.Address;
+import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.QAddress;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -31,35 +31,35 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
 /**
  * Address form presenter.
  */
-@Component
+@Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddressFormPresenter {
-  public static final String ADDRESS_PROPERTY = QAddress.address1.address.getMetadata().getName();
-  public static final String ADDRESS_SECOND_PROPERTY =
-      QAddress.address1.addressSecond.getMetadata().getName();
-  public static final String TOWN_PROPERTY = QAddress.address1.town.getMetadata().getName();
-  public static final String STATE_PROPERTY = QAddress.address1.state.getMetadata().getName();
-  public static final String COUNTRY_PROPERTY = QAddress.address1.country.getMetadata().getName();
+  public static final String LINE_PROPERTY = QAddress.address.line.getMetadata().getName();
+  public static final String SECOND_LINE_PROPERTY =
+      QAddress.address.secondLine.getMetadata().getName();
+  public static final String TOWN_PROPERTY = QAddress.address.town.getMetadata().getName();
+  public static final String STATE_PROPERTY = QAddress.address.state.getMetadata().getName();
+  public static final String COUNTRY_PROPERTY = QAddress.address.country.getMetadata().getName();
   public static final String POSTAL_CODE_PROPERTY =
-      QAddress.address1.postalCode.getMetadata().getName();
+      QAddress.address.postalCode.getMetadata().getName();
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<Address> addressFieldGroup = new BeanFieldGroup<>(Address.class);
   private AddressForm view;
-  private TextField addressField;
-  private TextField addressSecondField;
+  private TextField lineField;
+  private TextField secondLineField;
   private TextField townField;
   private TextField stateField;
   private TextField countryField;
   private TextField postalCodeField;
   @Inject
-  private ApplicationConfiguration applicationConfiguration;
+  private DefaultAddressConfiguration defaultAddressConfiguration;
 
   /**
    * Initializes presenter.
@@ -71,25 +71,43 @@ public class AddressFormPresenter {
     this.view = view;
     view.setPresenter(this);
     setFields();
-    bindFields();
-    addFieldListeners();
-    setDefaultAddress();
-    updateEditable();
   }
 
   private void setFields() {
-    addressField = view.getAddressField();
-    addressSecondField = view.getAddressSecondField();
+    lineField = view.getLineField();
+    secondLineField = view.getSecondLineField();
     townField = view.getTownField();
     stateField = view.getStateField();
     countryField = view.getCountryField();
     postalCodeField = view.getPostalCodeField();
   }
 
+  /**
+   * Called when view gets attached.
+   */
+  public void attach() {
+    setStyles();
+    bindFields();
+    addFieldListeners();
+    setDefaultAddress();
+    updateEditable();
+    setCaptions();
+    setRequired();
+  }
+
+  private void setStyles() {
+    lineField.setStyleName(LINE_PROPERTY);
+    secondLineField.setStyleName(SECOND_LINE_PROPERTY);
+    townField.setStyleName(TOWN_PROPERTY);
+    stateField.setStyleName(STATE_PROPERTY);
+    countryField.setStyleName(COUNTRY_PROPERTY);
+    postalCodeField.setStyleName(POSTAL_CODE_PROPERTY);
+  }
+
   private void bindFields() {
     addressFieldGroup.setItemDataSource(new BeanItem<>(new Address()));
-    addressFieldGroup.bind(addressField, ADDRESS_PROPERTY);
-    addressFieldGroup.bind(addressSecondField, ADDRESS_SECOND_PROPERTY);
+    addressFieldGroup.bind(lineField, LINE_PROPERTY);
+    addressFieldGroup.bind(secondLineField, SECOND_LINE_PROPERTY);
     addressFieldGroup.bind(townField, TOWN_PROPERTY);
     addressFieldGroup.bind(stateField, STATE_PROPERTY);
     addressFieldGroup.bind(countryField, COUNTRY_PROPERTY);
@@ -100,48 +118,42 @@ public class AddressFormPresenter {
     editableProperty.addValueChangeListener(e -> updateEditable());
   }
 
-  @SuppressWarnings("unchecked")
   private void setDefaultAddress() {
-    addressFieldGroup.getItemDataSource().getItemProperty(ADDRESS_PROPERTY)
-        .setValue(applicationConfiguration.getAddress());
-    addressFieldGroup.getItemDataSource().getItemProperty(TOWN_PROPERTY)
-        .setValue(applicationConfiguration.getTown());
-    addressFieldGroup.getItemDataSource().getItemProperty(STATE_PROPERTY)
-        .setValue(applicationConfiguration.getState());
-    addressFieldGroup.getItemDataSource().getItemProperty(POSTAL_CODE_PROPERTY)
-        .setValue(applicationConfiguration.getPostalCode());
-    addressFieldGroup.getItemDataSource().getItemProperty(COUNTRY_PROPERTY)
-        .setValue(applicationConfiguration.getCountry());
+    lineField.setValue(defaultAddressConfiguration.getAddress());
+    townField.setValue(defaultAddressConfiguration.getTown());
+    stateField.setValue(defaultAddressConfiguration.getState());
+    countryField.setValue(defaultAddressConfiguration.getCountry());
+    postalCodeField.setValue(defaultAddressConfiguration.getPostalCode());
   }
 
   private void updateEditable() {
-    boolean editable = editableProperty.getValue();
-    addressField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    addressField.setReadOnly(!editable);
-    addressSecondField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    addressSecondField.setReadOnly(!editable);
-    townField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    final boolean editable = editableProperty.getValue();
+    lineField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    secondLineField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    townField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    stateField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    countryField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    postalCodeField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    if (!editable) {
+      lineField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      secondLineField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      townField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      stateField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      countryField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      postalCodeField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    }
+    lineField.setReadOnly(!editable);
+    secondLineField.setReadOnly(!editable);
     townField.setReadOnly(!editable);
-    stateField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
     stateField.setReadOnly(!editable);
-    countryField.setStyleName(editable ? "" : ValoTheme.COMBOBOX_BORDERLESS);
     countryField.setReadOnly(!editable);
-    postalCodeField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
     postalCodeField.setReadOnly(!editable);
-  }
-
-  /**
-   * Called when view gets attached.
-   */
-  public void attach() {
-    setCaptions();
-    setRequired();
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    addressField.setCaption(resources.message(ADDRESS_PROPERTY));
-    addressSecondField.setCaption(resources.message(ADDRESS_SECOND_PROPERTY));
+    lineField.setCaption(resources.message(LINE_PROPERTY));
+    secondLineField.setCaption(resources.message(SECOND_LINE_PROPERTY));
     townField.setCaption(resources.message(TOWN_PROPERTY));
     stateField.setCaption(resources.message(STATE_PROPERTY));
     countryField.setCaption(resources.message(COUNTRY_PROPERTY));
@@ -151,8 +163,8 @@ public class AddressFormPresenter {
   private void setRequired() {
     final MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
-    addressField.setRequired(true);
-    addressField.setRequiredError(generalResources.message("required", addressField.getCaption()));
+    lineField.setRequired(true);
+    lineField.setRequiredError(generalResources.message("required", lineField.getCaption()));
     townField.setRequired(true);
     townField.setRequiredError(generalResources.message("required", townField.getCaption()));
     stateField.setRequired(true);

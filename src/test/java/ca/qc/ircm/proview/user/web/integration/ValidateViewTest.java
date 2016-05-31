@@ -22,25 +22,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.test.config.IntegrationTestDatabaseRule;
-import ca.qc.ircm.proview.test.config.Rules;
-import ca.qc.ircm.proview.test.config.Slow;
-import ca.qc.ircm.proview.test.config.TestBenchLicenseRunner;
-import ca.qc.ircm.proview.test.config.TestBenchRule;
+import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.ValidateView;
+import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashSet;
 import java.util.List;
@@ -48,30 +43,16 @@ import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-@RunWith(TestBenchLicenseRunner.class)
-@Slow
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestBenchTestAnnotations
 @WithSubject
 public class ValidateViewTest extends ValidatePageObject {
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewTest.class);
-  public TestBenchRule testBenchRule = new TestBenchRule(this);
-  public IntegrationTestDatabaseRule integrationTestDatabaseRule =
-      new IntegrationTestDatabaseRule();
-  @Rule
-  public RuleChain rules =
-      Rules.defaultRules(this).around(testBenchRule).around(integrationTestDatabaseRule);
+  @PersistenceContext
   private EntityManager entityManager;
-
-  @Before
-  public void beforeTest() throws Throwable {
-    entityManager = integrationTestDatabaseRule.getEntityManager();
-  }
-
-  @Override
-  protected String getBaseUrl() {
-    return testBenchRule.getBaseUrl();
-  }
 
   private User getUser(String email) {
     JPAQuery<User> query = new JPAQuery<>(entityManager);
@@ -84,7 +65,7 @@ public class ValidateViewTest extends ValidatePageObject {
   public void title() throws Throwable {
     open();
 
-    Set<Locale> locales = Rules.getLocales();
+    Set<Locale> locales = WebConstants.getLocales();
     Set<String> titles = new HashSet<>();
     for (Locale locale : locales) {
       titles.add(new MessageResource(ValidateView.class, locale).message("title"));
@@ -126,10 +107,7 @@ public class ValidateViewTest extends ValidatePageObject {
 
     clickValidateUser(email);
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + ValidateView.VIEW_NAME,
-        getDriver().getCurrentUrl());
-    entityManager.getTransaction().commit();
-    entityManager.getTransaction().begin();
+    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = getUser(email);
     assertNotNull(user);
     assertEquals(email, user.getEmail());
@@ -160,10 +138,7 @@ public class ValidateViewTest extends ValidatePageObject {
 
     clickValidateSelected();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + ValidateView.VIEW_NAME,
-        getDriver().getCurrentUrl());
-    entityManager.getTransaction().commit();
-    entityManager.getTransaction().begin();
+    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = getUser(email);
     assertNotNull(user);
     assertEquals(email, user.getEmail());
@@ -178,15 +153,13 @@ public class ValidateViewTest extends ValidatePageObject {
   @Test
   public void validateSelected_Many() throws Throwable {
     open();
-    String[] emails = new String[] { "robert.stlouis@ircm.qc.ca", "nicole.francis@ircm.qc.ca" };
+    String[] emails =
+        new String[] { "robert.stlouis@ircm.qc.ca", "nicole.francis@ircm.qc.ca" };
     selectUsers(emails);
 
     clickValidateSelected();
 
-    assertEquals(testBenchRule.getBaseUrl() + "/#!" + ValidateView.VIEW_NAME,
-        getDriver().getCurrentUrl());
-    entityManager.getTransaction().commit();
-    entityManager.getTransaction().begin();
+    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
     for (String email : emails) {
       User user = getUser(email);
       assertNotNull(user);
