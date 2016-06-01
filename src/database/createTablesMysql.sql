@@ -18,14 +18,23 @@
 DROP TABLE IF EXISTS laboratorymanager;
 DROP TABLE IF EXISTS laboratoryuser;
 DROP TABLE IF EXISTS phonenumber;
-DROP TABLE IF EXISTS address;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS address;
 DROP TABLE IF EXISTS laboratory;
 
 CREATE TABLE laboratory (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   organization varchar(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+CREATE TABLE address (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  line varchar(200) NOT NULL,
+  town varchar(50) NOT NULL,
+  state varchar(50) NOT NULL,
+  country varchar(50) NOT NULL,
+  postalCode varchar(50) NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE TABLE users (
@@ -36,25 +45,14 @@ CREATE TABLE users (
   salt varchar(255) DEFAULT NULL,
   passwordVersion int(10) DEFAULT NULL,
   locale varchar(50) DEFAULT NULL,
+  addressId bigint(20) DEFAULT NULL,
   active tinyint(1) NOT NULL DEFAULT '0',
   valid tinyint(1) NOT NULL DEFAULT '0',
-  proteomic tinyint(1) NOT NULL DEFAULT '0',
+  admin tinyint(1) NOT NULL DEFAULT '0',
   registerTime datetime DEFAULT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY email (email)
-);
-CREATE TABLE address (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  userId bigint(20) DEFAULT NULL,
-  address varchar(150) NOT NULL,
-  address2 varchar(150) DEFAULT NULL,
-  town varchar(50) NOT NULL,
-  state varchar(50) NOT NULL,
-  country varchar(50) NOT NULL,
-  postalCode varchar(50) NOT NULL,
-  billing tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (id),
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+  UNIQUE KEY email (email),
+  FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 CREATE TABLE phonenumber (
   id bigint(20) NOT NULL AUTO_INCREMENT,

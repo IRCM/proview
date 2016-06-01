@@ -46,7 +46,6 @@ CREATE TABLE users (
   passwordVersion int(10) DEFAULT NULL,
   locale varchar(50) DEFAULT NULL,
   addressId bigint(20) DEFAULT NULL,
-  defaultProjectId bigint(20) DEFAULT NULL,
   active tinyint(1) NOT NULL DEFAULT '0',
   valid tinyint(1) NOT NULL DEFAULT '0',
   admin tinyint(1) NOT NULL DEFAULT '0',
