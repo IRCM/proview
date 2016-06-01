@@ -78,7 +78,6 @@
     <h2-maven-plugin.version>1.0</h2-maven-plugin.version>
     <mojolicense-maven-plugin.version>1.8</mojolicense-maven-plugin.version>
     <h2.port>9092</h2.port>
-    <java.executable>${java.home}/bin/java</java.executable>
     <database.url>jdbc:h2:tcp://localhost:${h2.port}/mem:proview;DB_CLOSE_DELAY=-1</database.url>
     <integration-database.mainclass>ca.qc.ircm.proview.test.config.IntegrationTestDatabase</integration-database.mainclass>
   </properties>
@@ -732,17 +731,6 @@
     </plugins>
   </reporting>
   <profiles>
-    <profile>
-      <id>windows</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
-      <properties>
-        <java.executable>${java.home}/bin/java.exe</java.executable>
-      </properties>
-    </profile>
     <profile>
       <id>vaadin-repository</id>
       <activation>
