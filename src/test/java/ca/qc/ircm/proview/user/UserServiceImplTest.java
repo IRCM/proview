@@ -149,7 +149,6 @@ public class UserServiceImplTest {
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
     Address address = user.getAddress();
     assertEquals("110, avenue des Pins Ouest", address.getLine());
-    assertEquals(null, address.getSecondLine());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -188,7 +187,6 @@ public class UserServiceImplTest {
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
     Address address = user.getAddress();
     assertEquals("110, avenue des Pins Ouest", address.getLine());
-    assertEquals(null, address.getSecondLine());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -397,7 +395,6 @@ public class UserServiceImplTest {
     user.setAdmin(true);
     Address address = new Address();
     address.setLine("110 av des Pins Ouest");
-    address.setSecondLine("2640");
     address.setTown("Montréal");
     address.setState("Québec");
     address.setPostalCode("H2W 1R7");
@@ -434,7 +431,6 @@ public class UserServiceImplTest {
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
     address = user.getAddress();
     assertEquals("110 av des Pins Ouest", address.getLine());
-    assertEquals("2640", address.getSecondLine());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -461,7 +457,6 @@ public class UserServiceImplTest {
     user.setLocale(Locale.CANADA_FRENCH);
     Address address = new Address();
     address.setLine("110 av des Pins Ouest");
-    address.setSecondLine("2640");
     address.setTown("Montréal");
     address.setState("Québec");
     address.setPostalCode("H2W 1R7");
@@ -499,7 +494,6 @@ public class UserServiceImplTest {
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
     address = user.getAddress();
     assertEquals("110 av des Pins Ouest", address.getLine());
-    assertEquals("2640", address.getSecondLine());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -541,7 +535,6 @@ public class UserServiceImplTest {
     user.setLocale(Locale.CANADA_FRENCH);
     Address address = new Address();
     address.setLine("110 av des Pins Ouest");
-    address.setSecondLine("2640");
     address.setTown("Montréal");
     address.setState("Québec");
     address.setPostalCode("H2W 1R7");
@@ -576,7 +569,6 @@ public class UserServiceImplTest {
     user.setLocale(Locale.CANADA);
     Address address = new Address();
     address.setLine("110 av des Pins Ouest");
-    address.setSecondLine("2640");
     address.setTown("Montréal");
     address.setState("Québec");
     address.setPostalCode("H2W 1R7");
@@ -616,7 +608,6 @@ public class UserServiceImplTest {
     assertEquals(Locale.CANADA, user.getLocale());
     address = user.getAddress();
     assertEquals("110 av des Pins Ouest", address.getLine());
-    assertEquals("2640", address.getSecondLine());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -673,7 +664,6 @@ public class UserServiceImplTest {
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
     Address address = user.getAddress();
     assertEquals("110, avenue des Pins Ouest", address.getLine());
-    assertEquals(null, address.getSecondLine());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());
@@ -692,7 +682,6 @@ public class UserServiceImplTest {
     user.setLocale(Locale.US);
     address = new Address();
     address.setLine("110 av des Pins West");
-    address.setSecondLine("2640");
     address.setTown("Montreal");
     address.setState("Quebec");
     address.setPostalCode("H2W 1R8");
@@ -729,7 +718,6 @@ public class UserServiceImplTest {
     assertEquals(Locale.US, user.getLocale());
     address = user.getAddress();
     assertEquals("110 av des Pins West", address.getLine());
-    assertEquals("2640", address.getSecondLine());
     assertEquals("Montreal", address.getTown());
     assertEquals("Quebec", address.getState());
     assertEquals("H2W 1R8", address.getPostalCode());

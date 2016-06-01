@@ -68,7 +68,6 @@ public class RegisterViewTest extends RegisterPageObject {
   private String laboratoryName = "Test lab";
   private String organization = "IRCM";
   private String addressLine = "123 Papineau";
-  private String addressSecondLine = "2640";
   private String town = "Laval";
   private String state = "Ontario";
   private String country = "USA";
@@ -140,9 +139,6 @@ public class RegisterViewTest extends RegisterPageObject {
     current = addressLineField().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = addressSecondLineField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
     current = townField().getLocation().y;
     assertTrue(previous < current);
     previous = current;
@@ -201,7 +197,6 @@ public class RegisterViewTest extends RegisterPageObject {
       setManagerEmail(managerEmail);
     }
     setAddressLine(addressLine);
-    setAddressSecondLine(addressSecondLine);
     setTown(town);
     setState(state);
     setCountry(country);
@@ -245,7 +240,6 @@ public class RegisterViewTest extends RegisterPageObject {
     assertNotNull(user.getLocale());
     Address userAddress = user.getAddress();
     assertEquals(addressLine, userAddress.getLine());
-    assertEquals(addressSecondLine, userAddress.getSecondLine());
     assertEquals(town, userAddress.getTown());
     assertEquals(state, userAddress.getState());
     assertEquals(postalCode, userAddress.getPostalCode());
@@ -291,7 +285,6 @@ public class RegisterViewTest extends RegisterPageObject {
     assertNotNull(user.getLocale());
     Address userAddress = user.getAddress();
     assertEquals(addressLine, userAddress.getLine());
-    assertEquals(addressSecondLine, userAddress.getSecondLine());
     assertEquals(town, userAddress.getTown());
     assertEquals(state, userAddress.getState());
     assertEquals(postalCode, userAddress.getPostalCode());

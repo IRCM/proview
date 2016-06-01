@@ -65,15 +65,13 @@ public class ViewUserFormPresenter {
   public static final String PHONE_NUMBERS_PROPERTY =
       QUser.user.phoneNumbers.getMetadata().getName();
   public static final String LINE_PROPERTY = QAddress.address.line.getMetadata().getName();
-  public static final String SECOND_LINE_PROPERTY =
-      QAddress.address.secondLine.getMetadata().getName();
   public static final String TOWN_PROPERTY = QAddress.address.town.getMetadata().getName();
   public static final String STATE_PROPERTY = QAddress.address.state.getMetadata().getName();
   public static final String COUNTRY_PROPERTY = QAddress.address.country.getMetadata().getName();
   public static final String POSTAL_CODE_PROPERTY =
       QAddress.address.postalCode.getMetadata().getName();
-  public static final Object[] ADDRESS_COLUMNS = new Object[] { LINE_PROPERTY, SECOND_LINE_PROPERTY,
-      TOWN_PROPERTY, STATE_PROPERTY, COUNTRY_PROPERTY, POSTAL_CODE_PROPERTY };
+  public static final Object[] ADDRESS_COLUMNS = new Object[] { LINE_PROPERTY, TOWN_PROPERTY,
+      STATE_PROPERTY, COUNTRY_PROPERTY, POSTAL_CODE_PROPERTY };
   private static final Logger logger = LoggerFactory.getLogger(ViewUserFormPresenter.class);
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private ObjectProperty<String> passwordProperty = new ObjectProperty<>(null, String.class);

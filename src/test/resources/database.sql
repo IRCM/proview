@@ -30,8 +30,7 @@ CREATE TABLE laboratory (
 );
 CREATE TABLE address (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  line varchar(150) NOT NULL,
-  secondLine varchar(150) DEFAULT NULL,
+  line varchar(200) NOT NULL,
   town varchar(50) NOT NULL,
   state varchar(50) NOT NULL,
   country varchar(50) NOT NULL,
@@ -93,28 +92,28 @@ INSERT INTO laboratory (id,name,organization)
 VALUES ('4', 'Biochemistry of Epigenetic Inheritance', 'IRCM');
 INSERT INTO laboratory (id,name,organization)
 VALUES ('5', 'Génétique moléculaire et développement', 'IRCM');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('1', '110, avenue des Pins Ouest', '1234', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('2', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('3', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('4', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('5', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('6', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('7', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('8', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('9', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('10', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,secondLine,town,state,country,postalCode)
-VALUES ('11', '110, avenue des Pins Ouest', null, 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('1', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('2', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('3', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('4', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('5', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('6', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('7', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('8', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('9', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('10', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('11', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
 INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,admin,registerTime)
 VALUES ('1', 'proview@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', 'Robot', null, null, '1', '1', '1', NULL);
 INSERT INTO users (id,email,password,salt,passwordVersion,name,locale,addressId,active,valid,admin,registerTime)

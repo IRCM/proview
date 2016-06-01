@@ -101,7 +101,6 @@ public class AuthorizationServiceImplTest {
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
     Address address = user.getAddress();
     assertEquals("110, avenue des Pins Ouest", address.getLine());
-    assertEquals(null, address.getSecondLine());
     assertEquals("Montréal", address.getTown());
     assertEquals("Québec", address.getState());
     assertEquals("H2W 1R7", address.getPostalCode());

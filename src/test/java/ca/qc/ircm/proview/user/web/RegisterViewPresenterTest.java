@@ -135,7 +135,6 @@ public class RegisterViewPresenterTest {
   private String laboratoryName = "Test lab";
   private String organization = "IRCM";
   private String addressLine = "123 Papineau";
-  private String addressSecondLine = "2640";
   private String town = "Laval";
   private String state = "Ontario";
   private String country = "USA";
@@ -207,9 +206,6 @@ public class RegisterViewPresenterTest {
     Item addressItem = addressItemCaptor.getValue();
     view.getAddressForm().getLineField().setValue(addressLine);
     addressItem.getItemProperty(AddressFormPresenter.LINE_PROPERTY).setValue(addressLine);
-    view.getAddressForm().getSecondLineField().setValue(addressSecondLine);
-    addressItem.getItemProperty(AddressFormPresenter.SECOND_LINE_PROPERTY)
-        .setValue(addressSecondLine);
     view.getAddressForm().getTownField().setValue(town);
     addressItem.getItemProperty(AddressFormPresenter.TOWN_PROPERTY).setValue(town);
     view.getAddressForm().getStateField().setValue(state);
@@ -450,7 +446,6 @@ public class RegisterViewPresenterTest {
     assertNotNull(user.getAddress());
     Address address = user.getAddress();
     assertEquals(this.addressLine, address.getLine());
-    assertEquals(addressSecondLine, address.getSecondLine());
     assertEquals(town, address.getTown());
     assertEquals(state, address.getState());
     assertEquals(country, address.getCountry());
@@ -494,7 +489,6 @@ public class RegisterViewPresenterTest {
     assertNotNull(user.getAddress());
     Address address = user.getAddress();
     assertEquals(this.addressLine, address.getLine());
-    assertEquals(addressSecondLine, address.getSecondLine());
     assertEquals(town, address.getTown());
     assertEquals(state, address.getState());
     assertEquals(country, address.getCountry());

@@ -44,17 +44,11 @@ public class Address implements Serializable {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
-   * First line of address.
+   * Address line.
    */
   @Column(name = "line", nullable = false)
-  @Size(max = 150)
+  @Size(max = 200)
   private String line;
-  /**
-   * Second line of address.
-   */
-  @Column(name = "secondLine")
-  @Size(max = 150)
-  private String secondLine;
   /**
    * Town.
    */
@@ -99,14 +93,6 @@ public class Address implements Serializable {
 
   public void setLine(String line) {
     this.line = line;
-  }
-
-  public String getSecondLine() {
-    return secondLine;
-  }
-
-  public void setSecondLine(String secondLine) {
-    this.secondLine = secondLine;
   }
 
   public String getTown() {

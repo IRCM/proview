@@ -42,8 +42,6 @@ import javax.inject.Inject;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddressFormPresenter {
   public static final String LINE_PROPERTY = QAddress.address.line.getMetadata().getName();
-  public static final String SECOND_LINE_PROPERTY =
-      QAddress.address.secondLine.getMetadata().getName();
   public static final String TOWN_PROPERTY = QAddress.address.town.getMetadata().getName();
   public static final String STATE_PROPERTY = QAddress.address.state.getMetadata().getName();
   public static final String COUNTRY_PROPERTY = QAddress.address.country.getMetadata().getName();
@@ -53,7 +51,6 @@ public class AddressFormPresenter {
   private BeanFieldGroup<Address> addressFieldGroup = new BeanFieldGroup<>(Address.class);
   private AddressForm view;
   private TextField lineField;
-  private TextField secondLineField;
   private TextField townField;
   private TextField stateField;
   private TextField countryField;
@@ -75,7 +72,6 @@ public class AddressFormPresenter {
 
   private void setFields() {
     lineField = view.getLineField();
-    secondLineField = view.getSecondLineField();
     townField = view.getTownField();
     stateField = view.getStateField();
     countryField = view.getCountryField();
@@ -97,7 +93,6 @@ public class AddressFormPresenter {
 
   private void setStyles() {
     lineField.setStyleName(LINE_PROPERTY);
-    secondLineField.setStyleName(SECOND_LINE_PROPERTY);
     townField.setStyleName(TOWN_PROPERTY);
     stateField.setStyleName(STATE_PROPERTY);
     countryField.setStyleName(COUNTRY_PROPERTY);
@@ -107,7 +102,6 @@ public class AddressFormPresenter {
   private void bindFields() {
     addressFieldGroup.setItemDataSource(new BeanItem<>(new Address()));
     addressFieldGroup.bind(lineField, LINE_PROPERTY);
-    addressFieldGroup.bind(secondLineField, SECOND_LINE_PROPERTY);
     addressFieldGroup.bind(townField, TOWN_PROPERTY);
     addressFieldGroup.bind(stateField, STATE_PROPERTY);
     addressFieldGroup.bind(countryField, COUNTRY_PROPERTY);
@@ -129,21 +123,18 @@ public class AddressFormPresenter {
   private void updateEditable() {
     final boolean editable = editableProperty.getValue();
     lineField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-    secondLineField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     townField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     stateField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     countryField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     postalCodeField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     if (!editable) {
       lineField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-      secondLineField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
       townField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
       stateField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
       countryField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
       postalCodeField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     }
     lineField.setReadOnly(!editable);
-    secondLineField.setReadOnly(!editable);
     townField.setReadOnly(!editable);
     stateField.setReadOnly(!editable);
     countryField.setReadOnly(!editable);
@@ -153,7 +144,6 @@ public class AddressFormPresenter {
   private void setCaptions() {
     MessageResource resources = view.getResources();
     lineField.setCaption(resources.message(LINE_PROPERTY));
-    secondLineField.setCaption(resources.message(SECOND_LINE_PROPERTY));
     townField.setCaption(resources.message(TOWN_PROPERTY));
     stateField.setCaption(resources.message(STATE_PROPERTY));
     countryField.setCaption(resources.message(COUNTRY_PROPERTY));

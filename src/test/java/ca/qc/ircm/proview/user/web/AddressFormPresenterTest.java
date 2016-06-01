@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.user.web.AddressFormPresenter.COUNTRY_PROPERTY;
 import static ca.qc.ircm.proview.user.web.AddressFormPresenter.LINE_PROPERTY;
 import static ca.qc.ircm.proview.user.web.AddressFormPresenter.POSTAL_CODE_PROPERTY;
-import static ca.qc.ircm.proview.user.web.AddressFormPresenter.SECOND_LINE_PROPERTY;
 import static ca.qc.ircm.proview.user.web.AddressFormPresenter.STATE_PROPERTY;
 import static ca.qc.ircm.proview.user.web.AddressFormPresenter.TOWN_PROPERTY;
 import static org.junit.Assert.assertEquals;
@@ -68,7 +67,6 @@ public class AddressFormPresenterTest {
   private String defaultCountry = "Canada";
   private String defaultPostalCode = "H2W 1R7";
   private String line = "123 Papineau";
-  private String secondLine = "2640";
   private String town = "Laval";
   private String state = "Ontario";
   private String country = "USA";
@@ -92,7 +90,6 @@ public class AddressFormPresenterTest {
 
   private void setFields() {
     view.getLineField().setValue(line);
-    view.getSecondLineField().setValue(secondLine);
     view.getTownField().setValue(town);
     view.getStateField().setValue(state);
     view.getCountryField().setValue(country);
@@ -110,7 +107,6 @@ public class AddressFormPresenterTest {
   @Test
   public void styles() {
     assertTrue(view.getLineField().getStyleName().contains(LINE_PROPERTY));
-    assertTrue(view.getSecondLineField().getStyleName().contains(SECOND_LINE_PROPERTY));
     assertTrue(view.getTownField().getStyleName().contains(TOWN_PROPERTY));
     assertTrue(view.getStateField().getStyleName().contains(STATE_PROPERTY));
     assertTrue(view.getCountryField().getStyleName().contains(COUNTRY_PROPERTY));
@@ -120,7 +116,6 @@ public class AddressFormPresenterTest {
   @Test
   public void captions() {
     assertEquals(resources.message(LINE_PROPERTY), view.getLineField().getCaption());
-    assertEquals(resources.message(SECOND_LINE_PROPERTY), view.getSecondLineField().getCaption());
     assertEquals(resources.message(TOWN_PROPERTY), view.getTownField().getCaption());
     assertEquals(resources.message(STATE_PROPERTY), view.getStateField().getCaption());
     assertEquals(resources.message(COUNTRY_PROPERTY), view.getCountryField().getCaption());
@@ -150,8 +145,6 @@ public class AddressFormPresenterTest {
   public void editable_Default() {
     assertTrue(view.getLineField().isReadOnly());
     assertTrue(view.getLineField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getSecondLineField().isReadOnly());
-    assertTrue(view.getSecondLineField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
     assertTrue(view.getTownField().isReadOnly());
     assertTrue(view.getTownField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
     assertTrue(view.getStateField().isReadOnly());
@@ -168,8 +161,6 @@ public class AddressFormPresenterTest {
 
     assertFalse(view.getLineField().isReadOnly());
     assertFalse(view.getLineField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getSecondLineField().isReadOnly());
-    assertFalse(view.getSecondLineField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
     assertFalse(view.getTownField().isReadOnly());
     assertFalse(view.getTownField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
     assertFalse(view.getStateField().isReadOnly());
@@ -186,8 +177,6 @@ public class AddressFormPresenterTest {
 
     assertTrue(view.getLineField().isReadOnly());
     assertTrue(view.getLineField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getSecondLineField().isReadOnly());
-    assertTrue(view.getSecondLineField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
     assertTrue(view.getTownField().isReadOnly());
     assertTrue(view.getTownField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
     assertTrue(view.getStateField().isReadOnly());
@@ -201,7 +190,6 @@ public class AddressFormPresenterTest {
   @Test
   public void defaults() throws Throwable {
     assertEquals(defaultAddress, view.getLineField().getValue());
-    assertEquals(null, view.getSecondLineField().getValue());
     assertEquals(defaultTown, view.getTownField().getValue());
     assertEquals(defaultState, view.getStateField().getValue());
     assertEquals(defaultCountry, view.getCountryField().getValue());
@@ -217,7 +205,6 @@ public class AddressFormPresenterTest {
     assertTrue(presenter.isValid());
     presenter.commit();
     assertEquals(line, address.getLine());
-    assertEquals(secondLine, address.getSecondLine());
     assertEquals(town, address.getTown());
     assertEquals(state, address.getState());
     assertEquals(country, address.getCountry());
@@ -239,18 +226,6 @@ public class AddressFormPresenterTest {
     } catch (CommitException e) {
       // Success.
     }
-  }
-
-  @Test
-  public void secondLine_Empty() throws Throwable {
-    presenter.setItemDataSource(item);
-    presenter.setEditable(true);
-    setFields();
-    view.getSecondLineField().setValue("");
-
-    assertTrue(view.getSecondLineField().isValid());
-    assertTrue(presenter.isValid());
-    presenter.commit();
   }
 
   @Test

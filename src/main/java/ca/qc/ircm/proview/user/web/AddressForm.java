@@ -41,10 +41,6 @@ public class AddressForm extends AddressFormDesign implements MessageResourcesCo
     return lineField;
   }
 
-  public TextField getSecondLineField() {
-    return secondLineField;
-  }
-
   public TextField getTownField() {
     return townField;
   }

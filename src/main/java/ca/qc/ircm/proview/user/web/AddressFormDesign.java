@@ -19,7 +19,6 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class AddressFormDesign extends FormLayout {
   protected TextField lineField;
-  protected TextField secondLineField;
   protected TextField townField;
   protected TextField stateField;
   protected TextField countryField;

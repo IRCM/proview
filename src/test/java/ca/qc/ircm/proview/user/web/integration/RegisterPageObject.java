@@ -208,19 +208,6 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
     addressLineField().setValue(value);
   }
 
-  protected TextFieldElement addressSecondLineField() {
-    return wrap(TextFieldElement.class,
-        addressFormElement(AddressFormPresenter.SECOND_LINE_PROPERTY));
-  }
-
-  protected String getAddressSecondLine() {
-    return addressSecondLineField().getValue();
-  }
-
-  protected void setAddressSecondLine(String value) {
-    addressSecondLineField().setValue(value);
-  }
-
   protected TextFieldElement townField() {
     return wrap(TextFieldElement.class, addressFormElement(AddressFormPresenter.TOWN_PROPERTY));
   }
