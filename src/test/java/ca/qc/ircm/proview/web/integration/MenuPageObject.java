@@ -17,45 +17,23 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE_STYLE;
+import static ca.qc.ircm.proview.web.Menu.HELP_STYLE;
+import static ca.qc.ircm.proview.web.Menu.HOME_STYLE;
+import static ca.qc.ircm.proview.web.Menu.MANAGER_STYLE;
+import static ca.qc.ircm.proview.web.Menu.VALIDATE_USERS_STYLE;
+
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.web.MainView;
-import ca.qc.ircm.proview.web.Menu;
-import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.MenuBarElement;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-
-import java.util.Locale;
 
 public abstract class MenuPageObject extends AbstractTestBenchTestCase {
-  private Locale[] locales = new Locale[] { Locale.ENGLISH, Locale.FRENCH };
-
   protected void open() {
     openView(MainView.VIEW_NAME);
   }
 
-  private MessageResource getResources(Locale locale) {
-    return new MessageResource(Menu.class, locale);
-  }
-
   private void clickMenuItemByStyle(String className) {
-    menu().findElement(org.openqa.selenium.By.className("v-menubar-menuitem-" + className)).click();
-  }
-
-  private void clickMenuItem(String itemKey) {
-    try {
-      for (Locale locale : locales) {
-        String item = getResources(locale).message(itemKey);
-        try {
-          menu().clickItem(item);
-          break;
-        } catch (NoSuchElementException e) {
-          // Wrong locale.
-        }
-      }
-    } catch (StaleElementReferenceException e) {
-      // Thrown when page changes.
-    }
+    findElement(org.openqa.selenium.By.className("v-menubar-menuitem-" + className)).click();
   }
 
   protected MenuBarElement menu() {
@@ -63,19 +41,19 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected void clickHome() {
-    clickMenuItem("home");
+    clickMenuItemByStyle(HOME_STYLE);
   }
 
   protected void clickChangeLanguage() {
-    clickMenuItem("changeLanguage");
+    clickMenuItemByStyle(CHANGE_LANGUAGE_STYLE);
   }
 
   protected void clickValidateUsers() {
-    clickMenuItem("manager");
-    clickMenuItem("validateUsers");
+    clickMenuItemByStyle(MANAGER_STYLE);
+    clickMenuItemByStyle(VALIDATE_USERS_STYLE);
   }
 
   protected void clickHelp() {
-    clickMenuItem("help");
+    clickMenuItemByStyle(HELP_STYLE);
   }
 }

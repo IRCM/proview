@@ -38,7 +38,11 @@ import javax.inject.Inject;
  * Menu.
  */
 public class Menu extends CustomComponent implements MessageResourcesComponent {
-  public static final String CHANGE_PROJECT_STYLE = "changeProject";
+  public static final String HOME_STYLE = "home";
+  public static final String CHANGE_LANGUAGE_STYLE = "changeLanguage";
+  public static final String MANAGER_STYLE = "manager";
+  public static final String VALIDATE_USERS_STYLE = "validateUsers";
+  public static final String HELP_STYLE = "help";
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
   private MenuBar menu = new MenuBar();
@@ -78,15 +82,20 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   }
 
   private void setStyles() {
+    home.setStyleName(HOME_STYLE);
+    changeLanguage.setStyleName(CHANGE_LANGUAGE_STYLE);
+    manager.setStyleName(MANAGER_STYLE);
+    validateUsers.setStyleName(VALIDATE_USERS_STYLE);
+    help.setStyleName(HELP_STYLE);
   }
 
   private void setCaptions() {
     MessageResource resources = getResources();
-    home.setText(resources.message("home"));
-    changeLanguage.setText(resources.message("changeLanguage"));
-    manager.setText(resources.message("manager"));
-    validateUsers.setText(resources.message("validateUsers"));
-    help.setText(resources.message("help"));
+    home.setText(resources.message(HOME_STYLE));
+    changeLanguage.setText(resources.message(CHANGE_LANGUAGE_STYLE));
+    manager.setText(resources.message(MANAGER_STYLE));
+    validateUsers.setText(resources.message(VALIDATE_USERS_STYLE));
+    help.setText(resources.message(HELP_STYLE));
   }
 
   private void injectBeans() {
