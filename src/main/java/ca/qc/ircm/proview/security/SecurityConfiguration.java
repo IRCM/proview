@@ -27,15 +27,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
@@ -47,73 +42,53 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties(prefix = SecurityConfiguration.PREFIX)
 public class SecurityConfiguration {
   public static final String PREFIX = "security";
-  public static final String PASSWORD_NAME_PATTERN = "(\\w+)\\.(version|algorithm|iterations)";
-  public static final String PASSWORD_VERSION = "version";
-  public static final String PASSWORD_ALGORITHM = "algorithm";
-  public static final String PASSWORD_ITERATIONS = "iterations";
   private static final String HEX_BEGIN_TOKEN = "0x";
   private static final Logger logger = LoggerFactory.getLogger(SecurityConfiguration.class);
   private String cipherKey;
-  private Map<String, String> passwords;
-  private List<PasswordVersion> passwordVersions;
+  private List<PasswordVersion> passwords;
 
   @PostConstruct
   protected void processPasswords() {
-    passwordVersions = new ArrayList<>();
-    Set<String> passwordVersionNames = new HashSet<>();
-    Pattern namePattern = Pattern.compile(PASSWORD_NAME_PATTERN);
-    for (String key : passwords.keySet()) {
-      Matcher matcher = namePattern.matcher(key);
-      if (matcher.matches()) {
-        passwordVersionNames.add(matcher.group(1));
-      }
-    }
-    boolean valid = validatePasswordConfiguration(passwordVersionNames);
+    boolean valid = validatePasswordConfiguration();
     if (!valid) {
       throw new IllegalStateException("Password configuration is invalid");
     }
-    for (String name : passwordVersionNames) {
-      PasswordVersion passwordVersion = new PasswordVersion();
-      passwordVersion.setVersion(Integer.parseInt(passwords.get(name + "." + PASSWORD_VERSION)));
-      passwordVersion.setAlgorithm(passwords.get(name + "." + PASSWORD_ALGORITHM));
-      passwordVersion
-          .setIterations(Integer.parseInt(passwords.get(name + "." + PASSWORD_ITERATIONS)));
-      passwordVersions.add(passwordVersion);
-    }
-    Collections.sort(passwordVersions, new PasswordVersionComparator());
-    Collections.reverse(passwordVersions);
+    Collections.sort(passwords, new PasswordVersionComparator());
+    Collections.reverse(passwords);
   }
 
-  private boolean validatePasswordConfiguration(Collection<String> passwordVersionNames) {
+  private boolean validatePasswordConfiguration() {
     boolean valid = true;
-    if (passwordVersionNames.isEmpty()) {
+    if (passwords.isEmpty()) {
       logger.error("No password configuration");
       valid = false;
     }
-    for (String name : passwordVersionNames) {
-      String version = passwords.get(name + "." + PASSWORD_VERSION);
-      String algorithm = passwords.get(name + "." + PASSWORD_ALGORITHM);
-      String iterations = passwords.get(name + "." + PASSWORD_ITERATIONS);
+    Set<Integer> versions = new HashSet<>();
+    for (int i = 0; i < passwords.size(); i++) {
+      PasswordVersion passwordVersion = passwords.get(i);
+      int version = passwordVersion.getVersion();
+      String algorithm = passwordVersion.getAlgorithm();
+      int iterations = passwordVersion.getIterations();
       if (algorithm == null) {
-        valid = false;
-      }
-      try {
-        Integer.parseInt(version);
-      } catch (NumberFormatException e) {
-        logger.error("Password version {} is invalid for {}", version, name);
-        valid = false;
-      }
-      try {
-        Integer.parseInt(iterations);
-      } catch (NumberFormatException e) {
-        logger.error("Password iterations {} is invalid for {}", version, name);
+        logger.error("Algorithm undefined for password", algorithm, i);
         valid = false;
       }
       if (valid) {
+        if (version <= 0) {
+          logger.error("Version {} is invalid for password {}", version, i);
+          valid = false;
+        } else if (!versions.add(version)) {
+          logger.error("Version {} already defined in a previous password", algorithm, version);
+          valid = false;
+        }
+        if (iterations <= 0) {
+          logger.error("Iterations {} is invalid for password {}", iterations, i);
+          valid = false;
+        }
         try {
-          new SimpleHash(algorithm, "password", "salt", Integer.parseInt(iterations));
+          new SimpleHash(algorithm, "password", "salt", iterations);
         } catch (UnknownAlgorithmException e) {
-          logger.error("Password algorithm {} is invalid for {}", algorithm, name);
+          logger.error("Algorithm {} is invalid for password {}", algorithm, i);
           valid = false;
         }
       }
@@ -121,12 +96,12 @@ public class SecurityConfiguration {
     return valid;
   }
 
-  public PasswordVersion getPasswordVersion() {
-    return !passwordVersions.isEmpty() ? passwordVersions.get(0) : null;
+  public List<PasswordVersion> getPasswordVersions() {
+    return passwords;
   }
 
-  public List<PasswordVersion> getPasswordVersions() {
-    return passwordVersions;
+  public PasswordVersion getPasswordVersion() {
+    return !passwords.isEmpty() ? passwords.get(0) : null;
   }
 
   public byte[] getCipherKeyBytes() {
@@ -149,11 +124,11 @@ public class SecurityConfiguration {
     this.cipherKey = cipherKey;
   }
 
-  public Map<String, String> getPasswords() {
+  public List<PasswordVersion> getPasswords() {
     return passwords;
   }
 
-  public void setPasswords(Map<String, String> passwords) {
+  public void setPasswords(List<PasswordVersion> passwords) {
     this.passwords = passwords;
   }
 }

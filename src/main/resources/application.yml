@@ -42,8 +42,7 @@ vaadin:
 security:
   cipherKey: '0x2c9bff536d5bb8ae5550c93cdadace1b'
   passwords:
-    password:
-      version: 1
+    - version: 1
       algorithm: SHA-256
       iterations: 1000
 
@@ -72,8 +71,7 @@ spring:
 security:
   cipherKey: 'AcEG7RqLxcP6enoSBJKNjA=='
   passwords:
-    password:
-      version: 1
+    - version: 1
       algorithm: SHA-256
       iterations: 1000
 

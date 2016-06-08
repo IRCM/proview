@@ -27,9 +27,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -66,16 +65,13 @@ public class SecurityConfigurationTest {
   @Test
   public void multiplePasswordVersions() throws Throwable {
     securityConfiguration = new SecurityConfiguration();
-    Map<String, String> passwords = new HashMap<>();
-    passwords.put("password1.version", "1");
-    passwords.put("password1.algorithm", "SHA-256");
-    passwords.put("password1.iterations", "1000");
-    passwords.put("password2.version", "4");
-    passwords.put("password2.algorithm", "SHA-512");
-    passwords.put("password2.iterations", "262144");
-    passwords.put("password3.version", "3");
-    passwords.put("password3.algorithm", "SHA-512");
-    passwords.put("password3.iterations", "1234");
+    List<PasswordVersion> passwords = new ArrayList<>();
+    passwords
+        .add(new PasswordVersionBuilder().version(1).algorithm("SHA-256").iterations(1000).build());
+    passwords.add(
+        new PasswordVersionBuilder().version(4).algorithm("SHA-512").iterations(262144).build());
+    passwords
+        .add(new PasswordVersionBuilder().version(3).algorithm("SHA-512").iterations(1234).build());
     securityConfiguration.setPasswords(passwords);
 
     securityConfiguration.processPasswords();
@@ -103,7 +99,7 @@ public class SecurityConfigurationTest {
   @Test(expected = IllegalStateException.class)
   public void noPasswords() throws Throwable {
     securityConfiguration = new SecurityConfiguration();
-    Map<String, String> passwords = new HashMap<>();
+    List<PasswordVersion> passwords = new ArrayList<>();
     securityConfiguration.setPasswords(passwords);
 
     securityConfiguration.processPasswords();
@@ -112,21 +108,8 @@ public class SecurityConfigurationTest {
   @Test(expected = IllegalStateException.class)
   public void versionMissing() throws Throwable {
     securityConfiguration = new SecurityConfiguration();
-    Map<String, String> passwords = new HashMap<>();
-    passwords.put("password1.algorithm", "SHA-256");
-    passwords.put("password1.iterations", "1000");
-    securityConfiguration.setPasswords(passwords);
-
-    securityConfiguration.processPasswords();
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void versionInvalid() throws Throwable {
-    securityConfiguration = new SecurityConfiguration();
-    Map<String, String> passwords = new HashMap<>();
-    passwords.put("password1.version", "a");
-    passwords.put("password1.algorithm", "SHA-256");
-    passwords.put("password1.iterations", "1000");
+    List<PasswordVersion> passwords = new ArrayList<>();
+    passwords.add(new PasswordVersionBuilder().algorithm("SHA-256").iterations(1000).build());
     securityConfiguration.setPasswords(passwords);
 
     securityConfiguration.processPasswords();
@@ -135,9 +118,8 @@ public class SecurityConfigurationTest {
   @Test(expected = IllegalStateException.class)
   public void algorithmMissing() throws Throwable {
     securityConfiguration = new SecurityConfiguration();
-    Map<String, String> passwords = new HashMap<>();
-    passwords.put("password1.version", "1");
-    passwords.put("password1.iterations", "1000");
+    List<PasswordVersion> passwords = new ArrayList<>();
+    passwords.add(new PasswordVersionBuilder().version(1).iterations(1000).build());
     securityConfiguration.setPasswords(passwords);
 
     securityConfiguration.processPasswords();
@@ -146,10 +128,9 @@ public class SecurityConfigurationTest {
   @Test(expected = IllegalStateException.class)
   public void algorithmInvalid() throws Throwable {
     securityConfiguration = new SecurityConfiguration();
-    Map<String, String> passwords = new HashMap<>();
-    passwords.put("password1.version", "1");
-    passwords.put("password1.algorithm", "AAA");
-    passwords.put("password1.iterations", "1000");
+    List<PasswordVersion> passwords = new ArrayList<>();
+    passwords
+        .add(new PasswordVersionBuilder().version(1).algorithm("AAA").iterations(1000).build());
     securityConfiguration.setPasswords(passwords);
 
     securityConfiguration.processPasswords();
@@ -158,21 +139,8 @@ public class SecurityConfigurationTest {
   @Test(expected = IllegalStateException.class)
   public void iterationsMissing() throws Throwable {
     securityConfiguration = new SecurityConfiguration();
-    Map<String, String> passwords = new HashMap<>();
-    passwords.put("password1.version", "1");
-    passwords.put("password1.algorithm", "SHA-256");
-    securityConfiguration.setPasswords(passwords);
-
-    securityConfiguration.processPasswords();
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void iterationsInvalid() throws Throwable {
-    securityConfiguration = new SecurityConfiguration();
-    Map<String, String> passwords = new HashMap<>();
-    passwords.put("password1.version", "1");
-    passwords.put("password1.algorithm", "SHA-256");
-    passwords.put("password1.iterations", "a");
+    List<PasswordVersion> passwords = new ArrayList<>();
+    passwords.add(new PasswordVersionBuilder().version(1).algorithm("AAA").build());
     securityConfiguration.setPasswords(passwords);
 
     securityConfiguration.processPasswords();
