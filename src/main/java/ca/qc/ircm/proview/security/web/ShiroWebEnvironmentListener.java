@@ -67,7 +67,7 @@ public class ShiroWebEnvironmentListener extends EnvironmentLoaderListener {
     }
 
     ((ShiroWebEnvironment) environment).setRealm(realm);
-    ((ShiroWebEnvironment) environment).setCipherKey(securityConfiguration.getCipherKey());
+    ((ShiroWebEnvironment) environment).setCipherKey(securityConfiguration.getCipherKeyBytes());
   }
 
   private Realm createRealm() {

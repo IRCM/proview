@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.security.web;
 
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
-import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.AbstractRememberMeManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.web.env.IniWebEnvironment;
@@ -38,7 +37,7 @@ public class ShiroWebEnvironment extends IniWebEnvironment {
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(ShiroWebEnvironment.class);
   private Collection<Realm> realms;
-  private String cipherKey;
+  private byte[] cipherKey;
 
   @Override
   protected WebSecurityManager createWebSecurityManager() {
@@ -49,7 +48,7 @@ public class ShiroWebEnvironment extends IniWebEnvironment {
     manager.setRealms(realms);
     AbstractRememberMeManager rememberMeManager =
         (AbstractRememberMeManager) manager.getRememberMeManager();
-    rememberMeManager.setCipherKey(Base64.decode(cipherKey));
+    rememberMeManager.setCipherKey(cipherKey);
     return manager;
   }
 
@@ -65,7 +64,7 @@ public class ShiroWebEnvironment extends IniWebEnvironment {
     this.setRealms(realms);
   }
 
-  public void setCipherKey(String cipherKey) {
+  public void setCipherKey(byte[] cipherKey) {
     this.cipherKey = cipherKey;
   }
 

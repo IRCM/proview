@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.security;
 
+import org.apache.shiro.codec.Base64;
+import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.UnknownAlgorithmException;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.slf4j.Logger;
@@ -49,6 +51,7 @@ public class SecurityConfiguration {
   public static final String PASSWORD_VERSION = "version";
   public static final String PASSWORD_ALGORITHM = "algorithm";
   public static final String PASSWORD_ITERATIONS = "iterations";
+  private static final String HEX_BEGIN_TOKEN = "0x";
   private static final Logger logger = LoggerFactory.getLogger(SecurityConfiguration.class);
   private String cipherKey;
   private Map<String, String> passwords;
@@ -124,6 +127,18 @@ public class SecurityConfiguration {
 
   public List<PasswordVersion> getPasswordVersions() {
     return passwordVersions;
+  }
+
+  public byte[] getCipherKeyBytes() {
+    return toBytes(cipherKey);
+  }
+
+  private byte[] toBytes(String value) {
+    if (value.startsWith(HEX_BEGIN_TOKEN)) {
+      return Hex.decode(value.substring(HEX_BEGIN_TOKEN.length()));
+    } else {
+      return Base64.decode(value);
+    }
   }
 
   public String getCipherKey() {

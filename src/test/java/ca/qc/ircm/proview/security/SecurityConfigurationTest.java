@@ -17,9 +17,12 @@
 
 package ca.qc.ircm.proview.security;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import org.apache.shiro.codec.Base64;
+import org.apache.shiro.codec.Hex;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -38,7 +41,9 @@ public class SecurityConfigurationTest {
 
   @Test
   public void defaultProperties() throws Throwable {
-    assertEquals("0x3707344A4093822299F31D008", securityConfiguration.getCipherKey());
+    assertEquals("0x2c9bff536d5bb8ae5550c93cdadace1b", securityConfiguration.getCipherKey());
+    assertArrayEquals(Hex.decode("2c9bff536d5bb8ae5550c93cdadace1b"),
+        securityConfiguration.getCipherKeyBytes());
     PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
     assertEquals(1, passwordVersion.getVersion());
     assertEquals("SHA-256", passwordVersion.getAlgorithm());
@@ -49,6 +54,13 @@ public class SecurityConfigurationTest {
     assertEquals(1, passwordVersion.getVersion());
     assertEquals("SHA-256", passwordVersion.getAlgorithm());
     assertEquals(1000, passwordVersion.getIterations());
+  }
+
+  @Test
+  public void base64CipherKey() throws Throwable {
+    securityConfiguration.setCipherKey("AcEG7RqLxcP6enoSBJKNjA==");
+    assertArrayEquals(Base64.decode("AcEG7RqLxcP6enoSBJKNjA=="),
+        securityConfiguration.getCipherKeyBytes());
   }
 
   @Test

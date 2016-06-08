@@ -40,7 +40,7 @@ vaadin:
     closeIdleSessions: true
 
 security:
-  cipherKey: '0x3707344A4093822299F31D008'
+  cipherKey: '0x2c9bff536d5bb8ae5550c93cdadace1b'
   passwords:
     password:
       version: 1
