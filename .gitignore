@@ -6,5 +6,6 @@
 /.designer
 /*.log
 /*.launch
+/src/main/resources/VAADIN/themes/**/styles.css
 styles.scss.cache
 .DS_Store
