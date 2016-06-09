@@ -24,9 +24,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -39,17 +38,20 @@ import javax.inject.Provider;
 public class ValidateView extends ValidateViewDesign implements MessageResourcesView {
   public static final String VIEW_NAME = "user/validate";
   private static final long serialVersionUID = -1956061543048432065L;
-  private static final Logger logger = LoggerFactory.getLogger(ValidateView.class);
   @Inject
   private ValidateViewPresenter presenter;
   @Inject
   private Provider<ViewUserWindow> userWindowProvider;
 
+  @PostConstruct
+  public void init() {
+    presenter.init(this);
+  }
+
   @Override
   public void attach() {
-    logger.debug("Validate users view");
     super.attach();
-    presenter.init(this);
+    presenter.attach();
   }
 
   public void setTitle(String title) {

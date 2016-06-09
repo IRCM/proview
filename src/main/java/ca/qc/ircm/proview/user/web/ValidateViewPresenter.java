@@ -54,6 +54,9 @@ import javax.inject.Inject;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ValidateViewPresenter {
+  public static final String TITLE = "title";
+  public static final String HEADER_LABEL_ID = "header";
+  public static final String USERS_GRID_ID = "usersGrid";
   public static final String EMAIL = QUser.user.email.getMetadata().getName();
   public static final String NAME = QUser.user.name.getMetadata().getName();
   public static final String LABORATORY_PREFIX =
@@ -64,6 +67,7 @@ public class ValidateViewPresenter {
       LABORATORY_PREFIX + QLaboratory.laboratory.organization.getMetadata().getName();
   public static final String VIEW = "viewUser";
   public static final String VALIDATE = "validateUser";
+  public static final String VALIDATE_SELECTED_BUTTON_ID = "validateSelected";
   private static final String[] COLUMNS =
       { EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, VIEW, VALIDATE };
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewPresenter.class);
@@ -89,16 +93,30 @@ public class ValidateViewPresenter {
   public void init(ValidateView view) {
     this.view = view;
     setFields();
-    initializeUsersGridContainer();
-    initializeUsersGrid();
-    addFieldListeners();
-    setCaptions();
   }
 
   private void setFields() {
     headerLabel = view.getHeaderLabel();
     usersGrid = view.getUsersGrid();
     validateSelectedButton = view.getValidateSelectedButton();
+  }
+
+  /**
+   * Called by view when view is attached.
+   */
+  public void attach() {
+    logger.debug("Validate users view");
+    setIds();
+    initializeUsersGridContainer();
+    initializeUsersGrid();
+    addFieldListeners();
+    setCaptions();
+  }
+
+  private void setIds() {
+    headerLabel.setId(HEADER_LABEL_ID);
+    usersGrid.setId(USERS_GRID_ID);
+    validateSelectedButton.setId(VALIDATE_SELECTED_BUTTON_ID);
   }
 
   @SuppressWarnings("serial")
@@ -158,9 +176,9 @@ public class ValidateViewPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    view.setTitle(resources.message("title"));
-    headerLabel.setValue(resources.message("header"));
-    validateSelectedButton.setCaption(resources.message("validateSelected"));
+    view.setTitle(resources.message(TITLE));
+    headerLabel.setValue(resources.message(HEADER_LABEL_ID));
+    validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON_ID));
   }
 
   private List<User> searchUsers() {

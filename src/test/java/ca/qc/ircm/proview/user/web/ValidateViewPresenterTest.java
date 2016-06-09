@@ -18,10 +18,13 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.EMAIL;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.NAME;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.ORGANIZATION;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON_ID;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VIEW;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -110,6 +113,7 @@ public class ValidateViewPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
+    presenter.attach();
   }
 
   private User find(Collection<User> users, long id) {
@@ -152,13 +156,14 @@ public class ValidateViewPresenterTest {
 
   @Test
   public void title() {
-    verify(view).setTitle(resources.message("title"));
+    verify(view).setTitle(resources.message(TITLE));
   }
 
   @Test
   public void captions() {
-    assertEquals(resources.message("header"), headerLabel.getValue());
-    assertEquals(resources.message("validateSelected"), validateSelectedButton.getCaption());
+    assertEquals(resources.message(HEADER_LABEL_ID), headerLabel.getValue());
+    assertEquals(resources.message(VALIDATE_SELECTED_BUTTON_ID),
+        validateSelectedButton.getCaption());
   }
 
   @Test
