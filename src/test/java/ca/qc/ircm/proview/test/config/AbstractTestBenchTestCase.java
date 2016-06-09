@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.test.config;
 
 import com.vaadin.testbench.TestBenchTestCase;
+import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -39,7 +40,15 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
    */
   public void openView(String view) {
     String url = viewUrl(view);
-    getDriver().get(url);
-    getDriver().get(url);
+    if (url.equals(getDriver().getCurrentUrl())) {
+      getDriver().navigate().refresh();
+    } else {
+      getDriver().get(url);
+    }
+    waitForPageLoad();
+  }
+
+  public void waitForPageLoad() {
+    findElement(By.className("v-loading-indicator"));
   }
 }

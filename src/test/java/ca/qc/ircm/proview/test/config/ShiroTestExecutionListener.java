@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.ShiroRealm;
-import ca.qc.ircm.proview.web.ErrorView;
+import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.TestBenchTestCase;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.crypto.AesCipherService;
@@ -53,7 +53,7 @@ import javax.inject.Inject;
  * Sets Shiro's subject.
  */
 public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener {
-  private static final String ANONYMOUS_VAADIN_URL = "/#!" + ErrorView.VIEW_NAME;
+  private static final String ANONYMOUS_VIEW = MainView.VIEW_NAME;
   private static final Logger logger = LoggerFactory.getLogger(ShiroTestExecutionListener.class);
   private ThreadState threadState;
   @Value("${base.url:http://localhost:8080}")
@@ -103,9 +103,10 @@ public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener 
 
   private void setTestBenchUser(TestContext testContext, Optional<Long> userId) {
     if (userId.isPresent()) {
-      TestBenchTestCase testInstance = (TestBenchTestCase) testContext.getTestInstance();
+      AbstractTestBenchTestCase testInstance =
+          (AbstractTestBenchTestCase) testContext.getTestInstance();
       WebDriver driver = testInstance.getDriver();
-      driver.get(baseUrl + ANONYMOUS_VAADIN_URL);
+      testInstance.openView(ANONYMOUS_VIEW);
       Cookie cookie = new Cookie("rememberMe", rememberCookie(userId.get()));
       driver.manage().addCookie(cookie);
     }
