@@ -552,6 +552,10 @@
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
           <version>${spring-boot-maven-plugin.version}</version>
+          <configuration>
+            <mainClass>${start-class}</mainClass>
+            <executable>true</executable>
+          </configuration>
           <executions>
             <execution>
               <goals>
@@ -580,9 +584,6 @@
               </goals>
             </execution>
           </executions>
-          <configuration>
-            <mainClass>${start-class}</mainClass>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>com.edugility</groupId>
