@@ -66,6 +66,15 @@ address:
   country: Canada
   postalCode: H2W 1R7
 
+logging.file: proview.log
+
+---
+spring:
+  profiles: test
+
+logging:
+  file: test.log
+
 ---
 spring:
   profiles: integration-test

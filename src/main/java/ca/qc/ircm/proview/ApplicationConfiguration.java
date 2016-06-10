@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -33,11 +34,12 @@ import java.nio.file.Paths;
 public class ApplicationConfiguration {
   public static final String APPLICATION_NAME = "proview";
   public static final String PREFIX = "main";
-  private static final String LOG_FILENAME = APPLICATION_NAME + ".log";
+  @Value("${logging.path:${user.dir}}/${logging.file:" + APPLICATION_NAME + "log}")
+  private String logfile;
   private String serverUrl;
 
   public Path getLogFile() {
-    return Paths.get(LOG_FILENAME);
+    return Paths.get(logfile);
   }
 
   /**

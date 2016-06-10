@@ -36,7 +36,8 @@ public class ApplicationConfigurationTest {
 
   @Test
   public void getLogFile() {
-    assertEquals(Paths.get("proview.log"), applicationConfiguration.getLogFile());
+    assertEquals(Paths.get(System.getProperty("user.dir"), "test.log"),
+        applicationConfiguration.getLogFile());
   }
 
   @Test
