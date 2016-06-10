@@ -40,11 +40,17 @@ vaadin:
     closeIdleSessions: true
 
 security:
+# Shiro.
   cipherKey: '0x2c9bff536d5bb8ae5550c93cdadace1b'
   passwords:
     - version: 1
       algorithm: SHA-256
       iterations: 1000
+# Health.
+  basic:
+    path: /noUrlBecauseShiroSecurityIsUsedForVaadin
+  user:
+    name: admin
 
 email:
   enabled: true
