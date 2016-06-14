@@ -49,16 +49,6 @@ public class SpringConfiguration {
   private DataSource dataSource;
 
   /**
-   * Returns configuration file location, if any.
-   *
-   * @return configuration file location, or null for default location
-   */
-  @Bean(name = "configuration")
-  public String configuration() {
-    return null;
-  }
-
-  /**
    * Creates entity manager factory.
    *
    * @return entity manager factory
