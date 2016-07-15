@@ -18,8 +18,10 @@
 main:
   serverUrl: http://localhost
 
-# Database.
 spring:
+  application:
+    name: proview
+# Database.
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
@@ -68,7 +70,7 @@ address:
   country: Canada
   postalCode: H2W 1R7
 
-logging.file: proview.log
+logging.file: ${spring.application.name}.log
 
 ---
 spring:
