@@ -22,17 +22,12 @@ import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
 import ca.qc.ircm.proview.user.SignedImpl;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.SignedFilter;
-import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.spring.annotation.ViewScope;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -44,10 +39,6 @@ import javax.inject.Inject;
  * Enable Spring Web MVC for REST services.
  */
 @Configuration
-@ComponentScan(
-    basePackages = { "ca.qc.ircm.proview", "ca.qc.ircm.proview.*" },
-    useDefaultFilters = false,
-    includeFilters = @Filter({ Controller.class, UIScope.class, ViewScope.class }) )
 public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
   public static final String SHIRO_FILTER_NAME = "ShiroFilter";
   @Inject

@@ -18,15 +18,10 @@
 package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
-import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.spring.annotation.ViewScope;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.thymeleaf.TemplateEngine;
@@ -40,9 +35,6 @@ import javax.sql.DataSource;
  * Configuration for Spring.
  */
 @Configuration
-@ComponentScan(
-    basePackages = { "ca.qc.ircm.proview", "ca.qc.ircm.proview.*" },
-    excludeFilters = @Filter({ Controller.class, UIScope.class, ViewScope.class }) )
 @EnableTransactionManagement
 public class SpringConfiguration {
   @Inject
