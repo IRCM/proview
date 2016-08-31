@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<msanalysis xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="msanalysis_verifications.xsd">
+  <verifications type="INSTRUMENT">
+    <verification name="diskSpace">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="qcPassed">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="calibration">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="sonicatedPlaque">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="plaquePositionOnAutoSampler">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="coolerTemperature">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+    </verification>
+    <verification name="nitrogenQuantity">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="argonQuantity">
+      <instrument name="Q_TOF" />
+    </verification>
+    <verification name="heliumQuantity">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+    </verification>
+    <verification name="mobilePhaseQuantity">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+    </verification>
+    <verification name="openGaz">
+      <instrument name="Q_TOF" />
+    </verification>
+    <verification name="lcPumpPressure">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+    </verification>
+    <verification name="vacuum">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="collisionEnergy">
+      <instrument name="Q_TOF" />
+    </verification>
+    <verification name="mcp">
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="uncheckedAutoCid">
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="checkedGhz">
+      <instrument name="Q_TOF">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="TOF" />
+    </verification>
+    <verification name="drainingVialVolume">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+    </verification>
+    <verification name="spray">
+      <instrument name="VELOS">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="Q_EXACTIVE">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="TSQ_VANTAGE">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="ORBITRAP_FUSION">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="LTQ_ORBI_TRAP">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="Q_TOF">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="TOF" />
+    </verification>
+  </verifications>
+  <verifications type="SAMPLE">
+    <verification name="sampleVsSpot">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="acquisitionFile">
+      <instrument name="VELOS" />
+      <instrument name="Q_EXACTIVE" />
+      <instrument name="TSQ_VANTAGE" />
+      <instrument name="ORBITRAP_FUSION" />
+      <instrument name="LTQ_ORBI_TRAP" />
+    </verification>
+    <verification name="clMethod">
+      <instrument name="Q_TOF" />
+    </verification>
+    <verification name="msMethod">
+      <instrument name="Q_TOF" />
+      <instrument name="TOF" />
+    </verification>
+    <verification name="volume">
+      <instrument name="VELOS">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="Q_EXACTIVE">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="TSQ_VANTAGE">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="ORBITRAP_FUSION">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="LTQ_ORBI_TRAP">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+      <instrument name="Q_TOF">
+        <source name="NSI" />
+        <source name="ESI" />
+      </instrument>
+    </verification>
+  </verifications>
+</msanalysis>

@@ -17,9 +17,26 @@
 
 package ca.qc.ircm.proview.security;
 
+import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
+import static ca.qc.ircm.proview.laboratory.QLaboratory.laboratory;
+import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
+import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
+import static ca.qc.ircm.proview.sample.QSample.sample;
+import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.submission.QSubmission.submission;
+
+import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.laboratory.Laboratory;
+import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.QAcquisition;
+import ca.qc.ircm.proview.sample.Control;
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.subject.SimplePrincipalCollection;
@@ -40,18 +57,20 @@ public class AuthorizationServiceImpl implements AuthorizationService {
   private static final String ADMIN = UserRole.ADMIN.name();
   private static final String MANAGER = UserRole.MANAGER.name();
   private static final String USER = UserRole.USER.name();
-
   @PersistenceContext
   private EntityManager entityManager;
+  @Inject
+  private JPAQueryFactory queryFactory;
   @Inject
   private AuthenticationService authenticationService;
 
   protected AuthorizationServiceImpl() {
   }
 
-  protected AuthorizationServiceImpl(EntityManager entityManager,
+  protected AuthorizationServiceImpl(EntityManager entityManager, JPAQueryFactory queryFactory,
       AuthenticationService authenticationService) {
     this.entityManager = entityManager;
+    this.queryFactory = queryFactory;
     this.authenticationService = authenticationService;
   }
 
@@ -69,6 +88,22 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
   private String getRealmName() {
     return ShiroRealm.REALM_NAME;
+  }
+
+  private Sample getSample(Long id) {
+    if (id == null) {
+      return null;
+    }
+
+    return entityManager.find(Sample.class, id);
+  }
+
+  private Submission getSubmission(Long id) {
+    if (id == null) {
+      return null;
+    }
+
+    return entityManager.find(Submission.class, id);
   }
 
   @Override
@@ -200,6 +235,171 @@ public class AuthorizationServiceImpl implements AuthorizationService {
       getSubject().checkRole(USER);
       if (!getSubject().hasRole(ADMIN)) {
         getSubject().checkPermission("user:write_password:" + user.getId());
+      }
+    }
+  }
+
+  private boolean sampleOwnerForAnyMsAnalysisByControl(Sample sampleParam) {
+    User user = getCurrentUser();
+
+    QAcquisition controlAcquisition = new QAcquisition("control");
+    JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
+    query.from(msAnalysis, controlAcquisition, acquisition, submissionSample);
+    query.join(acquisition.sample, sample);
+    query.join(submissionSample.submission, submission);
+    query.where(submissionSample.eq(sample));
+    query.where(acquisition.in(msAnalysis.acquisitions));
+    query.where(controlAcquisition.in(msAnalysis.acquisitions));
+    query.where(controlAcquisition.sample.eq(sampleParam));
+    query.where(submission.user.eq(user));
+    return query.fetchCount() > 0;
+  }
+
+  private boolean laboratoryManagerForAnyMsAnalysisByControl(Sample sampleParam) {
+    User user = getCurrentUser();
+
+    QAcquisition controlAcquisition = new QAcquisition("control");
+    JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
+    query.from(msAnalysis, controlAcquisition, acquisition, submissionSample);
+    query.join(acquisition.sample, sample);
+    query.join(submissionSample.submission, submission);
+    query.join(submission.laboratory, laboratory);
+    query.where(submissionSample.eq(sample));
+    query.where(acquisition.in(msAnalysis.acquisitions));
+    query.where(controlAcquisition.in(msAnalysis.acquisitions));
+    query.where(controlAcquisition.sample.eq(sampleParam));
+    query.where(laboratory.managers.contains(user));
+    return query.fetchCount() > 0;
+  }
+
+  @Override
+  public void checkSampleReadPermission(Sample sample) {
+    if (sample != null) {
+      sample = getSample(sample.getId());
+      getSubject().checkRole("USER");
+      if (!getSubject().hasRole("PROTEOMIC")) {
+        if (sample instanceof SubmissionSample) {
+          SubmissionSample submissionSample = (SubmissionSample) sample;
+          boolean permitted = false;
+          User owner = submissionSample.getSubmission().getUser();
+          permitted |= getSubject().getPrincipal().equals(owner.getId());
+          Laboratory laboratory = submissionSample.getSubmission().getLaboratory();
+          permitted |= getSubject().isPermitted("laboratory:manager:" + laboratory.getId());
+          if (!permitted) {
+            getSubject().checkPermission("sample:owner:" + sample.getId());
+          }
+        } else if (sample instanceof Control) {
+          boolean permitted = false;
+          permitted |= sampleOwnerForAnyMsAnalysisByControl(sample);
+          permitted |= laboratoryManagerForAnyMsAnalysisByControl(sample);
+          if (!permitted) {
+            getSubject().checkPermission("sample:owner:" + sample.getId());
+          }
+        } else {
+          getSubject().checkPermission("sample:owner:" + sample.getId());
+        }
+      }
+    }
+  }
+
+  @Override
+  public void checkSubmissionReadPermission(Submission submission) {
+    if (submission != null) {
+      submission = getSubmission(submission.getId());
+      getSubject().checkRole("USER");
+      if (!getSubject().hasRole("PROTEOMIC")) {
+        boolean permitted = false;
+        User owner = submission.getUser();
+        permitted |= getSubject().getPrincipal().equals(owner.getId());
+        Laboratory laboratory = submission.getLaboratory();
+        permitted |= getSubject().isPermitted("laboratory:manager:" + laboratory.getId());
+        if (!permitted) {
+          getSubject().checkPermission("submission:owner:" + submission.getId());
+        }
+      }
+    }
+  }
+
+  private boolean sampleOwnerByMsAnalysis(MsAnalysis msAnalysisParam) {
+    User user = getCurrentUser();
+
+    JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
+    query.from(msAnalysis, acquisition, submissionSample);
+    query.join(acquisition.sample, sample);
+    query.join(submissionSample.submission, submission);
+    query.where(submissionSample.eq(sample));
+    query.where(acquisition.in(msAnalysis.acquisitions));
+    query.where(msAnalysis.eq(msAnalysisParam));
+    query.where(submission.user.eq(user));
+    return query.fetchCount() > 0;
+  }
+
+  private boolean laboratoryManagerByMsAnalysis(MsAnalysis msAnalysisParam) {
+    User user = getCurrentUser();
+
+    JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
+    query.from(msAnalysis, acquisition, submissionSample);
+    query.join(acquisition.sample, sample);
+    query.join(submissionSample.submission, submission);
+    query.join(submission.laboratory, laboratory);
+    query.where(submissionSample.eq(sample));
+    query.where(acquisition.in(msAnalysis.acquisitions));
+    query.where(msAnalysis.eq(msAnalysisParam));
+    query.where(laboratory.managers.contains(user));
+    return query.fetchCount() > 0;
+  }
+
+  @Override
+  public void checkMsAnalysisReadPermission(MsAnalysis msAnalysis) {
+    if (msAnalysis != null) {
+      getSubject().checkRole("USER");
+      if (!getSubject().hasRole("PROTEOMIC")) {
+        boolean permitted = false;
+        permitted |= sampleOwnerByMsAnalysis(msAnalysis);
+        permitted |= laboratoryManagerByMsAnalysis(msAnalysis);
+        if (!permitted) {
+          getSubject().checkPermission("msAnalysis:read:" + msAnalysis.getId());
+        }
+      }
+    }
+  }
+
+  private boolean sampleOwnerByDataAnalysis(DataAnalysis dataAnalysisParam) {
+    User user = getCurrentUser();
+
+    JPAQuery<Long> query = queryFactory.select(dataAnalysis.id);
+    query.from(dataAnalysis);
+    query.join(dataAnalysis.sample, submissionSample);
+    query.join(submissionSample.submission, submission);
+    query.where(dataAnalysis.eq(dataAnalysisParam));
+    query.where(submission.user.eq(user));
+    return query.fetchCount() > 0;
+  }
+
+  private boolean laboratoryManagerByDataAnalysis(DataAnalysis dataAnalysisParam) {
+    User user = getCurrentUser();
+
+    JPAQuery<Long> query = queryFactory.select(dataAnalysis.id);
+    query.from(dataAnalysis);
+    query.join(dataAnalysis.sample, submissionSample);
+    query.join(submissionSample.submission, submission);
+    query.join(submission.laboratory, laboratory);
+    query.where(dataAnalysis.eq(dataAnalysisParam));
+    query.where(laboratory.managers.contains(user));
+    return query.fetchCount() > 0;
+  }
+
+  @Override
+  public void checkDataAnalysisReadPermission(DataAnalysis dataAnalysis) {
+    if (dataAnalysis != null) {
+      getSubject().checkRole("USER");
+      if (!getSubject().hasRole("PROTEOMIC")) {
+        boolean permitted = false;
+        permitted |= sampleOwnerByDataAnalysis(dataAnalysis);
+        permitted |= laboratoryManagerByDataAnalysis(dataAnalysis);
+        if (!permitted) {
+          getSubject().checkPermission("dataAnalysis:read:" + dataAnalysis.getId());
+        }
       }
     }
   }

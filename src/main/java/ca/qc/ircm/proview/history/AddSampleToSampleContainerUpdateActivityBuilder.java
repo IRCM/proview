@@ -1,0 +1,34 @@
+package ca.qc.ircm.proview.history;
+
+import ca.qc.ircm.proview.history.Activity.ActionType;
+import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.tube.Tube;
+
+public class AddSampleToSampleContainerUpdateActivityBuilder extends UpdateActivityBuilder {
+  {
+    tableName("samplecontainer");
+    actionType(ActionType.UPDATE);
+    column("sampleId");
+    oldValue(null);
+  }
+
+  /**
+   * Sets new container for activity.
+   *
+   * @param newContainer
+   *          new container
+   * @return builder
+   */
+  public AddSampleToSampleContainerUpdateActivityBuilder
+      newContainer(SampleContainer newContainer) {
+    recordId(newContainer.getId());
+    newValue(newContainer.getSample().getId());
+    if (newContainer instanceof Tube) {
+      actionType(ActionType.INSERT);
+      column(null);
+      newValue(null);
+      oldValue(null);
+    }
+    return this;
+  }
+}

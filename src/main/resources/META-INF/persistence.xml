@@ -24,9 +24,52 @@
   <persistence-unit name="proview" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>proview</jta-data-source>
+    <class>ca.qc.ircm.proview.dataanalysis.DataAnalysis</class>
+    <class>ca.qc.ircm.proview.digestion.DigestedSample</class>
+    <class>ca.qc.ircm.proview.digestion.Digestion</class>
+    <class>ca.qc.ircm.proview.digestion.DigestionProtocol</class>
+    <class>ca.qc.ircm.proview.dilution.DilutedSample</class>
+    <class>ca.qc.ircm.proview.dilution.Dilution</class>
+    <class>ca.qc.ircm.proview.enrichment.EnrichedSample</class>
+    <class>ca.qc.ircm.proview.enrichment.Enrichment</class>
+    <class>ca.qc.ircm.proview.enrichment.EnrichmentProtocol</class>
+    <class>ca.qc.ircm.proview.fractionation.Fractionation</class>
+    <class>ca.qc.ircm.proview.fractionation.FractionationDetail</class>
+    <class>ca.qc.ircm.proview.history.Activity</class>
+    <class>ca.qc.ircm.proview.history.UpdateActivity</class>
     <class>ca.qc.ircm.proview.laboratory.Laboratory</class>
+    <class>ca.qc.ircm.proview.msanalysis.Acquisition</class>
+    <class>ca.qc.ircm.proview.msanalysis.MascotFile</class>
+    <class>ca.qc.ircm.proview.msanalysis.MsAnalysis</class>
+    <class>ca.qc.ircm.proview.msanalysis.MsAnalysisVerification</class>
     <class>ca.qc.ircm.proview.persistence.InstantConverter</class>
     <class>ca.qc.ircm.proview.persistence.LocaleConverter</class>
+    <class>ca.qc.ircm.proview.plate.Plate</class>
+    <class>ca.qc.ircm.proview.plate.PlateSpot</class>
+    <class>ca.qc.ircm.proview.sample.Contaminant</class>
+    <class>ca.qc.ircm.proview.sample.Control</class>
+    <class>ca.qc.ircm.proview.sample.EluateSample</class>
+    <class>ca.qc.ircm.proview.sample.GelSample</class>
+    <class>ca.qc.ircm.proview.sample.MoleculeSample</class>
+    <class>ca.qc.ircm.proview.sample.ProteicSample</class>
+    <class>ca.qc.ircm.proview.sample.Sample</class>
+    <class>ca.qc.ircm.proview.sample.SampleContainer</class>
+    <class>ca.qc.ircm.proview.sample.SampleSolvent</class>
+    <class>ca.qc.ircm.proview.sample.Standard</class>
+    <class>ca.qc.ircm.proview.sample.Structure</class>
+    <class>ca.qc.ircm.proview.sample.SubmissionSample</class>
+    <class>ca.qc.ircm.proview.solubilisation.Solubilisation</class>
+    <class>ca.qc.ircm.proview.solubilisation.SolubilisedSample</class>
+    <class>ca.qc.ircm.proview.standard.AddedStandard</class>
+    <class>ca.qc.ircm.proview.standard.StandardAddition</class>
+    <class>ca.qc.ircm.proview.submission.GelImage</class>
+    <class>ca.qc.ircm.proview.submission.Submission</class>
+    <class>ca.qc.ircm.proview.treatment.Protocol</class>
+    <class>ca.qc.ircm.proview.treatment.Treatment</class>
+    <class>ca.qc.ircm.proview.treatment.TreatmentSample</class>
+    <class>ca.qc.ircm.proview.transfer.SampleTransfer</class>
+    <class>ca.qc.ircm.proview.transfer.Transfer</class>
+    <class>ca.qc.ircm.proview.tube.Tube</class>
     <class>ca.qc.ircm.proview.user.Address</class>
     <class>ca.qc.ircm.proview.user.PhoneNumber</class>
     <class>ca.qc.ircm.proview.user.User</class>

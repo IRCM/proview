@@ -1,0 +1,295 @@
+package ca.qc.ircm.proview.plate;
+
+import static javax.persistence.EnumType.STRING;
+import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.TemporalType.TIMESTAMP;
+
+import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.Named;
+import ca.qc.ircm.proview.plate.PlateService.PlateChoice;
+import ca.qc.ircm.proview.plate.PlateSpotService.SimpleSpotLocation;
+import ca.qc.ircm.proview.plate.PlateSpotService.SpotLocation;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+
+/**
+ * Treatment Plate.
+ */
+@Entity
+@Table(name = "plate")
+@SuppressWarnings("deprecation")
+public class Plate
+    implements Data, Serializable, Named, PlateWithSpots, PlateChoice, Comparable<Plate> {
+
+  /**
+   * Plate types.
+   */
+  public static enum Type {
+    PM(8, 12), G(8, 12), A(8, 12);
+    Type(int rowCount, int columnCount) {
+      this.rowCount = rowCount;
+      this.columnCount = columnCount;
+    }
+
+    /**
+     * Number of rows in plate.
+     */
+    private int rowCount;
+    /**
+     * Number of columns in plate.
+     */
+    private int columnCount;
+
+    public int getRowCount() {
+      return rowCount;
+    }
+
+    public int getColumnCount() {
+      return columnCount;
+    }
+  }
+
+  private static final long serialVersionUID = 342820436770987756L;
+
+  /**
+   * Database identifier.
+   */
+  @Id
+  @Column(name = "id", unique = true, nullable = false)
+  @GeneratedValue(strategy = IDENTITY)
+  private Long id;
+  /**
+   * Name of this Plate.
+   */
+  @Column(name = "name", unique = true, nullable = false)
+  private String name;
+  /**
+   * Plate's type.
+   */
+  @Column(name = "type", nullable = false)
+  @Enumerated(STRING)
+  private Type type;
+  /**
+   * Time when analysis was inserted.
+   */
+  @Column(name = "insertTime", nullable = false)
+  @Temporal(TIMESTAMP)
+  private Date insertTime;
+  /**
+   * List of all treatments done on samples.
+   */
+  @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "plate")
+  private List<PlateSpot> spots;
+
+  public Plate() {
+  }
+
+  public Plate(Long id) {
+    this.id = id;
+  }
+
+  public Plate(Long id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+
+  /**
+   * Returns number of rows for Sample matrix.
+   *
+   * @return number of rows for Sample matrix.
+   */
+  public int getRowCount() {
+    return type.rowCount;
+  }
+
+  /**
+   * Returns number of columns for Sample matrix.
+   *
+   * @return number of columns for Sample matrix.
+   */
+  public int getColumnCount() {
+    return type.columnCount;
+  }
+
+  @Override
+  @Nonnull
+  public PlateSpot spot(int row, int column) {
+    if (row < 0 || row >= getRowCount()) {
+      throw new IllegalArgumentException("Row " + row
+          + " is greater/equal then the number of rows in this plate (" + getRowCount() + ")");
+    }
+    if (column < 0 || column >= getColumnCount()) {
+      throw new IllegalArgumentException(
+          "Column " + column + " is greater/equal then the number of columns in this plate ("
+              + getColumnCount() + ")");
+    }
+    for (PlateSpot spot : this.spots) {
+      if (spot.getRow() == row && spot.getColumn() == column) {
+        return spot;
+      }
+    }
+    throw new IllegalStateException("No spot could be found at location " + row + "-" + column);
+  }
+
+  @Override
+  public List<PlateSpot> spots(SpotLocation from, SpotLocation to) {
+    // Find all locations that are to be included.
+    Collection<SpotLocation> locations = new HashSet<SpotLocation>();
+    for (int column = from.getColumn(); column <= to.getColumn(); column++) {
+      int endRow = column == to.getColumn() ? to.getRow() : this.getRowCount() - 1;
+      for (int row = column == from.getColumn() ? from.getRow() : 0; row <= endRow; row++) {
+        locations.add(new SimpleSpotLocation(row, column));
+      }
+    }
+    // Add all spots that are on locations to include.
+    List<PlateSpot> spots = new ArrayList<PlateSpot>();
+    for (PlateSpot spot : getSpots()) {
+      SpotLocation spotLocation = new SimpleSpotLocation(spot.getRow(), spot.getColumn());
+      if (locations.contains(spotLocation)) {
+        spots.add(spot);
+      }
+    }
+    Collections.sort(spots, new PlateSpotComparator(PlateSpotComparator.Compare.LOCATION));
+    return spots;
+  }
+
+  /**
+   * Returns spots in column.
+   * 
+   * @param index
+   *          column
+   * @return spots in column
+   */
+  public List<PlateSpot> column(int index) {
+    List<PlateSpot> spots = new ArrayList<PlateSpot>();
+    for (PlateSpot spot : this.spots) {
+      if (spot.getColumn() == index) {
+        spots.add(spot);
+      }
+    }
+    Collections.sort(spots, new PlateSpotComparator(PlateSpotComparator.Compare.LOCATION));
+    return spots;
+  }
+
+  @Override
+  @Deprecated
+  public Plate getPlate() {
+    return this;
+  }
+
+  @Override
+  public Integer getEmptySpotCount() {
+    Integer count = 0;
+    for (PlateSpot spot : this.spots) {
+      if (spot.getSample() == null && !spot.isBanned()) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  @Override
+  public Integer getSampleCount() {
+    Integer count = 0;
+    for (PlateSpot spot : this.spots) {
+      if (spot.getSample() != null && !spot.isBanned()) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj instanceof Plate) {
+      Plate other = (Plate) obj;
+      return this.name != null && this.name.equalsIgnoreCase(other.getName());
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return this.name == null ? 0 : this.name.toUpperCase().hashCode();
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder buff = new StringBuilder("Plate(");
+    buff.append(id);
+    buff.append(",");
+    buff.append(name);
+    buff.append(",");
+    buff.append(type);
+    buff.append(")");
+    return buff.toString();
+  }
+
+  @Override
+  public int compareTo(Plate other) {
+    return name.compareToIgnoreCase(other.getName());
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public Type getType() {
+    return type;
+  }
+
+  public void setType(Type type) {
+    this.type = type;
+  }
+
+  public Date getInsertTime() {
+    return insertTime != null ? (Date) insertTime.clone() : null;
+  }
+
+  public void setInsertTime(Date insertTime) {
+    this.insertTime = insertTime != null ? (Date) insertTime.clone() : null;
+  }
+
+  @Override
+  public List<PlateSpot> getSpots() {
+    return spots;
+  }
+
+  public void setSpots(List<PlateSpot> spots) {
+    this.spots = spots;
+  }
+}

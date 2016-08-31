@@ -1,0 +1,6 @@
+$numberTool.integer($sampleCount) new samples were submitted by $user.email
+
+Sample LIMS${tab}Sample name${tab}Tube
+#foreach($sample in $samples)
+${sample.lims}${tab}${sample.name}${tab}$tubes.get($sample).name
+#end

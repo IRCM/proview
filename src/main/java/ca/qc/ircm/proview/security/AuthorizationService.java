@@ -17,7 +17,11 @@
 
 package ca.qc.ircm.proview.security;
 
+import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.laboratory.Laboratory;
+import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 
 /**
@@ -149,4 +153,36 @@ public interface AuthorizationService {
    *          user
    */
   public void checkUserWritePasswordPermission(User user);
+
+  /**
+   * Checks that current user can read sample.
+   *
+   * @param sample
+   *          sample
+   */
+  public void checkSampleReadPermission(Sample sample);
+
+  /**
+   * Checks that current user can read submission.
+   *
+   * @param submission
+   *          submission
+   */
+  public void checkSubmissionReadPermission(Submission submission);
+
+  /**
+   * Checks that current user can read MS analysis.
+   *
+   * @param msAnalysis
+   *          MS analysis
+   */
+  public void checkMsAnalysisReadPermission(MsAnalysis msAnalysis);
+
+  /**
+   * Checks that current user can read data analysis.
+   *
+   * @param dataAnalysis
+   *          data analysis
+   */
+  public void checkDataAnalysisReadPermission(DataAnalysis dataAnalysis);
 }

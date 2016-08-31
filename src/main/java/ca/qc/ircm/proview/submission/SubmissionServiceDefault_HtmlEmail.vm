@@ -1,0 +1,37 @@
+<html>
+    <head></head>
+    <body>
+        $numberTool.integer($sampleCount) new samples were submitted by $user.email
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Sample LIMS
+                    </th>
+                    <th>
+                        Sample name
+                    </th>
+                    <th>
+                        Tube
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+#foreach($sample in $samples)
+                <tr>
+                    <td>
+                        $sample.lims
+                    </td>
+                    <td>
+                        $sample.name
+                    </td>
+                    <td>
+                        $tubes.get($sample).name
+                    </td>
+                </tr>
+#end
+            </tbody>
+        </table>
+    </body>
+</html>

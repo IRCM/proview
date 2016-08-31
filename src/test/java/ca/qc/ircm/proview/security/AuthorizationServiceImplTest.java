@@ -27,7 +27,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
+import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.laboratory.Laboratory;
+import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.sample.Control;
+import ca.qc.ircm.proview.sample.EluateSample;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.Address;
@@ -35,6 +41,7 @@ import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -53,6 +60,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -62,6 +70,8 @@ public class AuthorizationServiceImplTest {
   private AuthorizationServiceImpl authorizationServiceImpl;
   @PersistenceContext
   private EntityManager entityManager;
+  @Inject
+  private JPAQueryFactory queryFactory;
   @Mock
   private AuthenticationService authenticationService;
   @Mock
@@ -80,7 +90,8 @@ public class AuthorizationServiceImplTest {
    */
   @Before
   public void beforeTest() {
-    authorizationServiceImpl = new AuthorizationServiceImpl(entityManager, authenticationService);
+    authorizationServiceImpl =
+        new AuthorizationServiceImpl(entityManager, queryFactory, authenticationService);
     subject = SecurityUtils.getSubject();
   }
 
@@ -813,5 +824,372 @@ public class AuthorizationServiceImplTest {
   @Test
   public void checkUserWritePasswordPermission_Null() {
     authorizationServiceImpl.checkUserWritePasswordPermission(null);
+  }
+
+  @Test
+  public void checkSampleReadPermission_SubmissionSample_Proteomic() throws Exception {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    SubmissionSample sample = new EluateSample(446L);
+
+    authorizationServiceImpl.checkSampleReadPermission(sample);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  public void checkSampleReadPermission_SubmissionSample_NotUser() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
+    SubmissionSample sample = new EluateSample(446L);
+
+    try {
+      authorizationServiceImpl.checkSampleReadPermission(sample);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void checkSampleReadPermission_SubmissionSample_SampleOwner() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    SubmissionSample sample = new EluateSample(446L);
+
+    authorizationServiceImpl.checkSampleReadPermission(sample);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  public void checkSampleReadPermission_SubmissionSample_LaboratoryManager() throws Exception {
+    when(subject.isPermitted(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    SubmissionSample sample = new EluateSample(446L);
+
+    authorizationServiceImpl.checkSampleReadPermission(sample);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).isPermitted("laboratory:manager:2");
+  }
+
+  @Test
+  public void checkSampleReadPermission_SubmissionSample_Other() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    SubmissionSample sample = new EluateSample(446L);
+
+    try {
+      authorizationServiceImpl.checkSampleReadPermission(sample);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).isPermitted("laboratory:manager:2");
+    verify(subject).checkPermission("sample:owner:446");
+  }
+
+  @Test
+  public void checkSampleReadPermission_Control_Proteomic() throws Exception {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Control sample = new Control(444L);
+
+    authorizationServiceImpl.checkSampleReadPermission(sample);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  public void checkSampleReadPermission_Control_NotUser() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
+    Control sample = new Control(444L);
+
+    try {
+      authorizationServiceImpl.checkSampleReadPermission(sample);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void checkSampleReadPermission_Control_SampleOwnerForAnalysis() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Control sample = new Control(444L);
+
+    authorizationServiceImpl.checkSampleReadPermission(sample);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  @WithSubject(userId = 3)
+  public void checkSampleReadPermission_Control_LaboratoryManagerForAnalysis() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Control sample = new Control(444L);
+
+    authorizationServiceImpl.checkSampleReadPermission(sample);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  @WithSubject(userId = 6)
+  public void checkSampleReadPermission_Control_Other() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+
+    Control sample = new Control(444L);
+    try {
+      authorizationServiceImpl.checkSampleReadPermission(sample);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).checkPermission("sample:owner:444");
+  }
+
+  @Test
+  public void checkSampleReadPermission_Null() throws Exception {
+    authorizationServiceImpl.checkSampleReadPermission(null);
+  }
+
+  @Test
+  public void checkSubmissionReadPermission_Proteomic() {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Submission submission = new Submission(35L);
+
+    authorizationServiceImpl.checkSubmissionReadPermission(submission);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  public void checkSubmissionReadPermission_NotUser() {
+    doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
+    Submission submission = new Submission(35L);
+
+    try {
+      authorizationServiceImpl.checkSubmissionReadPermission(submission);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void checkSubmissionReadPermission_SampleOwner() {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Submission submission = new Submission(35L);
+
+    authorizationServiceImpl.checkSubmissionReadPermission(submission);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  public void checkSubmissionReadPermission_LaboratoryManager() {
+    when(subject.isPermitted(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Submission submission = new Submission(35L);
+
+    authorizationServiceImpl.checkSubmissionReadPermission(submission);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).isPermitted("laboratory:manager:2");
+  }
+
+  @Test
+  public void checkSubmissionReadPermission_Other() {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+
+    Submission submission = new Submission(35L);
+    try {
+      authorizationServiceImpl.checkSubmissionReadPermission(submission);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).isPermitted("laboratory:manager:2");
+    verify(subject).checkPermission("submission:owner:35");
+  }
+
+  @Test
+  public void checkSubmissionReadPermission_Null() {
+    authorizationServiceImpl.checkSubmissionReadPermission(null);
+  }
+
+  @Test
+  public void checkMsAnalysisReadPermission_Proteomic() throws Exception {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    MsAnalysis msAnalysis = new MsAnalysis(13L);
+
+    authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  public void checkMsAnalysisReadPermission_NotUser() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
+    MsAnalysis msAnalysis = new MsAnalysis(13L);
+
+    try {
+      authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void checkMsAnalysisReadPermission_SampleOwner() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    MsAnalysis msAnalysis = new MsAnalysis(13L);
+
+    authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  @WithSubject(userId = 3)
+  public void checkMsAnalysisReadPermission_LaboratoryManager() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    MsAnalysis msAnalysis = new MsAnalysis(13L);
+
+    authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  @WithSubject(userId = 6)
+  public void checkMsAnalysisReadPermission_Other() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    MsAnalysis msAnalysis = new MsAnalysis(13L);
+
+    try {
+      authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).checkPermission("msAnalysis:read:13");
+  }
+
+  @Test
+  public void checkMsAnalysisReadPermission_Null() throws Exception {
+    authorizationServiceImpl.checkMsAnalysisReadPermission(null);
+  }
+
+  @Test
+  public void checkDataAnalysisReadPermission_Proteomic() throws Exception {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    DataAnalysis dataAnalysis = new DataAnalysis(5L);
+
+    authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  public void checkDataAnalysisReadPermission_NotUser() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
+    DataAnalysis dataAnalysis = new DataAnalysis(5L);
+
+    try {
+      authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void checkDataAnalysisReadPermission_SampleOwner() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    DataAnalysis dataAnalysis = new DataAnalysis(5L);
+
+    authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  @WithSubject(userId = 3)
+  public void checkDataAnalysisReadPermission_LaboratoryManager() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    DataAnalysis dataAnalysis = new DataAnalysis(5L);
+
+    authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+  }
+
+  @Test
+  @WithSubject(userId = 6)
+  public void checkDataAnalysisReadPermission_Other() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    DataAnalysis dataAnalysis = new DataAnalysis(5L);
+
+    try {
+      authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).checkPermission("dataAnalysis:read:5");
+  }
+
+  @Test
+  public void checkDataAnalysisReadPermission_Null() throws Exception {
+    authorizationServiceImpl.checkDataAnalysisReadPermission(null);
   }
 }

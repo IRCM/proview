@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:annotation>
+    <xs:documentation><![CDATA[
+    Describes how MS analysis verification list should be written in XML to allow ProView to parse it.
+    ]]></xs:documentation>
+</xs:annotation>
+
+<xs:element name="verifications">
+    <xs:annotation>
+        <xs:documentation><![CDATA[
+        Verification list group.
+        ]]></xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="verification" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    	<xs:attribute name="type" type="xs:ID" use="required"/>
+    </xs:complexType>
+</xs:element>
+<xs:element name="verification">
+    <xs:annotation>
+        <xs:documentation><![CDATA[
+        Verification to be done before launching MS analysis.
+        ]]></xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="instrument" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    	<xs:attribute name="name" type="xs:ID" use="required"/>
+    </xs:complexType>
+</xs:element>
+<xs:element name="instrument">
+    <xs:annotation>
+        <xs:documentation><![CDATA[
+        Instrument on which verification applies.
+        ]]></xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="source" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    	<xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:element>
+<xs:element name="source">
+    <xs:annotation>
+        <xs:documentation><![CDATA[
+        Instrument's source on which verification applies.
+        ]]></xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+    	<xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:element>
+
+
+<!-- Main element -->
+<xs:element name="msanalysis">
+    <xs:annotation>
+        <xs:documentation><![CDATA[
+        MS analysis verification list.
+        ]]></xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element ref="verifications" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+</xs:schema>

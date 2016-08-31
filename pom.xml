@@ -65,6 +65,7 @@
     <vaadin-icons.version>1.0.1</vaadin-icons.version>
     <vaadin.theme>${project.artifactId}</vaadin.theme> 
     <loginform.version>0.6.2</loginform.version>
+    <commons-lang3.version>3.4</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
     <el.version>2.2.5</el.version>
     <thymeleaf.version>3.0.0.BETA02</thymeleaf.version>
@@ -315,6 +316,11 @@
       <groupId>org.vaadin.addons</groupId>
       <artifactId>loginform</artifactId>
       <version>${loginform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${commons-lang3.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
