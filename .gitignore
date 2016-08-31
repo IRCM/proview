@@ -4,6 +4,7 @@
 /.project
 /.checkstyle
 /.designer
+/.factorypath
 /*.log
 /*.launch
 /src/main/resources/VAADIN/themes/**/styles.css
