@@ -1,0 +1,8 @@
+<html th:inline="text" th:remove="tag">
+[[${sampleCount}]] new samples were submitted by [[${user.email}]]
+
+Sample LIMS	Sample name	Tube
+[# th:each="sample: ${samples}"]
+[[${sample.lims}]]	[[${sample.name}]]	[[${tubes.get(sample).name}]]
+[/]
+</html>

@@ -1,7 +1,10 @@
-<html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
     <head></head>
     <body>
-        $numberTool.integer($sampleCount) new samples were submitted by $user.email
+        [[${sampleCount}]] new samples were submitted by [[${user.email}]]
         
         <table>
             <thead>
@@ -18,19 +21,17 @@
                 </tr>
             </thead>
             <tbody>
-#foreach($sample in $samples)
-                <tr>
+                <tr th:each="sample: ${samples}">
                     <td>
-                        $sample.lims
+                        [[${sample.lims}]]
                     </td>
                     <td>
-                        $sample.name
+                        [[${sample.name}]]
                     </td>
                     <td>
-                        $tubes.get($sample).name
+                        [[${tubes.get(sample).name}]]
                     </td>
                 </tr>
-#end
             </tbody>
         </table>
     </body>
