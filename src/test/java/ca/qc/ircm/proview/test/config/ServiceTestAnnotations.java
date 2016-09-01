@@ -35,7 +35,8 @@ import java.lang.annotation.Target;
 @ActiveProfiles("test")
 @WebAppConfiguration
 @Transactional
-@Sql("/database.sql")
+@Sql({ "/database.sql", "/user-data.sql", "/sample-data.sql", "/activity-data.sql",
+    "/analysis-data.sql", "/database-after-insert.sql" })
 public @interface ServiceTestAnnotations {
 
 }

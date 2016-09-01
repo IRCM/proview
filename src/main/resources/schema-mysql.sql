@@ -1,62 +1,11 @@
---
--- Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
---
--- This program is free software: you can redistribute it and/or modify
--- it under the terms of the GNU Affero General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- This program is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU Affero General Public License
--- along with this program.  If not, see <http://www.gnu.org/licenses/>.
---
-
-DROP TABLE activityupdate IF EXISTS;
-DROP TABLE activity IF EXISTS;
-DROP TABLE dataanalysis IF EXISTS;
-DROP TABLE acquisition_to_mascotfile IF EXISTS;
-DROP TABLE mascotfile IF EXISTS;
-DROP TABLE acquisition IF EXISTS;
-DROP TABLE msanalysisverification IF EXISTS;
-DROP TABLE msanalysis IF EXISTS;
-/*
-ALTER TABLE IF EXISTS samplecontainer
-DROP CONSTRAINT samplecontainer_ibfk_3;
-ALTER TABLE samplecontainer
-DROP CONSTRAINT samplecontainer_ibfk_2;
-*/
-DROP TABLE treatmentsample IF EXISTS;
-DROP TABLE treatment IF EXISTS;
-DROP TABLE protocol IF EXISTS;
-DROP TABLE solvent IF EXISTS;
-DROP TABLE contaminant IF EXISTS;
-DROP TABLE standard IF EXISTS;
-DROP TABLE sample IF EXISTS;
-DROP TABLE samplecontainer IF EXISTS;
-DROP TABLE plate IF EXISTS;
-DROP TABLE structure IF EXISTS;
-DROP TABLE gelimages IF EXISTS;
-DROP TABLE submission IF EXISTS;
-DROP TABLE forgotpassword IF EXISTS;
-DROP TABLE laboratorymanager IF EXISTS;
-DROP TABLE laboratoryuser IF EXISTS;
-DROP TABLE phonenumber IF EXISTS;
-DROP TABLE users IF EXISTS;
-DROP TABLE address IF EXISTS;
-DROP TABLE laboratory IF EXISTS;
-
 CREATE TABLE IF NOT EXISTS laboratory (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   organization varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS address (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   line varchar(200) NOT NULL,
   town varchar(50) NOT NULL,
   state varchar(50) NOT NULL,
@@ -65,7 +14,7 @@ CREATE TABLE IF NOT EXISTS address (
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS users (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   email varchar(255) NOT NULL,
   name varchar(255) NOT NULL,
   password varchar(255) DEFAULT NULL,
@@ -82,7 +31,7 @@ CREATE TABLE IF NOT EXISTS users (
   FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS phonenumber (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   userId bigint(20) DEFAULT NULL,
   type varchar(255) NOT NULL,
   number varchar(50) NOT NULL,
@@ -91,14 +40,14 @@ CREATE TABLE IF NOT EXISTS phonenumber (
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS laboratoryuser (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 CREATE TABLE IF NOT EXISTS laboratorymanager (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
@@ -107,7 +56,7 @@ CREATE TABLE IF NOT EXISTS laboratorymanager (
   FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE forgotpassword (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   userId bigint(20) NOT NULL,
   requestMoment timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   confirmNumber int(11) NOT NULL,
@@ -116,7 +65,7 @@ CREATE TABLE forgotpassword (
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE submission (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   submissionDate date DEFAULT NULL,
   laboratoryId bigint(20) NOT NULL,
   userId bigint(20) DEFAULT NULL,
@@ -125,30 +74,30 @@ CREATE TABLE submission (
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE gelimages (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   submissionId bigint(20) DEFAULT NULL,
   filename varchar(255) NOT NULL,
-  content blob,
+  content longblob,
   PRIMARY KEY (id),
   FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE structure (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   filename varchar(255) NOT NULL,
-  content blob NOT NULL,
+  content longblob NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE TABLE plate (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,
   type varchar(50) NOT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY plateName (name)
+  UNIQUE KEY plateName (name),
+  KEY plateType (type)
 );
-CREATE INDEX plateType ON plate (type);
 CREATE TABLE samplecontainer (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   type varchar(50) NOT NULL,
   name varchar(100) DEFAULT NULL,
   plateId bigint(20) DEFAULT NULL,
@@ -164,14 +113,14 @@ CREATE TABLE samplecontainer (
   FOREIGN KEY (plateId) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 CREATE TABLE sample (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   lims varchar(100) DEFAULT NULL,
   name varchar(150) DEFAULT NULL,
   serviceType varchar(50) DEFAULT NULL,
   controlType varchar(50) DEFAULT NULL,
   support varchar(50) DEFAULT NULL,
   containerId bigint(20) DEFAULT NULL,
-  comments clob,
+  comments text,
   status varchar(50),
   project varchar(100) DEFAULT NULL,
   experience varchar(100) DEFAULT NULL,
@@ -225,35 +174,37 @@ CREATE TABLE sample (
   sampleType varchar(50) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY sampleLims (lims),
+  KEY sampleName (name),
   FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (structureId) REFERENCES structure (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE INDEX sampleName ON sample (name);
+ALTER TABLE samplecontainer
+ADD FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
 CREATE TABLE standard (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
   quantity varchar(50) DEFAULT NULL,
   sampleId bigint(20) DEFAULT NULL,
   quantityUnit varchar(50) DEFAULT NULL,
-  comments clob,
+  comments text,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE contaminant (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
   quantity varchar(50) DEFAULT NULL,
   sampleId bigint(20) DEFAULT NULL,
   quantityUnit varchar(50) DEFAULT NULL,
-  comments clob,
+  comments text,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE solvent (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   sampleId bigint(20) DEFAULT NULL,
   solvent varchar(150) NOT NULL,
   deleted tinyint(4) NOT NULL DEFAULT '0',
@@ -261,34 +212,34 @@ CREATE TABLE solvent (
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE protocol (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
   type varchar(50) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY protocolName (name)
 );
 CREATE TABLE treatment (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   type varchar(100) DEFAULT NULL,
   protocolId bigint(20) DEFAULT NULL,
   fractionationType varchar(50) DEFAULT NULL,
   userId bigint(20) DEFAULT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted tinyint(4) NOT NULL DEFAULT '0',
-  deletionType varchar(50) DEFAULT NULL,
-  deletionJustification clob,
+  deletionType enum('ERRONEOUS','FAILED') DEFAULT NULL,
+  deletionJustification text,
   PRIMARY KEY (id),
   FOREIGN KEY (protocolId) REFERENCES protocol (id) ON UPDATE CASCADE,
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE treatmentsample (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   treatmentId bigint(20) DEFAULT NULL,
   treatmentType varchar(100) DEFAULT NULL,
   sampleId bigint(20) NOT NULL,
   containerId bigint(20) DEFAULT NULL,
   destinationContainerId bigint(20) DEFAULT NULL,
-  comments clob,
+  comments text,
   sourceVolume double DEFAULT NULL,
   solvent varchar(255) DEFAULT NULL,
   solventVolume double DEFAULT NULL,
@@ -304,18 +255,20 @@ CREATE TABLE treatmentsample (
   FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE,
   FOREIGN KEY (destinationContainerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
+ALTER TABLE samplecontainer
+ADD FOREIGN KEY (treatmentSampleId) REFERENCES treatmentsample (id) ON DELETE SET NULL ON UPDATE CASCADE;
 CREATE TABLE msanalysis (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   source varchar(50) DEFAULT NULL,
   massDetectionInstrument varchar(50) NOT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted tinyint(4) NOT NULL DEFAULT '0',
-  deletionType varchar(50) DEFAULT NULL,
-  deletionJustification clob,
+  deletionType enum('ERRONEOUS','FAILED') DEFAULT NULL,
+  deletionJustification text,
   PRIMARY KEY (id)
 );
 CREATE TABLE msanalysisverification (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   msAnalysisId bigint(20) DEFAULT NULL,
   verificationType varchar(50) NOT NULL,
   verificationName varchar(255) NOT NULL,
@@ -324,7 +277,7 @@ CREATE TABLE msanalysisverification (
   FOREIGN KEY (msAnalysisId) REFERENCES msanalysis (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS acquisition (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   msAnalysisId bigint(20) DEFAULT NULL,
   sampleId bigint(20) NOT NULL,
   containerId bigint(20) DEFAULT NULL,
@@ -336,13 +289,13 @@ CREATE TABLE IF NOT EXISTS acquisition (
   comments varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE (sampleId,position),
+  KEY acquisitionFile (acquisitionFile,sampleId),
   FOREIGN KEY (msAnalysisId) REFERENCES msanalysis (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
   FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
-CREATE INDEX acquisitionFile ON acquisition (acquisitionFile,sampleId);
 CREATE TABLE mascotfile (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   server varchar(50) NOT NULL,
   name varchar(50) NOT NULL,
   searchDate datetime NOT NULL,
@@ -351,11 +304,11 @@ CREATE TABLE mascotfile (
   comment varchar(255) DEFAULT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY mascotfileunique (server,name,searchDate)
+  UNIQUE KEY mascotfileunique (server,name,searchDate),
+  KEY mascotfileRawFile (rawFile)
 );
-CREATE INDEX mascotfileRawFile ON mascotfile (rawFile);
 CREATE TABLE IF NOT EXISTS acquisition_to_mascotfile (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   acquisitionId bigint(20) NOT NULL,
   mascotFileId bigint(20) NOT NULL,
   visible tinyint(4) NOT NULL DEFAULT '1',
@@ -366,12 +319,12 @@ CREATE TABLE IF NOT EXISTS acquisition_to_mascotfile (
   FOREIGN KEY (mascotFileId) REFERENCES mascotfile (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE dataanalysis (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   sampleId bigint(20) NOT NULL,
   protein varchar(255) NOT NULL,
   peptide varchar(255) DEFAULT NULL,
   maxWorkTime double NOT NULL,
-  score clob,
+  score text,
   workTime double DEFAULT NULL,
   status varchar(50) NOT NULL,
   analysisType varchar(50) NOT NULL,
@@ -379,22 +332,22 @@ CREATE TABLE dataanalysis (
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE activity (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   userId bigint(20) NOT NULL,
   tableName varchar(50) NOT NULL,
   recordId bigint(20) NOT NULL,
-  actionType varchar(50) NOT NULL,
+  actionType enum('INSERT','UPDATE','DELETE') NOT NULL,
   time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  justification clob,
-  PRIMARY KEY (id)
+  justification text,
+  PRIMARY KEY (id),
+  KEY activityRecordIndex (tableName,recordId,actionType)
 );
-CREATE INDEX activityRecordIndex ON activity (tableName,recordId,actionType);
 CREATE TABLE activityupdate (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   activityId bigint(20) DEFAULT NULL,
   tableName varchar(50) NOT NULL,
   recordId bigint(20) NOT NULL,
-  actionType varchar(50) NOT NULL,
+  actionType enum('INSERT','UPDATE','DELETE') NOT NULL,
   actionColumn varchar(70) DEFAULT NULL,
   oldValue varchar(255) DEFAULT NULL,
   newValue varchar(255) DEFAULT NULL,
