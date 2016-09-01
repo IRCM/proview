@@ -213,16 +213,16 @@ public class AuthorizationServiceImplTest {
   public void hasManagerRole_User_False() {
     when(authenticationService.getAuthorizationInfo(any())).thenReturn(authorizationInfo);
     when(authorizationInfo.getRoles()).thenReturn(new HashSet<>());
-    User user = new User(8L);
+    User user = new User(10L);
 
     boolean hasRole = authorizationServiceImpl.hasManagerRole(user);
 
     assertEquals(false, hasRole);
     verify(authenticationService).getAuthorizationInfo(principalCollectionCaptor.capture());
     PrincipalCollection principalCollection = principalCollectionCaptor.getValue();
-    assertEquals(8L, principalCollection.getPrimaryPrincipal());
+    assertEquals(10L, principalCollection.getPrimaryPrincipal());
     assertEquals(1, principalCollection.fromRealm(realmName).size());
-    assertEquals(8L, principalCollection.fromRealm(realmName).iterator().next());
+    assertEquals(10L, principalCollection.fromRealm(realmName).iterator().next());
   }
 
   @Test
@@ -231,16 +231,16 @@ public class AuthorizationServiceImplTest {
     Set<String> roles = new HashSet<>();
     roles.add(UserRole.MANAGER.name());
     when(authorizationInfo.getRoles()).thenReturn(roles);
-    User user = new User(8L);
+    User user = new User(10L);
 
     boolean hasRole = authorizationServiceImpl.hasManagerRole(user);
 
     assertEquals(true, hasRole);
     verify(authenticationService).getAuthorizationInfo(principalCollectionCaptor.capture());
     PrincipalCollection principalCollection = principalCollectionCaptor.getValue();
-    assertEquals(8L, principalCollection.getPrimaryPrincipal());
+    assertEquals(10L, principalCollection.getPrimaryPrincipal());
     assertEquals(1, principalCollection.fromRealm(realmName).size());
-    assertEquals(8L, principalCollection.fromRealm(realmName).iterator().next());
+    assertEquals(10L, principalCollection.fromRealm(realmName).iterator().next());
   }
 
   @Test
@@ -530,7 +530,7 @@ public class AuthorizationServiceImplTest {
 
   @Test
   public void checkUserReadPermission_CanRead() {
-    User user = new User(6L);
+    User user = new User(5L);
     user.setLaboratory(new Laboratory(1L));
 
     authorizationServiceImpl.checkUserReadPermission(user);
@@ -538,14 +538,14 @@ public class AuthorizationServiceImplTest {
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:1");
-    verify(subject).checkPermission("user:read:6");
+    verify(subject).checkPermission("user:read:5");
   }
 
   @Test
   public void checkUserReadPermission_LaboratoryManager() {
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     authorizationServiceImpl.checkUserReadPermission(user);
@@ -558,7 +558,7 @@ public class AuthorizationServiceImplTest {
   @Test
   public void checkUserReadPermission_CannotRead() {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     try {
@@ -571,7 +571,7 @@ public class AuthorizationServiceImplTest {
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
-    verify(subject).checkPermission("user:read:8");
+    verify(subject).checkPermission("user:read:10");
   }
 
   @Test
@@ -583,7 +583,7 @@ public class AuthorizationServiceImplTest {
   public void hasUserWritePermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     boolean value = authorizationServiceImpl.hasUserWritePermission(user);
@@ -596,7 +596,7 @@ public class AuthorizationServiceImplTest {
   @Test
   public void hasUserWritePermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     boolean value = authorizationServiceImpl.hasUserWritePermission(user);
@@ -610,7 +610,7 @@ public class AuthorizationServiceImplTest {
     when(subject.hasRole("USER")).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     boolean value = authorizationServiceImpl.hasUserWritePermission(user);
@@ -624,8 +624,8 @@ public class AuthorizationServiceImplTest {
   @Test
   public void hasUserWritePermission_CanWrite() {
     when(subject.hasRole("USER")).thenReturn(true);
-    when(subject.isPermitted("user:write:8")).thenReturn(true);
-    User user = new User(8L);
+    when(subject.isPermitted("user:write:10")).thenReturn(true);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     boolean value = authorizationServiceImpl.hasUserWritePermission(user);
@@ -634,14 +634,14 @@ public class AuthorizationServiceImplTest {
     verify(subject).hasRole("USER");
     verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
-    verify(subject).isPermitted("user:write:8");
+    verify(subject).isPermitted("user:write:10");
   }
 
   @Test
   public void hasUserWritePermission_CannotWrite() {
     when(subject.hasRole("USER")).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     boolean value = authorizationServiceImpl.hasUserWritePermission(user);
@@ -650,7 +650,7 @@ public class AuthorizationServiceImplTest {
     verify(subject).hasRole("USER");
     verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
-    verify(subject).isPermitted("user:write:8");
+    verify(subject).isPermitted("user:write:10");
   }
 
   @Test
@@ -664,7 +664,7 @@ public class AuthorizationServiceImplTest {
   public void checkUserWritePermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     authorizationServiceImpl.checkUserWritePermission(user);
@@ -676,7 +676,7 @@ public class AuthorizationServiceImplTest {
   @Test
   public void checkUserWritePermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     try {
@@ -694,7 +694,7 @@ public class AuthorizationServiceImplTest {
     when(subject.hasRole("USER")).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     authorizationServiceImpl.checkUserWritePermission(user);
@@ -707,8 +707,8 @@ public class AuthorizationServiceImplTest {
   @Test
   public void checkUserWritePermission_CanWrite() {
     when(subject.hasRole("USER")).thenReturn(true);
-    when(subject.isPermitted("user:write:8")).thenReturn(true);
-    User user = new User(8L);
+    when(subject.isPermitted("user:write:10")).thenReturn(true);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     authorizationServiceImpl.checkUserWritePermission(user);
@@ -716,14 +716,14 @@ public class AuthorizationServiceImplTest {
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
-    verify(subject).isPermitted("user:write:8");
+    verify(subject).isPermitted("user:write:10");
   }
 
   @Test
   public void checkUserWritePermission_CannotWrite() {
     when(subject.hasRole("USER")).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     try {
@@ -736,7 +736,7 @@ public class AuthorizationServiceImplTest {
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
-    verify(subject).checkPermission("user:write:8");
+    verify(subject).checkPermission("user:write:10");
   }
 
   @Test
@@ -748,7 +748,7 @@ public class AuthorizationServiceImplTest {
   public void checkUserWritePasswordPermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     authorizationServiceImpl.checkUserWritePasswordPermission(user);
@@ -760,7 +760,7 @@ public class AuthorizationServiceImplTest {
   @Test
   public void checkUserWritePasswordPermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     try {
@@ -776,7 +776,7 @@ public class AuthorizationServiceImplTest {
   @Test
   public void checkUserWritePasswordPermission_LaboratoryManager() {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     try {
@@ -788,25 +788,25 @@ public class AuthorizationServiceImplTest {
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
-    verify(subject).checkPermission("user:write_password:8");
+    verify(subject).checkPermission("user:write_password:10");
   }
 
   @Test
   public void checkUserWritePasswordPermission_CanWrite() {
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     authorizationServiceImpl.checkUserWritePasswordPermission(user);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
-    verify(subject).checkPermission("user:write_password:8");
+    verify(subject).checkPermission("user:write_password:10");
   }
 
   @Test
   public void checkUserWritePasswordPermission_CannotWrite() {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    User user = new User(8L);
+    User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     try {
@@ -818,7 +818,7 @@ public class AuthorizationServiceImplTest {
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
-    verify(subject).checkPermission("user:write_password:8");
+    verify(subject).checkPermission("user:write_password:10");
   }
 
   @Test

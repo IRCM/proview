@@ -72,7 +72,7 @@ public class LaboratoryServiceImplTest {
     assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Chromatin and Genomic Expression", laboratory.getName());
     assertEquals(1, laboratory.getManagers().size());
-    assertEquals((Long) 7L, laboratory.getManagers().get(0).getId());
+    assertEquals((Long) 6L, laboratory.getManagers().get(0).getId());
   }
 
   @Test
@@ -103,7 +103,7 @@ public class LaboratoryServiceImplTest {
   public void addManagerAdmin() throws Exception {
     Laboratory laboratory = entityManager.find(Laboratory.class, 1L);
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 6L);
+    User user = entityManager.find(User.class, 5L);
 
     laboratoryServiceImpl.addManager(laboratory, user);
 
@@ -119,7 +119,7 @@ public class LaboratoryServiceImplTest {
   public void addManager() throws Exception {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 8L);
+    User user = entityManager.find(User.class, 10L);
     entityManager.detach(user);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
@@ -138,7 +138,7 @@ public class LaboratoryServiceImplTest {
   public void addManager_InactivatedUser() throws Exception {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 5L);
+    User user = entityManager.find(User.class, 12L);
     entityManager.detach(user);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
@@ -150,7 +150,7 @@ public class LaboratoryServiceImplTest {
     verify(authorizationService).checkAdminRole();
     laboratory = entityManager.find(Laboratory.class, 2L);
     List<User> testManagers = laboratory.getManagers();
-    User testUser = entityManager.find(User.class, 5L);
+    User testUser = entityManager.find(User.class, 12L);
     assertEquals(true, testManagers.contains(user));
     assertEquals(true, testUser.isActive());
   }
@@ -187,7 +187,7 @@ public class LaboratoryServiceImplTest {
   public void addManager_Invalid() throws Exception {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 4L);
+    User user = entityManager.find(User.class, 7L);
     entityManager.detach(user);
 
     laboratoryServiceImpl.addManager(laboratory, user);
@@ -214,7 +214,7 @@ public class LaboratoryServiceImplTest {
   public void removeManager_UnmanagedLaboratory() throws Exception {
     Laboratory laboratory = entityManager.find(Laboratory.class, 3L);
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 7L);
+    User user = entityManager.find(User.class, 6L);
     entityManager.detach(user);
 
     try {
@@ -229,7 +229,7 @@ public class LaboratoryServiceImplTest {
   public void removeManager() throws Exception {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 9L);
+    User user = entityManager.find(User.class, 27L);
     entityManager.detach(user);
     List<User> managers = laboratory.getManagers();
     assertEquals(true, managers.contains(user));
@@ -238,7 +238,7 @@ public class LaboratoryServiceImplTest {
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    laboratory = entityManager.find(Laboratory.class, 4L);
+    laboratory = entityManager.find(Laboratory.class, 2L);
     verify(cacheFlusher).flushShiroCache();
     List<User> testManagers = laboratory.getManagers();
     assertEquals(false, testManagers.contains(user));
@@ -248,7 +248,7 @@ public class LaboratoryServiceImplTest {
   public void removeManager_AlreadyNotManager() throws Exception {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 8L);
+    User user = entityManager.find(User.class, 10L);
     entityManager.detach(user);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));

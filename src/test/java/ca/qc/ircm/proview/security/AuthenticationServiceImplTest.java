@@ -270,15 +270,14 @@ public class AuthenticationServiceImplTest {
   @Test(expected = InvalidAccountException.class)
   public void getAuthenticationInfo_Invalid() throws Throwable {
     UsernamePasswordToken token =
-        new UsernamePasswordToken("robert.stlouis@ircm.qc.ca", "password");
+        new UsernamePasswordToken("francois.robert@ircm.qc.ca", "password");
 
     authenticationServiceImpl.getAuthenticationInfo(token);
   }
 
   @Test(expected = DisabledAccountException.class)
   public void getAuthenticationInfo_Inactive() throws Throwable {
-    UsernamePasswordToken token =
-        new UsernamePasswordToken("michel.tremblay@ircm.qc.ca", "password");
+    UsernamePasswordToken token = new UsernamePasswordToken("james.johnson@ircm.qc.ca", "password");
 
     authenticationServiceImpl.getAuthenticationInfo(token);
   }
@@ -339,7 +338,7 @@ public class AuthenticationServiceImplTest {
     assertEquals(true, implies(authorization.getObjectPermissions(),
         new WildcardPermission("user:write_password:3")));
     assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:7")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:10")));
     assertEquals(false,
         implies(authorization.getObjectPermissions(), new WildcardPermission("laboratory:read:1")));
     assertEquals(true,
@@ -371,7 +370,7 @@ public class AuthenticationServiceImplTest {
     assertEquals(true, implies(authorization.getObjectPermissions(),
         new WildcardPermission("user:write_password:2")));
     assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:7")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:10")));
     assertEquals(true,
         implies(authorization.getObjectPermissions(), new WildcardPermission("laboratory:read:1")));
     assertEquals(false,
@@ -391,19 +390,19 @@ public class AuthenticationServiceImplTest {
   @Test
   public void getAuthorizationInfo_6() {
     AuthorizationInfo authorization = authenticationServiceImpl
-        .getAuthorizationInfo(new SimplePrincipalCollection(6L, realmName));
+        .getAuthorizationInfo(new SimplePrincipalCollection(5L, realmName));
 
     assertEquals(true, authorization.getRoles().contains("USER"));
     assertEquals(false, authorization.getRoles().contains("MANAGER"));
     assertEquals(true, authorization.getRoles().contains("ADMIN"));
     assertEquals(true,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:6")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:5")));
     assertEquals(true,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:write:6")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:write:5")));
     assertEquals(true, implies(authorization.getObjectPermissions(),
-        new WildcardPermission("user:write_password:6")));
+        new WildcardPermission("user:write_password:5")));
     assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:7")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:10")));
     assertEquals(true,
         implies(authorization.getObjectPermissions(), new WildcardPermission("laboratory:read:1")));
     assertEquals(false,
@@ -423,19 +422,19 @@ public class AuthenticationServiceImplTest {
   @Test
   public void getAuthorizationInfo_Invalid() {
     AuthorizationInfo authorization = authenticationServiceImpl
-        .getAuthorizationInfo(new SimplePrincipalCollection(4L, realmName));
+        .getAuthorizationInfo(new SimplePrincipalCollection(6L, realmName));
 
     assertEquals(false, authorization.getRoles().contains("USER"));
     assertEquals(false, authorization.getRoles().contains("MANAGER"));
     assertEquals(false, authorization.getRoles().contains("ADMIN"));
     assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:4")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:6")));
     assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:write:4")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:write:6")));
     assertEquals(false, implies(authorization.getObjectPermissions(),
-        new WildcardPermission("user:write_password:4")));
+        new WildcardPermission("user:write_password:6")));
     assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:7")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:10")));
     assertEquals(false,
         implies(authorization.getObjectPermissions(), new WildcardPermission("laboratory:read:1")));
     assertEquals(false,
@@ -455,19 +454,19 @@ public class AuthenticationServiceImplTest {
   @Test
   public void getAuthorizationInfo_Inactive() {
     AuthorizationInfo authorization = authenticationServiceImpl
-        .getAuthorizationInfo(new SimplePrincipalCollection(5L, realmName));
+        .getAuthorizationInfo(new SimplePrincipalCollection(12L, realmName));
 
     assertEquals(false, authorization.getRoles().contains("USER"));
     assertEquals(false, authorization.getRoles().contains("MANAGER"));
     assertEquals(false, authorization.getRoles().contains("ADMIN"));
     assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:5")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:12")));
     assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:write:5")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:write:12")));
     assertEquals(false, implies(authorization.getObjectPermissions(),
-        new WildcardPermission("user:write_password:5")));
+        new WildcardPermission("user:write_password:12")));
     assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:7")));
+        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:10")));
     assertEquals(false,
         implies(authorization.getObjectPermissions(), new WildcardPermission("laboratory:read:1")));
     assertEquals(false,

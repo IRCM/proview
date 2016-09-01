@@ -292,7 +292,7 @@ public class UserServiceImplTest {
 
     verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
     assertEquals(1, users.size());
-    assertNotNull(find(users, 4));
+    assertNotNull(find(users, 7));
   }
 
   @Test
@@ -304,8 +304,8 @@ public class UserServiceImplTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, users.size());
-    assertNotNull(find(users, 4));
-    assertNotNull(find(users, 10));
+    assertNotNull(find(users, 6));
+    assertNotNull(find(users, 7));
   }
 
   @Test
@@ -317,12 +317,11 @@ public class UserServiceImplTest {
     List<User> users = userServiceImpl.all(parameters);
 
     verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
-    assertEquals(5, users.size());
+    assertEquals(4, users.size());
     assertNotNull(find(users, 3));
-    assertNotNull(find(users, 5));
-    assertNotNull(find(users, 8));
-    assertNotNull(find(users, 9));
+    assertNotNull(find(users, 10));
     assertNotNull(find(users, 12));
+    assertNotNull(find(users, 27));
   }
 
   @Test
@@ -333,16 +332,19 @@ public class UserServiceImplTest {
     List<User> users = userServiceImpl.all(parameters);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(9, users.size());
+    assertEquals(12, users.size());
     assertNotNull(find(users, 2));
     assertNotNull(find(users, 3));
+    assertNotNull(find(users, 4));
     assertNotNull(find(users, 5));
-    assertNotNull(find(users, 6));
-    assertNotNull(find(users, 7));
-    assertNotNull(find(users, 8));
-    assertNotNull(find(users, 9));
+    assertNotNull(find(users, 10));
     assertNotNull(find(users, 11));
     assertNotNull(find(users, 12));
+    assertNotNull(find(users, 19));
+    assertNotNull(find(users, 24));
+    assertNotNull(find(users, 25));
+    assertNotNull(find(users, 26));
+    assertNotNull(find(users, 27));
   }
 
   @Test
@@ -353,16 +355,17 @@ public class UserServiceImplTest {
     List<User> users = userServiceImpl.all(parameters);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(9, users.size());
+    assertEquals(10, users.size());
     assertNotNull(find(users, 3));
-    assertNotNull(find(users, 4));
-    assertNotNull(find(users, 5));
+    assertNotNull(find(users, 6));
     assertNotNull(find(users, 7));
-    assertNotNull(find(users, 8));
-    assertNotNull(find(users, 9));
     assertNotNull(find(users, 10));
-    assertNotNull(find(users, 11));
     assertNotNull(find(users, 12));
+    assertNotNull(find(users, 19));
+    assertNotNull(find(users, 24));
+    assertNotNull(find(users, 25));
+    assertNotNull(find(users, 26));
+    assertNotNull(find(users, 27));
   }
 
   @Test
@@ -370,18 +373,21 @@ public class UserServiceImplTest {
     List<User> users = userServiceImpl.all(null);
 
     authorizationService.checkAdminRole();
-    assertEquals(11, users.size());
+    assertEquals(14, users.size());
     assertNotNull(find(users, 2));
     assertNotNull(find(users, 3));
     assertNotNull(find(users, 4));
     assertNotNull(find(users, 5));
     assertNotNull(find(users, 6));
     assertNotNull(find(users, 7));
-    assertNotNull(find(users, 8));
-    assertNotNull(find(users, 9));
     assertNotNull(find(users, 10));
     assertNotNull(find(users, 11));
     assertNotNull(find(users, 12));
+    assertNotNull(find(users, 19));
+    assertNotNull(find(users, 24));
+    assertNotNull(find(users, 25));
+    assertNotNull(find(users, 26));
+    assertNotNull(find(users, 27));
   }
 
   @Test
@@ -480,7 +486,7 @@ public class UserServiceImplTest {
     entityManager.refresh(laboratory);
     assertEquals(2, laboratory.getManagers().size());
     assertNotNull(find(laboratory.getManagers(), 3L));
-    assertNotNull(find(laboratory.getManagers(), 9L));
+    assertNotNull(find(laboratory.getManagers(), 27L));
     assertNotNull(user.getId());
     user = entityManager.find(User.class, user.getId());
     entityManager.refresh(user);
@@ -528,7 +534,7 @@ public class UserServiceImplTest {
 
   @Test
   public void register_ExistingLaboratory_Invalid() throws Throwable {
-    final User manager = entityManager.find(User.class, 10L);
+    final User manager = entityManager.find(User.class, 6L);
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -620,7 +626,7 @@ public class UserServiceImplTest {
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     assertEquals(false, user.isAdmin());
-    verify(emailService, times(2)).sendHtmlEmail(emailCaptor.capture());
+    verify(emailService, times(3)).sendHtmlEmail(emailCaptor.capture());
     Set<String> receivers = new HashSet<>();
     Set<String> subjects = new HashSet<>();
     MessageResource frenchMessageResource =
@@ -645,7 +651,8 @@ public class UserServiceImplTest {
       assertFalse(email.getHtmlMessage().contains("$resourceTool"));
     }
     receivers.contains("christian.poitras@ircm.qc.ca");
-    receivers.contains("christopher.anderson@ircm.qc.ca");
+    receivers.contains("liam.li@ircm.qc.ca");
+    receivers.contains("jackson.smith@ircm.qc.ca");
   }
 
   @Test
@@ -754,7 +761,7 @@ public class UserServiceImplTest {
 
   @Test
   public void validate() throws Throwable {
-    User user = entityManager.find(User.class, 4L);
+    User user = entityManager.find(User.class, 7L);
     entityManager.detach(user);
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
@@ -766,7 +773,7 @@ public class UserServiceImplTest {
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
-    user = entityManager.find(User.class, 4L);
+    user = entityManager.find(User.class, 7L);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -774,7 +781,7 @@ public class UserServiceImplTest {
 
   @Test
   public void activate() throws Throwable {
-    User user = entityManager.find(User.class, 5L);
+    User user = entityManager.find(User.class, 12L);
     entityManager.detach(user);
     assertEquals(false, user.isActive());
     Collection<User> users = new LinkedList<User>();
@@ -785,7 +792,7 @@ public class UserServiceImplTest {
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
-    user = entityManager.find(User.class, 5L);
+    user = entityManager.find(User.class, 12L);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -809,7 +816,7 @@ public class UserServiceImplTest {
 
   @Test
   public void deactivate() throws Throwable {
-    User user = entityManager.find(User.class, 8L);
+    User user = entityManager.find(User.class, 10L);
     entityManager.detach(user);
     assertEquals(true, user.isActive());
 
@@ -821,7 +828,7 @@ public class UserServiceImplTest {
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(authorizationService).hasManagerRole(user);
     verify(cacheFlusher).flushShiroCache();
-    user = entityManager.find(User.class, 8L);
+    user = entityManager.find(User.class, 10L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -845,7 +852,7 @@ public class UserServiceImplTest {
 
   @Test
   public void delete() throws Throwable {
-    User user = entityManager.find(User.class, 4L);
+    User user = entityManager.find(User.class, 7L);
     entityManager.detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<User>();
@@ -855,13 +862,13 @@ public class UserServiceImplTest {
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    user = entityManager.find(User.class, 4L);
+    user = entityManager.find(User.class, 7L);
     assertNull(user);
   }
 
   @Test
   public void delete_NewLaboratory() throws Throwable {
-    User user = entityManager.find(User.class, 10L);
+    User user = entityManager.find(User.class, 6L);
     entityManager.detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<User>();
@@ -871,9 +878,9 @@ public class UserServiceImplTest {
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    user = entityManager.find(User.class, 10L);
+    user = entityManager.find(User.class, 6L);
     assertNull(user);
-    Laboratory laboratory = entityManager.find(Laboratory.class, 4L);
+    Laboratory laboratory = entityManager.find(Laboratory.class, 3L);
     assertNull(laboratory);
   }
 }
