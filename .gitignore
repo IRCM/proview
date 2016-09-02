@@ -6,6 +6,7 @@
 /.designer
 /.factorypath
 /*.log
+/*.log.*
 /*.launch
 /src/main/resources/VAADIN/themes/**/styles.css
 styles.scss.cache
