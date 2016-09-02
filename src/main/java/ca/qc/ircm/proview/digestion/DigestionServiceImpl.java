@@ -16,9 +16,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -88,7 +88,7 @@ public class DigestionServiceImpl extends BaseTreatmentService implements Digest
     User user = authorizationService.getCurrentUser();
 
     digestion.setUser(user);
-    digestion.setInsertTime(new Date());
+    digestion.setInsertTime(Instant.now());
 
     entityManager.persist(digestion);
 

@@ -1,7 +1,5 @@
 package ca.qc.ircm.proview.sample;
 
-import com.google.common.base.Optional;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.UpdateActivity;
@@ -16,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -392,7 +391,7 @@ public class SampleActivityServiceImpl implements SampleActivityService {
       activity.setUpdates(new LinkedList<UpdateActivity>(updates));
       return Optional.of(activity);
     } else {
-      return Optional.absent();
+      return Optional.empty();
     }
   }
 }

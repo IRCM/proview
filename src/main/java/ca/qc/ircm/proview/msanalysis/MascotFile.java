@@ -2,12 +2,11 @@ package ca.qc.ircm.proview.msanalysis;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 import ca.qc.ircm.proview.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +16,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 import javax.validation.constraints.Size;
 
 /**
@@ -56,8 +54,7 @@ public class MascotFile implements Data, Serializable {
    * Seach date.
    */
   @Column(name = "searchDate", nullable = false)
-  @Temporal(TIMESTAMP)
-  private Date searchDate;
+  private Instant searchDate;
   /**
    * Location of mascot file on disk.
    */
@@ -80,8 +77,7 @@ public class MascotFile implements Data, Serializable {
    * Insertion time.
    */
   @Column(name = "insertTime", updatable = false, nullable = false)
-  @Temporal(TIMESTAMP)
-  private Date insertTime;
+  private Instant insertTime;
 
   public MascotFile() {
   }
@@ -158,12 +154,12 @@ public class MascotFile implements Data, Serializable {
     return name;
   }
 
-  public Date getSearchDate() {
-    return searchDate != null ? (Date) searchDate.clone() : null;
+  public Instant getSearchDate() {
+    return searchDate;
   }
 
-  public void setSearchDate(Date searchDate) {
-    this.searchDate = searchDate != null ? (Date) searchDate.clone() : null;
+  public void setSearchDate(Instant searchDate) {
+    this.searchDate = searchDate;
   }
 
   public void setName(String name) {
@@ -203,12 +199,12 @@ public class MascotFile implements Data, Serializable {
     this.rawFile = rawFile;
   }
 
-  public Date getInsertTime() {
-    return insertTime != null ? (Date) insertTime.clone() : null;
+  public Instant getInsertTime() {
+    return insertTime;
   }
 
-  public void setInsertTime(Date insertTime) {
-    this.insertTime = insertTime != null ? (Date) insertTime.clone() : null;
+  public void setInsertTime(Instant insertTime) {
+    this.insertTime = insertTime;
   }
 
   public MascotServer getServer() {

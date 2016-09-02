@@ -3,8 +3,6 @@ package ca.qc.ircm.proview.sample;
 import static ca.qc.ircm.proview.sample.QControl.control;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 
-import com.google.common.base.Optional;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -15,7 +13,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,6 +80,7 @@ public class ControlServiceImpl implements ControlService {
     Tube tube = new Tube();
     tube.setSample(control);
     tube.setName(tubeService.generateTubeName(control, new HashSet<String>()));
+    tube.setTimestamp(Instant.now());
     entityManager.persist(tube);
     control.setOriginalContainer(tube);
 

@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -127,7 +128,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     if (parameters.getActionType() != null) {
       query.where(activity.actionType.eq(parameters.getActionType()));
     }
@@ -150,7 +151,7 @@ public class ActivityServiceImpl implements ActivityService {
     if (sample instanceof SubmissionSample) {
       JPAQuery<Activity> query = queryFactory.select(activity);
       query.from(activity);
-      query.leftJoin(activity.updates).fetch();
+      query.leftJoin(activity.updates, updateActivity).fetch();
       query.from(submission);
       query.join(submission.samples, submissionSample);
       query.where(activity.recordId.eq(submission.id));
@@ -162,7 +163,7 @@ public class ActivityServiceImpl implements ActivityService {
     } else {
       JPAQuery<Activity> query = queryFactory.select(activity);
       query.from(activity);
-      query.leftJoin(activity.updates).fetch();
+      query.leftJoin(activity.updates, updateActivity).fetch();
       query.where(activity.tableName.eq("sample"));
       query.where(activity.actionType.eq(ActionType.INSERT));
       query.where(activity.recordId.eq(sample.getId()));
@@ -180,7 +181,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.where(activity.tableName.eq("plate"));
     query.where(activity.actionType.eq(ActionType.INSERT));
     query.where(activity.recordId.eq(plate.getId()));
@@ -198,7 +199,7 @@ public class ActivityServiceImpl implements ActivityService {
     final List<Activity> activities = new ArrayList<>();
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.where(activity.tableName.eq("sample"));
     query.where(activity.actionType.eq(ActionType.UPDATE));
     query.where(activity.recordId.eq(sample.getId()));
@@ -243,7 +244,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(treatment);
     query.where(activity.recordId.eq(treatment.id));
     query.from(treatmentSample);
@@ -264,7 +265,7 @@ public class ActivityServiceImpl implements ActivityService {
     final List<Activity> activities = new ArrayList<Activity>();
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(treatment);
     query.where(activity.recordId.eq(treatment.id));
     query.join(treatmentSample);
@@ -277,7 +278,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(treatment);
     query.where(activity.recordId.eq(treatment.id));
     query.from(fractionationDetail);
@@ -290,7 +291,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(treatment);
     query.where(activity.recordId.eq(treatment.id));
     query.from(sampleTransfer);
@@ -314,7 +315,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(msAnalysis);
     query.where(activity.recordId.eq(msAnalysis.id));
     query.from(acquisition);
@@ -334,7 +335,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(msAnalysis);
     query.where(activity.recordId.eq(msAnalysis.id));
     query.from(acquisition);
@@ -356,7 +357,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(dataAnalysis);
     query.where(activity.recordId.eq(dataAnalysis.id));
     query.where(activity.tableName.eq("dataanalysis"));
@@ -374,7 +375,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
-    query.leftJoin(activity.updates).fetch();
+    query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(acquisitionMascotFile);
     query.where(activity.recordId.eq(acquisitionMascotFile.id));
     query.from(acquisition);
@@ -769,7 +770,7 @@ public class ActivityServiceImpl implements ActivityService {
           message.append(message(bundle, "MascotFile." + activity.getActionType(),
               updateActivity.getColumn(), updateActivity.getOldValue(),
               updateActivity.getNewValue(), acquisitionMascotFile.getMascotFile().getName(),
-              acquisitionMascotFile.getMascotFile().getSearchDate(),
+              Date.from(acquisitionMascotFile.getMascotFile().getSearchDate()),
               acquisitionMascotFile.getAcquisition().getLims()));
         }
 
@@ -898,7 +899,7 @@ public class ActivityServiceImpl implements ActivityService {
 
   @Override
   public void insert(Activity activity) {
-    activity.setTimestamp(new Date());
+    activity.setTimestamp(Instant.now());
 
     entityManager.persist(activity);
   }

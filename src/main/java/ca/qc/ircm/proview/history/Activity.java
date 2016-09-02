@@ -2,12 +2,11 @@ package ca.qc.ircm.proview.history;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.user.User;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -20,7 +19,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 
 /**
  * History of an action in database.
@@ -35,12 +33,14 @@ public class Activity implements Data {
     /**
      * Data was just inserted.
      */
-    INSERT, /**
-             * Data was just updated.
-             */
-    UPDATE, /**
-             * Data was just deleted.
-             */
+    INSERT,
+    /**
+     * Data was just updated.
+     */
+    UPDATE,
+    /**
+     * Data was just deleted.
+     */
     DELETE
   }
 
@@ -77,8 +77,7 @@ public class Activity implements Data {
    * Moment where action was performed.
    */
   @Column(name = "time", nullable = false)
-  @Temporal(TIMESTAMP)
-  private Date timestamp;
+  private Instant timestamp;
   /**
    * Justification of changes.
    */
@@ -119,10 +118,6 @@ public class Activity implements Data {
     return actionType;
   }
 
-  public Date getTimestamp() {
-    return timestamp != null ? (Date) timestamp.clone() : null;
-  }
-
   public void setId(Long id) {
     this.id = id;
   }
@@ -143,10 +138,6 @@ public class Activity implements Data {
     this.actionType = actionType;
   }
 
-  public void setTimestamp(Date timestamp) {
-    this.timestamp = timestamp != null ? (Date) timestamp.clone() : null;
-  }
-
   public List<UpdateActivity> getUpdates() {
     return updates;
   }
@@ -161,5 +152,13 @@ public class Activity implements Data {
 
   public void setJustification(String justification) {
     this.justification = justification;
+  }
+
+  public Instant getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(Instant timestamp) {
+    this.timestamp = timestamp;
   }
 }

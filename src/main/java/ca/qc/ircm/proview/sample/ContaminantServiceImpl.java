@@ -35,6 +35,7 @@ public class ContaminantServiceImpl implements ContaminantService {
   protected ContaminantServiceImpl(EntityManager entityManager, JPAQueryFactory queryFactory,
       AuthorizationService authorizationService) {
     this.entityManager = entityManager;
+    this.queryFactory = queryFactory;
     this.authorizationService = authorizationService;
   }
 

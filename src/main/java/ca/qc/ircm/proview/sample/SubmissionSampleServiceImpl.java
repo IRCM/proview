@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMa
 import static ca.qc.ircm.proview.sample.QMoleculeSample.moleculeSample;
 import static ca.qc.ircm.proview.sample.QProteicSample.proteicSample;
 import static ca.qc.ircm.proview.sample.QSample.sample;
+import static ca.qc.ircm.proview.sample.QSampleContainer.sampleContainer;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SubmissionSample.Status.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.sample.SubmissionSample.Status.RECEIVED;
@@ -16,8 +17,6 @@ import static ca.qc.ircm.proview.sample.SubmissionSample.Status.TO_ENRICH;
 import static ca.qc.ircm.proview.sample.SubmissionSample.Status.TO_RECEIVE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QUser.user;
-
-import com.google.common.base.Optional;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -32,12 +31,13 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -86,10 +86,9 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
   protected SubmissionSampleServiceImpl() {
   }
 
-  protected SubmissionSampleServiceImpl(EntityManager entityManager,
-      JPAQueryFactory queryFactory, SampleActivityService sampleActivityService,
-      ActivityService activityService, PricingEvaluator pricingEvaluator,
-      AuthorizationService authorizationService) {
+  protected SubmissionSampleServiceImpl(EntityManager entityManager, JPAQueryFactory queryFactory,
+      SampleActivityService sampleActivityService, ActivityService activityService,
+      PricingEvaluator pricingEvaluator, AuthorizationService authorizationService) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.sampleActivityService = sampleActivityService;
@@ -206,7 +205,7 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
       query.where(proteicSample.experience.contains(filter.getExperienceContains()));
     }
     if (filter.getLaboratoryContains() != null) {
-      query.where(laboratory.organization.contains(filter.getLaboratoryContains()));
+      query.where(laboratory.organization.eq(filter.getLaboratoryContains()));
     }
     if (filter.getLaboratory() != null) {
       query.where(laboratory.eq(filter.getLaboratory()));
@@ -285,7 +284,7 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
     query.join(submissionSample.submission, submission).fetch();
     query.join(submission.laboratory, laboratory).fetch();
     query.join(submission.user, user).fetch();
-    query.join(submissionSample.originalContainer).fetch();
+    query.join(submissionSample.originalContainer, sampleContainer).fetch();
     query.where(submissionSample.status.in(TO_APPROVE, TO_RECEIVE, RECEIVED, TO_DIGEST, TO_ENRICH,
         TO_ANALYSE, DATA_ANALYSIS));
     return query.fetch();
@@ -319,11 +318,11 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
   }
 
   @Override
-  public BigDecimal computePrice(SubmissionSample sample, Date date) {
-    if (sample == null || date == null) {
+  public BigDecimal computePrice(SubmissionSample sample, Instant instant) {
+    if (sample == null || instant == null) {
       return null;
     }
 
-    return pricingEvaluator.computePrice(sample, date);
+    return pricingEvaluator.computePrice(sample, instant);
   }
 }

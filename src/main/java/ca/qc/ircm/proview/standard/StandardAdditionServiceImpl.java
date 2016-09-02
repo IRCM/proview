@@ -16,9 +16,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -47,8 +47,8 @@ public class StandardAdditionServiceImpl extends BaseTreatmentService
   protected StandardAdditionServiceImpl() {
   }
 
-  protected StandardAdditionServiceImpl(EntityManager entityManager,
-      JPAQueryFactory queryFactory, StandardAdditionActivityService standardAdditionActivityService,
+  protected StandardAdditionServiceImpl(EntityManager entityManager, JPAQueryFactory queryFactory,
+      StandardAdditionActivityService standardAdditionActivityService,
       ActivityService activityService, AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
@@ -88,7 +88,7 @@ public class StandardAdditionServiceImpl extends BaseTreatmentService
     authorizationService.checkAdminRole();
     User user = authorizationService.getCurrentUser();
 
-    standardAddition.setInsertTime(new Date());
+    standardAddition.setInsertTime(Instant.now());
     standardAddition.setUser(user);
 
     // Insert standard addition.

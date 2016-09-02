@@ -5,8 +5,6 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Optional;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.UpdateActivity;
@@ -23,6 +21,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.EntityManager;

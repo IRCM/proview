@@ -4,7 +4,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Compute prices of analysis and modifications asked by user.
@@ -17,30 +17,30 @@ public class PricingEvaluator {
    *
    * @param sample
    *          sample
-   * @param date
-   *          date of prices to use
+   * @param instant
+   *          instant of prices to use
    * @return sample's price
    */
-  public BigDecimal computePrice(SubmissionSample sample, Date date) {
-    PricingStrategy strategy = this.getPriceStrategy(date);
+  public BigDecimal computePrice(SubmissionSample sample, Instant instant) {
+    PricingStrategy strategy = this.getPriceStrategy(instant);
     return strategy.computePrice(sample);
   }
 
   /**
    * Returns price strategy that applied for date.
    *
-   * @param date
-   *          Date for prices.
-   * @return Price strategy that applied for date.
+   * @param instant
+   *          instant for prices
+   * @return price strategy that applied for date
    * @throws NullPointerException
    *           if date is null
    */
-  public PricingStrategy getPriceStrategy(Date date) {
-    if (date == null) {
-      throw new NullPointerException("date cannot be null");
+  public PricingStrategy getPriceStrategy(Instant instant) {
+    if (instant == null) {
+      throw new NullPointerException("instant cannot be null");
     }
 
-    NullPricingStrategy strategy = new NullPricingStrategy(date);
+    NullPricingStrategy strategy = new NullPricingStrategy(instant);
     return strategy;
   }
 }

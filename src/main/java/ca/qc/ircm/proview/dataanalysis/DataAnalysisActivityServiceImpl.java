@@ -1,7 +1,5 @@
 package ca.qc.ircm.proview.dataanalysis;
 
-import com.google.common.base.Optional;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.SampleStatusUpdateActivityBuilder;
@@ -17,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -121,7 +120,7 @@ public class DataAnalysisActivityServiceImpl implements DataAnalysisActivityServ
       activity.setUpdates(new LinkedList<UpdateActivity>(updates));
       return Optional.of(activity);
     } else {
-      return Optional.absent();
+      return Optional.empty();
     }
   }
 }

@@ -3,14 +3,14 @@ package ca.qc.ircm.proview.pricing;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Pricing strategy that always return null.
  */
 public class NullPricingStrategy implements PricingStrategy {
 
-  protected NullPricingStrategy(Date date) {
+  protected NullPricingStrategy(Instant instant) {
   }
 
   /**

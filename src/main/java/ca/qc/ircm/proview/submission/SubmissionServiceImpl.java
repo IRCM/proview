@@ -4,8 +4,6 @@ import static ca.qc.ircm.proview.laboratory.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.user.QUser.user;
 
-import com.google.common.base.Optional;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.laboratory.Laboratory;
@@ -29,12 +27,14 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -126,6 +126,7 @@ public class SubmissionServiceImpl implements SubmissionService {
       Tube tube = new Tube();
       tube.setSample(sample);
       tube.setName(tubeService.generateTubeName(sample, otherTubeNames));
+      tube.setTimestamp(Instant.now());
       otherTubeNames.add(tube.getName());
       sample.setOriginalContainer(tube);
     }

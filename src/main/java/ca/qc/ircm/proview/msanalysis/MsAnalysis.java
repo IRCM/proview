@@ -2,12 +2,11 @@ package ca.qc.ircm.proview.msanalysis;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 import ca.qc.ircm.proview.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,7 +22,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 
 /**
  * MS analysis.
@@ -59,10 +57,11 @@ public class MsAnalysis implements Data, Serializable {
     /**
      * Digestion information was not entered correctly.
      */
-    ERRONEOUS, /**
-                * Digestion failed due to an experimental problem. An attempt was made to do the
-                * digestion but something went wrong.
-                */
+    ERRONEOUS,
+    /**
+     * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
+     * something went wrong.
+     */
     FAILED;
   }
 
@@ -363,8 +362,7 @@ public class MsAnalysis implements Data, Serializable {
    * Time when analysis was inserted.
    */
   @Column(name = "insertTime", nullable = false)
-  @Temporal(TIMESTAMP)
-  private Date insertTime;
+  private Instant insertTime;
   /**
    * True if MS analysis was deleted.
    */
@@ -489,12 +487,12 @@ public class MsAnalysis implements Data, Serializable {
     this.massDetectionInstrument = massDetectionInstrument;
   }
 
-  public Date getInsertTime() {
-    return insertTime != null ? (Date) insertTime.clone() : null;
+  public Instant getInsertTime() {
+    return insertTime;
   }
 
-  public void setInsertTime(Date insertTime) {
-    this.insertTime = insertTime != null ? (Date) insertTime.clone() : null;
+  public void setInsertTime(Instant insertTime) {
+    this.insertTime = insertTime;
   }
 
   public DeletionType getDeletionType() {

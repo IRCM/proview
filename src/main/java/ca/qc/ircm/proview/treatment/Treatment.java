@@ -3,12 +3,11 @@ package ca.qc.ircm.proview.treatment;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.user.User;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -23,7 +22,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 
 /**
  * Treatment done on some samples.
@@ -47,10 +45,11 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
     /**
      * Digestion information was not entered correctly.
      */
-    ERRONEOUS, /**
-                * Digestion failed due to an experimental problem. An attempt was made to do the
-                * digestion but something went wrong.
-                */
+    ERRONEOUS,
+    /**
+     * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
+     * something went wrong.
+     */
     FAILED;
   }
 
@@ -71,8 +70,7 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
    * Time when treatment took plate.
    */
   @Column(name = "insertTime", nullable = false)
-  @Temporal(TIMESTAMP)
-  private Date insertTime;
+  private Instant insertTime;
   /**
    * True if treatment was deleted.
    */
@@ -104,14 +102,6 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
   }
 
   public abstract Type getType();
-
-  public Date getInsertTime() {
-    return insertTime != null ? (Date) insertTime.clone() : null;
-  }
-
-  public void setInsertTime(Date insertTime) {
-    this.insertTime = insertTime != null ? (Date) insertTime.clone() : null;
-  }
 
   @Override
   public Long getId() {
@@ -160,5 +150,13 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
 
   public void setTreatmentSamples(List<S> treatmentSamples) {
     this.treatmentSamples = treatmentSamples;
+  }
+
+  public Instant getInsertTime() {
+    return insertTime;
+  }
+
+  public void setInsertTime(Instant insertTime) {
+    this.insertTime = insertTime;
   }
 }

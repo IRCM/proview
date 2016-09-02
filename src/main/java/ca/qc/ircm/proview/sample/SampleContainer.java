@@ -3,14 +3,13 @@ package ca.qc.ircm.proview.sample;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -21,7 +20,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 
 /**
  * An object that contains a {@link Sample}.
@@ -63,8 +61,7 @@ public abstract class SampleContainer implements Data, Named, Serializable {
    * Timestamp of this PlateSpot. This property should not be set.
    */
   @Column(name = "time", nullable = false)
-  @Temporal(TIMESTAMP)
-  private Date timestamp;
+  private Instant timestamp;
   /**
    * True if spot cannot receive a sample.
    */
@@ -110,12 +107,12 @@ public abstract class SampleContainer implements Data, Named, Serializable {
     this.treatmentSample = treatmentSample;
   }
 
-  public Date getTimestamp() {
-    return timestamp != null ? (Date) timestamp.clone() : null;
+  public Instant getTimestamp() {
+    return timestamp;
   }
 
-  public void setTimestamp(Date timestamp) {
-    this.timestamp = timestamp != null ? (Date) timestamp.clone() : null;
+  public void setTimestamp(Instant timestamp) {
+    this.timestamp = timestamp;
   }
 
   public boolean isBanned() {

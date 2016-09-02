@@ -1,12 +1,12 @@
 package ca.qc.ircm.proview.sample;
 
-import com.google.common.base.Optional;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;

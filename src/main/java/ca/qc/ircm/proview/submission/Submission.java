@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.submission;
 
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.laboratory.Laboratory;
@@ -10,7 +9,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.user.User;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -22,7 +21,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 
 /**
  * Sample Submission of a User.
@@ -43,8 +41,7 @@ public class Submission implements Data, LaboratoryData, Serializable {
    * Date of Submission submission.
    */
   @Column(name = "submissionDate")
-  @Temporal(TIMESTAMP)
-  private Date submissionDate;
+  private Instant submissionDate;
   /**
    * User who made the Submission.
    */
@@ -127,12 +124,12 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.user = user;
   }
 
-  public Date getSubmissionDate() {
-    return submissionDate != null ? (Date) submissionDate.clone() : null;
+  public Instant getSubmissionDate() {
+    return submissionDate;
   }
 
-  public void setSubmissionDate(Date submissionDate) {
-    this.submissionDate = submissionDate != null ? (Date) submissionDate.clone() : null;
+  public void setSubmissionDate(Instant submissionDate) {
+    this.submissionDate = submissionDate;
   }
 
   public List<SubmissionSample> getSamples() {

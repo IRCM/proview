@@ -16,6 +16,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -122,6 +123,7 @@ public class PlateServiceImpl implements PlateService {
   public void insert(Plate plate) {
     authorizationService.checkAdminRole();
 
+    plate.setInsertTime(Instant.now());
     initPlateSpotList(plate);
     entityManager.persist(plate);
 
@@ -142,6 +144,7 @@ public class PlateServiceImpl implements PlateService {
     for (int row = 0; row < plate.getRowCount(); row++) {
       for (int column = 0; column < plate.getColumnCount(); column++) {
         PlateSpot plateSpot = new PlateSpot(row, column);
+        plateSpot.setTimestamp(Instant.now());
         plateSpot.setPlate(plate);
         spots.add(plateSpot);
       }

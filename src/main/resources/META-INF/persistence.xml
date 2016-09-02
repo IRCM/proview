@@ -39,6 +39,7 @@
     <class>ca.qc.ircm.proview.history.UpdateActivity</class>
     <class>ca.qc.ircm.proview.laboratory.Laboratory</class>
     <class>ca.qc.ircm.proview.msanalysis.Acquisition</class>
+    <class>ca.qc.ircm.proview.msanalysis.AcquisitionMascotFile</class>
     <class>ca.qc.ircm.proview.msanalysis.MascotFile</class>
     <class>ca.qc.ircm.proview.msanalysis.MsAnalysis</class>
     <class>ca.qc.ircm.proview.msanalysis.MsAnalysisVerification</class>

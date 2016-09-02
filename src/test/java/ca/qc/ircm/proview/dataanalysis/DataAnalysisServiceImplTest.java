@@ -9,8 +9,6 @@ import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Optional;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.GelSample;
@@ -29,6 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;

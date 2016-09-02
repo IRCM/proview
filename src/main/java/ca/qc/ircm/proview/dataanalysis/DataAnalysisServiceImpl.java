@@ -2,8 +2,6 @@ package ca.qc.ircm.proview.dataanalysis;
 
 import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
 
-import com.google.common.base.Optional;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -16,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;

@@ -20,9 +20,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -37,8 +37,7 @@ import javax.persistence.PersistenceContext;
  */
 @Service
 @Transactional
-public class FractionationServiceImpl extends BaseTreatmentService
-    implements FractionationService {
+public class FractionationServiceImpl extends BaseTreatmentService implements FractionationService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -136,7 +135,7 @@ public class FractionationServiceImpl extends BaseTreatmentService
     User user = authorizationService.getCurrentUser();
     validateSpotDestination(fractionation);
 
-    fractionation.setInsertTime(new Date());
+    fractionation.setInsertTime(Instant.now());
     fractionation.setUser(user);
 
     // Reassign samples inside spots.
@@ -148,7 +147,7 @@ public class FractionationServiceImpl extends BaseTreatmentService
     // Insert destination tubes.
     for (FractionationDetail detail : fractionation.getTreatmentSamples()) {
       if (detail.getDestinationContainer() instanceof Tube) {
-        detail.getDestinationContainer().setTimestamp(new Date());
+        detail.getDestinationContainer().setTimestamp(Instant.now());
         entityManager.persist(detail.getDestinationContainer());
       }
     }
@@ -172,7 +171,7 @@ public class FractionationServiceImpl extends BaseTreatmentService
     entityManager.persist(fractionation);
     // Link container to sample and treatment sample.
     for (FractionationDetail detail : fractionation.getTreatmentSamples()) {
-      detail.getDestinationContainer().setTimestamp(new Date());
+      detail.getDestinationContainer().setTimestamp(Instant.now());
     }
 
     // Log insertion of fractionation.

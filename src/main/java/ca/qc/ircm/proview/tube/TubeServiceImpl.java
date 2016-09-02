@@ -38,6 +38,7 @@ public class TubeServiceImpl implements TubeService {
   protected TubeServiceImpl(EntityManager entityManager, JPAQueryFactory queryFactory,
       AuthorizationService authorizationService) {
     this.entityManager = entityManager;
+    this.queryFactory = queryFactory;
     this.authorizationService = authorizationService;
   }
 

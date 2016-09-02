@@ -4,8 +4,8 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.sample.SubmissionSample.Status;
 import ca.qc.ircm.proview.user.User;
 
+import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * Simple implementation of {@link SampleFilter}.
@@ -15,8 +15,8 @@ public class SampleFilterBean implements SampleFilter {
   private String laboratoryContains;
   private Laboratory laboratory;
   private String limsContains;
-  private Date minimalSubmissionDate;
-  private Date maximalSubmissionDate;
+  private Instant minimalSubmissionDate;
+  private Instant maximalSubmissionDate;
   private String nameContains;
   private String projectContains;
   private Collection<Status> statuses;
@@ -65,8 +65,8 @@ public class SampleFilterBean implements SampleFilter {
   }
 
   @Override
-  public Date getMinimalSubmissionDate() {
-    return minimalSubmissionDate != null ? (Date) minimalSubmissionDate.clone() : null;
+  public Instant getMinimalSubmissionDate() {
+    return minimalSubmissionDate;
   }
 
   /**
@@ -76,15 +76,14 @@ public class SampleFilterBean implements SampleFilter {
    *          minimal submission date
    * @return filter
    */
-  public SampleFilterBean minimalSubmissionDate(Date minimalSubmissionDate) {
-    this.minimalSubmissionDate =
-        minimalSubmissionDate != null ? (Date) minimalSubmissionDate.clone() : null;
+  public SampleFilterBean minimalSubmissionDate(Instant minimalSubmissionDate) {
+    this.minimalSubmissionDate = minimalSubmissionDate;
     return this;
   }
 
   @Override
-  public Date getMaximalSubmissionDate() {
-    return maximalSubmissionDate != null ? (Date) maximalSubmissionDate.clone() : null;
+  public Instant getMaximalSubmissionDate() {
+    return maximalSubmissionDate;
   }
 
   /**
@@ -94,9 +93,8 @@ public class SampleFilterBean implements SampleFilter {
    *          maximal submission date
    * @return filter
    */
-  public SampleFilterBean maximalSubmissionDate(Date maximalSubmissionDate) {
-    this.maximalSubmissionDate =
-        maximalSubmissionDate != null ? (Date) maximalSubmissionDate.clone() : null;
+  public SampleFilterBean maximalSubmissionDate(Instant maximalSubmissionDate) {
+    this.maximalSubmissionDate = maximalSubmissionDate;
     return this;
   }
 

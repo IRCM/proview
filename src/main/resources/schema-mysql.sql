@@ -66,7 +66,7 @@ CREATE TABLE forgotpassword (
 );
 CREATE TABLE submission (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  submissionDate date DEFAULT NULL,
+  submissionDate timestamp NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   userId bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),

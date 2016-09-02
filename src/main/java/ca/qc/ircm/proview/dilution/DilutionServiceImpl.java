@@ -16,9 +16,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -87,7 +87,7 @@ public class DilutionServiceImpl extends BaseTreatmentService implements Dilutio
     authorizationService.checkAdminRole();
     User user = authorizationService.getCurrentUser();
 
-    dilution.setInsertTime(new Date());
+    dilution.setInsertTime(Instant.now());
     dilution.setUser(user);
 
     entityManager.persist(dilution);

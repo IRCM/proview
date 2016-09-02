@@ -4,8 +4,8 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.sample.SubmissionSample.Status;
 import ca.qc.ircm.proview.user.User;
 
+import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * Filters samples.
@@ -19,9 +19,9 @@ public interface SampleFilter {
 
   public String getLimsContains();
 
-  public Date getMinimalSubmissionDate();
+  public Instant getMinimalSubmissionDate();
 
-  public Date getMaximalSubmissionDate();
+  public Instant getMaximalSubmissionDate();
 
   public String getNameContains();
 

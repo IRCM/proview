@@ -3,8 +3,8 @@ package ca.qc.ircm.proview.plate;
 import ca.qc.ircm.proview.NamedComparator;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -21,12 +21,14 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
     /**
      * Compare by name.
      */
-    NAME, /**
-           * Plate with most empty spot will be first.
-           */
-    EMPTY_SPOT, /**
-                 * Plate with low timestamp will be first.
-                 */
+    NAME,
+    /**
+     * Plate with most empty spot will be first.
+     */
+    EMPTY_SPOT,
+    /**
+     * Plate with low timestamp will be first.
+     */
     TIME_STAMP;
   }
 
@@ -63,13 +65,13 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
         return compare;
       }
       case TIME_STAMP: {
-        Date min1 = o1.getSpots().get(0).getTimestamp();
+        Instant min1 = o1.getSpots().get(0).getTimestamp();
         for (PlateSpot spot : o1.getSpots()) {
-          min1 = min1.before(spot.getTimestamp()) ? spot.getTimestamp() : min1;
+          min1 = min1.isBefore(spot.getTimestamp()) ? spot.getTimestamp() : min1;
         }
-        Date min2 = o2.getSpots().get(0).getTimestamp();
+        Instant min2 = o2.getSpots().get(0).getTimestamp();
         for (PlateSpot spot : o2.getSpots()) {
-          min2 = min2.before(spot.getTimestamp()) ? spot.getTimestamp() : min2;
+          min2 = min2.isBefore(spot.getTimestamp()) ? spot.getTimestamp() : min2;
         }
         int compare = min2.compareTo(min1);
         compare = compare == 0 ? namedComparator.compare(o1, o2) : compare;

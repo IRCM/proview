@@ -18,9 +18,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -129,7 +129,7 @@ public class MsAnalysisServiceImpl extends BaseTreatmentService implements MsAna
 
     // Add MS analysis to database.
     MsAnalysis msAnalysis = msAnalysisAggregate.getMsAnalysis();
-    msAnalysis.setInsertTime(new Date());
+    msAnalysis.setInsertTime(Instant.now());
     msAnalysis.setAcquisitions(msAnalysisAggregate.getAcquisitions());
     Map<Sample, Integer> positions = new HashMap<>();
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {

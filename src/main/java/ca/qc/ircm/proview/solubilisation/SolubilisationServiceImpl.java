@@ -16,9 +16,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -88,7 +88,7 @@ public class SolubilisationServiceImpl extends BaseTreatmentService
     authorizationService.checkAdminRole();
     User user = authorizationService.getCurrentUser();
 
-    solubilisation.setInsertTime(new Date());
+    solubilisation.setInsertTime(Instant.now());
     solubilisation.setUser(user);
 
     entityManager.persist(solubilisation);

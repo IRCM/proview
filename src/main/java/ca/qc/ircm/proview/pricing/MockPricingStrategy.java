@@ -4,8 +4,8 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Pricing strategy to use for primary tests.
@@ -13,16 +13,16 @@ import java.util.Date;
 public class MockPricingStrategy implements PricingStrategy {
 
   /**
-   * Date to use for price computation.
+   * Instant to use for price computation.
    */
-  private final Date date;
+  private final Instant instant;
 
-  protected MockPricingStrategy(Date date) {
-    if (date == null) {
-      throw new NullPointerException("date cannot be null");
+  protected MockPricingStrategy(Instant instant) {
+    if (instant == null) {
+      throw new NullPointerException("instant cannot be null");
     }
 
-    this.date = date;
+    this.instant = instant;
   }
 
   /**

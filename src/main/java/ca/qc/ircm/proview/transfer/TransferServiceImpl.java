@@ -17,9 +17,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -97,19 +97,19 @@ public class TransferServiceImpl extends BaseTreatmentService implements Transfe
     // Insert destination tubes.
     for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
       if (sampleTransfer.getDestinationContainer() instanceof Tube) {
-        sampleTransfer.getDestinationContainer().setTimestamp(new Date());
+        sampleTransfer.getDestinationContainer().setTimestamp(Instant.now());
         entityManager.persist(sampleTransfer.getDestinationContainer());
       }
     }
 
     // Insert transfer.
-    transfer.setInsertTime(new Date());
+    transfer.setInsertTime(Instant.now());
     transfer.setUser(user);
 
     entityManager.persist(transfer);
     // Link container to sample and treatment sample.
     for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-      sampleTransfer.getDestinationContainer().setTimestamp(new Date());
+      sampleTransfer.getDestinationContainer().setTimestamp(Instant.now());
     }
 
     // Log insertion of transfer.

@@ -2,7 +2,6 @@ package ca.qc.ircm.proview.plate;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
@@ -11,10 +10,10 @@ import ca.qc.ircm.proview.plate.PlateSpotService.SimpleSpotLocation;
 import ca.qc.ircm.proview.plate.PlateSpotService.SpotLocation;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 
 /**
  * Treatment Plate.
@@ -90,8 +88,7 @@ public class Plate
    * Time when analysis was inserted.
    */
   @Column(name = "insertTime", nullable = false)
-  @Temporal(TIMESTAMP)
-  private Date insertTime;
+  private Instant insertTime;
   /**
    * List of all treatments done on samples.
    */
@@ -172,7 +169,7 @@ public class Plate
 
   /**
    * Returns spots in column.
-   * 
+   *
    * @param index
    *          column
    * @return spots in column
@@ -276,12 +273,12 @@ public class Plate
     this.type = type;
   }
 
-  public Date getInsertTime() {
-    return insertTime != null ? (Date) insertTime.clone() : null;
+  public Instant getInsertTime() {
+    return insertTime;
   }
 
-  public void setInsertTime(Date insertTime) {
-    this.insertTime = insertTime != null ? (Date) insertTime.clone() : null;
+  public void setInsertTime(Instant insertTime) {
+    this.insertTime = insertTime;
   }
 
   @Override

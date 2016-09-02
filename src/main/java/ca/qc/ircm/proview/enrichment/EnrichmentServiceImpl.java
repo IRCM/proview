@@ -16,9 +16,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -87,7 +87,7 @@ public class EnrichmentServiceImpl extends BaseTreatmentService implements Enric
     authorizationService.checkAdminRole();
     User user = authorizationService.getCurrentUser();
 
-    enrichment.setInsertTime(new Date());
+    enrichment.setInsertTime(Instant.now());
     enrichment.setUser(user);
 
     entityManager.persist(enrichment);

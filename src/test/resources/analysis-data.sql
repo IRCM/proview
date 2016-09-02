@@ -1143,23 +1143,23 @@ VALUES (424,24,629,87,1,'XL_20141022_03','XL_20141022_03_COU_01',1,0,NULL);
 INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comments)
 VALUES (425,25,630,88,1,'XL_20141022_04','XL_20141022_04_COU_01',1,0,NULL);
 INSERT INTO mascotfile (id,server,name,searchDate,location,rawFile,comment,insertTime)
-VALUES (1,'SERV01','F006100.dat','2009-10-02 00:00:00','C:\\mascot\\data\\20090802\\F006100.dat','\\\\Server01\\proteomic\\LTQ-Orbitrap\\DATA\\2009\\LO_20080617_COU_50.RAW',NULL,'2011-03-02 10:26:54');
+VALUES (1,'SERV01','F006100.dat','2009-10-02 00:00:00','C:\mascot\data\20090802\F006100.dat','\\Server01\proteomic\LTQ-Orbitrap\DATA\2009\LO_20080617_COU_50.RAW',NULL,'2011-03-02 10:26:54');
 INSERT INTO mascotfile (id,server,name,searchDate,location,rawFile,comment,insertTime)
-VALUES (2,'SERV01','F006101.dat','2009-10-02 00:00:00','C:\\mascot\\data\\20090802\\F006101.dat','\\\\Server01\\proteomic\\LTQ-Orbitrap\\DATA\\2009\\XL_20111014_COU_01.RAW',NULL,'2011-10-17 10:08:28');
+VALUES (2,'SERV01','F006101.dat','2009-10-02 00:00:00','C:\mascot\data\20090802\F006101.dat','\\Server01\proteomic\LTQ-Orbitrap\DATA\2009\XL_20111014_COU_01.RAW',NULL,'2011-10-17 10:08:28');
 INSERT INTO mascotfile (id,server,name,searchDate,location,rawFile,comment,insertTime)
-VALUES (3,'SERV01','F006102.dat','2009-10-02 00:00:00','C:\\mascot\\data\\20090802\\F006102.dat','\\\\Server01\\proteomic\\LTQ-Orbitrap\\DATA\\2009\\XL_20111014_COU_02.RAW',NULL,'2011-11-09 16:00:30');
+VALUES (3,'SERV01','F006102.dat','2009-10-02 00:00:00','C:\mascot\data\20090802\F006102.dat','\\Server01\proteomic\LTQ-Orbitrap\DATA\2009\XL_20111014_COU_02.RAW',NULL,'2011-11-09 16:00:30');
 INSERT INTO mascotfile (id,server,name,searchDate,location,rawFile,comment,insertTime)
-VALUES (4,'SERV01','F006103.dat','2009-10-02 00:00:00','C:\\mascot\\data\\20090802\\F006103.dat','\\\\Server01\\proteomic\\LTQ-Orbitrap\\DATA\\2009\\XL_20111014_COU_02.RAW',NULL,'2011-11-09 16:02:51');
+VALUES (4,'SERV01','F006103.dat','2009-10-02 00:00:00','C:\mascot\data\20090802\F006103.dat','\\Server01\proteomic\LTQ-Orbitrap\DATA\2009\XL_20111014_COU_02.RAW',NULL,'2011-11-09 16:02:51');
 INSERT INTO mascotfile (id,server,name,searchDate,location,rawFile,comment,insertTime)
-VALUES (5,'SERV01','F006104.dat','2009-10-02 00:00:00','C:\\mascot\\data\\20090802\\F006104.dat','\\\\Server01\\proteomic\\LTQ-Orbitrap\\DATA\\2009\\XL_20111014_COU_02.RAW',NULL,'2011-11-09 16:02:51');
+VALUES (5,'SERV01','F006104.dat','2009-10-02 00:00:00','C:\mascot\data\20090802\F006104.dat','\\Server01\proteomic\LTQ-Orbitrap\DATA\2009\XL_20111014_COU_02.RAW',NULL,'2011-11-09 16:02:51');
 INSERT INTO mascotfile (id,server,name,searchDate,location,rawFile,comment,insertTime)
 VALUES (6,'SERV02','F001559.dat','2015-05-21 13:13:41','/usr/local/mascot/data/20150521/F001559.dat','File Name: QE_20150519_ADH_04.raw','QE_20150519_ADH_04 - Node:2','2015-05-21 13:42:23');
 INSERT INTO mascotfile (id,server,name,searchDate,location,rawFile,comment,insertTime)
 VALUES (7,'SERV02','F001551.dat','2015-05-20 15:12:00','/usr/local/mascot/data/20150520/F001551.dat','File Name: VL_20150519_ADH_32.raw','VL_20150519_ADH_32_Node:2','2015-05-21 10:44:38');
 INSERT INTO mascotfile (id,server,name,searchDate,location,rawFile,comment,insertTime)
-VALUES (8,'SERV02','F001553.dat','2015-05-20 15:58:15','/usr/local/mascot/data/20150520/F001553.dat','\\\\Server01\\proteomic\\LTQ_Orbitrap_Velos\\Data\\2015\\VL_20150519_ADH_33.raw','ADH VELO','2015-05-21 10:44:38');
+VALUES (8,'SERV02','F001553.dat','2015-05-20 15:58:15','/usr/local/mascot/data/20150520/F001553.dat','\\Server01\proteomic\LTQ_Orbitrap_Velos\Data\2015\VL_20150519_ADH_33.raw','ADH VELO','2015-05-21 10:44:38');
 INSERT INTO mascotfile (id,server,name,searchDate,location,rawFile,comment,insertTime)
-VALUES (9,'SERV01','F038320.dat','2015-05-21 10:44:28','C:\\mascot\\data\\20150521\\F038320.dat','File Name: VL_20150514_SMI_06.raw','VL_20150514_SMI_06 - Node:2','2015-05-21 11:25:04');
+VALUES (9,'SERV01','F038320.dat','2015-05-21 10:44:28','C:\mascot\data\20150521\F038320.dat','File Name: VL_20150514_SMI_06.raw','VL_20150514_SMI_06 - Node:2','2015-05-21 11:25:04');
 INSERT INTO acquisition_to_mascotfile (id,acquisitionId,mascotFileId,visible,comments)
 VALUES (1,409,2,1,'complete report');
 INSERT INTO acquisition_to_mascotfile (id,acquisitionId,mascotFileId,visible,comments)

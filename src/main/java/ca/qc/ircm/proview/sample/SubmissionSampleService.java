@@ -1,8 +1,8 @@
 package ca.qc.ircm.proview.sample;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,33 +17,42 @@ public interface SubmissionSampleService {
     /**
      * Laboratory that submitted sample.
      */
-    LABORATORY, /**
-                 * Director of laboratory that submitted sample.
-                 */
-    USER, /**
-           * Mass spec service asked for sample.
-           */
-    SERVICE, /**
-              * Submission date.
-              */
-    SUBMISSION, /**
-                 * Sample lims.
-                 */
-    LIMS, /**
-           * Sample name.
-           */
-    NAME, /**
-           * Sample status.
-           */
-    STATUS, /**
-             * Sample project.
-             */
-    PROJECT, /**
-              * Sample experience.
-              */
-    EXPERIENCE, /**
-                 * Sample's support.
-                 */
+    LABORATORY,
+    /**
+     * Director of laboratory that submitted sample.
+     */
+    USER,
+    /**
+     * Mass spec service asked for sample.
+     */
+    SERVICE,
+    /**
+     * Submission date.
+     */
+    SUBMISSION,
+    /**
+     * Sample lims.
+     */
+    LIMS,
+    /**
+     * Sample name.
+     */
+    NAME,
+    /**
+     * Sample status.
+     */
+    STATUS,
+    /**
+     * Sample project.
+     */
+    PROJECT,
+    /**
+     * Sample experience.
+     */
+    EXPERIENCE,
+    /**
+     * Sample's support.
+     */
     SUPPORT;
   }
 
@@ -54,22 +63,26 @@ public interface SubmissionSampleService {
     /**
      * @see ca.qc.ircm.proview.sample.Sample.Support#SOLUTION
      */
-    SOLUTION, /**
-               * @see ca.qc.ircm.proview.sample.Sample.Support#GEL
-               */
-    GEL, /**
-          * Small molecule to analyse with high resolution.
-          *
-          * @see ca.qc.ircm.proview.sample.MoleculeSample#isHighResolution()
-          */
-    MOLECULE_HIGH, /**
-                    * Small molecule to analyse with low resolution.
-                    *
-                    * @see ca.qc.ircm.proview.sample.MoleculeSample#isLowResolution()
-                    */
-    MOLECULE_LOW, /**
-                   * @see ca.qc.ircm.proview.submission.Service#INTACT_PROTEIN
-                   */
+    SOLUTION,
+    /**
+     * @see ca.qc.ircm.proview.sample.Sample.Support#GEL
+     */
+    GEL,
+    /**
+     * Small molecule to analyse with high resolution.
+     *
+     * @see ca.qc.ircm.proview.sample.MoleculeSample#isHighResolution()
+     */
+    MOLECULE_HIGH,
+    /**
+     * Small molecule to analyse with low resolution.
+     *
+     * @see ca.qc.ircm.proview.sample.MoleculeSample#isLowResolution()
+     */
+    MOLECULE_LOW,
+    /**
+     * @see ca.qc.ircm.proview.submission.Service#INTACT_PROTEIN
+     */
     INTACT_PROTEIN;
   }
 
@@ -146,11 +159,11 @@ public interface SubmissionSampleService {
    *
    * @param sample
    *          sample
-   * @param date
-   *          date of prices to use
+   * @param instant
+   *          instant of prices to use
    * @return sample's price
    */
-  public BigDecimal computePrice(SubmissionSample sample, Date date);
+  public BigDecimal computePrice(SubmissionSample sample, Instant instant);
 
   /**
    * Update many sample's status.
