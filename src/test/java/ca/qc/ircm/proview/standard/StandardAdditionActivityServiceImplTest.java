@@ -57,8 +57,7 @@ public class StandardAdditionActivityServiceImplTest {
     AddedStandard addedStandard = new AddedStandard();
     addedStandard.setSample(sample);
     addedStandard.setName("unit_test_standard");
-    addedStandard.setQuantity("20");
-    addedStandard.setQuantityUnit(AddedStandard.QuantityUnit.MICRO_GRAMS);
+    addedStandard.setQuantity("20 μg");
     addedStandard.setContainer(sourceTube);
     List<AddedStandard> addedStandards = new ArrayList<AddedStandard>();
     addedStandards.add(addedStandard);
@@ -155,8 +154,8 @@ public class StandardAdditionActivityServiceImplTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-    Activity activity = standardAdditionActivityServiceImpl.undoFailed(standardAddition, reason,
-        bannedContainers);
+    Activity activity =
+        standardAdditionActivityServiceImpl.undoFailed(standardAddition, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

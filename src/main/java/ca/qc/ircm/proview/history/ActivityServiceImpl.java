@@ -679,8 +679,7 @@ public class ActivityServiceImpl implements ActivityService {
           AddedStandard addedStandard = (AddedStandard) treatmentSample;
           message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getLims(),
               treatmentSample.getContainer().getType().ordinal(), container,
-              addedStandard.getName(), addedStandard.getQuantity(),
-              addedStandard.getQuantityUnit().ordinal()));
+              addedStandard.getName(), addedStandard.getQuantity()));
           break;
         }
         case TRANSFER: {

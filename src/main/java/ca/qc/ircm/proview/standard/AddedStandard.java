@@ -1,14 +1,11 @@
 package ca.qc.ircm.proview.standard;
 
-import static javax.persistence.EnumType.STRING;
-
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.Size;
 
 /**
@@ -17,13 +14,6 @@ import javax.validation.constraints.Size;
 @Entity
 @DiscriminatorValue("STANDARD_ADDITION")
 public class AddedStandard extends TreatmentSample implements Data {
-  /**
-   * Quantity's unit.
-   */
-  public static enum QuantityUnit {
-    MICRO_GRAMS, PICO_MOL
-  }
-
   /**
    * Name of standard added.
    */
@@ -34,14 +24,8 @@ public class AddedStandard extends TreatmentSample implements Data {
    * Quantity of standard added.
    */
   @Column(name = "quantity", nullable = false)
-  @Size(max = 50)
+  @Size(max = 100)
   private String quantity;
-  /**
-   * Quantity's unit.
-   */
-  @Column(name = "quantityUnit", nullable = false)
-  @Enumerated(STRING)
-  private QuantityUnit quantityUnit;
 
   public String getName() {
     return name;
@@ -57,13 +41,5 @@ public class AddedStandard extends TreatmentSample implements Data {
 
   public void setQuantity(String quantity) {
     this.quantity = quantity;
-  }
-
-  public QuantityUnit getQuantityUnit() {
-    return quantityUnit;
-  }
-
-  public void setQuantityUnit(QuantityUnit quantityUnit) {
-    this.quantityUnit = quantityUnit;
   }
 }

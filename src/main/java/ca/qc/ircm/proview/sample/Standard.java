@@ -1,6 +1,5 @@
 package ca.qc.ircm.proview.sample;
 
-import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
@@ -10,7 +9,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -22,14 +20,6 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "standard")
 public class Standard implements Data, Cloneable, Serializable, Named {
-
-  /**
-   * Quantity units.
-   */
-  public enum QuantityUnit {
-    MICRO_GRAMS, PICO_MOL;
-  }
-
   private static final long serialVersionUID = 1027734850465332430L;
 
   /**
@@ -49,14 +39,8 @@ public class Standard implements Data, Cloneable, Serializable, Named {
    * Quantity of Standard.
    */
   @Column(name = "quantity")
-  @Size(max = 50)
+  @Size(max = 100)
   private String quantity;
-  /**
-   * Unit of Standard quantity.
-   */
-  @Column(name = "quantityUnit")
-  @Enumerated(STRING)
-  private QuantityUnit quantityUnit;
   /**
    * Comments about standard.
    */
@@ -124,14 +108,6 @@ public class Standard implements Data, Cloneable, Serializable, Named {
 
   public void setQuantity(String quantity) {
     this.quantity = quantity;
-  }
-
-  public QuantityUnit getQuantityUnit() {
-    return quantityUnit;
-  }
-
-  public void setQuantityUnit(QuantityUnit quantityUnit) {
-    this.quantityUnit = quantityUnit;
   }
 
   public String getComments() {

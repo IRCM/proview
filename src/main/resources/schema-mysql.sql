@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS laboratoryuser (
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS laboratorymanager (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -153,8 +154,7 @@ CREATE TABLE IF NOT EXISTS sample (
   thickness varchar(50) DEFAULT NULL,
   coloration varchar(50) DEFAULT NULL,
   otherColoration varchar(100) DEFAULT NULL,
-  developmentTime double DEFAULT NULL,
-  developmentTimeUnit varchar(50) DEFAULT NULL,
+  developmentTime varchar(100) DEFAULT NULL,
   decoloration tinyint(1) NOT NULL DEFAULT '0',
   weightMarkerQuantity double DEFAULT NULL,
   proteinQuantity varchar(100) DEFAULT NULL,
@@ -182,9 +182,8 @@ ADD FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE C
 CREATE TABLE IF NOT EXISTS standard (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
-  quantity varchar(50) DEFAULT NULL,
+  quantity varchar(100) DEFAULT NULL,
   sampleId bigint(20) DEFAULT NULL,
-  quantityUnit varchar(50) DEFAULT NULL,
   comments text,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
@@ -193,9 +192,8 @@ CREATE TABLE IF NOT EXISTS standard (
 CREATE TABLE IF NOT EXISTS contaminant (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
-  quantity varchar(50) DEFAULT NULL,
+  quantity varchar(100) DEFAULT NULL,
   sampleId bigint(20) DEFAULT NULL,
-  quantityUnit varchar(50) DEFAULT NULL,
   comments text,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
@@ -242,8 +240,7 @@ CREATE TABLE IF NOT EXISTS treatmentsample (
   solvent varchar(255) DEFAULT NULL,
   solventVolume double DEFAULT NULL,
   name varchar(100) DEFAULT NULL,
-  quantity varchar(50) DEFAULT NULL,
-  quantityUnit varchar(50) DEFAULT NULL,
+  quantity varchar(100) DEFAULT NULL,
   position int(11) DEFAULT NULL,
   number int(11) DEFAULT NULL,
   piInterval varchar(50) DEFAULT NULL,

@@ -35,8 +35,8 @@ import java.lang.annotation.Target;
 @ActiveProfiles("integration-test")
 @WebAppConfiguration
 @Transactional
-@Sql({ "/database.sql", "/user-data.sql", "/sample-data.sql", "/activity-data.sql",
-    "/analysis-data.sql", "/database-after-insert.sql" })
+@Sql({ "/drop-schema.sql", "/schema-h2.sql", "/database-before-insert.sql", "/user-data.sql",
+    "/sample-data.sql", "/activity-data.sql", "/analysis-data.sql", "/database-after-insert.sql" })
 public @interface IntegrationTestAnnotations {
 
 }

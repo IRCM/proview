@@ -14,7 +14,6 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.sample.GelSample.Coloration;
-import ca.qc.ircm.proview.sample.GelSample.DevelopmentTimeUnit;
 import ca.qc.ircm.proview.sample.GelSample.Separation;
 import ca.qc.ircm.proview.sample.GelSample.Thickness;
 import ca.qc.ircm.proview.sample.ProteicSample.EnrichmentType;
@@ -108,7 +107,6 @@ public class GelSampleServiceImplTest {
     assertEquals(Coloration.SILVER, sample.getColoration());
     assertEquals(null, sample.getOtherColoration());
     assertEquals(null, sample.getDevelopmentTime());
-    assertEquals(DevelopmentTimeUnit.SECONDS, sample.getDevelopmentTimeUnit());
     assertEquals(false, sample.isDecoloration());
     assertEquals(null, sample.getWeightMarkerQuantity());
     assertEquals(null, sample.getProteinQuantity());
@@ -155,11 +153,10 @@ public class GelSampleServiceImplTest {
     sample.setThickness(Thickness.ONE_HALF);
     sample.setColoration(Coloration.OTHER);
     sample.setOtherColoration("my_coloration");
-    sample.setDevelopmentTime(2.0);
-    sample.setDevelopmentTimeUnit(DevelopmentTimeUnit.MINUTES);
+    sample.setDevelopmentTime("2.0 min");
     sample.setDecoloration(true);
     sample.setWeightMarkerQuantity(2.5);
-    sample.setProteinQuantity("12.0 pm");
+    sample.setProteinQuantity("12.0 pmol");
     sample.setAdditionalPrice(new BigDecimal("21.50"));
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -198,11 +195,10 @@ public class GelSampleServiceImplTest {
     assertEquals(Thickness.ONE_HALF, test.getThickness());
     assertEquals(Coloration.OTHER, test.getColoration());
     assertEquals("my_coloration", test.getOtherColoration());
-    assertEquals((Double) 2.0, test.getDevelopmentTime());
-    assertEquals(DevelopmentTimeUnit.MINUTES, test.getDevelopmentTimeUnit());
+    assertEquals("2.0 min", test.getDevelopmentTime());
     assertEquals(true, test.isDecoloration());
     assertEquals((Double) 2.5, test.getWeightMarkerQuantity());
-    assertEquals("12.0 pm", test.getProteinQuantity());
+    assertEquals("12.0 pmol", test.getProteinQuantity());
     assertEquals(new BigDecimal("21.50").setScale(2), test.getAdditionalPrice().setScale(2));
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
@@ -234,11 +230,10 @@ public class GelSampleServiceImplTest {
     assertEquals(Thickness.ONE_HALF, newGelSample.getThickness());
     assertEquals(Coloration.OTHER, newGelSample.getColoration());
     assertEquals("my_coloration", newGelSample.getOtherColoration());
-    assertEquals((Double) 2.0, newGelSample.getDevelopmentTime());
-    assertEquals(DevelopmentTimeUnit.MINUTES, newGelSample.getDevelopmentTimeUnit());
+    assertEquals("2.0 min", newGelSample.getDevelopmentTime());
     assertEquals(true, newGelSample.isDecoloration());
     assertEquals((Double) 2.5, newGelSample.getWeightMarkerQuantity());
-    assertEquals("12.0 pm", newGelSample.getProteinQuantity());
+    assertEquals("12.0 pmol", newGelSample.getProteinQuantity());
     assertEquals(new BigDecimal("21.50").setScale(2),
         newGelSample.getAdditionalPrice().setScale(2));
   }

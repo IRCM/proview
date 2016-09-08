@@ -48,8 +48,7 @@ public class ContaminantServiceImplTest {
     assertEquals((Long) 445L, sampleCaptor.getValue().getId());
     assertEquals((Long) 2L, contaminant.getId());
     assertEquals("keratin1", contaminant.getName());
-    assertEquals("1.5", contaminant.getQuantity());
-    assertEquals(Contaminant.QuantityUnit.MICRO_GRAMS, contaminant.getQuantityUnit());
+    assertEquals("1.5 μg", contaminant.getQuantity());
     assertEquals(null, contaminant.getComments());
   }
 
@@ -72,8 +71,7 @@ public class ContaminantServiceImplTest {
     Contaminant contaminant = contaminants.get(0);
     assertEquals((Long) 2L, contaminant.getId());
     assertEquals("keratin1", contaminant.getName());
-    assertEquals("1.5", contaminant.getQuantity());
-    assertEquals(Contaminant.QuantityUnit.MICRO_GRAMS, contaminant.getQuantityUnit());
+    assertEquals("1.5 μg", contaminant.getQuantity());
     assertEquals(null, contaminant.getComments());
   }
 

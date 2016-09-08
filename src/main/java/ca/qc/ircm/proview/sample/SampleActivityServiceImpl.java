@@ -137,9 +137,6 @@ public class SampleActivityServiceImpl implements SampleActivityService {
           updateBuilders
               .add(new StandardUpdateActivityBuilder().newStandard(newStandard).column("quantity")
                   .oldValue(oldStandard.getQuantity()).newValue(newStandard.getQuantity()));
-          updateBuilders.add(
-              new StandardUpdateActivityBuilder().newStandard(newStandard).column("quantityUnit")
-                  .oldValue(oldStandard.getQuantityUnit()).newValue(newStandard.getQuantityUnit()));
           updateBuilders
               .add(new StandardUpdateActivityBuilder().newStandard(newStandard).column("comments")
                   .oldValue(oldStandard.getComments()).newValue(newStandard.getComments()));
@@ -233,8 +230,6 @@ public class SampleActivityServiceImpl implements SampleActivityService {
           .oldValue(oldGel.getOtherColoration()).newValue(newGel.getOtherColoration()));
       updateBuilders.add(new SampleUpdateActivityBuilder().column("developmentTime")
           .oldValue(oldGel.getDevelopmentTime()).newValue(newGel.getDevelopmentTime()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("developmentTimeUnit")
-          .oldValue(oldGel.getDevelopmentTimeUnit()).newValue(newGel.getDevelopmentTimeUnit()));
       updateBuilders.add(new SampleUpdateActivityBuilder().column("decoloration")
           .oldValue(oldGel.isDecoloration()).newValue(newGel.isDecoloration()));
       updateBuilders.add(new SampleUpdateActivityBuilder().column("weightMarkerQuantity")
@@ -277,9 +272,6 @@ public class SampleActivityServiceImpl implements SampleActivityService {
             updateBuilders.add(new ContaminantUpdateActivityBuilder().newContaminant(newContaminant)
                 .column("quantity").oldValue(oldContaminant.getQuantity())
                 .newValue(newContaminant.getQuantity()));
-            updateBuilders.add(new ContaminantUpdateActivityBuilder().newContaminant(newContaminant)
-                .column("quantityUnit").oldValue(oldContaminant.getQuantityUnit())
-                .newValue(newContaminant.getQuantityUnit()));
             updateBuilders.add(new ContaminantUpdateActivityBuilder().newContaminant(newContaminant)
                 .column("comments").oldValue(oldContaminant.getComments())
                 .newValue(newContaminant.getComments()));

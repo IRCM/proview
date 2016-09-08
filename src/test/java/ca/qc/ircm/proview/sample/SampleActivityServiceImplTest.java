@@ -10,7 +10,6 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.sample.GelSample.Coloration;
-import ca.qc.ircm.proview.sample.GelSample.DevelopmentTimeUnit;
 import ca.qc.ircm.proview.sample.GelSample.Separation;
 import ca.qc.ircm.proview.sample.GelSample.Thickness;
 import ca.qc.ircm.proview.sample.MoleculeSample.StorageTemperature;
@@ -73,7 +72,7 @@ public class SampleActivityServiceImplTest {
     Control control = new Control();
     control.setId(123456L);
     control.setName("unit_test_control");
-    control.setQuantity("200.0 mg");
+    control.setQuantity("200.0 μg");
     control.setSupport(Sample.Support.SOLUTION);
     control.setControlType(Control.ControlType.NEGATIVE_CONTROL);
     control.setVolume(300.0);
@@ -118,11 +117,10 @@ public class SampleActivityServiceImplTest {
     gelSample.setThickness(Thickness.ONE_HALF);
     gelSample.setColoration(Coloration.OTHER);
     gelSample.setOtherColoration("my_coloration");
-    gelSample.setDevelopmentTime(2.0);
-    gelSample.setDevelopmentTimeUnit(DevelopmentTimeUnit.MINUTES);
+    gelSample.setDevelopmentTime("2.0 min");
     gelSample.setDecoloration(true);
     gelSample.setWeightMarkerQuantity(2.5);
-    gelSample.setProteinQuantity("12.0 pm");
+    gelSample.setProteinQuantity("12.0 pmol");
     gelSample.setAdditionalPrice(new BigDecimal("21.50"));
 
     Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(gelSample, "unit_test");
@@ -349,16 +347,8 @@ public class SampleActivityServiceImplTest {
     developmentTimeActivity.setRecordId(gelSample.getId());
     developmentTimeActivity.setColumn("developmentTime");
     developmentTimeActivity.setOldValue(null);
-    developmentTimeActivity.setNewValue("2.0");
+    developmentTimeActivity.setNewValue("2.0 min");
     expectedUpdateActivities.add(developmentTimeActivity);
-    UpdateActivity developmentTimeUnitActivity = new UpdateActivity();
-    developmentTimeUnitActivity.setActionType(ActionType.UPDATE);
-    developmentTimeUnitActivity.setTableName("sample");
-    developmentTimeUnitActivity.setRecordId(gelSample.getId());
-    developmentTimeUnitActivity.setColumn("developmentTimeUnit");
-    developmentTimeUnitActivity.setOldValue("SECONDS");
-    developmentTimeUnitActivity.setNewValue(DevelopmentTimeUnit.MINUTES.name());
-    expectedUpdateActivities.add(developmentTimeUnitActivity);
     UpdateActivity decolorationActivity = new UpdateActivity();
     decolorationActivity.setActionType(ActionType.UPDATE);
     decolorationActivity.setTableName("sample");
@@ -381,7 +371,7 @@ public class SampleActivityServiceImplTest {
     proteinQuantityActivity.setRecordId(gelSample.getId());
     proteinQuantityActivity.setColumn("proteinQuantity");
     proteinQuantityActivity.setOldValue(null);
-    proteinQuantityActivity.setNewValue("12.0 pm");
+    proteinQuantityActivity.setNewValue("12.0 pmol");
     expectedUpdateActivities.add(proteinQuantityActivity);
     UpdateActivity additionalPriceActivity = new UpdateActivity();
     additionalPriceActivity.setActionType(ActionType.UPDATE);
@@ -421,7 +411,7 @@ public class SampleActivityServiceImplTest {
     eluateSample.setMolecularWeight(20.0);
     eluateSample.setPostTranslationModification("my_modification");
     eluateSample.setSupport(Support.DRY);
-    eluateSample.setQuantity("12 pm");
+    eluateSample.setQuantity("12 pmol");
     eluateSample.setVolume(70.0);
     eluateSample.setAdditionalPrice(new BigDecimal("21.50"));
 
@@ -625,8 +615,8 @@ public class SampleActivityServiceImplTest {
     quantityActivity.setTableName("sample");
     quantityActivity.setRecordId(eluateSample.getId());
     quantityActivity.setColumn("quantity");
-    quantityActivity.setOldValue("1.5 mg");
-    quantityActivity.setNewValue("12 pm");
+    quantityActivity.setOldValue("1.5 μg");
+    quantityActivity.setNewValue("12 pmol");
     expectedUpdateActivities.add(quantityActivity);
     UpdateActivity volumeActivity = new UpdateActivity();
     volumeActivity.setActionType(ActionType.UPDATE);
@@ -654,8 +644,7 @@ public class SampleActivityServiceImplTest {
     Contaminant contaminant = new Contaminant();
     contaminant.setId(57894121L);
     contaminant.setName("my_new_contaminant");
-    contaminant.setQuantity("3");
-    contaminant.setQuantityUnit(Contaminant.QuantityUnit.MICRO_GRAMS);
+    contaminant.setQuantity("3 μg");
     contaminant.setComments("some_comments");
     eluateSample.getContaminants().add(contaminant);
 
@@ -687,8 +676,7 @@ public class SampleActivityServiceImplTest {
     }
     Contaminant contaminant = eluateSample.getContaminants().get(0);
     contaminant.setName("new_contaminant_name");
-    contaminant.setQuantity("1");
-    contaminant.setQuantityUnit(Contaminant.QuantityUnit.PICO_MOL);
+    contaminant.setQuantity("1 pmol");
     contaminant.setComments("new_comments");
 
     Optional<Activity> optionalActivity =
@@ -715,17 +703,9 @@ public class SampleActivityServiceImplTest {
     quantityActivity.setTableName("contaminant");
     quantityActivity.setRecordId(contaminant.getId());
     quantityActivity.setColumn("quantity");
-    quantityActivity.setOldValue("3");
-    quantityActivity.setNewValue("1");
+    quantityActivity.setOldValue("3 μg");
+    quantityActivity.setNewValue("1 pmol");
     expectedUpdateActivities.add(quantityActivity);
-    UpdateActivity quantityUnitActivity = new UpdateActivity();
-    quantityUnitActivity.setActionType(ActionType.UPDATE);
-    quantityUnitActivity.setTableName("contaminant");
-    quantityUnitActivity.setRecordId(contaminant.getId());
-    quantityUnitActivity.setColumn("quantityUnit");
-    quantityUnitActivity.setOldValue(Contaminant.QuantityUnit.MICRO_GRAMS.name());
-    quantityUnitActivity.setNewValue(Contaminant.QuantityUnit.PICO_MOL.name());
-    expectedUpdateActivities.add(quantityUnitActivity);
     UpdateActivity commentsActivity = new UpdateActivity();
     commentsActivity.setActionType(ActionType.UPDATE);
     commentsActivity.setTableName("contaminant");
@@ -770,8 +750,7 @@ public class SampleActivityServiceImplTest {
     Standard standard = new Standard();
     standard.setId(57894121L);
     standard.setName("my_new_standard");
-    standard.setQuantity("3");
-    standard.setQuantityUnit(Standard.QuantityUnit.MICRO_GRAMS);
+    standard.setQuantity("3 μg");
     standard.setComments("some_comments");
     eluateSample.getStandards().add(standard);
 
@@ -803,8 +782,7 @@ public class SampleActivityServiceImplTest {
     }
     Standard standard = eluateSample.getStandards().get(0);
     standard.setName("new_standard_name");
-    standard.setQuantity("1");
-    standard.setQuantityUnit(Standard.QuantityUnit.PICO_MOL);
+    standard.setQuantity("1 pmol");
     standard.setComments("new_comments");
 
     Optional<Activity> optionalActivity =
@@ -831,17 +809,9 @@ public class SampleActivityServiceImplTest {
     quantityActivity.setTableName("standard");
     quantityActivity.setRecordId(standard.getId());
     quantityActivity.setColumn("quantity");
-    quantityActivity.setOldValue("3");
-    quantityActivity.setNewValue("1");
+    quantityActivity.setOldValue("3 μg");
+    quantityActivity.setNewValue("1 pmol");
     expectedUpdateActivities.add(quantityActivity);
-    UpdateActivity quantityUnitActivity = new UpdateActivity();
-    quantityUnitActivity.setActionType(ActionType.UPDATE);
-    quantityUnitActivity.setTableName("standard");
-    quantityUnitActivity.setRecordId(standard.getId());
-    quantityUnitActivity.setColumn("quantityUnit");
-    quantityUnitActivity.setOldValue(Contaminant.QuantityUnit.MICRO_GRAMS.name());
-    quantityUnitActivity.setNewValue(Contaminant.QuantityUnit.PICO_MOL.name());
-    expectedUpdateActivities.add(quantityUnitActivity);
     UpdateActivity commentsActivity = new UpdateActivity();
     commentsActivity.setActionType(ActionType.UPDATE);
     commentsActivity.setTableName("standard");
@@ -1169,7 +1139,7 @@ public class SampleActivityServiceImplTest {
     control.setComments("my_new_comment");
     control.setSupport(Support.SOLUTION);
     control.setVolume(2.0);
-    control.setQuantity("40 mg");
+    control.setQuantity("40 μg");
 
     Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(control, "unit_test");
 
@@ -1227,7 +1197,7 @@ public class SampleActivityServiceImplTest {
     quantityActivity.setRecordId(control.getId());
     quantityActivity.setColumn("quantity");
     quantityActivity.setOldValue(null);
-    quantityActivity.setNewValue("40 mg");
+    quantityActivity.setNewValue("40 μg");
     expectedUpdateActivities.add(quantityActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
@@ -1239,8 +1209,7 @@ public class SampleActivityServiceImplTest {
     Standard standard = new Standard();
     standard.setId(57894121L);
     standard.setName("my_new_standard");
-    standard.setQuantity("3");
-    standard.setQuantityUnit(Standard.QuantityUnit.MICRO_GRAMS);
+    standard.setQuantity("3 μg");
     standard.setComments("some_comments");
     control.getStandards().add(standard);
 
@@ -1271,8 +1240,7 @@ public class SampleActivityServiceImplTest {
     }
     Standard standard = control.getStandards().get(0);
     standard.setName("new_standard_name");
-    standard.setQuantity("1");
-    standard.setQuantityUnit(Standard.QuantityUnit.PICO_MOL);
+    standard.setQuantity("1 pmol");
     standard.setComments("new_comments");
 
     Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(control, "unit_test");
@@ -1298,17 +1266,9 @@ public class SampleActivityServiceImplTest {
     quantityActivity.setTableName("standard");
     quantityActivity.setRecordId(standard.getId());
     quantityActivity.setColumn("quantity");
-    quantityActivity.setOldValue("3");
-    quantityActivity.setNewValue("1");
+    quantityActivity.setOldValue("3 μg");
+    quantityActivity.setNewValue("1 pmol");
     expectedUpdateActivities.add(quantityActivity);
-    UpdateActivity quantityUnitActivity = new UpdateActivity();
-    quantityUnitActivity.setActionType(ActionType.UPDATE);
-    quantityUnitActivity.setTableName("standard");
-    quantityUnitActivity.setRecordId(standard.getId());
-    quantityUnitActivity.setColumn("quantityUnit");
-    quantityUnitActivity.setOldValue(Contaminant.QuantityUnit.MICRO_GRAMS.name());
-    quantityUnitActivity.setNewValue(Contaminant.QuantityUnit.PICO_MOL.name());
-    expectedUpdateActivities.add(quantityUnitActivity);
     UpdateActivity commentsActivity = new UpdateActivity();
     commentsActivity.setActionType(ActionType.UPDATE);
     commentsActivity.setTableName("standard");

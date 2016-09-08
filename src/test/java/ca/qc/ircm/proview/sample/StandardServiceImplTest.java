@@ -48,8 +48,7 @@ public class StandardServiceImplTest {
     assertEquals((Long) 445L, sampleCaptor.getValue().getId());
     assertEquals((Long) 4L, standard.getId());
     assertEquals("std1", standard.getName());
-    assertEquals("2", standard.getQuantity());
-    assertEquals(Standard.QuantityUnit.MICRO_GRAMS, standard.getQuantityUnit());
+    assertEquals("2 μg", standard.getQuantity());
     assertEquals(null, standard.getComments());
   }
 
@@ -61,8 +60,7 @@ public class StandardServiceImplTest {
     assertEquals((Long) 448L, sampleCaptor.getValue().getId());
     assertEquals((Long) 6L, standard.getId());
     assertEquals("cap_standard", standard.getName());
-    assertEquals("3", standard.getQuantity());
-    assertEquals(Standard.QuantityUnit.MICRO_GRAMS, standard.getQuantityUnit());
+    assertEquals("3 μg", standard.getQuantity());
     assertEquals("some_comments", standard.getComments());
   }
 
@@ -85,8 +83,7 @@ public class StandardServiceImplTest {
     Standard standard = standards.get(0);
     assertEquals((Long) 4L, standard.getId());
     assertEquals("std1", standard.getName());
-    assertEquals("2", standard.getQuantity());
-    assertEquals(Standard.QuantityUnit.MICRO_GRAMS, standard.getQuantityUnit());
+    assertEquals("2 μg", standard.getQuantity());
     assertEquals(null, standard.getComments());
   }
 

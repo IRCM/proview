@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample.Support;
-import ca.qc.ircm.proview.sample.Standard.QuantityUnit;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
@@ -100,7 +99,7 @@ public class ControlServiceImplTest {
     control.setControlType(Control.ControlType.NEGATIVE_CONTROL);
     control.setSupport(Support.GEL);
     control.setVolume(20.0);
-    control.setQuantity("12.0 mg");
+    control.setQuantity("12.0 μg");
     control.setComments("unit_test_comments");
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
         .thenReturn("nc_test_000001");
@@ -119,7 +118,7 @@ public class ControlServiceImplTest {
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(Support.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
-    assertEquals("12.0 mg", testControl.getQuantity());
+    assertEquals("12.0 μg", testControl.getQuantity());
     assertEquals("unit_test_comments", testControl.getComments());
     assertEquals(0, testControl.getStandards().size());
     // Validate log.
@@ -127,7 +126,7 @@ public class ControlServiceImplTest {
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(Support.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
-    assertEquals("12.0 mg", testControl.getQuantity());
+    assertEquals("12.0 μg", testControl.getQuantity());
     assertEquals("unit_test_comments", testControl.getComments());
     assertEquals(true, testControl.getStandards() == null || testControl.getStandards().isEmpty());
   }
@@ -141,7 +140,7 @@ public class ControlServiceImplTest {
     control.setControlType(Control.ControlType.POSITIVE_CONTROL);
     control.setSupport(Support.SOLUTION);
     control.setVolume(2.0);
-    control.setQuantity("40 mg");
+    control.setQuantity("40 μg");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
@@ -158,7 +157,7 @@ public class ControlServiceImplTest {
     assertEquals(Control.ControlType.POSITIVE_CONTROL, test.getControlType());
     assertEquals(Support.SOLUTION, test.getSupport());
     assertEquals((Double) 2.0, test.getVolume());
-    assertEquals("40 mg", test.getQuantity());
+    assertEquals("40 μg", test.getQuantity());
     assertEquals(0, test.getStandards().size());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
@@ -169,7 +168,7 @@ public class ControlServiceImplTest {
     assertEquals(Control.ControlType.POSITIVE_CONTROL, newControl.getControlType());
     assertEquals(Support.SOLUTION, newControl.getSupport());
     assertEquals((Double) 2.0, newControl.getVolume());
-    assertEquals("40 mg", newControl.getQuantity());
+    assertEquals("40 μg", newControl.getQuantity());
     assertEquals(0, newControl.getStandards().size());
   }
 
@@ -179,8 +178,7 @@ public class ControlServiceImplTest {
     entityManager.detach(control);
     Standard standard = new Standard();
     standard.setName("my_new_standard");
-    standard.setQuantity("3");
-    standard.setQuantityUnit(QuantityUnit.MICRO_GRAMS);
+    standard.setQuantity("3 μg");
     standard.setComments("some_comments");
     control.getStandards().add(standard);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
@@ -198,8 +196,7 @@ public class ControlServiceImplTest {
     assertEquals(1, test.getStandards().size());
     Standard testStandard = test.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
-    assertEquals("3", testStandard.getQuantity());
-    assertEquals(QuantityUnit.MICRO_GRAMS, testStandard.getQuantityUnit());
+    assertEquals("3 μg", testStandard.getQuantity());
     assertEquals("some_comments", testStandard.getComments());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
@@ -208,8 +205,7 @@ public class ControlServiceImplTest {
     assertEquals(1, newControl.getStandards().size());
     testStandard = newControl.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
-    assertEquals("3", testStandard.getQuantity());
-    assertEquals(QuantityUnit.MICRO_GRAMS, testStandard.getQuantityUnit());
+    assertEquals("3 μg", testStandard.getQuantity());
     assertEquals("some_comments", testStandard.getComments());
   }
 
@@ -223,8 +219,7 @@ public class ControlServiceImplTest {
     // Change standard.
     Standard standard = control.getStandards().get(0);
     standard.setName("new_standard_name");
-    standard.setQuantity("1");
-    standard.setQuantityUnit(QuantityUnit.PICO_MOL);
+    standard.setQuantity("1 pmol");
     standard.setComments("new_comments");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -241,8 +236,7 @@ public class ControlServiceImplTest {
     assertEquals(1, test.getStandards().size());
     Standard testStandard = test.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
-    assertEquals("1", testStandard.getQuantity());
-    assertEquals(QuantityUnit.PICO_MOL, testStandard.getQuantityUnit());
+    assertEquals("1 pmol", testStandard.getQuantity());
     assertEquals("new_comments", testStandard.getComments());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
@@ -251,8 +245,7 @@ public class ControlServiceImplTest {
     assertEquals(1, newControl.getStandards().size());
     testStandard = newControl.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
-    assertEquals("1", testStandard.getQuantity());
-    assertEquals(QuantityUnit.PICO_MOL, testStandard.getQuantityUnit());
+    assertEquals("1 pmol", testStandard.getQuantity());
     assertEquals("new_comments", testStandard.getComments());
   }
 

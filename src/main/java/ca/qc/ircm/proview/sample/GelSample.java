@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 /**
@@ -34,13 +33,6 @@ public class GelSample extends ProteicSample implements Cloneable {
    */
   public static enum Coloration {
     COOMASSIE, SYPRO, SILVER, SILVER_INVITROGEN, OTHER;
-  }
-
-  /**
-   * Development time unit.
-   */
-  public static enum DevelopmentTimeUnit {
-    SECONDS, MINUTES;
   }
 
   private static final long serialVersionUID = -8931210404937061204L;
@@ -73,16 +65,8 @@ public class GelSample extends ProteicSample implements Cloneable {
    * Gel development time (for coloration).
    */
   @Column(name = "developmentTime")
-  @Min(0)
-  private Double developmentTime;
-  /**
-   * Gel development time unit.
-   *
-   * @see #developmentTime
-   */
-  @Column(name = "developmentTimeUnit")
-  @Enumerated(STRING)
-  private DevelopmentTimeUnit developmentTimeUnit;
+  @Size(max = 100)
+  private String developmentTime;
   /**
    * Gel decoloration.
    */
@@ -177,20 +161,12 @@ public class GelSample extends ProteicSample implements Cloneable {
     this.weightMarkerQuantity = weightMarkerQuantity;
   }
 
-  public Double getDevelopmentTime() {
+  public String getDevelopmentTime() {
     return developmentTime;
   }
 
-  public void setDevelopmentTime(Double developmentTime) {
+  public void setDevelopmentTime(String developmentTime) {
     this.developmentTime = developmentTime;
-  }
-
-  public DevelopmentTimeUnit getDevelopmentTimeUnit() {
-    return developmentTimeUnit;
-  }
-
-  public void setDevelopmentTimeUnit(DevelopmentTimeUnit developmentTimeUnit) {
-    this.developmentTimeUnit = developmentTimeUnit;
   }
 
   @Override

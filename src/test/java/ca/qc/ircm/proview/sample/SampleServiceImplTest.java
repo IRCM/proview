@@ -84,7 +84,6 @@ public class SampleServiceImplTest {
     assertEquals(GelSample.Coloration.SILVER, gelSample.getColoration());
     assertEquals(null, gelSample.getOtherColoration());
     assertEquals(null, gelSample.getDevelopmentTime());
-    assertEquals(GelSample.DevelopmentTimeUnit.SECONDS, gelSample.getDevelopmentTimeUnit());
     assertEquals(false, gelSample.isDecoloration());
     assertEquals(null, gelSample.getWeightMarkerQuantity());
     assertEquals(null, gelSample.getProteinQuantity());
@@ -128,7 +127,7 @@ public class SampleServiceImplTest {
     assertEquals(null, eluateSample.getProtein());
     assertEquals(null, eluateSample.getMolecularWeight());
     assertEquals(null, eluateSample.getPostTranslationModification());
-    assertEquals("1.5 mg", eluateSample.getQuantity());
+    assertEquals("1.5 μg", eluateSample.getQuantity());
     assertEquals((Double) 50.0, eluateSample.getVolume());
   }
 

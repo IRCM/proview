@@ -106,8 +106,7 @@ public class StandardAdditionServiceImplTest {
     assertEquals((Long) 4L, addedStandard.getContainer().getId());
     assertEquals(null, addedStandard.getComments());
     assertEquals("unit_test_added_standard", addedStandard.getName());
-    assertEquals("20.0", addedStandard.getQuantity());
-    assertEquals(AddedStandard.QuantityUnit.MICRO_GRAMS, addedStandard.getQuantityUnit());
+    assertEquals("20.0 μg", addedStandard.getQuantity());
   }
 
   @Test
@@ -158,8 +157,7 @@ public class StandardAdditionServiceImplTest {
     addedStandard.setSample(sample);
     addedStandard.setContainer(tube);
     addedStandard.setName("unit_test_added_standard");
-    addedStandard.setQuantity("20.0");
-    addedStandard.setQuantityUnit(AddedStandard.QuantityUnit.MICRO_GRAMS);
+    addedStandard.setQuantity("20.0 μg");
     addedStandards.add(addedStandard);
     StandardAddition standardAddition = new StandardAddition();
     standardAddition.setTreatmentSamples(addedStandards);
@@ -188,8 +186,7 @@ public class StandardAdditionServiceImplTest {
     assertEquals(SampleContainer.Type.TUBE, addedStandard.getContainer().getType());
     assertEquals((Long) 1L, addedStandard.getContainer().getId());
     assertEquals("unit_test_added_standard", addedStandard.getName());
-    assertEquals("20.0", addedStandard.getQuantity());
-    assertEquals(AddedStandard.QuantityUnit.MICRO_GRAMS, addedStandard.getQuantityUnit());
+    assertEquals("20.0 μg", addedStandard.getQuantity());
   }
 
   @Test
@@ -202,8 +199,7 @@ public class StandardAdditionServiceImplTest {
     addedStandard.setSample(sample);
     addedStandard.setContainer(spot);
     addedStandard.setName("unit_test_added_standard");
-    addedStandard.setQuantity("20.0");
-    addedStandard.setQuantityUnit(AddedStandard.QuantityUnit.MICRO_GRAMS);
+    addedStandard.setQuantity("20.0 μg");
     addedStandards.add(addedStandard);
     StandardAddition standardAddition = new StandardAddition();
     standardAddition.setTreatmentSamples(addedStandards);
@@ -232,8 +228,7 @@ public class StandardAdditionServiceImplTest {
     assertEquals(SampleContainer.Type.SPOT, addedStandard.getContainer().getType());
     assertEquals((Long) 128L, addedStandard.getContainer().getId());
     assertEquals("unit_test_added_standard", addedStandard.getName());
-    assertEquals("20.0", addedStandard.getQuantity());
-    assertEquals(AddedStandard.QuantityUnit.MICRO_GRAMS, addedStandard.getQuantityUnit());
+    assertEquals("20.0 μg", addedStandard.getQuantity());
   }
 
   @Test

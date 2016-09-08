@@ -99,7 +99,7 @@ public class EluateSampleServiceImplTest {
     assertEquals(null, sample.getProtein());
     assertEquals(null, sample.getMolecularWeight());
     assertEquals(null, sample.getPostTranslationModification());
-    assertEquals("1.5 mg", sample.getQuantity());
+    assertEquals("1.5 μg", sample.getQuantity());
     assertEquals((Double) 50.0, sample.getVolume());
     assertEquals(null, sample.getPrice());
     assertEquals(null, sample.getAdditionalPrice());
@@ -141,7 +141,7 @@ public class EluateSampleServiceImplTest {
     sample.setMolecularWeight(20.0);
     sample.setPostTranslationModification("my_modification");
     sample.setSupport(Support.DRY);
-    sample.setQuantity("12 pm");
+    sample.setQuantity("12 pmol");
     sample.setVolume(70.0);
     sample.setAdditionalPrice(new BigDecimal("21.50"));
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
@@ -178,7 +178,7 @@ public class EluateSampleServiceImplTest {
     assertEquals((Double) 20.0, test.getMolecularWeight());
     assertEquals("my_modification", test.getPostTranslationModification());
     assertEquals(Support.DRY, test.getSupport());
-    assertEquals("12 pm", test.getQuantity());
+    assertEquals("12 pmol", test.getQuantity());
     assertEquals((Double) 70.0, test.getVolume());
     assertEquals(new BigDecimal("21.50").setScale(2), test.getAdditionalPrice().setScale(2));
     // Validate log.
@@ -208,7 +208,7 @@ public class EluateSampleServiceImplTest {
     assertEquals((Double) 20.0, newEluateSample.getMolecularWeight());
     assertEquals("my_modification", newEluateSample.getPostTranslationModification());
     assertEquals(Support.DRY, newEluateSample.getSupport());
-    assertEquals("12 pm", newEluateSample.getQuantity());
+    assertEquals("12 pmol", newEluateSample.getQuantity());
     assertEquals((Double) 70.0, newEluateSample.getVolume());
     assertEquals(new BigDecimal("21.50").setScale(2),
         newEluateSample.getAdditionalPrice().setScale(2));
@@ -220,8 +220,7 @@ public class EluateSampleServiceImplTest {
     entityManager.detach(sample);
     Contaminant insert = new Contaminant();
     insert.setName("my_new_contaminant");
-    insert.setQuantity("3");
-    insert.setQuantityUnit(Contaminant.QuantityUnit.MICRO_GRAMS);
+    insert.setQuantity("3 μg");
     insert.setComments("some_comments");
     sample.getContaminants().add(insert);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
@@ -239,8 +238,7 @@ public class EluateSampleServiceImplTest {
     assertEquals(1, test.getContaminants().size());
     Contaminant testContaminant = test.getContaminants().get(0);
     assertEquals("my_new_contaminant", testContaminant.getName());
-    assertEquals("3", testContaminant.getQuantity());
-    assertEquals(Contaminant.QuantityUnit.MICRO_GRAMS, testContaminant.getQuantityUnit());
+    assertEquals("3 μg", testContaminant.getQuantity());
     assertEquals("some_comments", testContaminant.getComments());
     // Validate activity log.
     Sample newSample = sampleCaptor.getValue();
@@ -249,8 +247,7 @@ public class EluateSampleServiceImplTest {
     assertEquals(1, newEluateSample.getContaminants().size());
     testContaminant = newEluateSample.getContaminants().get(0);
     assertEquals("my_new_contaminant", testContaminant.getName());
-    assertEquals("3", testContaminant.getQuantity());
-    assertEquals(Contaminant.QuantityUnit.MICRO_GRAMS, testContaminant.getQuantityUnit());
+    assertEquals("3 μg", testContaminant.getQuantity());
     assertEquals("some_comments", testContaminant.getComments());
   }
 
@@ -263,8 +260,7 @@ public class EluateSampleServiceImplTest {
     }
     Contaminant update = sample.getContaminants().get(0);
     update.setName("new_contaminant_name");
-    update.setQuantity("1");
-    update.setQuantityUnit(Contaminant.QuantityUnit.PICO_MOL);
+    update.setQuantity("1 pmol");
     update.setComments("new_comments");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -281,8 +277,7 @@ public class EluateSampleServiceImplTest {
     assertEquals(1, test.getContaminants().size());
     Contaminant testContaminant = test.getContaminants().get(0);
     assertEquals("new_contaminant_name", testContaminant.getName());
-    assertEquals("1", testContaminant.getQuantity());
-    assertEquals(Contaminant.QuantityUnit.PICO_MOL, testContaminant.getQuantityUnit());
+    assertEquals("1 pmol", testContaminant.getQuantity());
     assertEquals("new_comments", testContaminant.getComments());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
@@ -291,8 +286,7 @@ public class EluateSampleServiceImplTest {
     assertTrue(newEluateSample.getContaminants().size() == 1);
     testContaminant = newEluateSample.getContaminants().get(0);
     assertEquals("new_contaminant_name", testContaminant.getName());
-    assertEquals("1", testContaminant.getQuantity());
-    assertEquals(Contaminant.QuantityUnit.PICO_MOL, testContaminant.getQuantityUnit());
+    assertEquals("1 pmol", testContaminant.getQuantity());
     assertEquals("new_comments", testContaminant.getComments());
   }
 
@@ -328,8 +322,7 @@ public class EluateSampleServiceImplTest {
     entityManager.detach(sample);
     Standard standard = new Standard();
     standard.setName("my_new_standard");
-    standard.setQuantity("3");
-    standard.setQuantityUnit(Standard.QuantityUnit.MICRO_GRAMS);
+    standard.setQuantity("3 μg");
     standard.setComments("some_comments");
     sample.getStandards().add(standard);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
@@ -348,8 +341,7 @@ public class EluateSampleServiceImplTest {
     assertEquals(1, test.getStandards().size());
     Standard testStandard = test.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
-    assertEquals("3", testStandard.getQuantity());
-    assertEquals(Standard.QuantityUnit.MICRO_GRAMS, testStandard.getQuantityUnit());
+    assertEquals("3 μg", testStandard.getQuantity());
     assertEquals("some_comments", testStandard.getComments());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
@@ -358,8 +350,7 @@ public class EluateSampleServiceImplTest {
     assertEquals(1, newEluateSample.getStandards().size());
     testStandard = newEluateSample.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
-    assertEquals("3", testStandard.getQuantity());
-    assertEquals(Standard.QuantityUnit.MICRO_GRAMS, testStandard.getQuantityUnit());
+    assertEquals("3 μg", testStandard.getQuantity());
     assertEquals("some_comments", testStandard.getComments());
   }
 
@@ -372,8 +363,7 @@ public class EluateSampleServiceImplTest {
     }
     Standard standard = sample.getStandards().get(0);
     standard.setName("new_standard_name");
-    standard.setQuantity("1");
-    standard.setQuantityUnit(Standard.QuantityUnit.PICO_MOL);
+    standard.setQuantity("1 pmol");
     standard.setComments("new_comments");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -390,8 +380,7 @@ public class EluateSampleServiceImplTest {
     assertEquals(1, test.getStandards().size());
     Standard testStandard = test.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
-    assertEquals("1", testStandard.getQuantity());
-    assertEquals(Standard.QuantityUnit.PICO_MOL, testStandard.getQuantityUnit());
+    assertEquals("1 pmol", testStandard.getQuantity());
     assertEquals("new_comments", testStandard.getComments());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
@@ -400,8 +389,7 @@ public class EluateSampleServiceImplTest {
     assertTrue(newEluateSample.getStandards().size() == 1);
     testStandard = newEluateSample.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
-    assertEquals("1", testStandard.getQuantity());
-    assertEquals(Standard.QuantityUnit.PICO_MOL, testStandard.getQuantityUnit());
+    assertEquals("1 pmol", testStandard.getQuantity());
     assertEquals("new_comments", testStandard.getComments());
   }
 
