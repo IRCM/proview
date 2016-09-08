@@ -38,14 +38,8 @@ public class EluateSample extends ProteicSample implements Cloneable {
    * Quantity of Sample (in ug or pmol).
    */
   @Column(name = "quantity", nullable = false)
-  @Size(max = 50)
+  @Size(max = 100)
   private String quantity;
-  /**
-   * Unit for Sample quantity (ug or pmol).
-   */
-  @Column(name = "quantityUnit", nullable = false)
-  @Enumerated(STRING)
-  private QuantityUnit quantityUnit;
   /**
    * Contaminants that are in the same at submission.
    */
@@ -75,14 +69,6 @@ public class EluateSample extends ProteicSample implements Cloneable {
 
   public void setQuantity(String quantity) {
     this.quantity = quantity;
-  }
-
-  public QuantityUnit getQuantityUnit() {
-    return quantityUnit;
-  }
-
-  public void setQuantityUnit(QuantityUnit quantityUnit) {
-    this.quantityUnit = quantityUnit;
   }
 
   public List<Contaminant> getContaminants() {

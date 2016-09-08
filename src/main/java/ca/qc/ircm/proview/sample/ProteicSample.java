@@ -14,20 +14,6 @@ import javax.validation.constraints.Size;
 @Entity
 public abstract class ProteicSample extends SubmissionSample {
   /**
-   * Available type of digestions.
-   */
-  public static enum ProteolyticDigestion {
-    TRYPSINE, DIGESTED, OTHER;
-  }
-
-  /**
-   * Available protein identifications.
-   */
-  public static enum ProteinIdentification {
-    NCBINR, MSDB_ID, OTHER;
-  }
-
-  /**
    * Available MudPit fractions.
    */
   public static enum MudPitFraction {
@@ -147,18 +133,18 @@ public abstract class ProteicSample extends SubmissionSample {
   private ProteolyticDigestion proteolyticDigestionMethod;
   /**
    * Proteolytic digestion method supplied by User if ProteolyticDigestion is
-   * {@link ProteicSample.ProteolyticDigestion#DIGESTED DIGESTED}.
+   * {@link ProteolyticDigestion#DIGESTED DIGESTED}.
    *
-   * @see ProteicSample.ProteolyticDigestion
+   * @see ProteolyticDigestion
    */
   @Column(name = "usedProteolyticDigestionMethod")
   @Size(max = 100)
   private String usedProteolyticDigestionMethod;
   /**
    * Proteolytic digestion method supplied by User if ProteolyticDigestion is
-   * {@link ProteicSample.ProteolyticDigestion#OTHER OTHER}.
+   * {@link ProteolyticDigestion#OTHER OTHER}.
    *
-   * @see ProteicSample.ProteolyticDigestion
+   * @see ProteolyticDigestion
    */
   @Column(name = "otherProteolyticDigestionMethod")
   @Size(max = 100)

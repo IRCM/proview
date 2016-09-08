@@ -11,13 +11,11 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.sample.ProteicSample.EnrichmentType;
 import ca.qc.ircm.proview.sample.ProteicSample.MudPitFraction;
 import ca.qc.ircm.proview.sample.ProteicSample.ProteinContent;
-import ca.qc.ircm.proview.sample.ProteicSample.ProteinIdentification;
-import ca.qc.ircm.proview.sample.ProteicSample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.sample.SubmissionSample.ServiceType;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -85,7 +83,7 @@ public class EluateSampleServiceImplTest {
     assertEquals("cap_goal", sample.getGoal());
     assertEquals(null, sample.getSource());
     assertEquals(null, sample.getSampleNumberProtein());
-    assertEquals(ProteolyticDigestion.TRYPSINE, sample.getProteolyticDigestionMethod());
+    assertEquals(ProteolyticDigestion.TRYPSIN, sample.getProteolyticDigestionMethod());
     assertEquals(null, sample.getUsedProteolyticDigestionMethod());
     assertEquals(null, sample.getOtherProteolyticDigestionMethod());
     assertEquals(ProteinIdentification.NCBINR, sample.getProteinIdentification());
@@ -101,8 +99,7 @@ public class EluateSampleServiceImplTest {
     assertEquals(null, sample.getProtein());
     assertEquals(null, sample.getMolecularWeight());
     assertEquals(null, sample.getPostTranslationModification());
-    assertEquals("1.5", sample.getQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, sample.getQuantityUnit());
+    assertEquals("1.5 mg", sample.getQuantity());
     assertEquals((Double) 50.0, sample.getVolume());
     assertEquals(null, sample.getPrice());
     assertEquals(null, sample.getAdditionalPrice());
@@ -144,8 +141,7 @@ public class EluateSampleServiceImplTest {
     sample.setMolecularWeight(20.0);
     sample.setPostTranslationModification("my_modification");
     sample.setSupport(Support.DRY);
-    sample.setQuantity("12");
-    sample.setQuantityUnit(Sample.QuantityUnit.PICO_MOL);
+    sample.setQuantity("12 pm");
     sample.setVolume(70.0);
     sample.setAdditionalPrice(new BigDecimal("21.50"));
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
@@ -182,8 +178,7 @@ public class EluateSampleServiceImplTest {
     assertEquals((Double) 20.0, test.getMolecularWeight());
     assertEquals("my_modification", test.getPostTranslationModification());
     assertEquals(Support.DRY, test.getSupport());
-    assertEquals("12", test.getQuantity());
-    assertEquals(Sample.QuantityUnit.PICO_MOL, test.getQuantityUnit());
+    assertEquals("12 pm", test.getQuantity());
     assertEquals((Double) 70.0, test.getVolume());
     assertEquals(new BigDecimal("21.50").setScale(2), test.getAdditionalPrice().setScale(2));
     // Validate log.
@@ -213,8 +208,7 @@ public class EluateSampleServiceImplTest {
     assertEquals((Double) 20.0, newEluateSample.getMolecularWeight());
     assertEquals("my_modification", newEluateSample.getPostTranslationModification());
     assertEquals(Support.DRY, newEluateSample.getSupport());
-    assertEquals("12", newEluateSample.getQuantity());
-    assertEquals(Sample.QuantityUnit.PICO_MOL, newEluateSample.getQuantityUnit());
+    assertEquals("12 pm", newEluateSample.getQuantity());
     assertEquals((Double) 70.0, newEluateSample.getVolume());
     assertEquals(new BigDecimal("21.50").setScale(2),
         newEluateSample.getAdditionalPrice().setScale(2));

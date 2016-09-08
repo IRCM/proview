@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.UpdateActivity;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.sample.GelSample.Coloration;
 import ca.qc.ircm.proview.sample.GelSample.DevelopmentTimeUnit;
@@ -17,8 +17,6 @@ import ca.qc.ircm.proview.sample.MoleculeSample.StorageTemperature;
 import ca.qc.ircm.proview.sample.ProteicSample.EnrichmentType;
 import ca.qc.ircm.proview.sample.ProteicSample.MudPitFraction;
 import ca.qc.ircm.proview.sample.ProteicSample.ProteinContent;
-import ca.qc.ircm.proview.sample.ProteicSample.ProteinIdentification;
-import ca.qc.ircm.proview.sample.ProteicSample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
@@ -56,8 +54,7 @@ public class SampleActivityServiceImplTest {
    */
   @Before
   public void beforeTest() {
-    sampleActivityServiceImpl =
-        new SampleActivityServiceImpl(entityManager, authorizationService);
+    sampleActivityServiceImpl = new SampleActivityServiceImpl(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -76,8 +73,7 @@ public class SampleActivityServiceImplTest {
     Control control = new Control();
     control.setId(123456L);
     control.setName("unit_test_control");
-    control.setQuantity("200.0");
-    control.setQuantityUnit(Sample.QuantityUnit.MICRO_GRAMS);
+    control.setQuantity("200.0 mg");
     control.setSupport(Sample.Support.SOLUTION);
     control.setControlType(Control.ControlType.NEGATIVE_CONTROL);
     control.setVolume(300.0);
@@ -126,12 +122,10 @@ public class SampleActivityServiceImplTest {
     gelSample.setDevelopmentTimeUnit(DevelopmentTimeUnit.MINUTES);
     gelSample.setDecoloration(true);
     gelSample.setWeightMarkerQuantity(2.5);
-    gelSample.setProteinQuantity("12.0");
-    gelSample.setProteinQuantityUnit(Sample.QuantityUnit.PICO_MOL);
+    gelSample.setProteinQuantity("12.0 pm");
     gelSample.setAdditionalPrice(new BigDecimal("21.50"));
 
-    Optional<Activity> optionalActivity =
-        sampleActivityServiceImpl.update(gelSample, "unit_test");
+    Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(gelSample, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -202,7 +196,7 @@ public class SampleActivityServiceImplTest {
     proteolyticDigestionMethodActivity.setTableName("sample");
     proteolyticDigestionMethodActivity.setRecordId(gelSample.getId());
     proteolyticDigestionMethodActivity.setColumn("proteolyticDigestionMethod");
-    proteolyticDigestionMethodActivity.setOldValue("TRYPSINE");
+    proteolyticDigestionMethodActivity.setOldValue("TRYPSIN");
     proteolyticDigestionMethodActivity.setNewValue(ProteolyticDigestion.DIGESTED.name());
     expectedUpdateActivities.add(proteolyticDigestionMethodActivity);
     UpdateActivity usedProteolyticDigestionMethodActivity = new UpdateActivity();
@@ -387,16 +381,8 @@ public class SampleActivityServiceImplTest {
     proteinQuantityActivity.setRecordId(gelSample.getId());
     proteinQuantityActivity.setColumn("proteinQuantity");
     proteinQuantityActivity.setOldValue(null);
-    proteinQuantityActivity.setNewValue("12.0");
+    proteinQuantityActivity.setNewValue("12.0 pm");
     expectedUpdateActivities.add(proteinQuantityActivity);
-    UpdateActivity proteinQuantityUnitActivity = new UpdateActivity();
-    proteinQuantityUnitActivity.setActionType(ActionType.UPDATE);
-    proteinQuantityUnitActivity.setTableName("sample");
-    proteinQuantityUnitActivity.setRecordId(gelSample.getId());
-    proteinQuantityUnitActivity.setColumn("proteinQuantityUnit");
-    proteinQuantityUnitActivity.setOldValue("MICRO_GRAMS");
-    proteinQuantityUnitActivity.setNewValue(Sample.QuantityUnit.PICO_MOL.name());
-    expectedUpdateActivities.add(proteinQuantityUnitActivity);
     UpdateActivity additionalPriceActivity = new UpdateActivity();
     additionalPriceActivity.setActionType(ActionType.UPDATE);
     additionalPriceActivity.setTableName("sample");
@@ -435,8 +421,7 @@ public class SampleActivityServiceImplTest {
     eluateSample.setMolecularWeight(20.0);
     eluateSample.setPostTranslationModification("my_modification");
     eluateSample.setSupport(Support.DRY);
-    eluateSample.setQuantity("12");
-    eluateSample.setQuantityUnit(Sample.QuantityUnit.PICO_MOL);
+    eluateSample.setQuantity("12 pm");
     eluateSample.setVolume(70.0);
     eluateSample.setAdditionalPrice(new BigDecimal("21.50"));
 
@@ -512,7 +497,7 @@ public class SampleActivityServiceImplTest {
     proteolyticDigestionMethodActivity.setTableName("sample");
     proteolyticDigestionMethodActivity.setRecordId(eluateSample.getId());
     proteolyticDigestionMethodActivity.setColumn("proteolyticDigestionMethod");
-    proteolyticDigestionMethodActivity.setOldValue("TRYPSINE");
+    proteolyticDigestionMethodActivity.setOldValue("TRYPSIN");
     proteolyticDigestionMethodActivity.setNewValue(ProteolyticDigestion.DIGESTED.name());
     expectedUpdateActivities.add(proteolyticDigestionMethodActivity);
     UpdateActivity usedProteolyticDigestionMethodActivity = new UpdateActivity();
@@ -640,17 +625,9 @@ public class SampleActivityServiceImplTest {
     quantityActivity.setTableName("sample");
     quantityActivity.setRecordId(eluateSample.getId());
     quantityActivity.setColumn("quantity");
-    quantityActivity.setOldValue("1.5");
-    quantityActivity.setNewValue("12");
+    quantityActivity.setOldValue("1.5 mg");
+    quantityActivity.setNewValue("12 pm");
     expectedUpdateActivities.add(quantityActivity);
-    UpdateActivity quantityUnitActivity = new UpdateActivity();
-    quantityUnitActivity.setActionType(ActionType.UPDATE);
-    quantityUnitActivity.setTableName("sample");
-    quantityUnitActivity.setRecordId(eluateSample.getId());
-    quantityUnitActivity.setColumn("quantityUnit");
-    quantityUnitActivity.setOldValue("MICRO_GRAMS");
-    quantityUnitActivity.setNewValue(Sample.QuantityUnit.PICO_MOL.name());
-    expectedUpdateActivities.add(quantityUnitActivity);
     UpdateActivity volumeActivity = new UpdateActivity();
     volumeActivity.setActionType(ActionType.UPDATE);
     volumeActivity.setTableName("sample");
@@ -1192,8 +1169,7 @@ public class SampleActivityServiceImplTest {
     control.setComments("my_new_comment");
     control.setSupport(Support.SOLUTION);
     control.setVolume(2.0);
-    control.setQuantity("40");
-    control.setQuantityUnit(Sample.QuantityUnit.MICRO_GRAMS);
+    control.setQuantity("40 mg");
 
     Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(control, "unit_test");
 
@@ -1251,16 +1227,8 @@ public class SampleActivityServiceImplTest {
     quantityActivity.setRecordId(control.getId());
     quantityActivity.setColumn("quantity");
     quantityActivity.setOldValue(null);
-    quantityActivity.setNewValue("40");
+    quantityActivity.setNewValue("40 mg");
     expectedUpdateActivities.add(quantityActivity);
-    UpdateActivity quantityUnitActivity = new UpdateActivity();
-    quantityUnitActivity.setActionType(ActionType.UPDATE);
-    quantityUnitActivity.setTableName("sample");
-    quantityUnitActivity.setRecordId(control.getId());
-    quantityUnitActivity.setColumn("quantityUnit");
-    quantityUnitActivity.setOldValue(null);
-    quantityUnitActivity.setNewValue(Sample.QuantityUnit.MICRO_GRAMS.name());
-    expectedUpdateActivities.add(quantityUnitActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

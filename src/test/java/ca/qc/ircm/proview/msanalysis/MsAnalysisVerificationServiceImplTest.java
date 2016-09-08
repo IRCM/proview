@@ -3,7 +3,6 @@ package ca.qc.ircm.proview.msanalysis;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;

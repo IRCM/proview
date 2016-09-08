@@ -54,14 +54,8 @@ public class Control extends Sample implements Named {
    * Quantity.
    */
   @Column(name = "quantity")
-  @Size(max = 50)
+  @Size(max = 100)
   private String quantity;
-  /**
-   * Quantity unit.
-   */
-  @Column(name = "quantityUnit")
-  @Enumerated(STRING)
-  private QuantityUnit quantityUnit;
 
   public Control() {
   }
@@ -103,14 +97,6 @@ public class Control extends Sample implements Named {
 
   public void setQuantity(String quantity) {
     this.quantity = quantity;
-  }
-
-  public QuantityUnit getQuantityUnit() {
-    return quantityUnit;
-  }
-
-  public void setQuantityUnit(QuantityUnit quantityUnit) {
-    this.quantityUnit = quantityUnit;
   }
 
   public void setControlType(ControlType controlType) {

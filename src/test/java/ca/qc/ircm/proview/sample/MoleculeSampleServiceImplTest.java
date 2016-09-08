@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.sample.MoleculeSample.StorageTemperature;
 import ca.qc.ircm.proview.sample.Sample.Support;

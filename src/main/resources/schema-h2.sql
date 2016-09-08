@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS laboratorymanager (
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE forgotpassword (
+CREATE TABLE IF NOT EXISTS forgotpassword (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   userId bigint(20) NOT NULL,
   requestMoment timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -64,7 +64,7 @@ CREATE TABLE forgotpassword (
   PRIMARY KEY (id),
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE submission (
+CREATE TABLE IF NOT EXISTS submission (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   submissionDate timestamp NOT NULL,
   laboratoryId bigint(20) NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE submission (
   FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE,
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
-CREATE TABLE gelimages (
+CREATE TABLE IF NOT EXISTS gelimages (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   submissionId bigint(20) DEFAULT NULL,
   filename varchar(255) NOT NULL,
@@ -81,13 +81,13 @@ CREATE TABLE gelimages (
   PRIMARY KEY (id),
   FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE structure (
+CREATE TABLE IF NOT EXISTS structure (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   filename varchar(255) NOT NULL,
   content blob NOT NULL,
   PRIMARY KEY (id)
 );
-CREATE TABLE plate (
+CREATE TABLE IF NOT EXISTS plate (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) NOT NULL,
   type varchar(50) NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE plate (
   UNIQUE KEY plateName (name)
 );
 CREATE INDEX plateType ON plate (type);
-CREATE TABLE samplecontainer (
+CREATE TABLE IF NOT EXISTS samplecontainer (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   type varchar(50) NOT NULL,
   name varchar(100) DEFAULT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE samplecontainer (
   FOREIGN KEY (plateId) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
-CREATE TABLE sample (
+CREATE TABLE IF NOT EXISTS sample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   lims varchar(100) DEFAULT NULL,
   name varchar(150) DEFAULT NULL,
@@ -158,10 +158,8 @@ CREATE TABLE sample (
   developmentTimeUnit varchar(50) DEFAULT NULL,
   decoloration tinyint(1) NOT NULL DEFAULT '0',
   weightMarkerQuantity double DEFAULT NULL,
-  proteinQuantity varchar(50) DEFAULT NULL,
-  proteinQuantityUnit varchar(50) DEFAULT NULL,
-  quantity varchar(50) DEFAULT NULL,
-  quantityUnit varchar(50) DEFAULT NULL,
+  proteinQuantity varchar(100) DEFAULT NULL,
+  quantity varchar(100) DEFAULT NULL,
   volume double DEFAULT NULL,
   formula varchar(50) DEFAULT NULL,
   monoisotopicMass double DEFAULT NULL,
@@ -182,7 +180,7 @@ CREATE TABLE sample (
 CREATE INDEX sampleName ON sample (name);
 ALTER TABLE samplecontainer
 ADD FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
-CREATE TABLE standard (
+CREATE TABLE IF NOT EXISTS standard (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) DEFAULT NULL,
   quantity varchar(50) DEFAULT NULL,
@@ -193,7 +191,7 @@ CREATE TABLE standard (
   PRIMARY KEY (id),
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE contaminant (
+CREATE TABLE IF NOT EXISTS contaminant (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) DEFAULT NULL,
   quantity varchar(50) DEFAULT NULL,
@@ -204,7 +202,7 @@ CREATE TABLE contaminant (
   PRIMARY KEY (id),
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE solvent (
+CREATE TABLE IF NOT EXISTS solvent (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   sampleId bigint(20) DEFAULT NULL,
   solvent varchar(150) NOT NULL,
@@ -212,14 +210,14 @@ CREATE TABLE solvent (
   PRIMARY KEY (id),
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE protocol (
+CREATE TABLE IF NOT EXISTS protocol (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) DEFAULT NULL,
   type varchar(50) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY protocolName (name)
 );
-CREATE TABLE treatment (
+CREATE TABLE IF NOT EXISTS treatment (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   type varchar(100) DEFAULT NULL,
   protocolId bigint(20) DEFAULT NULL,
@@ -233,7 +231,7 @@ CREATE TABLE treatment (
   FOREIGN KEY (protocolId) REFERENCES protocol (id) ON UPDATE CASCADE,
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
-CREATE TABLE treatmentsample (
+CREATE TABLE IF NOT EXISTS treatmentsample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   treatmentId bigint(20) DEFAULT NULL,
   treatmentType varchar(100) DEFAULT NULL,
@@ -258,7 +256,7 @@ CREATE TABLE treatmentsample (
 );
 ALTER TABLE samplecontainer
 ADD FOREIGN KEY (treatmentSampleId) REFERENCES treatmentsample (id) ON DELETE SET NULL ON UPDATE CASCADE;
-CREATE TABLE msanalysis (
+CREATE TABLE IF NOT EXISTS msanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   source varchar(50) DEFAULT NULL,
   massDetectionInstrument varchar(50) NOT NULL,
@@ -268,7 +266,7 @@ CREATE TABLE msanalysis (
   deletionJustification clob,
   PRIMARY KEY (id)
 );
-CREATE TABLE msanalysisverification (
+CREATE TABLE IF NOT EXISTS msanalysisverification (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   msAnalysisId bigint(20) DEFAULT NULL,
   verificationType varchar(50) NOT NULL,
@@ -295,7 +293,7 @@ CREATE TABLE IF NOT EXISTS acquisition (
   FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
 CREATE INDEX acquisitionFile ON acquisition (acquisitionFile,sampleId);
-CREATE TABLE mascotfile (
+CREATE TABLE IF NOT EXISTS mascotfile (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   server varchar(50) NOT NULL,
   name varchar(50) NOT NULL,
@@ -319,7 +317,7 @@ CREATE TABLE IF NOT EXISTS acquisition_to_mascotfile (
   FOREIGN KEY (acquisitionId) REFERENCES acquisition (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (mascotFileId) REFERENCES mascotfile (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE dataanalysis (
+CREATE TABLE IF NOT EXISTS dataanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   sampleId bigint(20) NOT NULL,
   protein varchar(255) NOT NULL,
@@ -332,7 +330,7 @@ CREATE TABLE dataanalysis (
   PRIMARY KEY (id),
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE activity (
+CREATE TABLE IF NOT EXISTS activity (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   userId bigint(20) NOT NULL,
   tableName varchar(50) NOT NULL,
@@ -343,7 +341,7 @@ CREATE TABLE activity (
   PRIMARY KEY (id)
 );
 CREATE INDEX activityRecordIndex ON activity (tableName,recordId,actionType);
-CREATE TABLE activityupdate (
+CREATE TABLE IF NOT EXISTS activityupdate (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   activityId bigint(20) DEFAULT NULL,
   tableName varchar(50) NOT NULL,

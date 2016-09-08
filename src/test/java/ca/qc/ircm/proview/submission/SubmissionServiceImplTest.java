@@ -17,8 +17,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.mail.HtmlEmail;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -34,8 +33,8 @@ import ca.qc.ircm.proview.sample.ProteicSample;
 import ca.qc.ircm.proview.sample.ProteicSample.EnrichmentType;
 import ca.qc.ircm.proview.sample.ProteicSample.MudPitFraction;
 import ca.qc.ircm.proview.sample.ProteicSample.ProteinContent;
-import ca.qc.ircm.proview.sample.ProteicSample.ProteinIdentification;
-import ca.qc.ircm.proview.sample.ProteicSample.ProteolyticDigestion;
+import ca.qc.ircm.proview.sample.ProteinIdentification;
+import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.sample.SampleSolvent;
@@ -172,19 +171,17 @@ public class SubmissionServiceImplTest {
     assertEquals(null, gelSample.getGoal());
     assertEquals(null, gelSample.getSource());
     assertEquals(null, gelSample.getSampleNumberProtein());
-    assertEquals(ProteicSample.ProteolyticDigestion.TRYPSINE,
-        gelSample.getProteolyticDigestionMethod());
+    assertEquals(ProteolyticDigestion.TRYPSIN, gelSample.getProteolyticDigestionMethod());
     assertEquals(null, gelSample.getUsedProteolyticDigestionMethod());
     assertEquals(null, gelSample.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteicSample.ProteinIdentification.NCBINR, gelSample.getProteinIdentification());
+    assertEquals(ProteinIdentification.NCBINR, gelSample.getProteinIdentification());
     assertEquals(null, gelSample.getProteinIdentificationLink());
     assertEquals(null, gelSample.getEnrichmentType());
     assertEquals(null, gelSample.getOtherEnrichmentType());
     assertEquals(submission, gelSample.getSubmission());
     assertEquals(null, gelSample.getMudPitFraction());
     assertEquals(ProteicSample.ProteinContent.XLARGE, gelSample.getProteinContent());
-    assertEquals(MsAnalysis.MassDetectionInstrument.LTQ_ORBI_TRAP,
-        gelSample.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, gelSample.getMassDetectionInstrument());
     assertEquals(Service.LC_MS_MS, gelSample.getService());
     assertEquals(null, gelSample.getPrice());
     assertEquals(null, gelSample.getAdditionalPrice());
@@ -201,7 +198,6 @@ public class SubmissionServiceImplTest {
     assertEquals(false, gelSample.isDecoloration());
     assertEquals(null, gelSample.getWeightMarkerQuantity());
     assertEquals(null, gelSample.getProteinQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, gelSample.getProteinQuantityUnit());
   }
 
   @Test
@@ -251,7 +247,7 @@ public class SubmissionServiceImplTest {
     sample.setMolecularWeight(120.0);
     sample.setPostTranslationModification("my_modification");
     sample.setSampleNumberProtein(10);
-    sample.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSINE);
+    sample.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     sample.setUsedProteolyticDigestionMethod("trypsine was not used");
     sample.setOtherProteolyticDigestionMethod("other digestion");
     sample.setProteinIdentification(ProteinIdentification.NCBINR);
@@ -268,8 +264,7 @@ public class SubmissionServiceImplTest {
     sample.setDevelopmentTimeUnit(DevelopmentTimeUnit.MINUTES);
     sample.setDecoloration(true);
     sample.setWeightMarkerQuantity(20.0);
-    sample.setProteinQuantity("20.0");
-    sample.setProteinQuantityUnit(Sample.QuantityUnit.MICRO_GRAMS);
+    sample.setProteinQuantity("20.0 mg");
     List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
     samples.add(sample);
     GelImage gelImage = new GelImage();
@@ -333,7 +328,7 @@ public class SubmissionServiceImplTest {
     assertEquals(new Double(120.0), gelSample.getMolecularWeight());
     assertEquals("my_modification", gelSample.getPostTranslationModification());
     assertEquals(new Integer(10), gelSample.getSampleNumberProtein());
-    assertEquals(ProteolyticDigestion.TRYPSINE, gelSample.getProteolyticDigestionMethod());
+    assertEquals(ProteolyticDigestion.TRYPSIN, gelSample.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", gelSample.getUsedProteolyticDigestionMethod());
     assertEquals("other digestion", gelSample.getOtherProteolyticDigestionMethod());
     assertEquals(ProteinIdentification.NCBINR, gelSample.getProteinIdentification());
@@ -350,8 +345,7 @@ public class SubmissionServiceImplTest {
     assertEquals(DevelopmentTimeUnit.MINUTES, gelSample.getDevelopmentTimeUnit());
     assertEquals(true, gelSample.isDecoloration());
     assertEquals(new Double(20.0), gelSample.getWeightMarkerQuantity());
-    assertEquals("20.0", gelSample.getProteinQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, gelSample.getProteinQuantityUnit());
+    assertEquals("20.0 mg", gelSample.getProteinQuantity());
     Tube tube = (Tube) gelSample.getOriginalContainer();
     assertNotNull(tube);
     assertEquals("unit_test_gel_01", tube.getName());
@@ -388,7 +382,7 @@ public class SubmissionServiceImplTest {
     sample.setMolecularWeight(120.0);
     sample.setPostTranslationModification("my_modification");
     sample.setSampleNumberProtein(10);
-    sample.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSINE);
+    sample.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     sample.setUsedProteolyticDigestionMethod("trypsine was not used");
     sample.setOtherProteolyticDigestionMethod("other digestion");
     sample.setProteinIdentification(ProteinIdentification.NCBINR);
@@ -399,8 +393,7 @@ public class SubmissionServiceImplTest {
     sample.setOtherEnrichmentType("other enrichment");
     sample.setSupport(Support.SOLUTION);
     sample.setVolume(10.0);
-    sample.setQuantity("2.0");
-    sample.setQuantityUnit(Sample.QuantityUnit.MICRO_GRAMS);
+    sample.setQuantity("2.0 mg");
     EluateSample sample2 = new EluateSample();
     sample2.setName("unit_test_eluate_02");
     sample2.setComments("comments");
@@ -415,7 +408,7 @@ public class SubmissionServiceImplTest {
     sample2.setMolecularWeight(120.0);
     sample2.setPostTranslationModification("my_modification");
     sample2.setSampleNumberProtein(10);
-    sample2.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSINE);
+    sample2.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     sample2.setUsedProteolyticDigestionMethod("trypsine was not used");
     sample2.setOtherProteolyticDigestionMethod("other digestion");
     sample2.setProteinIdentification(ProteinIdentification.NCBINR);
@@ -426,8 +419,7 @@ public class SubmissionServiceImplTest {
     sample2.setOtherEnrichmentType("other enrichment");
     sample2.setSupport(Support.SOLUTION);
     sample2.setVolume(10.0);
-    sample2.setQuantity("2.0");
-    sample2.setQuantityUnit(Sample.QuantityUnit.MICRO_GRAMS);
+    sample2.setQuantity("2.0 mg");
     List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
     samples.add(sample);
     samples.add(sample2);
@@ -510,7 +502,7 @@ public class SubmissionServiceImplTest {
     assertEquals(new Double(120.0), eluateSample.getMolecularWeight());
     assertEquals("my_modification", eluateSample.getPostTranslationModification());
     assertEquals(new Integer(10), eluateSample.getSampleNumberProtein());
-    assertEquals(ProteolyticDigestion.TRYPSINE, eluateSample.getProteolyticDigestionMethod());
+    assertEquals(ProteolyticDigestion.TRYPSIN, eluateSample.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", eluateSample.getUsedProteolyticDigestionMethod());
     assertEquals("other digestion", eluateSample.getOtherProteolyticDigestionMethod());
     assertEquals(ProteinIdentification.NCBINR, eluateSample.getProteinIdentification());
@@ -521,8 +513,7 @@ public class SubmissionServiceImplTest {
     assertEquals("other enrichment", eluateSample.getOtherEnrichmentType());
     assertEquals(Support.SOLUTION, eluateSample.getSupport());
     assertEquals(new Double(10.0), eluateSample.getVolume());
-    assertEquals("2.0", eluateSample.getQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, eluateSample.getQuantityUnit());
+    assertEquals("2.0 mg", eluateSample.getQuantity());
     contaminants = eluateSample.getContaminants();
     assertEquals(1, contaminants.size());
     contaminant = contaminants.get(0);
@@ -682,7 +673,7 @@ public class SubmissionServiceImplTest {
     sample.setMolecularWeight(120.0);
     sample.setPostTranslationModification("my_modification");
     sample.setSampleNumberProtein(10);
-    sample.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSINE);
+    sample.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     sample.setUsedProteolyticDigestionMethod("trypsine was not used");
     sample.setOtherProteolyticDigestionMethod("other digestion");
     sample.setProteinIdentification(ProteinIdentification.NCBINR);
@@ -693,8 +684,7 @@ public class SubmissionServiceImplTest {
     sample.setOtherEnrichmentType("other enrichment");
     sample.setSupport(Support.SOLUTION);
     sample.setVolume(10.0);
-    sample.setQuantity("2.0");
-    sample.setQuantityUnit(Sample.QuantityUnit.MICRO_GRAMS);
+    sample.setQuantity("2.0 mg");
     List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
     samples.add(sample);
     Contaminant contaminant = new Contaminant();

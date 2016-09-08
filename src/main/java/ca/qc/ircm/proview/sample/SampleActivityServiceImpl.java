@@ -241,8 +241,6 @@ public class SampleActivityServiceImpl implements SampleActivityService {
           .oldValue(oldGel.getWeightMarkerQuantity()).newValue(newGel.getWeightMarkerQuantity()));
       updateBuilders.add(new SampleUpdateActivityBuilder().column("proteinQuantity")
           .oldValue(oldGel.getProteinQuantity()).newValue(newGel.getProteinQuantity()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("proteinQuantityUnit")
-          .oldValue(oldGel.getProteinQuantityUnit()).newValue(newGel.getProteinQuantityUnit()));
     }
     if (newSample instanceof EluateSample) {
       EluateSample oldEluate = (EluateSample) oldSample;
@@ -253,8 +251,6 @@ public class SampleActivityServiceImpl implements SampleActivityService {
           .oldValue(oldEluate.getVolume()).newValue(newEluate.getVolume()));
       updateBuilders.add(new SampleUpdateActivityBuilder().column("quantity")
           .oldValue(oldEluate.getQuantity()).newValue(newEluate.getQuantity()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("quantityUnit")
-          .oldValue(oldEluate.getQuantityUnit()).newValue(newEluate.getQuantityUnit()));
       // Contaminants.
       List<Contaminant> oldContaminants = oldEluate.getContaminants() != null
           ? oldEluate.getContaminants() : new ArrayList<Contaminant>();
@@ -369,8 +365,6 @@ public class SampleActivityServiceImpl implements SampleActivityService {
           .oldValue(oldControl.getVolume()).newValue(newControl.getVolume()));
       updateBuilders.add(new SampleUpdateActivityBuilder().column("quantity")
           .oldValue(oldControl.getQuantity()).newValue(newControl.getQuantity()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("quantityUnit")
-          .oldValue(oldControl.getQuantityUnit()).newValue(newControl.getQuantityUnit()));
     }
 
     // Keep updateBuilders that did not change.

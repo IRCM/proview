@@ -23,6 +23,7 @@ spring:
     name: proview
 # Database.
   datasource:
+    platform: h2
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb;IGNORECASE=TRUE
     username: sa
@@ -99,3 +100,19 @@ email:
   server: myemailserver.com
   sender: proview@ircm.qc.ca
   errorReceiver: christian.poitras@ircm.qc.ca
+
+---
+spring:
+  profiles: poitrac
+  datasource:
+    platform: mysql
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://zapp01:3306/proviewdev2
+    username: poitrac_dev
+    password: VRd6YoXwaUO3UCejRreA
+security:
+  cipherKey: '0xb31667d84c6c83d66f1bf29b33fa9ade'
+  passwords:
+    - version: 1
+      algorithm: SHA-512
+      iterations: 1281

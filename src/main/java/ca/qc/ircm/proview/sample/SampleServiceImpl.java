@@ -55,9 +55,8 @@ public class SampleServiceImpl implements SampleService {
     authorizationService.checkSampleReadPermission(sample);
 
     JPAQuery<Long> query = queryFactory.select(acquisition.id);
-    query.from(acquisition);
     query.from(acquisitionMascotFile);
-    query.where(acquisitionMascotFile.acquisition.eq(acquisition));
+    query.join(acquisitionMascotFile.acquisition, acquisition);
     query.where(acquisition.sample.eq(sample));
     if (!authorizationService.hasAdminRole()) {
       query.where(acquisitionMascotFile.visible.eq(true));

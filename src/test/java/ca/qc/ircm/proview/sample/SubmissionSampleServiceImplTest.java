@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.laboratory.Laboratory;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.MoleculeSample.StorageTemperature;
@@ -111,19 +112,17 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(null, gelSample.getGoal());
     assertEquals(null, gelSample.getSource());
     assertEquals(null, gelSample.getSampleNumberProtein());
-    assertEquals(ProteicSample.ProteolyticDigestion.TRYPSINE,
-        gelSample.getProteolyticDigestionMethod());
+    assertEquals(ProteolyticDigestion.TRYPSIN, gelSample.getProteolyticDigestionMethod());
     assertEquals(null, gelSample.getUsedProteolyticDigestionMethod());
     assertEquals(null, gelSample.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteicSample.ProteinIdentification.NCBINR, gelSample.getProteinIdentification());
+    assertEquals(ProteinIdentification.NCBINR, gelSample.getProteinIdentification());
     assertEquals(null, gelSample.getProteinIdentificationLink());
     assertEquals(null, gelSample.getEnrichmentType());
     assertEquals(null, gelSample.getOtherEnrichmentType());
     assertEquals((Long) 1L, gelSample.getSubmission().getId());
     assertEquals(null, gelSample.getMudPitFraction());
     assertEquals(ProteicSample.ProteinContent.XLARGE, gelSample.getProteinContent());
-    assertEquals(MsAnalysis.MassDetectionInstrument.LTQ_ORBI_TRAP,
-        gelSample.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, gelSample.getMassDetectionInstrument());
     assertEquals(Service.LC_MS_MS, gelSample.getService());
     assertEquals(null, gelSample.getPrice());
     assertEquals(null, gelSample.getAdditionalPrice());
@@ -140,7 +139,6 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(false, gelSample.isDecoloration());
     assertEquals(null, gelSample.getWeightMarkerQuantity());
     assertEquals(null, gelSample.getProteinQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, gelSample.getProteinQuantityUnit());
   }
 
   @Test
@@ -164,20 +162,17 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("cap_goal", eluateSample.getGoal());
     assertEquals(null, eluateSample.getSource());
     assertEquals(null, eluateSample.getSampleNumberProtein());
-    assertEquals(ProteicSample.ProteolyticDigestion.TRYPSINE,
-        eluateSample.getProteolyticDigestionMethod());
+    assertEquals(ProteolyticDigestion.TRYPSIN, eluateSample.getProteolyticDigestionMethod());
     assertEquals(null, eluateSample.getUsedProteolyticDigestionMethod());
     assertEquals(null, eluateSample.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteicSample.ProteinIdentification.NCBINR,
-        eluateSample.getProteinIdentification());
+    assertEquals(ProteinIdentification.NCBINR, eluateSample.getProteinIdentification());
     assertEquals(null, eluateSample.getProteinIdentificationLink());
     assertEquals(null, eluateSample.getEnrichmentType());
     assertEquals(null, eluateSample.getOtherEnrichmentType());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
     assertEquals(null, eluateSample.getMudPitFraction());
     assertEquals(ProteicSample.ProteinContent.MEDIUM, eluateSample.getProteinContent());
-    assertEquals(MsAnalysis.MassDetectionInstrument.LTQ_ORBI_TRAP,
-        eluateSample.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, eluateSample.getMassDetectionInstrument());
     assertEquals(Service.LC_MS_MS, eluateSample.getService());
     assertEquals(null, eluateSample.getPrice());
     assertEquals(null, eluateSample.getAdditionalPrice());
@@ -185,8 +180,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(null, eluateSample.getProtein());
     assertEquals(null, eluateSample.getMolecularWeight());
     assertEquals(null, eluateSample.getPostTranslationModification());
-    assertEquals("1.5", eluateSample.getQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, eluateSample.getQuantityUnit());
+    assertEquals("1.5 mg", eluateSample.getQuantity());
     assertEquals((Double) 50.0, eluateSample.getVolume());
   }
 
@@ -246,19 +240,17 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(null, gelSample.getGoal());
     assertEquals(null, gelSample.getSource());
     assertEquals(null, gelSample.getSampleNumberProtein());
-    assertEquals(ProteicSample.ProteolyticDigestion.TRYPSINE,
-        gelSample.getProteolyticDigestionMethod());
+    assertEquals(ProteolyticDigestion.TRYPSIN, gelSample.getProteolyticDigestionMethod());
     assertEquals(null, gelSample.getUsedProteolyticDigestionMethod());
     assertEquals(null, gelSample.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteicSample.ProteinIdentification.NCBINR, gelSample.getProteinIdentification());
+    assertEquals(ProteinIdentification.NCBINR, gelSample.getProteinIdentification());
     assertEquals(null, gelSample.getProteinIdentificationLink());
     assertEquals(null, gelSample.getEnrichmentType());
     assertEquals(null, gelSample.getOtherEnrichmentType());
     assertEquals((Long) 1L, gelSample.getSubmission().getId());
     assertEquals(null, gelSample.getMudPitFraction());
     assertEquals(ProteicSample.ProteinContent.XLARGE, gelSample.getProteinContent());
-    assertEquals(MsAnalysis.MassDetectionInstrument.LTQ_ORBI_TRAP,
-        gelSample.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, gelSample.getMassDetectionInstrument());
     assertEquals(Service.LC_MS_MS, gelSample.getService());
     assertEquals(null, gelSample.getPrice());
     assertEquals(null, gelSample.getAdditionalPrice());
@@ -275,7 +267,6 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(false, gelSample.isDecoloration());
     assertEquals(null, gelSample.getWeightMarkerQuantity());
     assertEquals(null, gelSample.getProteinQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, gelSample.getProteinQuantityUnit());
   }
 
   @Test
@@ -299,20 +290,17 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("cap_goal", eluateSample.getGoal());
     assertEquals(null, eluateSample.getSource());
     assertEquals(null, eluateSample.getSampleNumberProtein());
-    assertEquals(ProteicSample.ProteolyticDigestion.TRYPSINE,
-        eluateSample.getProteolyticDigestionMethod());
+    assertEquals(ProteolyticDigestion.TRYPSIN, eluateSample.getProteolyticDigestionMethod());
     assertEquals(null, eluateSample.getUsedProteolyticDigestionMethod());
     assertEquals(null, eluateSample.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteicSample.ProteinIdentification.NCBINR,
-        eluateSample.getProteinIdentification());
+    assertEquals(ProteinIdentification.NCBINR, eluateSample.getProteinIdentification());
     assertEquals(null, eluateSample.getProteinIdentificationLink());
     assertEquals(null, eluateSample.getEnrichmentType());
     assertEquals(null, eluateSample.getOtherEnrichmentType());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
     assertEquals(null, eluateSample.getMudPitFraction());
     assertEquals(ProteicSample.ProteinContent.MEDIUM, eluateSample.getProteinContent());
-    assertEquals(MsAnalysis.MassDetectionInstrument.LTQ_ORBI_TRAP,
-        eluateSample.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, eluateSample.getMassDetectionInstrument());
     assertEquals(Service.LC_MS_MS, eluateSample.getService());
     assertEquals(null, eluateSample.getPrice());
     assertEquals(null, eluateSample.getAdditionalPrice());
@@ -320,8 +308,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(null, eluateSample.getProtein());
     assertEquals(null, eluateSample.getMolecularWeight());
     assertEquals(null, eluateSample.getPostTranslationModification());
-    assertEquals("1.5", eluateSample.getQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, eluateSample.getQuantityUnit());
+    assertEquals("1.5 mg", eluateSample.getQuantity());
     assertEquals((Double) 50.0, eluateSample.getVolume());
   }
 

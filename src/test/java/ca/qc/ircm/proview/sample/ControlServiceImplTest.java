@@ -64,8 +64,8 @@ public class ControlServiceImplTest {
    */
   @Before
   public void beforeTest() {
-    controlServiceImpl = new ControlServiceImpl(entityManager, queryFactory,
-        sampleActivityService, activityService, tubeService, authorizationService);
+    controlServiceImpl = new ControlServiceImpl(entityManager, queryFactory, sampleActivityService,
+        activityService, tubeService, authorizationService);
     optionalActivity = Optional.of(activity);
   }
 
@@ -82,7 +82,6 @@ public class ControlServiceImplTest {
     assertEquals(Sample.Support.GEL, control.getSupport());
     assertEquals(null, control.getVolume());
     assertEquals(null, control.getQuantity());
-    assertEquals(null, control.getQuantityUnit());
     assertEquals(true, control.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 4L, control.getOriginalContainer().getId());
   }
@@ -101,8 +100,7 @@ public class ControlServiceImplTest {
     control.setControlType(Control.ControlType.NEGATIVE_CONTROL);
     control.setSupport(Support.GEL);
     control.setVolume(20.0);
-    control.setQuantity("12.0");
-    control.setQuantityUnit(Sample.QuantityUnit.MICRO_GRAMS);
+    control.setQuantity("12.0 mg");
     control.setComments("unit_test_comments");
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
         .thenReturn("nc_test_000001");
@@ -121,8 +119,7 @@ public class ControlServiceImplTest {
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(Support.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
-    assertEquals("12.0", testControl.getQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, testControl.getQuantityUnit());
+    assertEquals("12.0 mg", testControl.getQuantity());
     assertEquals("unit_test_comments", testControl.getComments());
     assertEquals(0, testControl.getStandards().size());
     // Validate log.
@@ -130,8 +127,7 @@ public class ControlServiceImplTest {
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(Support.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
-    assertEquals("12.0", testControl.getQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, testControl.getQuantityUnit());
+    assertEquals("12.0 mg", testControl.getQuantity());
     assertEquals("unit_test_comments", testControl.getComments());
     assertEquals(true, testControl.getStandards() == null || testControl.getStandards().isEmpty());
   }
@@ -145,8 +141,7 @@ public class ControlServiceImplTest {
     control.setControlType(Control.ControlType.POSITIVE_CONTROL);
     control.setSupport(Support.SOLUTION);
     control.setVolume(2.0);
-    control.setQuantity("40");
-    control.setQuantityUnit(Sample.QuantityUnit.MICRO_GRAMS);
+    control.setQuantity("40 mg");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
@@ -163,8 +158,7 @@ public class ControlServiceImplTest {
     assertEquals(Control.ControlType.POSITIVE_CONTROL, test.getControlType());
     assertEquals(Support.SOLUTION, test.getSupport());
     assertEquals((Double) 2.0, test.getVolume());
-    assertEquals("40", test.getQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, test.getQuantityUnit());
+    assertEquals("40 mg", test.getQuantity());
     assertEquals(0, test.getStandards().size());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
@@ -175,8 +169,7 @@ public class ControlServiceImplTest {
     assertEquals(Control.ControlType.POSITIVE_CONTROL, newControl.getControlType());
     assertEquals(Support.SOLUTION, newControl.getSupport());
     assertEquals((Double) 2.0, newControl.getVolume());
-    assertEquals("40", newControl.getQuantity());
-    assertEquals(Sample.QuantityUnit.MICRO_GRAMS, newControl.getQuantityUnit());
+    assertEquals("40 mg", newControl.getQuantity());
     assertEquals(0, newControl.getStandards().size());
   }
 

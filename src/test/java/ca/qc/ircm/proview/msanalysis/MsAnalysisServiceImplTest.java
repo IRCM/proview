@@ -1,6 +1,6 @@
 package ca.qc.ircm.proview.msanalysis;
 
-import static ca.qc.ircm.proview.msanalysis.MsAnalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
+import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
 import static ca.qc.ircm.proview.msanalysis.MsAnalysis.Source.LDTD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -106,8 +106,7 @@ public class MsAnalysisServiceImplTest {
     verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
     assertNotNull(msAnalysis);
     assertEquals((Long) 1L, msAnalysis.getId());
-    assertEquals(MsAnalysis.MassDetectionInstrument.LTQ_ORBI_TRAP,
-        msAnalysis.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
     assertEquals(MsAnalysis.Source.NSI, msAnalysis.getSource());
     assertEquals(
         LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -131,8 +130,7 @@ public class MsAnalysisServiceImplTest {
     verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
     assertNotNull(msAnalysis);
     assertEquals((Long) 1L, msAnalysis.getId());
-    assertEquals(MsAnalysis.MassDetectionInstrument.LTQ_ORBI_TRAP,
-        msAnalysis.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
     assertEquals(MsAnalysis.Source.NSI, msAnalysis.getSource());
     assertEquals(
         LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -213,8 +211,7 @@ public class MsAnalysisServiceImplTest {
 
   @Test
   public void verifications_Null() {
-    Map<VerificationType, Map<String, Boolean>> checks =
-        msAnalysisServiceImpl.verifications(null);
+    Map<VerificationType, Map<String, Boolean>> checks = msAnalysisServiceImpl.verifications(null);
 
     assertEquals(0, checks.size());
   }

@@ -5,7 +5,7 @@ import static javax.persistence.EnumType.STRING;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.LaboratoryData;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
@@ -98,7 +98,7 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
    */
   @Column(name = "massDetectionInstrument")
   @Enumerated(STRING)
-  private MsAnalysis.MassDetectionInstrument massDetectionInstrument;
+  private MassDetectionInstrument massDetectionInstrument;
   /**
    * Intact protein ionization source for mass detection instrument.
    */
@@ -172,12 +172,12 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
     this.service = service;
   }
 
-  public MsAnalysis.MassDetectionInstrument getMassDetectionInstrument() {
+  public MassDetectionInstrument getMassDetectionInstrument() {
     return massDetectionInstrument;
   }
 
   public void
-      setMassDetectionInstrument(MsAnalysis.MassDetectionInstrument massDetectionInstrument) {
+      setMassDetectionInstrument(MassDetectionInstrument massDetectionInstrument) {
     this.massDetectionInstrument = massDetectionInstrument;
   }
 

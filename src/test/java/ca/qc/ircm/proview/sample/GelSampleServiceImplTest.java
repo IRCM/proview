@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.sample.GelSample.Coloration;
 import ca.qc.ircm.proview.sample.GelSample.DevelopmentTimeUnit;
@@ -20,9 +20,6 @@ import ca.qc.ircm.proview.sample.GelSample.Thickness;
 import ca.qc.ircm.proview.sample.ProteicSample.EnrichmentType;
 import ca.qc.ircm.proview.sample.ProteicSample.MudPitFraction;
 import ca.qc.ircm.proview.sample.ProteicSample.ProteinContent;
-import ca.qc.ircm.proview.sample.ProteicSample.ProteinIdentification;
-import ca.qc.ircm.proview.sample.ProteicSample.ProteolyticDigestion;
-import ca.qc.ircm.proview.sample.Sample.QuantityUnit;
 import ca.qc.ircm.proview.sample.SubmissionSample.ServiceType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
@@ -89,7 +86,7 @@ public class GelSampleServiceImplTest {
     assertEquals(null, sample.getGoal());
     assertEquals(null, sample.getSource());
     assertEquals(null, sample.getSampleNumberProtein());
-    assertEquals(ProteolyticDigestion.TRYPSINE, sample.getProteolyticDigestionMethod());
+    assertEquals(ProteolyticDigestion.TRYPSIN, sample.getProteolyticDigestionMethod());
     assertEquals(null, sample.getUsedProteolyticDigestionMethod());
     assertEquals(null, sample.getOtherProteolyticDigestionMethod());
     assertEquals(ProteinIdentification.NCBINR, sample.getProteinIdentification());
@@ -115,7 +112,6 @@ public class GelSampleServiceImplTest {
     assertEquals(false, sample.isDecoloration());
     assertEquals(null, sample.getWeightMarkerQuantity());
     assertEquals(null, sample.getProteinQuantity());
-    assertEquals(QuantityUnit.MICRO_GRAMS, sample.getProteinQuantityUnit());
     assertEquals(null, sample.getPrice());
     assertEquals(null, sample.getAdditionalPrice());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
@@ -163,8 +159,7 @@ public class GelSampleServiceImplTest {
     sample.setDevelopmentTimeUnit(DevelopmentTimeUnit.MINUTES);
     sample.setDecoloration(true);
     sample.setWeightMarkerQuantity(2.5);
-    sample.setProteinQuantity("12.0");
-    sample.setProteinQuantityUnit(Sample.QuantityUnit.PICO_MOL);
+    sample.setProteinQuantity("12.0 pm");
     sample.setAdditionalPrice(new BigDecimal("21.50"));
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -207,8 +202,7 @@ public class GelSampleServiceImplTest {
     assertEquals(DevelopmentTimeUnit.MINUTES, test.getDevelopmentTimeUnit());
     assertEquals(true, test.isDecoloration());
     assertEquals((Double) 2.5, test.getWeightMarkerQuantity());
-    assertEquals("12.0", test.getProteinQuantity());
-    assertEquals(Sample.QuantityUnit.PICO_MOL, test.getProteinQuantityUnit());
+    assertEquals("12.0 pm", test.getProteinQuantity());
     assertEquals(new BigDecimal("21.50").setScale(2), test.getAdditionalPrice().setScale(2));
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
@@ -244,8 +238,7 @@ public class GelSampleServiceImplTest {
     assertEquals(DevelopmentTimeUnit.MINUTES, newGelSample.getDevelopmentTimeUnit());
     assertEquals(true, newGelSample.isDecoloration());
     assertEquals((Double) 2.5, newGelSample.getWeightMarkerQuantity());
-    assertEquals("12.0", newGelSample.getProteinQuantity());
-    assertEquals(Sample.QuantityUnit.PICO_MOL, newGelSample.getProteinQuantityUnit());
+    assertEquals("12.0 pm", newGelSample.getProteinQuantity());
     assertEquals(new BigDecimal("21.50").setScale(2),
         newGelSample.getAdditionalPrice().setScale(2));
   }

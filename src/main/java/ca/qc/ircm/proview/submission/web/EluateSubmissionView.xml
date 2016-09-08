@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+    Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <entry key="title">Submission of samples</entry>
+  <entry key="header">Submission of samples</entry>
+  <entry key="title.DRY">Submission of dry samples</entry>
+  <entry key="header.DRY">Submission of dry samples</entry>
+  <entry key="title.SOLUTION">Submission of samples in solution</entry>
+  <entry key="header.SOLUTION">Submission of samples in solution</entry>
+  <entry key="service"></entry>
+  <entry key="service.LC_MS_MS">Proteomics analysis by LC/MS/MS</entry>
+  <entry key="service.TWO_DIMENSION_LC_MS_MS">Proteomics analysis by 2D-LC/MS/MS (MudPit)</entry>
+  <entry key="service.MALDI_MS">Proteomics analysis by MALDI/MS</entry>
+  <entry key="service.INTACT_PROTEIN">Mass determination of intact protein</entry>
+  <entry key="p.message.sameType">Before filling this form, make sure all samples are of the same type. All samples must be in solution, dry or in a gel. All analysis must be the same for all samples submitted. If this is not he case, you will need to fill this form again.</entry>
+  <entry key="information">If your browser is inactive for more than 30 minutes before confirming your analysis requests, you may lose all unconfirmed information.</entry>
+  <entry key="sampleCountPanel">Number of samples</entry>
+  <entry key="sampleCount">Number of samples</entry>
+  <entry key="sampleNamesPanel">Sample names</entry>
+  <entry key="name">{0,number,#}.</entry>
+  <entry key="fillSampleNames">Fill down</entry>
+  <entry key="experiencePanel">Choose project and experience</entry>
+  <entry key="project">Project</entry>
+  <entry key="experience">Experience</entry>
+  <entry key="goal">Experience goal</entry>
+  <entry key="sampleDetailsPanel">Details about samples</entry>
+  <entry key="taxonomy">Taxonomy (species)</entry>
+  <entry key="protein">Protein name or id</entry>
+  <entry key="molecularWeight">Molecular weight</entry>
+  <entry key="postTranslationModification">Post-translationnal modification</entry>
+  <entry key="volume">Volume (\u00B5l)</entry>
+  <entry key="quantity">Quantity</entry>
+  <entry key="standardsPanel">Number of standards</entry>
+  <entry key="updateStandardCount.submit">Update</entry>
+  <entry key="standards.header">Standards</entry>
+  <entry key="standards.name">Name</entry>
+  <entry key="standards.quantity">Quantity</entry>
+  <entry key="standards.comments">Comments</entry>
+  <entry key="copyStandard">Fill down</entry>
+  <entry key="contaminantsPanel">Number of contaminants</entry>
+  <entry key="updateContaminantCount.submit">Update</entry>
+  <entry key="contaminants.header">Contaminants</entry>
+  <entry key="contaminants.name">Name</entry>
+  <entry key="contaminants.quantity">Quantity</entry>
+  <entry key="contaminants.comments">Comments</entry>
+  <entry key="copyContaminant">Fill down</entry>
+  <entry key="digestionPanel">Proteolytic digestion</entry>
+  <entry key="sample.usedProteolyticDigestionMethod">- used enzyme</entry>
+  <entry key="sample.otherProteolyticDigestionMethod">- enzyme to use</entry>
+  <entry key="sample.otherProteolyticDigestionMethod.note">(enzymes, reactives and protocol must be supplied with samples)</entry>
+  <entry key="enrichmentPanel">Peptide enrichment with post-translationnal modifications</entry>
+  <entry key="exclusionsPanel">LC MSMS exclusion and inclusion</entry>
+  <entry key="exclusion.message">LC MSMS exclusion and inclusion will be added to the site in the future. For these options, please contact Denis Faubert in contact us page.</entry>
+  <entry key="instrumentPanel">Instrument selection</entry>
+  <entry key="proteinIdentificationPanel">Database where digested protein identification will be made</entry>
+  <entry key="sample.proteinIdentificationLink">- link to download database</entry>
+  <entry key="commentsPanel">Comments</entry>
+  <entry key="submit">Submit</entry>
+  <entry key="reset">Reset</entry>
+  <entry key="mudPitFraction.header">Ions exchange column fractions (2DLC-MudPit)</entry>
+  <entry key="proteinContent.header">To help us choose the best LC-MS chromatography for your samples, choose the most appropriate option below</entry>
+  <entry key="sample.source">Ionization source</entry>
+  <entry key="sample.source.MALDI.note">(nominal mass only)</entry>
+  <entry key="sampleNumberProtein.header">Number of proteins in the sample</entry>
+  <entry key="coming">Coming soon!</entry>
+</properties>

@@ -97,14 +97,8 @@ public class GelSample extends ProteicSample implements Cloneable {
    * Quantity of proteins in gel (total).
    */
   @Column(name = "proteinQuantity")
-  @Size(max = 50)
+  @Size(max = 100)
   private String proteinQuantity;
-  /**
-   * Unit of quantity of proteins in gel (total).
-   */
-  @Column(name = "proteinQuantityUnit")
-  @Enumerated(STRING)
-  private QuantityUnit proteinQuantityUnit;
 
   public GelSample() {
   }
@@ -133,14 +127,6 @@ public class GelSample extends ProteicSample implements Cloneable {
 
   public void setProteinQuantity(String proteinQuantity) {
     this.proteinQuantity = proteinQuantity;
-  }
-
-  public QuantityUnit getProteinQuantityUnit() {
-    return proteinQuantityUnit;
-  }
-
-  public void setProteinQuantityUnit(QuantityUnit proteinQuantityUnit) {
-    this.proteinQuantityUnit = proteinQuantityUnit;
   }
 
   public Separation getSeparation() {

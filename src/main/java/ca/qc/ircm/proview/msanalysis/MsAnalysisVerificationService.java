@@ -1,6 +1,5 @@
 package ca.qc.ircm.proview.msanalysis;
 
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 

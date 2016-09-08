@@ -59,13 +59,6 @@ public abstract class Sample implements Data, Named, Comparable<Sample>, Seriali
     GEL
   }
 
-  /**
-   * Units for sample quantities.
-   */
-  public static enum QuantityUnit {
-    MICRO_GRAMS, PICO_MOL;
-  }
-
   private static final long serialVersionUID = -3637467720218236079L;
 
   /**

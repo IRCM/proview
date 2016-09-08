@@ -30,13 +30,6 @@ import javax.persistence.Table;
 @Table(name = "msanalysis")
 public class MsAnalysis implements Data, Serializable {
   /**
-   * Instruments available for protein mass detection.
-   */
-  public static enum MassDetectionInstrument {
-    VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION, LTQ_ORBI_TRAP, Q_TOF, TOF;
-  }
-
-  /**
    * Source for mass spectrometer.
    */
   public static enum Source {
