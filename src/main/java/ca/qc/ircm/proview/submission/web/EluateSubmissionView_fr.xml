@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+    Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <entry key="title">Soumission d'échantillons</entry>
+  <entry key="header">Soumission d'échantillons</entry>
+  <entry key="title.DRY">Soumission d'échantillons secs</entry>
+  <entry key="header.DRY">Soumission d'échantillons secs</entry>
+  <entry key="title.SOLUTION">Soumission d'échantillons en solution</entry>
+  <entry key="header.SOLUTION">Soumission d'échantillons en solution</entry>
+  <entry key="service">Proteomic platform service</entry>
+  <entry key="service.LC_MS_MS">Analyse protéique par LC/MS/MS</entry>
+  <entry key="service.TWO_DIMENSION_LC_MS_MS">Analyse protéique par 2D-LC/MS/MS (MudPit)</entry>
+  <entry key="service.MALDI_MS">Analyse protéique par MALDI/MS</entry>
+  <entry key="service.INTACT_PROTEIN">Détermination de la masse de protéines intactes</entry>
+  <entry key="sampleType">Avant de remplir ce formulaire, assurez-vous que tous vos échantillons sont du même type. Tous les échnatillons d'une soumission doivent être en solution, sec ou en gel. Toutes les analyses doivent être les mêmes pour les échantillons soumis. Si ce n'est pas le cas, vous pouvez remplir ce formulaire plusieurs fois.</entry>
+  <entry key="inactive">Si votre fureteur est inactif pendant plus de 30 minutes avant que vous ayez compléter la soumission, vous pouvez perdre les informations non-confirmées.</entry>
+  <entry key="sampleCountPanel">Nombre d'échantillons</entry>
+  <entry key="sampleCount">Nombre d'échantillons</entry>
+  <entry key="sampleNamesPanel">Nom des échantillons</entry>
+  <entry key="name">{0,number,#}.</entry>
+  <entry key="fillSampleNames">Copier vers le bas</entry>
+  <entry key="experiencePanel">Détails à propos des échantillons</entry>
+  <entry key="experience">Expérience</entry>
+  <entry key="goal">But de l'expérience</entry>
+  <entry key="taxonomy">Taxonomie (espèce)</entry>
+  <entry key="protein">Nom ou identifiant de protéine</entry>
+  <entry key="molecularWeight">Poids moléculaire</entry>
+  <entry key="postTranslationModification">Modification post-traductionnelle</entry>
+  <entry key="volume">Volume (μl)</entry>
+  <entry key="quantity">Quantité</entry>
+  <entry key="standardsPanel">Standards</entry>
+  <entry key="standardCount">Nombre de standards</entry>
+  <entry key="standard.name">Nom</entry>
+  <entry key="standard.quantity">Quantité</entry>
+  <entry key="standard.comments">Commentaires</entry>
+  <entry key="fillStandards">Copier vers le bas</entry>
+  <entry key="contaminantsPanel">Contaminants</entry>
+  <entry key="contaminantCount">Nombre de contaminants</entry>
+  <entry key="contaminant.name">Nom</entry>
+  <entry key="contaminant.quantity">Quantité</entry>
+  <entry key="contaminant.comments">Commentaires</entry>
+  <entry key="fillContaminants">Copier vers le bas</entry>
+  <entry key="servicesPanel">Services</entry>
+  <entry key="proteolyticDigestionMethod">Digestion</entry>
+  <entry key="proteolyticDigestionMethod.DIGESTED.value">- enzyme utilisé</entry>
+  <entry key="proteolyticDigestionMethod.OTHER.value">- enzyme à utiliser</entry>
+  <entry key="proteolyticDigestionMethod.OTHER.note">(les enzymes, réactifs et protocoles doivent être fournis avec les échantillons)</entry>
+  <entry key="enrichment">Enrichissement de peptide avec modifications post-traductionnelle</entry>
+  <entry key="enrichment.value">À venir!</entry>
+  <entry key="exclusions">Exclusion et inclusion LC MSMS</entry>
+  <entry key="exclusions.value">Les exclusions/inclusions pour le LC MSMS seront ajoutés dans le futur. Pour ces options, contactez Denis Faubert dans la page de contact.</entry>
+  <entry key="massDetectionInstrument">Sélection d'instrument</entry>
+  <entry key="proteinIdentification">Base de données d'identification de protéines</entry>
+  <entry key="proteinIdentification.OTHER.value">- lien pour télécharger la base de données</entry>
+  <entry key="commentsPanel">Commentaires</entry>
+  <entry key="submit">Soumettre</entry>
+</properties>

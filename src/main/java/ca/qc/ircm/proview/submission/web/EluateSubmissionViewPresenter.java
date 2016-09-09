@@ -9,22 +9,23 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.UNIPROT;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
+import static ca.qc.ircm.proview.sample.QContaminant.contaminant;
 import static ca.qc.ircm.proview.sample.QEluateSample.eluateSample;
+import static ca.qc.ircm.proview.sample.QStandard.standard;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.EluateSample;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
+import ca.qc.ircm.proview.sample.Standard;
+import ca.qc.ircm.proview.utils.web.EmptyNullTableFieldFactory;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.converter.StringToDoubleConverter;
+import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,8 @@ import org.springframework.stereotype.Controller;
 public class EluateSubmissionViewPresenter {
   public static final String HEADER_LABEL_ID = "header";
   public static final String SERVICE_LABEL_ID = "service";
-  public static final String INFORMATION_LABEL_ID = "information";
+  public static final String SAMPLE_TYPE_LABEL_ID = "sampleType";
+  public static final String INACTIVE_LABEL_ID = "inactive";
   public static final String SAMPLE_COUNT_PANEL_ID = "sampleCountPanel";
   public static final String SAMPLE_COUNT_PROPERTY = "sampleCount";
   public static final String SAMPLE_NAMES_PANEL_ID = "sampleNamesPanel";
@@ -49,7 +51,6 @@ public class EluateSubmissionViewPresenter {
   public static final String FIRST_SAMPLE_NAME_PROPERTY = "sampleName1";
   public static final String FILL_SAMPLE_NAMES_PROPERTY = "fillSampleNames";
   public static final String EXPERIENCE_PANEL_ID = "experiencePanel";
-  public static final String PROJECT_PROPERTY = eluateSample.project.getMetadata().getName();
   public static final String EXPERIENCE_PROPERTY = eluateSample.experience.getMetadata().getName();
   public static final String EXPERIENCE_GOAL_PROPERTY = eluateSample.goal.getMetadata().getName();
   public static final String SAMPLE_DETAILS_PANEL_ID = "sampleDetailsPanel";
@@ -63,20 +64,37 @@ public class EluateSubmissionViewPresenter {
   public static final String SAMPLE_QUANTITY_PROPERTY =
       eluateSample.quantity.getMetadata().getName();
   public static final String STANDARDS_PANEL_ID = "standardsPanel";
+  public static final String STANDARD_COUNT_PROPERTY = "standardCount";
+  public static final String STANDARD_PROPERTY = standard.getMetadata().getName();
+  public static final String STANDARD_NAME_PROPERTY = standard.name.getMetadata().getName();
+  public static final String STANDARD_QUANTITY_PROPERTY = standard.quantity.getMetadata().getName();
+  public static final String STANDARD_COMMENTS_PROPERTY = standard.comments.getMetadata().getName();
+  public static final String FILL_STANDARDS_PROPERTY = "fillStandards";
   public static final String CONTAMINANTS_PANEL_ID = "contaminantsPanel";
-  public static final String DIGESTION_PANEL_ID = "digestionPanel";
+  public static final String CONTAMINANT_COUNT_PROPERTY = "contaminantCount";
+  public static final String CONTAMINANT_PROPERTY = contaminant.getMetadata().getName();
+  public static final String CONTAMINANT_NAME_PROPERTY = contaminant.name.getMetadata().getName();
+  public static final String CONTAMINANT_QUANTITY_PROPERTY =
+      contaminant.quantity.getMetadata().getName();
+  public static final String CONTAMINANT_COMMENTS_PROPERTY =
+      contaminant.comments.getMetadata().getName();
+  public static final String FILL_CONTAMINANTS_PROPERTY = "fillContaminants";
+  public static final String SERVICES_PANEL_ID = "servicesPanel";
   public static final String DIGESTION_PROPERTY =
       eluateSample.proteolyticDigestionMethod.getMetadata().getName();
-  public static final String ENRICHEMENT_PANEL_ID = "enrichmentPanel";
-  public static final String EXCLUSIONS_PANEL_ID = "exclusionsPanel";
-  public static final String INSTRUMENT_PANEL_ID = "instrumentPanel";
+  public static final String ENRICHEMENT_PROPERTY = "enrichment";
+  public static final String EXCLUSIONS_PROPERTY = "exclusions";
   public static final String INSTRUMENT_PROPERTY =
       eluateSample.massDetectionInstrument.getMetadata().getName();
-  public static final String PROTEIN_IDENTIFICATION_PANEL_ID = "proteinIdentificationPanel";
   public static final String PROTEIN_IDENTIFICATION_PROPERTY =
       eluateSample.proteinIdentification.getMetadata().getName();
   public static final String COMMENTS_PANEL_ID = "commentsPanel";
   public static final String COMMENTS_PROPERTY = eluateSample.comments.getMetadata().getName();
+  public static final String SUBMIT_ID = "submit";
+  private static final Object[] standardsColumns = new Object[] { STANDARD_NAME_PROPERTY,
+      STANDARD_QUANTITY_PROPERTY, STANDARD_COMMENTS_PROPERTY };
+  private static final Object[] contaminantsColumns = new Object[] { CONTAMINANT_NAME_PROPERTY,
+      CONTAMINANT_QUANTITY_PROPERTY, CONTAMINANT_COMMENTS_PROPERTY };
   private static final ProteolyticDigestion[] digestions =
       new ProteolyticDigestion[] { TRYPSIN, DIGESTED, ProteolyticDigestion.OTHER };
   private static final MassDetectionInstrument[] instruments = new MassDetectionInstrument[] {
@@ -87,38 +105,9 @@ public class EluateSubmissionViewPresenter {
   private EluateSubmissionView view;
   private BeanFieldGroup<EluateSample> firstSampleFieldGroup =
       new BeanFieldGroup<>(EluateSample.class);
-  private Label headerLabel;
-  private Label serviceLabel;
-  private Label informationLabel;
-  private Panel sampleCountPanel;
-  private TextField sampleCountField;
-  private Panel sampleNamesPanel;
-  private FormLayout sampleNamesForm;
-  private TextField sampleNameField;
-  private Button fillSampleNameButton;
-  private Panel experiencePanel;
-  private ComboBox projectField;
-  private TextField experienceField;
-  private TextField experienceGoalField;
-  private Panel sampleDetailsPanel;
-  private TextField taxonomyField;
-  private TextField proteinNameField;
-  private TextField proteinWeightField;
-  private TextField postTranslationModificationField;
-  private TextField sampleVolumeField;
-  private TextField sampleQuantityField;
-  private Panel standardsPanel;
-  private Panel contaminantsPanel;
-  private Panel digestionPanel;
-  private OptionGroup digestionOptions;
-  private Panel enrichmentPanel;
-  private Panel exclusionsPanel;
-  private Panel instrumentPanel;
-  private OptionGroup instrumentOptions;
-  private Panel proteinIdentificationPanel;
-  private OptionGroup proteinIdentificationOptions;
-  private Panel commentsPanel;
-  private TextArea commentsField;
+  private BeanItemContainer<Standard> standardsContainer = new BeanItemContainer<>(Standard.class);
+  private BeanItemContainer<Contaminant> contaminantsContainer =
+      new BeanItemContainer<>(Contaminant.class);
 
   /**
    * Called by view when view is initialized.
@@ -128,42 +117,6 @@ public class EluateSubmissionViewPresenter {
    */
   public void init(EluateSubmissionView view) {
     this.view = view;
-    setFields();
-  }
-
-  private void setFields() {
-    headerLabel = view.getHeaderLabel();
-    serviceLabel = view.getServiceLabel();
-    informationLabel = view.getInformationLabel();
-    sampleCountPanel = view.getSampleCountPanel();
-    sampleCountField = view.getSampleCountField();
-    sampleNamesPanel = view.getSampleNamesPanel();
-    sampleNamesForm = view.getSampleNamesForm();
-    sampleNameField = view.getSampleNameField();
-    fillSampleNameButton = view.getFillSampleNameButton();
-    experiencePanel = view.getExperiencePanel();
-    projectField = view.getProjectField();
-    experienceField = view.getExperienceField();
-    experienceGoalField = view.getExperienceGoalField();
-    sampleDetailsPanel = view.getSampleDetailsPanel();
-    taxonomyField = view.getTaxonomyField();
-    proteinNameField = view.getProteinNameField();
-    proteinWeightField = view.getProteinWeightField();
-    postTranslationModificationField = view.getPostTranslationModificationField();
-    sampleVolumeField = view.getSampleVolumeField();
-    sampleQuantityField = view.getSampleQuantityField();
-    standardsPanel = view.getStandardsPanel();
-    contaminantsPanel = view.getContaminantsPanel();
-    digestionPanel = view.getDigestionPanel();
-    digestionOptions = view.getDigestionOptions();
-    enrichmentPanel = view.getEnrichmentPanel();
-    exclusionsPanel = view.getExclusionsPanel();
-    instrumentPanel = view.getInstrumentPanel();
-    instrumentOptions = view.getInstrumentOptions();
-    proteinIdentificationPanel = view.getProteinIdentificationPanel();
-    proteinIdentificationOptions = view.getProteinIdentificationOptions();
-    commentsPanel = view.getCommentsPanel();
-    commentsField = view.getCommentsField();
   }
 
   /**
@@ -172,116 +125,209 @@ public class EluateSubmissionViewPresenter {
   public void attach() {
     logger.debug("Eluate submission view");
     setIds();
+    setConverters();
     bindFields();
     addFieldListeners();
     setCaptions();
+    setDefaults();
   }
 
   private void setIds() {
-    headerLabel.setId(HEADER_LABEL_ID);
-    serviceLabel.setId(SERVICE_LABEL_ID);
-    informationLabel.setId(INFORMATION_LABEL_ID);
-    sampleCountPanel.setId(SAMPLE_COUNT_PANEL_ID);
-    sampleCountField.setId(SAMPLE_COUNT_PROPERTY);
-    sampleNamesPanel.setId(SAMPLE_NAMES_PANEL_ID);
-    sampleNamesForm.setId(SAMPLE_NAMES_FORM_ID);
-    sampleNameField.setId(FIRST_SAMPLE_NAME_PROPERTY);
-    fillSampleNameButton.setId(FILL_SAMPLE_NAMES_PROPERTY);
-    experiencePanel.setId(EXPERIENCE_PANEL_ID);
-    projectField.setId(PROJECT_PROPERTY);
-    experienceField.setId(EXPERIENCE_PROPERTY);
-    experienceGoalField.setId(EXPERIENCE_GOAL_PROPERTY);
-    sampleDetailsPanel.setId(SAMPLE_DETAILS_PANEL_ID);
-    taxonomyField.setId(TAXONOMY_PROPERTY);
-    proteinNameField.setId(PROTEIN_NAME_PROPERTY);
-    proteinWeightField.setId(PROTEIN_WEIGHT_PROPERTY);
-    postTranslationModificationField.setId(POST_TRANSLATION_MODIFICATION_PROPERTY);
-    sampleVolumeField.setId(SAMPLE_VOLUME_PROPERTY);
-    sampleQuantityField.setId(SAMPLE_QUANTITY_PROPERTY);
-    standardsPanel.setId(STANDARDS_PANEL_ID);
-    contaminantsPanel.setId(CONTAMINANTS_PANEL_ID);
-    digestionPanel.setId(DIGESTION_PANEL_ID);
-    digestionOptions.setId(DIGESTION_PROPERTY);
-    enrichmentPanel.setId(ENRICHEMENT_PANEL_ID);
-    exclusionsPanel.setId(EXCLUSIONS_PANEL_ID);
-    instrumentPanel.setId(INSTRUMENT_PANEL_ID);
-    instrumentOptions.setId(INSTRUMENT_PROPERTY);
-    proteinIdentificationPanel.setId(PROTEIN_IDENTIFICATION_PANEL_ID);
-    proteinIdentificationOptions.setId(PROTEIN_IDENTIFICATION_PROPERTY);
-    commentsPanel.setId(COMMENTS_PANEL_ID);
-    commentsField.setId(COMMENTS_PROPERTY);
+    view.headerLabel.setId(HEADER_LABEL_ID);
+    view.serviceLabel.setId(SERVICE_LABEL_ID);
+    view.sampleTypeLabel.setId(SAMPLE_TYPE_LABEL_ID);
+    view.inactiveLabel.setId(INACTIVE_LABEL_ID);
+    view.sampleCountPanel.setId(SAMPLE_COUNT_PANEL_ID);
+    view.sampleCountField.setId(SAMPLE_COUNT_PROPERTY);
+    view.sampleNamesPanel.setId(SAMPLE_NAMES_PANEL_ID);
+    view.sampleNamesForm.setId(SAMPLE_NAMES_FORM_ID);
+    view.sampleNameField.setId(FIRST_SAMPLE_NAME_PROPERTY);
+    view.fillSampleNamesButton.setId(FILL_SAMPLE_NAMES_PROPERTY);
+    view.experiencePanel.setId(EXPERIENCE_PANEL_ID);
+    view.experienceField.setId(EXPERIENCE_PROPERTY);
+    view.experienceGoalField.setId(EXPERIENCE_GOAL_PROPERTY);
+    view.taxonomyField.setId(TAXONOMY_PROPERTY);
+    view.proteinNameField.setId(PROTEIN_NAME_PROPERTY);
+    view.proteinWeightField.setId(PROTEIN_WEIGHT_PROPERTY);
+    view.postTranslationModificationField.setId(POST_TRANSLATION_MODIFICATION_PROPERTY);
+    view.sampleVolumeField.setId(SAMPLE_VOLUME_PROPERTY);
+    view.sampleQuantityField.setId(SAMPLE_QUANTITY_PROPERTY);
+    view.standardsPanel.setId(STANDARDS_PANEL_ID);
+    view.standardCountField.setId(STANDARD_COUNT_PROPERTY);
+    view.standardsTable.setId(STANDARD_PROPERTY);
+    view.fillStandardsButton.setId(FILL_STANDARDS_PROPERTY);
+    view.contaminantsPanel.setId(CONTAMINANTS_PANEL_ID);
+    view.contaminantCountField.setId(CONTAMINANT_COUNT_PROPERTY);
+    view.contaminantsTable.setId(CONTAMINANT_PROPERTY);
+    view.fillContaminantsButton.setId(FILL_CONTAMINANTS_PROPERTY);
+    view.servicesPanel.setId(SERVICES_PANEL_ID);
+    view.digestionOptionsLayout.setId(DIGESTION_PROPERTY);
+    view.enrichmentLabel.setId(ENRICHEMENT_PROPERTY);
+    view.exclusionsLabel.setId(EXCLUSIONS_PROPERTY);
+    view.instrumentOptions.setId(INSTRUMENT_PROPERTY);
+    view.proteinIdentificationOptionsLayout.setId(PROTEIN_IDENTIFICATION_PROPERTY);
+    view.commentsPanel.setId(COMMENTS_PANEL_ID);
+    view.commentsField.setId(COMMENTS_PROPERTY);
+    view.submitButton.setId(SUBMIT_ID);
+  }
+
+  private void setConverters() {
+    view.sampleCountField.setConverter(new StringToIntegerConverter());
+    view.sampleVolumeField.setConverter(new StringToDoubleConverter());
+    view.standardCountField.setConverter(new StringToIntegerConverter());
+    view.contaminantCountField.setConverter(new StringToIntegerConverter());
   }
 
   private void bindFields() {
-    firstSampleFieldGroup.bind(sampleNameField, SAMPLE_NAMES_PROPERTY);
-    firstSampleFieldGroup.bind(projectField, PROJECT_PROPERTY);
-    firstSampleFieldGroup.bind(experienceField, EXPERIENCE_PROPERTY);
-    firstSampleFieldGroup.bind(experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
-    firstSampleFieldGroup.bind(taxonomyField, TAXONOMY_PROPERTY);
-    firstSampleFieldGroup.bind(proteinNameField, PROTEIN_NAME_PROPERTY);
-    firstSampleFieldGroup.bind(proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
-    firstSampleFieldGroup.bind(postTranslationModificationField,
+    firstSampleFieldGroup.bind(view.sampleNameField, SAMPLE_NAMES_PROPERTY);
+    firstSampleFieldGroup.bind(view.experienceField, EXPERIENCE_PROPERTY);
+    firstSampleFieldGroup.bind(view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
+    firstSampleFieldGroup.bind(view.taxonomyField, TAXONOMY_PROPERTY);
+    firstSampleFieldGroup.bind(view.proteinNameField, PROTEIN_NAME_PROPERTY);
+    firstSampleFieldGroup.bind(view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
+    firstSampleFieldGroup.bind(view.postTranslationModificationField,
         POST_TRANSLATION_MODIFICATION_PROPERTY);
-    firstSampleFieldGroup.bind(sampleVolumeField, SAMPLE_VOLUME_PROPERTY);
-    firstSampleFieldGroup.bind(sampleQuantityField, SAMPLE_QUANTITY_PROPERTY);
-    firstSampleFieldGroup.bind(digestionOptions, DIGESTION_PROPERTY);
-    firstSampleFieldGroup.bind(instrumentOptions, INSTRUMENT_PROPERTY);
-    firstSampleFieldGroup.bind(proteinIdentificationOptions, PROTEIN_IDENTIFICATION_PROPERTY);
-    firstSampleFieldGroup.bind(commentsField, COMMENTS_PROPERTY);
+    firstSampleFieldGroup.bind(view.sampleVolumeField, SAMPLE_VOLUME_PROPERTY);
+    firstSampleFieldGroup.bind(view.sampleQuantityField, SAMPLE_QUANTITY_PROPERTY);
+    firstSampleFieldGroup.bind(view.digestionFlexibleOptions, DIGESTION_PROPERTY);
+    firstSampleFieldGroup.bind(view.instrumentOptions, INSTRUMENT_PROPERTY);
+    firstSampleFieldGroup.bind(view.proteinIdentificationFlexibleOptions,
+        PROTEIN_IDENTIFICATION_PROPERTY);
+    firstSampleFieldGroup.bind(view.commentsField, COMMENTS_PROPERTY);
+    view.standardsTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
+    view.standardsTable.setContainerDataSource(standardsContainer);
+    view.standardsTable.setEditable(true);
+    view.contaminantsTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
+    view.contaminantsTable.setContainerDataSource(standardsContainer);
+    view.contaminantsTable.setEditable(true);
   }
 
   private void addFieldListeners() {
+    view.standardCountField.addValueChangeListener(e -> updateStandardsTable());
+    view.contaminantCountField.addValueChangeListener(e -> updateContaminantsTable());
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message("title"));
-    headerLabel.setValue(resources.message(HEADER_LABEL_ID));
-    serviceLabel.setValue(resources.message(SERVICE_LABEL_ID));
-    informationLabel.setValue(resources.message(INFORMATION_LABEL_ID));
-    sampleCountPanel.setCaption(resources.message(SAMPLE_COUNT_PANEL_ID));
-    sampleCountField.setCaption(resources.message(SAMPLE_COUNT_PROPERTY));
-    sampleNamesPanel.setCaption(resources.message(SAMPLE_NAMES_PANEL_ID));
-    sampleNameField.setCaption(resources.message(SAMPLE_NAMES_PROPERTY, 1));
-    fillSampleNameButton.setCaption(resources.message(FILL_SAMPLE_NAMES_PROPERTY));
-    experiencePanel.setCaption(resources.message(EXPERIENCE_PANEL_ID));
-    projectField.setCaption(resources.message(PROJECT_PROPERTY));
-    experienceField.setCaption(resources.message(EXPERIENCE_PROPERTY));
-    experienceGoalField.setCaption(resources.message(EXPERIENCE_GOAL_PROPERTY));
-    sampleDetailsPanel.setCaption(resources.message(SAMPLE_DETAILS_PANEL_ID));
-    taxonomyField.setCaption(resources.message(TAXONOMY_PROPERTY));
-    proteinNameField.setCaption(resources.message(PROTEIN_NAME_PROPERTY));
-    proteinWeightField.setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY));
-    postTranslationModificationField
+    view.headerLabel.setValue(resources.message(HEADER_LABEL_ID));
+    view.serviceLabel.setValue(resources.message(SERVICE_LABEL_ID));
+    view.sampleTypeLabel.setValue(resources.message(SAMPLE_TYPE_LABEL_ID));
+    view.inactiveLabel.setValue(resources.message(INACTIVE_LABEL_ID));
+    view.sampleCountPanel.setCaption(resources.message(SAMPLE_COUNT_PANEL_ID));
+    view.sampleCountField.setCaption(resources.message(SAMPLE_COUNT_PROPERTY));
+    view.sampleNamesPanel.setCaption(resources.message(SAMPLE_NAMES_PANEL_ID));
+    view.sampleNameField.setCaption(resources.message(SAMPLE_NAMES_PROPERTY, 1));
+    view.fillSampleNamesButton.setCaption(resources.message(FILL_SAMPLE_NAMES_PROPERTY));
+    view.experiencePanel.setCaption(resources.message(EXPERIENCE_PANEL_ID));
+    view.experienceField.setCaption(resources.message(EXPERIENCE_PROPERTY));
+    view.experienceGoalField.setCaption(resources.message(EXPERIENCE_GOAL_PROPERTY));
+    view.taxonomyField.setCaption(resources.message(TAXONOMY_PROPERTY));
+    view.proteinNameField.setCaption(resources.message(PROTEIN_NAME_PROPERTY));
+    view.proteinWeightField.setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY));
+    view.postTranslationModificationField
         .setCaption(resources.message(POST_TRANSLATION_MODIFICATION_PROPERTY));
-    sampleVolumeField.setCaption(resources.message(SAMPLE_VOLUME_PROPERTY));
-    sampleQuantityField.setCaption(resources.message(SAMPLE_QUANTITY_PROPERTY));
-    standardsPanel.setCaption(resources.message(STANDARDS_PANEL_ID));
-    contaminantsPanel.setCaption(resources.message(CONTAMINANTS_PANEL_ID));
-    digestionPanel.setCaption(resources.message(DIGESTION_PANEL_ID));
-    digestionOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
-    digestionOptions.removeAllItems();
+    view.sampleVolumeField.setCaption(resources.message(SAMPLE_VOLUME_PROPERTY));
+    view.sampleQuantityField.setCaption(resources.message(SAMPLE_QUANTITY_PROPERTY));
+    view.standardsPanel.setCaption(resources.message(STANDARDS_PANEL_ID));
+    view.standardCountField.setCaption(resources.message(STANDARD_COUNT_PROPERTY));
+    view.standardsTable.setVisibleColumns(standardsColumns);
+    for (Object column : standardsColumns) {
+      view.standardsTable.setColumnHeader(column,
+          resources.message(STANDARD_PROPERTY + "." + column));
+    }
+    view.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS_PROPERTY));
+    view.contaminantsPanel.setCaption(resources.message(CONTAMINANTS_PANEL_ID));
+    view.contaminantCountField.setCaption(resources.message(CONTAMINANT_COUNT_PROPERTY));
+    view.contaminantsTable.setVisibleColumns(contaminantsColumns);
+    for (Object column : contaminantsColumns) {
+      view.contaminantsTable.setColumnHeader(column,
+          resources.message(CONTAMINANT_PROPERTY + "." + column));
+    }
+    view.fillStandardsButton.setCaption(resources.message(FILL_CONTAMINANTS_PROPERTY));
+    view.servicesPanel.setCaption(resources.message(SERVICES_PANEL_ID));
+    view.digestionOptionsLayout.setCaption(resources.message(DIGESTION_PROPERTY));
     for (ProteolyticDigestion digestion : digestions) {
-      digestionOptions.addItem(digestion);
-      digestionOptions.setItemCaption(digestion, digestion.getLabel(view.getLocale()));
+      view.digestionFlexibleOptions.addItem(digestion);
+      view.digestionFlexibleOptions.setItemCaption(digestion, digestion.getLabel(view.getLocale()));
+      view.createDigestionOptionLayout(digestion);
+      TextField text = view.getDigestionOptionTextField(digestion);
+      if (digestion == DIGESTED || digestion == ProteolyticDigestion.OTHER) {
+        text.setCaption(resources.message(DIGESTION_PROPERTY + "." + digestion.name() + ".value"));
+      } else {
+        view.getDigestionOptionTextLayout(digestion).setVisible(false);
+      }
+      if (digestion == ProteolyticDigestion.OTHER) {
+        view.getDigestionOptionNoteLabel(digestion)
+            .setCaption(resources.message(DIGESTION_PROPERTY + "." + digestion.name() + ".note"));
+      }
     }
-    enrichmentPanel.setCaption(resources.message(ENRICHEMENT_PANEL_ID));
-    exclusionsPanel.setCaption(resources.message(EXCLUSIONS_PANEL_ID));
-    instrumentPanel.setCaption(resources.message(INSTRUMENT_PANEL_ID));
-    instrumentOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
-    instrumentOptions.removeAllItems();
+    view.enrichmentLabel.setCaption(resources.message(ENRICHEMENT_PROPERTY));
+    view.enrichmentLabel.setValue(resources.message(ENRICHEMENT_PROPERTY + ".value"));
+    view.exclusionsLabel.setCaption(resources.message(EXCLUSIONS_PROPERTY));
+    view.exclusionsLabel.setValue(resources.message(EXCLUSIONS_PROPERTY + ".value"));
+    view.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
+    view.instrumentOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
+    view.instrumentOptions.removeAllItems();
     for (MassDetectionInstrument instrument : instruments) {
-      instrumentOptions.addItem(instrument);
-      instrumentOptions.setItemCaption(instrument, instrument.getLabel(view.getLocale()));
+      view.instrumentOptions.addItem(instrument);
+      view.instrumentOptions.setItemCaption(instrument, instrument.getLabel(view.getLocale()));
     }
-    proteinIdentificationPanel.setCaption(resources.message(PROTEIN_IDENTIFICATION_PANEL_ID));
-    proteinIdentificationOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
-    proteinIdentificationOptions.removeAllItems();
+    view.proteinIdentificationOptionsLayout
+        .setCaption(resources.message(PROTEIN_IDENTIFICATION_PROPERTY));
     for (ProteinIdentification proteinIdentification : proteinIdentifications) {
-      proteinIdentificationOptions.addItem(proteinIdentification);
-      proteinIdentificationOptions.setItemCaption(proteinIdentification,
+      view.proteinIdentificationFlexibleOptions.addItem(proteinIdentification);
+      view.proteinIdentificationFlexibleOptions.setItemCaption(proteinIdentification,
           proteinIdentification.getLabel(view.getLocale()));
+      view.createProteinIdentificationOptionLayout(proteinIdentification);
+      TextField text = view.getProteinIdentificationOptionTextField(proteinIdentification);
+      if (proteinIdentification != ProteinIdentification.OTHER) {
+        view.getProteinIdentificationOptionTextLayout(proteinIdentification).setVisible(false);
+      } else {
+        text.setCaption(resources.message(
+            PROTEIN_IDENTIFICATION_PROPERTY + "." + proteinIdentification.name() + ".value"));
+      }
     }
-    commentsPanel.setCaption(resources.message(COMMENTS_PANEL_ID));
+    view.commentsPanel.setCaption(resources.message(COMMENTS_PANEL_ID));
+    view.submitButton.setCaption(resources.message(SUBMIT_ID));
+  }
+
+  private void setDefaults() {
+    view.sampleCountField.setConvertedValue(1);
+    view.standardCountField.setConvertedValue(0);
+    view.standardsTableLayout.setVisible(false);
+    view.contaminantCountField.setConvertedValue(0);
+    view.contaminantsTableLayout.setVisible(false);
+    view.digestionFlexibleOptions.setConvertedValue(TRYPSIN);
+    view.instrumentOptions.setConvertedValue(VELOS);
+    view.proteinIdentificationFlexibleOptions.setConvertedValue(REFSEQ);
+  }
+
+  private void updateStandardsTable() {
+    Integer count = (Integer) view.standardCountField.getConvertedValue();
+    if (count == null) {
+      count = 0;
+    }
+    while (standardsContainer.size() > count) {
+      standardsContainer.removeItem(standardsContainer.lastItemId());
+    }
+    while (standardsContainer.size() < count) {
+      standardsContainer.addBean(new Standard());
+    }
+    view.standardsTableLayout.setVisible(count > 0);
+  }
+
+  private void updateContaminantsTable() {
+    Integer count = (Integer) view.contaminantCountField.getConvertedValue();
+    if (count == null) {
+      count = 0;
+    }
+    while (contaminantsContainer.size() > count) {
+      contaminantsContainer.removeItem(contaminantsContainer.lastItemId());
+    }
+    while (contaminantsContainer.size() < count) {
+      contaminantsContainer.addBean(new Contaminant());
+    }
+    view.contaminantsTableLayout.setVisible(count > 0);
   }
 }

@@ -3,6 +3,7 @@
  <head>
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+  <meta charset="UTF-8" name="package-mapping" content="org_vaadin_hene_flexibleoptiongroup:org.vaadin.hene.flexibleoptiongroup">
  </head> 
  <body> 
   <vaadin-vertical-layout> 
@@ -14,7 +15,10 @@
     <vaadin-label style-name="h2" size-auto plain-text _id="serviceLabel">
       LC/MS/MS proteomic analysis 
     </vaadin-label> 
-    <vaadin-label size-auto plain-text _id="informationLabel">
+    <vaadin-label size-auto plain-text _id="sampleTypeLabel">
+      Before filling this form, make sure all samples are of the same type. 
+    </vaadin-label> 
+    <vaadin-label size-auto plain-text _id="inactiveLabel">
       If browser is inactive for more than 30 minutes, submission data may be lost. 
     </vaadin-label> 
     <vaadin-panel caption="Number of samples" size-auto _id="sampleCountPanel"> 
@@ -30,7 +34,7 @@
        <vaadin-text-field caption="1." required null-representation="" immediate _id="sampleNameField"></vaadin-text-field> 
       </vaadin-form-layout> 
       <vaadin-vertical-layout spacing size-auto> 
-       <vaadin-button plain-text _id="fillSampleNameButton">
+       <vaadin-button plain-text _id="fillSampleNamesButton">
          Fill down 
        </vaadin-button> 
       </vaadin-vertical-layout> 
@@ -39,58 +43,60 @@
     <vaadin-panel caption="Experience" size-auto _id="experiencePanel"> 
      <vaadin-vertical-layout spacing size-auto margin> 
       <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-       <vaadin-combo-box caption="Project" required item-caption-mode="id" _id="projectField"> 
-        <option>Option 1</option> 
-        <option>Option 2</option> 
-        <option>Option 3</option> 
-       </vaadin-combo-box> 
        <vaadin-text-field caption="Experience" required null-representation="" immediate _id="experienceField"></vaadin-text-field> 
        <vaadin-text-field caption="Experience goal" null-representation="" _id="experienceGoalField"></vaadin-text-field> 
-      </vaadin-form-layout> 
-     </vaadin-vertical-layout> 
-    </vaadin-panel> 
-    <vaadin-panel caption="Sample details" size-auto _id="sampleDetailsPanel"> 
-     <vaadin-vertical-layout spacing size-auto margin> 
-      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
        <vaadin-text-field caption="Taxonomy (specie)" required null-representation="" immediate _id="taxonomyField"></vaadin-text-field> 
        <vaadin-text-field caption="Protein name" null-representation="" _id="proteinNameField"></vaadin-text-field> 
        <vaadin-text-field caption="Protein weight" null-representation="" _id="proteinWeightField"></vaadin-text-field> 
        <vaadin-text-field caption="Post translational modification" null-representation="" _id="postTranslationModificationField"></vaadin-text-field> 
-       <vaadin-text-field caption="Volume" null-representation="" _id="sampleVolumeField"></vaadin-text-field> 
        <vaadin-text-field caption="Protein quantity" required null-representation="" immediate _id="sampleQuantityField"></vaadin-text-field> 
+       <vaadin-text-field caption="Volume" null-representation="" _id="sampleVolumeField"></vaadin-text-field> 
       </vaadin-form-layout> 
      </vaadin-vertical-layout> 
     </vaadin-panel> 
-    <vaadin-panel caption="Standard" size-auto _id="standardsPanel"></vaadin-panel> 
-    <vaadin-panel caption="Contaminant" size-auto _id="contaminantsPanel"></vaadin-panel> 
-    <vaadin-panel caption="Digestion" size-auto _id="digestionPanel"> 
+    <vaadin-panel caption="Standards" size-auto _id="standardsPanel"> 
      <vaadin-vertical-layout spacing size-auto margin> 
-      <vaadin-option-group item-caption-mode="id" _id="digestionOptions"> 
-       <option>Trypsine</option> 
-       <option>Already digested</option> 
-       <option>Other</option> 
-      </vaadin-option-group> 
+      <vaadin-form-layout spacing="false" size-auto margin-top="false" margin-bottom="false"> 
+       <vaadin-text-field caption="Number of standards" null-representation="" _id="standardCountField"></vaadin-text-field> 
+      </vaadin-form-layout> 
+      <vaadin-horizontal-layout spacing _id="standardsTableLayout"> 
+       <vaadin-table height="220px" _id="standardsTable"></vaadin-table> 
+       <vaadin-button plain-text _id="fillStandardsButton">
+         Fill down 
+       </vaadin-button> 
+      </vaadin-horizontal-layout> 
      </vaadin-vertical-layout> 
     </vaadin-panel> 
-    <vaadin-panel caption="Enrichment" size-auto _id="enrichmentPanel"></vaadin-panel> 
-    <vaadin-panel caption="Exclusions and inclusions" size-auto _id="exclusionsPanel"></vaadin-panel> 
-    <vaadin-panel caption="Instrument" size-auto _id="instrumentPanel"> 
+    <vaadin-panel caption="Contaminants" size-auto _id="contaminantsPanel"> 
      <vaadin-vertical-layout spacing size-auto margin> 
-      <vaadin-option-group item-caption-mode="id" _id="instrumentOptions"> 
-       <option>LTQ-Orbitrap-Velos</option> 
-       <option>Q-Exactive</option> 
-       <option>LTQ-Orbitrap-Fusion</option> 
-      </vaadin-option-group> 
+      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
+       <vaadin-text-field caption="Number of contaminants" null-representation="" _id="contaminantCountField"></vaadin-text-field> 
+      </vaadin-form-layout> 
+      <vaadin-horizontal-layout spacing _id="contaminantsTableLayout"> 
+       <vaadin-table height="220px" _id="contaminantsTable"></vaadin-table> 
+       <vaadin-button plain-text _id="fillContaminantsButton">
+         Fill down 
+       </vaadin-button> 
+      </vaadin-horizontal-layout> 
      </vaadin-vertical-layout> 
     </vaadin-panel> 
-    <vaadin-panel caption="Database for protein identification" size-auto _id="proteinIdentificationPanel"> 
+    <vaadin-panel caption="Services" size-auto _id="servicesPanel"> 
      <vaadin-vertical-layout spacing size-auto margin> 
-      <vaadin-option-group item-caption-mode="id" _id="proteinIdentificationOptions"> 
-       <option>NCBI (RefSeq)</option> 
-       <option>UniProt</option> 
-       <option>MSDB</option> 
-       <option>Other</option> 
-      </vaadin-option-group> 
+      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
+       <vaadin-vertical-layout caption="Digestion" spacing size-auto _id="digestionOptionsLayout"></vaadin-vertical-layout> 
+       <vaadin-label caption="Enrichment" size-auto plain-text _id="enrichmentLabel">
+         Coming soon 
+       </vaadin-label> 
+       <vaadin-label caption="Exclusions and inclusions" size-auto plain-text _id="exclusionsLabel">
+         Coming soon 
+       </vaadin-label> 
+       <vaadin-option-group caption="Instrument" item-caption-mode="id" _id="instrumentOptions"> 
+        <option>LTQ-Orbitrap-Velos</option> 
+        <option>Q-Exactive</option> 
+        <option>LTQ-Orbitrap-Fusion</option> 
+       </vaadin-option-group> 
+       <vaadin-vertical-layout caption="Protein identification database" spacing size-auto _id="proteinIdentificationOptionsLayout"></vaadin-vertical-layout> 
+      </vaadin-form-layout> 
      </vaadin-vertical-layout> 
     </vaadin-panel> 
     <vaadin-panel caption="Comments" size-auto _id="commentsPanel"> 
@@ -98,6 +104,11 @@
       <vaadin-text-area columns="50" rows="10" null-representation="" _id="commentsField"></vaadin-text-area> 
      </vaadin-vertical-layout> 
     </vaadin-panel> 
+    <vaadin-horizontal-layout> 
+     <vaadin-button plain-text _id="submitButton">
+       Submit 
+     </vaadin-button> 
+    </vaadin-horizontal-layout> 
    </vaadin-vertical-layout> 
   </vaadin-vertical-layout>  
  </body>

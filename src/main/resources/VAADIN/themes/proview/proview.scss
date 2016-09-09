@@ -63,8 +63,15 @@
   }
   
   .v-label-h1 {
-    font-size: 2em;
-    line-height: normal;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  .v-label-h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  .v-label-formcaption {
+    font-weight: normal;
   }
 
   .v-formlayout-with-header > table > tbody [class*="firstrow"] > td {
