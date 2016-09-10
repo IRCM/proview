@@ -38,7 +38,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.test.context.TestContext;
 
@@ -56,8 +55,6 @@ public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener 
   private static final String ANONYMOUS_VIEW = MainView.VIEW_NAME;
   private static final Logger logger = LoggerFactory.getLogger(ShiroTestExecutionListener.class);
   private ThreadState threadState;
-  @Value("${base.url:http://localhost:8080}")
-  private String baseUrl;
   @Inject
   private SecurityConfiguration securityConfiguration;
 

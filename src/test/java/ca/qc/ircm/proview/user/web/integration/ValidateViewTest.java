@@ -96,14 +96,14 @@ public class ValidateViewTest extends ValidatePageObject {
     List<String> emails = getUserEmails();
 
     assertEquals(2, emails.size());
-    assertTrue(emails.contains("robert.stlouis@ircm.qc.ca"));
-    assertTrue(emails.contains("nicole.francis@ircm.qc.ca"));
+    assertTrue(emails.contains("francois.robert@ircm.qc.ca"));
+    assertTrue(emails.contains("michel.tremblay@ircm.qc.ca"));
   }
 
   @Test
   public void validate() throws Throwable {
     open();
-    String email = "robert.stlouis@ircm.qc.ca";
+    String email = "francois.robert@ircm.qc.ca";
 
     clickValidateUser(email);
 
@@ -133,7 +133,7 @@ public class ValidateViewTest extends ValidatePageObject {
   @Test
   public void validateSelected_One() throws Throwable {
     open();
-    String email = "robert.stlouis@ircm.qc.ca";
+    String email = "francois.robert@ircm.qc.ca";
     selectUsers(email);
 
     clickValidateSelected();
@@ -146,6 +146,7 @@ public class ValidateViewTest extends ValidatePageObject {
     assertEquals(true, user.isActive());
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
+    waitForNotificationCaption(notification);
     assertNotNull(notification.getCaption());
     assertTrue(notification.getCaption().contains(email));
   }
@@ -153,8 +154,7 @@ public class ValidateViewTest extends ValidatePageObject {
   @Test
   public void validateSelected_Many() throws Throwable {
     open();
-    String[] emails =
-        new String[] { "robert.stlouis@ircm.qc.ca", "nicole.francis@ircm.qc.ca" };
+    String[] emails = new String[] { "francois.robert@ircm.qc.ca", "michel.tremblay@ircm.qc.ca" };
     selectUsers(emails);
 
     clickValidateSelected();
@@ -169,6 +169,7 @@ public class ValidateViewTest extends ValidatePageObject {
     }
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
+    waitForNotificationCaption(notification);
     assertNotNull(notification.getCaption());
     for (String email : emails) {
       assertTrue(notification.getCaption().contains(email));

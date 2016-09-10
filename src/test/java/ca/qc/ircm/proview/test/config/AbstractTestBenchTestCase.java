@@ -18,14 +18,19 @@
 package ca.qc.ircm.proview.test.config;
 
 import com.vaadin.testbench.TestBenchTestCase;
+import com.vaadin.testbench.elements.NotificationElement;
 import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Value;
+
+import java.util.function.Supplier;
 
 /**
  * Additional functions for TestBenchTestCase.
  */
 public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
-  @Value("${base.url}")
+  private static final long MAX_WAIT = 500;
+  private static final long SINGLE_WAIT = 100;
+  @Value("http://localhost:${local.server.port}")
   protected String baseUrl;
 
   protected String viewUrl(String view) {
@@ -50,5 +55,22 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
 
   public void waitForPageLoad() {
     findElement(By.className("v-loading-indicator"));
+  }
+
+  public void waitForNotificationCaption(NotificationElement notification) {
+    waitFor(() -> !notification.getCaption().isEmpty());
+  }
+
+  private void waitFor(Supplier<Boolean> condition) {
+    long totalWait = 0;
+    try {
+      while (!condition.get() && totalWait < MAX_WAIT) {
+        Thread.sleep(SINGLE_WAIT);
+        totalWait += SINGLE_WAIT;
+      }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+
   }
 }
