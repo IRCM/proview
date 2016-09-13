@@ -3,11 +3,21 @@ package ca.qc.ircm.proview.submission;
 import ca.qc.ircm.proview.user.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service for submission.
  */
 public interface SubmissionService {
+  /**
+   * Report containing submitted samples.
+   */
+  public static interface Report {
+    List<Submission> getSubmissions();
+
+    Map<Submission, Boolean> getLinkedToResults();
+  }
+
   /**
    * Selects submission from database.
    *
@@ -16,6 +26,24 @@ public interface SubmissionService {
    * @return submission
    */
   public Submission get(Long id);
+
+  /**
+   * Selects submission from database.
+   *
+   * @param id
+   *          database identifier of submission
+   * @return submission
+   */
+  public Report report(SubmissionFilter filter);
+
+  /**
+   * Selects submission from database for admin users.
+   *
+   * @param id
+   *          database identifier of submission
+   * @return submission
+   */
+  public Report adminReport(SubmissionFilter filter);
 
   /**
    * Returns all gel images that are linked to submission.

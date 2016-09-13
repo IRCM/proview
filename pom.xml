@@ -66,6 +66,7 @@
     <vaadin.theme>${project.artifactId}</vaadin.theme> 
     <loginform.version>0.6.2</loginform.version>
     <flexibleoptiongroup.version>2.3.0</flexibleoptiongroup.version>
+    <componentrenderer.version>1.0.2</componentrenderer.version>
     <commons-lang3.version>3.4</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
     <el.version>2.2.5</el.version>
@@ -323,6 +324,11 @@
       <groupId>org.vaadin.addons</groupId>
       <artifactId>flexibleoptiongroup</artifactId>
       <version>${flexibleoptiongroup.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>de.datenhahn.vaadin</groupId>
+      <artifactId>componentrenderer</artifactId>
+      <version>${componentrenderer.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

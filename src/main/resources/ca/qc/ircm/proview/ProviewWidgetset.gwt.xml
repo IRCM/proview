@@ -27,4 +27,10 @@
     <inherits name="com.vaadin.DefaultWidgetSet" />
 
     <inherits name="org.vaadin.hene.flexibleoptiongroup.widgetset.FlexibleOptionGroupWidgetset" />
+
+    <inherits name="org.vaadin.hene.popupbutton.widgetset.PopupbuttonWidgetset" />
+
+    <inherits name="org.tepi.filtertable.gwt.FilterTableWidgetset" />
+
+    <inherits name="de.datenhahn.vaadin.componentrenderer.ComponentRendererWidgetSet" />
 </module>

@@ -74,6 +74,31 @@
     font-weight: normal;
   }
 
+  .v-button-condition-false {
+    cursor:default;
+  }
+  .v-button-condition-false:focus:after {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+
+  .v-grid-hide-selection {
+    td:first-child,th:first-child {
+      padding: 0px;
+      border: 0px;
+      > span {
+        display: none;
+      }
+    }
+  }
+  .v-grid-components tbody .v-grid-cell {
+    height: 60px;
+    line-height: 60px;
+  }
+  .v-grid-components tbody .v-button {
+    height: 40px;
+  }
+
   .v-formlayout-with-header > table > tbody [class*="firstrow"] > td {
     border-top: 1px solid #dfdfdf;
     padding-top: $v-layout-spacing-vertical;
@@ -92,13 +117,5 @@
   .datefilter .v-popup-indicator {
     margin-left: 0.3em;
     margin-right: 0.3em;
-  }
-  
-  .v-button-condition-false {
-    cursor:default;
-  }
-  .v-button-condition-false:focus:after {
-    -webkit-box-shadow: none;
-    box-shadow: none;
   }
 }

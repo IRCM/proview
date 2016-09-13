@@ -78,24 +78,6 @@ public abstract class ProteicSample extends SubmissionSample {
   private static final long serialVersionUID = -4255179147934758033L;
 
   /**
-   * User's project.
-   */
-  @Column(name = "project")
-  @Size(max = 100)
-  private String project;
-  /**
-   * User's experience.
-   */
-  @Column(name = "experience")
-  @Size(max = 100)
-  private String experience;
-  /**
-   * Experience's goal.
-   */
-  @Column(name = "goal")
-  @Size(max = 150)
-  private String goal;
-  /**
    * Taxonomy of Sample content.
    */
   @Column(name = "taxonomy")
@@ -232,30 +214,6 @@ public abstract class ProteicSample extends SubmissionSample {
 
   public void setMolecularWeight(Double molecularWeight) {
     this.molecularWeight = molecularWeight;
-  }
-
-  public String getProject() {
-    return project;
-  }
-
-  public void setProject(String project) {
-    this.project = project;
-  }
-
-  public String getExperience() {
-    return experience;
-  }
-
-  public void setExperience(String experience) {
-    this.experience = experience;
-  }
-
-  public String getGoal() {
-    return goal;
-  }
-
-  public void setGoal(String goal) {
-    this.goal = goal;
   }
 
   public Integer getSampleNumberProtein() {

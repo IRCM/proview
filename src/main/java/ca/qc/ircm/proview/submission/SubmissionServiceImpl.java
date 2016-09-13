@@ -1,7 +1,13 @@
 package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.laboratory.QLaboratory.laboratory;
+import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
+import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMascotFile;
+import static ca.qc.ircm.proview.sample.QMoleculeSample.moleculeSample;
+import static ca.qc.ircm.proview.sample.QProteicSample.proteicSample;
 import static ca.qc.ircm.proview.sample.QSample.sample;
+import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QUser.user;
 
 import ca.qc.ircm.proview.history.Activity;
@@ -10,12 +16,17 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.mail.HtmlEmailDefault;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
+import ca.qc.ircm.proview.sample.EluateSample;
+import ca.qc.ircm.proview.sample.GelSample;
+import ca.qc.ircm.proview.sample.MoleculeSample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSample.Status;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.user.User;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -29,7 +40,9 @@ import org.thymeleaf.context.Context;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,6 +60,26 @@ import javax.persistence.PersistenceContext;
 @org.springframework.stereotype.Service
 @Transactional
 public class SubmissionServiceImpl implements SubmissionService {
+  private static class ReportDefault implements Report {
+    private List<Submission> submissions;
+    private Map<Submission, Boolean> linkedToResults;
+
+    private ReportDefault(List<Submission> submissions, Map<Submission, Boolean> linkedToResults) {
+      this.submissions = submissions;
+      this.linkedToResults = linkedToResults;
+    }
+
+    @Override
+    public List<Submission> getSubmissions() {
+      return submissions;
+    }
+
+    @Override
+    public Map<Submission, Boolean> getLinkedToResults() {
+      return linkedToResults;
+    }
+  }
+
   private static final String LIMS_RANDOM_CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
   private final Logger logger = LoggerFactory.getLogger(SubmissionServiceImpl.class);
   @PersistenceContext
@@ -95,6 +128,145 @@ public class SubmissionServiceImpl implements SubmissionService {
     Submission submission = entityManager.find(Submission.class, id);
     authorizationService.checkSubmissionReadPermission(submission);
     return submission;
+  }
+
+  @Override
+  public Report report(SubmissionFilter filter) {
+    authorizationService.checkUserRole();
+    return report(filter, false);
+  }
+
+  private Report report(SubmissionFilter filter, boolean admin) {
+    if (filter == null) {
+      filter = new SubmissionFilterBuilder().build();
+    }
+
+    final List<Submission> submissions = fetchReportSubmissions(filter, admin);
+
+    List<Tuple> tuples;
+    if (!submissions.isEmpty()) {
+      JPAQuery<Tuple> query = queryFactory.select(submission.id, acquisitionMascotFile.count());
+      query.from(submission);
+      query.join(submission.samples, submissionSample);
+      query.join(acquisition);
+      query.join(acquisitionMascotFile);
+      query.where(submission.in(submissions));
+      query.where(acquisition.sample.eq(submissionSample._super));
+      query.where(acquisitionMascotFile.acquisition.eq(acquisition));
+      if (!admin) {
+        query.where(acquisitionMascotFile.visible.eq(true));
+      }
+      query.groupBy(submission.id);
+      tuples = query.fetch();
+    } else {
+      tuples = Collections.emptyList();
+    }
+    final Map<Submission, Boolean> linkedToResults = new HashMap<>();
+    final Map<Long, Submission> submissionsById = new HashMap<>();
+    for (Submission submission : submissions) {
+      submissionsById.put(submission.getId(), submission);
+      linkedToResults.put(submission, false);
+    }
+    for (Tuple tuple : tuples) {
+      Submission actualSubmission = submissionsById.get(tuple.get(submission.id));
+      linkedToResults.put(actualSubmission, tuple.get(acquisitionMascotFile.count()) > 0);
+    }
+    return new ReportDefault(submissions, linkedToResults);
+  }
+
+  private List<Submission> fetchReportSubmissions(SubmissionFilter filter, boolean admin) {
+    final User _user;
+    final Laboratory _laboratory;
+    boolean manager;
+    if (admin) {
+      _user = null;
+      _laboratory = null;
+      manager = false;
+    } else {
+      _user = authorizationService.getCurrentUser();
+      _laboratory = _user.getLaboratory();
+      manager = authorizationService.hasLaboratoryManagerPermission(_laboratory);
+    }
+
+    JPAQuery<Submission> query = queryFactory.select(submission);
+    query.from(submission);
+    query.join(submission.samples, submissionSample).fetch();
+    query.join(submission.laboratory, laboratory);
+    query.join(submission.user, user);
+    if (filter.getExperienceContains() != null) {
+      query.where(submissionSample.instanceOfAny(GelSample.class, EluateSample.class));
+      query.from(proteicSample);
+      query.where(proteicSample.eq(submissionSample));
+      query.where(proteicSample.experience.contains(filter.getExperienceContains()));
+    }
+    if (filter.getLaboratoryContains() != null) {
+      query.where(laboratory.organization.eq(filter.getLaboratoryContains()));
+    }
+    if (filter.getLaboratory() != null) {
+      query.where(laboratory.eq(filter.getLaboratory()));
+    }
+    if (filter.getLimsContains() != null) {
+      query.where(submissionSample.lims.contains(filter.getLimsContains()));
+    }
+    if (filter.getMinimalSubmissionDate() != null) {
+      query.where(submission.submissionDate.goe(filter.getMinimalSubmissionDate()));
+    }
+    if (filter.getMaximalSubmissionDate() != null) {
+      query.where(submission.submissionDate.loe(filter.getMaximalSubmissionDate()));
+    }
+    if (filter.getNameContains() != null) {
+      query.where(submissionSample.name.contains(filter.getNameContains()));
+    }
+    if (filter.getProjectContains() != null) {
+      query.where(submissionSample.instanceOfAny(GelSample.class, EluateSample.class));
+      query.from(proteicSample);
+      query.where(proteicSample.eq(submissionSample));
+      query.where(proteicSample.project.contains(filter.getProjectContains()));
+    }
+    if (filter.getStatuses() != null) {
+      query.where(submissionSample.status.in(filter.getStatuses()));
+    }
+    if (filter.getSupport() != null) {
+      if (filter.getSupport() == SubmissionSampleService.Support.SOLUTION) {
+        query.where(submissionSample.instanceOf(EluateSample.class));
+        query.where(submissionSample.service.ne(Service.INTACT_PROTEIN));
+      } else if (filter.getSupport() == SubmissionSampleService.Support.GEL) {
+        query.where(submissionSample.instanceOf(GelSample.class));
+        query.where(submissionSample.service.ne(Service.INTACT_PROTEIN));
+      } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_HIGH) {
+        query.where(submissionSample.instanceOf(MoleculeSample.class));
+        query.from(moleculeSample);
+        query.where(moleculeSample.eq(submissionSample));
+        query.where(moleculeSample.highResolution.eq(true));
+      } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_LOW) {
+        query.where(submissionSample.instanceOf(MoleculeSample.class));
+        query.from(moleculeSample);
+        query.where(moleculeSample.eq(submissionSample));
+        query.where(moleculeSample.highResolution.eq(false));
+      } else if (filter.getSupport() == SubmissionSampleService.Support.INTACT_PROTEIN) {
+        query.where(submissionSample.service.eq(Service.INTACT_PROTEIN));
+      }
+    }
+    if (filter.getUserContains() != null) {
+      query.where(user.name.contains(filter.getUserContains()));
+    }
+    if (filter.getUser() != null) {
+      query.where(user.eq(filter.getUser()));
+    }
+    if (!admin) {
+      if (manager) {
+        query.where(laboratory.eq(_laboratory));
+      } else {
+        query.where(user.eq(_user));
+      }
+    }
+    return query.fetch();
+  }
+
+  @Override
+  public Report adminReport(SubmissionFilter filter) {
+    authorizationService.checkAdminRole();
+    return report(filter, true);
   }
 
   @Override

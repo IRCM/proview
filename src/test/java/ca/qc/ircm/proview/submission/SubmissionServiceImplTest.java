@@ -15,9 +15,11 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.mail.HtmlEmail;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -40,6 +42,7 @@ import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -65,10 +68,12 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -124,19 +129,23 @@ public class SubmissionServiceImplTest {
     optionalActivity = Optional.of(activity);
   }
 
-  private <S extends Sample> S findByName(Collection<S> samples, String name) {
-    for (S sample : samples) {
-      if (sample.getName().equals(name)) {
-        return sample;
-      }
-    }
-    return null;
+  private Optional<Submission> find(Collection<Submission> submissions, long id) {
+    return submissions.stream().filter(s -> s.getId() == id).findFirst();
   }
 
   private SampleSolvent find(Collection<SampleSolvent> solvents, Solvent solvent) {
     for (SampleSolvent ssolvent : solvents) {
       if (ssolvent.getSolvent() == solvent) {
         return ssolvent;
+      }
+    }
+    return null;
+  }
+
+  private <S extends Sample> S findByName(Collection<S> samples, String name) {
+    for (S sample : samples) {
+      if (sample.getName().equals(name)) {
+        return sample;
       }
     }
     return null;
@@ -203,6 +212,995 @@ public class SubmissionServiceImplTest {
     Submission submission = submissionServiceImpl.get(null);
 
     assertNull(submission);
+  }
+
+  @Test
+  public void report() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.nameContains("CAP");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    Submission submission = find(submissions, 32).get();
+    assertEquals((Long) 32L, submission.getId());
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals((Long) 442L, sample.getId());
+    assertEquals("IRC20111013_2", sample.getLims());
+    assertEquals("CAP_20111013_01", sample.getName());
+    assertEquals("cap_project", ((ProteicSample) sample).getProject());
+    assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
+    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(
+        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+        sample.getSubmission().getSubmissionDate());
+    submission = find(submissions, 33).get();
+    assertEquals((Long) 33L, submission.getId());
+    sample = submission.getSamples().get(0);
+    assertEquals((Long) 443L, sample.getId());
+    assertEquals("IRC20111013_3", sample.getLims());
+    assertEquals("CAP_20111013_05", sample.getName());
+    assertEquals(SubmissionSample.Status.TO_APPROVE, sample.getStatus());
+    assertEquals(
+        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+        sample.getSubmission().getSubmissionDate());
+    Map<Submission, Boolean> linkedToResults = report.getLinkedToResults();
+    assertEquals(true, linkedToResults.get(find(submissions, 32).get()));
+    assertEquals(false, linkedToResults.get(find(submissions, 33).get()));
+  }
+
+  @Test
+  public void report_All() throws Throwable {
+    final SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_ExperienceContains() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.experienceContains("cap_experience");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_LaboratoryContains_1() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.laboratoryContains("ircm");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_LaboratoryContains_2() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.laboratoryContains("ircm2");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_Laboratory_1() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.laboratory(new Laboratory(1L));
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_Laboratory_2() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.laboratory(new Laboratory(2L));
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_LimsContains() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.limsContains("RC20111013");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_MaximalSubmissionDate() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.maximalSubmissionDate(
+        LocalDateTime.of(2011, 10, 15, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_MinimalSubmissionDate() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.minimalSubmissionDate(
+        LocalDateTime.of(2011, 10, 15, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_NameContains() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.nameContains("AP_20111013");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_ProjectContains() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.projectContains("cap_project");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_Status() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.statuses(Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS));
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_Status_Multiple() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.statuses(
+        Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS, SubmissionSample.Status.TO_APPROVE));
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_Support_Gel() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.support(SubmissionSampleService.Support.GEL);
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_Support_Solution() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.support(SubmissionSampleService.Support.SOLUTION);
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_Support_Molecule_Low() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.support(SubmissionSampleService.Support.MOLECULE_LOW);
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_Support_Molecule_High() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.support(SubmissionSampleService.Support.MOLECULE_HIGH);
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_User() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    filter.user(user);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_UserContains_LastName_1() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.userContains("coulombe");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_UserContains_LastName_2() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.userContains("anderson");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_UserContains_FirstName() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.userContains("benoit");
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(filter.build());
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void report_NullFilter() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
+        .thenReturn(true);
+
+    SubmissionService.Report report = submissionServiceImpl.report(null);
+
+    verify(authorizationService).checkUserRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.nameContains("CAP");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    Submission submission = find(submissions, 32).get();
+    assertEquals((Long) 32L, submission.getId());
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals((Long) 442L, sample.getId());
+    assertEquals((Long) 2L, sample.getLaboratory().getId());
+    assertEquals("IRCM", sample.getLaboratory().getOrganization());
+    assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
+    assertEquals("IRC20111013_2", sample.getLims());
+    assertEquals("CAP_20111013_01", sample.getName());
+    assertEquals("cap_project", ((ProteicSample) sample).getProject());
+    assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
+    assertEquals(Service.LC_MS_MS, sample.getService());
+    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(
+        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+        sample.getSubmission().getSubmissionDate());
+    submission = find(submissions, 33).get();
+    assertEquals((Long) 33L, submission.getId());
+    sample = submission.getSamples().get(0);
+    assertEquals((Long) 443L, sample.getId());
+    assertEquals((Long) 2L, sample.getLaboratory().getId());
+    assertEquals("IRCM", sample.getLaboratory().getOrganization());
+    assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
+    assertEquals("IRC20111013_3", sample.getLims());
+    assertEquals("CAP_20111013_05", sample.getName());
+    assertEquals((Double) 654.654, ((MoleculeSample) sample).getMonoisotopicMass());
+    assertEquals(1, ((MoleculeSample) sample).getSolventList().size());
+    assertNotNull(find(((MoleculeSample) sample).getSolventList(), Solvent.METHANOL));
+    assertEquals("MeOH/TFA 0.1%", ((MoleculeSample) sample).getSolutionSolvent());
+    assertEquals(StorageTemperature.MEDIUM, ((MoleculeSample) sample).getStorageTemperature());
+    assertEquals(MsAnalysis.Source.ESI, ((MoleculeSample) sample).getSource());
+    assertEquals(Service.SMALL_MOLECULE, sample.getService());
+    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SubmissionSample.Status.TO_APPROVE, sample.getStatus());
+    assertEquals(
+        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+        sample.getSubmission().getSubmissionDate());
+    submission = find(submissions, 34).get();
+    assertEquals((Long) 34L, submission.getId());
+    sample = submission.getSamples().get(0);
+    assertEquals((Long) 445L, sample.getId());
+    assertEquals((Long) 1L, sample.getLaboratory().getId());
+    assertEquals("IRCM", sample.getLaboratory().getOrganization());
+    assertEquals("christian.poitras@ircm.qc.ca", sample.getUser().getEmail());
+    assertEquals("IRC20111017_4", sample.getLims());
+    assertEquals("CAP_20111017_01", sample.getName());
+    assertEquals("cap_project", ((ProteicSample) sample).getProject());
+    assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
+    assertEquals(Service.LC_MS_MS, sample.getService());
+    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(
+        LocalDateTime.of(2011, 10, 17, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+        sample.getSubmission().getSubmissionDate());
+    Map<Submission, Boolean> linkedToResults = report.getLinkedToResults();
+    assertEquals(true, linkedToResults.get(find(submissions, 32).get()));
+    assertEquals(false, linkedToResults.get(find(submissions, 33).get()));
+    assertEquals(true, linkedToResults.get(find(submissions, 34).get()));
+  }
+
+  @Test
+  public void adminReport_All() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_ExperienceContains() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.experienceContains("cap_experience");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_LaboratoryContains_1() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.laboratoryContains("ircm");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_LaboratoryContains_2() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.laboratoryContains("ircm2");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_Laboratory() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.laboratory(new Laboratory(2L));
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_LimsContains() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.limsContains("RC20111013");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_MaximalSubmissionDate() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.maximalSubmissionDate(
+        LocalDateTime.of(2011, 10, 15, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_MinimalSubmissionDate() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.minimalSubmissionDate(
+        LocalDateTime.of(2011, 10, 15, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_NameContains() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.nameContains("AP_20111013");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_ProjectContains() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.projectContains("cap_project");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_Status() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.statuses(Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS));
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_Status_Multiple() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.statuses(
+        Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS, SubmissionSample.Status.ANALYSED));
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_Support_Gel() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.support(SubmissionSampleService.Support.GEL);
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_Support_Solution() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.support(SubmissionSampleService.Support.SOLUTION);
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_Support_MoleculeLow() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.support(SubmissionSampleService.Support.MOLECULE_LOW);
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_Support_MoleculeHigh() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.support(SubmissionSampleService.Support.MOLECULE_HIGH);
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_Support_IntactProtein() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.support(SubmissionSampleService.Support.INTACT_PROTEIN);
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_User() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    filter.user(user);
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_UserContains_FirstName() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.userContains("benoit");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_UserContains_LastName() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.userContains("poitras");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_UserContains_FullName_1() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.userContains("Benoit Coulombe");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_UserContains_FullName_2() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.userContains("Benoit Coulombe 2");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_UserContains_FullName_3() throws Throwable {
+    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
+    filter.userContains("Christian Poitras");
+
+    SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertFalse(find(submissions, 1).isPresent());
+    assertFalse(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertFalse(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void adminReport_NullFilter() throws Throwable {
+    SubmissionService.Report report = submissionServiceImpl.adminReport(null);
+
+    verify(authorizationService).checkAdminRole();
+    List<Submission> submissions = report.getSubmissions();
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
   }
 
   @Test

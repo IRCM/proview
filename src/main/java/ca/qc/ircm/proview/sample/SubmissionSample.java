@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
 
 /**
  * Sample submitted for MS analysis.
@@ -75,6 +76,24 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
 
   private static final long serialVersionUID = -7652364189294805763L;
 
+  /**
+   * User's project.
+   */
+  @Column(name = "project")
+  @Size(max = 100)
+  private String project;
+  /**
+   * User's experience.
+   */
+  @Column(name = "experience")
+  @Size(max = 100)
+  private String experience;
+  /**
+   * Experience's goal.
+   */
+  @Column(name = "goal")
+  @Size(max = 150)
+  private String goal;
   /**
    * Sample status.
    */
@@ -176,8 +195,7 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
     return massDetectionInstrument;
   }
 
-  public void
-      setMassDetectionInstrument(MassDetectionInstrument massDetectionInstrument) {
+  public void setMassDetectionInstrument(MassDetectionInstrument massDetectionInstrument) {
     this.massDetectionInstrument = massDetectionInstrument;
   }
 
@@ -203,5 +221,29 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
 
   public void setAdditionalPrice(BigDecimal additionalPrice) {
     this.additionalPrice = additionalPrice;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public void setProject(String project) {
+    this.project = project;
+  }
+
+  public String getExperience() {
+    return experience;
+  }
+
+  public void setExperience(String experience) {
+    this.experience = experience;
+  }
+
+  public String getGoal() {
+    return goal;
+  }
+
+  public void setGoal(String goal) {
+    this.goal = goal;
   }
 }
