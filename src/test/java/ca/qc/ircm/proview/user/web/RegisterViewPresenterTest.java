@@ -76,7 +76,7 @@ import java.util.Locale;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class RegisterViewPresenterTest {
-  private RegisterViewPresenter presenter = new RegisterViewPresenter();
+  private RegisterViewPresenter presenter;
   @Mock
   private RegisterView view;
   @Mock
