@@ -20,12 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -68,69 +63,5 @@ public class RegisterView extends RegisterViewDesign implements MessageResources
   public void afterSuccessfulRegister(String message) {
     Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
     getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
-  }
-
-  public Panel getLaboratoryPanel() {
-    return laboratoryPanel;
-  }
-
-  public CheckBox getNewLaboratoryField() {
-    return newLaboratoryField;
-  }
-
-  public TextField getOrganizationField() {
-    return organizationField;
-  }
-
-  public TextField getLaboratoryNameField() {
-    return laboratoryNameField;
-  }
-
-  public TextField getManagerEmailField() {
-    return managerEmailField;
-  }
-
-  public Button getRegisterButton() {
-    return registerButton;
-  }
-
-  public Label getHeaderLabel() {
-    return headerLabel;
-  }
-
-  public Label getRegisterHeaderLabel() {
-    return registerHeaderLabel;
-  }
-
-  public Label getRequiredLabel() {
-    return requiredLabel;
-  }
-
-  public Panel getUserPanel() {
-    return userPanel;
-  }
-
-  public UserForm getUserForm() {
-    return userForm;
-  }
-
-  public Panel getAddressPanel() {
-    return addressPanel;
-  }
-
-  public AddressForm getAddressForm() {
-    return addressForm;
-  }
-
-  public Button getClearAddressButton() {
-    return clearAddressButton;
-  }
-
-  public Panel getPhoneNumberPanel() {
-    return phoneNumberPanel;
-  }
-
-  public PhoneNumberForm getPhoneNumberForm() {
-    return phoneNumberForm;
   }
 }

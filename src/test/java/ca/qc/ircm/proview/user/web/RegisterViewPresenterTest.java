@@ -68,7 +68,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -77,7 +76,6 @@ import java.util.Locale;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class RegisterViewPresenterTest {
-  @InjectMocks
   private RegisterViewPresenter presenter = new RegisterViewPresenter();
   @Mock
   private RegisterView view;
@@ -107,22 +105,6 @@ public class RegisterViewPresenterTest {
   private ArgumentCaptor<Item> phoneNumberItemCaptor;
   @Captor
   private ArgumentCaptor<RegisterUserWebContext> registerUserWebContextCaptor;
-  private Label headerLabel = new Label();
-  private Panel userPanel = new Panel();
-  private UserForm userForm = new UserForm();
-  private Panel laboratoryPanel = new Panel();
-  private CheckBox newLaboratoryField = new CheckBox();
-  private TextField organizationField = new TextField();
-  private TextField laboratoryNameField = new TextField();
-  private TextField managerEmailField = new TextField();
-  private Panel addressPanel = new Panel();
-  private AddressForm addressForm = new AddressForm();
-  private Button clearAddressButton = new Button();
-  private Panel phoneNumberPanel = new Panel();
-  private PhoneNumberForm phoneNumberForm = new PhoneNumberForm();
-  private Label registerHeaderLabel = new Label();
-  private Button registerButton = new Button();
-  private Label requiredLabel = new Label();
   private String defaultAddress = "110 avenue des Pins Ouest";
   private String defaultTown = "Montreal";
   private String defaultState = "Quebec";
@@ -152,34 +134,36 @@ public class RegisterViewPresenterTest {
    */
   @Before
   public void beforeTest() {
+    presenter = new RegisterViewPresenter(defaultAddressConfiguration, userService, vaadinUtils,
+        userFormPresenter, addressFormPresenter, phoneNumberFormPresenter);
     when(defaultAddressConfiguration.getAddress()).thenReturn(defaultAddress);
     when(defaultAddressConfiguration.getTown()).thenReturn(defaultTown);
     when(defaultAddressConfiguration.getState()).thenReturn(defaultState);
     when(defaultAddressConfiguration.getPostalCode()).thenReturn(defaultPostalCode);
     when(defaultAddressConfiguration.getCountry()).thenReturn(defaultCountry);
-    when(view.getHeaderLabel()).thenReturn(headerLabel);
-    when(view.getUserPanel()).thenReturn(userPanel);
-    when(view.getUserForm()).thenReturn(userForm);
-    when(view.getLaboratoryPanel()).thenReturn(laboratoryPanel);
-    when(view.getNewLaboratoryField()).thenReturn(newLaboratoryField);
-    when(view.getOrganizationField()).thenReturn(organizationField);
-    when(view.getLaboratoryNameField()).thenReturn(laboratoryNameField);
-    when(view.getManagerEmailField()).thenReturn(managerEmailField);
-    when(view.getAddressPanel()).thenReturn(addressPanel);
-    when(view.getAddressForm()).thenReturn(addressForm);
-    when(view.getClearAddressButton()).thenReturn(clearAddressButton);
-    when(view.getPhoneNumberPanel()).thenReturn(phoneNumberPanel);
-    when(view.getPhoneNumberForm()).thenReturn(phoneNumberForm);
-    when(view.getRegisterHeaderLabel()).thenReturn(registerHeaderLabel);
-    when(view.getRegisterButton()).thenReturn(registerButton);
-    when(view.getRequiredLabel()).thenReturn(requiredLabel);
+    view.headerLabel = new Label();
+    view.userPanel = new Panel();
+    view.userForm = new UserForm();
+    view.laboratoryPanel = new Panel();
+    view.newLaboratoryField = new CheckBox();
+    view.organizationField = new TextField();
+    view.laboratoryNameField = new TextField();
+    view.managerEmailField = new TextField();
+    view.addressPanel = new Panel();
+    view.addressForm = new AddressForm();
+    view.clearAddressButton = new Button();
+    view.phoneNumberPanel = new Panel();
+    view.phoneNumberForm = new PhoneNumberForm();
+    view.registerHeaderLabel = new Label();
+    view.registerButton = new Button();
+    view.requiredLabel = new Label();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    view.getPhoneNumberForm().typeField.setNullSelectionAllowed(false);
-    view.getPhoneNumberForm().typeField.setNewItemsAllowed(false);
-    view.getPhoneNumberForm().typeField.removeAllItems();
+    view.phoneNumberForm.typeField.setNullSelectionAllowed(false);
+    view.phoneNumberForm.typeField.setNewItemsAllowed(false);
+    view.phoneNumberForm.typeField.removeAllItems();
     for (PhoneNumberType type : PhoneNumberType.values()) {
-      view.getPhoneNumberForm().typeField.addItem(type);
+      view.phoneNumberForm.typeField.addItem(type);
     }
     presenter.init(view);
     presenter.attach();
@@ -192,34 +176,34 @@ public class RegisterViewPresenterTest {
     verify(addressFormPresenter).setItemDataSource(addressItemCaptor.capture());
     verify(phoneNumberFormPresenter).setItemDataSource(phoneNumberItemCaptor.capture());
     Item userItem = userItemCaptor.getValue();
-    view.getUserForm().getEmailField().setValue(email);
+    view.userForm.getEmailField().setValue(email);
     userItem.getItemProperty(UserFormPresenter.EMAIL_PROPERTY).setValue(email);
-    view.getUserForm().getNameField().setValue(name);
+    view.userForm.getNameField().setValue(name);
     userItem.getItemProperty(UserFormPresenter.NAME_PROPERTY).setValue(name);
     Item passwordItem = passwordItemCaptor.getValue();
-    view.getUserForm().getPasswordField().setValue(password);
+    view.userForm.getPasswordField().setValue(password);
     passwordItem.getItemProperty(UserFormPresenter.PASSWORD_PROPERTY).setValue(password);
-    view.getUserForm().getConfirmPasswordField().setValue(password);
-    view.getManagerEmailField().setValue(managerEmail);
-    view.getLaboratoryNameField().setValue(laboratoryName);
-    view.getOrganizationField().setValue(organization);
+    view.userForm.getConfirmPasswordField().setValue(password);
+    view.managerEmailField.setValue(managerEmail);
+    view.laboratoryNameField.setValue(laboratoryName);
+    view.organizationField.setValue(organization);
     Item addressItem = addressItemCaptor.getValue();
-    view.getAddressForm().lineField.setValue(addressLine);
+    view.addressForm.lineField.setValue(addressLine);
     addressItem.getItemProperty(AddressFormPresenter.LINE_PROPERTY).setValue(addressLine);
-    view.getAddressForm().townField.setValue(town);
+    view.addressForm.townField.setValue(town);
     addressItem.getItemProperty(AddressFormPresenter.TOWN_PROPERTY).setValue(town);
-    view.getAddressForm().stateField.setValue(state);
+    view.addressForm.stateField.setValue(state);
     addressItem.getItemProperty(AddressFormPresenter.STATE_PROPERTY).setValue(state);
-    view.getAddressForm().countryField.setValue(country);
+    view.addressForm.countryField.setValue(country);
     addressItem.getItemProperty(AddressFormPresenter.COUNTRY_PROPERTY).setValue(country);
-    view.getAddressForm().postalCodeField.setValue(postalCode);
+    view.addressForm.postalCodeField.setValue(postalCode);
     addressItem.getItemProperty(AddressFormPresenter.POSTAL_CODE_PROPERTY).setValue(postalCode);
     Item phoneNumberItem = phoneNumberItemCaptor.getValue();
-    view.getPhoneNumberForm().typeField.setValue(phoneType);
+    view.phoneNumberForm.typeField.setValue(phoneType);
     phoneNumberItem.getItemProperty(PhoneNumberFormPresenter.TYPE_PROPERTY).setValue(phoneType);
-    view.getPhoneNumberForm().numberField.setValue(phoneNumber);
+    view.phoneNumberForm.numberField.setValue(phoneNumber);
     phoneNumberItem.getItemProperty(PhoneNumberFormPresenter.NUMBER_PROPERTY).setValue(phoneNumber);
-    view.getPhoneNumberForm().extensionField.setValue(phoneExtension);
+    view.phoneNumberForm.extensionField.setValue(phoneExtension);
     phoneNumberItem.getItemProperty(PhoneNumberFormPresenter.EXTENSION_PROPERTY)
         .setValue(phoneExtension);
   }
@@ -242,29 +226,29 @@ public class RegisterViewPresenterTest {
 
   @Test
   public void newLaboratoryVisibleFields_True() {
-    view.getNewLaboratoryField().setValue(true);
-    view.getNewLaboratoryField().valueChange(new ValueChangeEvent(view.getNewLaboratoryField()));
+    view.newLaboratoryField.setValue(true);
+    view.newLaboratoryField.valueChange(new ValueChangeEvent(view.newLaboratoryField));
 
-    assertFalse(view.getManagerEmailField().isVisible());
-    assertTrue(view.getOrganizationField().isVisible());
-    assertTrue(view.getLaboratoryNameField().isVisible());
+    assertFalse(view.managerEmailField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
   }
 
   @Test
   public void newLaboratoryVisibleFields_False() {
-    view.getNewLaboratoryField().setValue(false);
-    view.getNewLaboratoryField().valueChange(new ValueChangeEvent(view.getNewLaboratoryField()));
+    view.newLaboratoryField.setValue(false);
+    view.newLaboratoryField.valueChange(new ValueChangeEvent(view.newLaboratoryField));
 
-    assertTrue(view.getManagerEmailField().isVisible());
-    assertFalse(view.getOrganizationField().isVisible());
-    assertFalse(view.getLaboratoryNameField().isVisible());
+    assertTrue(view.managerEmailField.isVisible());
+    assertFalse(view.organizationField.isVisible());
+    assertFalse(view.laboratoryNameField.isVisible());
   }
 
   @Test
   public void init() {
-    verify(userFormPresenter).init(view.getUserForm());
-    verify(addressFormPresenter).init(view.getAddressForm());
-    verify(phoneNumberFormPresenter).init(view.getPhoneNumberForm());
+    verify(userFormPresenter).init(view.userForm);
+    verify(addressFormPresenter).init(view.addressForm);
+    verify(phoneNumberFormPresenter).init(view.phoneNumberForm);
   }
 
   @Test
@@ -274,38 +258,36 @@ public class RegisterViewPresenterTest {
 
   @Test
   public void ids() {
-    assertEquals(HEADER_LABEL_ID, view.getHeaderLabel().getId());
-    assertEquals(USER_FORM_ID, view.getUserPanel().getId());
-    assertEquals(LABORATORY_ID, view.getLaboratoryPanel().getId());
-    assertEquals(NEW_LABORATORY_ID, view.getNewLaboratoryField().getId());
-    assertEquals(ORGANIZATION_ID, view.getOrganizationField().getId());
-    assertEquals(LABORATORY_NAME_ID, view.getLaboratoryNameField().getId());
-    assertEquals(MANAGER_EMAIL_ID, view.getManagerEmailField().getId());
-    assertEquals(ADDRESS_FORM_ID, view.getAddressPanel().getId());
-    assertEquals(CLEAR_ADDRESS_BUTTON_ID, view.getClearAddressButton().getId());
-    assertEquals(PHONE_NUMBER_FORM_ID, view.getPhoneNumberPanel().getId());
-    assertEquals(REGISTER_HEADER_LABEL_ID, view.getRegisterHeaderLabel().getId());
-    assertEquals(REGISTER_BUTTON_ID, view.getRegisterButton().getId());
-    assertEquals(REQUIRED_LABEL_ID, view.getRequiredLabel().getId());
+    assertEquals(HEADER_LABEL_ID, view.headerLabel.getId());
+    assertEquals(USER_FORM_ID, view.userPanel.getId());
+    assertEquals(LABORATORY_ID, view.laboratoryPanel.getId());
+    assertEquals(NEW_LABORATORY_ID, view.newLaboratoryField.getId());
+    assertEquals(ORGANIZATION_ID, view.organizationField.getId());
+    assertEquals(LABORATORY_NAME_ID, view.laboratoryNameField.getId());
+    assertEquals(MANAGER_EMAIL_ID, view.managerEmailField.getId());
+    assertEquals(ADDRESS_FORM_ID, view.addressPanel.getId());
+    assertEquals(CLEAR_ADDRESS_BUTTON_ID, view.clearAddressButton.getId());
+    assertEquals(PHONE_NUMBER_FORM_ID, view.phoneNumberPanel.getId());
+    assertEquals(REGISTER_HEADER_LABEL_ID, view.registerHeaderLabel.getId());
+    assertEquals(REGISTER_BUTTON_ID, view.registerButton.getId());
+    assertEquals(REQUIRED_LABEL_ID, view.requiredLabel.getId());
   }
 
   @Test
   public void captions() {
-    assertEquals(resources.message(HEADER_LABEL_ID), view.getHeaderLabel().getValue());
-    assertEquals(resources.message(USER_FORM_ID), view.getUserPanel().getCaption());
-    assertEquals(resources.message(LABORATORY_ID), view.getLaboratoryPanel().getCaption());
-    assertEquals(resources.message(NEW_LABORATORY_ID), view.getNewLaboratoryField().getCaption());
-    assertEquals(resources.message(ORGANIZATION_ID), view.getOrganizationField().getCaption());
-    assertEquals(resources.message(LABORATORY_NAME_ID), view.getLaboratoryNameField().getCaption());
-    assertEquals(resources.message(MANAGER_EMAIL_ID), view.getManagerEmailField().getCaption());
-    assertEquals(resources.message(ADDRESS_FORM_ID), view.getAddressPanel().getCaption());
-    assertEquals(resources.message(CLEAR_ADDRESS_BUTTON_ID),
-        view.getClearAddressButton().getCaption());
-    assertEquals(resources.message(PHONE_NUMBER_FORM_ID), view.getPhoneNumberPanel().getCaption());
-    assertEquals(resources.message(REGISTER_HEADER_LABEL_ID),
-        view.getRegisterHeaderLabel().getValue());
-    assertEquals(resources.message(REGISTER_BUTTON_ID), view.getRegisterButton().getCaption());
-    assertEquals(resources.message(REQUIRED_LABEL_ID), view.getRequiredLabel().getValue());
+    assertEquals(resources.message(HEADER_LABEL_ID), view.headerLabel.getValue());
+    assertEquals(resources.message(USER_FORM_ID), view.userPanel.getCaption());
+    assertEquals(resources.message(LABORATORY_ID), view.laboratoryPanel.getCaption());
+    assertEquals(resources.message(NEW_LABORATORY_ID), view.newLaboratoryField.getCaption());
+    assertEquals(resources.message(ORGANIZATION_ID), view.organizationField.getCaption());
+    assertEquals(resources.message(LABORATORY_NAME_ID), view.laboratoryNameField.getCaption());
+    assertEquals(resources.message(MANAGER_EMAIL_ID), view.managerEmailField.getCaption());
+    assertEquals(resources.message(ADDRESS_FORM_ID), view.addressPanel.getCaption());
+    assertEquals(resources.message(CLEAR_ADDRESS_BUTTON_ID), view.clearAddressButton.getCaption());
+    assertEquals(resources.message(PHONE_NUMBER_FORM_ID), view.phoneNumberPanel.getCaption());
+    assertEquals(resources.message(REGISTER_HEADER_LABEL_ID), view.registerHeaderLabel.getValue());
+    assertEquals(resources.message(REGISTER_BUTTON_ID), view.registerButton.getCaption());
+    assertEquals(resources.message(REQUIRED_LABEL_ID), view.requiredLabel.getValue());
   }
 
   private String requiredError(String caption) {
@@ -314,15 +296,15 @@ public class RegisterViewPresenterTest {
 
   @Test
   public void requiredFields() {
-    assertTrue(view.getOrganizationField().isRequired());
+    assertTrue(view.organizationField.isRequired());
     assertEquals(requiredError(resources.message(ORGANIZATION_ID)),
-        view.getOrganizationField().getRequiredError());
-    assertTrue(view.getLaboratoryNameField().isRequired());
+        view.organizationField.getRequiredError());
+    assertTrue(view.laboratoryNameField.isRequired());
     assertEquals(requiredError(resources.message(LABORATORY_NAME_ID)),
-        view.getLaboratoryNameField().getRequiredError());
-    assertTrue(view.getManagerEmailField().isRequired());
+        view.laboratoryNameField.getRequiredError());
+    assertTrue(view.managerEmailField.isRequired());
     assertEquals(requiredError(resources.message(MANAGER_EMAIL_ID)),
-        view.getManagerEmailField().getRequiredError());
+        view.managerEmailField.getRequiredError());
   }
 
   @Test
@@ -342,68 +324,68 @@ public class RegisterViewPresenterTest {
 
   @Test
   public void defaults() {
-    assertEquals(defaultAddress, view.getAddressForm().lineField.getValue());
-    assertEquals(defaultTown, view.getAddressForm().townField.getValue());
-    assertEquals(defaultState, view.getAddressForm().stateField.getValue());
-    assertEquals(defaultCountry, view.getAddressForm().countryField.getValue());
-    assertEquals(defaultPostalCode, view.getAddressForm().postalCodeField.getValue());
-    assertEquals(PhoneNumberType.WORK, view.getPhoneNumberForm().typeField.getValue());
+    assertEquals(defaultAddress, view.addressForm.lineField.getValue());
+    assertEquals(defaultTown, view.addressForm.townField.getValue());
+    assertEquals(defaultState, view.addressForm.stateField.getValue());
+    assertEquals(defaultCountry, view.addressForm.countryField.getValue());
+    assertEquals(defaultPostalCode, view.addressForm.postalCodeField.getValue());
+    assertEquals(PhoneNumberType.WORK, view.phoneNumberForm.typeField.getValue());
   }
 
   @Test
   public void clearAddress() {
     setFields();
 
-    view.getClearAddressButton().click();
+    view.clearAddressButton.click();
 
-    assertEquals("", view.getAddressForm().lineField.getValue());
-    assertEquals("", view.getAddressForm().townField.getValue());
-    assertEquals("", view.getAddressForm().stateField.getValue());
-    assertEquals("", view.getAddressForm().postalCodeField.getValue());
-    assertEquals("", view.getAddressForm().countryField.getValue());
+    assertEquals("", view.addressForm.lineField.getValue());
+    assertEquals("", view.addressForm.townField.getValue());
+    assertEquals("", view.addressForm.stateField.getValue());
+    assertEquals("", view.addressForm.postalCodeField.getValue());
+    assertEquals("", view.addressForm.countryField.getValue());
   }
 
   @Test
   public void newLaboratory_Default() {
-    assertFalse(view.getLaboratoryNameField().isVisible());
-    assertFalse(view.getOrganizationField().isVisible());
-    assertTrue(view.getManagerEmailField().isVisible());
+    assertFalse(view.laboratoryNameField.isVisible());
+    assertFalse(view.organizationField.isVisible());
+    assertTrue(view.managerEmailField.isVisible());
   }
 
   @Test
   public void newLaboratory_False() {
-    view.getNewLaboratoryField().setValue(false);
+    view.newLaboratoryField.setValue(false);
 
-    assertFalse(view.getLaboratoryNameField().isVisible());
-    assertFalse(view.getOrganizationField().isVisible());
-    assertTrue(view.getManagerEmailField().isVisible());
+    assertFalse(view.laboratoryNameField.isVisible());
+    assertFalse(view.organizationField.isVisible());
+    assertTrue(view.managerEmailField.isVisible());
   }
 
   @Test
   public void newLaboratory_True() {
-    view.getNewLaboratoryField().setValue(true);
+    view.newLaboratoryField.setValue(true);
 
-    assertTrue(view.getLaboratoryNameField().isVisible());
-    assertTrue(view.getOrganizationField().isVisible());
-    assertFalse(view.getManagerEmailField().isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertFalse(view.managerEmailField.isVisible());
   }
 
   @Test
   public void managerEmailEmailValidator() {
-    view.getManagerEmailField().setValue("aaa");
+    view.managerEmailField.setValue("aaa");
 
-    assertFalse(view.getManagerEmailField().isValid());
+    assertFalse(view.managerEmailField.isValid());
     assertEquals(resources.message(MANAGER_EMAIL_ID + ".invalid"),
-        errorMessage(view.getManagerEmailField()));
+        errorMessage(view.managerEmailField));
   }
 
   @Test
   public void managerEmailManagerValidtor_Manager() {
     when(userService.isManager(any())).thenReturn(true);
 
-    view.getManagerEmailField().setValue(managerEmail);
+    view.managerEmailField.setValue(managerEmail);
 
-    assertTrue(view.getManagerEmailField().isValid());
+    assertTrue(view.managerEmailField.isValid());
     verify(userService).isManager(managerEmail);
   }
 
@@ -411,22 +393,22 @@ public class RegisterViewPresenterTest {
   public void managerEmailManagerValidtor_NotManager() {
     when(userService.isManager(any())).thenReturn(false);
 
-    view.getManagerEmailField().setValue(managerEmail);
+    view.managerEmailField.setValue(managerEmail);
 
-    assertFalse(view.getManagerEmailField().isValid());
+    assertFalse(view.managerEmailField.isValid());
     verify(userService).isManager(managerEmail);
     assertEquals(resources.message(MANAGER_EMAIL_ID + ".notExists"),
-        errorMessage(view.getManagerEmailField()));
+        errorMessage(view.managerEmailField));
   }
 
   @Test
   public void register_NewLaboratory() throws Throwable {
     setFields();
-    view.getNewLaboratoryField().setValue(true);
+    view.newLaboratoryField.setValue(true);
     String validationUrl = "validationUrl";
     when(vaadinUtils.getUrl(any())).thenReturn(validationUrl);
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userFormPresenter).commit();
     verify(addressFormPresenter).commit();
@@ -466,12 +448,12 @@ public class RegisterViewPresenterTest {
   @Test
   public void register_ExistingLaboratory() throws Throwable {
     setFields();
-    view.getNewLaboratoryField().setValue(false);
+    view.newLaboratoryField.setValue(false);
     String validationUrl = "validationUrl";
     when(userService.isManager(any())).thenReturn(true);
     when(vaadinUtils.getUrl(any())).thenReturn(validationUrl);
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userFormPresenter).commit();
     verify(addressFormPresenter).commit();
@@ -512,7 +494,7 @@ public class RegisterViewPresenterTest {
     setFields();
     doThrow(new CommitException()).when(userFormPresenter).commit();
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userService, never()).register(any(), any(), any(), any());
     verify(view).showError(any());
@@ -521,10 +503,10 @@ public class RegisterViewPresenterTest {
   @Test
   public void register_OrganizationEmpty() {
     setFields();
-    view.getNewLaboratoryField().setValue(true);
-    view.getOrganizationField().setValue("");
+    view.newLaboratoryField.setValue(true);
+    view.organizationField.setValue("");
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userService, never()).register(any(), any(), any(), any());
     verify(view).showError(any());
@@ -533,10 +515,10 @@ public class RegisterViewPresenterTest {
   @Test
   public void register_LaboratoryNameEmpty() {
     setFields();
-    view.getNewLaboratoryField().setValue(true);
-    view.getLaboratoryNameField().setValue("");
+    view.newLaboratoryField.setValue(true);
+    view.laboratoryNameField.setValue("");
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userService, never()).register(any(), any(), any(), any());
     verify(view).showError(any());
@@ -545,10 +527,10 @@ public class RegisterViewPresenterTest {
   @Test
   public void register_ManagerEmailEmpty() {
     setFields();
-    view.getNewLaboratoryField().setValue(false);
-    view.getManagerEmailField().setValue("");
+    view.newLaboratoryField.setValue(false);
+    view.managerEmailField.setValue("");
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userService, never()).register(any(), any(), any(), any());
     verify(view).showError(any());
@@ -557,10 +539,10 @@ public class RegisterViewPresenterTest {
   @Test
   public void register_ManagerEmailInvalid() {
     setFields();
-    view.getNewLaboratoryField().setValue(false);
-    view.getManagerEmailField().setValue("aaa");
+    view.newLaboratoryField.setValue(false);
+    view.managerEmailField.setValue("aaa");
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userService, never()).register(any(), any(), any(), any());
     verify(view).showError(any());
@@ -570,10 +552,10 @@ public class RegisterViewPresenterTest {
   public void register_ManagerEmailNotManager() {
     when(userService.isManager(any())).thenReturn(false);
     setFields();
-    view.getNewLaboratoryField().setValue(false);
-    view.getManagerEmailField().setValue("aaa@ircm.qc.ca");
+    view.newLaboratoryField.setValue(false);
+    view.managerEmailField.setValue("aaa@ircm.qc.ca");
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userService, never()).register(any(), any(), any(), any());
     verify(view).showError(any());
@@ -584,7 +566,7 @@ public class RegisterViewPresenterTest {
     setFields();
     doThrow(new CommitException()).when(addressFormPresenter).commit();
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userService, never()).register(any(), any(), any(), any());
     verify(view).showError(any());
@@ -595,7 +577,7 @@ public class RegisterViewPresenterTest {
     setFields();
     doThrow(new CommitException()).when(phoneNumberFormPresenter).commit();
 
-    view.getRegisterButton().click();
+    view.registerButton.click();
 
     verify(userService, never()).register(any(), any(), any(), any());
     verify(view).showError(any());
