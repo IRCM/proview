@@ -27,7 +27,6 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -50,13 +49,15 @@ public class AddressFormPresenter {
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<Address> addressFieldGroup = new BeanFieldGroup<>(Address.class);
   private AddressForm view;
-  private TextField lineField;
-  private TextField townField;
-  private TextField stateField;
-  private TextField countryField;
-  private TextField postalCodeField;
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
+
+  public AddressFormPresenter() {
+  }
+
+  protected AddressFormPresenter(DefaultAddressConfiguration defaultAddressConfiguration) {
+    this.defaultAddressConfiguration = defaultAddressConfiguration;
+  }
 
   /**
    * Initializes presenter.
@@ -67,15 +68,6 @@ public class AddressFormPresenter {
   public void init(AddressForm view) {
     this.view = view;
     view.setPresenter(this);
-    setFields();
-  }
-
-  private void setFields() {
-    lineField = view.getLineField();
-    townField = view.getTownField();
-    stateField = view.getStateField();
-    countryField = view.getCountryField();
-    postalCodeField = view.getPostalCodeField();
   }
 
   /**
@@ -92,20 +84,20 @@ public class AddressFormPresenter {
   }
 
   private void setStyles() {
-    lineField.setStyleName(LINE_PROPERTY);
-    townField.setStyleName(TOWN_PROPERTY);
-    stateField.setStyleName(STATE_PROPERTY);
-    countryField.setStyleName(COUNTRY_PROPERTY);
-    postalCodeField.setStyleName(POSTAL_CODE_PROPERTY);
+    view.lineField.setStyleName(LINE_PROPERTY);
+    view.townField.setStyleName(TOWN_PROPERTY);
+    view.stateField.setStyleName(STATE_PROPERTY);
+    view.countryField.setStyleName(COUNTRY_PROPERTY);
+    view.postalCodeField.setStyleName(POSTAL_CODE_PROPERTY);
   }
 
   private void bindFields() {
     addressFieldGroup.setItemDataSource(new BeanItem<>(new Address()));
-    addressFieldGroup.bind(lineField, LINE_PROPERTY);
-    addressFieldGroup.bind(townField, TOWN_PROPERTY);
-    addressFieldGroup.bind(stateField, STATE_PROPERTY);
-    addressFieldGroup.bind(countryField, COUNTRY_PROPERTY);
-    addressFieldGroup.bind(postalCodeField, POSTAL_CODE_PROPERTY);
+    addressFieldGroup.bind(view.lineField, LINE_PROPERTY);
+    addressFieldGroup.bind(view.townField, TOWN_PROPERTY);
+    addressFieldGroup.bind(view.stateField, STATE_PROPERTY);
+    addressFieldGroup.bind(view.countryField, COUNTRY_PROPERTY);
+    addressFieldGroup.bind(view.postalCodeField, POSTAL_CODE_PROPERTY);
   }
 
   private void addFieldListeners() {
@@ -113,57 +105,61 @@ public class AddressFormPresenter {
   }
 
   private void setDefaultAddress() {
-    lineField.setValue(defaultAddressConfiguration.getAddress());
-    townField.setValue(defaultAddressConfiguration.getTown());
-    stateField.setValue(defaultAddressConfiguration.getState());
-    countryField.setValue(defaultAddressConfiguration.getCountry());
-    postalCodeField.setValue(defaultAddressConfiguration.getPostalCode());
+    view.lineField.setValue(defaultAddressConfiguration.getAddress());
+    view.townField.setValue(defaultAddressConfiguration.getTown());
+    view.stateField.setValue(defaultAddressConfiguration.getState());
+    view.countryField.setValue(defaultAddressConfiguration.getCountry());
+    view.postalCodeField.setValue(defaultAddressConfiguration.getPostalCode());
   }
 
   private void updateEditable() {
     final boolean editable = editableProperty.getValue();
-    lineField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-    townField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-    stateField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-    countryField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-    postalCodeField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.lineField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.townField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.stateField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.countryField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.postalCodeField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     if (!editable) {
-      lineField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-      townField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-      stateField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-      countryField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-      postalCodeField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.lineField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.townField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.stateField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.countryField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.postalCodeField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     }
-    lineField.setReadOnly(!editable);
-    townField.setReadOnly(!editable);
-    stateField.setReadOnly(!editable);
-    countryField.setReadOnly(!editable);
-    postalCodeField.setReadOnly(!editable);
+    view.lineField.setReadOnly(!editable);
+    view.townField.setReadOnly(!editable);
+    view.stateField.setReadOnly(!editable);
+    view.countryField.setReadOnly(!editable);
+    view.postalCodeField.setReadOnly(!editable);
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    lineField.setCaption(resources.message(LINE_PROPERTY));
-    townField.setCaption(resources.message(TOWN_PROPERTY));
-    stateField.setCaption(resources.message(STATE_PROPERTY));
-    countryField.setCaption(resources.message(COUNTRY_PROPERTY));
-    postalCodeField.setCaption(resources.message(POSTAL_CODE_PROPERTY));
+    view.lineField.setCaption(resources.message(LINE_PROPERTY));
+    view.townField.setCaption(resources.message(TOWN_PROPERTY));
+    view.stateField.setCaption(resources.message(STATE_PROPERTY));
+    view.countryField.setCaption(resources.message(COUNTRY_PROPERTY));
+    view.postalCodeField.setCaption(resources.message(POSTAL_CODE_PROPERTY));
   }
 
   private void setRequired() {
     final MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
-    lineField.setRequired(true);
-    lineField.setRequiredError(generalResources.message("required", lineField.getCaption()));
-    townField.setRequired(true);
-    townField.setRequiredError(generalResources.message("required", townField.getCaption()));
-    stateField.setRequired(true);
-    stateField.setRequiredError(generalResources.message("required", stateField.getCaption()));
-    countryField.setRequired(true);
-    countryField.setRequiredError(generalResources.message("required", countryField.getCaption()));
-    postalCodeField.setRequired(true);
-    postalCodeField
-        .setRequiredError(generalResources.message("required", postalCodeField.getCaption()));
+    view.lineField.setRequired(true);
+    view.lineField
+        .setRequiredError(generalResources.message("required", view.lineField.getCaption()));
+    view.townField.setRequired(true);
+    view.townField
+        .setRequiredError(generalResources.message("required", view.townField.getCaption()));
+    view.stateField.setRequired(true);
+    view.stateField
+        .setRequiredError(generalResources.message("required", view.stateField.getCaption()));
+    view.countryField.setRequired(true);
+    view.countryField
+        .setRequiredError(generalResources.message("required", view.countryField.getCaption()));
+    view.postalCodeField.setRequired(true);
+    view.postalCodeField
+        .setRequiredError(generalResources.message("required", view.postalCodeField.getCaption()));
   }
 
   public void commit() throws CommitException {

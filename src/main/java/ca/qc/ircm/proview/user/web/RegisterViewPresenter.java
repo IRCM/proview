@@ -226,11 +226,11 @@ public class RegisterViewPresenter {
       registerUser();
     });
     clearAddressButton.addClickListener(e -> {
-      addressForm.getLineField().setValue("");
-      addressForm.getTownField().setValue("");
-      addressForm.getStateField().setValue("");
-      addressForm.getCountryField().setValue("");
-      addressForm.getPostalCodeField().setValue("");
+      addressForm.lineField.setValue("");
+      addressForm.townField.setValue("");
+      addressForm.stateField.setValue("");
+      addressForm.countryField.setValue("");
+      addressForm.postalCodeField.setValue("");
     });
   }
 
@@ -278,12 +278,11 @@ public class RegisterViewPresenter {
   }
 
   private void setDefaults() {
-    view.getAddressForm().getLineField().setValue(defaultAddressConfiguration.getAddress());
-    view.getAddressForm().getTownField().setValue(defaultAddressConfiguration.getTown());
-    view.getAddressForm().getStateField().setValue(defaultAddressConfiguration.getState());
-    view.getAddressForm().getPostalCodeField()
-        .setValue(defaultAddressConfiguration.getPostalCode());
-    view.getAddressForm().getCountryField().setValue(defaultAddressConfiguration.getCountry());
+    view.getAddressForm().lineField.setValue(defaultAddressConfiguration.getAddress());
+    view.getAddressForm().townField.setValue(defaultAddressConfiguration.getTown());
+    view.getAddressForm().stateField.setValue(defaultAddressConfiguration.getState());
+    view.getAddressForm().postalCodeField.setValue(defaultAddressConfiguration.getPostalCode());
+    view.getAddressForm().countryField.setValue(defaultAddressConfiguration.getCountry());
     view.getPhoneNumberForm().getTypeField().setValue(PhoneNumberType.WORK);
     laboratoryNameField.setVisible(false);
     organizationField.setVisible(false);

@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.ui.TextField;
 
 /**
  * Address form.
@@ -35,25 +34,5 @@ public class AddressForm extends AddressFormDesign implements MessageResourcesCo
   public void attach() {
     super.attach();
     presenter.attach();
-  }
-
-  public TextField getLineField() {
-    return lineField;
-  }
-
-  public TextField getTownField() {
-    return townField;
-  }
-
-  public TextField getStateField() {
-    return stateField;
-  }
-
-  public TextField getCountryField() {
-    return countryField;
-  }
-
-  public TextField getPostalCodeField() {
-    return postalCodeField;
   }
 }

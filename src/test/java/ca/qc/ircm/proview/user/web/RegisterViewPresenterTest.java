@@ -204,15 +204,15 @@ public class RegisterViewPresenterTest {
     view.getLaboratoryNameField().setValue(laboratoryName);
     view.getOrganizationField().setValue(organization);
     Item addressItem = addressItemCaptor.getValue();
-    view.getAddressForm().getLineField().setValue(addressLine);
+    view.getAddressForm().lineField.setValue(addressLine);
     addressItem.getItemProperty(AddressFormPresenter.LINE_PROPERTY).setValue(addressLine);
-    view.getAddressForm().getTownField().setValue(town);
+    view.getAddressForm().townField.setValue(town);
     addressItem.getItemProperty(AddressFormPresenter.TOWN_PROPERTY).setValue(town);
-    view.getAddressForm().getStateField().setValue(state);
+    view.getAddressForm().stateField.setValue(state);
     addressItem.getItemProperty(AddressFormPresenter.STATE_PROPERTY).setValue(state);
-    view.getAddressForm().getCountryField().setValue(country);
+    view.getAddressForm().countryField.setValue(country);
     addressItem.getItemProperty(AddressFormPresenter.COUNTRY_PROPERTY).setValue(country);
-    view.getAddressForm().getPostalCodeField().setValue(postalCode);
+    view.getAddressForm().postalCodeField.setValue(postalCode);
     addressItem.getItemProperty(AddressFormPresenter.POSTAL_CODE_PROPERTY).setValue(postalCode);
     Item phoneNumberItem = phoneNumberItemCaptor.getValue();
     view.getPhoneNumberForm().getTypeField().setValue(phoneType);
@@ -342,11 +342,11 @@ public class RegisterViewPresenterTest {
 
   @Test
   public void defaults() {
-    assertEquals(defaultAddress, view.getAddressForm().getLineField().getValue());
-    assertEquals(defaultTown, view.getAddressForm().getTownField().getValue());
-    assertEquals(defaultState, view.getAddressForm().getStateField().getValue());
-    assertEquals(defaultCountry, view.getAddressForm().getCountryField().getValue());
-    assertEquals(defaultPostalCode, view.getAddressForm().getPostalCodeField().getValue());
+    assertEquals(defaultAddress, view.getAddressForm().lineField.getValue());
+    assertEquals(defaultTown, view.getAddressForm().townField.getValue());
+    assertEquals(defaultState, view.getAddressForm().stateField.getValue());
+    assertEquals(defaultCountry, view.getAddressForm().countryField.getValue());
+    assertEquals(defaultPostalCode, view.getAddressForm().postalCodeField.getValue());
     assertEquals(PhoneNumberType.WORK, view.getPhoneNumberForm().getTypeField().getValue());
   }
 
@@ -356,11 +356,11 @@ public class RegisterViewPresenterTest {
 
     view.getClearAddressButton().click();
 
-    assertEquals("", view.getAddressForm().getLineField().getValue());
-    assertEquals("", view.getAddressForm().getTownField().getValue());
-    assertEquals("", view.getAddressForm().getStateField().getValue());
-    assertEquals("", view.getAddressForm().getPostalCodeField().getValue());
-    assertEquals("", view.getAddressForm().getCountryField().getValue());
+    assertEquals("", view.getAddressForm().lineField.getValue());
+    assertEquals("", view.getAddressForm().townField.getValue());
+    assertEquals("", view.getAddressForm().stateField.getValue());
+    assertEquals("", view.getAddressForm().postalCodeField.getValue());
+    assertEquals("", view.getAddressForm().countryField.getValue());
   }
 
   @Test

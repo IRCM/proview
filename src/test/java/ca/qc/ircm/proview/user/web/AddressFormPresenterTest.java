@@ -41,7 +41,6 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -50,8 +49,7 @@ import java.util.Locale;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class AddressFormPresenterTest {
-  @InjectMocks
-  private AddressFormPresenter presenter = new AddressFormPresenter();
+  private AddressFormPresenter presenter;
   @Mock
   private DefaultAddressConfiguration defaultAddressConfiguration;
   private AddressForm view = new AddressForm();
@@ -77,6 +75,7 @@ public class AddressFormPresenterTest {
    */
   @Before
   public void beforeTest() {
+    presenter = new AddressFormPresenter(defaultAddressConfiguration);
     view.setLocale(locale);
     resources = view.getResources();
     when(defaultAddressConfiguration.getAddress()).thenReturn(defaultAddress);
@@ -89,11 +88,11 @@ public class AddressFormPresenterTest {
   }
 
   private void setFields() {
-    view.getLineField().setValue(line);
-    view.getTownField().setValue(town);
-    view.getStateField().setValue(state);
-    view.getCountryField().setValue(country);
-    view.getPostalCodeField().setValue(postalCode);
+    view.lineField.setValue(line);
+    view.townField.setValue(town);
+    view.stateField.setValue(state);
+    view.countryField.setValue(country);
+    view.postalCodeField.setValue(postalCode);
   }
 
   @Test
@@ -106,94 +105,94 @@ public class AddressFormPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.getLineField().getStyleName().contains(LINE_PROPERTY));
-    assertTrue(view.getTownField().getStyleName().contains(TOWN_PROPERTY));
-    assertTrue(view.getStateField().getStyleName().contains(STATE_PROPERTY));
-    assertTrue(view.getCountryField().getStyleName().contains(COUNTRY_PROPERTY));
-    assertTrue(view.getPostalCodeField().getStyleName().contains(POSTAL_CODE_PROPERTY));
+    assertTrue(view.lineField.getStyleName().contains(LINE_PROPERTY));
+    assertTrue(view.townField.getStyleName().contains(TOWN_PROPERTY));
+    assertTrue(view.stateField.getStyleName().contains(STATE_PROPERTY));
+    assertTrue(view.countryField.getStyleName().contains(COUNTRY_PROPERTY));
+    assertTrue(view.postalCodeField.getStyleName().contains(POSTAL_CODE_PROPERTY));
   }
 
   @Test
   public void captions() {
-    assertEquals(resources.message(LINE_PROPERTY), view.getLineField().getCaption());
-    assertEquals(resources.message(TOWN_PROPERTY), view.getTownField().getCaption());
-    assertEquals(resources.message(STATE_PROPERTY), view.getStateField().getCaption());
-    assertEquals(resources.message(COUNTRY_PROPERTY), view.getCountryField().getCaption());
-    assertEquals(resources.message(POSTAL_CODE_PROPERTY), view.getPostalCodeField().getCaption());
+    assertEquals(resources.message(LINE_PROPERTY), view.lineField.getCaption());
+    assertEquals(resources.message(TOWN_PROPERTY), view.townField.getCaption());
+    assertEquals(resources.message(STATE_PROPERTY), view.stateField.getCaption());
+    assertEquals(resources.message(COUNTRY_PROPERTY), view.countryField.getCaption());
+    assertEquals(resources.message(POSTAL_CODE_PROPERTY), view.postalCodeField.getCaption());
   }
 
   @Test
   public void required() {
-    assertTrue(view.getLineField().isRequired());
-    assertEquals(generalResources.message("required", view.getLineField().getCaption()),
-        view.getLineField().getRequiredError());
-    assertTrue(view.getTownField().isRequired());
-    assertEquals(generalResources.message("required", view.getTownField().getCaption()),
-        view.getTownField().getRequiredError());
-    assertTrue(view.getStateField().isRequired());
-    assertEquals(generalResources.message("required", view.getStateField().getCaption()),
-        view.getStateField().getRequiredError());
-    assertTrue(view.getCountryField().isRequired());
-    assertEquals(generalResources.message("required", view.getCountryField().getCaption()),
-        view.getCountryField().getRequiredError());
-    assertTrue(view.getPostalCodeField().isRequired());
-    assertEquals(generalResources.message("required", view.getPostalCodeField().getCaption()),
-        view.getPostalCodeField().getRequiredError());
+    assertTrue(view.lineField.isRequired());
+    assertEquals(generalResources.message("required", view.lineField.getCaption()),
+        view.lineField.getRequiredError());
+    assertTrue(view.townField.isRequired());
+    assertEquals(generalResources.message("required", view.townField.getCaption()),
+        view.townField.getRequiredError());
+    assertTrue(view.stateField.isRequired());
+    assertEquals(generalResources.message("required", view.stateField.getCaption()),
+        view.stateField.getRequiredError());
+    assertTrue(view.countryField.isRequired());
+    assertEquals(generalResources.message("required", view.countryField.getCaption()),
+        view.countryField.getRequiredError());
+    assertTrue(view.postalCodeField.isRequired());
+    assertEquals(generalResources.message("required", view.postalCodeField.getCaption()),
+        view.postalCodeField.getRequiredError());
   }
 
   @Test
   public void editable_Default() {
-    assertTrue(view.getLineField().isReadOnly());
-    assertTrue(view.getLineField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getTownField().isReadOnly());
-    assertTrue(view.getTownField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getStateField().isReadOnly());
-    assertTrue(view.getStateField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getCountryField().isReadOnly());
-    assertTrue(view.getCountryField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getPostalCodeField().isReadOnly());
-    assertTrue(view.getPostalCodeField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.lineField.isReadOnly());
+    assertTrue(view.lineField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.townField.isReadOnly());
+    assertTrue(view.townField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.stateField.isReadOnly());
+    assertTrue(view.stateField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.countryField.isReadOnly());
+    assertTrue(view.countryField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.postalCodeField.isReadOnly());
+    assertTrue(view.postalCodeField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
   }
 
   @Test
   public void editable_True() {
     presenter.setEditable(true);
 
-    assertFalse(view.getLineField().isReadOnly());
-    assertFalse(view.getLineField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getTownField().isReadOnly());
-    assertFalse(view.getTownField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getStateField().isReadOnly());
-    assertFalse(view.getStateField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getCountryField().isReadOnly());
-    assertFalse(view.getCountryField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getPostalCodeField().isReadOnly());
-    assertFalse(view.getPostalCodeField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.lineField.isReadOnly());
+    assertFalse(view.lineField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.townField.isReadOnly());
+    assertFalse(view.townField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.stateField.isReadOnly());
+    assertFalse(view.stateField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.countryField.isReadOnly());
+    assertFalse(view.countryField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.postalCodeField.isReadOnly());
+    assertFalse(view.postalCodeField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
   }
 
   @Test
   public void editable_False() {
     presenter.setEditable(false);
 
-    assertTrue(view.getLineField().isReadOnly());
-    assertTrue(view.getLineField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getTownField().isReadOnly());
-    assertTrue(view.getTownField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getStateField().isReadOnly());
-    assertTrue(view.getStateField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getCountryField().isReadOnly());
-    assertTrue(view.getCountryField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getPostalCodeField().isReadOnly());
-    assertTrue(view.getPostalCodeField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.lineField.isReadOnly());
+    assertTrue(view.lineField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.townField.isReadOnly());
+    assertTrue(view.townField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.stateField.isReadOnly());
+    assertTrue(view.stateField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.countryField.isReadOnly());
+    assertTrue(view.countryField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.postalCodeField.isReadOnly());
+    assertTrue(view.postalCodeField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
   }
 
   @Test
   public void defaults() throws Throwable {
-    assertEquals(defaultAddress, view.getLineField().getValue());
-    assertEquals(defaultTown, view.getTownField().getValue());
-    assertEquals(defaultState, view.getStateField().getValue());
-    assertEquals(defaultCountry, view.getCountryField().getValue());
-    assertEquals(defaultPostalCode, view.getPostalCodeField().getValue());
+    assertEquals(defaultAddress, view.lineField.getValue());
+    assertEquals(defaultTown, view.townField.getValue());
+    assertEquals(defaultState, view.stateField.getValue());
+    assertEquals(defaultCountry, view.countryField.getValue());
+    assertEquals(defaultPostalCode, view.postalCodeField.getValue());
   }
 
   @Test
@@ -216,9 +215,9 @@ public class AddressFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getLineField().setValue("");
+    view.lineField.setValue("");
 
-    assertFalse(view.getLineField().isValid());
+    assertFalse(view.lineField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -233,9 +232,9 @@ public class AddressFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getTownField().setValue("");
+    view.townField.setValue("");
 
-    assertFalse(view.getTownField().isValid());
+    assertFalse(view.townField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -250,9 +249,9 @@ public class AddressFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getStateField().setValue("");
+    view.stateField.setValue("");
 
-    assertFalse(view.getStateField().isValid());
+    assertFalse(view.stateField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -267,9 +266,9 @@ public class AddressFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getCountryField().setValue("");
+    view.countryField.setValue("");
 
-    assertFalse(view.getCountryField().isValid());
+    assertFalse(view.countryField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -284,9 +283,9 @@ public class AddressFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getPostalCodeField().setValue("");
+    view.postalCodeField.setValue("");
 
-    assertFalse(view.getPostalCodeField().isValid());
+    assertFalse(view.postalCodeField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
