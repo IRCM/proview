@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.LaboratoryService;
-import ca.qc.ircm.proview.laboratory.web.LaboratoryForm;
 import ca.qc.ircm.proview.laboratory.web.LaboratoryFormPresenter;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.Address;
@@ -35,10 +34,7 @@ import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,17 +75,6 @@ public class ViewUserFormPresenter {
   private List<DeletablePhoneNumberFormPresenter> phoneNumberFormPresenters = new ArrayList<>();
   private User user = new User();
   private ViewUserForm view;
-  private Panel userPanel;
-  private UserForm userForm;
-  private Panel laboratoryPanel;
-  private LaboratoryForm laboratoryForm;
-  private Panel addressPanel;
-  private AddressForm addressForm;
-  private Panel phoneNumbersPanel;
-  private VerticalLayout phoneNumbersLayout;
-  private Button addPhoneNumberButton;
-  private Button saveButton;
-  private Button cancelButton;
   @Inject
   private UserFormPresenter userFormPresenter;
   @Inject
@@ -109,6 +94,26 @@ public class ViewUserFormPresenter {
   @Inject
   private VaadinUtils vaadinUtils;
 
+  public ViewUserFormPresenter() {
+  }
+
+  protected ViewUserFormPresenter(UserFormPresenter userFormPresenter,
+      LaboratoryFormPresenter laboratoryFormPresenter, AddressFormPresenter addressFormPresenter,
+      Provider<DeletablePhoneNumberFormPresenter> deletablePhoneNumberPresenterProvider,
+      Provider<AddPhoneNumberWindow> addPhoneNumberWindowProvider, UserService userService,
+      LaboratoryService laboratoryService, AuthorizationService authorizationService,
+      VaadinUtils vaadinUtils) {
+    this.userFormPresenter = userFormPresenter;
+    this.laboratoryFormPresenter = laboratoryFormPresenter;
+    this.addressFormPresenter = addressFormPresenter;
+    this.deletablePhoneNumberPresenterProvider = deletablePhoneNumberPresenterProvider;
+    this.addPhoneNumberWindowProvider = addPhoneNumberWindowProvider;
+    this.userService = userService;
+    this.laboratoryService = laboratoryService;
+    this.authorizationService = authorizationService;
+    this.vaadinUtils = vaadinUtils;
+  }
+
   /**
    * Initializes presenter.
    *
@@ -118,26 +123,11 @@ public class ViewUserFormPresenter {
   public void init(ViewUserForm view) {
     this.view = view;
     view.setPresenter(this);
-    setFields();
-    userFormPresenter.init(userForm);
-    laboratoryFormPresenter.init(laboratoryForm);
-    addressFormPresenter.init(addressForm);
+    userFormPresenter.init(view.userForm);
+    laboratoryFormPresenter.init(view.laboratoryForm);
+    addressFormPresenter.init(view.addressForm);
     bindFields();
     addFieldListeners();
-  }
-
-  private void setFields() {
-    userPanel = view.getUserPanel();
-    userForm = view.getUserForm();
-    laboratoryPanel = view.getLaboratoryPanel();
-    laboratoryForm = view.getLaboratoryForm();
-    addressPanel = view.getAddressPanel();
-    addressForm = view.getAddressForm();
-    phoneNumbersPanel = view.getPhoneNumbersPanel();
-    phoneNumbersLayout = view.getPhoneNumbersLayout();
-    addPhoneNumberButton = view.getAddPhoneNumberButton();
-    saveButton = view.getSaveButton();
-    cancelButton = view.getCancelButton();
   }
 
   private void bindFields() {
@@ -148,9 +138,9 @@ public class ViewUserFormPresenter {
 
   private void addFieldListeners() {
     editableProperty.addValueChangeListener(e -> updateEditable());
-    addPhoneNumberButton.addClickListener(e -> addPhoneNumber());
-    saveButton.addClickListener(e -> save());
-    cancelButton.addClickListener(e -> refresh());
+    view.addPhoneNumberButton.addClickListener(e -> addPhoneNumber());
+    view.saveButton.addClickListener(e -> save());
+    view.cancelButton.addClickListener(e -> refresh());
   }
 
   private void updateEditable() {
@@ -162,9 +152,9 @@ public class ViewUserFormPresenter {
     for (DeletablePhoneNumberFormPresenter phoneNumberFormPresenter : phoneNumberFormPresenters) {
       phoneNumberFormPresenter.setEditable(editable);
     }
-    addPhoneNumberButton.setVisible(editable);
-    saveButton.setVisible(editable);
-    cancelButton.setVisible(editable);
+    view.addPhoneNumberButton.setVisible(editable);
+    view.saveButton.setVisible(editable);
+    view.cancelButton.setVisible(editable);
   }
 
   /**
@@ -176,13 +166,13 @@ public class ViewUserFormPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    userPanel.setCaption(resources.message("userHeader"));
-    laboratoryPanel.setCaption(resources.message("laboratoryHeader"));
-    addressPanel.setCaption(resources.message("addressHeader"));
-    phoneNumbersPanel.setCaption(resources.message("phoneNumbersHeader"));
-    addPhoneNumberButton.setCaption(resources.message("addPhoneNumber"));
-    saveButton.setCaption(resources.message("save"));
-    cancelButton.setCaption(resources.message("cancel"));
+    view.userPanel.setCaption(resources.message("userHeader"));
+    view.laboratoryPanel.setCaption(resources.message("laboratoryHeader"));
+    view.addressPanel.setCaption(resources.message("addressHeader"));
+    view.phoneNumbersPanel.setCaption(resources.message("phoneNumbersHeader"));
+    view.addPhoneNumberButton.setCaption(resources.message("addPhoneNumber"));
+    view.saveButton.setCaption(resources.message("save"));
+    view.cancelButton.setCaption(resources.message("cancel"));
   }
 
   private void addPhoneNumber() {
@@ -268,7 +258,7 @@ public class ViewUserFormPresenter {
     laboratoryFormPresenter
         .setItemDataSource(new BeanItem<>(user.getLaboratory(), Laboratory.class));
     addressFormPresenter.setItemDataSource(new BeanItem<>(user.getAddress(), Address.class));
-    phoneNumbersLayout.removeAllComponents();
+    view.phoneNumbersLayout.removeAllComponents();
     phoneNumberFormPresenters.clear();
     List<PhoneNumber> phoneNumbers = user.getPhoneNumbers();
     if (phoneNumbers == null || phoneNumbers.isEmpty()) {
@@ -285,16 +275,16 @@ public class ViewUserFormPresenter {
       phoneNumberFormPresenters.add(presenter);
       presenter.addDeleteClickListener(e -> removePhoneNumber(phoneNumber));
       presenter.setEditable(editableProperty.getValue());
-      phoneNumbersLayout.addComponent(form);
+      view.phoneNumbersLayout.addComponent(form);
       presenter.setItemDataSource(new BeanItem<>(phoneNumber, PhoneNumber.class));
     }
   }
 
   public void addCancelClickListener(ClickListener listener) {
-    cancelButton.addClickListener(listener);
+    view.cancelButton.addClickListener(listener);
   }
 
   public void removeCancelClickListener(ClickListener listener) {
-    cancelButton.removeClickListener(listener);
+    view.cancelButton.removeClickListener(listener);
   }
 }
