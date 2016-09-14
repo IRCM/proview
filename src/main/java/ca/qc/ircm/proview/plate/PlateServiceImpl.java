@@ -3,9 +3,9 @@ package ca.qc.ircm.proview.plate;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.plate.QPlateSpot.plateSpot;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.sample.SubmissionSample.Status.ANALYSED;
-import static ca.qc.ircm.proview.sample.SubmissionSample.Status.CANCELLED;
-import static ca.qc.ircm.proview.sample.SubmissionSample.Status.DATA_ANALYSIS;
+import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
+import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
+import static ca.qc.ircm.proview.sample.SampleStatus.DATA_ANALYSIS;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;

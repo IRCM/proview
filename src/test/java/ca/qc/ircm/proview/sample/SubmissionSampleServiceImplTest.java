@@ -106,7 +106,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(Sample.Support.GEL, gelSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
     assertEquals("Philippe", gelSample.getComments());
-    assertEquals(SubmissionSample.Status.ANALYSED, gelSample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
     assertEquals("Coulombe", gelSample.getProject());
     assertEquals("G100429", gelSample.getExperience());
     assertEquals(null, gelSample.getGoal());
@@ -155,7 +155,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(Sample.Support.SOLUTION, eluateSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, eluateSample.getType());
     assertEquals(null, eluateSample.getComments());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, eluateSample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
     assertEquals("cap_project", eluateSample.getProject());
     assertEquals("cap_experience", eluateSample.getExperience());
     assertEquals("cap_goal", eluateSample.getGoal());
@@ -198,7 +198,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(Sample.Support.SOLUTION, moleculeSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, moleculeSample.getType());
     assertEquals(null, moleculeSample.getComments());
-    assertEquals(SubmissionSample.Status.TO_APPROVE, moleculeSample.getStatus());
+    assertEquals(SampleStatus.TO_APPROVE, moleculeSample.getStatus());
     assertEquals(MsAnalysis.Source.ESI, moleculeSample.getSource());
     assertEquals(true, moleculeSample.isLowResolution());
     assertEquals(false, moleculeSample.isHighResolution());
@@ -233,7 +233,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(Sample.Support.GEL, gelSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
     assertEquals("Philippe", gelSample.getComments());
-    assertEquals(SubmissionSample.Status.ANALYSED, gelSample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
     assertEquals("Coulombe", gelSample.getProject());
     assertEquals("G100429", gelSample.getExperience());
     assertEquals(null, gelSample.getGoal());
@@ -282,7 +282,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(Sample.Support.SOLUTION, eluateSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, eluateSample.getType());
     assertEquals(null, eluateSample.getComments());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, eluateSample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
     assertEquals("cap_project", eluateSample.getProject());
     assertEquals("cap_experience", eluateSample.getExperience());
     assertEquals("cap_goal", eluateSample.getGoal());
@@ -325,7 +325,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(Sample.Support.SOLUTION, moleculeSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, moleculeSample.getType());
     assertEquals(null, moleculeSample.getComments());
-    assertEquals(SubmissionSample.Status.TO_APPROVE, moleculeSample.getStatus());
+    assertEquals(SampleStatus.TO_APPROVE, moleculeSample.getStatus());
     assertEquals(MsAnalysis.Source.ESI, moleculeSample.getSource());
     assertEquals(true, moleculeSample.isLowResolution());
     assertEquals(false, moleculeSample.isHighResolution());
@@ -393,7 +393,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals("cap_project", ((ProteicSample) sample).getProject());
     assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -401,7 +401,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals((Long) 443L, sample.getId());
     assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
-    assertEquals(SubmissionSample.Status.TO_APPROVE, sample.getStatus());
+    assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -645,7 +645,7 @@ public class SubmissionSampleServiceImplTest {
   @Test
   public void report_Status() throws Throwable {
     SampleFilterBean filter = new SampleFilterBean();
-    filter.statuses(Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS));
+    filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS));
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -667,7 +667,7 @@ public class SubmissionSampleServiceImplTest {
   public void report_Status_Multiple() throws Throwable {
     SampleFilterBean filter = new SampleFilterBean();
     filter.statuses(
-        Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS, SubmissionSample.Status.TO_APPROVE));
+        Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.TO_APPROVE));
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -899,7 +899,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
     assertEquals(Service.LC_MS_MS, sample.getService());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -918,7 +918,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(MsAnalysis.Source.ESI, ((MoleculeSample) sample).getSource());
     assertEquals(Service.SMALL_MOLECULE, sample.getService());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
-    assertEquals(SubmissionSample.Status.TO_APPROVE, sample.getStatus());
+    assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -933,7 +933,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
     assertEquals(Service.LC_MS_MS, sample.getService());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
-    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 17, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -1117,7 +1117,7 @@ public class SubmissionSampleServiceImplTest {
   @Test
   public void adminReport_Status() throws Throwable {
     SampleFilterBean filter = new SampleFilterBean();
-    filter.statuses(Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS));
+    filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS));
 
     SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter);
 
@@ -1135,7 +1135,7 @@ public class SubmissionSampleServiceImplTest {
   public void adminReport_Status_Multiple() throws Throwable {
     SampleFilterBean filter = new SampleFilterBean();
     filter.statuses(
-        Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS, SubmissionSample.Status.ANALYSED));
+        Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.ANALYSED));
 
     SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter);
 
@@ -1406,10 +1406,10 @@ public class SubmissionSampleServiceImplTest {
   public void updateStatus() throws Throwable {
     SubmissionSample sample1 = entityManager.find(SubmissionSample.class, 443L);
     entityManager.detach(sample1);
-    sample1.setStatus(SubmissionSample.Status.TO_DIGEST);
+    sample1.setStatus(SampleStatus.TO_DIGEST);
     SubmissionSample sample2 = entityManager.find(SubmissionSample.class, 445L);
     entityManager.detach(sample2);
-    sample2.setStatus(SubmissionSample.Status.RECEIVED);
+    sample2.setStatus(SampleStatus.RECEIVED);
     Collection<SubmissionSample> samples = new LinkedList<SubmissionSample>();
     samples.add(sample1);
     samples.add(sample2);
@@ -1422,14 +1422,14 @@ public class SubmissionSampleServiceImplTest {
     verify(authorizationService).checkAdminRole();
     SubmissionSample testSample1 = entityManager.find(SubmissionSample.class, 443L);
     SubmissionSample testSample2 = entityManager.find(SubmissionSample.class, 445L);
-    assertEquals(SubmissionSample.Status.TO_DIGEST, testSample1.getStatus());
-    assertEquals(SubmissionSample.Status.RECEIVED, testSample2.getStatus());
+    assertEquals(SampleStatus.TO_DIGEST, testSample1.getStatus());
+    assertEquals(SampleStatus.RECEIVED, testSample2.getStatus());
     verify(sampleActivityService, times(2)).update(sampleCaptor.capture(), isNull(String.class));
     verify(activityService, times(2)).insert(activity);
     SubmissionSample newTestSample1 = (SubmissionSample) sampleCaptor.getAllValues().get(0);
-    assertEquals(SubmissionSample.Status.TO_DIGEST, newTestSample1.getStatus());
+    assertEquals(SampleStatus.TO_DIGEST, newTestSample1.getStatus());
     SubmissionSample newTestSample2 = (SubmissionSample) sampleCaptor.getAllValues().get(1);
-    assertEquals(SubmissionSample.Status.RECEIVED, newTestSample2.getStatus());
+    assertEquals(SampleStatus.RECEIVED, newTestSample2.getStatus());
   }
 
   @Test

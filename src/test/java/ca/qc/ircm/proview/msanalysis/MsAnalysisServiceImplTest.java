@@ -23,8 +23,8 @@ import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.EluateSample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.sample.SubmissionSample.Status;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
@@ -321,7 +321,7 @@ public class MsAnalysisServiceImplTest {
     assertEquals((Integer) 0, acquisition.getListIndex());
     assertEquals("unit_test_comments", acquisition.getComments());
     SubmissionSample sampleStatus = entityManager.find(SubmissionSample.class, sample.getId());
-    assertEquals(Status.ANALYSED, sampleStatus.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sampleStatus.getStatus());
     MsAnalysisAggregate msAnalysisAggregate = msAnalysisAggregateCaptor.getValue();
     assertEquals(msAnalysis.getId(), msAnalysisAggregate.getMsAnalysis().getId());
     acquisitions = msAnalysisAggregate.getAcquisitions();

@@ -55,7 +55,7 @@ public class SampleServiceImplTest {
     assertEquals(Sample.Support.GEL, gelSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
     assertEquals("Philippe", gelSample.getComments());
-    assertEquals(SubmissionSample.Status.ANALYSED, gelSample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
     assertEquals("Coulombe", gelSample.getProject());
     assertEquals("G100429", gelSample.getExperience());
     assertEquals(null, gelSample.getGoal());
@@ -103,7 +103,7 @@ public class SampleServiceImplTest {
     assertEquals(Sample.Support.SOLUTION, eluateSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, eluateSample.getType());
     assertEquals(null, eluateSample.getComments());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, eluateSample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
     assertEquals("cap_project", eluateSample.getProject());
     assertEquals("cap_experience", eluateSample.getExperience());
     assertEquals("cap_goal", eluateSample.getGoal());
@@ -145,7 +145,7 @@ public class SampleServiceImplTest {
     assertEquals(Sample.Support.SOLUTION, moleculeSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, moleculeSample.getType());
     assertEquals(null, moleculeSample.getComments());
-    assertEquals(SubmissionSample.Status.TO_APPROVE, moleculeSample.getStatus());
+    assertEquals(SampleStatus.TO_APPROVE, moleculeSample.getStatus());
     assertEquals(MsAnalysis.Source.ESI, moleculeSample.getSource());
     assertEquals(true, moleculeSample.isLowResolution());
     assertEquals(false, moleculeSample.isHighResolution());

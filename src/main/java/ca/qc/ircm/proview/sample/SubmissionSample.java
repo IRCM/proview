@@ -40,40 +40,6 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
     SMALL_MOLECULE
   }
 
-  /**
-   * All statuses of a sample.
-   */
-  public static enum Status {
-    /**
-     * Sample price must be approved by manager.
-     */
-    TO_APPROVE, /**
-                 * Sample is not received yet.
-                 */
-    TO_RECEIVE, /**
-                 * Sample is in solution.
-                 */
-    RECEIVED, /**
-               * Sample must be digest.
-               */
-    TO_DIGEST, /**
-                * Sample must be enriched.
-                */
-    TO_ENRICH, /**
-                * Sample must be analysed.
-                */
-    TO_ANALYSE, /**
-                 * Result data must be manually analysed.
-                 */
-    DATA_ANALYSIS, /**
-                    * Sample is analysed and have results.
-                    */
-    ANALYSED, /**
-               * Sample analyse was cancelled.
-               */
-    CANCELLED;
-  }
-
   private static final long serialVersionUID = -7652364189294805763L;
 
   /**
@@ -99,7 +65,7 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
    */
   @Column(name = "status", nullable = false)
   @Enumerated(STRING)
-  private Status status;
+  private SampleStatus status;
   /**
    * Submission of this sample.
    */
@@ -170,7 +136,7 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
     this.submission = submission;
   }
 
-  public Status getStatus() {
+  public SampleStatus getStatus() {
     return status;
   }
 
@@ -179,7 +145,7 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
     return Type.SUBMISSION;
   }
 
-  public void setStatus(Status status) {
+  public void setStatus(SampleStatus status) {
     this.status = status;
   }
 

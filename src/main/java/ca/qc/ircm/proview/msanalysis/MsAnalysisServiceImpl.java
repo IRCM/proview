@@ -8,8 +8,8 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.sample.SubmissionSample.Status;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.user.User;
@@ -161,7 +161,7 @@ public class MsAnalysisServiceImpl extends BaseTreatmentService implements MsAna
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
       if (acquisition.getSample() instanceof SubmissionSample) {
         SubmissionSample submissionSample = (SubmissionSample) acquisition.getSample();
-        submissionSample.setStatus(Status.ANALYSED);
+        submissionSample.setStatus(SampleStatus.ANALYSED);
       }
     }
 

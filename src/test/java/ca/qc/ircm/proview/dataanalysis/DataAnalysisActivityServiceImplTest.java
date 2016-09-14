@@ -9,6 +9,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.sample.GelSample;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -48,7 +49,7 @@ public class DataAnalysisActivityServiceImplTest {
   @Test
   public void insert() {
     SubmissionSample sample = new GelSample(1L);
-    sample.setStatus(SubmissionSample.Status.DATA_ANALYSIS);
+    sample.setStatus(SampleStatus.DATA_ANALYSIS);
     DataAnalysis dataAnalysis = new DataAnalysis();
     dataAnalysis.setId(123456L);
     dataAnalysis.setSample(sample);
@@ -72,8 +73,8 @@ public class DataAnalysisActivityServiceImplTest {
     sampleStatusUpdate.setTableName("sample");
     sampleStatusUpdate.setRecordId(sample.getId());
     sampleStatusUpdate.setColumn("status");
-    sampleStatusUpdate.setOldValue(SubmissionSample.Status.ANALYSED.name());
-    sampleStatusUpdate.setNewValue(SubmissionSample.Status.DATA_ANALYSIS.name());
+    sampleStatusUpdate.setOldValue(SampleStatus.ANALYSED.name());
+    sampleStatusUpdate.setNewValue(SampleStatus.DATA_ANALYSIS.name());
     expecteds.add(sampleStatusUpdate);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
@@ -86,7 +87,7 @@ public class DataAnalysisActivityServiceImplTest {
     dataAnalysis.setScore("90.0");
     dataAnalysis.setStatus(DataAnalysis.Status.ANALYSED);
     dataAnalysis.setWorkTime(2.0);
-    dataAnalysis.getSample().setStatus(SubmissionSample.Status.ANALYSED);
+    dataAnalysis.getSample().setStatus(SampleStatus.ANALYSED);
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
@@ -107,8 +108,8 @@ public class DataAnalysisActivityServiceImplTest {
     sampleStatusUpdate.setTableName("sample");
     sampleStatusUpdate.setRecordId(dataAnalysis.getSample().getId());
     sampleStatusUpdate.setColumn("status");
-    sampleStatusUpdate.setOldValue(SubmissionSample.Status.DATA_ANALYSIS.name());
-    sampleStatusUpdate.setNewValue(SubmissionSample.Status.ANALYSED.name());
+    sampleStatusUpdate.setOldValue(SampleStatus.DATA_ANALYSIS.name());
+    sampleStatusUpdate.setNewValue(SampleStatus.ANALYSED.name());
     expecteds.add(sampleStatusUpdate);
     UpdateActivity scoreUpdate = new UpdateActivity();
     scoreUpdate.setActionType(ActionType.UPDATE);
@@ -145,7 +146,7 @@ public class DataAnalysisActivityServiceImplTest {
     dataAnalysis.setScore(null);
     dataAnalysis.setStatus(DataAnalysis.Status.TO_DO);
     dataAnalysis.setWorkTime(null);
-    dataAnalysis.getSample().setStatus(SubmissionSample.Status.DATA_ANALYSIS);
+    dataAnalysis.getSample().setStatus(SampleStatus.DATA_ANALYSIS);
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
@@ -166,8 +167,8 @@ public class DataAnalysisActivityServiceImplTest {
     sampleStatusUpdate.setTableName("sample");
     sampleStatusUpdate.setRecordId(dataAnalysis.getSample().getId());
     sampleStatusUpdate.setColumn("status");
-    sampleStatusUpdate.setOldValue(SubmissionSample.Status.ANALYSED.name());
-    sampleStatusUpdate.setNewValue(SubmissionSample.Status.DATA_ANALYSIS.name());
+    sampleStatusUpdate.setOldValue(SampleStatus.ANALYSED.name());
+    sampleStatusUpdate.setNewValue(SampleStatus.DATA_ANALYSIS.name());
     expecteds.add(sampleStatusUpdate);
     UpdateActivity scoreUpdate = new UpdateActivity();
     scoreUpdate.setActionType(ActionType.UPDATE);

@@ -5,6 +5,7 @@ import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.SampleStatusUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
@@ -48,7 +49,7 @@ public class DataAnalysisActivityServiceImpl implements DataAnalysisActivityServ
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<UpdateActivityBuilder>();
     updateBuilders.add(new SampleStatusUpdateActivityBuilder().oldSample(oldSample)
-        .newValue(SubmissionSample.Status.DATA_ANALYSIS));
+        .newValue(SampleStatus.DATA_ANALYSIS));
 
     // Keep updates that did not change.
     final Collection<UpdateActivity> updates = new ArrayList<UpdateActivity>();

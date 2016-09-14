@@ -3,7 +3,6 @@ package ca.qc.ircm.proview.sample;
 import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
-import ca.qc.ircm.proview.sample.SubmissionSample.Status;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
@@ -41,7 +40,7 @@ public class SubmissionSampleComparatorTest {
       sample.setLims("IRCM_20111018_01");
       sample.setName("CAP_20111018_01");
       sample.setService(Service.LC_MS_MS);
-      sample.setStatus(Status.TO_DIGEST);
+      sample.setStatus(SampleStatus.TO_DIGEST);
       sample.setProject("cap_project");
       sample.setExperience("cap_experience");
       samples.add(sample);
@@ -61,7 +60,7 @@ public class SubmissionSampleComparatorTest {
       sample.setId(2L);
       sample.setLims("MCGI_20111018_01");
       sample.setName("MLA_20111018_01");
-      sample.setStatus(Status.TO_ANALYSE);
+      sample.setStatus(SampleStatus.TO_ANALYSE);
       sample.setProject("caé_project");
       sample.setExperience("mla_experience");
       sample.setService(Service.TWO_DIMENSION_LC_MS_MS);
@@ -83,7 +82,7 @@ public class SubmissionSampleComparatorTest {
       sample.setId(3L);
       sample.setLims("UDEM_20111018_01");
       sample.setName("JZA_20111018_01");
-      sample.setStatus(Status.ANALYSED);
+      sample.setStatus(SampleStatus.ANALYSED);
       sample.setService(Service.SMALL_MOLECULE);
       sample.setSupport(Sample.Support.SOLUTION);
       samples.add(sample);

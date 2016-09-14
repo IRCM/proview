@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.sample;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
-import ca.qc.ircm.proview.sample.SubmissionSample.Status;
 import ca.qc.ircm.proview.user.User;
 
 import java.time.Instant;
@@ -27,7 +26,7 @@ public interface SampleFilter {
 
   public String getProjectContains();
 
-  public Collection<Status> getStatuses();
+  public Collection<SampleStatus> getStatuses();
 
   public SubmissionSampleService.Support getSupport();
 

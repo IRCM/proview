@@ -19,8 +19,8 @@ import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.EluateSample;
 import ca.qc.ircm.proview.sample.GelSample;
 import ca.qc.ircm.proview.sample.MoleculeSample;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.sample.SubmissionSample.Status;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
@@ -293,7 +293,7 @@ public class SubmissionServiceImpl implements SubmissionService {
     for (SubmissionSample sample : submission.getSamples()) {
       generateLims(sample, laboratory, otherSampleLims);
       sample.setSubmission(submission);
-      sample.setStatus(Status.TO_APPROVE);
+      sample.setStatus(SampleStatus.TO_APPROVE);
       sample.setPrice(pricingEvaluator.computePrice(sample, submission.getSubmissionDate()));
       Tube tube = new Tube();
       tube.setSample(sample);

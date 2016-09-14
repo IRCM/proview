@@ -98,7 +98,7 @@ public class MoleculeSampleServiceImplTest {
     assertEquals(null, sample.getComments());
     assertEquals(ServiceType.SMALL_MOLECULE, sample.getServiceType());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
-    assertEquals(SubmissionSample.Status.TO_APPROVE, sample.getStatus());
+    assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(Service.SMALL_MOLECULE, sample.getService());
     assertEquals(null, sample.getMassDetectionInstrument());
     assertEquals(Source.ESI, sample.getSource());

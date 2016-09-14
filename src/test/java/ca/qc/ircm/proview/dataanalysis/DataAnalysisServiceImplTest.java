@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.GelSample;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -116,7 +117,7 @@ public class DataAnalysisServiceImplTest {
   @Test
   public void insert() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     DataAnalysis dataAnalysis = new DataAnalysis();
     dataAnalysis.setSample(sample);
     dataAnalysis.setProtein("85574");
@@ -143,7 +144,7 @@ public class DataAnalysisServiceImplTest {
     assertEquals(DataAnalysis.Status.TO_DO, dataAnalysis.getStatus());
     assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 1L);
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     verify(dataAnalysisActivityService).insert(dataAnalysisCaptor.capture());
     verify(activityService).insert(activity);
     DataAnalysis dataAnalysisLog = dataAnalysisCaptor.getValue();
@@ -161,7 +162,7 @@ public class DataAnalysisServiceImplTest {
   @Test
   public void analyse() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(4L);
     entityManager.detach(dataAnalysis);
     assertEquals((Long) 4L, dataAnalysis.getId());
@@ -196,7 +197,7 @@ public class DataAnalysisServiceImplTest {
     assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysis.getStatus());
     assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 442L);
-    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), isNull(String.class));
     verify(activityService).insert(activity);
     DataAnalysis dataAnalysisLog = dataAnalysisCaptor.getValue();
@@ -209,13 +210,13 @@ public class DataAnalysisServiceImplTest {
     assertEquals((Double) 3.5, dataAnalysisLog.getWorkTime());
     assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysisLog.getStatus());
     assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysisLog.getType());
-    assertEquals(SubmissionSample.Status.ANALYSED, dataAnalysisLog.getSample().getStatus());
+    assertEquals(SampleStatus.ANALYSED, dataAnalysisLog.getSample().getStatus());
   }
 
   @Test
   public void update() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(3L);
     entityManager.detach(dataAnalysis);
     assertEquals((Long) 3L, dataAnalysis.getId());
@@ -248,7 +249,7 @@ public class DataAnalysisServiceImplTest {
     assertEquals(DataAnalysis.Status.CANCELLED, dataAnalysis.getStatus());
     assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 1L);
-    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
     DataAnalysis dataAnalysisLog = dataAnalysisCaptor.getValue();
@@ -261,13 +262,13 @@ public class DataAnalysisServiceImplTest {
     assertEquals((Double) 2.0, dataAnalysisLog.getWorkTime());
     assertEquals(DataAnalysis.Status.CANCELLED, dataAnalysisLog.getStatus());
     assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysisLog.getType());
-    assertEquals(SubmissionSample.Status.ANALYSED, dataAnalysisLog.getSample().getStatus());
+    assertEquals(SampleStatus.ANALYSED, dataAnalysisLog.getSample().getStatus());
   }
 
   @Test
   public void update_Status_Todo() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(3L);
     entityManager.detach(dataAnalysis);
     assertEquals((Long) 3L, dataAnalysis.getId());
@@ -299,7 +300,7 @@ public class DataAnalysisServiceImplTest {
     assertEquals(DataAnalysis.Status.TO_DO, dataAnalysis.getStatus());
     assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 1L);
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
     DataAnalysis dataAnalysisLog = dataAnalysisCaptor.getValue();
@@ -312,13 +313,13 @@ public class DataAnalysisServiceImplTest {
     assertEquals(null, dataAnalysisLog.getWorkTime());
     assertEquals(DataAnalysis.Status.TO_DO, dataAnalysisLog.getStatus());
     assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysisLog.getType());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, dataAnalysisLog.getSample().getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, dataAnalysisLog.getSample().getStatus());
   }
 
   @Test
   public void updateToAnalysed() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(4L);
     entityManager.detach(dataAnalysis);
     assertEquals((Long) 4L, dataAnalysis.getId());
@@ -350,7 +351,7 @@ public class DataAnalysisServiceImplTest {
     assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysis.getStatus());
     assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 442L);
-    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
     DataAnalysis dataAnalysisLog = dataAnalysisCaptor.getValue();
@@ -363,6 +364,6 @@ public class DataAnalysisServiceImplTest {
     assertEquals((Double) 3.50, dataAnalysis.getWorkTime());
     assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysisLog.getStatus());
     assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
-    assertEquals(SubmissionSample.Status.ANALYSED, dataAnalysisLog.getSample().getStatus());
+    assertEquals(SampleStatus.ANALYSED, dataAnalysisLog.getSample().getStatus());
   }
 }

@@ -40,6 +40,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.Standard;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
@@ -173,7 +174,7 @@ public class SubmissionServiceImplTest {
     assertEquals(Sample.Support.GEL, gelSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
     assertEquals("Philippe", gelSample.getComments());
-    assertEquals(SubmissionSample.Status.ANALYSED, gelSample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
     assertEquals("Coulombe", gelSample.getProject());
     assertEquals("G100429", gelSample.getExperience());
     assertEquals(null, gelSample.getGoal());
@@ -239,7 +240,7 @@ public class SubmissionServiceImplTest {
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals("cap_project", ((ProteicSample) sample).getProject());
     assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -249,7 +250,7 @@ public class SubmissionServiceImplTest {
     assertEquals((Long) 443L, sample.getId());
     assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
-    assertEquals(SubmissionSample.Status.TO_APPROVE, sample.getStatus());
+    assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -493,7 +494,7 @@ public class SubmissionServiceImplTest {
   @Test
   public void report_Status() throws Throwable {
     SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
-    filter.statuses(Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS));
+    filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS));
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -515,7 +516,7 @@ public class SubmissionServiceImplTest {
   public void report_Status_Multiple() throws Throwable {
     SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
     filter.statuses(
-        Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS, SubmissionSample.Status.TO_APPROVE));
+        Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.TO_APPROVE));
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -746,7 +747,7 @@ public class SubmissionServiceImplTest {
     assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
     assertEquals(Service.LC_MS_MS, sample.getService());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -767,7 +768,7 @@ public class SubmissionServiceImplTest {
     assertEquals(MsAnalysis.Source.ESI, ((MoleculeSample) sample).getSource());
     assertEquals(Service.SMALL_MOLECULE, sample.getService());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
-    assertEquals(SubmissionSample.Status.TO_APPROVE, sample.getStatus());
+    assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -784,7 +785,7 @@ public class SubmissionServiceImplTest {
     assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
     assertEquals(Service.LC_MS_MS, sample.getService());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
-    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 17, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
@@ -968,7 +969,7 @@ public class SubmissionServiceImplTest {
   @Test
   public void adminReport_Status() throws Throwable {
     SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
-    filter.statuses(Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS));
+    filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS));
 
     SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
 
@@ -986,7 +987,7 @@ public class SubmissionServiceImplTest {
   public void adminReport_Status_Multiple() throws Throwable {
     SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
     filter.statuses(
-        Arrays.asList(SubmissionSample.Status.DATA_ANALYSIS, SubmissionSample.Status.ANALYSED));
+        Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.ANALYSED));
 
     SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
 

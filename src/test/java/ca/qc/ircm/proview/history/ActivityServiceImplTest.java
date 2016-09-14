@@ -16,7 +16,7 @@ import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.EluateSample;
 import ca.qc.ircm.proview.sample.GelSample;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -281,8 +281,8 @@ public class ActivityServiceImplTest {
     assertEquals(sample.getId(), updateActivity.getRecordId());
     assertEquals(ActionType.UPDATE, updateActivity.getActionType());
     assertEquals("status", updateActivity.getColumn());
-    assertEquals(SubmissionSample.Status.ANALYSED.name(), updateActivity.getOldValue());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS.name(), updateActivity.getNewValue());
+    assertEquals(SampleStatus.ANALYSED.name(), updateActivity.getOldValue());
+    assertEquals(SampleStatus.DATA_ANALYSIS.name(), updateActivity.getNewValue());
   }
 
   @Test
@@ -559,8 +559,8 @@ public class ActivityServiceImplTest {
     assertEquals(sample.getId(), updateActivity.getRecordId());
     assertEquals(ActionType.UPDATE, updateActivity.getActionType());
     assertEquals("status", updateActivity.getColumn());
-    assertEquals(SubmissionSample.Status.TO_ANALYSE.name(), updateActivity.getOldValue());
-    assertEquals(SubmissionSample.Status.ANALYSED.name(), updateActivity.getNewValue());
+    assertEquals(SampleStatus.TO_ANALYSE.name(), updateActivity.getOldValue());
+    assertEquals(SampleStatus.ANALYSED.name(), updateActivity.getNewValue());
   }
 
   @Test
@@ -592,8 +592,8 @@ public class ActivityServiceImplTest {
     assertEquals((Long) 612L, updateActivity.getRecordId());
     assertEquals(ActionType.UPDATE, updateActivity.getActionType());
     assertEquals("status", updateActivity.getColumn());
-    assertEquals(SubmissionSample.Status.RECEIVED.name(), updateActivity.getOldValue());
-    assertEquals(SubmissionSample.Status.ANALYSED.name(), updateActivity.getNewValue());
+    assertEquals(SampleStatus.RECEIVED.name(), updateActivity.getOldValue());
+    assertEquals(SampleStatus.ANALYSED.name(), updateActivity.getNewValue());
   }
 
   @Test
@@ -625,8 +625,8 @@ public class ActivityServiceImplTest {
     assertEquals(sample.getId(), updateActivity.getRecordId());
     assertEquals(ActionType.UPDATE, updateActivity.getActionType());
     assertEquals("status", updateActivity.getColumn());
-    assertEquals(SubmissionSample.Status.ANALYSED.name(), updateActivity.getOldValue());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS.name(), updateActivity.getNewValue());
+    assertEquals(SampleStatus.ANALYSED.name(), updateActivity.getOldValue());
+    assertEquals(SampleStatus.DATA_ANALYSIS.name(), updateActivity.getNewValue());
   }
 
   @Test
@@ -650,8 +650,8 @@ public class ActivityServiceImplTest {
     assertEquals(sample.getId(), updateActivity.getRecordId());
     assertEquals(ActionType.UPDATE, updateActivity.getActionType());
     assertEquals("status", updateActivity.getColumn());
-    assertEquals(SubmissionSample.Status.ANALYSED.name(), updateActivity.getOldValue());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS.name(), updateActivity.getNewValue());
+    assertEquals(SampleStatus.ANALYSED.name(), updateActivity.getOldValue());
+    assertEquals(SampleStatus.DATA_ANALYSIS.name(), updateActivity.getNewValue());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("dataanalysis", activity.getTableName());
@@ -691,8 +691,8 @@ public class ActivityServiceImplTest {
     sampleStatusUpdate.setTableName("sample");
     sampleStatusUpdate.setRecordId(sample.getId());
     sampleStatusUpdate.setColumn("status");
-    sampleStatusUpdate.setOldValue(SubmissionSample.Status.DATA_ANALYSIS.name());
-    sampleStatusUpdate.setNewValue(SubmissionSample.Status.ANALYSED.name());
+    sampleStatusUpdate.setOldValue(SampleStatus.DATA_ANALYSIS.name());
+    sampleStatusUpdate.setNewValue(SampleStatus.ANALYSED.name());
     expecteds.add(new ComparableUpdateActivity(sampleStatusUpdate));
     Set<ComparableUpdateActivity> actuals = new HashSet<ComparableUpdateActivity>();
     for (UpdateActivity testUpdateActivity : activity.getUpdates()) {

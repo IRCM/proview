@@ -77,7 +77,7 @@ public class EluateSampleServiceImplTest {
     assertEquals(null, sample.getComments());
     assertEquals(ServiceType.PROTEIC, sample.getServiceType());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
-    assertEquals(SubmissionSample.Status.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals("cap_project", sample.getProject());
     assertEquals("cap_experience", sample.getExperience());
     assertEquals("cap_goal", sample.getGoal());

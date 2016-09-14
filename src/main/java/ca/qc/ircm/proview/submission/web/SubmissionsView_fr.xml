@@ -20,7 +20,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
   <entry key="title">Mes sousmissions</entry>
-  <entry key="header">Mes sousmissions</entry>
   <entry key="select"></entry>
   <entry key="sampleCount">Nombre d''échantillons</entry>
   <entry key="experience">Expérience</entry>
@@ -31,4 +30,5 @@
   <entry key="results">Résultats</entry>
   <entry key="results.false">Aucun</entry>
   <entry key="results.true">Résultats</entry>
+  <entry key="all">Tous</entry>
 </properties>

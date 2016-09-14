@@ -79,7 +79,7 @@ public class GelSampleServiceImplTest {
     assertEquals("Philippe", sample.getComments());
     assertEquals(ServiceType.PROTEIC, sample.getServiceType());
     assertEquals(Sample.Support.GEL, sample.getSupport());
-    assertEquals(SubmissionSample.Status.ANALYSED, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals("Coulombe", sample.getProject());
     assertEquals("G100429", sample.getExperience());
     assertEquals(null, sample.getGoal());

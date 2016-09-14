@@ -13,6 +13,7 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysisService.MsAnalysisAggregate;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.EluateSample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -83,7 +84,7 @@ public class MsAnalysisActivityServiceImplTest {
         verifications.get(verificationType).put(verification, true);
       }
     }
-    sample.setStatus(SubmissionSample.Status.ANALYSED);
+    sample.setStatus(SampleStatus.ANALYSED);
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
@@ -116,8 +117,8 @@ public class MsAnalysisActivityServiceImplTest {
     sampleStatusActivity.setTableName("sample");
     sampleStatusActivity.setRecordId(sample.getId());
     sampleStatusActivity.setColumn("status");
-    sampleStatusActivity.setOldValue(SubmissionSample.Status.TO_APPROVE.name());
-    sampleStatusActivity.setNewValue(SubmissionSample.Status.ANALYSED.name());
+    sampleStatusActivity.setOldValue(SampleStatus.TO_APPROVE.name());
+    sampleStatusActivity.setNewValue(SampleStatus.ANALYSED.name());
     expectedUpdateActivities.add(sampleStatusActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }

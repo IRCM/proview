@@ -31,4 +31,5 @@
   <entry key="results">Results</entry>
   <entry key="results.false">No</entry>
   <entry key="results.true">Results</entry>
+  <entry key="all">All</entry>
 </properties>

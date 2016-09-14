@@ -1,7 +1,7 @@
 package ca.qc.ircm.proview.submission;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
-import ca.qc.ircm.proview.sample.SubmissionSample.Status;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.user.User;
 
@@ -18,7 +18,7 @@ public class SubmissionFilterBuilder {
     private Instant maximalSubmissionDate;
     private String nameContains;
     private String projectContains;
-    private Collection<Status> statuses;
+    private Collection<SampleStatus> statuses;
     private SubmissionSampleService.Support support;
     private String userContains;
     private User user;
@@ -64,7 +64,7 @@ public class SubmissionFilterBuilder {
     }
 
     @Override
-    public Collection<Status> getStatuses() {
+    public Collection<SampleStatus> getStatuses() {
       return statuses;
     }
 
@@ -130,7 +130,7 @@ public class SubmissionFilterBuilder {
     return this;
   }
 
-  public SubmissionFilterBuilder statuses(Collection<Status> statuses) {
+  public SubmissionFilterBuilder statuses(Collection<SampleStatus> statuses) {
     filter.statuses = statuses;
     return this;
   }

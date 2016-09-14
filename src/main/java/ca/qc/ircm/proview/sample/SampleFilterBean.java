@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.sample;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
-import ca.qc.ircm.proview.sample.SubmissionSample.Status;
 import ca.qc.ircm.proview.user.User;
 
 import java.time.Instant;
@@ -19,7 +18,7 @@ public class SampleFilterBean implements SampleFilter {
   private Instant maximalSubmissionDate;
   private String nameContains;
   private String projectContains;
-  private Collection<Status> statuses;
+  private Collection<SampleStatus> statuses;
   private SubmissionSampleService.Support support;
   private String userContains;
   private User user;
@@ -119,11 +118,11 @@ public class SampleFilterBean implements SampleFilter {
   }
 
   @Override
-  public Collection<Status> getStatuses() {
+  public Collection<SampleStatus> getStatuses() {
     return statuses;
   }
 
-  public SampleFilterBean statuses(Collection<Status> statuses) {
+  public SampleFilterBean statuses(Collection<SampleStatus> statuses) {
     this.statuses = statuses;
     return this;
   }
