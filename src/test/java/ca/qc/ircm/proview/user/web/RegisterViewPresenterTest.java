@@ -175,11 +175,11 @@ public class RegisterViewPresenterTest {
     when(view.getRequiredLabel()).thenReturn(requiredLabel);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    view.getPhoneNumberForm().getTypeField().setNullSelectionAllowed(false);
-    view.getPhoneNumberForm().getTypeField().setNewItemsAllowed(false);
-    view.getPhoneNumberForm().getTypeField().removeAllItems();
+    view.getPhoneNumberForm().typeField.setNullSelectionAllowed(false);
+    view.getPhoneNumberForm().typeField.setNewItemsAllowed(false);
+    view.getPhoneNumberForm().typeField.removeAllItems();
     for (PhoneNumberType type : PhoneNumberType.values()) {
-      view.getPhoneNumberForm().getTypeField().addItem(type);
+      view.getPhoneNumberForm().typeField.addItem(type);
     }
     presenter.init(view);
     presenter.attach();
@@ -215,11 +215,11 @@ public class RegisterViewPresenterTest {
     view.getAddressForm().postalCodeField.setValue(postalCode);
     addressItem.getItemProperty(AddressFormPresenter.POSTAL_CODE_PROPERTY).setValue(postalCode);
     Item phoneNumberItem = phoneNumberItemCaptor.getValue();
-    view.getPhoneNumberForm().getTypeField().setValue(phoneType);
+    view.getPhoneNumberForm().typeField.setValue(phoneType);
     phoneNumberItem.getItemProperty(PhoneNumberFormPresenter.TYPE_PROPERTY).setValue(phoneType);
-    view.getPhoneNumberForm().getNumberField().setValue(phoneNumber);
+    view.getPhoneNumberForm().numberField.setValue(phoneNumber);
     phoneNumberItem.getItemProperty(PhoneNumberFormPresenter.NUMBER_PROPERTY).setValue(phoneNumber);
-    view.getPhoneNumberForm().getExtensionField().setValue(phoneExtension);
+    view.getPhoneNumberForm().extensionField.setValue(phoneExtension);
     phoneNumberItem.getItemProperty(PhoneNumberFormPresenter.EXTENSION_PROPERTY)
         .setValue(phoneExtension);
   }
@@ -347,7 +347,7 @@ public class RegisterViewPresenterTest {
     assertEquals(defaultState, view.getAddressForm().stateField.getValue());
     assertEquals(defaultCountry, view.getAddressForm().countryField.getValue());
     assertEquals(defaultPostalCode, view.getAddressForm().postalCodeField.getValue());
-    assertEquals(PhoneNumberType.WORK, view.getPhoneNumberForm().getTypeField().getValue());
+    assertEquals(PhoneNumberType.WORK, view.getPhoneNumberForm().typeField.getValue());
   }
 
   @Test

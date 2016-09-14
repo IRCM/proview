@@ -28,8 +28,6 @@ import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.RegexpValidator;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -50,9 +48,6 @@ public class PhoneNumberFormPresenter {
   private BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup =
       new BeanFieldGroup<>(PhoneNumber.class);
   private PhoneNumberForm view;
-  private ComboBox typeField;
-  private TextField numberField;
-  private TextField extensionField;
 
   /**
    * Initializes presenter.
@@ -63,13 +58,6 @@ public class PhoneNumberFormPresenter {
   public void init(PhoneNumberForm view) {
     this.view = view;
     view.setPresenter(this);
-    setFields();
-  }
-
-  private void setFields() {
-    typeField = view.getTypeField();
-    numberField = view.getNumberField();
-    extensionField = view.getExtensionField();
   }
 
   /**
@@ -87,16 +75,16 @@ public class PhoneNumberFormPresenter {
   }
 
   private void setStyles() {
-    typeField.setStyleName(TYPE_PROPERTY);
-    numberField.setStyleName(NUMBER_PROPERTY);
-    extensionField.setStyleName(EXTENSION_PROPERTY);
+    view.typeField.setStyleName(TYPE_PROPERTY);
+    view.numberField.setStyleName(NUMBER_PROPERTY);
+    view.extensionField.setStyleName(EXTENSION_PROPERTY);
   }
 
   private void bindFields() {
     phoneNumberFieldGroup.setItemDataSource(new BeanItem<>(new PhoneNumber()));
-    phoneNumberFieldGroup.bind(typeField, TYPE_PROPERTY);
-    phoneNumberFieldGroup.bind(numberField, NUMBER_PROPERTY);
-    phoneNumberFieldGroup.bind(extensionField, EXTENSION_PROPERTY);
+    phoneNumberFieldGroup.bind(view.typeField, TYPE_PROPERTY);
+    phoneNumberFieldGroup.bind(view.numberField, NUMBER_PROPERTY);
+    phoneNumberFieldGroup.bind(view.extensionField, EXTENSION_PROPERTY);
   }
 
   private void addFieldListeners() {
@@ -104,51 +92,53 @@ public class PhoneNumberFormPresenter {
   }
 
   private void setTypeValues() {
-    typeField.setNullSelectionAllowed(false);
-    typeField.setNewItemsAllowed(false);
-    typeField.removeAllItems();
+    view.typeField.setNullSelectionAllowed(false);
+    view.typeField.setNewItemsAllowed(false);
+    view.typeField.removeAllItems();
     for (PhoneNumberType type : PhoneNumberType.values()) {
-      typeField.addItem(type);
+      view.typeField.addItem(type);
     }
   }
 
   private void updateEditable() {
     final boolean editable = editableProperty.getValue();
-    typeField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-    numberField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-    extensionField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.typeField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.numberField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.extensionField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     if (!editable) {
-      typeField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-      numberField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-      extensionField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.typeField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.numberField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.extensionField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     }
-    typeField.setReadOnly(!editable);
-    numberField.setReadOnly(!editable);
-    extensionField.setReadOnly(!editable);
+    view.typeField.setReadOnly(!editable);
+    view.numberField.setReadOnly(!editable);
+    view.extensionField.setReadOnly(!editable);
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    typeField.setCaption(resources.message(TYPE_PROPERTY));
-    numberField.setCaption(resources.message(NUMBER_PROPERTY));
-    extensionField.setCaption(resources.message(EXTENSION_PROPERTY));
+    view.typeField.setCaption(resources.message(TYPE_PROPERTY));
+    view.numberField.setCaption(resources.message(NUMBER_PROPERTY));
+    view.extensionField.setCaption(resources.message(EXTENSION_PROPERTY));
     for (PhoneNumberType type : PhoneNumberType.values()) {
-      typeField.setItemCaption(type, type.getLabel(view.getLocale()));
+      view.typeField.setItemCaption(type, type.getLabel(view.getLocale()));
     }
   }
 
   private void setRequiredErrors() {
     final MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
-    typeField.setRequiredError(generalResources.message("required", typeField.getCaption()));
-    numberField.setRequiredError(generalResources.message("required", numberField.getCaption()));
+    view.typeField
+        .setRequiredError(generalResources.message("required", view.typeField.getCaption()));
+    view.numberField
+        .setRequiredError(generalResources.message("required", view.numberField.getCaption()));
   }
 
   private void addValidators() {
     MessageResource resources = view.getResources();
-    numberField.addValidator(
+    view.numberField.addValidator(
         new RegexpValidator("[\\d\\-]*", resources.message(NUMBER_PROPERTY + ".invalid")));
-    extensionField.addValidator(
+    view.extensionField.addValidator(
         new RegexpValidator("[\\d\\-]*", resources.message(EXTENSION_PROPERTY + ".invalid")));
   }
 

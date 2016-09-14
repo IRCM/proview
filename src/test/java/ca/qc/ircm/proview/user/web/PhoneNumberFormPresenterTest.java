@@ -73,9 +73,9 @@ public class PhoneNumberFormPresenterTest {
   }
 
   private void setFields() {
-    view.getTypeField().setValue(type);
-    view.getNumberField().setValue(number);
-    view.getExtensionField().setValue(extension);
+    view.typeField.setValue(type);
+    view.numberField.setValue(number);
+    view.extensionField.setValue(extension);
   }
 
   private CompositeErrorMessage error(String message) {
@@ -92,57 +92,57 @@ public class PhoneNumberFormPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.getTypeField().getStyleName().contains(TYPE_PROPERTY));
-    assertTrue(view.getNumberField().getStyleName().contains(NUMBER_PROPERTY));
-    assertTrue(view.getExtensionField().getStyleName().contains(EXTENSION_PROPERTY));
+    assertTrue(view.typeField.getStyleName().contains(TYPE_PROPERTY));
+    assertTrue(view.numberField.getStyleName().contains(NUMBER_PROPERTY));
+    assertTrue(view.extensionField.getStyleName().contains(EXTENSION_PROPERTY));
   }
 
   @Test
   public void captions() {
-    assertEquals(resources.message(TYPE_PROPERTY), view.getTypeField().getCaption());
-    assertEquals(resources.message(NUMBER_PROPERTY), view.getNumberField().getCaption());
-    assertEquals(resources.message(EXTENSION_PROPERTY), view.getExtensionField().getCaption());
+    assertEquals(resources.message(TYPE_PROPERTY), view.typeField.getCaption());
+    assertEquals(resources.message(NUMBER_PROPERTY), view.numberField.getCaption());
+    assertEquals(resources.message(EXTENSION_PROPERTY), view.extensionField.getCaption());
   }
 
   @Test
   public void required() {
-    assertTrue(view.getNumberField().isRequired());
-    assertEquals(generalResources.message("required", view.getNumberField().getCaption()),
-        view.getNumberField().getRequiredError());
+    assertTrue(view.numberField.isRequired());
+    assertEquals(generalResources.message("required", view.numberField.getCaption()),
+        view.numberField.getRequiredError());
   }
 
   @Test
   public void editable_Default() {
-    assertTrue(view.getTypeField().isReadOnly());
-    assertTrue(view.getTypeField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getNumberField().isReadOnly());
-    assertTrue(view.getNumberField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getExtensionField().isReadOnly());
-    assertTrue(view.getExtensionField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.typeField.isReadOnly());
+    assertTrue(view.typeField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.numberField.isReadOnly());
+    assertTrue(view.numberField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.extensionField.isReadOnly());
+    assertTrue(view.extensionField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
   }
 
   @Test
   public void editable_True() {
     presenter.setEditable(true);
 
-    assertFalse(view.getTypeField().isReadOnly());
-    assertFalse(view.getTypeField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getNumberField().isReadOnly());
-    assertFalse(view.getNumberField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getExtensionField().isReadOnly());
-    assertFalse(view.getExtensionField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.typeField.isReadOnly());
+    assertFalse(view.typeField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.numberField.isReadOnly());
+    assertFalse(view.numberField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.extensionField.isReadOnly());
+    assertFalse(view.extensionField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
   }
 
   @Test
   public void editable_False() {
     presenter.setEditable(false);
 
-    assertTrue(view.getTypeField().isReadOnly());
-    assertTrue(view.getTypeField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getNumberField().isReadOnly());
-    assertTrue(view.getNumberField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getExtensionField().isReadOnly());
-    assertTrue(view.getExtensionField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.typeField.isReadOnly());
+    assertTrue(view.typeField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.numberField.isReadOnly());
+    assertTrue(view.numberField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.extensionField.isReadOnly());
+    assertTrue(view.extensionField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
   }
 
   @Test
@@ -163,9 +163,9 @@ public class PhoneNumberFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getNumberField().setValue("");
+    view.numberField.setValue("");
 
-    assertFalse(view.getNumberField().isValid());
+    assertFalse(view.numberField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -180,11 +180,11 @@ public class PhoneNumberFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getNumberField().setValue("aaa");
+    view.numberField.setValue("aaa");
 
-    assertFalse(view.getNumberField().isValid());
+    assertFalse(view.numberField.isValid());
     assertEquals(error(resources.message(NUMBER_PROPERTY + ".invalid")).getFormattedHtmlMessage(),
-        view.getNumberField().getErrorMessage().getFormattedHtmlMessage());
+        view.numberField.getErrorMessage().getFormattedHtmlMessage());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -199,9 +199,9 @@ public class PhoneNumberFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getExtensionField().setValue("");
+    view.extensionField.setValue("");
 
-    assertTrue(view.getExtensionField().isValid());
+    assertTrue(view.extensionField.isValid());
     assertTrue(presenter.isValid());
     presenter.commit();
   }
@@ -211,12 +211,12 @@ public class PhoneNumberFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getExtensionField().setValue("aaa");
+    view.extensionField.setValue("aaa");
 
-    assertFalse(view.getExtensionField().isValid());
+    assertFalse(view.extensionField.isValid());
     assertEquals(
         error(resources.message(EXTENSION_PROPERTY + ".invalid")).getFormattedHtmlMessage(),
-        view.getExtensionField().getErrorMessage().getFormattedHtmlMessage());
+        view.extensionField.getErrorMessage().getFormattedHtmlMessage());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();

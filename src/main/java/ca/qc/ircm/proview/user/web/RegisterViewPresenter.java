@@ -283,7 +283,7 @@ public class RegisterViewPresenter {
     view.getAddressForm().stateField.setValue(defaultAddressConfiguration.getState());
     view.getAddressForm().postalCodeField.setValue(defaultAddressConfiguration.getPostalCode());
     view.getAddressForm().countryField.setValue(defaultAddressConfiguration.getCountry());
-    view.getPhoneNumberForm().getTypeField().setValue(PhoneNumberType.WORK);
+    view.getPhoneNumberForm().typeField.setValue(PhoneNumberType.WORK);
     laboratoryNameField.setVisible(false);
     organizationField.setVisible(false);
   }

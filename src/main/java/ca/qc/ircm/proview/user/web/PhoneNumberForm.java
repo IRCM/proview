@@ -18,8 +18,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.TextField;
 
 /**
  * Phone number form.
@@ -37,17 +35,5 @@ public class PhoneNumberForm extends PhoneNumberFormDesign implements MessageRes
   public void attach() {
     super.attach();
     presenter.attach();
-  }
-
-  public ComboBox getTypeField() {
-    return typeField;
-  }
-
-  public TextField getNumberField() {
-    return numberField;
-  }
-
-  public TextField getExtensionField() {
-    return extensionField;
   }
 }
