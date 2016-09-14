@@ -34,7 +34,6 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
@@ -42,8 +41,7 @@ import java.util.Locale;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class LaboratoryFormPresenterTest {
-  @InjectMocks
-  private LaboratoryFormPresenter presenter = new LaboratoryFormPresenter();
+  private LaboratoryFormPresenter presenter;
   private LaboratoryForm view = new LaboratoryForm();
   private Laboratory laboratory = new Laboratory();
   private BeanItem<Laboratory> item = new BeanItem<>(laboratory);
@@ -59,6 +57,7 @@ public class LaboratoryFormPresenterTest {
    */
   @Before
   public void beforeTest() {
+    presenter = new LaboratoryFormPresenter();
     view.setLocale(locale);
     resources = view.getResources();
     presenter.init(view);
@@ -66,8 +65,8 @@ public class LaboratoryFormPresenterTest {
   }
 
   private void setFields() {
-    view.getOrganizationField().setValue(organization);
-    view.getNameField().setValue(name);
+    view.organizationField.setValue(organization);
+    view.nameField.setValue(name);
   }
 
   @Test
@@ -81,47 +80,47 @@ public class LaboratoryFormPresenterTest {
   @Test
   public void captions() {
     assertEquals(resources.message(LaboratoryFormPresenter.ORGANIZATION_PROPERTY),
-        view.getOrganizationField().getCaption());
+        view.organizationField.getCaption());
     assertEquals(resources.message(LaboratoryFormPresenter.NAME_PROPERTY),
-        view.getNameField().getCaption());
+        view.nameField.getCaption());
   }
 
   @Test
   public void required() {
-    assertTrue(view.getOrganizationField().isRequired());
-    assertEquals(generalResources.message("required", view.getOrganizationField().getCaption()),
-        view.getOrganizationField().getRequiredError());
-    assertTrue(view.getNameField().isRequired());
-    assertEquals(generalResources.message("required", view.getNameField().getCaption()),
-        view.getNameField().getRequiredError());
+    assertTrue(view.organizationField.isRequired());
+    assertEquals(generalResources.message("required", view.organizationField.getCaption()),
+        view.organizationField.getRequiredError());
+    assertTrue(view.nameField.isRequired());
+    assertEquals(generalResources.message("required", view.nameField.getCaption()),
+        view.nameField.getRequiredError());
   }
 
   @Test
   public void editable_Default() {
-    assertTrue(view.getOrganizationField().isReadOnly());
-    assertEquals(ValoTheme.TEXTFIELD_BORDERLESS, view.getOrganizationField().getStyleName());
-    assertTrue(view.getNameField().isReadOnly());
-    assertEquals(ValoTheme.TEXTFIELD_BORDERLESS, view.getNameField().getStyleName());
+    assertTrue(view.organizationField.isReadOnly());
+    assertEquals(ValoTheme.TEXTFIELD_BORDERLESS, view.organizationField.getStyleName());
+    assertTrue(view.nameField.isReadOnly());
+    assertEquals(ValoTheme.TEXTFIELD_BORDERLESS, view.nameField.getStyleName());
   }
 
   @Test
   public void editable_True() {
     presenter.setEditable(true);
 
-    assertFalse(view.getOrganizationField().isReadOnly());
-    assertEquals("", view.getOrganizationField().getStyleName());
-    assertFalse(view.getNameField().isReadOnly());
-    assertEquals("", view.getNameField().getStyleName());
+    assertFalse(view.organizationField.isReadOnly());
+    assertEquals("", view.organizationField.getStyleName());
+    assertFalse(view.nameField.isReadOnly());
+    assertEquals("", view.nameField.getStyleName());
   }
 
   @Test
   public void editable_False() {
     presenter.setEditable(false);
 
-    assertTrue(view.getOrganizationField().isReadOnly());
-    assertEquals(ValoTheme.TEXTFIELD_BORDERLESS, view.getOrganizationField().getStyleName());
-    assertTrue(view.getNameField().isReadOnly());
-    assertEquals(ValoTheme.TEXTFIELD_BORDERLESS, view.getNameField().getStyleName());
+    assertTrue(view.organizationField.isReadOnly());
+    assertEquals(ValoTheme.TEXTFIELD_BORDERLESS, view.organizationField.getStyleName());
+    assertTrue(view.nameField.isReadOnly());
+    assertEquals(ValoTheme.TEXTFIELD_BORDERLESS, view.nameField.getStyleName());
   }
 
   @Test
@@ -141,9 +140,9 @@ public class LaboratoryFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getOrganizationField().setValue("");
+    view.organizationField.setValue("");
 
-    assertFalse(view.getOrganizationField().isValid());
+    assertFalse(view.organizationField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -158,9 +157,9 @@ public class LaboratoryFormPresenterTest {
     presenter.setItemDataSource(item);
     presenter.setEditable(true);
     setFields();
-    view.getNameField().setValue("");
+    view.nameField.setValue("");
 
-    assertFalse(view.getNameField().isValid());
+    assertFalse(view.nameField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();

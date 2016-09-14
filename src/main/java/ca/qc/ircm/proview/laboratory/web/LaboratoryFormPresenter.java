@@ -26,7 +26,6 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -44,8 +43,6 @@ public class LaboratoryFormPresenter {
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<Laboratory> laboratoryFieldGroup = new BeanFieldGroup<>(Laboratory.class);
   private LaboratoryForm view;
-  private TextField organizationField;
-  private TextField nameField;
 
   /**
    * Initializes presenter.
@@ -56,12 +53,6 @@ public class LaboratoryFormPresenter {
   public void init(LaboratoryForm view) {
     this.view = view;
     view.setPresenter(this);
-    setFields();
-  }
-
-  private void setFields() {
-    organizationField = view.getOrganizationField();
-    nameField = view.getNameField();
   }
 
   /**
@@ -77,8 +68,8 @@ public class LaboratoryFormPresenter {
 
   private void bindFields() {
     laboratoryFieldGroup.setItemDataSource(new BeanItem<>(new Laboratory()));
-    laboratoryFieldGroup.bind(nameField, NAME_PROPERTY);
-    laboratoryFieldGroup.bind(organizationField, ORGANIZATION_PROPERTY);
+    laboratoryFieldGroup.bind(view.nameField, NAME_PROPERTY);
+    laboratoryFieldGroup.bind(view.organizationField, ORGANIZATION_PROPERTY);
   }
 
   private void addFieldListeners() {
@@ -87,26 +78,27 @@ public class LaboratoryFormPresenter {
 
   private void updateEditable() {
     boolean editable = editableProperty.getValue();
-    organizationField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    organizationField.setReadOnly(!editable);
-    nameField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
-    nameField.setReadOnly(!editable);
+    view.organizationField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    view.organizationField.setReadOnly(!editable);
+    view.nameField.setStyleName(editable ? "" : ValoTheme.TEXTFIELD_BORDERLESS);
+    view.nameField.setReadOnly(!editable);
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    nameField.setCaption(resources.message(NAME_PROPERTY));
-    organizationField.setCaption(resources.message(ORGANIZATION_PROPERTY));
+    view.nameField.setCaption(resources.message(NAME_PROPERTY));
+    view.organizationField.setCaption(resources.message(ORGANIZATION_PROPERTY));
   }
 
   private void setRequired() {
     final MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
-    nameField.setRequired(true);
-    nameField.setRequiredError(generalResources.message("required", nameField.getCaption()));
-    organizationField.setRequired(true);
-    organizationField
-        .setRequiredError(generalResources.message("required", organizationField.getCaption()));
+    view.nameField.setRequired(true);
+    view.nameField
+        .setRequiredError(generalResources.message("required", view.nameField.getCaption()));
+    view.organizationField.setRequired(true);
+    view.organizationField.setRequiredError(
+        generalResources.message("required", view.organizationField.getCaption()));
   }
 
   public void commit() throws CommitException {
