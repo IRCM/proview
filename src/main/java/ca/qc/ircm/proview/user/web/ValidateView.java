@@ -20,9 +20,6 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 
 import javax.annotation.PostConstruct;
@@ -77,17 +74,5 @@ public class ValidateView extends ValidateViewDesign implements MessageResources
 
   public void afterSuccessfulValidate(String message) {
     Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
-  }
-
-  public Label getHeaderLabel() {
-    return headerLabel;
-  }
-
-  public Grid getUsersGrid() {
-    return usersGrid;
-  }
-
-  public Button getValidateSelectedButton() {
-    return validateSelectedButton;
   }
 }

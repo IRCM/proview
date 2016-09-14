@@ -58,7 +58,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -73,8 +72,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ValidateViewPresenterTest {
-  @InjectMocks
-  private ValidateViewPresenter presenter = new ValidateViewPresenter();
+  private ValidateViewPresenter presenter;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -87,9 +85,6 @@ public class ValidateViewPresenterTest {
   private Signed signed;
   @Captor
   private ArgumentCaptor<Collection<User>> usersCaptor;
-  private Label headerLabel = new Label();
-  private Grid usersGrid = new Grid();
-  private Button validateSelectedButton = new Button();
   private User signedUser;
   private List<User> usersToValidate;
   private Locale locale = Locale.ENGLISH;
@@ -100,6 +95,7 @@ public class ValidateViewPresenterTest {
    */
   @Before
   public void beforeTest() {
+    presenter = new ValidateViewPresenter(userService, authorizationService, signed);
     signedUser = entityManager.find(User.class, 1L);
     when(signed.getUser()).thenReturn(signedUser);
     usersToValidate = new ArrayList<>();
@@ -107,9 +103,9 @@ public class ValidateViewPresenterTest {
     usersToValidate.add(entityManager.find(User.class, 5L));
     usersToValidate.add(entityManager.find(User.class, 10L));
     when(userService.all(any())).thenReturn(usersToValidate);
-    when(view.getHeaderLabel()).thenReturn(headerLabel);
-    when(view.getUsersGrid()).thenReturn(usersGrid);
-    when(view.getValidateSelectedButton()).thenReturn(validateSelectedButton);
+    view.headerLabel = new Label();
+    view.usersGrid = new Grid();
+    view.validateSelectedButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
@@ -127,7 +123,7 @@ public class ValidateViewPresenterTest {
 
   @Test
   public void usersGridColumns() {
-    List<Column> columns = usersGrid.getColumns();
+    List<Column> columns = view.usersGrid.getColumns();
 
     assertEquals(EMAIL, columns.get(0).getPropertyId());
     assertEquals(NAME, columns.get(1).getPropertyId());
@@ -139,14 +135,14 @@ public class ValidateViewPresenterTest {
 
   @Test
   public void usersGridSelection() {
-    SelectionModel selectionModel = usersGrid.getSelectionModel();
+    SelectionModel selectionModel = view.usersGrid.getSelectionModel();
 
     assertTrue(selectionModel instanceof SelectionModel.Multi);
   }
 
   @Test
   public void usersGridOrder() {
-    List<SortOrder> sortOrders = usersGrid.getSortOrder();
+    List<SortOrder> sortOrders = view.usersGrid.getSortOrder();
 
     assertFalse(sortOrders.isEmpty());
     SortOrder sortOrder = sortOrders.get(0);
@@ -161,22 +157,23 @@ public class ValidateViewPresenterTest {
 
   @Test
   public void captions() {
-    assertEquals(resources.message(HEADER_LABEL_ID), headerLabel.getValue());
+    assertEquals(resources.message(HEADER_LABEL_ID), view.headerLabel.getValue());
     assertEquals(resources.message(VALIDATE_SELECTED_BUTTON_ID),
-        validateSelectedButton.getCaption());
+        view.validateSelectedButton.getCaption());
   }
 
   @Test
   @SuppressWarnings({ "serial", "unchecked" })
   public void viewUser() {
     final User user = usersToValidate.get(0);
-    Column column = usersGrid.getColumn(VIEW);
+    Column column = view.usersGrid.getColumn(VIEW);
     ButtonRenderer renderer = (ButtonRenderer) column.getRenderer();
     RendererClickListener viewListener =
         ((Collection<RendererClickListener>) renderer.getListeners(RendererClickEvent.class))
             .iterator().next();
 
-    viewListener.click(new RendererClickEvent(usersGrid, user, column, new MouseEventDetails()) {});
+    viewListener
+        .click(new RendererClickEvent(view.usersGrid, user, column, new MouseEventDetails()) {});
 
     verify(view).viewUser(user);
   }
@@ -185,7 +182,7 @@ public class ValidateViewPresenterTest {
   @SuppressWarnings({ "serial", "unchecked" })
   public void validateOne() {
     final User user = usersToValidate.get(0);
-    Column column = usersGrid.getColumn(VALIDATE);
+    Column column = view.usersGrid.getColumn(VALIDATE);
     ButtonRenderer renderer = (ButtonRenderer) column.getRenderer();
     RendererClickListener viewListener =
         ((Collection<RendererClickListener>) renderer.getListeners(RendererClickEvent.class))
@@ -194,7 +191,8 @@ public class ValidateViewPresenterTest {
     usersToValidateAfter.remove(0);
     when(userService.all(any())).thenReturn(usersToValidateAfter);
 
-    viewListener.click(new RendererClickEvent(usersGrid, user, column, new MouseEventDetails()) {});
+    viewListener
+        .click(new RendererClickEvent(view.usersGrid, user, column, new MouseEventDetails()) {});
 
     verify(userService).validate(usersCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
@@ -203,7 +201,7 @@ public class ValidateViewPresenterTest {
     verify(view).afterSuccessfulValidate(resources.message("done", 1, user.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(usersToValidateAfter.size(),
-        usersGrid.getContainerDataSource().getItemIds().size());
+        view.usersGrid.getContainerDataSource().getItemIds().size());
   }
 
   @Test
@@ -211,12 +209,12 @@ public class ValidateViewPresenterTest {
     final User user1 = usersToValidate.get(0);
     final User user2 = usersToValidate.get(1);
     final User user3 = usersToValidate.get(2);
-    usersGrid.select(user1);
-    usersGrid.select(user2);
-    usersGrid.select(user3);
+    view.usersGrid.select(user1);
+    view.usersGrid.select(user2);
+    view.usersGrid.select(user3);
     when(userService.all(any())).thenReturn(new ArrayList<>());
 
-    validateSelectedButton.click();
+    view.validateSelectedButton.click();
 
     verify(userService).validate(usersCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
@@ -228,15 +226,15 @@ public class ValidateViewPresenterTest {
         resources.message("done", 3, user1.getEmail() + resources.message("userSeparator", 0)
             + user2.getEmail() + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
-    assertEquals(0, usersGrid.getSelectedRows().size());
-    assertEquals(0, usersGrid.getContainerDataSource().getItemIds().size());
+    assertEquals(0, view.usersGrid.getSelectedRows().size());
+    assertEquals(0, view.usersGrid.getContainerDataSource().getItemIds().size());
   }
 
   @Test
   public void validateMany_NoSelection() {
     when(userService.all(any())).thenReturn(new ArrayList<>());
 
-    validateSelectedButton.click();
+    view.validateSelectedButton.click();
 
     verify(userService, never()).validate(any());
     verify(view).showError(any());

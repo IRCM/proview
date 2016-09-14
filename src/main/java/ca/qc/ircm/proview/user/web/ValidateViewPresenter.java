@@ -30,10 +30,8 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,15 +72,22 @@ public class ValidateViewPresenter {
   private ValidateView view;
   private BeanItemContainer<User> container;
   private GeneratedPropertyContainer gridContainer;
-  private Label headerLabel;
-  private Grid usersGrid;
-  private Button validateSelectedButton;
   @Inject
   private UserService userService;
   @Inject
   private AuthorizationService authorizationService;
   @Inject
   private Signed signed;
+
+  public ValidateViewPresenter() {
+  }
+
+  protected ValidateViewPresenter(UserService userService,
+      AuthorizationService authorizationService, Signed signed) {
+    this.userService = userService;
+    this.authorizationService = authorizationService;
+    this.signed = signed;
+  }
 
   /**
    * Called by view when view is initialized.
@@ -92,13 +97,6 @@ public class ValidateViewPresenter {
    */
   public void init(ValidateView view) {
     this.view = view;
-    setFields();
-  }
-
-  private void setFields() {
-    headerLabel = view.getHeaderLabel();
-    usersGrid = view.getUsersGrid();
-    validateSelectedButton = view.getValidateSelectedButton();
   }
 
   /**
@@ -114,9 +112,9 @@ public class ValidateViewPresenter {
   }
 
   private void setIds() {
-    headerLabel.setId(HEADER_LABEL_ID);
-    usersGrid.setId(USERS_GRID_ID);
-    validateSelectedButton.setId(VALIDATE_SELECTED_BUTTON_ID);
+    view.headerLabel.setId(HEADER_LABEL_ID);
+    view.usersGrid.setId(USERS_GRID_ID);
+    view.validateSelectedButton.setId(VALIDATE_SELECTED_BUTTON_ID);
   }
 
   @SuppressWarnings("serial")
@@ -152,16 +150,16 @@ public class ValidateViewPresenter {
   }
 
   private void initializeUsersGrid() {
-    usersGrid.setContainerDataSource(gridContainer);
-    usersGrid.setColumns((Object[]) COLUMNS);
-    usersGrid.setSelectionMode(SelectionMode.MULTI);
-    usersGrid.sort(EMAIL, SortDirection.ASCENDING);
-    Grid.Column viewColumn = usersGrid.getColumn(VIEW);
+    view.usersGrid.setContainerDataSource(gridContainer);
+    view.usersGrid.setColumns((Object[]) COLUMNS);
+    view.usersGrid.setSelectionMode(SelectionMode.MULTI);
+    view.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
+    Grid.Column viewColumn = view.usersGrid.getColumn(VIEW);
     viewColumn.setRenderer(new ButtonRenderer(event -> {
       User user = (User) event.getItemId();
       viewUser(user);
     }));
-    Grid.Column validateColumn = usersGrid.getColumn(VALIDATE);
+    Grid.Column validateColumn = view.usersGrid.getColumn(VALIDATE);
     validateColumn.setRenderer(new ButtonRenderer(event -> {
       User user = (User) event.getItemId();
       validateUser(user);
@@ -169,7 +167,7 @@ public class ValidateViewPresenter {
   }
 
   private void addFieldListeners() {
-    validateSelectedButton.addClickListener(event -> {
+    view.validateSelectedButton.addClickListener(event -> {
       validateMany();
     });
   }
@@ -177,8 +175,8 @@ public class ValidateViewPresenter {
   private void setCaptions() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE));
-    headerLabel.setValue(resources.message(HEADER_LABEL_ID));
-    validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON_ID));
+    view.headerLabel.setValue(resources.message(HEADER_LABEL_ID));
+    view.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON_ID));
   }
 
   private List<User> searchUsers() {
@@ -191,10 +189,10 @@ public class ValidateViewPresenter {
   }
 
   private void refresh() {
-    usersGrid.getSelectionModel().reset();
+    view.usersGrid.getSelectionModel().reset();
     container.removeAllItems();
     container.addAll(searchUsers());
-    usersGrid.setSortOrder(new ArrayList<>(usersGrid.getSortOrder()));
+    view.usersGrid.setSortOrder(new ArrayList<>(view.usersGrid.getSortOrder()));
   }
 
   private void viewUser(User user) {
@@ -210,7 +208,7 @@ public class ValidateViewPresenter {
   }
 
   private void validateMany() {
-    Collection<Object> ids = usersGrid.getSelectedRows();
+    Collection<Object> ids = view.usersGrid.getSelectedRows();
     List<User> selected = new ArrayList<>();
     for (Object id : ids) {
       selected.add((User) id);
