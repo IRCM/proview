@@ -21,22 +21,26 @@ import static org.junit.Assert.fail;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class EmailServiceImplTest {
-  @InjectMocks
-  private EmailServiceImpl emailServiceImpl = new EmailServiceImpl();
+  private EmailServiceImpl emailServiceImpl;
   @Mock
   private EmailConfiguration emailConfiguration;
   @Mock
   private AuthorizationService authorizationService;
+
+  @Before
+  public void beforeTest() {
+    emailServiceImpl = new EmailServiceImpl(emailConfiguration, authorizationService);
+  }
 
   @Test
   @Ignore("Cannot test unless we have an email server")

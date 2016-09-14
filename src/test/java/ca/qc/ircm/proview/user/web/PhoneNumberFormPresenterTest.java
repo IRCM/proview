@@ -40,7 +40,6 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
@@ -48,8 +47,7 @@ import java.util.Locale;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PhoneNumberFormPresenterTest {
-  @InjectMocks
-  private PhoneNumberFormPresenter presenter = new PhoneNumberFormPresenter();
+  private PhoneNumberFormPresenter presenter;
   private PhoneNumberForm view = new PhoneNumberForm();
   private PhoneNumber phoneNumber = new PhoneNumber();
   private BeanItem<PhoneNumber> item = new BeanItem<>(phoneNumber);
@@ -66,6 +64,7 @@ public class PhoneNumberFormPresenterTest {
    */
   @Before
   public void beforeTest() {
+    presenter = new PhoneNumberFormPresenter();
     view.setLocale(locale);
     resources = view.getResources();
     presenter.init(view);
