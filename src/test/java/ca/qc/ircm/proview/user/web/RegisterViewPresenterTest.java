@@ -176,14 +176,14 @@ public class RegisterViewPresenterTest {
     verify(addressFormPresenter).setItemDataSource(addressItemCaptor.capture());
     verify(phoneNumberFormPresenter).setItemDataSource(phoneNumberItemCaptor.capture());
     Item userItem = userItemCaptor.getValue();
-    view.userForm.getEmailField().setValue(email);
+    view.userForm.emailField.setValue(email);
     userItem.getItemProperty(UserFormPresenter.EMAIL_PROPERTY).setValue(email);
-    view.userForm.getNameField().setValue(name);
+    view.userForm.nameField.setValue(name);
     userItem.getItemProperty(UserFormPresenter.NAME_PROPERTY).setValue(name);
     Item passwordItem = passwordItemCaptor.getValue();
-    view.userForm.getPasswordField().setValue(password);
+    view.userForm.passwordField.setValue(password);
     passwordItem.getItemProperty(UserFormPresenter.PASSWORD_PROPERTY).setValue(password);
-    view.userForm.getConfirmPasswordField().setValue(password);
+    view.userForm.confirmPasswordField.setValue(password);
     view.managerEmailField.setValue(managerEmail);
     view.laboratoryNameField.setValue(laboratoryName);
     view.organizationField.setValue(organization);

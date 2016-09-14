@@ -30,8 +30,6 @@ import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -59,12 +57,15 @@ public class UserFormPresenter {
   private FieldGroup passwordFieldGroup = new FieldGroup();
   private Long userId;
   private UserForm view;
-  private TextField emailField;
-  private TextField nameField;
-  private PasswordField passwordField;
-  private PasswordField confirmPasswordField;
   @Inject
   private UserService userService;
+
+  public UserFormPresenter() {
+  }
+
+  public UserFormPresenter(UserService userService) {
+    this.userService = userService;
+  }
 
   /**
    * Initializes presenter.
@@ -75,14 +76,6 @@ public class UserFormPresenter {
   public void init(UserForm view) {
     this.view = view;
     view.setPresenter(this);
-    setFields();
-  }
-
-  private void setFields() {
-    emailField = view.getEmailField();
-    nameField = view.getNameField();
-    passwordField = view.getPasswordField();
-    confirmPasswordField = view.getConfirmPasswordField();
   }
 
   /**
@@ -99,78 +92,81 @@ public class UserFormPresenter {
   }
 
   private void setStyles() {
-    emailField.setStyleName(EMAIL_PROPERTY);
-    nameField.setStyleName(NAME_PROPERTY);
-    passwordField.setStyleName(PASSWORD_PROPERTY);
-    confirmPasswordField.setStyleName(CONFIRM_PASSWORD_PROPERTY);
+    view.emailField.setStyleName(EMAIL_PROPERTY);
+    view.nameField.setStyleName(NAME_PROPERTY);
+    view.passwordField.setStyleName(PASSWORD_PROPERTY);
+    view.confirmPasswordField.setStyleName(CONFIRM_PASSWORD_PROPERTY);
   }
 
   private void bindFields() {
     userFieldGroup.setItemDataSource(new BeanItem<>(new User()));
-    userFieldGroup.bind(emailField, EMAIL_PROPERTY);
-    userFieldGroup.bind(nameField, NAME_PROPERTY);
-    passwordFieldGroup.bind(passwordField, PASSWORD_PROPERTY);
-    passwordFieldGroup.bind(confirmPasswordField, CONFIRM_PASSWORD_PROPERTY);
+    userFieldGroup.bind(view.emailField, EMAIL_PROPERTY);
+    userFieldGroup.bind(view.nameField, NAME_PROPERTY);
+    passwordFieldGroup.bind(view.passwordField, PASSWORD_PROPERTY);
+    passwordFieldGroup.bind(view.confirmPasswordField, CONFIRM_PASSWORD_PROPERTY);
   }
 
   private void addFieldListeners() {
     editableProperty.addValueChangeListener(e -> updateEditable());
-    confirmPasswordField.addValueChangeListener(e -> {
-      passwordField.isValid();
-      passwordField.markAsDirty();
+    view.confirmPasswordField.addValueChangeListener(e -> {
+      view.passwordField.isValid();
+      view.passwordField.markAsDirty();
     });
   }
 
   private void updateEditable() {
     boolean editable = editableProperty.getValue();
-    emailField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-    nameField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.emailField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.nameField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     if (!editable) {
-      emailField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-      nameField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.emailField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.nameField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     }
-    emailField.setReadOnly(!editable);
-    nameField.setReadOnly(!editable);
-    passwordField.setVisible(editable);
-    confirmPasswordField.setVisible(editable);
+    view.emailField.setReadOnly(!editable);
+    view.nameField.setReadOnly(!editable);
+    view.passwordField.setVisible(editable);
+    view.confirmPasswordField.setVisible(editable);
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    emailField.setCaption(resources.message(EMAIL_PROPERTY));
-    nameField.setCaption(resources.message(NAME_PROPERTY));
-    passwordField.setCaption(resources.message(PASSWORD_PROPERTY));
-    confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD_PROPERTY));
+    view.emailField.setCaption(resources.message(EMAIL_PROPERTY));
+    view.nameField.setCaption(resources.message(NAME_PROPERTY));
+    view.passwordField.setCaption(resources.message(PASSWORD_PROPERTY));
+    view.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD_PROPERTY));
   }
 
   private void setRequired() {
     final MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
-    emailField.setRequired(true);
-    emailField.setRequiredError(generalResources.message("required", emailField.getCaption()));
-    nameField.setRequired(true);
-    nameField.setRequiredError(generalResources.message("required", nameField.getCaption()));
-    passwordField
-        .setRequiredError(generalResources.message("required", passwordField.getCaption()));
-    confirmPasswordField
-        .setRequiredError(generalResources.message("required", confirmPasswordField.getCaption()));
-    passwordField.setRequired(userId == null);
-    confirmPasswordField.setRequired(userId == null);
+    view.emailField.setRequired(true);
+    view.emailField
+        .setRequiredError(generalResources.message("required", view.emailField.getCaption()));
+    view.nameField.setRequired(true);
+    view.nameField
+        .setRequiredError(generalResources.message("required", view.nameField.getCaption()));
+    view.passwordField
+        .setRequiredError(generalResources.message("required", view.passwordField.getCaption()));
+    view.confirmPasswordField.setRequiredError(
+        generalResources.message("required", view.confirmPasswordField.getCaption()));
+    view.passwordField.setRequired(userId == null);
+    view.confirmPasswordField.setRequired(userId == null);
   }
 
   private void addValidators() {
     MessageResource resources = view.getResources();
-    emailField.addValidator(new EmailValidator(resources.message(EMAIL_PROPERTY + ".invalid")));
-    emailField.addValidator((value) -> {
-      String email = emailField.getValue();
+    view.emailField
+        .addValidator(new EmailValidator(resources.message(EMAIL_PROPERTY + ".invalid")));
+    view.emailField.addValidator((value) -> {
+      String email = view.emailField.getValue();
       if (userService.exists(email)
           && (userId == null || !userService.get(userId).getEmail().equals(email))) {
         throw new InvalidValueException(resources.message(EMAIL_PROPERTY + ".exists"));
       }
     });
-    passwordField.addValidator((value) -> {
-      String password = passwordField.getValue();
-      String confirmPassword = confirmPasswordField.getValue();
+    view.passwordField.addValidator((value) -> {
+      String password = view.passwordField.getValue();
+      String confirmPassword = view.confirmPasswordField.getValue();
       if (password != null && !password.isEmpty() && confirmPassword != null
           && !confirmPassword.isEmpty() && !password.equals(confirmPassword)) {
         throw new InvalidValueException(resources.message(PASSWORD_PROPERTY + ".notMatch"));

@@ -45,7 +45,6 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -54,8 +53,7 @@ import java.util.Locale;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UserFormPresenterTest {
-  @InjectMocks
-  private UserFormPresenter presenter = new UserFormPresenter();
+  private UserFormPresenter presenter;
   @Mock
   private UserService userService;
   private UserForm view = new UserForm();
@@ -77,6 +75,7 @@ public class UserFormPresenterTest {
    */
   @Before
   public void beforeTest() {
+    presenter = new UserFormPresenter(userService);
     view.setLocale(locale);
     resources = view.getResources();
     presenter.init(view);
@@ -87,10 +86,10 @@ public class UserFormPresenterTest {
   }
 
   private void setFields() {
-    view.getEmailField().setValue(email);
-    view.getNameField().setValue(name);
-    view.getPasswordField().setValue(password);
-    view.getConfirmPasswordField().setValue(password);
+    view.emailField.setValue(email);
+    view.nameField.setValue(name);
+    view.passwordField.setValue(password);
+    view.confirmPasswordField.setValue(password);
   }
 
   private CompositeErrorMessage error(String message) {
@@ -107,53 +106,53 @@ public class UserFormPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.getEmailField().getStyleName().contains(EMAIL_PROPERTY));
-    assertTrue(view.getNameField().getStyleName().contains(NAME_PROPERTY));
-    assertTrue(view.getPasswordField().getStyleName().contains(PASSWORD_PROPERTY));
-    assertTrue(view.getConfirmPasswordField().getStyleName().contains(CONFIRM_PASSWORD_PROPERTY));
+    assertTrue(view.emailField.getStyleName().contains(EMAIL_PROPERTY));
+    assertTrue(view.nameField.getStyleName().contains(NAME_PROPERTY));
+    assertTrue(view.passwordField.getStyleName().contains(PASSWORD_PROPERTY));
+    assertTrue(view.confirmPasswordField.getStyleName().contains(CONFIRM_PASSWORD_PROPERTY));
   }
 
   @Test
   public void captions() {
-    assertEquals(resources.message(EMAIL_PROPERTY), view.getEmailField().getCaption());
-    assertEquals(resources.message(NAME_PROPERTY), view.getNameField().getCaption());
-    assertEquals(resources.message(PASSWORD_PROPERTY), view.getPasswordField().getCaption());
+    assertEquals(resources.message(EMAIL_PROPERTY), view.emailField.getCaption());
+    assertEquals(resources.message(NAME_PROPERTY), view.nameField.getCaption());
+    assertEquals(resources.message(PASSWORD_PROPERTY), view.passwordField.getCaption());
     assertEquals(resources.message(CONFIRM_PASSWORD_PROPERTY),
-        view.getConfirmPasswordField().getCaption());
+        view.confirmPasswordField.getCaption());
   }
 
   @Test
   public void required_Default() {
-    assertTrue(view.getEmailField().isRequired());
-    assertEquals(generalResources.message("required", view.getEmailField().getCaption()),
-        view.getEmailField().getRequiredError());
-    assertTrue(view.getNameField().isRequired());
-    assertEquals(generalResources.message("required", view.getNameField().getCaption()),
-        view.getNameField().getRequiredError());
-    assertTrue(view.getPasswordField().isRequired());
-    assertEquals(generalResources.message("required", view.getPasswordField().getCaption()),
-        view.getPasswordField().getRequiredError());
-    assertTrue(view.getConfirmPasswordField().isRequired());
-    assertEquals(generalResources.message("required", view.getConfirmPasswordField().getCaption()),
-        view.getConfirmPasswordField().getRequiredError());
+    assertTrue(view.emailField.isRequired());
+    assertEquals(generalResources.message("required", view.emailField.getCaption()),
+        view.emailField.getRequiredError());
+    assertTrue(view.nameField.isRequired());
+    assertEquals(generalResources.message("required", view.nameField.getCaption()),
+        view.nameField.getRequiredError());
+    assertTrue(view.passwordField.isRequired());
+    assertEquals(generalResources.message("required", view.passwordField.getCaption()),
+        view.passwordField.getRequiredError());
+    assertTrue(view.confirmPasswordField.isRequired());
+    assertEquals(generalResources.message("required", view.confirmPasswordField.getCaption()),
+        view.confirmPasswordField.getRequiredError());
   }
 
   @Test
   public void required_NewUser() {
     presenter.setItemDataSource(item);
 
-    assertTrue(view.getEmailField().isRequired());
-    assertEquals(generalResources.message("required", view.getEmailField().getCaption()),
-        view.getEmailField().getRequiredError());
-    assertTrue(view.getNameField().isRequired());
-    assertEquals(generalResources.message("required", view.getNameField().getCaption()),
-        view.getNameField().getRequiredError());
-    assertTrue(view.getPasswordField().isRequired());
-    assertEquals(generalResources.message("required", view.getPasswordField().getCaption()),
-        view.getPasswordField().getRequiredError());
-    assertTrue(view.getConfirmPasswordField().isRequired());
-    assertEquals(generalResources.message("required", view.getConfirmPasswordField().getCaption()),
-        view.getConfirmPasswordField().getRequiredError());
+    assertTrue(view.emailField.isRequired());
+    assertEquals(generalResources.message("required", view.emailField.getCaption()),
+        view.emailField.getRequiredError());
+    assertTrue(view.nameField.isRequired());
+    assertEquals(generalResources.message("required", view.nameField.getCaption()),
+        view.nameField.getRequiredError());
+    assertTrue(view.passwordField.isRequired());
+    assertEquals(generalResources.message("required", view.passwordField.getCaption()),
+        view.passwordField.getRequiredError());
+    assertTrue(view.confirmPasswordField.isRequired());
+    assertEquals(generalResources.message("required", view.confirmPasswordField.getCaption()),
+        view.confirmPasswordField.getRequiredError());
   }
 
   @Test
@@ -161,48 +160,48 @@ public class UserFormPresenterTest {
     user.setId(1L);
     presenter.setItemDataSource(item);
 
-    assertTrue(view.getEmailField().isRequired());
-    assertEquals(generalResources.message("required", view.getEmailField().getCaption()),
-        view.getEmailField().getRequiredError());
-    assertTrue(view.getNameField().isRequired());
-    assertEquals(generalResources.message("required", view.getNameField().getCaption()),
-        view.getNameField().getRequiredError());
-    assertFalse(view.getPasswordField().isRequired());
-    assertFalse(view.getConfirmPasswordField().isRequired());
+    assertTrue(view.emailField.isRequired());
+    assertEquals(generalResources.message("required", view.emailField.getCaption()),
+        view.emailField.getRequiredError());
+    assertTrue(view.nameField.isRequired());
+    assertEquals(generalResources.message("required", view.nameField.getCaption()),
+        view.nameField.getRequiredError());
+    assertFalse(view.passwordField.isRequired());
+    assertFalse(view.confirmPasswordField.isRequired());
   }
 
   @Test
   public void editable_Default() {
-    assertTrue(view.getEmailField().isReadOnly());
-    assertTrue(view.getEmailField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getNameField().isReadOnly());
-    assertTrue(view.getNameField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getPasswordField().isVisible());
-    assertFalse(view.getConfirmPasswordField().isVisible());
+    assertTrue(view.emailField.isReadOnly());
+    assertTrue(view.emailField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.nameField.isReadOnly());
+    assertTrue(view.nameField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
   }
 
   @Test
   public void editable_True() {
     presenter.setEditable(true);
 
-    assertFalse(view.getEmailField().isReadOnly());
-    assertFalse(view.getEmailField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getNameField().isReadOnly());
-    assertFalse(view.getNameField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getPasswordField().isVisible());
-    assertTrue(view.getConfirmPasswordField().isVisible());
+    assertFalse(view.emailField.isReadOnly());
+    assertFalse(view.emailField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.nameField.isReadOnly());
+    assertFalse(view.nameField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.passwordField.isVisible());
+    assertTrue(view.confirmPasswordField.isVisible());
   }
 
   @Test
   public void editable_False() {
     presenter.setEditable(false);
 
-    assertTrue(view.getEmailField().isReadOnly());
-    assertTrue(view.getEmailField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertTrue(view.getNameField().isReadOnly());
-    assertTrue(view.getNameField().getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
-    assertFalse(view.getPasswordField().isVisible());
-    assertFalse(view.getConfirmPasswordField().isVisible());
+    assertTrue(view.emailField.isReadOnly());
+    assertTrue(view.emailField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertTrue(view.nameField.isReadOnly());
+    assertTrue(view.nameField.getStyleName().contains(ValoTheme.TEXTFIELD_BORDERLESS));
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
   }
 
   @Test
@@ -226,9 +225,9 @@ public class UserFormPresenterTest {
     presenter.setPasswordItemDataSource(passwordItem);
     presenter.setEditable(true);
     setFields();
-    view.getEmailField().setValue("");
+    view.emailField.setValue("");
 
-    assertFalse(view.getEmailField().isValid());
+    assertFalse(view.emailField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -244,11 +243,11 @@ public class UserFormPresenterTest {
     presenter.setPasswordItemDataSource(passwordItem);
     presenter.setEditable(true);
     setFields();
-    view.getEmailField().setValue("abc");
+    view.emailField.setValue("abc");
 
-    assertFalse(view.getEmailField().isValid());
+    assertFalse(view.emailField.isValid());
     assertEquals(error(resources.message(EMAIL_PROPERTY + ".invalid")).getFormattedHtmlMessage(),
-        view.getEmailField().getErrorMessage().getFormattedHtmlMessage());
+        view.emailField.getErrorMessage().getFormattedHtmlMessage());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -266,9 +265,9 @@ public class UserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
 
-    assertFalse(view.getEmailField().isValid());
+    assertFalse(view.emailField.isValid());
     assertEquals(error(resources.message(EMAIL_PROPERTY + ".exists")).getFormattedHtmlMessage(),
-        view.getEmailField().getErrorMessage().getFormattedHtmlMessage());
+        view.emailField.getErrorMessage().getFormattedHtmlMessage());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -290,9 +289,9 @@ public class UserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
 
-    assertFalse(view.getEmailField().isValid());
+    assertFalse(view.emailField.isValid());
     assertEquals(error(resources.message(EMAIL_PROPERTY + ".exists")).getFormattedHtmlMessage(),
-        view.getEmailField().getErrorMessage().getFormattedHtmlMessage());
+        view.emailField.getErrorMessage().getFormattedHtmlMessage());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -313,7 +312,7 @@ public class UserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
 
-    assertTrue(view.getEmailField().isValid());
+    assertTrue(view.emailField.isValid());
     assertTrue(presenter.isValid());
     presenter.commit();
   }
@@ -324,9 +323,9 @@ public class UserFormPresenterTest {
     presenter.setPasswordItemDataSource(passwordItem);
     presenter.setEditable(true);
     setFields();
-    view.getNameField().setValue("");
+    view.nameField.setValue("");
 
-    assertFalse(view.getNameField().isValid());
+    assertFalse(view.nameField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -342,9 +341,9 @@ public class UserFormPresenterTest {
     presenter.setPasswordItemDataSource(passwordItem);
     presenter.setEditable(true);
     setFields();
-    view.getPasswordField().setValue("");
+    view.passwordField.setValue("");
 
-    assertFalse(view.getPasswordField().isValid());
+    assertFalse(view.passwordField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -360,9 +359,9 @@ public class UserFormPresenterTest {
     presenter.setPasswordItemDataSource(passwordItem);
     presenter.setEditable(true);
     setFields();
-    view.getConfirmPasswordField().setValue("");
+    view.confirmPasswordField.setValue("");
 
-    assertFalse(view.getConfirmPasswordField().isValid());
+    assertFalse(view.confirmPasswordField.isValid());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -379,10 +378,10 @@ public class UserFormPresenterTest {
     presenter.setPasswordItemDataSource(passwordItem);
     presenter.setEditable(true);
     setFields();
-    view.getPasswordField().setValue("");
-    view.getConfirmPasswordField().setValue("");
+    view.passwordField.setValue("");
+    view.confirmPasswordField.setValue("");
 
-    assertTrue(view.getPasswordField().isValid());
+    assertTrue(view.passwordField.isValid());
     assertTrue(presenter.isValid());
     presenter.commit();
   }
@@ -394,7 +393,7 @@ public class UserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
 
-    assertTrue(view.getPasswordField().isValid());
+    assertTrue(view.passwordField.isValid());
     assertTrue(presenter.isValid());
     presenter.commit();
   }
@@ -406,12 +405,12 @@ public class UserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
     assertTrue(presenter.isValid());
-    view.getConfirmPasswordField().setValue("password2");
+    view.confirmPasswordField.setValue("password2");
 
-    assertFalse(view.getPasswordField().isValid());
+    assertFalse(view.passwordField.isValid());
     assertEquals(
         error(resources.message(PASSWORD_PROPERTY + ".notMatch")).getFormattedHtmlMessage(),
-        view.getPasswordField().getErrorMessage().getFormattedHtmlMessage());
+        view.passwordField.getErrorMessage().getFormattedHtmlMessage());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
@@ -428,12 +427,12 @@ public class UserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
     assertTrue(presenter.isValid());
-    view.getPasswordField().setValue("password2");
+    view.passwordField.setValue("password2");
 
-    assertFalse(view.getPasswordField().isValid());
+    assertFalse(view.passwordField.isValid());
     assertEquals(
         error(resources.message(PASSWORD_PROPERTY + ".notMatch")).getFormattedHtmlMessage(),
-        view.getPasswordField().getErrorMessage().getFormattedHtmlMessage());
+        view.passwordField.getErrorMessage().getFormattedHtmlMessage());
     assertFalse(presenter.isValid());
     try {
       presenter.commit();
