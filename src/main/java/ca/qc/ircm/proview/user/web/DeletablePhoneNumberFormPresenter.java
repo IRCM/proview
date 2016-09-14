@@ -21,7 +21,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -38,8 +37,6 @@ public class DeletablePhoneNumberFormPresenter {
   public static final String DELETE_PROPERTY = "delete";
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private DeletablePhoneNumberForm view;
-  private PhoneNumberForm phoneNumberForm;
-  private Button deleteButton;
   @Inject
   private PhoneNumberFormPresenter phoneNumberFormPresenter;
 
@@ -52,15 +49,9 @@ public class DeletablePhoneNumberFormPresenter {
   public void init(DeletablePhoneNumberForm view) {
     this.view = view;
     view.setPresenter(this);
-    setFields();
     addListeners();
     updateEditable();
-    phoneNumberFormPresenter.init(phoneNumberForm);
-  }
-
-  private void setFields() {
-    phoneNumberForm = view.getPhoneNumberForm();
-    deleteButton = view.getDeleteButton();
+    phoneNumberFormPresenter.init(view.phoneNumberForm);
   }
 
   private void addListeners() {
@@ -70,7 +61,7 @@ public class DeletablePhoneNumberFormPresenter {
   private void updateEditable() {
     boolean editable = editableProperty.getValue();
     phoneNumberFormPresenter.setEditable(editable);
-    deleteButton.setVisible(editable);
+    view.deleteButton.setVisible(editable);
   }
 
   /**
@@ -82,7 +73,7 @@ public class DeletablePhoneNumberFormPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    deleteButton.setCaption(resources.message(DELETE_PROPERTY));
+    view.deleteButton.setCaption(resources.message(DELETE_PROPERTY));
   }
 
   public void commit() throws CommitException {
@@ -110,10 +101,10 @@ public class DeletablePhoneNumberFormPresenter {
   }
 
   public void addDeleteClickListener(ClickListener listener) {
-    deleteButton.addClickListener(listener);
+    view.deleteButton.addClickListener(listener);
   }
 
   public void removeDeleteClickListener(ClickListener listener) {
-    deleteButton.removeClickListener(listener);
+    view.deleteButton.removeClickListener(listener);
   }
 }

@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.ui.Button;
 
 /**
  * Deletable phone number form.
@@ -38,13 +37,5 @@ public class DeletablePhoneNumberForm extends DeletablePhoneNumberFormDesign
     presenter.attach();
     removeComponent(buttonsLayout);
     phoneNumberForm.addComponent(buttonsLayout);
-  }
-
-  public PhoneNumberForm getPhoneNumberForm() {
-    return phoneNumberForm;
-  }
-
-  public Button getDeleteButton() {
-    return deleteButton;
   }
 }
