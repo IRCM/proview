@@ -42,7 +42,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -52,8 +51,7 @@ import java.util.Locale;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class MainViewPresenterTest {
-  @InjectMocks
-  private MainViewPresenter presenter = new MainViewPresenter();
+  private MainViewPresenter presenter;
   @Mock
   private MainView view;
   @Mock
@@ -66,16 +64,10 @@ public class MainViewPresenterTest {
   private User user;
   @Captor
   private ArgumentCaptor<LoginListener> loginListenerCaptor;
-  private Label header = new Label();
   private Label signHeader = new Label();
   private TextField signFormUsername = new TextField();
   private PasswordField signFormPassword = new PasswordField();
   private Button signButton = new Button();
-  private Label forgorPasswordHeader = new Label();
-  private TextField forgotPasswordEmailField = new TextField();
-  private Button forgotPasswordButton = new Button();
-  private Label registerHeader = new Label();
-  private Button registerButton = new Button();
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(MainView.class, locale);
   private MessageResource generalResources =
@@ -88,17 +80,19 @@ public class MainViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    when(view.getHeader()).thenReturn(header);
-    when(view.getSignForm()).thenReturn(signForm);
+    presenter = new MainViewPresenter(authenticationService);
+    view.menu = new Menu();
+    view.header = new Label();
+    view.signForm = signForm;
+    view.forgotPasswordHeader = new Label();
+    view.forgotPasswordEmailField = new TextField();
+    view.forgotPasswordButton = new Button();
+    view.registerHeader = new Label();
+    view.registerButton = new Button();
     when(signForm.getHeader()).thenReturn(signHeader);
     when(signForm.getUserNameField()).thenReturn(signFormUsername);
     when(signForm.getPasswordField()).thenReturn(signFormPassword);
     when(signForm.getLoginButton()).thenReturn(signButton);
-    when(view.getForgotPasswordHeader()).thenReturn(forgorPasswordHeader);
-    when(view.getForgotPasswordEmailField()).thenReturn(forgotPasswordEmailField);
-    when(view.getForgotPasswordButton()).thenReturn(forgotPasswordButton);
-    when(view.getRegisterHeader()).thenReturn(registerHeader);
-    when(view.getRegisterButton()).thenReturn(registerButton);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
@@ -106,16 +100,18 @@ public class MainViewPresenterTest {
 
   @Test
   public void captions() {
-    assertEquals(resources.message("header"), header.getValue());
+    assertEquals(resources.message("header"), view.header.getValue());
     assertEquals(resources.message("sign"), signHeader.getValue());
     assertEquals(resources.message("sign.username"), signFormUsername.getCaption());
     assertEquals(resources.message("sign.password"), signFormPassword.getCaption());
     assertEquals(resources.message("sign.button"), signButton.getCaption());
-    assertEquals(resources.message("forgotPassword"), forgorPasswordHeader.getValue());
-    assertEquals(resources.message("forgotPassword.email"), forgotPasswordEmailField.getCaption());
-    assertEquals(resources.message("forgotPassword.button"), forgotPasswordButton.getCaption());
-    assertEquals(resources.message("register"), registerHeader.getValue());
-    assertEquals(resources.message("register.button"), registerButton.getCaption());
+    assertEquals(resources.message("forgotPassword"), view.forgotPasswordHeader.getValue());
+    assertEquals(resources.message("forgotPassword.email"),
+        view.forgotPasswordEmailField.getCaption());
+    assertEquals(resources.message("forgotPassword.button"),
+        view.forgotPasswordButton.getCaption());
+    assertEquals(resources.message("register"), view.registerHeader.getValue());
+    assertEquals(resources.message("register.button"), view.registerButton.getCaption());
   }
 
   private String requiredError(String caption) {
@@ -130,9 +126,9 @@ public class MainViewPresenterTest {
     assertTrue(signFormPassword.isRequired());
     assertEquals(requiredError(resources.message("sign.password")),
         signFormPassword.getRequiredError());
-    assertTrue(forgotPasswordEmailField.isRequired());
+    assertTrue(view.forgotPasswordEmailField.isRequired());
     assertEquals(requiredError(resources.message("forgotPassword.email")),
-        forgotPasswordEmailField.getRequiredError());
+        view.forgotPasswordEmailField.getRequiredError());
   }
 
   @Test
@@ -159,14 +155,14 @@ public class MainViewPresenterTest {
 
   @Test
   public void forgotPasswordEmailField_Required() {
-    assertFalse(forgotPasswordEmailField.isValid());
+    assertFalse(view.forgotPasswordEmailField.isValid());
   }
 
   @Test
   public void forgotPasswordEmailField_EmailValidator() {
-    forgotPasswordEmailField.setValue("aaa");
+    view.forgotPasswordEmailField.setValue("aaa");
 
-    assertFalse(forgotPasswordEmailField.isValid());
+    assertFalse(view.forgotPasswordEmailField.isValid());
   }
 
   private void clickLoginButton() {
@@ -221,16 +217,16 @@ public class MainViewPresenterTest {
   @Test
   public void forgotPassword() {
     when(userService.get(anyString())).thenReturn(user);
-    forgotPasswordEmailField.setValue(username);
+    view.forgotPasswordEmailField.setValue(username);
 
-    forgotPasswordButton.click();
+    view.forgotPasswordButton.click();
 
     // TODO Add test for forgot password creation.
   }
 
   @Test
   public void forgotPassword_EmailEmpty() {
-    forgotPasswordButton.click();
+    view.forgotPasswordButton.click();
 
     // TODO Add test for forgot password creation (never).
     verify(view).showError(any());
@@ -238,9 +234,9 @@ public class MainViewPresenterTest {
 
   @Test
   public void forgotPassword_EmailInvalid() {
-    forgotPasswordEmailField.setValue("aaa");
+    view.forgotPasswordEmailField.setValue("aaa");
 
-    forgotPasswordButton.click();
+    view.forgotPasswordButton.click();
 
     // TODO Add test for forgot password creation (never).
     verify(view).showError(any());
@@ -248,7 +244,7 @@ public class MainViewPresenterTest {
 
   @Test
   public void register() {
-    registerButton.click();
+    view.registerButton.click();
 
     verify(view).navigateToRegister();
   }

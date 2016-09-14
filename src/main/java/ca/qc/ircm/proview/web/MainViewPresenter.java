@@ -22,9 +22,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 import org.apache.shiro.authc.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,19 +39,19 @@ import javax.inject.Inject;
 public class MainViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(MainViewPresenter.class);
   private MainView view;
-  private Label header;
-  private CustomLoginForm signForm;
-  private Label forgotPasswordHeader;
-  private TextField forgotPasswordEmailField;
-  private Button forgotPasswordButton;
-  private Label registerHeader;
-  private Button registerButton;
   private ObjectProperty<String> username = new ObjectProperty<String>(null, String.class);
   private ObjectProperty<String> password = new ObjectProperty<String>(null, String.class);
   private ObjectProperty<String> forgotPasswordEmail =
       new ObjectProperty<String>(null, String.class);
   @Inject
   private AuthenticationService authenticationService;
+
+  public MainViewPresenter() {
+  }
+
+  protected MainViewPresenter(AuthenticationService authenticationService) {
+    this.authenticationService = authenticationService;
+  }
 
   /**
    * Initialize presenter.
@@ -64,7 +61,6 @@ public class MainViewPresenter {
    */
   public void init(MainView view) {
     this.view = view;
-    setFields();
     bindFields();
     addFieldListeners();
     setCaptions();
@@ -72,68 +68,58 @@ public class MainViewPresenter {
     addValidators();
   }
 
-  private void setFields() {
-    header = view.getHeader();
-    signForm = view.getSignForm();
-    forgotPasswordHeader = view.getForgotPasswordHeader();
-    forgotPasswordEmailField = view.getForgotPasswordEmailField();
-    forgotPasswordButton = view.getForgotPasswordButton();
-    registerHeader = view.getRegisterHeader();
-    registerButton = view.getRegisterButton();
-  }
-
   private void bindFields() {
-    signForm.getUserNameField().setPropertyDataSource(username);
-    signForm.getPasswordField().setPropertyDataSource(password);
-    forgotPasswordEmailField.setPropertyDataSource(forgotPasswordEmail);
+    view.signForm.getUserNameField().setPropertyDataSource(username);
+    view.signForm.getPasswordField().setPropertyDataSource(password);
+    view.forgotPasswordEmailField.setPropertyDataSource(forgotPasswordEmail);
   }
 
   private void addFieldListeners() {
-    signForm.addLoginListener(e -> sign());
-    forgotPasswordButton.addClickListener(e -> forgotPassword());
-    registerButton.addClickListener(e -> {
+    view.signForm.addLoginListener(e -> sign());
+    view.forgotPasswordButton.addClickListener(e -> forgotPassword());
+    view.registerButton.addClickListener(e -> {
       view.navigateToRegister();
     });
   }
 
   private void setCaptions() {
-    signForm.getHeader().setStyleName("h2");
+    view.signForm.getHeader().setStyleName("h2");
     MessageResource resources = view.getResources();
     view.setTitle(resources.message("title"));
-    header.setValue(resources.message("header"));
-    signForm.getHeader().setValue(resources.message("sign"));
-    signForm.getUserNameField().setCaption(resources.message("sign.username"));
-    signForm.getUserNameField().setNullRepresentation("");
-    signForm.getPasswordField().setCaption(resources.message("sign.password"));
-    signForm.getPasswordField().setNullRepresentation("");
-    signForm.getLoginButton().setCaption(resources.message("sign.button"));
-    forgotPasswordHeader.setValue(resources.message("forgotPassword"));
-    forgotPasswordEmailField.setNullRepresentation("");
-    forgotPasswordEmailField.setCaption(resources.message("forgotPassword.email"));
-    forgotPasswordButton.setCaption(resources.message("forgotPassword.button"));
-    registerHeader.setValue(resources.message("register"));
-    registerButton.setCaption(resources.message("register.button"));
+    view.header.setValue(resources.message("header"));
+    view.signForm.getHeader().setValue(resources.message("sign"));
+    view.signForm.getUserNameField().setCaption(resources.message("sign.username"));
+    view.signForm.getUserNameField().setNullRepresentation("");
+    view.signForm.getPasswordField().setCaption(resources.message("sign.password"));
+    view.signForm.getPasswordField().setNullRepresentation("");
+    view.signForm.getLoginButton().setCaption(resources.message("sign.button"));
+    view.forgotPasswordHeader.setValue(resources.message("forgotPassword"));
+    view.forgotPasswordEmailField.setNullRepresentation("");
+    view.forgotPasswordEmailField.setCaption(resources.message("forgotPassword.email"));
+    view.forgotPasswordButton.setCaption(resources.message("forgotPassword.button"));
+    view.registerHeader.setValue(resources.message("register"));
+    view.registerButton.setCaption(resources.message("register.button"));
   }
 
   private void setRequired() {
     final MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
-    signForm.getUserNameField().setRequired(true);
-    signForm.getUserNameField().setRequiredError(
-        generalResources.message("required", signForm.getUserNameField().getCaption()));
-    signForm.getPasswordField().setRequired(true);
-    signForm.getPasswordField().setRequiredError(
-        generalResources.message("required", signForm.getPasswordField().getCaption()));
-    forgotPasswordEmailField.setRequired(true);
-    forgotPasswordEmailField.setRequiredError(
-        generalResources.message("required", forgotPasswordEmailField.getCaption()));
+    view.signForm.getUserNameField().setRequired(true);
+    view.signForm.getUserNameField().setRequiredError(
+        generalResources.message("required", view.signForm.getUserNameField().getCaption()));
+    view.signForm.getPasswordField().setRequired(true);
+    view.signForm.getPasswordField().setRequiredError(
+        generalResources.message("required", view.signForm.getPasswordField().getCaption()));
+    view.forgotPasswordEmailField.setRequired(true);
+    view.forgotPasswordEmailField.setRequiredError(
+        generalResources.message("required", view.forgotPasswordEmailField.getCaption()));
   }
 
   private void addValidators() {
     MessageResource resources = view.getResources();
-    signForm.getUserNameField()
+    view.signForm.getUserNameField()
         .addValidator(new EmailValidator(resources.message("sign.email.invalid")));
-    forgotPasswordEmailField
+    view.forgotPasswordEmailField
         .addValidator(new EmailValidator(resources.message("forgotPassword.email.invalid")));
   }
 
@@ -141,8 +127,8 @@ public class MainViewPresenter {
     logger.trace("Validate sign user");
     boolean valid = true;
     try {
-      signForm.getUserNameField().commit();
-      signForm.getPasswordField().commit();
+      view.signForm.getUserNameField().commit();
+      view.signForm.getPasswordField().commit();
     } catch (InvalidValueException e) {
       logger.debug("Validation failed for sign user with message {}", e.getMessage());
       view.showError(e.getMessage());
@@ -154,8 +140,8 @@ public class MainViewPresenter {
   private void sign() {
     if (validateSign()) {
       MessageResource resources = view.getResources();
-      String username = signForm.getUserNameField().getValue();
-      String password = signForm.getPasswordField().getValue();
+      String username = view.signForm.getUserNameField().getValue();
+      String password = view.signForm.getPasswordField().getValue();
       try {
         logger.debug("User {} tries to signin", username);
         authenticationService.sign(username, password, true);
@@ -172,7 +158,7 @@ public class MainViewPresenter {
     logger.trace("Validate forgot password creation");
     boolean valid = true;
     try {
-      forgotPasswordEmailField.commit();
+      view.forgotPasswordEmailField.commit();
     } catch (InvalidValueException e) {
       logger.debug("Validation failed for forgot password with message {}", e.getMessage());
       view.showError(e.getMessage());

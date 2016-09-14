@@ -21,10 +21,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,33 +69,5 @@ public class MainView extends MainViewDesign implements MessageResourcesView {
 
   public void navigateToRegister() {
     getUI().getNavigator().navigateTo(RegisterView.VIEW_NAME);
-  }
-
-  public Label getHeader() {
-    return header;
-  }
-
-  public CustomLoginForm getSignForm() {
-    return signForm;
-  }
-
-  public Label getForgotPasswordHeader() {
-    return forgotPasswordHeader;
-  }
-
-  public TextField getForgotPasswordEmailField() {
-    return forgotPasswordEmailField;
-  }
-
-  public Button getForgotPasswordButton() {
-    return forgotPasswordButton;
-  }
-
-  public Label getRegisterHeader() {
-    return registerHeader;
-  }
-
-  public Button getRegisterButton() {
-    return registerButton;
   }
 }
