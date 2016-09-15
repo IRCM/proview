@@ -28,9 +28,8 @@ spring:
     url: jdbc:h2:mem:testdb;IGNORECASE=TRUE
     username: sa
     password:
-    tomcat:
-      test-on-borrow: true
-      validationQuery: SELECT 1
+    test-on-borrow: true
+    validationQuery: SELECT 1
 # MySQL database example.
 #     driver-class-name: com.mysql.jdbc.Driver
 #     url: jdbc:mysql://localhost/test
