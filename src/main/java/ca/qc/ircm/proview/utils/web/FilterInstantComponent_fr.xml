@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="all">Tous</entry>
+<entry key="interval">{0} - {1}</entry>
+<entry key="null">N''importe</entry>
+<entry key="from">Début</entry>
+<entry key="to">Fin</entry>
+<entry key="set">OK</entry>
+<entry key="clear">Effacer</entry>
+</properties>

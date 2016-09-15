@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta charset="UTF-8" name="package-mapping" content="org_vaadin_hene_popupbutton:org.vaadin.hene.popupbutton">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout size-auto> 
+   <org_vaadin_hene_popupbutton-popup-button caption="All" _id="filterButton"></org_vaadin_hene_popupbutton-popup-button> 
+   <vaadin-vertical-layout spacing size-auto _id="popupLayout"> 
+    <vaadin-horizontal-layout spacing> 
+     <vaadin-vertical-layout size-auto> 
+      <vaadin-inline-date-field caption="From" _id="startDateField"></vaadin-inline-date-field> 
+     </vaadin-vertical-layout> 
+     <vaadin-vertical-layout size-auto> 
+      <vaadin-inline-date-field caption="To" _id="endDateField"></vaadin-inline-date-field> 
+     </vaadin-vertical-layout> 
+    </vaadin-horizontal-layout> 
+    <vaadin-horizontal-layout spacing :middle :right> 
+     <vaadin-button plain-text _id="setButton">
+       Set 
+     </vaadin-button> 
+     <vaadin-button plain-text _id="clearButton">
+       Clear 
+     </vaadin-button> 
+    </vaadin-horizontal-layout> 
+   </vaadin-vertical-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

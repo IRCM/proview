@@ -66,7 +66,9 @@
     <vaadin.theme>${project.artifactId}</vaadin.theme> 
     <loginform.version>0.6.2</loginform.version>
     <flexibleoptiongroup.version>2.3.0</flexibleoptiongroup.version>
+    <popupbutton.version>2.6.0</popupbutton.version>
     <componentrenderer.version>1.0.2</componentrenderer.version>
+    <guava.version>19.0</guava.version>
     <commons-lang3.version>3.4</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
     <el.version>2.2.5</el.version>
@@ -331,9 +333,19 @@
       <version>${flexibleoptiongroup.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>popupbutton</artifactId>
+      <version>${popupbutton.version}</version>
+    </dependency>
+    <dependency>
       <groupId>de.datenhahn.vaadin</groupId>
       <artifactId>componentrenderer</artifactId>
       <version>${componentrenderer.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

@@ -11,6 +11,9 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.utils.web.AbstractFilterListener;
 import ca.qc.ircm.proview.utils.web.FilterEqualsChangeListener;
+import ca.qc.ircm.proview.utils.web.FilterInstantComponent;
+import ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter;
+import ca.qc.ircm.proview.utils.web.FilterRangeChangeListener;
 import ca.qc.ircm.proview.utils.web.FilterTextChangeListener;
 import ca.qc.ircm.proview.utils.web.GeneratedPropertyContainerFilter;
 import ca.qc.ircm.proview.utils.web.StringToInstantConverter;
@@ -49,6 +52,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Submissions view presenter.
@@ -88,6 +92,8 @@ public class SubmissionsViewPresenter {
   private Report report;
   @Inject
   private SubmissionService submissionService;
+  @Inject
+  private Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider;
 
   /**
    * Initializes presenter.
@@ -245,7 +251,7 @@ public class SubmissionsViewPresenter {
         }
         cell.setComponent(filter);
       } else if (propertyId.equals(DATE_PROPERTY)) {
-        // TODO Add date filter.
+        cell.setComponent(createFilterInstantComponent(propertyId));
       } else if (propertyId.equals(LINKED_TO_RESULTS_PROPERTY)) {
         Boolean[] values = new Boolean[] { true, false };
         ComboBox filter = createFilterComboBox(propertyId, resources, values);
@@ -279,6 +285,15 @@ public class SubmissionsViewPresenter {
     }
     filter.select(nullId);
     filter.setSizeFull();
+    return filter;
+  }
+
+  private FilterInstantComponent createFilterInstantComponent(Object propertyId) {
+    FilterInstantComponentPresenter presenter = filterInstantComponentPresenterProvider.get();
+    FilterInstantComponent filter = new FilterInstantComponent();
+    presenter.init(filter);
+    presenter.getRangeProperty().addValueChangeListener(
+        new FilterRangeChangeListener(submissionsGeneratedContainer, propertyId));
     return filter;
   }
 
