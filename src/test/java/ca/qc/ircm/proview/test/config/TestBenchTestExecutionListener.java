@@ -43,7 +43,8 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
   private static final String[] LICENSE_PATHS =
       new String[] { "vaadin.testbench.developer.license", ".vaadin.testbench.developer.license" };
   private static final String LICENSE_SYSTEM_PROPERTY = "vaadin.testbench.developer.license";
-  private static final Logger logger = LoggerFactory.getLogger(SlowTestExecutionListener.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(TestBenchTestExecutionListener.class);
 
   @Override
   public void beforeTestClass(TestContext testContext) throws Exception {
