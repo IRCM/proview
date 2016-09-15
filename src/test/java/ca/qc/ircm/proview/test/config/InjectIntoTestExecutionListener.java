@@ -21,7 +21,7 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 /**
- * Sets Shiro's subject.
+ * Injects dependencies in listener before test class.
  */
 public class InjectIntoTestExecutionListener extends AbstractTestExecutionListener {
   @Override
