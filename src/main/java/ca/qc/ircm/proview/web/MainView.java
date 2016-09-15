@@ -35,10 +35,17 @@ public class MainView extends MainViewDesign implements MessageResourcesView {
   private static final long serialVersionUID = -2537732272999926530L;
   public static final String VIEW_NAME = "";
   private static final Logger logger = LoggerFactory.getLogger(MainView.class);
+  protected Menu menu = new Menu();
+  protected CustomLoginForm signForm = new CustomLoginForm();
   @Inject
   private MainViewPresenter presenter;
   @Inject
   private AuthorizationService authorizationService;
+
+  public MainView() {
+    menuLayout.addComponent(menu);
+    signFormLayout.addComponent(signForm);
+  }
 
   @Override
   public void attach() {

@@ -6,12 +6,12 @@
  </head> 
  <body> 
   <vaadin-vertical-layout size-auto> 
-   <ca_qc_ircm_proview_web-menu id="menu" _id="menu"></ca_qc_ircm_proview_web-menu> 
+   <vaadin-vertical-layout _id="menuLayout"></vaadin-vertical-layout> 
    <vaadin-vertical-layout spacing size-auto margin> 
     <vaadin-label style-name="h1" id="header" size-auto plain-text _id="header">
       Proteomics-MS Core Facility 
     </vaadin-label> 
-    <ca_qc_ircm_proview_web-custom-login-form id="signForm" _id="signForm"></ca_qc_ircm_proview_web-custom-login-form> 
+    <vaadin-vertical-layout _id="signFormLayout"></vaadin-vertical-layout> 
     <vaadin-form-layout size-auto> 
      <vaadin-label style-name="h2" id="forgotPasswordHeader" size-auto plain-text _id="forgotPasswordHeader">
        Forgot password 
