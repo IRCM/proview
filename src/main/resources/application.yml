@@ -27,9 +27,10 @@ spring:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb;IGNORECASE=TRUE
     username: sa
-    password: 
-    test-on-borrow: true
-    validationQuery: SELECT 1
+    password:
+    tomcat:
+      test-on-borrow: true
+      validationQuery: SELECT 1
 # MySQL database example.
 #     driver-class-name: com.mysql.jdbc.Driver
 #     url: jdbc:mysql://localhost/test
@@ -38,7 +39,8 @@ spring:
 
 # Web server.
 server:
-  session.persistence: false
+  session:
+    persistent: false
 vaadin:
   servlet:
     productionMode: false
