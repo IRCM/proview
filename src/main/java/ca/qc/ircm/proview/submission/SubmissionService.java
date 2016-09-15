@@ -30,8 +30,8 @@ public interface SubmissionService {
   /**
    * Selects submission from database.
    *
-   * @param id
-   *          database identifier of submission
+   * @param filter
+   *          filters submissions
    * @return submission
    */
   public Report report(SubmissionFilter filter);
@@ -39,8 +39,8 @@ public interface SubmissionService {
   /**
    * Selects submission from database for admin users.
    *
-   * @param id
-   *          database identifier of submission
+   * @param filter
+   *          filters submissions
    * @return submission
    */
   public Report adminReport(SubmissionFilter filter);
