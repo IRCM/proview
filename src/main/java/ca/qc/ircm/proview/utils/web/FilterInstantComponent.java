@@ -22,4 +22,16 @@ public class FilterInstantComponent extends FilterInstantComponentDesign
     super.attach();
     presenter.attach();
   }
+
+  @Override
+  public void addStyleName(String style) {
+    super.addStyleName(style);
+    filterButton.addStyleName(style);
+  }
+
+  @Override
+  public void setStyleName(String style) {
+    super.setStyleName(style);
+    filterButton.setStyleName(style);
+  }
 }

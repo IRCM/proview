@@ -212,6 +212,7 @@ public class SubmissionsViewPresenter {
     ComponentCellKeyExtension.extend(view.submissionsGrid);
     view.submissionsGrid.setContainerDataSource(submissionsGeneratedContainer);
     view.submissionsGrid.setColumns(columns);
+    view.submissionsGrid.setFrozenColumnCount(2);
     view.submissionsGrid.getColumn(SELECT_PROPERTY).setWidth(56);
     view.submissionsGrid.getColumn(SELECT_PROPERTY).setRenderer(new ComponentRenderer());
     view.submissionsGrid.getColumn(EXPERIMENT_PROPERTY).setRenderer(new ComponentRenderer());
@@ -267,7 +268,8 @@ public class SubmissionsViewPresenter {
     TextField filter = new TextField();
     filter.addTextChangeListener(
         new FilterTextChangeListener(submissionsGeneratedContainer, propertyId, true, false));
-    filter.setSizeFull();
+    filter.setWidth("100%");
+    filter.addStyleName("tiny");
     filter.setInputPrompt(resources.message(ALL));
     return filter;
   }
@@ -283,7 +285,8 @@ public class SubmissionsViewPresenter {
       filter.addItem(value);
     }
     filter.select(nullId);
-    filter.setSizeFull();
+    filter.setWidth("100%");
+    filter.addStyleName("tiny");
     return filter;
   }
 
@@ -293,7 +296,8 @@ public class SubmissionsViewPresenter {
     presenter.init(filter);
     presenter.getRangeProperty().addValueChangeListener(
         new FilterRangeChangeListener(submissionsGeneratedContainer, propertyId));
-    filter.setSizeFull();
+    filter.setWidth("100%");
+    filter.addStyleName("tiny");
     return filter;
   }
 
@@ -321,10 +325,12 @@ public class SubmissionsViewPresenter {
 
   private void openSubmission(Submission submission) {
     logger.debug("openSubmission {}", submission);
+    // TODO Replace by submission window.
   }
 
   private void openSubmissionResults(Submission submission) {
     logger.debug("openSubmissionResults {}", submission);
+    // TODO Replace by submission results window.
   }
 
   private class ResultsFilterChangeListener extends CutomNullPropertyFilterValueChangeListener {
