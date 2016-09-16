@@ -50,11 +50,10 @@ public class MsAnalysis implements Data, Serializable {
     /**
      * Digestion information was not entered correctly.
      */
-    ERRONEOUS,
-    /**
-     * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
-     * something went wrong.
-     */
+    ERRONEOUS, /**
+                * Digestion failed due to an experimental problem. An attempt was made to do the
+                * digestion but something went wrong.
+                */
     FAILED;
   }
 
@@ -390,44 +389,6 @@ public class MsAnalysis implements Data, Serializable {
 
   public MsAnalysis(Long id) {
     this.id = id;
-  }
-
-  /**
-   * Returns a list of all checks that must be performed in order to be a valid MS analysis.
-   *
-   * @param instrument
-   *          mass detection instrument to use
-   * @param source
-   *          source to use
-   * @return all checks that must be performed in order to be a valid MS analysis
-   */
-  @Deprecated
-  public static Map<VerificationType, Set<String>> verifications(MassDetectionInstrument instrument,
-      Source source) {
-    if (instrument == MassDetectionInstrument.TOF) {
-      // No source for TOF.
-      source = null;
-    }
-    Map<Source, Map<VerificationType, Set<String>>> instrumentChecks =
-        VERIFICATION_LIST.get(instrument);
-    Map<VerificationType, Set<String>> sourceChecks =
-        instrumentChecks != null ? instrumentChecks.get(source) : null;
-    if (sourceChecks == null) {
-      sourceChecks = new HashMap<VerificationType, Set<String>>();
-      sourceChecks.put(VerificationType.INSTRUMENT, new LinkedHashSet<String>());
-      sourceChecks.put(VerificationType.SAMPLE, new LinkedHashSet<String>());
-    }
-    return sourceChecks;
-  }
-
-  /**
-   * Returns a list of all checks that must be performed in order to be a valid MS analysis.
-   *
-   * @return all checks that must be performed in order to be a valid MS analysis
-   */
-  @Deprecated
-  public Map<VerificationType, Set<String>> verifications() {
-    return verifications(this.getMassDetectionInstrument(), this.getSource());
   }
 
   @Override

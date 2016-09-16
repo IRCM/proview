@@ -1,16 +1,12 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.sample.QSample.sample;
-import static ca.qc.ircm.proview.sample.QStandard.standard;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -58,20 +54,5 @@ public class StandardServiceImpl implements StandardService {
       authorizationService.checkSampleReadPermission(sample);
     }
     return standard;
-  }
-
-  @Override
-  @Deprecated
-  public List<Standard> all(Sample sampleParam) {
-    if (sampleParam == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkSampleReadPermission(sampleParam);
-
-    JPAQuery<Standard> query = queryFactory.select(standard);
-    query.from(sample);
-    query.join(sample.standards, standard);
-    query.where(sample.eq(sampleParam));
-    return query.fetch();
   }
 }

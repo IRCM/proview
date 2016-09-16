@@ -39,7 +39,6 @@ import org.thymeleaf.context.Context;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -267,17 +266,6 @@ public class SubmissionServiceImpl implements SubmissionService {
   public Report adminReport(SubmissionFilter filter) {
     authorizationService.checkAdminRole();
     return report(filter, true);
-  }
-
-  @Override
-  @Deprecated
-  public List<GelImage> gelImages(Submission submission) {
-    if (submission == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkSubmissionReadPermission(submission);
-
-    return submission.getGelImages();
   }
 
   @Override

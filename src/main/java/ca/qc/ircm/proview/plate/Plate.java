@@ -5,7 +5,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
-import ca.qc.ircm.proview.plate.PlateService.PlateChoice;
 import ca.qc.ircm.proview.plate.PlateSpotService.SimpleSpotLocation;
 import ca.qc.ircm.proview.plate.PlateSpotService.SpotLocation;
 
@@ -32,9 +31,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "plate")
-@SuppressWarnings("deprecation")
-public class Plate
-    implements Data, Serializable, Named, PlateWithSpots, PlateChoice, Comparable<Plate> {
+public class Plate implements Data, Serializable, Named, Comparable<Plate> {
 
   /**
    * Plate types.
@@ -125,7 +122,17 @@ public class Plate
     return type.columnCount;
   }
 
-  @Override
+  /**
+   * Returns spot at specified location.
+   *
+   * @param row
+   *          row
+   * @param column
+   *          column
+   * @return spot at specified location
+   * @throws IllegalStateException
+   *           invalid row or column for this plate
+   */
   @Nonnull
   public PlateSpot spot(int row, int column) {
     if (row < 0 || row >= getRowCount()) {
@@ -145,7 +152,15 @@ public class Plate
     throw new IllegalStateException("No spot could be found at location " + row + "-" + column);
   }
 
-  @Override
+  /**
+   * Returns spots from the 'from' location up to the 'to' location.
+   *
+   * @param from
+   *          starting location
+   * @param to
+   *          end location (inclusive)
+   * @return spots from the 'from' location up to the 'to' location
+   */
   public List<PlateSpot> spots(SpotLocation from, SpotLocation to) {
     // Find all locations that are to be included.
     Collection<SpotLocation> locations = new HashSet<SpotLocation>();
@@ -185,13 +200,11 @@ public class Plate
     return spots;
   }
 
-  @Override
-  @Deprecated
-  public Plate getPlate() {
-    return this;
-  }
-
-  @Override
+  /**
+   * Returns number of empty spots on plate.
+   *
+   * @return number of empty spots on plate
+   */
   public Integer getEmptySpotCount() {
     Integer count = 0;
     for (PlateSpot spot : this.spots) {
@@ -202,7 +215,11 @@ public class Plate
     return count;
   }
 
-  @Override
+  /**
+   * Returns number of spots containing a sample on plate.
+   *
+   * @return number of spots containing a sample on plate
+   */
   public Integer getSampleCount() {
     Integer count = 0;
     for (PlateSpot spot : this.spots) {
@@ -281,7 +298,6 @@ public class Plate
     this.insertTime = insertTime;
   }
 
-  @Override
   public List<PlateSpot> getSpots() {
     return spots;
   }

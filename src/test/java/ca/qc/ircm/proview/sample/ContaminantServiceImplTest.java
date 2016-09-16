@@ -15,8 +15,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -57,29 +55,5 @@ public class ContaminantServiceImplTest {
     Contaminant contaminant = contaminantServiceImpl.get(null);
 
     assertNull(contaminant);
-  }
-
-  @Test
-  @Deprecated
-  public void all() {
-    Sample sample = new EluateSample(445L);
-
-    List<Contaminant> contaminants = contaminantServiceImpl.all(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(1, contaminants.size());
-    Contaminant contaminant = contaminants.get(0);
-    assertEquals((Long) 2L, contaminant.getId());
-    assertEquals("keratin1", contaminant.getName());
-    assertEquals("1.5 μg", contaminant.getQuantity());
-    assertEquals(null, contaminant.getComments());
-  }
-
-  @Test
-  @Deprecated
-  public void all_Null() {
-    List<Contaminant> contaminants = contaminantServiceImpl.all(null);
-
-    assertEquals(0, contaminants.size());
   }
 }

@@ -46,16 +46,6 @@ public interface SubmissionService {
   public Report adminReport(SubmissionFilter filter);
 
   /**
-   * Returns all gel images that are linked to submission.
-   *
-   * @param submission
-   *          submission of samples
-   * @return all gel images that are linked to submission
-   */
-  @Deprecated
-  public List<GelImage> gelImages(Submission submission);
-
-  /**
    * Add a submission to database.<br>
    * Submission's date should not be older than yesterday.
    *

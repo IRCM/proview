@@ -39,8 +39,8 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.sample.SampleSolvent;
-import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
@@ -62,9 +62,6 @@ import org.mockito.stubbing.Answer;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.TemplateEngine;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -515,8 +512,7 @@ public class SubmissionServiceImplTest {
   @Test
   public void report_Status_Multiple() throws Throwable {
     SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
-    filter.statuses(
-        Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.TO_APPROVE));
+    filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.TO_APPROVE));
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -986,8 +982,7 @@ public class SubmissionServiceImplTest {
   @Test
   public void adminReport_Status_Multiple() throws Throwable {
     SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
-    filter.statuses(
-        Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.ANALYSED));
+    filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.ANALYSED));
 
     SubmissionService.Report report = submissionServiceImpl.adminReport(filter.build());
 
@@ -1202,29 +1197,6 @@ public class SubmissionServiceImplTest {
     assertTrue(find(submissions, 34).isPresent());
     assertTrue(find(submissions, 35).isPresent());
     assertTrue(find(submissions, 36).isPresent());
-  }
-
-  @Test
-  @Deprecated
-  public void gelImages() throws Throwable {
-    Submission submission = entityManager.find(Submission.class, 1L);
-
-    List<GelImage> images = submissionServiceImpl.gelImages(submission);
-
-    verify(authorizationService).checkSubmissionReadPermission(submission);
-    assertEquals(1, images.size());
-    GelImage image = images.get(0);
-    assertEquals("frag.jpg", image.getFilename());
-    Path expectedContent = Paths.get(getClass().getResource("/submission/frag.jpg").toURI());
-    assertArrayEquals(Files.readAllBytes(expectedContent), image.getContent());
-  }
-
-  @Test
-  @Deprecated
-  public void gelImages_Null() throws Throwable {
-    List<GelImage> images = submissionServiceImpl.gelImages(null);
-
-    assertEquals(0, images.size());
   }
 
   @Test

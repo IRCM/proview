@@ -9,33 +9,6 @@ import java.util.List;
  */
 public interface PlateService {
   /**
-   * A single choice for plate.
-   */
-  @Deprecated
-  public static interface PlateChoice {
-    /**
-     * Returns plate.
-     *
-     * @return plate
-     */
-    public Plate getPlate();
-
-    /**
-     * Returns number of empty spots on plate.
-     *
-     * @return number of empty spots on plate
-     */
-    public Integer getEmptySpotCount();
-
-    /**
-     * Returns number of spots containing a sample on plate.
-     *
-     * @return number of spots containing a sample on plate
-     */
-    public Integer getSampleCount();
-  }
-
-  /**
    * Finds plate in database.
    *
    * @param id

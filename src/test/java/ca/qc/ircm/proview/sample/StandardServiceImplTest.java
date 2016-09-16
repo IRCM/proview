@@ -15,8 +15,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -69,42 +67,5 @@ public class StandardServiceImplTest {
     Standard standard = standardServiceImpl.get(null);
 
     assertNull(standard);
-  }
-
-  @Test
-  @Deprecated
-  public void all() {
-    Sample sample = new EluateSample(445L);
-
-    List<Standard> standards = standardServiceImpl.all(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(1, standards.size());
-    Standard standard = standards.get(0);
-    assertEquals((Long) 4L, standard.getId());
-    assertEquals("std1", standard.getName());
-    assertEquals("2 μg", standard.getQuantity());
-    assertEquals(null, standard.getComments());
-  }
-
-  @Test
-  @Deprecated
-  public void all_Control() {
-    Sample sample = new Control(448L);
-
-    List<Standard> standards = standardServiceImpl.all(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(1, standards.size());
-    Standard standard = standards.get(0);
-    assertEquals((Long) 6L, standard.getId());
-  }
-
-  @Test
-  @Deprecated
-  public void all_Null() {
-    List<Standard> standards = standardServiceImpl.all(null);
-
-    assertEquals(0, standards.size());
   }
 }
