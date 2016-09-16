@@ -5,13 +5,15 @@ import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.BASE_
 import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.CLEAR;
 import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.FILTER;
 import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.FROM;
-import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.INTERVAL;
-import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.NULL;
+import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.RANGE;
+import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.RANGE_ONLY_FROM;
+import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.RANGE_ONLY_TO;
 import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.SET;
 import static ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter.TO;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -73,16 +75,21 @@ public class FilterInstantComponentPresenterTest {
     return intervalCaption(fromDate, toDate);
   }
 
-  private String intervalCaption(Instant startDate, Instant endDate) {
+  private String intervalCaption(Instant fromDate, Instant toDate) {
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
-    return resources.message(INTERVAL,
-        startDate != null ? formatter.format(toLocalDateTime(startDate)) : resources.message(NULL),
-        formatter.format(toLocalDateTime(endDate)));
+    if (toDate == null) {
+      return resources.message(RANGE_ONLY_FROM, formatter.format(toLocalDateTime(fromDate)));
+    } else if (fromDate == null) {
+      return resources.message(RANGE_ONLY_TO, formatter.format(toLocalDateTime(toDate)));
+    } else {
+      return resources.message(RANGE, formatter.format(toLocalDateTime(fromDate)),
+          formatter.format(toLocalDateTime(toDate)));
+    }
   }
 
   private void setFields() {
-    view.startDateField.setValue(Date.from(fromDate));
-    view.endDateField.setValue(Date.from(toDate));
+    view.fromDateField.setValue(Date.from(fromDate));
+    view.toDateField.setValue(Date.from(toDate));
   }
 
   @Test
@@ -95,18 +102,19 @@ public class FilterInstantComponentPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.filterButton.getStyleName().contains(BASE_STYLE + FILTER));
-    assertTrue(view.startDateField.getStyleName().contains(BASE_STYLE + FROM));
-    assertTrue(view.endDateField.getStyleName().contains(BASE_STYLE + TO));
-    assertTrue(view.setButton.getStyleName().contains(BASE_STYLE + SET));
-    assertTrue(view.clearButton.getStyleName().contains(BASE_STYLE + CLEAR));
+    assertTrue(view.getStyleName().contains(BASE_STYLE));
+    assertTrue(view.filterButton.getStyleName().contains(BASE_STYLE + "-" + FILTER));
+    assertTrue(view.fromDateField.getStyleName().contains(BASE_STYLE + "-" + FROM));
+    assertTrue(view.toDateField.getStyleName().contains(BASE_STYLE + "-" + TO));
+    assertTrue(view.setButton.getStyleName().contains(BASE_STYLE + "-" + SET));
+    assertTrue(view.clearButton.getStyleName().contains(BASE_STYLE + "-" + CLEAR));
   }
 
   @Test
   public void captions() {
     assertEquals(resources.message(ALL), view.filterButton.getCaption());
-    assertEquals(resources.message(FROM), view.startDateField.getCaption());
-    assertEquals(resources.message(TO), view.endDateField.getCaption());
+    assertEquals(resources.message(FROM), view.fromDateField.getCaption());
+    assertEquals(resources.message(TO), view.toDateField.getCaption());
     assertEquals(resources.message(SET), view.setButton.getCaption());
     assertEquals(resources.message(CLEAR), view.clearButton.getCaption());
   }
@@ -114,6 +122,8 @@ public class FilterInstantComponentPresenterTest {
   @Test
   public void defaultValues() {
     assertEquals(Range.all(), presenter.getRange());
+    assertNull(view.fromDateField.getValue());
+    assertNull(view.toDateField.getValue());
   }
 
   @Test
@@ -123,24 +133,82 @@ public class FilterInstantComponentPresenterTest {
     view.setButton.click();
 
     assertNotNull(presenter.getRange());
+    assertTrue(presenter.getRange().hasLowerBound());
     assertEquals(fromDate, presenter.getRange().lowerEndpoint());
+    assertTrue(presenter.getRange().hasUpperBound());
     assertEquals(toDate, presenter.getRange().upperEndpoint());
     assertEquals(intervalCaption(), view.filterButton.getCaption());
     verify(rangeListener).valueChange(any());
   }
 
   @Test
-  public void set_EndBeforeStart() {
-    LocalDateTime endDate = LocalDateTime.now();
-    view.startDateField.setValue(Date.from(toInstant(endDate.plusDays(10))));
-    view.endDateField.setValue(Date.from(toInstant(endDate)));
+  public void set_NullFrom() {
+    view.toDateField.setValue(Date.from(toDate));
 
     view.setButton.click();
 
     assertNotNull(presenter.getRange());
     assertFalse(presenter.getRange().hasLowerBound());
-    assertEquals(toInstant(endDate), presenter.getRange().upperEndpoint());
-    assertEquals(intervalCaption(null, toInstant(endDate)), view.filterButton.getCaption());
+    assertTrue(presenter.getRange().hasUpperBound());
+    assertEquals(toDate, presenter.getRange().upperEndpoint());
+    assertEquals(intervalCaption(null, toDate), view.filterButton.getCaption());
+    verify(rangeListener).valueChange(any());
+  }
+
+  @Test
+  public void set_NullTo() {
+    view.fromDateField.setValue(Date.from(fromDate));
+
+    view.setButton.click();
+
+    assertNotNull(presenter.getRange());
+    assertTrue(presenter.getRange().hasLowerBound());
+    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
+    assertFalse(presenter.getRange().hasUpperBound());
+    assertEquals(intervalCaption(fromDate, null), view.filterButton.getCaption());
+    verify(rangeListener).valueChange(any());
+  }
+
+  @Test
+  public void set_NullFromTo() {
+    view.setButton.click();
+
+    assertNotNull(presenter.getRange());
+    assertFalse(presenter.getRange().hasLowerBound());
+    assertFalse(presenter.getRange().hasUpperBound());
+    assertEquals(resources.message(ALL), view.filterButton.getCaption());
+    verify(rangeListener).valueChange(any());
+  }
+
+  @Test
+  public void set_FromEqualsTo() {
+    view.fromDateField.setValue(Date.from(fromDate));
+    view.toDateField.setValue(Date.from(fromDate));
+
+    view.setButton.click();
+
+    assertNotNull(presenter.getRange());
+    assertTrue(presenter.getRange().hasLowerBound());
+    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
+    assertTrue(presenter.getRange().hasUpperBound());
+    assertEquals(fromDate, presenter.getRange().upperEndpoint());
+    assertEquals(intervalCaption(fromDate, fromDate), view.filterButton.getCaption());
+    verify(rangeListener).valueChange(any());
+  }
+
+  @Test
+  public void set_ToBeforeFrom() {
+    LocalDateTime toDate = LocalDateTime.now();
+    view.fromDateField.setValue(Date.from(toInstant(toDate.plusDays(10))));
+    view.toDateField.setValue(Date.from(toInstant(toDate)));
+
+    view.setButton.click();
+
+    assertNotNull(presenter.getRange());
+    assertFalse(presenter.getRange().hasLowerBound());
+    assertTrue(presenter.getRange().hasUpperBound());
+    assertEquals(toInstant(toDate), presenter.getRange().upperEndpoint());
+    assertEquals(intervalCaption(null, toInstant(toDate)), view.filterButton.getCaption());
     verify(rangeListener).valueChange(any());
   }
 
@@ -152,6 +220,8 @@ public class FilterInstantComponentPresenterTest {
 
     assertEquals(Range.all(), presenter.getRange());
     assertEquals(resources.message(ALL), view.filterButton.getCaption());
+    assertNull(view.fromDateField.getValue());
+    assertNull(view.toDateField.getValue());
   }
 
   @Test
@@ -161,7 +231,9 @@ public class FilterInstantComponentPresenterTest {
     view.setButton.click();
 
     assertNotNull(presenter.getRange());
+    assertTrue(presenter.getRange().hasLowerBound());
     assertEquals(fromDate, presenter.getRange().lowerEndpoint());
+    assertTrue(presenter.getRange().hasUpperBound());
     assertEquals(toDate, presenter.getRange().upperEndpoint());
     assertEquals(intervalCaption(), view.filterButton.getCaption());
 
@@ -170,5 +242,7 @@ public class FilterInstantComponentPresenterTest {
     assertEquals(Range.all(), presenter.getRange());
     assertEquals(resources.message(ALL), view.filterButton.getCaption());
     verify(rangeListener, times(2)).valueChange(any());
+    assertNull(view.fromDateField.getValue());
+    assertNull(view.toDateField.getValue());
   }
 }

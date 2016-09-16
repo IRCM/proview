@@ -2,7 +2,9 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <entry key="all">All</entry>
-<entry key="interval">{0} - {1}</entry>
+<entry key="range">{0} - {1}</entry>
+<entry key="range.from">&gt;= {0}</entry>
+<entry key="range.to">&lt;= {0}</entry>
 <entry key="null">Any</entry>
 <entry key="from">Start</entry>
 <entry key="to">End</entry>

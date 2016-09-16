@@ -19,11 +19,8 @@ package ca.qc.ircm.proview.utils.web;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -34,8 +31,6 @@ import java.time.format.FormatStyle;
 import java.time.temporal.ChronoField;
 import java.util.Locale;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
 public class StringToInstantConverterTest {
   private StringToInstantConverter stringToInstantConverter;
   private DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;

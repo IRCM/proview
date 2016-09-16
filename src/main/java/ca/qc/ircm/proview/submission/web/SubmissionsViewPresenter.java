@@ -9,7 +9,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilterBuilder;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
-import ca.qc.ircm.proview.utils.web.AbstractFilterListener;
+import ca.qc.ircm.proview.utils.web.CutomNullPropertyFilterValueChangeListener;
 import ca.qc.ircm.proview.utils.web.FilterEqualsChangeListener;
 import ca.qc.ircm.proview.utils.web.FilterInstantComponent;
 import ca.qc.ircm.proview.utils.web.FilterInstantComponentPresenter;
@@ -21,8 +21,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
@@ -278,6 +276,7 @@ public class SubmissionsViewPresenter {
       Object[] values) {
     ComboBox filter = new ComboBox();
     filter.setNullSelectionAllowed(false);
+    filter.setTextInputAllowed(false);
     filter.addItem(nullId);
     filter.setItemCaption(nullId, resources.message(ALL));
     for (Object value : values) {
@@ -294,6 +293,7 @@ public class SubmissionsViewPresenter {
     presenter.init(filter);
     presenter.getRangeProperty().addValueChangeListener(
         new FilterRangeChangeListener(submissionsGeneratedContainer, propertyId));
+    filter.setSizeFull();
     return filter;
   }
 
@@ -327,21 +327,16 @@ public class SubmissionsViewPresenter {
     logger.debug("openSubmissionResults {}", submission);
   }
 
-  private class ResultsFilterChangeListener extends AbstractFilterListener
-      implements ValueChangeListener {
+  private class ResultsFilterChangeListener extends CutomNullPropertyFilterValueChangeListener {
     private static final long serialVersionUID = 2301952986512937369L;
 
     private ResultsFilterChangeListener(Container.Filterable container) {
-      super(container);
+      super(container, LINKED_TO_RESULTS_PROPERTY, nullId);
     }
 
     @Override
-    public void valueChange(ValueChangeEvent event) {
-      removeContainerFilters(LINKED_TO_RESULTS_PROPERTY);
-      Object value = event.getProperty().getValue();
-      if (value != null && !value.equals(nullId)) {
-        container.addContainerFilter(new ResultsFilter(value));
-      }
+    public void addNonNullFilter(Object propertyValue) {
+      container.addContainerFilter(new ResultsFilter(propertyValue));
     }
   }
 

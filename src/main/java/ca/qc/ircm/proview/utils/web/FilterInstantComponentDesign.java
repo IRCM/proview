@@ -22,8 +22,8 @@ import org.vaadin.hene.popupbutton.PopupButton;
 public class FilterInstantComponentDesign extends VerticalLayout {
   protected PopupButton filterButton;
   protected VerticalLayout popupLayout;
-  protected InlineDateField startDateField;
-  protected InlineDateField endDateField;
+  protected InlineDateField fromDateField;
+  protected InlineDateField toDateField;
   protected Button setButton;
   protected Button clearButton;
 

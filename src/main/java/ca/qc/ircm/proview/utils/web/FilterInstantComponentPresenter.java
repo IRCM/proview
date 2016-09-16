@@ -12,7 +12,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  * Presenter of FilterInstantComponent.
@@ -20,10 +19,12 @@ import java.util.Date;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class FilterInstantComponentPresenter {
-  public static final String BASE_STYLE = "filter-instant-";
+  public static final String BASE_STYLE = "filter-instant";
   public static final String FILTER = "filter";
   public static final String ALL = "all";
-  public static final String INTERVAL = "interval";
+  public static final String RANGE = "range";
+  public static final String RANGE_ONLY_FROM = "range.from";
+  public static final String RANGE_ONLY_TO = "range.to";
   public static final String NULL = "null";
   public static final String FROM = "from";
   public static final String TO = "to";
@@ -53,19 +54,20 @@ public class FilterInstantComponentPresenter {
   }
 
   private void setStyles() {
-    view.filterButton.addStyleName(BASE_STYLE + FILTER);
-    view.startDateField.addStyleName(BASE_STYLE + FROM);
-    view.endDateField.addStyleName(BASE_STYLE + TO);
-    view.setButton.addStyleName(BASE_STYLE + SET);
-    view.clearButton.addStyleName(BASE_STYLE + CLEAR);
+    view.addStyleName(BASE_STYLE);
+    view.filterButton.addStyleName(BASE_STYLE + "-" + FILTER);
+    view.fromDateField.addStyleName(BASE_STYLE + "-" + FROM);
+    view.toDateField.addStyleName(BASE_STYLE + "-" + TO);
+    view.setButton.addStyleName(BASE_STYLE + "-" + SET);
+    view.clearButton.addStyleName(BASE_STYLE + "-" + CLEAR);
   }
 
   private void setCaption() {
     MessageResource resources = view.getResources();
     updateFilterButtonCaption();
     view.filterButton.setCaption(resources.message(ALL));
-    view.startDateField.setCaption(resources.message(FROM));
-    view.endDateField.setCaption(resources.message(TO));
+    view.fromDateField.setCaption(resources.message(FROM));
+    view.toDateField.setCaption(resources.message(TO));
     view.setButton.setCaption(resources.message(SET));
     view.clearButton.setCaption(resources.message(CLEAR));
   }
@@ -80,25 +82,43 @@ public class FilterInstantComponentPresenter {
     if (Range.all().equals(rangeProperty.getValue())) {
       view.filterButton.setCaption(resources.message("all"));
     } else {
+      DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
       Range<Instant> range = rangeProperty.getValue();
       Instant from = range.hasLowerBound() ? range.lowerEndpoint() : null;
       Instant to = range.hasUpperBound() ? range.upperEndpoint() : null;
-      DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
-      String caption = resources.message(INTERVAL,
-          from != null ? formatter.format(toLocalDateTime(from)) : resources.message(NULL),
-          formatter.format(toLocalDateTime(to)));
+      String caption;
+      if (!range.hasUpperBound()) {
+        caption = resources.message(RANGE_ONLY_FROM, formatter.format(toLocalDateTime(from)));
+      } else if (!range.hasLowerBound()) {
+        caption = resources.message(RANGE_ONLY_TO, formatter.format(toLocalDateTime(to)));
+      } else {
+        caption = resources.message(RANGE, formatter.format(toLocalDateTime(from)),
+            formatter.format(toLocalDateTime(to)));
+      }
       view.filterButton.setCaption(caption);
     }
   }
 
   private void setInterval() {
-    Instant from = view.startDateField.getValue().toInstant();
-    Instant to = view.endDateField.getValue().toInstant();
+    Instant from =
+        view.fromDateField.getValue() != null ? view.fromDateField.getValue().toInstant() : null;
+    Instant to =
+        view.toDateField.getValue() != null ? view.toDateField.getValue().toInstant() : null;
     Range<Instant> range;
-    if (from.isAfter(to)) {
+    if (from != null && to != null) {
+      if (from.isAfter(to)) {
+        range = Range.atMost(to);
+      } else if (from.equals(to)) {
+        range = Range.singleton(from);
+      } else {
+        range = Range.open(from, to);
+      }
+    } else if (from != null) {
+      range = Range.atLeast(from);
+    } else if (to != null) {
       range = Range.atMost(to);
     } else {
-      range = Range.open(from, to);
+      range = Range.all();
     }
     rangeProperty.setValue(range);
     view.filterButton.setPopupVisible(false);
@@ -107,8 +127,8 @@ public class FilterInstantComponentPresenter {
 
   private void clearInterval() {
     rangeProperty.setValue(Range.all());
-    view.startDateField.setValue(new Date());
-    view.endDateField.setValue(new Date());
+    view.fromDateField.setValue(null);
+    view.toDateField.setValue(null);
     view.filterButton.setPopupVisible(false);
     updateFilterButtonCaption();
   }

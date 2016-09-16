@@ -26,4 +26,12 @@ public class RangeFilter<T extends Comparable<?>> implements Filter {
   public boolean appliesToProperty(Object propertyId) {
     return this.propertyId.equals(propertyId);
   }
+
+  public Object getPropertyId() {
+    return propertyId;
+  }
+
+  public Range<T> getRange() {
+    return range;
+  }
 }
