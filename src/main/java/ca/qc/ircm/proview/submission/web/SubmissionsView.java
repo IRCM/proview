@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.submission.web;
 
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Notification;
@@ -30,5 +31,25 @@ public class SubmissionsView extends SubmissionsViewDesign implements MessageRes
 
   public void showError(String message) {
     Notification.show(message, Notification.Type.ERROR_MESSAGE);
+  }
+
+  /**
+   * Open view submission window.
+   *
+   * @param submission
+   *          submission to view
+   */
+  public void viewSubmission(Submission submission) {
+    // TODO Replace by submission window.
+  }
+
+  /**
+   * Open view submission's results window.
+   *
+   * @param submission
+   *          submission to view
+   */
+  public void viewSubmissionResults(Submission submission) {
+    // TODO Replace by submission results window.
   }
 }
