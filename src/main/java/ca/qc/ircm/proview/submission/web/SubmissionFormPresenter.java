@@ -38,7 +38,7 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class EluateSubmissionViewPresenter {
+public class SubmissionFormPresenter {
   public static final String HEADER_LABEL_ID = "header";
   public static final String SERVICE_LABEL_ID = "service";
   public static final String SAMPLE_TYPE_LABEL_ID = "sampleType";
@@ -101,8 +101,8 @@ public class EluateSubmissionViewPresenter {
       VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION, LTQ_ORBI_TRAP };
   private static final ProteinIdentification[] proteinIdentifications =
       new ProteinIdentification[] { REFSEQ, UNIPROT, ProteinIdentification.OTHER };
-  private static final Logger logger = LoggerFactory.getLogger(EluateSubmissionViewPresenter.class);
-  private EluateSubmissionView view;
+  private static final Logger logger = LoggerFactory.getLogger(SubmissionFormPresenter.class);
+  private SubmissionForm view;
   private BeanFieldGroup<EluateSample> firstSampleFieldGroup =
       new BeanFieldGroup<>(EluateSample.class);
   private BeanItemContainer<Standard> standardsContainer = new BeanItemContainer<>(Standard.class);
@@ -115,7 +115,7 @@ public class EluateSubmissionViewPresenter {
    * @param view
    *          view
    */
-  public void init(EluateSubmissionView view) {
+  public void init(SubmissionForm view) {
     this.view = view;
   }
 

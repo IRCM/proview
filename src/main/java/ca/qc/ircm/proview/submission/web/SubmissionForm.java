@@ -22,13 +22,13 @@ import javax.inject.Inject;
 /**
  * Eluate sample submission view.
  */
-@SpringView(name = EluateSubmissionView.VIEW_NAME)
-public class EluateSubmissionView extends EluateSubmissionViewDesign
+@SpringView(name = SubmissionForm.VIEW_NAME)
+public class SubmissionForm extends SubmissionFormDesign
     implements MessageResourcesView {
   public static final String VIEW_NAME = "submission/eluate";
   private static final long serialVersionUID = 7586918222688019429L;
   @Inject
-  private EluateSubmissionViewPresenter presenter;
+  private SubmissionFormPresenter presenter;
   protected FlexibleOptionGroup digestionFlexibleOptions = new FlexibleOptionGroup();
   protected FlexibleOptionGroup proteinIdentificationFlexibleOptions = new FlexibleOptionGroup();
   private Map<Object, TextField> digestionOptionTextField = new HashMap<>();
