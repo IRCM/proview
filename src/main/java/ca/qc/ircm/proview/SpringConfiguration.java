@@ -17,9 +17,13 @@
 
 package ca.qc.ircm.proview;
 
+import ca.qc.ircm.proview.mail.MailConfiguration;
 import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -28,6 +32,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -39,6 +45,8 @@ import javax.sql.DataSource;
 public class SpringConfiguration {
   @Inject
   private DataSource dataSource;
+  @Inject
+  private MailConfiguration mailConfiguration;
 
   /**
    * Creates entity manager factory.
@@ -70,5 +78,35 @@ public class SpringConfiguration {
     templateEngine.setTemplateResolver(new ClassLoaderTemplateResolver());
     templateEngine.setMessageResolver(new XmlClasspathMessageResolver());
     return templateEngine;
+  }
+
+  /**
+   * Mail sender.
+   *
+   * @return mail sender
+   */
+  @Bean
+  public JavaMailSender mailSender() {
+    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    mailSender.setHost(mailConfiguration.getHost());
+    return mailSender;
+  }
+
+  /**
+   * Template message.
+   *
+   * @return template message
+   * @throws MessagingException
+   *           could not create template message
+   */
+  @Bean
+  public MimeMessage templateMessage() throws MessagingException {
+    MimeMessage message = mailSender().createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(message);
+    helper.setFrom(mailConfiguration.getFrom());
+    helper.setTo(mailConfiguration.getTo());
+    helper.setSubject(mailConfiguration.getSubject());
+    helper.setText("");
+    return message;
   }
 }

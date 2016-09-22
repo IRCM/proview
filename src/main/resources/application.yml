@@ -60,9 +60,9 @@ security:
 
 email:
   enabled: true
-  server: myemailserver.com
-  sender: proview@ircm.qc.ca
-  errorReceiver: christian.poitras@ircm.qc.ca
+  host: myemailserver.com
+  from: proview@ircm.qc.ca
+  to: christian.poitras@ircm.qc.ca
 
 # Address to display by default on user registration page.
 address:

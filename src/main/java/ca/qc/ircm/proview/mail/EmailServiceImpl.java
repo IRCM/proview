@@ -22,12 +22,16 @@ import ca.qc.ircm.proview.user.User;
 import org.apache.commons.mail.EmailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Service class for sending emails.
@@ -36,70 +40,69 @@ import javax.inject.Inject;
 public class EmailServiceImpl implements EmailService {
   private final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
   @Inject
-  private EmailConfiguration emailConfiguration;
+  private MailConfiguration mailConfiguration;
+  @Inject
+  private JavaMailSender mailSender;
+  @Inject
+  private MimeMessage templateMessage;
   @Inject
   private AuthorizationService authorizationService;
 
   protected EmailServiceImpl() {
   }
 
-  protected EmailServiceImpl(EmailConfiguration emailConfiguration,
-      AuthorizationService authorizationService) {
-    this.emailConfiguration = emailConfiguration;
+  protected EmailServiceImpl(MailConfiguration mailConfiguration, JavaMailSender mailSender,
+      MimeMessage templateMessage, AuthorizationService authorizationService) {
+    this.mailConfiguration = mailConfiguration;
+    this.mailSender = mailSender;
+    this.templateMessage = templateMessage;
     this.authorizationService = authorizationService;
   }
 
   @Override
   public void sendTextEmail(TextEmail email) throws EmailException {
-    org.apache.commons.mail.SimpleEmail commonsSimpleEmail =
-        new org.apache.commons.mail.SimpleEmail();
-    commonsSimpleEmail.setHostName(emailConfiguration.getServer());
-    commonsSimpleEmail.setFrom(emailConfiguration.getSender());
-    for (String receiver : email.getReceivers()) {
-      commonsSimpleEmail.addTo(receiver);
+    if (!mailConfiguration.isEnabled()) {
+      return;
     }
-    commonsSimpleEmail.setSubject(email.getSubject());
-    commonsSimpleEmail.setMsg(email.getTextMessage());
+
     try {
-      if (getSendEmail()) {
-        // Send email.
-        commonsSimpleEmail.send();
-      }
-    } finally {
-      // Always log email content for development.
-      logger.trace("Email receivers: {}", email.getReceivers());
-      logger.trace("Email subject: {}", email.getSubject());
-      logger.trace("Text email content: {}", email.getTextMessage());
+      MimeMessage springEmail = new MimeMessage(templateMessage);
+      MimeMessageHelper helper = new MimeMessageHelper(springEmail);
+      helper.setTo(email.getReceivers().toArray(new String[0]));
+      helper.setSubject(email.getSubject());
+      helper.setText(email.getTextMessage());
+      // Send email.
+      mailSender.send(springEmail);
+    } catch (MessagingException e) {
+      logger.error("Could not send error email with content {}", email.getTextMessage(), e);
     }
   }
 
   @Override
   public void sendHtmlEmail(final HtmlEmail email) throws EmailException {
-    org.apache.commons.mail.HtmlEmail commonsHtmlEmail = new org.apache.commons.mail.HtmlEmail();
-    commonsHtmlEmail.setHostName(emailConfiguration.getServer());
-    commonsHtmlEmail.setFrom(emailConfiguration.getSender());
-    for (String receiver : email.getReceivers()) {
-      commonsHtmlEmail.addTo(receiver);
+    if (!mailConfiguration.isEnabled()) {
+      return;
     }
-    commonsHtmlEmail.setSubject(email.getSubject());
-    commonsHtmlEmail.setHtmlMsg(email.getHtmlMessage());
-    commonsHtmlEmail.setTextMsg(email.getTextMessage());
+
     try {
-      if (getSendEmail()) {
-        // Send email.
-        commonsHtmlEmail.send();
-      }
-    } finally {
-      // Always log email content for development.
-      logger.trace("Email receivers: {}", email.getReceivers());
-      logger.trace("Email subject: {}", email.getSubject());
-      logger.trace("HTML email content: {}", email.getHtmlMessage());
-      logger.trace("Text email content: {}", email.getTextMessage());
+      MimeMessage springEmail = new MimeMessage(templateMessage);
+      MimeMessageHelper helper = new MimeMessageHelper(springEmail, true);
+      helper.setTo(email.getReceivers().toArray(new String[0]));
+      helper.setSubject(email.getSubject());
+      helper.setText(email.getTextMessage(), email.getHtmlMessage());
+      // Send email.
+      mailSender.send(springEmail);
+    } catch (MessagingException e) {
+      logger.error("Could not send error email with content {}", email.getTextMessage(), e);
     }
   }
 
   @Override
   public void sendError(Throwable error) {
+    if (!mailConfiguration.isEnabled()) {
+      return;
+    }
+
     StringBuilder message = new StringBuilder();
     message.append("User:");
     User user = authorizationService.getCurrentUser();
@@ -115,30 +118,13 @@ public class EmailServiceImpl implements EmailService {
     error.printStackTrace(new PrintWriter(stringWriter));
     message.append(stringWriter.toString());
     try {
-      org.apache.commons.mail.SimpleEmail commonsSimpleEmail =
-          new org.apache.commons.mail.SimpleEmail();
-      commonsSimpleEmail.setHostName(emailConfiguration.getServer());
-      commonsSimpleEmail.setFrom(emailConfiguration.getSender());
-      commonsSimpleEmail.addTo(emailConfiguration.getErrorReceiver());
-      commonsSimpleEmail.setSubject("ProView - Error");
-      commonsSimpleEmail.setMsg(message.toString());
-      try {
-        if (getSendEmail()) {
-          // Send email.
-          commonsSimpleEmail.send();
-        }
-      } finally {
-        // Always log email content for development.
-        logger.trace("Email receivers: {}", emailConfiguration.getErrorReceiver());
-        logger.trace("Email subject: {}", "ProView - Error");
-        logger.trace("Text email content: {}", message.toString());
-      }
-    } catch (EmailException e) {
-      logger.error("Could not send error email with content {}", message.toString());
+      MimeMessage email = new MimeMessage(templateMessage);
+      MimeMessageHelper helper = new MimeMessageHelper(email);
+      helper.setText(message.toString());
+      // Send email.
+      mailSender.send(email);
+    } catch (MessagingException e) {
+      logger.error("Could not send error email with content {}", message.toString(), e);
     }
-  }
-
-  private boolean getSendEmail() {
-    return Boolean.valueOf(emailConfiguration.isEnabled());
   }
 }
