@@ -8,18 +8,18 @@ import com.vaadin.data.Item;
 public class RangeFilter<T extends Comparable<?>> implements Filter {
   private static final long serialVersionUID = 3935971819294022440L;
   private final Object propertyId;
-  private final Range<T> range;
+  private final Range<T> value;
 
-  public RangeFilter(Object propertyId, Range<T> range) {
+  public RangeFilter(Object propertyId, Range<T> value) {
     this.propertyId = propertyId;
-    this.range = range;
+    this.value = value;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-    T value = (T) item.getItemProperty(propertyId).getValue();
-    return range.contains(value);
+    T itemValue = (T) item.getItemProperty(propertyId).getValue();
+    return value.contains(itemValue);
   }
 
   @Override
@@ -31,7 +31,7 @@ public class RangeFilter<T extends Comparable<?>> implements Filter {
     return propertyId;
   }
 
-  public Range<T> getRange() {
-    return range;
+  public Range<T> getValue() {
+    return value;
   }
 }

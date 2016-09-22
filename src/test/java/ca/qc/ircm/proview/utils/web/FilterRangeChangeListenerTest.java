@@ -52,6 +52,6 @@ public class FilterRangeChangeListenerTest {
     assertTrue(filter instanceof RangeFilter);
     RangeFilter<?> rangeFilter = (RangeFilter<?>) filter;
     assertEquals(propertyId, rangeFilter.getPropertyId());
-    assertEquals(range, rangeFilter.getRange());
+    assertEquals(range, rangeFilter.getValue());
   }
 }

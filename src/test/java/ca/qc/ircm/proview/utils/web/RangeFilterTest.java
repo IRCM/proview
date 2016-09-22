@@ -83,6 +83,6 @@ public class RangeFilterTest {
     Range<Integer> range = Range.all();
     filter = new RangeFilter<>(propertyId, range);
 
-    assertEquals(range, filter.getRange());
+    assertEquals(range, filter.getValue());
   }
 }
