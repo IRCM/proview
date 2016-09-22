@@ -25,6 +25,7 @@ import com.google.common.collect.Range;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -244,5 +245,59 @@ public class FilterInstantComponentPresenterTest {
     verify(rangeListener, times(2)).valueChange(any());
     assertNull(view.fromDateField.getValue());
     assertNull(view.toDateField.getValue());
+  }
+
+  @Test
+  public void getRange() {
+    setFields();
+
+    view.setButton.click();
+
+    assertNotNull(presenter.getRange());
+    assertTrue(presenter.getRange().hasLowerBound());
+    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
+    assertTrue(presenter.getRange().hasUpperBound());
+    assertEquals(toDate, presenter.getRange().upperEndpoint());
+  }
+
+  @Test
+  public void setRange() {
+    presenter.setRange(Range.open(fromDate, toDate));
+
+    assertNotNull(presenter.getRange());
+    assertTrue(presenter.getRange().hasLowerBound());
+    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
+    assertTrue(presenter.getRange().hasUpperBound());
+    assertEquals(toDate, presenter.getRange().upperEndpoint());
+    assertEquals(fromDate, view.fromDateField.getValue().toInstant());
+    assertEquals(toDate, view.toDateField.getValue().toInstant());
+    assertEquals(intervalCaption(), view.filterButton.getCaption());
+  }
+
+  @Test
+  public void setRange_All() {
+    presenter.setRange(Range.all());
+
+    assertNotNull(presenter.getRange());
+    assertFalse(presenter.getRange().hasLowerBound());
+    assertFalse(presenter.getRange().hasUpperBound());
+    assertNull(view.fromDateField.getValue());
+    assertNull(view.toDateField.getValue());
+    assertEquals(resources.message(ALL), view.filterButton.getCaption());
+  }
+
+  @Test
+  public void getRangeProperty() {
+    ObjectProperty<Range<Instant>> rangeProperty = presenter.getRangeProperty();
+    setFields();
+
+    view.setButton.click();
+
+    Range<Instant> range = rangeProperty.getValue();
+    assertNotNull(range);
+    assertTrue(range.hasLowerBound());
+    assertEquals(fromDate, range.lowerEndpoint());
+    assertTrue(range.hasUpperBound());
+    assertEquals(toDate, range.upperEndpoint());
   }
 }

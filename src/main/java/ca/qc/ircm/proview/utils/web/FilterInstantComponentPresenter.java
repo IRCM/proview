@@ -75,6 +75,22 @@ public class FilterInstantComponentPresenter {
   private void setListeners() {
     view.setButton.addClickListener(e -> setInterval());
     view.clearButton.addClickListener(e -> clearInterval());
+    rangeProperty.addValueChangeListener(e -> rangeChanged());
+  }
+
+  private void rangeChanged() {
+    Range<Instant> range = rangeProperty.getValue();
+    if (!range.hasLowerBound()) {
+      view.fromDateField.setValue(null);
+    } else {
+      view.fromDateField.setValue(java.util.Date.from(range.lowerEndpoint()));
+    }
+    if (!range.hasUpperBound()) {
+      view.toDateField.setValue(null);
+    } else {
+      view.toDateField.setValue(java.util.Date.from(range.upperEndpoint()));
+    }
+    updateFilterButtonCaption();
   }
 
   private void updateFilterButtonCaption() {
@@ -122,22 +138,22 @@ public class FilterInstantComponentPresenter {
     }
     rangeProperty.setValue(range);
     view.filterButton.setPopupVisible(false);
-    updateFilterButtonCaption();
   }
 
   private void clearInterval() {
     rangeProperty.setValue(Range.all());
-    view.fromDateField.setValue(null);
-    view.toDateField.setValue(null);
     view.filterButton.setPopupVisible(false);
-    updateFilterButtonCaption();
+  }
+
+  public ObjectProperty<Range<Instant>> getRangeProperty() {
+    return rangeProperty;
   }
 
   public Range<Instant> getRange() {
     return rangeProperty.getValue();
   }
 
-  public ObjectProperty<Range<Instant>> getRangeProperty() {
-    return rangeProperty;
+  public void setRange(Range<Instant> range) {
+    rangeProperty.setValue(range);
   }
 }

@@ -1,5 +1,11 @@
 package ca.qc.ircm.proview.utils.web;
 
+import com.google.common.collect.Range;
+
+import com.vaadin.data.util.ObjectProperty;
+
+import java.time.Instant;
+
 /**
  * Filters instant based on a day resolution.
  */
@@ -33,5 +39,17 @@ public class FilterInstantComponent extends FilterInstantComponentDesign
   public void setStyleName(String style) {
     super.setStyleName(style);
     filterButton.setStyleName(style);
+  }
+
+  public ObjectProperty<Range<Instant>> getRangeProperty() {
+    return presenter.getRangeProperty();
+  }
+
+  public Range<Instant> getRange() {
+    return presenter.getRange();
+  }
+
+  public void setRange(Range<Instant> range) {
+    presenter.setRange(range);
   }
 }
