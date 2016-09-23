@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Notification;
 
@@ -34,9 +35,20 @@ public class RegisterView extends RegisterViewDesign implements MessageResources
   private static final long serialVersionUID = 7586918222688019429L;
   @Inject
   private RegisterViewPresenter presenter;
+  protected Menu menu = new Menu();
+  protected UserForm userForm = new UserForm();
+  protected AddressForm addressForm = new AddressForm();
+  protected PhoneNumberForm phoneNumberForm = new PhoneNumberForm();
 
+  /**
+   * Initializes view.
+   */
   @PostConstruct
   public void init() {
+    menuLayout.addComponent(menu);
+    userFormLayout.addComponent(userForm);
+    addressFormLayout.addComponent(addressForm);
+    phoneNumberFormLayout.addComponent(phoneNumberForm);
     presenter.init(this);
   }
 

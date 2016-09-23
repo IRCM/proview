@@ -2,9 +2,11 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Notification;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -18,6 +20,12 @@ public class SubmissionsView extends SubmissionsViewDesign implements MessageRes
   private static final long serialVersionUID = -7912663074202035516L;
   @Inject
   private SubmissionsViewPresenter presenter;
+  protected Menu menu = new Menu();
+
+  @PostConstruct
+  public void init() {
+    menuLayout.addComponent(menu);
+  }
 
   @Override
   public void attach() {

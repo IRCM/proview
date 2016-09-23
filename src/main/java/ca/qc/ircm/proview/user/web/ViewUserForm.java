@@ -17,16 +17,29 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import ca.qc.ircm.proview.laboratory.web.LaboratoryForm;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Window;
 
 /**
- * User view.
+ * View user form.
  */
 public class ViewUserForm extends ViewUserFormDesign implements MessageResourcesComponent {
   private static final long serialVersionUID = -4585597583437283309L;
   private ViewUserFormPresenter presenter;
+  protected UserForm userForm = new UserForm();
+  protected LaboratoryForm laboratoryForm = new LaboratoryForm();
+  protected AddressForm addressForm = new AddressForm();
+
+  /**
+   * Creates view user form.
+   */
+  public ViewUserForm() {
+    userFormLayout.addComponent(userForm);
+    laboratoryFormLayout.addComponent(laboratoryForm);
+    addressFormLayout.addComponent(addressForm);
+  }
 
   public void setPresenter(ViewUserFormPresenter presenter) {
     this.presenter = presenter;

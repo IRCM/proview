@@ -26,6 +26,11 @@ public class DeletablePhoneNumberForm extends DeletablePhoneNumberFormDesign
     implements MessageResourcesComponent {
   private static final long serialVersionUID = -2276634153004414957L;
   private DeletablePhoneNumberFormPresenter presenter;
+  protected PhoneNumberForm phoneNumberForm = new PhoneNumberForm();
+
+  public DeletablePhoneNumberForm() {
+    phoneNumberFormLayout.addComponent(phoneNumberForm);
+  }
 
   public void setPresenter(DeletablePhoneNumberFormPresenter presenter) {
     this.presenter = presenter;

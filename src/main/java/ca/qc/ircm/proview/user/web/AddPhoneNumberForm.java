@@ -26,6 +26,11 @@ public class AddPhoneNumberForm extends AddPhoneNumberFormDesign
     implements MessageResourcesComponent {
   private static final long serialVersionUID = 6629591211365105609L;
   private AddPhoneNumberFormPresenter presenter;
+  protected PhoneNumberForm phoneNumberForm = new PhoneNumberForm();
+
+  public AddPhoneNumberForm() {
+    phoneNumberFormLayout.addComponent(phoneNumberForm);
+  }
 
   public void setPresenter(AddPhoneNumberFormPresenter presenter) {
     this.presenter = presenter;

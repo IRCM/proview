@@ -49,7 +49,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 /**
- * User form.
+ * View user form presenter.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)

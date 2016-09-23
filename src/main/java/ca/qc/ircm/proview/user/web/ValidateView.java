@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Notification;
 
@@ -39,9 +40,11 @@ public class ValidateView extends ValidateViewDesign implements MessageResources
   private ValidateViewPresenter presenter;
   @Inject
   private Provider<ViewUserWindow> userWindowProvider;
+  protected Menu menu = new Menu();
 
   @PostConstruct
   public void init() {
+    menuLayout.addComponent(menu);
     presenter.init(this);
   }
 
