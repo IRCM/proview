@@ -19,22 +19,33 @@ import ca.qc.ircm.proview.sample.EluateSample;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Standard;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.utils.web.EmptyNullTableFieldFactory;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.vaadin.hene.flexibleoptiongroup.FlexibleOptionGroupItemComponent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Eluate sample submission presenter.
+ * Submission form presenter.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -101,13 +112,17 @@ public class SubmissionFormPresenter {
       VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION, LTQ_ORBI_TRAP };
   private static final ProteinIdentification[] proteinIdentifications =
       new ProteinIdentification[] { REFSEQ, UNIPROT, ProteinIdentification.OTHER };
-  private static final Logger logger = LoggerFactory.getLogger(SubmissionFormPresenter.class);
   private SubmissionForm view;
+  private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
+  private BeanFieldGroup<Submission> submissionFieldGroup = new BeanFieldGroup<>(Submission.class);
   private BeanFieldGroup<EluateSample> firstSampleFieldGroup =
       new BeanFieldGroup<>(EluateSample.class);
   private BeanItemContainer<Standard> standardsContainer = new BeanItemContainer<>(Standard.class);
   private BeanItemContainer<Contaminant> contaminantsContainer =
       new BeanItemContainer<>(Contaminant.class);
+  private Map<Object, TextField> digestionOptionTextField = new HashMap<>();
+  private Map<Object, Label> digestionOptionNoteLabel = new HashMap<>();
+  private Map<Object, TextField> proteinIdentificationOptionTextField = new HashMap<>();
 
   /**
    * Called by view when view is initialized.
@@ -117,17 +132,11 @@ public class SubmissionFormPresenter {
    */
   public void init(SubmissionForm view) {
     this.view = view;
-  }
-
-  /**
-   * Called when view gets attached.
-   */
-  public void attach() {
-    logger.debug("Eluate submission view");
     setIds();
     setConverters();
     bindFields();
     addFieldListeners();
+    updateEditable();
     setCaptions();
     setDefaults();
   }
@@ -203,13 +212,60 @@ public class SubmissionFormPresenter {
   }
 
   private void addFieldListeners() {
+    editableProperty.addValueChangeListener(e -> updateEditable());
     view.standardCountField.addValueChangeListener(e -> updateStandardsTable());
     view.contaminantCountField.addValueChangeListener(e -> updateContaminantsTable());
   }
 
+  private void updateEditable() {
+    final boolean editable = editableProperty.getValue();
+    view.serviceLabel.setVisible(editable);
+    view.sampleTypeLabel.setVisible(editable);
+    view.inactiveLabel.setVisible(editable);
+    view.sampleCountPanel.setVisible(editable);
+    view.standardsPanel.setVisible(editable);
+    view.contaminantsPanel.setVisible(editable);
+    view.digestionLabel.setVisible(!editable);
+    view.digestionOptionsLayout.setVisible(editable);
+    view.enrichmentLabel.setVisible(editable);
+    view.exclusionsLabel.setVisible(editable);
+    view.instrumentLabel.setVisible(!editable);
+    view.instrumentOptions.setVisible(editable);
+    view.proteinIdentificationLabel.setVisible(!editable);
+    view.proteinIdentificationOptionsLayout.setVisible(editable);
+    view.experienceField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.experienceGoalField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.taxonomyField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.proteinNameField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.proteinWeightField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.postTranslationModificationField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.sampleQuantityField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.sampleVolumeField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    view.commentsField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    if (!editable) {
+      view.experienceField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.experienceGoalField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.taxonomyField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.proteinNameField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.proteinWeightField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.postTranslationModificationField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.sampleQuantityField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.sampleVolumeField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+      view.commentsField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
+    }
+    view.experienceField.setReadOnly(!editable);
+    view.experienceGoalField.setReadOnly(!editable);
+    view.taxonomyField.setReadOnly(!editable);
+    view.proteinNameField.setReadOnly(!editable);
+    view.proteinWeightField.setReadOnly(!editable);
+    view.postTranslationModificationField.setReadOnly(!editable);
+    view.sampleQuantityField.setReadOnly(!editable);
+    view.sampleVolumeField.setReadOnly(!editable);
+    view.commentsField.setReadOnly(!editable);
+  }
+
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    view.setTitle(resources.message("title"));
     view.headerLabel.setValue(resources.message(HEADER_LABEL_ID));
     view.serviceLabel.setValue(resources.message(SERVICE_LABEL_ID));
     view.sampleTypeLabel.setValue(resources.message(SAMPLE_TYPE_LABEL_ID));
@@ -246,19 +302,20 @@ public class SubmissionFormPresenter {
     }
     view.fillStandardsButton.setCaption(resources.message(FILL_CONTAMINANTS_PROPERTY));
     view.servicesPanel.setCaption(resources.message(SERVICES_PANEL_ID));
+    view.digestionLabel.setCaption(resources.message(DIGESTION_PROPERTY));
     view.digestionOptionsLayout.setCaption(resources.message(DIGESTION_PROPERTY));
     for (ProteolyticDigestion digestion : digestions) {
       view.digestionFlexibleOptions.addItem(digestion);
       view.digestionFlexibleOptions.setItemCaption(digestion, digestion.getLabel(view.getLocale()));
-      view.createDigestionOptionLayout(digestion);
-      TextField text = view.getDigestionOptionTextField(digestion);
+      createDigestionOptionLayout(digestion);
+      TextField text = getDigestionOptionTextField(digestion);
       if (digestion == DIGESTED || digestion == ProteolyticDigestion.OTHER) {
         text.setCaption(resources.message(DIGESTION_PROPERTY + "." + digestion.name() + ".value"));
       } else {
-        view.getDigestionOptionTextLayout(digestion).setVisible(false);
+        getDigestionOptionTextLayout(digestion).setVisible(false);
       }
       if (digestion == ProteolyticDigestion.OTHER) {
-        view.getDigestionOptionNoteLabel(digestion)
+        getDigestionOptionNoteLabel(digestion)
             .setCaption(resources.message(DIGESTION_PROPERTY + "." + digestion.name() + ".note"));
       }
     }
@@ -266,6 +323,7 @@ public class SubmissionFormPresenter {
     view.enrichmentLabel.setValue(resources.message(ENRICHEMENT_PROPERTY + ".value"));
     view.exclusionsLabel.setCaption(resources.message(EXCLUSIONS_PROPERTY));
     view.exclusionsLabel.setValue(resources.message(EXCLUSIONS_PROPERTY + ".value"));
+    view.instrumentLabel.setCaption(resources.message(INSTRUMENT_PROPERTY));
     view.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
     view.instrumentOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.instrumentOptions.removeAllItems();
@@ -273,16 +331,17 @@ public class SubmissionFormPresenter {
       view.instrumentOptions.addItem(instrument);
       view.instrumentOptions.setItemCaption(instrument, instrument.getLabel(view.getLocale()));
     }
+    view.proteinIdentificationLabel.setCaption(resources.message(PROTEIN_IDENTIFICATION_PROPERTY));
     view.proteinIdentificationOptionsLayout
         .setCaption(resources.message(PROTEIN_IDENTIFICATION_PROPERTY));
     for (ProteinIdentification proteinIdentification : proteinIdentifications) {
       view.proteinIdentificationFlexibleOptions.addItem(proteinIdentification);
       view.proteinIdentificationFlexibleOptions.setItemCaption(proteinIdentification,
           proteinIdentification.getLabel(view.getLocale()));
-      view.createProteinIdentificationOptionLayout(proteinIdentification);
-      TextField text = view.getProteinIdentificationOptionTextField(proteinIdentification);
+      createProteinIdentificationOptionLayout(proteinIdentification);
+      TextField text = getProteinIdentificationOptionTextField(proteinIdentification);
       if (proteinIdentification != ProteinIdentification.OTHER) {
-        view.getProteinIdentificationOptionTextLayout(proteinIdentification).setVisible(false);
+        getProteinIdentificationOptionTextLayout(proteinIdentification).setVisible(false);
       } else {
         text.setCaption(resources.message(
             PROTEIN_IDENTIFICATION_PROPERTY + "." + proteinIdentification.name() + ".value"));
@@ -329,5 +388,85 @@ public class SubmissionFormPresenter {
       contaminantsContainer.addBean(new Contaminant());
     }
     view.contaminantsTableLayout.setVisible(count > 0);
+  }
+
+  private AbstractLayout createDigestionOptionLayout(Object itemId) {
+    VerticalLayout optionTextLayout = new VerticalLayout();
+    view.digestionOptionsLayout.addComponent(optionTextLayout);
+    HorizontalLayout optionLayout = new HorizontalLayout();
+    optionTextLayout.addComponent(optionLayout);
+    FlexibleOptionGroupItemComponent comp = view.digestionFlexibleOptions.getItemComponent(itemId);
+    optionLayout.addComponent(comp);
+    Label captionLabel = new Label();
+    captionLabel.setStyleName("formcaption");
+    captionLabel.setValue(comp.getCaption());
+    optionLayout.addComponent(captionLabel);
+    HorizontalLayout textAndNoteLayout = new HorizontalLayout();
+    textAndNoteLayout.setMargin(new MarginInfo(false, false, false, true));
+    textAndNoteLayout.setSpacing(true);
+    optionTextLayout.addComponent(textAndNoteLayout);
+    FormLayout textLayout = new FormLayout();
+    textLayout.setMargin(false);
+    textAndNoteLayout.addComponent(textLayout);
+    TextField text = new TextField();
+    textLayout.addComponent(text);
+    digestionOptionTextField.put(itemId, text);
+    FormLayout noteLayout = new FormLayout();
+    noteLayout.setMargin(false);
+    textAndNoteLayout.addComponent(noteLayout);
+    Label note = new Label();
+    note.setStyleName("formcaption");
+    noteLayout.addComponent(note);
+    digestionOptionNoteLabel.put(itemId, note);
+    return optionTextLayout;
+  }
+
+  private TextField getDigestionOptionTextField(Object itemId) {
+    return digestionOptionTextField.get(itemId);
+  }
+
+  private AbstractLayout getDigestionOptionTextLayout(Object itemId) {
+    return digestionOptionTextField.get(itemId).findAncestor(HorizontalLayout.class);
+  }
+
+  private Label getDigestionOptionNoteLabel(Object itemId) {
+    return digestionOptionNoteLabel.get(itemId);
+  }
+
+  private AbstractLayout createProteinIdentificationOptionLayout(Object itemId) {
+    VerticalLayout optionTextLayout = new VerticalLayout();
+    view.proteinIdentificationOptionsLayout.addComponent(optionTextLayout);
+    HorizontalLayout optionLayout = new HorizontalLayout();
+    optionTextLayout.addComponent(optionLayout);
+    FlexibleOptionGroupItemComponent comp =
+        view.proteinIdentificationFlexibleOptions.getItemComponent(itemId);
+    optionLayout.addComponent(comp);
+    Label captionLabel = new Label();
+    captionLabel.setStyleName("formcaption");
+    captionLabel.setValue(comp.getCaption());
+    optionLayout.addComponent(captionLabel);
+    FormLayout textLayout = new FormLayout();
+    textLayout.setMargin(new MarginInfo(false, false, false, true));
+    optionTextLayout.addComponent(textLayout);
+    TextField text = new TextField();
+    textLayout.addComponent(text);
+    proteinIdentificationOptionTextField.put(itemId, text);
+    return optionTextLayout;
+  }
+
+  private TextField getProteinIdentificationOptionTextField(Object itemId) {
+    return proteinIdentificationOptionTextField.get(itemId);
+  }
+
+  private AbstractLayout getProteinIdentificationOptionTextLayout(Object itemId) {
+    return proteinIdentificationOptionTextField.get(itemId).findAncestor(FormLayout.class);
+  }
+
+  public boolean isEditable() {
+    return editableProperty.getValue();
+  }
+
+  public void setEditable(boolean editable) {
+    editableProperty.setValue(editable);
   }
 }

@@ -56,10 +56,13 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Table contaminantsTable;
   protected Button fillContaminantsButton;
   protected Panel servicesPanel;
+  protected Label digestionLabel;
   protected VerticalLayout digestionOptionsLayout;
   protected Label enrichmentLabel;
   protected Label exclusionsLabel;
+  protected Label instrumentLabel;
   protected OptionGroup instrumentOptions;
+  protected Label proteinIdentificationLabel;
   protected VerticalLayout proteinIdentificationOptionsLayout;
   protected Panel commentsPanel;
   protected TextArea commentsField;
