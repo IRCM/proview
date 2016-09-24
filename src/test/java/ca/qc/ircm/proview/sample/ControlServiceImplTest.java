@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
@@ -76,8 +93,7 @@ public class ControlServiceImplTest {
     assertEquals((Long) 444L, control.getId());
     assertEquals("CONTROL.1", control.getLims());
     assertEquals("control_01", control.getName());
-    assertEquals(Control.ControlType.NEGATIVE_CONTROL, control.getControlType());
-    assertEquals(null, control.getComments());
+    assertEquals(ControlType.NEGATIVE_CONTROL, control.getControlType());
     assertEquals(Sample.Support.GEL, control.getSupport());
     assertEquals(null, control.getVolume());
     assertEquals(null, control.getQuantity());
@@ -96,11 +112,10 @@ public class ControlServiceImplTest {
   public void insert() {
     Control control = new Control();
     control.setName("nc_test_000001");
-    control.setControlType(Control.ControlType.NEGATIVE_CONTROL);
+    control.setControlType(ControlType.NEGATIVE_CONTROL);
     control.setSupport(Support.GEL);
     control.setVolume(20.0);
     control.setQuantity("12.0 μg");
-    control.setComments("unit_test_comments");
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
         .thenReturn("nc_test_000001");
     when(sampleActivityService.insertControl(any(Control.class))).thenReturn(activity);
@@ -119,7 +134,6 @@ public class ControlServiceImplTest {
     assertEquals(Support.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
     assertEquals("12.0 μg", testControl.getQuantity());
-    assertEquals("unit_test_comments", testControl.getComments());
     assertEquals(0, testControl.getStandards().size());
     // Validate log.
     testControl = controlCaptor.getValue();
@@ -127,7 +141,6 @@ public class ControlServiceImplTest {
     assertEquals(Support.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
     assertEquals("12.0 μg", testControl.getQuantity());
-    assertEquals("unit_test_comments", testControl.getComments());
     assertEquals(true, testControl.getStandards() == null || testControl.getStandards().isEmpty());
   }
 
@@ -135,9 +148,8 @@ public class ControlServiceImplTest {
   public void update() {
     Control control = entityManager.find(Control.class, 444L);
     entityManager.detach(control);
-    control.setComments("my_new_comment");
     control.setName("nc_test_000001");
-    control.setControlType(Control.ControlType.POSITIVE_CONTROL);
+    control.setControlType(ControlType.POSITIVE_CONTROL);
     control.setSupport(Support.SOLUTION);
     control.setVolume(2.0);
     control.setQuantity("40 μg");
@@ -152,9 +164,8 @@ public class ControlServiceImplTest {
     verify(activityService).insert(activity);
     Control test = entityManager.find(Control.class, control.getId());
     entityManager.refresh(test);
-    assertEquals("my_new_comment", test.getComments());
     assertEquals("nc_test_000001", test.getName());
-    assertEquals(Control.ControlType.POSITIVE_CONTROL, test.getControlType());
+    assertEquals(ControlType.POSITIVE_CONTROL, test.getControlType());
     assertEquals(Support.SOLUTION, test.getSupport());
     assertEquals((Double) 2.0, test.getVolume());
     assertEquals("40 μg", test.getQuantity());
@@ -163,9 +174,8 @@ public class ControlServiceImplTest {
     Sample newSample = sampleCaptor.getValue();
     assertTrue(newSample instanceof Control);
     Control newControl = (Control) newSample;
-    assertEquals("my_new_comment", newControl.getComments());
     assertEquals("nc_test_000001", newControl.getName());
-    assertEquals(Control.ControlType.POSITIVE_CONTROL, newControl.getControlType());
+    assertEquals(ControlType.POSITIVE_CONTROL, newControl.getControlType());
     assertEquals(Support.SOLUTION, newControl.getSupport());
     assertEquals((Double) 2.0, newControl.getVolume());
     assertEquals("40 μg", newControl.getQuantity());

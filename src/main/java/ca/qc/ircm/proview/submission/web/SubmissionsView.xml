@@ -23,8 +23,8 @@
   <entry key="header">My submissions</entry>
   <entry key="select"></entry>
   <entry key="sampleCount">Number of samples</entry>
-  <entry key="experience">Experience</entry>
-  <entry key="goal">Experience goal</entry>
+  <entry key="submission.experience">Experience</entry>
+  <entry key="submission.goal">Experience goal</entry>
   <entry key="name">First sample</entry>
   <entry key="status">Status</entry>
   <entry key="submission.submissionDate">Date</entry>

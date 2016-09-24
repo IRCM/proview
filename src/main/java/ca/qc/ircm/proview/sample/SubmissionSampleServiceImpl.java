@@ -1,10 +1,25 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.laboratory.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMascotFile;
-import static ca.qc.ircm.proview.sample.QMoleculeSample.moleculeSample;
-import static ca.qc.ircm.proview.sample.QProteicSample.proteicSample;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSampleContainer.sampleContainer;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
@@ -21,7 +36,6 @@ import static ca.qc.ircm.proview.user.QUser.user;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.laboratory.Laboratory;
-import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.user.User;
@@ -30,8 +44,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -79,8 +91,6 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
   @Inject
   private ActivityService activityService;
   @Inject
-  private PricingEvaluator pricingEvaluator;
-  @Inject
   private AuthorizationService authorizationService;
 
   protected SubmissionSampleServiceImpl() {
@@ -88,12 +98,11 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
 
   protected SubmissionSampleServiceImpl(EntityManager entityManager, JPAQueryFactory queryFactory,
       SampleActivityService sampleActivityService, ActivityService activityService,
-      PricingEvaluator pricingEvaluator, AuthorizationService authorizationService) {
+      AuthorizationService authorizationService) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.sampleActivityService = sampleActivityService;
     this.activityService = activityService;
-    this.pricingEvaluator = pricingEvaluator;
     this.authorizationService = authorizationService;
   }
 
@@ -199,10 +208,7 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
     query.join(submission.laboratory, laboratory);
     query.join(submission.user, user);
     if (filter.getExperienceContains() != null) {
-      query.where(submissionSample.instanceOfAny(GelSample.class, EluateSample.class));
-      query.from(proteicSample);
-      query.where(proteicSample.eq(submissionSample));
-      query.where(proteicSample.experience.contains(filter.getExperienceContains()));
+      query.where(submission.experience.contains(filter.getExperienceContains()));
     }
     if (filter.getLaboratoryContains() != null) {
       query.where(laboratory.organization.eq(filter.getLaboratoryContains()));
@@ -223,33 +229,26 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
       query.where(submissionSample.name.contains(filter.getNameContains()));
     }
     if (filter.getProjectContains() != null) {
-      query.where(submissionSample.instanceOfAny(GelSample.class, EluateSample.class));
-      query.from(proteicSample);
-      query.where(proteicSample.eq(submissionSample));
-      query.where(proteicSample.project.contains(filter.getProjectContains()));
+      query.where(submission.project.contains(filter.getProjectContains()));
     }
     if (filter.getStatuses() != null) {
       query.where(submissionSample.status.in(filter.getStatuses()));
     }
     if (filter.getSupport() != null) {
       if (filter.getSupport() == SubmissionSampleService.Support.SOLUTION) {
-        query.where(submissionSample.instanceOf(EluateSample.class));
-        query.where(submissionSample.service.ne(Service.INTACT_PROTEIN));
+        query.where(submissionSample.support.in(Sample.Support.SOLUTION, Sample.Support.DRY));
+        query.where(submission.service.notIn(Service.INTACT_PROTEIN, Service.SMALL_MOLECULE));
       } else if (filter.getSupport() == SubmissionSampleService.Support.GEL) {
-        query.where(submissionSample.instanceOf(GelSample.class));
-        query.where(submissionSample.service.ne(Service.INTACT_PROTEIN));
+        query.where(submissionSample.support.eq(Sample.Support.GEL));
+        query.where(submission.service.ne(Service.INTACT_PROTEIN));
       } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_HIGH) {
-        query.where(submissionSample.instanceOf(MoleculeSample.class));
-        query.from(moleculeSample);
-        query.where(moleculeSample.eq(submissionSample));
-        query.where(moleculeSample.highResolution.eq(true));
+        query.where(submission.service.eq(Service.SMALL_MOLECULE));
+        query.where(submission.highResolution.eq(true));
       } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_LOW) {
-        query.where(submissionSample.instanceOf(MoleculeSample.class));
-        query.from(moleculeSample);
-        query.where(moleculeSample.eq(submissionSample));
-        query.where(moleculeSample.highResolution.eq(false));
+        query.where(submission.service.eq(Service.SMALL_MOLECULE));
+        query.where(submission.highResolution.eq(false));
       } else if (filter.getSupport() == SubmissionSampleService.Support.INTACT_PROTEIN) {
-        query.where(submissionSample.service.eq(Service.INTACT_PROTEIN));
+        query.where(submission.service.eq(Service.INTACT_PROTEIN));
       }
     }
     if (filter.getUserContains() != null) {
@@ -295,11 +294,24 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
     authorizationService.checkUserRole();
     User user = authorizationService.getCurrentUser();
 
-    JPAQuery<String> query = queryFactory.select(proteicSample.project);
-    query.from(proteicSample);
-    query.join(proteicSample.submission, submission);
+    JPAQuery<String> query = queryFactory.select(submission.project);
+    query.from(submission);
+    query.where(submission.project.isNotNull());
     query.where(submission.user.eq(user));
     return query.distinct().fetch();
+  }
+
+  @Override
+  public void update(SubmissionSample sample, String justification) {
+    authorizationService.checkAdminRole();
+
+    // Log changes.
+    Optional<Activity> activity = sampleActivityService.update(sample, justification);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
+    }
+
+    entityManager.merge(sample);
   }
 
   @Override
@@ -315,14 +327,5 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
 
       entityManager.merge(sample);
     }
-  }
-
-  @Override
-  public BigDecimal computePrice(SubmissionSample sample, Instant instant) {
-    if (sample == null || instant == null) {
-      return null;
-    }
-
-    return pricingEvaluator.computePrice(sample, instant);
   }
 }

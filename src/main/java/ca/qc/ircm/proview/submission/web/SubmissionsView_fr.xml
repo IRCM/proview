@@ -22,8 +22,8 @@
   <entry key="title">Mes sousmissions</entry>
   <entry key="select"></entry>
   <entry key="sampleCount">Nombre d''échantillons</entry>
-  <entry key="experience">Expérience</entry>
-  <entry key="goal">But de l''expérience</entry>
+  <entry key="submission.experience">Expérience</entry>
+  <entry key="submission.goal">But de l''expérience</entry>
   <entry key="name">Premier échantillon</entry>
   <entry key="status">Statut</entry>
   <entry key="submission.submissionDate">Date</entry>

@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.sample;
 
 import ca.qc.ircm.proview.history.Activity;
@@ -100,18 +117,16 @@ public class SampleActivityServiceImpl implements SampleActivityService {
       }
     }
 
-    class SolventUpdateActivityBuilder extends UpdateActivityBuilder {
-      {
-        tableName("solvent");
-      }
-    }
-
     updateBuilders.add(new SampleUpdateActivityBuilder().column("lims")
         .oldValue(oldSample.getLims()).newValue(newSample.getLims()));
-    updateBuilders.add(new SampleUpdateActivityBuilder().column("comments")
-        .oldValue(oldSample.getComments()).newValue(newSample.getComments()));
     updateBuilders.add(new SampleUpdateActivityBuilder().column("name")
         .oldValue(oldSample.getName()).newValue(newSample.getName()));
+    updateBuilders.add(new SampleUpdateActivityBuilder().column("support")
+        .oldValue(oldSample.getSupport()).newValue(newSample.getSupport()));
+    updateBuilders.add(new SampleUpdateActivityBuilder().column("volume")
+        .oldValue(oldSample.getVolume()).newValue(newSample.getVolume()));
+    updateBuilders.add(new SampleUpdateActivityBuilder().column("quantity")
+        .oldValue(oldSample.getQuantity()).newValue(newSample.getQuantity()));
     // Standards.
     List<Standard> oldStandards =
         oldSample.getStandards() != null ? oldSample.getStandards() : new ArrayList<Standard>();
@@ -160,97 +175,11 @@ public class SampleActivityServiceImpl implements SampleActivityService {
       SubmissionSample newSubmission = (SubmissionSample) newSample;
       updateBuilders.add(new SampleUpdateActivityBuilder().column("status")
           .oldValue(oldSubmission.getStatus()).newValue(newSubmission.getStatus()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("service")
-          .oldValue(oldSubmission.getService()).newValue(newSubmission.getService()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("massDetectionInstrument")
-          .oldValue(oldSubmission.getMassDetectionInstrument())
-          .newValue(newSubmission.getMassDetectionInstrument()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("source")
-          .oldValue(oldSubmission.getSource()).newValue(newSubmission.getSource()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("additionalPrice")
-          .oldValue(oldSubmission.getAdditionalPrice())
-          .newValue(newSubmission.getAdditionalPrice()));
-    }
-    if (newSample instanceof ProteicSample) {
-      ProteicSample oldProteic = (ProteicSample) oldSample;
-      ProteicSample newProteic = (ProteicSample) newSample;
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("project")
-          .oldValue(oldProteic.getProject()).newValue(newProteic.getProject()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("experience")
-          .oldValue(oldProteic.getExperience()).newValue(newProteic.getExperience()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("goal")
-          .oldValue(oldProteic.getGoal()).newValue(newProteic.getGoal()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("taxonomy")
-          .oldValue(oldProteic.getTaxonomy()).newValue(newProteic.getTaxonomy()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("protein")
-          .oldValue(oldProteic.getProtein()).newValue(newProteic.getProtein()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("molecularWeight")
-          .oldValue(oldProteic.getMolecularWeight()).newValue(newProteic.getMolecularWeight()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("postTranslationModification")
-          .oldValue(oldProteic.getPostTranslationModification())
-          .newValue(newProteic.getPostTranslationModification()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("sampleNumberProtein")
-          .oldValue(oldProteic.getSampleNumberProtein())
-          .newValue(newProteic.getSampleNumberProtein()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("proteolyticDigestionMethod")
-          .oldValue(oldProteic.getProteolyticDigestionMethod())
-          .newValue(newProteic.getProteolyticDigestionMethod()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("usedProteolyticDigestionMethod")
-          .oldValue(oldProteic.getUsedProteolyticDigestionMethod())
-          .newValue(newProteic.getUsedProteolyticDigestionMethod()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("otherProteolyticDigestionMethod")
-          .oldValue(oldProteic.getOtherProteolyticDigestionMethod())
-          .newValue(newProteic.getOtherProteolyticDigestionMethod()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("proteinIdentification")
-          .oldValue(oldProteic.getProteinIdentification())
-          .newValue(newProteic.getProteinIdentification()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("proteinIdentificationLink")
-          .oldValue(oldProteic.getProteinIdentificationLink())
-          .newValue(newProteic.getProteinIdentificationLink()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("mudPitFraction")
-          .oldValue(oldProteic.getMudPitFraction()).newValue(newProteic.getMudPitFraction()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("proteinContent")
-          .oldValue(oldProteic.getProteinContent()).newValue(newProteic.getProteinContent()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("enrichmentType")
-          .oldValue(oldProteic.getEnrichmentType()).newValue(newProteic.getEnrichmentType()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("otherEnrichmentType")
-          .oldValue(oldProteic.getOtherEnrichmentType())
-          .newValue(newProteic.getOtherEnrichmentType()));
-    }
-    if (newSample instanceof GelSample) {
-      GelSample oldGel = (GelSample) oldSample;
-      GelSample newGel = (GelSample) newSample;
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("separation")
-          .oldValue(oldGel.getSeparation()).newValue(newGel.getSeparation()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("thickness")
-          .oldValue(oldGel.getThickness()).newValue(newGel.getThickness()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("coloration")
-          .oldValue(oldGel.getColoration()).newValue(newGel.getColoration()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("otherColoration")
-          .oldValue(oldGel.getOtherColoration()).newValue(newGel.getOtherColoration()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("developmentTime")
-          .oldValue(oldGel.getDevelopmentTime()).newValue(newGel.getDevelopmentTime()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("decoloration")
-          .oldValue(oldGel.isDecoloration()).newValue(newGel.isDecoloration()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("weightMarkerQuantity")
-          .oldValue(oldGel.getWeightMarkerQuantity()).newValue(newGel.getWeightMarkerQuantity()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("proteinQuantity")
-          .oldValue(oldGel.getProteinQuantity()).newValue(newGel.getProteinQuantity()));
-    }
-    if (newSample instanceof EluateSample) {
-      EluateSample oldEluate = (EluateSample) oldSample;
-      EluateSample newEluate = (EluateSample) newSample;
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("support")
-          .oldValue(oldEluate.getSupport()).newValue(newEluate.getSupport()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("volume")
-          .oldValue(oldEluate.getVolume()).newValue(newEluate.getVolume()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("quantity")
-          .oldValue(oldEluate.getQuantity()).newValue(newEluate.getQuantity()));
       // Contaminants.
-      List<Contaminant> oldContaminants = oldEluate.getContaminants() != null
-          ? oldEluate.getContaminants() : new ArrayList<Contaminant>();
-      List<Contaminant> newContaminants = newEluate.getContaminants() != null
-          ? newEluate.getContaminants() : new ArrayList<Contaminant>();
+      List<Contaminant> oldContaminants = oldSubmission.getContaminants() != null
+          ? oldSubmission.getContaminants() : new ArrayList<Contaminant>();
+      List<Contaminant> newContaminants = newSubmission.getContaminants() != null
+          ? newSubmission.getContaminants() : new ArrayList<Contaminant>();
       for (Contaminant oldContaminant : oldContaminants) {
         boolean deleted = true;
         for (Contaminant newContaminant : newContaminants) {
@@ -291,72 +220,11 @@ public class SampleActivityServiceImpl implements SampleActivityService {
         }
       }
     }
-    if (newSample instanceof MoleculeSample) {
-      MoleculeSample oldMolecule = (MoleculeSample) oldSample;
-      MoleculeSample newMolecule = (MoleculeSample) newSample;
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("support")
-          .oldValue(oldMolecule.getSupport()).newValue(newMolecule.getSupport()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("formula")
-          .oldValue(oldMolecule.getFormula()).newValue(newMolecule.getFormula()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("monoisotopicMass")
-          .oldValue(oldMolecule.getMonoisotopicMass()).newValue(newMolecule.getMonoisotopicMass()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("averageMass")
-          .oldValue(oldMolecule.getAverageMass()).newValue(newMolecule.getAverageMass()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("solutionSolvent")
-          .oldValue(oldMolecule.getSolutionSolvent()).newValue(newMolecule.getSolutionSolvent()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("otherSolvent")
-          .oldValue(oldMolecule.getOtherSolvent()).newValue(newMolecule.getOtherSolvent()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("toxicity")
-          .oldValue(oldMolecule.getToxicity()).newValue(newMolecule.getToxicity()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("lightSensitive")
-          .oldValue(oldMolecule.isLightSensitive()).newValue(newMolecule.isLightSensitive()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("storageTemperature")
-          .oldValue(oldMolecule.getStorageTemperature())
-          .newValue(newMolecule.getStorageTemperature()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("lowResolution")
-          .oldValue(oldMolecule.isLowResolution()).newValue(newMolecule.isLowResolution()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("highResolution")
-          .oldValue(oldMolecule.isHighResolution()).newValue(newMolecule.isHighResolution()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("msms")
-          .oldValue(oldMolecule.isMsms()).newValue(newMolecule.isMsms()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("exactMsms")
-          .oldValue(oldMolecule.isExactMsms()).newValue(newMolecule.isExactMsms()));
-      // Structure.
-      Structure oldStructure = oldMolecule.getStructure();
-      Structure newStructure = newMolecule.getStructure();
-      if (newStructure != null) {
-        updateBuilders.add(new SampleUpdateActivityBuilder().column("structure")
-            .oldValue(oldStructure.getFilename()).newValue(newStructure.getFilename()));
-      }
-      // Solvents.
-      List<SampleSolvent> oldSolvents = oldMolecule.getSolventList() != null
-          ? oldMolecule.getSolventList() : new ArrayList<SampleSolvent>();
-      List<SampleSolvent> newSolvents = newMolecule.getSolventList() != null
-          ? newMolecule.getSolventList() : new ArrayList<SampleSolvent>();
-      for (SampleSolvent solvent : oldSolvents) {
-        if (!newSolvents.contains(solvent)) {
-          updateBuilders.add(new SolventUpdateActivityBuilder().recordId(solvent.getId())
-              .actionType(ActionType.DELETE));
-        }
-      }
-      for (SampleSolvent solvent : newSolvents) {
-        if (!oldSolvents.contains(solvent)) {
-          updateBuilders.add(new SolventUpdateActivityBuilder().recordId(solvent.getId())
-              .actionType(ActionType.INSERT));
-        }
-      }
-    }
     if (newSample instanceof Control) {
       Control oldControl = (Control) oldSample;
       Control newControl = (Control) newSample;
       updateBuilders.add(new SampleUpdateActivityBuilder().column("controlType")
           .oldValue(oldControl.getControlType()).newValue(newControl.getControlType()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("support")
-          .oldValue(oldControl.getSupport()).newValue(newControl.getSupport()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("volume")
-          .oldValue(oldControl.getVolume()).newValue(newControl.getVolume()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("quantity")
-          .oldValue(oldControl.getQuantity()).newValue(newControl.getQuantity()));
     }
 
     // Keep updateBuilders that did not change.

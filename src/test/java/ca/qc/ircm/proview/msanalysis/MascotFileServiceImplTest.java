@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.msanalysis;
 
 import static org.junit.Assert.assertEquals;
@@ -8,9 +25,8 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.EluateSample;
-import ca.qc.ircm.proview.sample.GelSample;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -128,7 +144,7 @@ public class MascotFileServiceImplTest {
 
   @Test
   public void exists_Sample_True() throws Throwable {
-    Sample sample = new EluateSample(442L);
+    Sample sample = new SubmissionSample(442L);
 
     boolean exists = mascotFileServiceImpl.exists(sample);
 
@@ -139,7 +155,7 @@ public class MascotFileServiceImplTest {
 
   @Test
   public void exists_Sample_False() throws Throwable {
-    Sample sample = new GelSample(1L);
+    Sample sample = new SubmissionSample(1L);
 
     boolean exists = mascotFileServiceImpl.exists(sample);
 
@@ -151,7 +167,7 @@ public class MascotFileServiceImplTest {
   @Test
   public void exists_Sample_Proteomic() throws Throwable {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    Sample sample = new EluateSample(445L);
+    Sample sample = new SubmissionSample(445L);
 
     boolean exists = mascotFileServiceImpl.exists(sample);
 
@@ -163,7 +179,7 @@ public class MascotFileServiceImplTest {
   @Test
   public void exists_Sample_NonProteomic() throws Throwable {
     when(authorizationService.hasAdminRole()).thenReturn(false);
-    Sample sample = new EluateSample(445L);
+    Sample sample = new SubmissionSample(445L);
 
     boolean exists = mascotFileServiceImpl.exists(sample);
 

@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.tube;
 
 import static org.junit.Assert.assertEquals;
@@ -6,9 +23,9 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.Data;
-import ca.qc.ircm.proview.sample.GelSample;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -101,7 +118,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void original() throws Throwable {
-    Sample sample = new GelSample(1L);
+    Sample sample = new SubmissionSample(1L);
 
     Tube tube = tubeServiceImpl.original(sample);
 
@@ -125,7 +142,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void last() throws Throwable {
-    Sample sample = new GelSample(1L);
+    Sample sample = new SubmissionSample(1L);
 
     Tube tube = tubeServiceImpl.last(sample);
 
@@ -149,7 +166,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void all() throws Throwable {
-    Sample sample = new GelSample(1L);
+    Sample sample = new SubmissionSample(1L);
 
     List<Tube> tubes = tubeServiceImpl.all(sample);
 
@@ -189,7 +206,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void generateTubeName_1() throws Throwable {
-    Sample sample = new GelSample(1L, "FAM119A_band_01");
+    Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     Set<String> exludes = Collections.emptySet();
 
     String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
@@ -200,7 +217,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void generateTubeName_1WithExcludes() throws Throwable {
-    Sample sample = new GelSample(1L, "FAM119A_band_01");
+    Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     Set<String> exludes = new HashSet<String>();
     exludes.add("FAM119A_band_01_1");
 
@@ -212,7 +229,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void generateTubeName_1WithRandomExcludes() throws Throwable {
-    Sample sample = new GelSample(1L, "FAM119A_band_01");
+    Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     Set<String> exludes = new HashSet<String>();
     exludes.add("test");
 
@@ -224,7 +241,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void generateTubeName_New() throws Throwable {
-    Sample sample = new GelSample(null, "test");
+    Sample sample = new SubmissionSample(null, "test");
     Set<String> exludes = Collections.emptySet();
 
     String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
@@ -235,7 +252,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void generateTubeName_NewWithExcludes() throws Throwable {
-    Sample sample = new GelSample(null, "test");
+    Sample sample = new SubmissionSample(null, "test");
     Set<String> exludes = new HashSet<String>();
     exludes.add("test");
     exludes.add("test_1");
@@ -249,7 +266,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void generateTubeName_NewWithRandomExcludes() throws Throwable {
-    Sample sample = new GelSample(null, "test");
+    Sample sample = new SubmissionSample(null, "test");
     Set<String> exludes = new HashSet<String>();
     exludes.add("abc");
     exludes.add("abc_1");
@@ -272,7 +289,7 @@ public class TubeServiceImplTest {
 
   @Test
   public void generateTubeName_NullExcludes() throws Throwable {
-    Sample sample = new GelSample(null, "test");
+    Sample sample = new SubmissionSample(null, "test");
 
     String tubeName = tubeServiceImpl.generateTubeName(sample, null);
 

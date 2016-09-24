@@ -1,10 +1,25 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.laboratory.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMascotFile;
-import static ca.qc.ircm.proview.sample.QMoleculeSample.moleculeSample;
-import static ca.qc.ircm.proview.sample.QProteicSample.proteicSample;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
@@ -16,9 +31,7 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.mail.HtmlEmailDefault;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
-import ca.qc.ircm.proview.sample.EluateSample;
-import ca.qc.ircm.proview.sample.GelSample;
-import ca.qc.ircm.proview.sample.MoleculeSample;
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
@@ -193,10 +206,7 @@ public class SubmissionServiceImpl implements SubmissionService {
     query.join(submission.laboratory, laboratory);
     query.join(submission.user, user);
     if (filter.getExperienceContains() != null) {
-      query.where(submissionSample.instanceOfAny(GelSample.class, EluateSample.class));
-      query.from(proteicSample);
-      query.where(proteicSample.eq(submissionSample));
-      query.where(proteicSample.experience.contains(filter.getExperienceContains()));
+      query.where(submission.experience.contains(filter.getExperienceContains()));
     }
     if (filter.getLaboratoryContains() != null) {
       query.where(laboratory.organization.eq(filter.getLaboratoryContains()));
@@ -217,33 +227,26 @@ public class SubmissionServiceImpl implements SubmissionService {
       query.where(submissionSample.name.contains(filter.getNameContains()));
     }
     if (filter.getProjectContains() != null) {
-      query.where(submissionSample.instanceOfAny(GelSample.class, EluateSample.class));
-      query.from(proteicSample);
-      query.where(proteicSample.eq(submissionSample));
-      query.where(proteicSample.project.contains(filter.getProjectContains()));
+      query.where(submission.project.contains(filter.getProjectContains()));
     }
     if (filter.getStatuses() != null) {
       query.where(submissionSample.status.in(filter.getStatuses()));
     }
     if (filter.getSupport() != null) {
       if (filter.getSupport() == SubmissionSampleService.Support.SOLUTION) {
-        query.where(submissionSample.instanceOf(EluateSample.class));
-        query.where(submissionSample.service.ne(Service.INTACT_PROTEIN));
+        query.where(submissionSample.support.in(Sample.Support.SOLUTION, Sample.Support.DRY));
+        query.where(submission.service.notIn(Service.INTACT_PROTEIN, Service.SMALL_MOLECULE));
       } else if (filter.getSupport() == SubmissionSampleService.Support.GEL) {
-        query.where(submissionSample.instanceOf(GelSample.class));
-        query.where(submissionSample.service.ne(Service.INTACT_PROTEIN));
+        query.where(submissionSample.support.eq(Sample.Support.GEL));
+        query.where(submission.service.ne(Service.INTACT_PROTEIN));
       } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_HIGH) {
-        query.where(submissionSample.instanceOf(MoleculeSample.class));
-        query.from(moleculeSample);
-        query.where(moleculeSample.eq(submissionSample));
-        query.where(moleculeSample.highResolution.eq(true));
+        query.where(submission.service.eq(Service.SMALL_MOLECULE));
+        query.where(submission.highResolution.eq(true));
       } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_LOW) {
-        query.where(submissionSample.instanceOf(MoleculeSample.class));
-        query.from(moleculeSample);
-        query.where(moleculeSample.eq(submissionSample));
-        query.where(moleculeSample.highResolution.eq(false));
+        query.where(submission.service.eq(Service.SMALL_MOLECULE));
+        query.where(submission.highResolution.eq(false));
       } else if (filter.getSupport() == SubmissionSampleService.Support.INTACT_PROTEIN) {
-        query.where(submissionSample.service.eq(Service.INTACT_PROTEIN));
+        query.where(submission.service.eq(Service.INTACT_PROTEIN));
       }
     }
     if (filter.getUserContains() != null) {
@@ -276,13 +279,13 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     submission.setLaboratory(laboratory);
     submission.setUser(user);
+    submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
     Set<String> otherSampleLims = new HashSet<String>();
     Set<String> otherTubeNames = new HashSet<String>();
     for (SubmissionSample sample : submission.getSamples()) {
       generateLims(sample, laboratory, otherSampleLims);
       sample.setSubmission(submission);
       sample.setStatus(SampleStatus.TO_APPROVE);
-      sample.setPrice(pricingEvaluator.computePrice(sample, submission.getSubmissionDate()));
       Tube tube = new Tube();
       tube.setSample(sample);
       tube.setName(tubeService.generateTubeName(sample, otherTubeNames));

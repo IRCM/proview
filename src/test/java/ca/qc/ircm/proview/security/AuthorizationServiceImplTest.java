@@ -31,7 +31,6 @@ import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.sample.Control;
-import ca.qc.ircm.proview.sample.EluateSample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -830,7 +829,7 @@ public class AuthorizationServiceImplTest {
   public void checkSampleReadPermission_SubmissionSample_Proteomic() throws Exception {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    SubmissionSample sample = new EluateSample(446L);
+    SubmissionSample sample = new SubmissionSample(446L);
 
     authorizationServiceImpl.checkSampleReadPermission(sample);
 
@@ -841,7 +840,7 @@ public class AuthorizationServiceImplTest {
   @Test
   public void checkSampleReadPermission_SubmissionSample_NotUser() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
-    SubmissionSample sample = new EluateSample(446L);
+    SubmissionSample sample = new SubmissionSample(446L);
 
     try {
       authorizationServiceImpl.checkSampleReadPermission(sample);
@@ -857,7 +856,7 @@ public class AuthorizationServiceImplTest {
   @WithSubject(userId = 10)
   public void checkSampleReadPermission_SubmissionSample_SampleOwner() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    SubmissionSample sample = new EluateSample(446L);
+    SubmissionSample sample = new SubmissionSample(446L);
 
     authorizationServiceImpl.checkSampleReadPermission(sample);
 
@@ -869,7 +868,7 @@ public class AuthorizationServiceImplTest {
   public void checkSampleReadPermission_SubmissionSample_LaboratoryManager() throws Exception {
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    SubmissionSample sample = new EluateSample(446L);
+    SubmissionSample sample = new SubmissionSample(446L);
 
     authorizationServiceImpl.checkSampleReadPermission(sample);
 
@@ -881,7 +880,7 @@ public class AuthorizationServiceImplTest {
   @Test
   public void checkSampleReadPermission_SubmissionSample_Other() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    SubmissionSample sample = new EluateSample(446L);
+    SubmissionSample sample = new SubmissionSample(446L);
 
     try {
       authorizationServiceImpl.checkSampleReadPermission(sample);

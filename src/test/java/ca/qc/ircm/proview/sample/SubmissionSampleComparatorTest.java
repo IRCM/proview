@@ -1,9 +1,25 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
-import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
@@ -34,15 +50,13 @@ public class SubmissionSampleComparatorTest {
       submission.setUser(user);
       submission.setSubmissionDate(
           LocalDateTime.of(2011, 10, 18, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-      GelSample sample = new GelSample();
+      SubmissionSample sample = new SubmissionSample();
       sample.setSubmission(submission);
       sample.setId(1L);
       sample.setLims("IRCM_20111018_01");
       sample.setName("CAP_20111018_01");
-      sample.setService(Service.LC_MS_MS);
       sample.setStatus(SampleStatus.TO_DIGEST);
-      sample.setProject("cap_project");
-      sample.setExperience("cap_experience");
+      sample.setSupport(Sample.Support.GEL);
       samples.add(sample);
     }
     {
@@ -55,15 +69,12 @@ public class SubmissionSampleComparatorTest {
       submission.setUser(user);
       submission.setSubmissionDate(
           LocalDateTime.of(2011, 10, 19, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-      EluateSample sample = new EluateSample();
+      SubmissionSample sample = new SubmissionSample();
       sample.setSubmission(submission);
       sample.setId(2L);
       sample.setLims("MCGI_20111018_01");
       sample.setName("MLA_20111018_01");
       sample.setStatus(SampleStatus.TO_ANALYSE);
-      sample.setProject("caé_project");
-      sample.setExperience("mla_experience");
-      sample.setService(Service.TWO_DIMENSION_LC_MS_MS);
       sample.setSupport(Sample.Support.DRY);
       samples.add(sample);
     }
@@ -77,13 +88,12 @@ public class SubmissionSampleComparatorTest {
       submission.setUser(user);
       submission.setSubmissionDate(
           LocalDateTime.of(2011, 10, 20, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-      MoleculeSample sample = new MoleculeSample();
+      SubmissionSample sample = new SubmissionSample();
       sample.setSubmission(submission);
       sample.setId(3L);
       sample.setLims("UDEM_20111018_01");
       sample.setName("JZA_20111018_01");
       sample.setStatus(SampleStatus.ANALYSED);
-      sample.setService(Service.SMALL_MOLECULE);
       sample.setSupport(Sample.Support.SOLUTION);
       samples.add(sample);
     }
@@ -121,23 +131,6 @@ public class SubmissionSampleComparatorTest {
     assertEquals(samples.get(0), testSamples.get(0));
     assertEquals(samples.get(2), testSamples.get(1));
     assertEquals(samples.get(1), testSamples.get(2));
-  }
-
-  @Test
-  public void compareByService() {
-    SubmissionSampleComparator comparator =
-        new SubmissionSampleComparator(SubmissionSampleService.Sort.SERVICE, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(0), testSamples.get(0));
-    assertEquals(samples.get(1), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.reverse(testSamples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(0), testSamples.get(0));
-    assertEquals(samples.get(1), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
   }
 
   @Test
@@ -195,54 +188,6 @@ public class SubmissionSampleComparatorTest {
   public void compareByStatus() {
     SubmissionSampleComparator comparator =
         new SubmissionSampleComparator(SubmissionSampleService.Sort.STATUS, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(0), testSamples.get(0));
-    assertEquals(samples.get(1), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.reverse(testSamples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(0), testSamples.get(0));
-    assertEquals(samples.get(1), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
-  }
-
-  @Test
-  public void compareByProject() {
-    SubmissionSampleComparator comparator =
-        new SubmissionSampleComparator(SubmissionSampleService.Sort.PROJECT, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(1), testSamples.get(0));
-    assertEquals(samples.get(0), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.reverse(testSamples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(1), testSamples.get(0));
-    assertEquals(samples.get(0), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
-
-    comparator =
-        new SubmissionSampleComparator(SubmissionSampleService.Sort.PROJECT, Locale.CANADA_FRENCH);
-    testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(1), testSamples.get(0));
-    assertEquals(samples.get(0), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.reverse(testSamples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(1), testSamples.get(0));
-    assertEquals(samples.get(0), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
-  }
-
-  @Test
-  public void compareByExperience() {
-    SubmissionSampleComparator comparator =
-        new SubmissionSampleComparator(SubmissionSampleService.Sort.EXPERIENCE, Locale.CANADA);
     List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));

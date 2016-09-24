@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
@@ -10,15 +27,16 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.UNIPROT;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
 import static ca.qc.ircm.proview.sample.QContaminant.contaminant;
-import static ca.qc.ircm.proview.sample.QEluateSample.eluateSample;
 import static ca.qc.ircm.proview.sample.QStandard.standard;
+import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.submission.QSubmission.submission;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.Contaminant;
-import ca.qc.ircm.proview.sample.EluateSample;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Standard;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.utils.web.EmptyNullTableFieldFactory;
 import ca.qc.ircm.utils.MessageResource;
@@ -58,22 +76,23 @@ public class SubmissionFormPresenter {
   public static final String SAMPLE_COUNT_PROPERTY = "sampleCount";
   public static final String SAMPLE_NAMES_PANEL_ID = "sampleNamesPanel";
   public static final String SAMPLE_NAMES_FORM_ID = "sampleNamesForm";
-  public static final String SAMPLE_NAMES_PROPERTY = eluateSample.name.getMetadata().getName();
+  public static final String SAMPLE_NAMES_PROPERTY = submissionSample.name.getMetadata().getName();
   public static final String FIRST_SAMPLE_NAME_PROPERTY = "sampleName1";
   public static final String FILL_SAMPLE_NAMES_PROPERTY = "fillSampleNames";
   public static final String EXPERIENCE_PANEL_ID = "experiencePanel";
-  public static final String EXPERIENCE_PROPERTY = eluateSample.experience.getMetadata().getName();
-  public static final String EXPERIENCE_GOAL_PROPERTY = eluateSample.goal.getMetadata().getName();
+  public static final String EXPERIENCE_PROPERTY = submission.experience.getMetadata().getName();
+  public static final String EXPERIENCE_GOAL_PROPERTY = submission.goal.getMetadata().getName();
   public static final String SAMPLE_DETAILS_PANEL_ID = "sampleDetailsPanel";
-  public static final String TAXONOMY_PROPERTY = eluateSample.taxonomy.getMetadata().getName();
-  public static final String PROTEIN_NAME_PROPERTY = eluateSample.protein.getMetadata().getName();
+  public static final String TAXONOMY_PROPERTY = submission.taxonomy.getMetadata().getName();
+  public static final String PROTEIN_NAME_PROPERTY = submission.protein.getMetadata().getName();
   public static final String PROTEIN_WEIGHT_PROPERTY =
-      eluateSample.molecularWeight.getMetadata().getName();
+      submission.molecularWeight.getMetadata().getName();
   public static final String POST_TRANSLATION_MODIFICATION_PROPERTY =
-      eluateSample.postTranslationModification.getMetadata().getName();
-  public static final String SAMPLE_VOLUME_PROPERTY = eluateSample.volume.getMetadata().getName();
+      submission.postTranslationModification.getMetadata().getName();
+  public static final String SAMPLE_VOLUME_PROPERTY =
+      submissionSample.volume.getMetadata().getName();
   public static final String SAMPLE_QUANTITY_PROPERTY =
-      eluateSample.quantity.getMetadata().getName();
+      submissionSample.quantity.getMetadata().getName();
   public static final String STANDARDS_PANEL_ID = "standardsPanel";
   public static final String STANDARD_COUNT_PROPERTY = "standardCount";
   public static final String STANDARD_PROPERTY = standard.getMetadata().getName();
@@ -92,15 +111,15 @@ public class SubmissionFormPresenter {
   public static final String FILL_CONTAMINANTS_PROPERTY = "fillContaminants";
   public static final String SERVICES_PANEL_ID = "servicesPanel";
   public static final String DIGESTION_PROPERTY =
-      eluateSample.proteolyticDigestionMethod.getMetadata().getName();
+      submission.proteolyticDigestionMethod.getMetadata().getName();
   public static final String ENRICHEMENT_PROPERTY = "enrichment";
   public static final String EXCLUSIONS_PROPERTY = "exclusions";
   public static final String INSTRUMENT_PROPERTY =
-      eluateSample.massDetectionInstrument.getMetadata().getName();
+      submission.massDetectionInstrument.getMetadata().getName();
   public static final String PROTEIN_IDENTIFICATION_PROPERTY =
-      eluateSample.proteinIdentification.getMetadata().getName();
+      submission.proteinIdentification.getMetadata().getName();
   public static final String COMMENTS_PANEL_ID = "commentsPanel";
-  public static final String COMMENTS_PROPERTY = eluateSample.comments.getMetadata().getName();
+  public static final String COMMENTS_PROPERTY = submission.comments.getMetadata().getName();
   public static final String SUBMIT_ID = "submit";
   private static final Object[] standardsColumns = new Object[] { STANDARD_NAME_PROPERTY,
       STANDARD_QUANTITY_PROPERTY, STANDARD_COMMENTS_PROPERTY };
@@ -115,8 +134,8 @@ public class SubmissionFormPresenter {
   private SubmissionForm view;
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<Submission> submissionFieldGroup = new BeanFieldGroup<>(Submission.class);
-  private BeanFieldGroup<EluateSample> firstSampleFieldGroup =
-      new BeanFieldGroup<>(EluateSample.class);
+  private BeanFieldGroup<SubmissionSample> firstSampleFieldGroup =
+      new BeanFieldGroup<>(SubmissionSample.class);
   private BeanItemContainer<Standard> standardsContainer = new BeanItemContainer<>(Standard.class);
   private BeanItemContainer<Contaminant> contaminantsContainer =
       new BeanItemContainer<>(Contaminant.class);

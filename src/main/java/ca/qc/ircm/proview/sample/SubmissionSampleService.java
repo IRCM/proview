@@ -1,7 +1,22 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.sample;
 
-import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -17,42 +32,24 @@ public interface SubmissionSampleService {
     /**
      * Laboratory that submitted sample.
      */
-    LABORATORY,
-    /**
-     * Director of laboratory that submitted sample.
-     */
-    USER,
-    /**
-     * Mass spec service asked for sample.
-     */
-    SERVICE,
-    /**
-     * Submission date.
-     */
-    SUBMISSION,
-    /**
-     * Sample lims.
-     */
-    LIMS,
-    /**
-     * Sample name.
-     */
-    NAME,
-    /**
-     * Sample status.
-     */
-    STATUS,
-    /**
-     * Sample project.
-     */
-    PROJECT,
-    /**
-     * Sample experience.
-     */
-    EXPERIENCE,
-    /**
-     * Sample's support.
-     */
+    LABORATORY, /**
+                 * Director of laboratory that submitted sample.
+                 */
+    USER, /**
+           * Submission date.
+           */
+    SUBMISSION, /**
+                 * Sample lims.
+                 */
+    LIMS, /**
+           * Sample name.
+           */
+    NAME, /**
+           * Sample status.
+           */
+    STATUS, /**
+             * Sample support.
+             */
     SUPPORT;
   }
 
@@ -63,26 +60,22 @@ public interface SubmissionSampleService {
     /**
      * @see ca.qc.ircm.proview.sample.Sample.Support#SOLUTION
      */
-    SOLUTION,
-    /**
-     * @see ca.qc.ircm.proview.sample.Sample.Support#GEL
-     */
-    GEL,
-    /**
-     * Small molecule to analyse with high resolution.
-     *
-     * @see ca.qc.ircm.proview.sample.MoleculeSample#isHighResolution()
-     */
-    MOLECULE_HIGH,
-    /**
-     * Small molecule to analyse with low resolution.
-     *
-     * @see ca.qc.ircm.proview.sample.MoleculeSample#isLowResolution()
-     */
-    MOLECULE_LOW,
-    /**
-     * @see ca.qc.ircm.proview.submission.Service#INTACT_PROTEIN
-     */
+    SOLUTION, /**
+               * @see ca.qc.ircm.proview.sample.Sample.Support#GEL
+               */
+    GEL, /**
+          * Small molecule to analyse with high resolution.
+          *
+          * @see ca.qc.ircm.proview.sample.MoleculeSample#isHighResolution()
+          */
+    MOLECULE_HIGH, /**
+                    * Small molecule to analyse with low resolution.
+                    *
+                    * @see ca.qc.ircm.proview.sample.MoleculeSample#isLowResolution()
+                    */
+    MOLECULE_LOW, /**
+                   * @see ca.qc.ircm.proview.submission.Service#INTACT_PROTEIN
+                   */
     INTACT_PROTEIN;
   }
 
@@ -155,15 +148,14 @@ public interface SubmissionSampleService {
   public List<String> projects();
 
   /**
-   * Compute price for sample.
+   * Updates sample's information in database.
    *
    * @param sample
-   *          sample
-   * @param instant
-   *          instant of prices to use
-   * @return sample's price
+   *          sample containing new information
+   * @param justification
+   *          justification for changes made to sample
    */
-  public BigDecimal computePrice(SubmissionSample sample, Instant instant);
+  public void update(SubmissionSample sample, String justification);
 
   /**
    * Update many sample's status.

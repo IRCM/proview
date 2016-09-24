@@ -1,3 +1,20 @@
+--
+-- Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+--
+-- This program is free software: you can redistribute it and/or modify
+-- it under the terms of the GNU Affero General Public License as published by
+-- the Free Software Foundation, either version 3 of the License, or
+-- (at your option) any later version.
+--
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+--
+-- You should have received a copy of the GNU Affero General Public License
+-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+--
+
 CREATE TABLE IF NOT EXISTS laboratory (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(255) NOT NULL,
@@ -65,14 +82,65 @@ CREATE TABLE IF NOT EXISTS forgotpassword (
   PRIMARY KEY (id),
   CONSTRAINT forgotpassword_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE TABLE IF NOT EXISTS structure (
+  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  filename varchar(255) NOT NULL,
+  content blob NOT NULL,
+  PRIMARY KEY (id)
+);
 CREATE TABLE IF NOT EXISTS submission (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  service varchar(50) DEFAULT NULL,
+  project varchar(100) DEFAULT NULL,
+  experience varchar(100) DEFAULT NULL,
+  goal varchar(150) DEFAULT NULL,
+  taxonomy varchar(100) DEFAULT NULL,
+  massDetectionInstrument varchar(50) DEFAULT NULL,
+  source varchar(50) DEFAULT NULL,
+  sampleNumberProtein int(11) DEFAULT NULL,
+  proteolyticDigestionMethod varchar(50) DEFAULT NULL,
+  usedProteolyticDigestionMethod varchar(100) DEFAULT NULL,
+  otherProteolyticDigestionMethod varchar(100) DEFAULT NULL,
+  proteinIdentification varchar(50) DEFAULT NULL,
+  proteinIdentificationLink varchar(255) DEFAULT NULL,
+  enrichmentType varchar(50) DEFAULT NULL,
+  otherEnrichmentType varchar(100) DEFAULT NULL,
+  lowResolution tinyint(1) NOT NULL DEFAULT '0',
+  highResolution tinyint(1) NOT NULL DEFAULT '0',
+  msms tinyint(1) NOT NULL DEFAULT '0',
+  exactMsms tinyint(1) NOT NULL DEFAULT '0',
+  mudPitFraction varchar(50) DEFAULT NULL,
+  proteinContent varchar(50) DEFAULT NULL,
+  protein varchar(100) DEFAULT NULL,
+  molecularWeight double DEFAULT NULL,
+  postTranslationModification varchar(150) DEFAULT NULL,
+  separation varchar(50) DEFAULT NULL,
+  thickness varchar(50) DEFAULT NULL,
+  coloration varchar(50) DEFAULT NULL,
+  otherColoration varchar(100) DEFAULT NULL,
+  developmentTime varchar(100) DEFAULT NULL,
+  decoloration tinyint(1) NOT NULL DEFAULT '0',
+  weightMarkerQuantity double DEFAULT NULL,
+  proteinQuantity varchar(100) DEFAULT NULL,
+  formula varchar(50) DEFAULT NULL,
+  monoisotopicMass double DEFAULT NULL,
+  averageMass double DEFAULT NULL,
+  solutionSolvent varchar(100) DEFAULT NULL,
+  otherSolvent varchar(100) DEFAULT NULL,
+  toxicity varchar(100) DEFAULT NULL,
+  lightSensitive tinyint(1) NOT NULL DEFAULT '0',
+  storageTemperature varchar(50) DEFAULT NULL,
+  structureId bigint(20) DEFAULT NULL,
+  comments clob,
+  price double DEFAULT NULL,
+  additionalPrice double DEFAULT NULL,
   submissionDate timestamp NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   userId bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   CONSTRAINT submission_ibfk_1 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE,
-  CONSTRAINT submission_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT submission_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT submission_ibfk_3 FOREIGN KEY (structureId) REFERENCES structure (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS gelimages (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
@@ -81,12 +149,6 @@ CREATE TABLE IF NOT EXISTS gelimages (
   content blob,
   PRIMARY KEY (id),
   CONSTRAINT gelimages_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-CREATE TABLE IF NOT EXISTS structure (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  filename varchar(255) NOT NULL,
-  content blob NOT NULL,
-  PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS plate (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
@@ -117,64 +179,18 @@ CREATE TABLE IF NOT EXISTS sample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   lims varchar(100) DEFAULT NULL,
   name varchar(150) DEFAULT NULL,
-  serviceType varchar(50) DEFAULT NULL,
   controlType varchar(50) DEFAULT NULL,
   support varchar(50) DEFAULT NULL,
   containerId bigint(20) DEFAULT NULL,
-  comments clob,
   status varchar(50),
-  project varchar(100) DEFAULT NULL,
-  experience varchar(100) DEFAULT NULL,
-  goal varchar(150) DEFAULT NULL,
-  source varchar(50) DEFAULT NULL,
-  sampleNumberProtein int(11) DEFAULT NULL,
-  proteolyticDigestionMethod varchar(50) DEFAULT NULL,
-  usedProteolyticDigestionMethod varchar(100) DEFAULT NULL,
-  otherProteolyticDigestionMethod varchar(100) DEFAULT NULL,
-  proteinIdentification varchar(50) DEFAULT NULL,
-  proteinIdentificationLink varchar(255) DEFAULT NULL,
-  enrichmentType varchar(50) DEFAULT NULL,
-  otherEnrichmentType varchar(100) DEFAULT NULL,
-  lowResolution tinyint(1) NOT NULL DEFAULT '0',
-  highResolution tinyint(1) NOT NULL DEFAULT '0',
-  msms tinyint(1) NOT NULL DEFAULT '0',
-  exactMsms tinyint(1) NOT NULL DEFAULT '0',
   submissionId bigint(20) DEFAULT NULL,
-  mudPitFraction varchar(50) DEFAULT NULL,
-  proteinContent varchar(50) DEFAULT NULL,
-  massDetectionInstrument varchar(50) DEFAULT NULL,
-  service varchar(50) DEFAULT NULL,
-  price double DEFAULT NULL,
-  additionalPrice double DEFAULT NULL,
-  taxonomy varchar(100) DEFAULT NULL,
-  protein varchar(100) DEFAULT NULL,
-  molecularWeight double DEFAULT NULL,
-  postTranslationModification varchar(150) DEFAULT NULL,
-  separation varchar(50) DEFAULT NULL,
-  thickness varchar(50) DEFAULT NULL,
-  coloration varchar(50) DEFAULT NULL,
-  otherColoration varchar(100) DEFAULT NULL,
-  developmentTime varchar(100) DEFAULT NULL,
-  decoloration tinyint(1) NOT NULL DEFAULT '0',
-  weightMarkerQuantity double DEFAULT NULL,
-  proteinQuantity varchar(100) DEFAULT NULL,
   quantity varchar(100) DEFAULT NULL,
   volume double DEFAULT NULL,
-  formula varchar(50) DEFAULT NULL,
-  monoisotopicMass double DEFAULT NULL,
-  averageMass double DEFAULT NULL,
-  solutionSolvent varchar(100) DEFAULT NULL,
-  otherSolvent varchar(100) DEFAULT NULL,
-  toxicity varchar(100) DEFAULT NULL,
-  lightSensitive tinyint(1) NOT NULL DEFAULT '0',
-  storageTemperature varchar(50) DEFAULT NULL,
-  structureId bigint(20) DEFAULT NULL,
   sampleType varchar(50) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY sampleLims (lims),
   CONSTRAINT sample_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT sample_ibfk_2 FOREIGN KEY (structureId) REFERENCES structure (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT sample_ibfk_3 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT sample_ibfk_2 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE INDEX IF NOT EXISTS sampleName ON sample (name);
 ALTER TABLE samplecontainer
@@ -201,11 +217,11 @@ CREATE TABLE IF NOT EXISTS contaminant (
 );
 CREATE TABLE IF NOT EXISTS solvent (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  sampleId bigint(20) DEFAULT NULL,
+  submissionId bigint(20) DEFAULT NULL,
   solvent varchar(150) NOT NULL,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  CONSTRAINT solvent_ibfk_1 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT solvent_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS protocol (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),

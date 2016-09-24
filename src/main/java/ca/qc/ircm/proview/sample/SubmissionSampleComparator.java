@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.sample;
 
 import ca.qc.ircm.proview.sample.SubmissionSampleService.Sort;
@@ -31,8 +48,6 @@ public class SubmissionSampleComparator implements Comparator<SubmissionSample>,
               o2.getLaboratory().getOrganization());
         case USER:
           return collator.compare(o1.getUser().getEmail(), o2.getUser().getEmail());
-        case SERVICE:
-          return o1.getService().compareTo(o2.getService());
         case SUBMISSION:
           return o1.getSubmission().getSubmissionDate()
               .compareTo(o2.getSubmission().getSubmissionDate());
@@ -43,28 +58,6 @@ public class SubmissionSampleComparator implements Comparator<SubmissionSample>,
           return collator.compare(o1.getName(), o2.getName());
         case STATUS:
           return o1.getStatus().compareTo(o2.getStatus());
-        case PROJECT:
-          if (o1 instanceof ProteicSample && o2 instanceof ProteicSample) {
-            return collator.compare(((ProteicSample) o1).getProject(),
-                ((ProteicSample) o2).getProject());
-          } else if (o1 instanceof ProteicSample) {
-            return -1;
-          } else if (o2 instanceof ProteicSample) {
-            return 1;
-          } else {
-            return 0;
-          }
-        case EXPERIENCE:
-          if (o1 instanceof ProteicSample && o2 instanceof ProteicSample) {
-            return collator.compare(((ProteicSample) o1).getExperience(),
-                ((ProteicSample) o2).getExperience());
-          } else if (o1 instanceof ProteicSample) {
-            return -1;
-          } else if (o2 instanceof ProteicSample) {
-            return 1;
-          } else {
-            return 0;
-          }
         case SUPPORT:
           return o1.getSupport().compareTo(o2.getSupport());
         default:

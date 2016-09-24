@@ -1,27 +1,39 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.laboratory.Laboratory;
-import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
-import ca.qc.ircm.proview.sample.MoleculeSample.StorageTemperature;
+import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -33,8 +45,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -78,17 +88,8 @@ public class SubmissionSampleServiceImplTest {
   @Before
   public void beforeTest() {
     submissionSampleServiceImpl = new SubmissionSampleServiceImpl(entityManager, queryFactory,
-        sampleActivityService, activityService, pricingEvaluator, authorizationService);
+        sampleActivityService, activityService, authorizationService);
     optionalActivity = Optional.of(activity);
-  }
-
-  private SampleSolvent find(Collection<SampleSolvent> solvents, Solvent solvent) {
-    for (SampleSolvent ssolvent : solvents) {
-      if (ssolvent.getSolvent() == solvent) {
-        return ssolvent;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -96,8 +97,8 @@ public class SubmissionSampleServiceImplTest {
     SubmissionSample sample = submissionSampleServiceImpl.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
-    assertTrue(sample instanceof GelSample);
-    GelSample gelSample = (GelSample) sample;
+    assertTrue(sample instanceof SubmissionSample);
+    SubmissionSample gelSample = sample;
     assertEquals((Long) 1L, gelSample.getId());
     assertEquals("IRC20101015_1", gelSample.getLims());
     assertEquals("FAM119A_band_01", gelSample.getName());
@@ -105,48 +106,17 @@ public class SubmissionSampleServiceImplTest {
     assertEquals((Long) 1L, gelSample.getOriginalContainer().getId());
     assertEquals(Sample.Support.GEL, gelSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
-    assertEquals("Philippe", gelSample.getComments());
     assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
-    assertEquals("Coulombe", gelSample.getProject());
-    assertEquals("G100429", gelSample.getExperience());
-    assertEquals(null, gelSample.getGoal());
-    assertEquals(null, gelSample.getSource());
-    assertEquals(null, gelSample.getSampleNumberProtein());
-    assertEquals(ProteolyticDigestion.TRYPSIN, gelSample.getProteolyticDigestionMethod());
-    assertEquals(null, gelSample.getUsedProteolyticDigestionMethod());
-    assertEquals(null, gelSample.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, gelSample.getProteinIdentification());
-    assertEquals(null, gelSample.getProteinIdentificationLink());
-    assertEquals(null, gelSample.getEnrichmentType());
-    assertEquals(null, gelSample.getOtherEnrichmentType());
     assertEquals((Long) 1L, gelSample.getSubmission().getId());
-    assertEquals(null, gelSample.getMudPitFraction());
-    assertEquals(ProteicSample.ProteinContent.XLARGE, gelSample.getProteinContent());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, gelSample.getMassDetectionInstrument());
-    assertEquals(Service.LC_MS_MS, gelSample.getService());
-    assertEquals(null, gelSample.getPrice());
-    assertEquals(null, gelSample.getAdditionalPrice());
-    assertEquals("Human", gelSample.getTaxonomy());
-    assertEquals(null, gelSample.getProtein());
-    assertEquals(null, gelSample.getMolecularWeight());
-    assertEquals(null, gelSample.getPostTranslationModification());
-    assertEquals(GelSample.Separation.ONE_DIMENSION, gelSample.getSeparation());
-    assertEquals(GelSample.Thickness.ONE, gelSample.getThickness());
-    assertEquals(GelSample.Coloration.SILVER, gelSample.getColoration());
-    assertEquals(null, gelSample.getOtherColoration());
-    assertEquals(null, gelSample.getDevelopmentTime());
-    assertEquals(false, gelSample.isDecoloration());
-    assertEquals(null, gelSample.getWeightMarkerQuantity());
-    assertEquals(null, gelSample.getProteinQuantity());
   }
 
   @Test
-  public void get_Eluate() throws Throwable {
+  public void get() throws Throwable {
     SubmissionSample sample = submissionSampleServiceImpl.get(442L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
-    assertTrue(sample instanceof EluateSample);
-    EluateSample eluateSample = (EluateSample) sample;
+    assertTrue(sample instanceof SubmissionSample);
+    SubmissionSample eluateSample = sample;
     assertEquals((Long) 442L, eluateSample.getId());
     assertEquals("IRC20111013_2", eluateSample.getLims());
     assertEquals("CAP_20111013_01", eluateSample.getName());
@@ -154,61 +124,10 @@ public class SubmissionSampleServiceImplTest {
     assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
     assertEquals(Sample.Support.SOLUTION, eluateSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, eluateSample.getType());
-    assertEquals(null, eluateSample.getComments());
     assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
-    assertEquals("cap_project", eluateSample.getProject());
-    assertEquals("cap_experience", eluateSample.getExperience());
-    assertEquals("cap_goal", eluateSample.getGoal());
-    assertEquals(null, eluateSample.getSource());
-    assertEquals(null, eluateSample.getSampleNumberProtein());
-    assertEquals(ProteolyticDigestion.TRYPSIN, eluateSample.getProteolyticDigestionMethod());
-    assertEquals(null, eluateSample.getUsedProteolyticDigestionMethod());
-    assertEquals(null, eluateSample.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, eluateSample.getProteinIdentification());
-    assertEquals(null, eluateSample.getProteinIdentificationLink());
-    assertEquals(null, eluateSample.getEnrichmentType());
-    assertEquals(null, eluateSample.getOtherEnrichmentType());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
-    assertEquals(null, eluateSample.getMudPitFraction());
-    assertEquals(ProteicSample.ProteinContent.MEDIUM, eluateSample.getProteinContent());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, eluateSample.getMassDetectionInstrument());
-    assertEquals(Service.LC_MS_MS, eluateSample.getService());
-    assertEquals(null, eluateSample.getPrice());
-    assertEquals(null, eluateSample.getAdditionalPrice());
-    assertEquals("human", eluateSample.getTaxonomy());
-    assertEquals(null, eluateSample.getProtein());
-    assertEquals(null, eluateSample.getMolecularWeight());
-    assertEquals(null, eluateSample.getPostTranslationModification());
     assertEquals("1.5 μg", eluateSample.getQuantity());
     assertEquals((Double) 50.0, eluateSample.getVolume());
-  }
-
-  @Test
-  public void get_Molecule() throws Throwable {
-    SubmissionSample sample = submissionSampleServiceImpl.get(443L);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertTrue(sample instanceof MoleculeSample);
-    MoleculeSample moleculeSample = (MoleculeSample) sample;
-    assertEquals((Long) 443L, moleculeSample.getId());
-    assertEquals("IRC20111013_3", moleculeSample.getLims());
-    assertEquals("CAP_20111013_05", moleculeSample.getName());
-    assertEquals(true, moleculeSample.getOriginalContainer() instanceof Tube);
-    assertEquals((Long) 3L, moleculeSample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.SOLUTION, moleculeSample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, moleculeSample.getType());
-    assertEquals(null, moleculeSample.getComments());
-    assertEquals(SampleStatus.TO_APPROVE, moleculeSample.getStatus());
-    assertEquals(MsAnalysis.Source.ESI, moleculeSample.getSource());
-    assertEquals(true, moleculeSample.isLowResolution());
-    assertEquals(false, moleculeSample.isHighResolution());
-    assertEquals(false, moleculeSample.isMsms());
-    assertEquals(false, moleculeSample.isExactMsms());
-    assertEquals((Long) 33L, moleculeSample.getSubmission().getId());
-    assertEquals(null, moleculeSample.getMassDetectionInstrument());
-    assertEquals(Service.SMALL_MOLECULE, moleculeSample.getService());
-    assertEquals(null, moleculeSample.getPrice());
-    assertEquals(null, moleculeSample.getAdditionalPrice());
   }
 
   @Test
@@ -223,119 +142,33 @@ public class SubmissionSampleServiceImplTest {
     SubmissionSample sample = submissionSampleServiceImpl.getSubmission("FAM119A_band_01");
 
     verify(authorizationService).checkSampleReadPermission(sample);
-    assertTrue(sample instanceof GelSample);
-    GelSample gelSample = (GelSample) sample;
-    assertEquals((Long) 1L, gelSample.getId());
-    assertEquals("IRC20101015_1", gelSample.getLims());
-    assertEquals("FAM119A_band_01", gelSample.getName());
-    assertEquals(true, gelSample.getOriginalContainer() instanceof Tube);
-    assertEquals((Long) 1L, gelSample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.GEL, gelSample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
-    assertEquals("Philippe", gelSample.getComments());
-    assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
-    assertEquals("Coulombe", gelSample.getProject());
-    assertEquals("G100429", gelSample.getExperience());
-    assertEquals(null, gelSample.getGoal());
-    assertEquals(null, gelSample.getSource());
-    assertEquals(null, gelSample.getSampleNumberProtein());
-    assertEquals(ProteolyticDigestion.TRYPSIN, gelSample.getProteolyticDigestionMethod());
-    assertEquals(null, gelSample.getUsedProteolyticDigestionMethod());
-    assertEquals(null, gelSample.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, gelSample.getProteinIdentification());
-    assertEquals(null, gelSample.getProteinIdentificationLink());
-    assertEquals(null, gelSample.getEnrichmentType());
-    assertEquals(null, gelSample.getOtherEnrichmentType());
-    assertEquals((Long) 1L, gelSample.getSubmission().getId());
-    assertEquals(null, gelSample.getMudPitFraction());
-    assertEquals(ProteicSample.ProteinContent.XLARGE, gelSample.getProteinContent());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, gelSample.getMassDetectionInstrument());
-    assertEquals(Service.LC_MS_MS, gelSample.getService());
-    assertEquals(null, gelSample.getPrice());
-    assertEquals(null, gelSample.getAdditionalPrice());
-    assertEquals("Human", gelSample.getTaxonomy());
-    assertEquals(null, gelSample.getProtein());
-    assertEquals(null, gelSample.getMolecularWeight());
-    assertEquals(null, gelSample.getPostTranslationModification());
-    assertEquals(GelSample.Separation.ONE_DIMENSION, gelSample.getSeparation());
-    assertEquals(GelSample.Thickness.ONE, gelSample.getThickness());
-    assertEquals(GelSample.Coloration.SILVER, gelSample.getColoration());
-    assertEquals(null, gelSample.getOtherColoration());
-    assertEquals(null, gelSample.getDevelopmentTime());
-    assertEquals(false, gelSample.isDecoloration());
-    assertEquals(null, gelSample.getWeightMarkerQuantity());
-    assertEquals(null, gelSample.getProteinQuantity());
+    assertEquals((Long) 1L, sample.getId());
+    assertEquals("IRC20101015_1", sample.getLims());
+    assertEquals("FAM119A_band_01", sample.getName());
+    assertEquals(true, sample.getOriginalContainer() instanceof Tube);
+    assertEquals((Long) 1L, sample.getOriginalContainer().getId());
+    assertEquals(Sample.Support.GEL, sample.getSupport());
+    assertEquals(Sample.Type.SUBMISSION, sample.getType());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
+    assertEquals((Long) 1L, sample.getSubmission().getId());
   }
 
   @Test
-  public void get_EluateByName() throws Throwable {
+  public void get_ByName() throws Throwable {
     SubmissionSample sample = submissionSampleServiceImpl.getSubmission("CAP_20111013_01");
 
     verify(authorizationService).checkSampleReadPermission(sample);
-    assertTrue(sample instanceof EluateSample);
-    EluateSample eluateSample = (EluateSample) sample;
-    assertEquals((Long) 442L, eluateSample.getId());
-    assertEquals("IRC20111013_2", eluateSample.getLims());
-    assertEquals("CAP_20111013_01", eluateSample.getName());
-    assertEquals(true, eluateSample.getOriginalContainer() instanceof Tube);
-    assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.SOLUTION, eluateSample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, eluateSample.getType());
-    assertEquals(null, eluateSample.getComments());
-    assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
-    assertEquals("cap_project", eluateSample.getProject());
-    assertEquals("cap_experience", eluateSample.getExperience());
-    assertEquals("cap_goal", eluateSample.getGoal());
-    assertEquals(null, eluateSample.getSource());
-    assertEquals(null, eluateSample.getSampleNumberProtein());
-    assertEquals(ProteolyticDigestion.TRYPSIN, eluateSample.getProteolyticDigestionMethod());
-    assertEquals(null, eluateSample.getUsedProteolyticDigestionMethod());
-    assertEquals(null, eluateSample.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, eluateSample.getProteinIdentification());
-    assertEquals(null, eluateSample.getProteinIdentificationLink());
-    assertEquals(null, eluateSample.getEnrichmentType());
-    assertEquals(null, eluateSample.getOtherEnrichmentType());
-    assertEquals((Long) 32L, eluateSample.getSubmission().getId());
-    assertEquals(null, eluateSample.getMudPitFraction());
-    assertEquals(ProteicSample.ProteinContent.MEDIUM, eluateSample.getProteinContent());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, eluateSample.getMassDetectionInstrument());
-    assertEquals(Service.LC_MS_MS, eluateSample.getService());
-    assertEquals(null, eluateSample.getPrice());
-    assertEquals(null, eluateSample.getAdditionalPrice());
-    assertEquals("human", eluateSample.getTaxonomy());
-    assertEquals(null, eluateSample.getProtein());
-    assertEquals(null, eluateSample.getMolecularWeight());
-    assertEquals(null, eluateSample.getPostTranslationModification());
-    assertEquals("1.5 μg", eluateSample.getQuantity());
-    assertEquals((Double) 50.0, eluateSample.getVolume());
-  }
-
-  @Test
-  public void get_MoleculeByName() throws Throwable {
-    SubmissionSample sample = submissionSampleServiceImpl.getSubmission("CAP_20111013_05");
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertTrue(sample instanceof MoleculeSample);
-    MoleculeSample moleculeSample = (MoleculeSample) sample;
-    assertEquals((Long) 443L, moleculeSample.getId());
-    assertEquals("IRC20111013_3", moleculeSample.getLims());
-    assertEquals("CAP_20111013_05", moleculeSample.getName());
-    assertEquals(true, moleculeSample.getOriginalContainer() instanceof Tube);
-    assertEquals((Long) 3L, moleculeSample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.SOLUTION, moleculeSample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, moleculeSample.getType());
-    assertEquals(null, moleculeSample.getComments());
-    assertEquals(SampleStatus.TO_APPROVE, moleculeSample.getStatus());
-    assertEquals(MsAnalysis.Source.ESI, moleculeSample.getSource());
-    assertEquals(true, moleculeSample.isLowResolution());
-    assertEquals(false, moleculeSample.isHighResolution());
-    assertEquals(false, moleculeSample.isMsms());
-    assertEquals(false, moleculeSample.isExactMsms());
-    assertEquals((Long) 33L, moleculeSample.getSubmission().getId());
-    assertEquals(null, moleculeSample.getMassDetectionInstrument());
-    assertEquals(Service.SMALL_MOLECULE, moleculeSample.getService());
-    assertEquals(null, moleculeSample.getPrice());
-    assertEquals(null, moleculeSample.getAdditionalPrice());
+    assertEquals((Long) 442L, sample.getId());
+    assertEquals("IRC20111013_2", sample.getLims());
+    assertEquals("CAP_20111013_01", sample.getName());
+    assertEquals(true, sample.getOriginalContainer() instanceof Tube);
+    assertEquals((Long) 2L, sample.getOriginalContainer().getId());
+    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(Sample.Type.SUBMISSION, sample.getType());
+    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
+    assertEquals((Long) 32L, sample.getSubmission().getId());
+    assertEquals("1.5 μg", sample.getQuantity());
+    assertEquals((Double) 50.0, sample.getVolume());
   }
 
   @Test
@@ -391,8 +224,6 @@ public class SubmissionSampleServiceImplTest {
     assertEquals((Long) 442L, sample.getId());
     assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
-    assertEquals("cap_project", ((ProteicSample) sample).getProject());
-    assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -666,8 +497,7 @@ public class SubmissionSampleServiceImplTest {
   @Test
   public void report_Status_Multiple() throws Throwable {
     SampleFilterBean filter = new SampleFilterBean();
-    filter.statuses(
-        Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.TO_APPROVE));
+    filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.TO_APPROVE));
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -895,9 +725,6 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
-    assertEquals("cap_project", ((ProteicSample) sample).getProject());
-    assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
-    assertEquals(Service.LC_MS_MS, sample.getService());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
@@ -910,13 +737,6 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
-    assertEquals((Double) 654.654, ((MoleculeSample) sample).getMonoisotopicMass());
-    assertEquals(1, ((MoleculeSample) sample).getSolventList().size());
-    assertNotNull(find(((MoleculeSample) sample).getSolventList(), Solvent.METHANOL));
-    assertEquals("MeOH/TFA 0.1%", ((MoleculeSample) sample).getSolutionSolvent());
-    assertEquals(StorageTemperature.MEDIUM, ((MoleculeSample) sample).getStorageTemperature());
-    assertEquals(MsAnalysis.Source.ESI, ((MoleculeSample) sample).getSource());
-    assertEquals(Service.SMALL_MOLECULE, sample.getService());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(
@@ -929,9 +749,6 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("christian.poitras@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("IRC20111017_4", sample.getLims());
     assertEquals("CAP_20111017_01", sample.getName());
-    assertEquals("cap_project", ((ProteicSample) sample).getProject());
-    assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
-    assertEquals(Service.LC_MS_MS, sample.getService());
     assertEquals(Sample.Support.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(
@@ -1134,8 +951,7 @@ public class SubmissionSampleServiceImplTest {
   @Test
   public void adminReport_Status_Multiple() throws Throwable {
     SampleFilterBean filter = new SampleFilterBean();
-    filter.statuses(
-        Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.ANALYSED));
+    filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.ANALYSED));
 
     SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter);
 
@@ -1368,23 +1184,18 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
-    assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
-    assertEquals(Service.LC_MS_MS, sample.getService());
     assertEquals("CAP_20111013_01", sample.getOriginalContainer().getName());
     sample = samples.get(1);
     assertEquals((Long) 443L, sample.getId());
     assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
-    assertEquals(Service.SMALL_MOLECULE, sample.getService());
     assertEquals("CAP_20111013_05", sample.getOriginalContainer().getName());
     sample = samples.get(2);
     assertEquals((Long) 446L, sample.getId());
     assertEquals("IRC20111109_5", sample.getLims());
     assertEquals("CAP_20111109_01", sample.getName());
     assertEquals("christopher.anderson@ircm.qc.ca", sample.getUser().getEmail());
-    assertEquals("cap_experience", ((ProteicSample) sample).getExperience());
-    assertEquals(Service.LC_MS_MS, sample.getService());
     assertEquals("CAP_20111109_01", sample.getOriginalContainer().getName());
   }
 
@@ -1400,6 +1211,243 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(true, projects.contains("cap_project"));
     assertEquals(true, projects.contains("Coulombe"));
     assertEquals(false, projects.contains("some_random_string"));
+  }
+
+  @Test
+  public void update() {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
+    entityManager.detach(sample);
+    sample.setName("new_solution_tag_0001");
+    sample.setSupport(Support.DRY);
+    sample.setQuantity("12 pmol");
+    sample.setVolume(70.0);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleServiceImpl.update(sample, "test changes");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
+    verify(activityService).insert(activity);
+    SubmissionSample test = entityManager.find(SubmissionSample.class, sample.getId());
+    entityManager.refresh(test);
+    assertEquals("new_solution_tag_0001", test.getName());
+    assertEquals(Support.DRY, test.getSupport());
+    assertEquals("12 pmol", test.getQuantity());
+    assertEquals((Double) 70.0, test.getVolume());
+    // Validate log.
+    Sample newSample = sampleCaptor.getValue();
+    assertTrue(newSample instanceof SubmissionSample);
+    SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
+    assertEquals("new_solution_tag_0001", newSubmissionSample.getName());
+    assertEquals(Support.DRY, newSubmissionSample.getSupport());
+    assertEquals("12 pmol", newSubmissionSample.getQuantity());
+    assertEquals((Double) 70.0, newSubmissionSample.getVolume());
+  }
+
+  @Test
+  public void update_AddContaminant() {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
+    entityManager.detach(sample);
+    Contaminant insert = new Contaminant();
+    insert.setName("my_new_contaminant");
+    insert.setQuantity("3 μg");
+    insert.setComments("some_comments");
+    sample.getContaminants().add(insert);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleServiceImpl.update(sample, "test changes");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
+    verify(activityService).insert(activity);
+    // Validate contaminant insertion.
+    SubmissionSample test = entityManager.find(SubmissionSample.class, sample.getId());
+    entityManager.refresh(test);
+    assertEquals(1, test.getContaminants().size());
+    Contaminant testContaminant = test.getContaminants().get(0);
+    assertEquals("my_new_contaminant", testContaminant.getName());
+    assertEquals("3 μg", testContaminant.getQuantity());
+    assertEquals("some_comments", testContaminant.getComments());
+    // Validate activity log.
+    Sample newSample = sampleCaptor.getValue();
+    assertTrue(newSample instanceof SubmissionSample);
+    SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
+    assertEquals(1, newSubmissionSample.getContaminants().size());
+    testContaminant = newSubmissionSample.getContaminants().get(0);
+    assertEquals("my_new_contaminant", testContaminant.getName());
+    assertEquals("3 μg", testContaminant.getQuantity());
+    assertEquals("some_comments", testContaminant.getComments());
+  }
+
+  @Test
+  public void update_UpdateContaminant() {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 445L);
+    entityManager.detach(sample);
+    for (Contaminant contaminant : sample.getContaminants()) {
+      entityManager.detach(contaminant);
+    }
+    Contaminant update = sample.getContaminants().get(0);
+    update.setName("new_contaminant_name");
+    update.setQuantity("1 pmol");
+    update.setComments("new_comments");
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleServiceImpl.update(sample, "test changes");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
+    verify(activityService).insert(activity);
+    // Validate contaminant update.
+    SubmissionSample test = entityManager.find(SubmissionSample.class, sample.getId());
+    entityManager.refresh(test);
+    assertEquals(1, test.getContaminants().size());
+    Contaminant testContaminant = test.getContaminants().get(0);
+    assertEquals("new_contaminant_name", testContaminant.getName());
+    assertEquals("1 pmol", testContaminant.getQuantity());
+    assertEquals("new_comments", testContaminant.getComments());
+    // Validate log.
+    Sample newSample = sampleCaptor.getValue();
+    assertTrue(newSample instanceof SubmissionSample);
+    SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
+    assertTrue(newSubmissionSample.getContaminants().size() == 1);
+    testContaminant = newSubmissionSample.getContaminants().get(0);
+    assertEquals("new_contaminant_name", testContaminant.getName());
+    assertEquals("1 pmol", testContaminant.getQuantity());
+    assertEquals("new_comments", testContaminant.getComments());
+  }
+
+  @Test
+  public void update_RemoveContaminant() {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 445L);
+    entityManager.detach(sample);
+    sample.getContaminants().remove(0);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    // Update sample.
+    submissionSampleServiceImpl.update(sample, "test changes");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
+    verify(activityService).insert(activity);
+    // Validate contaminant deletion.
+    SubmissionSample test = entityManager.find(SubmissionSample.class, sample.getId());
+    entityManager.refresh(test);
+    assertEquals(0, test.getContaminants().size());
+    // Validate log.
+    Sample newSample = sampleCaptor.getValue();
+    assertTrue(newSample instanceof SubmissionSample);
+    SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
+    assertEquals(0, newSubmissionSample.getContaminants().size());
+  }
+
+  @Test
+  public void update_AddStandard() {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
+    entityManager.detach(sample);
+    Standard standard = new Standard();
+    standard.setName("my_new_standard");
+    standard.setQuantity("3 μg");
+    standard.setComments("some_comments");
+    sample.getStandards().add(standard);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    // Update sample.
+    submissionSampleServiceImpl.update(sample, "test changes");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
+    verify(activityService).insert(activity);
+    // Validate standard insertion.
+    SubmissionSample test = entityManager.find(SubmissionSample.class, sample.getId());
+    entityManager.refresh(test);
+    assertEquals(1, test.getStandards().size());
+    Standard testStandard = test.getStandards().get(0);
+    assertEquals("my_new_standard", testStandard.getName());
+    assertEquals("3 μg", testStandard.getQuantity());
+    assertEquals("some_comments", testStandard.getComments());
+    // Validate log.
+    Sample newSample = sampleCaptor.getValue();
+    assertTrue(newSample instanceof SubmissionSample);
+    SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
+    assertEquals(1, newSubmissionSample.getStandards().size());
+    testStandard = newSubmissionSample.getStandards().get(0);
+    assertEquals("my_new_standard", testStandard.getName());
+    assertEquals("3 μg", testStandard.getQuantity());
+    assertEquals("some_comments", testStandard.getComments());
+  }
+
+  @Test
+  public void update_UpdateStandard() {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 445L);
+    entityManager.detach(sample);
+    for (Standard standard : sample.getStandards()) {
+      entityManager.detach(standard);
+    }
+    Standard standard = sample.getStandards().get(0);
+    standard.setName("new_standard_name");
+    standard.setQuantity("1 pmol");
+    standard.setComments("new_comments");
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleServiceImpl.update(sample, "test changes");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
+    verify(activityService).insert(activity);
+    // Validate standard update.
+    SubmissionSample test = entityManager.find(SubmissionSample.class, sample.getId());
+    entityManager.refresh(test);
+    assertEquals(1, test.getStandards().size());
+    Standard testStandard = test.getStandards().get(0);
+    assertEquals("new_standard_name", testStandard.getName());
+    assertEquals("1 pmol", testStandard.getQuantity());
+    assertEquals("new_comments", testStandard.getComments());
+    // Validate log.
+    Sample newSample = sampleCaptor.getValue();
+    assertTrue(newSample instanceof SubmissionSample);
+    SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
+    assertTrue(newSubmissionSample.getStandards().size() == 1);
+    testStandard = newSubmissionSample.getStandards().get(0);
+    assertEquals("new_standard_name", testStandard.getName());
+    assertEquals("1 pmol", testStandard.getQuantity());
+    assertEquals("new_comments", testStandard.getComments());
+  }
+
+  @Test
+  public void update_RemoveStandard() {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 445L);
+    entityManager.detach(sample);
+    sample.getStandards().remove(0);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleServiceImpl.update(sample, "test changes");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
+    verify(activityService).insert(activity);
+    // Validate standard deletion.
+    SubmissionSample test = entityManager.find(SubmissionSample.class, sample.getId());
+    entityManager.refresh(test);
+    assertEquals(0, test.getStandards().size());
+    // Validate log.
+    Sample newSample = sampleCaptor.getValue();
+    assertTrue(newSample instanceof SubmissionSample);
+    SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
+    assertEquals(0, newSubmissionSample.getStandards().size());
   }
 
   @Test
@@ -1430,38 +1478,5 @@ public class SubmissionSampleServiceImplTest {
     assertEquals(SampleStatus.TO_DIGEST, newTestSample1.getStatus());
     SubmissionSample newTestSample2 = (SubmissionSample) sampleCaptor.getAllValues().get(1);
     assertEquals(SampleStatus.RECEIVED, newTestSample2.getStatus());
-  }
-
-  @Test
-  public void computePrice() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    Instant instant = Instant.now();
-    when(pricingEvaluator.computePrice(any(SubmissionSample.class), any(Instant.class)))
-        .thenReturn(new BigDecimal("45.26"));
-
-    BigDecimal price = submissionSampleServiceImpl.computePrice(sample, instant);
-
-    verify(pricingEvaluator).computePrice(sample, instant);
-    assertEquals(new BigDecimal("45.26"), price);
-  }
-
-  @Test
-  public void computePrice_NullSample() throws Throwable {
-    Instant instant = Instant.now();
-
-    BigDecimal price = submissionSampleServiceImpl.computePrice(null, instant);
-
-    verifyZeroInteractions(pricingEvaluator);
-    assertNull(price);
-  }
-
-  @Test
-  public void computePrice_NullDate() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-
-    BigDecimal price = submissionSampleServiceImpl.computePrice(sample, null);
-
-    verifyZeroInteractions(pricingEvaluator);
-    assertNull(price);
   }
 }

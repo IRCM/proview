@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.history;
 
 import static org.junit.Assert.assertEquals;
@@ -13,10 +30,9 @@ import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.msanalysis.AcquisitionMascotFile;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.sample.EluateSample;
-import ca.qc.ircm.proview.sample.GelSample;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -206,7 +222,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allInsertActivities_Sample() throws Exception {
-    Sample sample = new EluateSample(442L);
+    Sample sample = new SubmissionSample(442L);
 
     List<Activity> activities = activityServiceImpl.allInsertActivities(sample);
 
@@ -260,7 +276,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allUpdateActivities() throws Exception {
-    EluateSample sample = new EluateSample(442L);
+    SubmissionSample sample = new SubmissionSample(442L);
 
     List<Activity> activities = activityServiceImpl.allUpdateActivities(sample);
 
@@ -328,7 +344,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allTreatmentActivities_Sample_Digestion() throws Exception {
-    Sample sample = new EluateSample(559L);
+    Sample sample = new SubmissionSample(559L);
 
     List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
 
@@ -347,7 +363,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allTreatmentActivities_Sample_Dilution() throws Exception {
-    Sample sample = new EluateSample(569L);
+    Sample sample = new SubmissionSample(569L);
 
     List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
 
@@ -366,7 +382,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allTreatmentActivities_Sample_Enrichment() throws Exception {
-    Sample sample = new EluateSample(579L);
+    Sample sample = new SubmissionSample(579L);
 
     List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
 
@@ -385,7 +401,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allTreatmentActivities_Sample_Solubilisation() throws Exception {
-    Sample sample = new EluateSample(589L);
+    Sample sample = new SubmissionSample(589L);
 
     List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
 
@@ -404,7 +420,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allTreatmentActivities_Sample_StandardAdition() throws Exception {
-    Sample sample = new EluateSample(599L);
+    Sample sample = new SubmissionSample(599L);
 
     List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
 
@@ -423,7 +439,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allTreatmentActivities_Sample_Fractionation() throws Exception {
-    Sample sample = new EluateSample(628L);
+    Sample sample = new SubmissionSample(628L);
 
     List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
 
@@ -455,7 +471,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allTreatmentActivities_Sample_Transfer() throws Exception {
-    Sample sample = new EluateSample(627L);
+    Sample sample = new SubmissionSample(627L);
 
     List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
 
@@ -539,7 +555,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allMsAnalysisActivities_Sample() throws Exception {
-    Sample sample = new EluateSample(627L);
+    Sample sample = new SubmissionSample(627L);
 
     List<Activity> activities = activityServiceImpl.allMsAnalysisActivities(sample);
 
@@ -605,7 +621,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allDataAnalysisActivities_Insert() throws Exception {
-    Sample sample = new EluateSample(442L);
+    Sample sample = new SubmissionSample(442L);
 
     List<Activity> activities = activityServiceImpl.allDataAnalysisActivities(sample);
 
@@ -631,7 +647,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allDataAnalysisActivities_Update() throws Exception {
-    Sample sample = new GelSample(1L);
+    Sample sample = new SubmissionSample(1L);
 
     List<Activity> activities = activityServiceImpl.allDataAnalysisActivities(sample);
 
@@ -717,7 +733,7 @@ public class ActivityServiceImplTest {
 
   @Test
   public void allMascotFileActivities() {
-    Sample sample = new EluateSample(442L);
+    Sample sample = new SubmissionSample(442L);
 
     List<Activity> activities = activityServiceImpl.allMascotFileActivities(sample);
 

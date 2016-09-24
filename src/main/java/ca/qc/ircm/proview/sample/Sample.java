@@ -1,5 +1,23 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.sample;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
@@ -13,6 +31,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -20,6 +39,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 /**
@@ -81,10 +101,23 @@ public abstract class Sample implements Data, Named, Comparable<Sample>, Seriali
   @Size(max = 150)
   private String name;
   /**
-   * Any comments on this sample.
+   * Support for this molecule.
    */
-  @Column(name = "comments")
-  private String comments;
+  @Column(name = "support")
+  @Enumerated(STRING)
+  private Support support;
+  /**
+   * Volume of Sample (in ul).
+   */
+  @Column(name = "volume")
+  @Min(0)
+  private Double volume;
+  /**
+   * Quantity of Sample (in ug or pmol).
+   */
+  @Column(name = "quantity", nullable = false)
+  @Size(max = 100)
+  private String quantity;
   /**
    * Container where sample was originally located.
    */
@@ -116,13 +149,6 @@ public abstract class Sample implements Data, Named, Comparable<Sample>, Seriali
    * @return Sample type.
    */
   public abstract Type getType();
-
-  /**
-   * Returns sample's support.
-   *
-   * @return sample's support
-   */
-  public abstract Support getSupport();
 
   @Override
   public boolean equals(Object obj) {
@@ -160,14 +186,6 @@ public abstract class Sample implements Data, Named, Comparable<Sample>, Seriali
     this.id = id;
   }
 
-  public String getComments() {
-    return comments;
-  }
-
-  public void setComments(String comments) {
-    this.comments = comments;
-  }
-
   public String getLims() {
     return lims;
   }
@@ -200,4 +218,29 @@ public abstract class Sample implements Data, Named, Comparable<Sample>, Seriali
   public void setStandards(List<Standard> standards) {
     this.standards = standards;
   }
+
+  public String getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(String quantity) {
+    this.quantity = quantity;
+  }
+
+  public Double getVolume() {
+    return volume;
+  }
+
+  public void setVolume(Double volume) {
+    this.volume = volume;
+  }
+
+  public Support getSupport() {
+    return support;
+  }
+
+  public void setSupport(Support support) {
+    this.support = support;
+  }
+
 }

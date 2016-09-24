@@ -49,10 +49,6 @@
     <class>ca.qc.ircm.proview.plate.PlateSpot</class>
     <class>ca.qc.ircm.proview.sample.Contaminant</class>
     <class>ca.qc.ircm.proview.sample.Control</class>
-    <class>ca.qc.ircm.proview.sample.EluateSample</class>
-    <class>ca.qc.ircm.proview.sample.GelSample</class>
-    <class>ca.qc.ircm.proview.sample.MoleculeSample</class>
-    <class>ca.qc.ircm.proview.sample.ProteicSample</class>
     <class>ca.qc.ircm.proview.sample.Sample</class>
     <class>ca.qc.ircm.proview.sample.SampleContainer</class>
     <class>ca.qc.ircm.proview.sample.SampleSolvent</class>

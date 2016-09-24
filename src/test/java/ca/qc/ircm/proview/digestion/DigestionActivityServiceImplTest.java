@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.digestion;
 
 import static org.junit.Assert.assertEquals;
@@ -7,9 +24,9 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import ca.qc.ircm.proview.sample.GelSample;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
@@ -44,7 +61,8 @@ public class DigestionActivityServiceImplTest {
    */
   @Before
   public void beforeTest() {
-    digestionActivityServiceImpl = new DigestionActivityServiceImpl(entityManager, authorizationService);
+    digestionActivityServiceImpl =
+        new DigestionActivityServiceImpl(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -52,7 +70,7 @@ public class DigestionActivityServiceImplTest {
   @Test
   public void insert() {
     final DigestionProtocol protocol = new DigestionProtocol(1L);
-    Sample sample = new GelSample(1L);
+    Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(352L);
     DigestedSample digestedSample = new DigestedSample();
     digestedSample.setSample(sample);
@@ -111,7 +129,8 @@ public class DigestionActivityServiceImplTest {
     bannedContainers.add(sourceTube);
     bannedContainers.add(spot);
 
-    Activity activity = digestionActivityServiceImpl.undoFailed(digestion, "unit_test", bannedContainers);
+    Activity activity =
+        digestionActivityServiceImpl.undoFailed(digestion, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -150,7 +169,8 @@ public class DigestionActivityServiceImplTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-    Activity activity = digestionActivityServiceImpl.undoFailed(digestion, reason, bannedContainers);
+    Activity activity =
+        digestionActivityServiceImpl.undoFailed(digestion, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

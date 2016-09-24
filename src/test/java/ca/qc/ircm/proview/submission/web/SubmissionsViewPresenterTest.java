@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
@@ -368,12 +385,12 @@ public class SubmissionsViewPresenterTest {
     assertEquals(true, checkBox.isVisible());
     Button button =
         (Button) container.getItem(sample).getItemProperty(EXPERIENCE_PROPERTY).getValue();
-    assertEquals(sample.getExperience(), button.getCaption());
+    assertEquals(sample.getSubmission().getExperience(), button.getCaption());
     assertEquals(sample.getSubmission().getSamples().size(),
         container.getItem(sample).getItemProperty(SAMPLE_COUNT_PROPERTY).getValue());
     assertEquals(sample.getName(),
         container.getItem(sample).getItemProperty(SAMPLE_NAME_PROPERTY).getValue());
-    assertEquals(sample.getGoal(),
+    assertEquals(sample.getSubmission().getGoal(),
         container.getItem(sample).getItemProperty(EXPERIENCE_GOAL_PROPERTY).getValue());
     assertEquals(sample.getStatus(),
         container.getItem(sample).getItemProperty(SAMPLE_STATUS_PROPERTY).getValue());
@@ -396,12 +413,12 @@ public class SubmissionsViewPresenterTest {
     assertEquals(false, checkBox.isVisible());
     Button button =
         (Button) container.getItem(sample).getItemProperty(EXPERIENCE_PROPERTY).getValue();
-    assertEquals(sample.getExperience(), button.getCaption());
+    assertEquals(sample.getSubmission().getExperience(), button.getCaption());
     assertEquals(sample.getSubmission().getSamples().size(),
         container.getItem(sample).getItemProperty(SAMPLE_COUNT_PROPERTY).getValue());
     assertEquals(sample.getName(),
         container.getItem(sample).getItemProperty(SAMPLE_NAME_PROPERTY).getValue());
-    assertEquals(sample.getGoal(),
+    assertEquals(sample.getSubmission().getGoal(),
         container.getItem(sample).getItemProperty(EXPERIENCE_GOAL_PROPERTY).getValue());
     assertEquals(sample.getStatus(),
         container.getItem(sample).getItemProperty(SAMPLE_STATUS_PROPERTY).getValue());

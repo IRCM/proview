@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.sample;
 
 import static javax.persistence.EnumType.STRING;
@@ -5,61 +22,28 @@ import static javax.persistence.EnumType.STRING;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.LaboratoryData;
-import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
-import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 
-import java.math.BigDecimal;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Size;
+import javax.persistence.OneToMany;
 
 /**
  * Sample submitted for MS analysis.
  */
 @Entity
-public abstract class SubmissionSample extends Sample implements LaboratoryData, Named {
-  /**
-   * Service demanded for submitted sample.
-   */
-  public static enum ServiceType {
-    /**
-     * Sample contains multiple proteins to be analysed by MS.
-     */
-    PROTEIC, /**
-              * Sample contains a single small molecule to be analyse by MS.
-              * {@link ServiceType#SMALL_MOLECULE} is valid only if
-              * {@link SubmissionSample#getService()} is {@link Service#SMALL_MOLECULE}.
-              */
-    SMALL_MOLECULE
-  }
-
+@DiscriminatorValue("SUBMISSION")
+public class SubmissionSample extends Sample implements LaboratoryData, Named {
   private static final long serialVersionUID = -7652364189294805763L;
 
-  /**
-   * User's project.
-   */
-  @Column(name = "project")
-  @Size(max = 100)
-  private String project;
-  /**
-   * User's experience.
-   */
-  @Column(name = "experience")
-  @Size(max = 100)
-  private String experience;
-  /**
-   * Experience's goal.
-   */
-  @Column(name = "goal")
-  @Size(max = 150)
-  private String goal;
   /**
    * Sample status.
    */
@@ -73,33 +57,11 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
   @JoinColumn(name = "submissionId")
   private Submission submission;
   /**
-   * Service chosen.
+   * Contaminants that are in the same at submission.
    */
-  @Column(name = "service", nullable = false)
-  @Enumerated(STRING)
-  private Service service;
-  /**
-   * Mass detection instrument.
-   */
-  @Column(name = "massDetectionInstrument")
-  @Enumerated(STRING)
-  private MassDetectionInstrument massDetectionInstrument;
-  /**
-   * Intact protein ionization source for mass detection instrument.
-   */
-  @Column(name = "source")
-  @Enumerated(STRING)
-  private Source source;
-  /**
-   * Price charged when sample was first submitted.
-   */
-  @Column(name = "price")
-  private BigDecimal price;
-  /**
-   * Additional price charged by proteomic laboratory members due to change in sample's submission.
-   */
-  @Column(name = "additionalPrice")
-  private BigDecimal additionalPrice;
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "sampleId", updatable = false, nullable = false)
+  private List<Contaminant> contaminants;
 
   public SubmissionSample() {
   }
@@ -112,13 +74,6 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
     super(id, name);
   }
 
-  /**
-   * Returns service demanded for submitted sample.
-   *
-   * @return service demanded for submitted sample
-   */
-  public abstract ServiceType getServiceType();
-
   @Override
   public Laboratory getLaboratory() {
     return getSubmission() != null ? getSubmission().getLaboratory() : null;
@@ -126,6 +81,11 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
 
   public User getUser() {
     return getSubmission() != null ? getSubmission().getUser() : null;
+  }
+
+  @Override
+  public Type getType() {
+    return Type.SUBMISSION;
   }
 
   public Submission getSubmission() {
@@ -140,76 +100,15 @@ public abstract class SubmissionSample extends Sample implements LaboratoryData,
     return status;
   }
 
-  @Override
-  public Type getType() {
-    return Type.SUBMISSION;
-  }
-
   public void setStatus(SampleStatus status) {
     this.status = status;
   }
 
-  public Service getService() {
-    return service;
+  public List<Contaminant> getContaminants() {
+    return contaminants;
   }
 
-  public void setService(Service service) {
-    this.service = service;
-  }
-
-  public MassDetectionInstrument getMassDetectionInstrument() {
-    return massDetectionInstrument;
-  }
-
-  public void setMassDetectionInstrument(MassDetectionInstrument massDetectionInstrument) {
-    this.massDetectionInstrument = massDetectionInstrument;
-  }
-
-  public Source getSource() {
-    return source;
-  }
-
-  public void setSource(Source source) {
-    this.source = source;
-  }
-
-  public BigDecimal getPrice() {
-    return price;
-  }
-
-  public void setPrice(BigDecimal price) {
-    this.price = price;
-  }
-
-  public BigDecimal getAdditionalPrice() {
-    return additionalPrice;
-  }
-
-  public void setAdditionalPrice(BigDecimal additionalPrice) {
-    this.additionalPrice = additionalPrice;
-  }
-
-  public String getProject() {
-    return project;
-  }
-
-  public void setProject(String project) {
-    this.project = project;
-  }
-
-  public String getExperience() {
-    return experience;
-  }
-
-  public void setExperience(String experience) {
-    this.experience = experience;
-  }
-
-  public String getGoal() {
-    return goal;
-  }
-
-  public void setGoal(String goal) {
-    this.goal = goal;
+  public void setContaminants(List<Contaminant> contaminants) {
+    this.contaminants = contaminants;
   }
 }
