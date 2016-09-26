@@ -34,8 +34,7 @@
   <entry key="inactive">If your browser is inactive for more than 30 minutes before confirming your analysis requests, you may lose all unconfirmed information.</entry>
   <entry key="sampleCountPanel">Number of samples</entry>
   <entry key="sampleCount">Number of samples</entry>
-  <entry key="sampleNamesPanel">Sample names</entry>
-  <entry key="name">{0,number,#}.</entry>
+  <entry key="name">Sample names</entry>
   <entry key="fillSampleNames">Fill down</entry>
   <entry key="experiencePanel">Sample details</entry>
   <entry key="experience">Experience</entry>

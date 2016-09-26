@@ -34,8 +34,7 @@
   <entry key="inactive">Si votre fureteur est inactif pendant plus de 30 minutes avant que vous ayez compléter la soumission, vous pouvez perdre les informations non-confirmées.</entry>
   <entry key="sampleCountPanel">Nombre d'échantillons</entry>
   <entry key="sampleCount">Nombre d'échantillons</entry>
-  <entry key="sampleNamesPanel">Nom des échantillons</entry>
-  <entry key="name">{0,number,#}.</entry>
+  <entry key="name">Nom des échantillons</entry>
   <entry key="fillSampleNames">Copier vers le bas</entry>
   <entry key="experiencePanel">Détails à propos des échantillons</entry>
   <entry key="experience">Expérience</entry>

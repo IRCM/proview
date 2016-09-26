@@ -26,18 +26,14 @@
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
-   <vaadin-panel caption="Sample names" size-auto _id="sampleNamesPanel"> 
-    <vaadin-horizontal-layout spacing margin> 
-     <vaadin-form-layout size-auto margin-top="false" margin-bottom="false" _id="sampleNamesForm"> 
-      <vaadin-text-field caption="1." required null-representation="" immediate _id="sampleNameField"></vaadin-text-field> 
-     </vaadin-form-layout> 
-     <vaadin-vertical-layout spacing size-auto> 
-      <vaadin-button plain-text _id="fillSampleNamesButton">
-        Fill down 
-      </vaadin-button> 
-     </vaadin-vertical-layout> 
-    </vaadin-horizontal-layout> 
-   </vaadin-panel> 
+   <vaadin-horizontal-layout spacing> 
+    <vaadin-table _id="sampleNamesTable"></vaadin-table> 
+    <vaadin-vertical-layout spacing size-auto> 
+     <vaadin-button plain-text _id="fillSampleNamesButton">
+       Fill Down 
+     </vaadin-button> 
+    </vaadin-vertical-layout> 
+   </vaadin-horizontal-layout> 
    <vaadin-panel caption="Experience" size-auto _id="experiencePanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
@@ -111,7 +107,7 @@
      <vaadin-text-area columns="50" rows="10" null-representation="" _id="commentsField"></vaadin-text-area> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
-   <vaadin-horizontal-layout> 
+   <vaadin-horizontal-layout _id="buttonsLayout"> 
     <vaadin-button plain-text _id="submitButton">
       Submit 
     </vaadin-button> 

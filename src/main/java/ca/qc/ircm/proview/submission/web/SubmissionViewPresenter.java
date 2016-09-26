@@ -17,12 +17,17 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.util.BeanItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
 
 /**
  * Submission view presenter.
@@ -33,6 +38,8 @@ public class SubmissionViewPresenter {
   public static final String TITLE = "title";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);
   private SubmissionView view;
+  @Inject
+  private SubmissionService submissionService;
 
   /**
    * Initialize presenter.
@@ -44,10 +51,16 @@ public class SubmissionViewPresenter {
     logger.debug("Submission view");
     this.view = view;
     setCaptions();
+    view.submissionFormPresenter.setEditable(true);
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE));
+  }
+
+  void setSubmissionById(Long id) {
+    Submission submission = submissionService.get(id);
+    view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
   }
 }

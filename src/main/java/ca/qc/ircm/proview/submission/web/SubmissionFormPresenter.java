@@ -38,9 +38,12 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.utils.web.EmptyNullTableFieldFactory;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.converter.StringToDoubleConverter;
@@ -60,7 +63,12 @@ import org.springframework.stereotype.Controller;
 import org.vaadin.hene.flexibleoptiongroup.FlexibleOptionGroupItemComponent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.inject.Inject;
 
 /**
  * Submission form presenter.
@@ -72,12 +80,11 @@ public class SubmissionFormPresenter {
   public static final String SERVICE_LABEL_ID = "service";
   public static final String SAMPLE_TYPE_LABEL_ID = "sampleType";
   public static final String INACTIVE_LABEL_ID = "inactive";
+  public static final String SAMPLES_PROPERTY = submission.samples.getMetadata().getName();
   public static final String SAMPLE_COUNT_PANEL_ID = "sampleCountPanel";
   public static final String SAMPLE_COUNT_PROPERTY = "sampleCount";
-  public static final String SAMPLE_NAMES_PANEL_ID = "sampleNamesPanel";
-  public static final String SAMPLE_NAMES_FORM_ID = "sampleNamesForm";
+  public static final int SAMPLES_NAMES_TABLE_LENGTH = 8;
   public static final String SAMPLE_NAMES_PROPERTY = submissionSample.name.getMetadata().getName();
-  public static final String FIRST_SAMPLE_NAME_PROPERTY = "sampleName1";
   public static final String FILL_SAMPLE_NAMES_PROPERTY = "fillSampleNames";
   public static final String EXPERIENCE_PANEL_ID = "experiencePanel";
   public static final String EXPERIENCE_PROPERTY = submission.experience.getMetadata().getName();
@@ -96,6 +103,7 @@ public class SubmissionFormPresenter {
   public static final String STANDARDS_PANEL_ID = "standardsPanel";
   public static final String STANDARD_COUNT_PROPERTY = "standardCount";
   public static final String STANDARD_PROPERTY = standard.getMetadata().getName();
+  public static final int STANDARDS_TABLE_LENGTH = 4;
   public static final String STANDARD_NAME_PROPERTY = standard.name.getMetadata().getName();
   public static final String STANDARD_QUANTITY_PROPERTY = standard.quantity.getMetadata().getName();
   public static final String STANDARD_COMMENTS_PROPERTY = standard.comments.getMetadata().getName();
@@ -103,6 +111,7 @@ public class SubmissionFormPresenter {
   public static final String CONTAMINANTS_PANEL_ID = "contaminantsPanel";
   public static final String CONTAMINANT_COUNT_PROPERTY = "contaminantCount";
   public static final String CONTAMINANT_PROPERTY = contaminant.getMetadata().getName();
+  public static final int CONTAMINANTS_TABLE_LENGTH = 4;
   public static final String CONTAMINANT_NAME_PROPERTY = contaminant.name.getMetadata().getName();
   public static final String CONTAMINANT_QUANTITY_PROPERTY =
       contaminant.quantity.getMetadata().getName();
@@ -121,6 +130,7 @@ public class SubmissionFormPresenter {
   public static final String COMMENTS_PANEL_ID = "commentsPanel";
   public static final String COMMENTS_PROPERTY = submission.comments.getMetadata().getName();
   public static final String SUBMIT_ID = "submit";
+  public static final String FILL_BUTTON_STYLE = "skip-row";
   private static final Object[] standardsColumns = new Object[] { STANDARD_NAME_PROPERTY,
       STANDARD_QUANTITY_PROPERTY, STANDARD_COMMENTS_PROPERTY };
   private static final Object[] contaminantsColumns = new Object[] { CONTAMINANT_NAME_PROPERTY,
@@ -136,12 +146,16 @@ public class SubmissionFormPresenter {
   private BeanFieldGroup<Submission> submissionFieldGroup = new BeanFieldGroup<>(Submission.class);
   private BeanFieldGroup<SubmissionSample> firstSampleFieldGroup =
       new BeanFieldGroup<>(SubmissionSample.class);
+  private BeanItemContainer<SubmissionSample> samplesContainer =
+      new BeanItemContainer<>(SubmissionSample.class);
   private BeanItemContainer<Standard> standardsContainer = new BeanItemContainer<>(Standard.class);
   private BeanItemContainer<Contaminant> contaminantsContainer =
       new BeanItemContainer<>(Contaminant.class);
   private Map<Object, TextField> digestionOptionTextField = new HashMap<>();
   private Map<Object, Label> digestionOptionNoteLabel = new HashMap<>();
   private Map<Object, TextField> proteinIdentificationOptionTextField = new HashMap<>();
+  @Inject
+  private SubmissionService submissionService;
 
   /**
    * Called by view when view is initialized.
@@ -167,10 +181,9 @@ public class SubmissionFormPresenter {
     view.inactiveLabel.setId(INACTIVE_LABEL_ID);
     view.sampleCountPanel.setId(SAMPLE_COUNT_PANEL_ID);
     view.sampleCountField.setId(SAMPLE_COUNT_PROPERTY);
-    view.sampleNamesPanel.setId(SAMPLE_NAMES_PANEL_ID);
-    view.sampleNamesForm.setId(SAMPLE_NAMES_FORM_ID);
-    view.sampleNameField.setId(FIRST_SAMPLE_NAME_PROPERTY);
+    view.sampleNamesTable.setId(SAMPLE_NAMES_PROPERTY);
     view.fillSampleNamesButton.setId(FILL_SAMPLE_NAMES_PROPERTY);
+    view.fillSampleNamesButton.addStyleName(FILL_BUTTON_STYLE);
     view.experiencePanel.setId(EXPERIENCE_PANEL_ID);
     view.experienceField.setId(EXPERIENCE_PROPERTY);
     view.experienceGoalField.setId(EXPERIENCE_GOAL_PROPERTY);
@@ -184,10 +197,12 @@ public class SubmissionFormPresenter {
     view.standardCountField.setId(STANDARD_COUNT_PROPERTY);
     view.standardsTable.setId(STANDARD_PROPERTY);
     view.fillStandardsButton.setId(FILL_STANDARDS_PROPERTY);
+    view.fillStandardsButton.addStyleName(FILL_BUTTON_STYLE);
     view.contaminantsPanel.setId(CONTAMINANTS_PANEL_ID);
     view.contaminantCountField.setId(CONTAMINANT_COUNT_PROPERTY);
     view.contaminantsTable.setId(CONTAMINANT_PROPERTY);
     view.fillContaminantsButton.setId(FILL_CONTAMINANTS_PROPERTY);
+    view.fillContaminantsButton.addStyleName(FILL_BUTTON_STYLE);
     view.servicesPanel.setId(SERVICES_PANEL_ID);
     view.digestionOptionsLayout.setId(DIGESTION_PROPERTY);
     view.enrichmentLabel.setId(ENRICHEMENT_PROPERTY);
@@ -207,33 +222,39 @@ public class SubmissionFormPresenter {
   }
 
   private void bindFields() {
-    firstSampleFieldGroup.bind(view.sampleNameField, SAMPLE_NAMES_PROPERTY);
-    firstSampleFieldGroup.bind(view.experienceField, EXPERIENCE_PROPERTY);
-    firstSampleFieldGroup.bind(view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
-    firstSampleFieldGroup.bind(view.taxonomyField, TAXONOMY_PROPERTY);
-    firstSampleFieldGroup.bind(view.proteinNameField, PROTEIN_NAME_PROPERTY);
-    firstSampleFieldGroup.bind(view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
-    firstSampleFieldGroup.bind(view.postTranslationModificationField,
+    view.sampleNamesTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
+    view.sampleNamesTable.setContainerDataSource(samplesContainer);
+    view.sampleNamesTable.setPageLength(SAMPLES_NAMES_TABLE_LENGTH);
+    submissionFieldGroup.bind(view.experienceField, EXPERIENCE_PROPERTY);
+    submissionFieldGroup.bind(view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
+    submissionFieldGroup.bind(view.taxonomyField, TAXONOMY_PROPERTY);
+    submissionFieldGroup.bind(view.proteinNameField, PROTEIN_NAME_PROPERTY);
+    submissionFieldGroup.bind(view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
+    submissionFieldGroup.bind(view.postTranslationModificationField,
         POST_TRANSLATION_MODIFICATION_PROPERTY);
     firstSampleFieldGroup.bind(view.sampleVolumeField, SAMPLE_VOLUME_PROPERTY);
     firstSampleFieldGroup.bind(view.sampleQuantityField, SAMPLE_QUANTITY_PROPERTY);
-    firstSampleFieldGroup.bind(view.digestionFlexibleOptions, DIGESTION_PROPERTY);
-    firstSampleFieldGroup.bind(view.instrumentOptions, INSTRUMENT_PROPERTY);
-    firstSampleFieldGroup.bind(view.proteinIdentificationFlexibleOptions,
+    submissionFieldGroup.bind(view.digestionFlexibleOptions, DIGESTION_PROPERTY);
+    submissionFieldGroup.bind(view.instrumentOptions, INSTRUMENT_PROPERTY);
+    submissionFieldGroup.bind(view.proteinIdentificationFlexibleOptions,
         PROTEIN_IDENTIFICATION_PROPERTY);
-    firstSampleFieldGroup.bind(view.commentsField, COMMENTS_PROPERTY);
+    submissionFieldGroup.bind(view.commentsField, COMMENTS_PROPERTY);
     view.standardsTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
     view.standardsTable.setContainerDataSource(standardsContainer);
-    view.standardsTable.setEditable(true);
+    view.standardsTable.setPageLength(STANDARDS_TABLE_LENGTH);
     view.contaminantsTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
     view.contaminantsTable.setContainerDataSource(standardsContainer);
-    view.contaminantsTable.setEditable(true);
+    view.standardsTable.setPageLength(CONTAMINANTS_TABLE_LENGTH);
   }
 
   private void addFieldListeners() {
     editableProperty.addValueChangeListener(e -> updateEditable());
+    view.sampleCountField.addValueChangeListener(e -> updateSampleCount());
+    view.fillSampleNamesButton.addClickListener(e -> fillSampleNames());
     view.standardCountField.addValueChangeListener(e -> updateStandardsTable());
+    view.fillStandardsButton.addClickListener(e -> fillStandards());
     view.contaminantCountField.addValueChangeListener(e -> updateContaminantsTable());
+    view.fillContaminantsButton.addClickListener(e -> fillContaminants());
   }
 
   private void updateEditable() {
@@ -242,6 +263,7 @@ public class SubmissionFormPresenter {
     view.sampleTypeLabel.setVisible(editable);
     view.inactiveLabel.setVisible(editable);
     view.sampleCountPanel.setVisible(editable);
+    view.fillSampleNamesButton.setVisible(editable);
     view.standardsPanel.setVisible(editable);
     view.contaminantsPanel.setVisible(editable);
     view.digestionLabel.setVisible(!editable);
@@ -252,6 +274,7 @@ public class SubmissionFormPresenter {
     view.instrumentOptions.setVisible(editable);
     view.proteinIdentificationLabel.setVisible(!editable);
     view.proteinIdentificationOptionsLayout.setVisible(editable);
+    view.buttonsLayout.setVisible(editable);
     view.experienceField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     view.experienceGoalField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     view.taxonomyField.removeStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
@@ -272,12 +295,15 @@ public class SubmissionFormPresenter {
       view.sampleVolumeField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
       view.commentsField.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
     }
+    view.sampleNamesTable.setEditable(editable);
     view.experienceField.setReadOnly(!editable);
     view.experienceGoalField.setReadOnly(!editable);
     view.taxonomyField.setReadOnly(!editable);
     view.proteinNameField.setReadOnly(!editable);
     view.proteinWeightField.setReadOnly(!editable);
     view.postTranslationModificationField.setReadOnly(!editable);
+    view.standardsTable.setEditable(editable);
+    view.contaminantsTable.setEditable(editable);
     view.sampleQuantityField.setReadOnly(!editable);
     view.sampleVolumeField.setReadOnly(!editable);
     view.commentsField.setReadOnly(!editable);
@@ -291,8 +317,9 @@ public class SubmissionFormPresenter {
     view.inactiveLabel.setValue(resources.message(INACTIVE_LABEL_ID));
     view.sampleCountPanel.setCaption(resources.message(SAMPLE_COUNT_PANEL_ID));
     view.sampleCountField.setCaption(resources.message(SAMPLE_COUNT_PROPERTY));
-    view.sampleNamesPanel.setCaption(resources.message(SAMPLE_NAMES_PANEL_ID));
-    view.sampleNameField.setCaption(resources.message(SAMPLE_NAMES_PROPERTY, 1));
+    view.sampleNamesTable.setVisibleColumns(SAMPLE_NAMES_PROPERTY);
+    view.sampleNamesTable.setColumnHeader(SAMPLE_NAMES_PROPERTY,
+        resources.message(SAMPLE_NAMES_PROPERTY));
     view.fillSampleNamesButton.setCaption(resources.message(FILL_SAMPLE_NAMES_PROPERTY));
     view.experiencePanel.setCaption(resources.message(EXPERIENCE_PANEL_ID));
     view.experienceField.setCaption(resources.message(EXPERIENCE_PROPERTY));
@@ -379,6 +406,20 @@ public class SubmissionFormPresenter {
     view.digestionFlexibleOptions.setConvertedValue(TRYPSIN);
     view.instrumentOptions.setConvertedValue(VELOS);
     view.proteinIdentificationFlexibleOptions.setConvertedValue(REFSEQ);
+  }
+
+  private void updateSampleCount() {
+    Integer count = (Integer) view.sampleCountField.getConvertedValue();
+    if (count == null || count < 1) {
+      count = 1;
+    }
+    while (count > samplesContainer.size()) {
+      samplesContainer.addBean(new SubmissionSample());
+    }
+    while (count < samplesContainer.size()) {
+      samplesContainer.removeItem(samplesContainer.getIdByIndex(samplesContainer.size() - 1));
+    }
+    view.sampleNamesTable.setPageLength(Math.min(count, SAMPLES_NAMES_TABLE_LENGTH));
   }
 
   private void updateStandardsTable() {
@@ -479,6 +520,99 @@ public class SubmissionFormPresenter {
 
   private AbstractLayout getProteinIdentificationOptionTextLayout(Object itemId) {
     return proteinIdentificationOptionTextField.get(itemId).findAncestor(FormLayout.class);
+  }
+
+  @SuppressWarnings("unchecked")
+  private void fillSampleNames() {
+    Object first = samplesContainer.getIdByIndex(0);
+    String name =
+        (String) samplesContainer.getContainerProperty(first, SAMPLE_NAMES_PROPERTY).getValue();
+    for (Object itemId : samplesContainer.getItemIds().subList(1, samplesContainer.size())) {
+      name = incrementLastNumber(name);
+      samplesContainer.getContainerProperty(itemId, SAMPLE_NAMES_PROPERTY).setValue(name);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void fillStandards() {
+    Object first = standardsContainer.getIdByIndex(0);
+    String name =
+        (String) standardsContainer.getContainerProperty(first, STANDARD_NAME_PROPERTY).getValue();
+    String quantity = (String) standardsContainer
+        .getContainerProperty(first, STANDARD_QUANTITY_PROPERTY).getValue();
+    String comments = (String) standardsContainer
+        .getContainerProperty(first, STANDARD_COMMENTS_PROPERTY).getValue();
+    for (Object itemId : standardsContainer.getItemIds().subList(1, samplesContainer.size())) {
+      name = incrementLastNumber(name);
+      standardsContainer.getContainerProperty(itemId, STANDARD_NAME_PROPERTY).setValue(name);
+      standardsContainer.getContainerProperty(itemId, STANDARD_QUANTITY_PROPERTY)
+          .setValue(quantity);
+      standardsContainer.getContainerProperty(itemId, STANDARD_COMMENTS_PROPERTY)
+          .setValue(comments);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void fillContaminants() {
+    Object first = contaminantsContainer.getIdByIndex(0);
+    String name = (String) contaminantsContainer
+        .getContainerProperty(first, CONTAMINANT_NAME_PROPERTY).getValue();
+    String quantity = (String) contaminantsContainer
+        .getContainerProperty(first, CONTAMINANT_QUANTITY_PROPERTY).getValue();
+    String comments = (String) contaminantsContainer
+        .getContainerProperty(first, CONTAMINANT_COMMENTS_PROPERTY).getValue();
+    for (Object itemId : contaminantsContainer.getItemIds().subList(1, samplesContainer.size())) {
+      name = incrementLastNumber(name);
+      contaminantsContainer.getContainerProperty(itemId, CONTAMINANT_NAME_PROPERTY).setValue(name);
+      contaminantsContainer.getContainerProperty(itemId, CONTAMINANT_QUANTITY_PROPERTY)
+          .setValue(quantity);
+      contaminantsContainer.getContainerProperty(itemId, CONTAMINANT_COMMENTS_PROPERTY)
+          .setValue(comments);
+    }
+  }
+
+  private String incrementLastNumber(String value) {
+    Pattern pattern = Pattern.compile("(.*\\D)(\\d+)(\\D*)");
+    Matcher matcher = pattern.matcher(value);
+    if (matcher.matches()) {
+      try {
+        StringBuilder builder = new StringBuilder();
+        builder.append(matcher.group(1));
+        int number = Integer.parseInt(matcher.group(2));
+        int length = matcher.group(2).length();
+        String newNumber = String.valueOf(number + 1);
+        while (newNumber.length() < length) {
+          newNumber = "0" + newNumber;
+        }
+        builder.append(newNumber);
+        builder.append(matcher.group(3));
+        return builder.toString();
+      } catch (NumberFormatException e) {
+        return value;
+      }
+    } else {
+      return value;
+    }
+  }
+
+  public Item getItemDataSource() {
+    return submissionFieldGroup.getItemDataSource();
+  }
+
+  public void setItemDataSource(Item item) {
+    submissionFieldGroup.setItemDataSource(item);
+    if (item != null && item.getItemProperty(SAMPLES_PROPERTY) != null) {
+      @SuppressWarnings("unchecked")
+      List<SubmissionSample> samples =
+          (List<SubmissionSample>) item.getItemProperty(SAMPLES_PROPERTY).getValue();
+      if (!samples.isEmpty()) {
+        firstSampleFieldGroup.setItemDataSource(new BeanItem<>(samples.get(0)));
+      }
+      samplesContainer.removeAllItems();
+      samplesContainer.addAll(samples);
+      view.sampleCountField.setConvertedValue(samples.size());
+      updateEditable();
+    }
   }
 
   public boolean isEditable() {

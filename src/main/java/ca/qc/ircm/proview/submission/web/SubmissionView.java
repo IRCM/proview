@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import ca.qc.ircm.proview.web.Menu;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 
 import javax.annotation.PostConstruct;
@@ -56,5 +57,14 @@ public class SubmissionView extends SubmissionViewDesign implements MessageResou
 
   public void setTitle(String title) {
     getUI().getPage().setTitle(title);
+  }
+
+  @Override
+  public void enter(ViewChangeEvent event) {
+    try {
+      Long id = Long.valueOf(event.getParameters());
+      presenter.setSubmissionById(id);
+    } catch (NumberFormatException e) {
+    }
   }
 }
