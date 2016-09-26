@@ -625,7 +625,7 @@
               <exclude>**/.*</exclude>
               <exclude>**/*.dtd</exclude>
               <exclude>**/*.dat</exclude>
-              <exclude>src/main/VAADIN/themes/**/addons.scss</exclude>
+              <exclude>src/main/resources/VAADIN/themes/**/addons.scss</exclude>
               <exclude>src/main/java/**/web/**/*Design.java</exclude>
               <exclude>src/main/java/**/web/**/*Design.html</exclude>
             </excludes>
