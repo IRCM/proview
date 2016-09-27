@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.msanalysis;
 
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 
 import java.util.Map;
@@ -37,5 +36,5 @@ public interface MsAnalysisVerificationService {
    * @return verification list for specified instrument and source
    */
   public Map<VerificationType, Set<String>> verifications(MassDetectionInstrument instrument,
-      Source source);
+      MassDetectionInstrumentSource source);
 }

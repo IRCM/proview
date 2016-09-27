@@ -56,7 +56,7 @@ public class SubmissionSampleComparatorTest {
       sample.setLims("IRCM_20111018_01");
       sample.setName("CAP_20111018_01");
       sample.setStatus(SampleStatus.TO_DIGEST);
-      sample.setSupport(Sample.Support.GEL);
+      sample.setSupport(SampleSupport.GEL);
       samples.add(sample);
     }
     {
@@ -75,7 +75,7 @@ public class SubmissionSampleComparatorTest {
       sample.setLims("MCGI_20111018_01");
       sample.setName("MLA_20111018_01");
       sample.setStatus(SampleStatus.TO_ANALYSE);
-      sample.setSupport(Sample.Support.DRY);
+      sample.setSupport(SampleSupport.DRY);
       samples.add(sample);
     }
     {
@@ -94,7 +94,7 @@ public class SubmissionSampleComparatorTest {
       sample.setLims("UDEM_20111018_01");
       sample.setName("JZA_20111018_01");
       sample.setStatus(SampleStatus.ANALYSED);
-      sample.setSupport(Sample.Support.SOLUTION);
+      sample.setSupport(SampleSupport.SOLUTION);
       samples.add(sample);
     }
   }

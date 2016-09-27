@@ -31,10 +31,10 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.mail.HtmlEmailDefault;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
@@ -234,10 +234,10 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
     if (filter.getSupport() != null) {
       if (filter.getSupport() == SubmissionSampleService.Support.SOLUTION) {
-        query.where(submissionSample.support.in(Sample.Support.SOLUTION, Sample.Support.DRY));
+        query.where(submissionSample.support.in(SampleSupport.SOLUTION, SampleSupport.DRY));
         query.where(submission.service.notIn(Service.INTACT_PROTEIN, Service.SMALL_MOLECULE));
       } else if (filter.getSupport() == SubmissionSampleService.Support.GEL) {
-        query.where(submissionSample.support.eq(Sample.Support.GEL));
+        query.where(submissionSample.support.eq(SampleSupport.GEL));
         query.where(submission.service.ne(Service.INTACT_PROTEIN));
       } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_HIGH) {
         query.where(submission.service.eq(Service.SMALL_MOLECULE));

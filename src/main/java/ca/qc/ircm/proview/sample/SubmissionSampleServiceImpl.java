@@ -236,10 +236,10 @@ public class SubmissionSampleServiceImpl implements SubmissionSampleService {
     }
     if (filter.getSupport() != null) {
       if (filter.getSupport() == SubmissionSampleService.Support.SOLUTION) {
-        query.where(submissionSample.support.in(Sample.Support.SOLUTION, Sample.Support.DRY));
+        query.where(submissionSample.support.in(SampleSupport.SOLUTION, SampleSupport.DRY));
         query.where(submission.service.notIn(Service.INTACT_PROTEIN, Service.SMALL_MOLECULE));
       } else if (filter.getSupport() == SubmissionSampleService.Support.GEL) {
-        query.where(submissionSample.support.eq(Sample.Support.GEL));
+        query.where(submissionSample.support.eq(SampleSupport.GEL));
         query.where(submission.service.ne(Service.INTACT_PROTEIN));
       } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_HIGH) {
         query.where(submission.service.eq(Service.SMALL_MOLECULE));

@@ -25,7 +25,7 @@ import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.LaboratoryData;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleSolvent;
@@ -108,7 +108,7 @@ public class Submission implements Data, LaboratoryData, Serializable {
    */
   @Column(name = "source")
   @Enumerated(STRING)
-  private Source source;
+  private MassDetectionInstrumentSource source;
   /**
    * Number of Proteins in Sample.
    */
@@ -457,11 +457,11 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.comments = comments;
   }
 
-  public Source getSource() {
+  public MassDetectionInstrumentSource getSource() {
     return source;
   }
 
-  public void setSource(Source source) {
+  public void setSource(MassDetectionInstrumentSource source) {
     this.source = source;
   }
 

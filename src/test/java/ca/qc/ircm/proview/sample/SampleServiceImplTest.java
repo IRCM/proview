@@ -66,7 +66,7 @@ public class SampleServiceImplTest {
     assertEquals("IRC20101015_1", gelSample.getLims());
     assertEquals("FAM119A_band_01", gelSample.getName());
     assertEquals((Long) 1L, gelSample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.GEL, gelSample.getSupport());
+    assertEquals(SampleSupport.GEL, gelSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
     assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
     assertEquals((Long) 1L, gelSample.getSubmission().getId());
@@ -83,7 +83,7 @@ public class SampleServiceImplTest {
     assertEquals("IRC20111013_2", eluateSample.getLims());
     assertEquals("CAP_20111013_01", eluateSample.getName());
     assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.SOLUTION, eluateSample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, eluateSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, eluateSample.getType());
     assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
@@ -102,7 +102,7 @@ public class SampleServiceImplTest {
     assertEquals("CONTROL.1", control.getLims());
     assertEquals("control_01", control.getName());
     assertEquals((Long) 4L, control.getOriginalContainer().getId());
-    assertEquals(Sample.Support.GEL, control.getSupport());
+    assertEquals(SampleSupport.GEL, control.getSupport());
     assertEquals(Sample.Type.CONTROL, control.getType());
     assertEquals(ControlType.NEGATIVE_CONTROL, control.getControlType());
     assertEquals(null, control.getVolume());

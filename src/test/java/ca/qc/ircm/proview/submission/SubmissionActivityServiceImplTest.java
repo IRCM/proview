@@ -26,7 +26,7 @@ import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleSolvent;
@@ -117,7 +117,7 @@ public class SubmissionActivityServiceImplTest {
     newSubmission.setExperience("new_experience");
     newSubmission.setGoal("new_goal");
     newSubmission.setMassDetectionInstrument(MassDetectionInstrument.TOF);
-    newSubmission.setSource(Source.LDTD);
+    newSubmission.setSource(MassDetectionInstrumentSource.LDTD);
     newSubmission.setSampleNumberProtein(2);
     newSubmission.setProteolyticDigestionMethod(ProteolyticDigestion.DIGESTED);
     newSubmission.setUsedProteolyticDigestionMethod("Trypsine");
@@ -222,7 +222,7 @@ public class SubmissionActivityServiceImplTest {
     sourceActivity.setRecordId(newSubmission.getId());
     sourceActivity.setColumn("source");
     sourceActivity.setOldValue(null);
-    sourceActivity.setNewValue(Source.LDTD.name());
+    sourceActivity.setNewValue(MassDetectionInstrumentSource.LDTD.name());
     expectedUpdateActivities.add(sourceActivity);
     UpdateActivity sampleNumberProteinActivity = new UpdateActivity();
     sampleNumberProteinActivity.setActionType(ActionType.UPDATE);

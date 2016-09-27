@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.msanalysis;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import org.junit.Before;
@@ -60,7 +59,7 @@ public class MsAnalysisVerificationServiceImplTest {
   @Test
   public void verifications_VelosNsi() {
     final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
-        .verifications(MassDetectionInstrument.VELOS, Source.NSI);
+        .verifications(MassDetectionInstrument.VELOS, MassDetectionInstrumentSource.NSI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");
@@ -87,7 +86,7 @@ public class MsAnalysisVerificationServiceImplTest {
   @Test
   public void verifications_VelosEsi() {
     final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
-        .verifications(MassDetectionInstrument.VELOS, Source.ESI);
+        .verifications(MassDetectionInstrument.VELOS, MassDetectionInstrumentSource.ESI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");
@@ -114,7 +113,7 @@ public class MsAnalysisVerificationServiceImplTest {
   @Test
   public void verifications_VelosLtdt() {
     final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
-        .verifications(MassDetectionInstrument.VELOS, Source.LDTD);
+        .verifications(MassDetectionInstrument.VELOS, MassDetectionInstrumentSource.LDTD);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");
@@ -139,7 +138,7 @@ public class MsAnalysisVerificationServiceImplTest {
   @Test
   public void verifications_LtqorbitrapNsi() {
     final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
-        .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, Source.NSI);
+        .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, MassDetectionInstrumentSource.NSI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");
@@ -166,7 +165,7 @@ public class MsAnalysisVerificationServiceImplTest {
   @Test
   public void verifications_LtqorbitrapEsi() {
     final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
-        .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, Source.ESI);
+        .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, MassDetectionInstrumentSource.ESI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");
@@ -193,7 +192,7 @@ public class MsAnalysisVerificationServiceImplTest {
   @Test
   public void verifications_LtqorbitrapLtdt() {
     final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
-        .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, Source.LDTD);
+        .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, MassDetectionInstrumentSource.LDTD);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");
@@ -218,7 +217,7 @@ public class MsAnalysisVerificationServiceImplTest {
   @Test
   public void verifications_QtofNsi() {
     final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
-        .verifications(MassDetectionInstrument.Q_TOF, Source.NSI);
+        .verifications(MassDetectionInstrument.Q_TOF, MassDetectionInstrumentSource.NSI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");
@@ -251,7 +250,7 @@ public class MsAnalysisVerificationServiceImplTest {
   @Test
   public void verifications_QtofEsi() {
     final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
-        .verifications(MassDetectionInstrument.Q_TOF, Source.ESI);
+        .verifications(MassDetectionInstrument.Q_TOF, MassDetectionInstrumentSource.ESI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");
@@ -284,7 +283,7 @@ public class MsAnalysisVerificationServiceImplTest {
   @Test
   public void verifications_QtofLdtd() {
     final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
-        .verifications(MassDetectionInstrument.Q_TOF, Source.LDTD);
+        .verifications(MassDetectionInstrument.Q_TOF, MassDetectionInstrumentSource.LDTD);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");

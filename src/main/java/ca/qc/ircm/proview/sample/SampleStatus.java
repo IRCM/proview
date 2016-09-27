@@ -28,34 +28,47 @@ public enum SampleStatus {
   /**
    * Sample price must be approved by manager.
    */
-  TO_APPROVE, /**
-               * Sample is not received yet.
-               */
-  TO_RECEIVE, /**
-               * Sample is in solution.
-               */
-  RECEIVED, /**
-             * Sample must be digest.
-             */
-  TO_DIGEST, /**
-              * Sample must be enriched.
-              */
-  TO_ENRICH, /**
-              * Sample must be analysed.
-              */
-  TO_ANALYSE, /**
-               * Result data must be manually analysed.
-               */
-  DATA_ANALYSIS, /**
-                  * Sample is analysed and have results.
-                  */
-  ANALYSED, /**
-             * Sample analyse was cancelled.
-             */
+  TO_APPROVE,
+  /**
+   * Sample is not received yet.
+   */
+  TO_RECEIVE,
+  /**
+   * Sample was received and awaits treatments and analysis.
+   */
+  RECEIVED,
+  /**
+   * Sample must be digested.
+   */
+  TO_DIGEST,
+  /**
+   * Sample must be enriched.
+   */
+  TO_ENRICH,
+  /**
+   * Sample must be analysed.
+   */
+  TO_ANALYSE,
+  /**
+   * Result data must be manually analysed.
+   */
+  DATA_ANALYSIS,
+  /**
+   * Sample was analysed and have results.
+   */
+  ANALYSED,
+  /**
+   * Sample analysis was cancelled.
+   */
   CANCELLED;
 
   private static MessageResource getResources(Locale locale) {
     return new MessageResource(SampleStatus.class, locale);
+  }
+
+  public static String getNullLabel(Locale locale) {
+    MessageResource resources = getResources(locale);
+    return resources.message("NULL");
   }
 
   public String getLabel(Locale locale) {

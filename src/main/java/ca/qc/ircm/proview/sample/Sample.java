@@ -64,24 +64,6 @@ public abstract class Sample implements Data, Named, Serializable {
     CONTROL
   }
 
-  /**
-   * Sample support.
-   */
-  public static enum Support {
-    /**
-     * Sample is dry.
-     */
-    DRY,
-    /**
-     * Sample is in solution.
-     */
-    SOLUTION,
-    /**
-     * Sample is in a Gel.
-     */
-    GEL
-  }
-
   private static final long serialVersionUID = -3637467720218236079L;
 
   /**
@@ -108,7 +90,7 @@ public abstract class Sample implements Data, Named, Serializable {
    */
   @Column(name = "support")
   @Enumerated(STRING)
-  private Support support;
+  private SampleSupport support;
   /**
    * Volume of Sample (in ul).
    */
@@ -216,11 +198,11 @@ public abstract class Sample implements Data, Named, Serializable {
     this.volume = volume;
   }
 
-  public Support getSupport() {
+  public SampleSupport getSupport() {
     return support;
   }
 
-  public void setSupport(Support support) {
+  public void setSupport(SampleSupport support) {
     this.support = support;
   }
 

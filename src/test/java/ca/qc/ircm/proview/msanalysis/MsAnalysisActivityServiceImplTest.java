@@ -80,7 +80,7 @@ public class MsAnalysisActivityServiceImplTest {
     final MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setId(123456L);
     msAnalysis.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
-    msAnalysis.setSource(MsAnalysis.Source.LDTD);
+    msAnalysis.setSource(MassDetectionInstrumentSource.LDTD);
     Acquisition acquisition = new Acquisition();
     acquisition.setAcquisitionFile("unit_test_acquisition_file");
     acquisition.setListIndex(1);
@@ -93,7 +93,7 @@ public class MsAnalysisActivityServiceImplTest {
     final Map<VerificationType, Map<String, Boolean>> verifications =
         new HashMap<VerificationType, Map<String, Boolean>>();
     Map<VerificationType, Set<String>> expectedVerifications = realMsAnalysisVerificationService
-        .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, MsAnalysis.Source.LDTD);
+        .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, MassDetectionInstrumentSource.LDTD);
     for (VerificationType verificationType : expectedVerifications.keySet()) {
       verifications.put(verificationType, new HashMap<String, Boolean>());
       for (String verification : expectedVerifications.get(verificationType)) {

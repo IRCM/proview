@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.msanalysis;
 
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
-import static ca.qc.ircm.proview.msanalysis.MsAnalysis.Source.LDTD;
+import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.LDTD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -123,7 +123,7 @@ public class MsAnalysisServiceImplTest {
     assertNotNull(msAnalysis);
     assertEquals((Long) 1L, msAnalysis.getId());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
-    assertEquals(MsAnalysis.Source.NSI, msAnalysis.getSource());
+    assertEquals(MassDetectionInstrumentSource.NSI, msAnalysis.getSource());
     assertEquals(
         LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
         msAnalysis.getInsertTime());
@@ -147,7 +147,7 @@ public class MsAnalysisServiceImplTest {
     assertNotNull(msAnalysis);
     assertEquals((Long) 1L, msAnalysis.getId());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
-    assertEquals(MsAnalysis.Source.NSI, msAnalysis.getSource());
+    assertEquals(MassDetectionInstrumentSource.NSI, msAnalysis.getSource());
     assertEquals(
         LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
         msAnalysis.getInsertTime());
@@ -241,7 +241,7 @@ public class MsAnalysisServiceImplTest {
     MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
-    Map<String, Boolean> instrumentVerifications = new HashMap<String, Boolean>();
+    Map<String, Boolean> instrumentVerifications = new HashMap<>();
     instrumentVerifications.put("nitrogenQuantity", true);
     instrumentVerifications.put("calibration", true);
     instrumentVerifications.put("heliumQuantity", true);
@@ -254,11 +254,10 @@ public class MsAnalysisServiceImplTest {
     instrumentVerifications.put("vacuum", true);
     instrumentVerifications.put("drainingVialVolume", true);
     instrumentVerifications.put("qcPassed", true);
-    Map<String, Boolean> sampleVerifications = new HashMap<String, Boolean>();
+    Map<String, Boolean> sampleVerifications = new HashMap<>();
     sampleVerifications.put("sampleVsSpot", true);
     sampleVerifications.put("acquisitionFile", true);
-    Map<VerificationType, Map<String, Boolean>> verifications =
-        new HashMap<VerificationType, Map<String, Boolean>>();
+    Map<VerificationType, Map<String, Boolean>> verifications = new HashMap<>();
     verifications.put(VerificationType.INSTRUMENT, instrumentVerifications);
     verifications.put(VerificationType.SAMPLE, sampleVerifications);
     Acquisition acquisition = new Acquisition();
@@ -269,7 +268,7 @@ public class MsAnalysisServiceImplTest {
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
     acquisition.setListIndex(0);
     acquisition.setComments("unit_test_comments");
-    List<Acquisition> acquisitions = new ArrayList<Acquisition>();
+    List<Acquisition> acquisitions = new ArrayList<>();
     acquisitions.add(acquisition);
     final MsAnalysis finalMsAnalysis = msAnalysis;
     final List<Acquisition> finalAcquisitions = acquisitions;
@@ -360,9 +359,8 @@ public class MsAnalysisServiceImplTest {
     final MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
-    final Map<VerificationType, Map<String, Boolean>> verifications =
-        new HashMap<VerificationType, Map<String, Boolean>>();
-    Map<String, Boolean> instrumentVerifications = new HashMap<String, Boolean>();
+    final Map<VerificationType, Map<String, Boolean>> verifications = new HashMap<>();
+    Map<String, Boolean> instrumentVerifications = new HashMap<>();
     instrumentVerifications.put("nitrogenQuantity", true);
     instrumentVerifications.put("calibration", true);
     instrumentVerifications.put("heliumQuantity", true);
@@ -375,14 +373,14 @@ public class MsAnalysisServiceImplTest {
     instrumentVerifications.put("vacuum", true);
     instrumentVerifications.put("drainingVialVolume", true);
     instrumentVerifications.put("qcPassed", true);
-    Map<String, Boolean> sampleVerifications = new HashMap<String, Boolean>();
+    Map<String, Boolean> sampleVerifications = new HashMap<>();
     sampleVerifications.put("sampleVsSpot", true);
     sampleVerifications.put("acquisitionFile", true);
     verifications.put(VerificationType.INSTRUMENT, instrumentVerifications);
     verifications.put(VerificationType.SAMPLE, sampleVerifications);
     Tube tube1 = new Tube(3L);
     tube1.setSample(sample1);
-    final List<Acquisition> acquisitions = new ArrayList<Acquisition>();
+    final List<Acquisition> acquisitions = new ArrayList<>();
     Acquisition acquisition = new Acquisition();
     acquisition.setContainer(tube1);
     acquisition.setSample(tube1.getSample());
@@ -441,9 +439,8 @@ public class MsAnalysisServiceImplTest {
     final MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
-    final Map<VerificationType, Map<String, Boolean>> verifications =
-        new HashMap<VerificationType, Map<String, Boolean>>();
-    Map<String, Boolean> instrumentVerifications = new HashMap<String, Boolean>();
+    final Map<VerificationType, Map<String, Boolean>> verifications = new HashMap<>();
+    Map<String, Boolean> instrumentVerifications = new HashMap<>();
     instrumentVerifications.put("nitrogenQuantity", true);
     instrumentVerifications.put("calibration", true);
     instrumentVerifications.put("heliumQuantity", true);
@@ -456,12 +453,12 @@ public class MsAnalysisServiceImplTest {
     instrumentVerifications.put("vacuum", true);
     instrumentVerifications.put("drainingVialVolume", true);
     instrumentVerifications.put("qcPassed", true);
-    Map<String, Boolean> sampleVerifications = new HashMap<String, Boolean>();
+    Map<String, Boolean> sampleVerifications = new HashMap<>();
     sampleVerifications.put("sampleVsSpot", true);
     sampleVerifications.put("acquisitionFile", true);
     verifications.put(VerificationType.INSTRUMENT, instrumentVerifications);
     verifications.put(VerificationType.SAMPLE, sampleVerifications);
-    final List<Acquisition> acquisitions = new ArrayList<Acquisition>();
+    final List<Acquisition> acquisitions = new ArrayList<>();
     Acquisition acquisition = new Acquisition();
     acquisition.setContainer(tube1);
     acquisition.setSample(tube1.getSample());

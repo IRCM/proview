@@ -51,7 +51,7 @@ public class SubmissionViewPresenter {
     logger.debug("Submission view");
     this.view = view;
     setCaptions();
-    view.submissionFormPresenter.setEditable(true);
+    //view.submissionFormPresenter.setEditable(true);
   }
 
   private void setCaptions() {

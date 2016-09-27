@@ -49,13 +49,6 @@ public class MsAnalysis implements Data, Serializable {
   /**
    * Source for mass spectrometer.
    */
-  public static enum Source {
-    NSI, ESI, LDTD;
-  }
-
-  /**
-   * Source for mass spectrometer.
-   */
   public static enum VerificationType {
     INSTRUMENT, SAMPLE;
   }
@@ -79,15 +72,15 @@ public class MsAnalysis implements Data, Serializable {
    * Verifications to do before launching MS analysis.
    */
   @SuppressWarnings("checkstyle:linelength")
-  private static final Map<MassDetectionInstrument, Map<Source, Map<VerificationType, Set<String>>>> VERIFICATION_LIST;
+  private static final Map<MassDetectionInstrument, Map<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>>> VERIFICATION_LIST;
 
   static {
     VERIFICATION_LIST =
-        new HashMap<MassDetectionInstrument, Map<Source, Map<VerificationType, Set<String>>>>();
+        new HashMap<MassDetectionInstrument, Map<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>>>();
 
     // VELOS.
-    Map<Source, Map<VerificationType, Set<String>>> velosList =
-        new HashMap<Source, Map<VerificationType, Set<String>>>();
+    Map<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>> velosList =
+        new HashMap<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>>();
     // VELOS with NSI source.
     {
       Map<VerificationType, Set<String>> velosNsi = new HashMap<VerificationType, Set<String>>();
@@ -109,7 +102,7 @@ public class MsAnalysis implements Data, Serializable {
       velosNsi.get(VerificationType.SAMPLE).add("sampleVsSpot");
       velosNsi.get(VerificationType.SAMPLE).add("acquisitionFile");
       velosNsi.get(VerificationType.SAMPLE).add("volume");
-      velosList.put(Source.NSI, velosNsi);
+      velosList.put(MassDetectionInstrumentSource.NSI, velosNsi);
     }
     // VELOS with ESI source.
     {
@@ -132,7 +125,7 @@ public class MsAnalysis implements Data, Serializable {
       velosEsi.get(VerificationType.SAMPLE).add("sampleVsSpot");
       velosEsi.get(VerificationType.SAMPLE).add("acquisitionFile");
       velosEsi.get(VerificationType.SAMPLE).add("volume");
-      velosList.put(Source.ESI, velosEsi);
+      velosList.put(MassDetectionInstrumentSource.ESI, velosEsi);
     }
     // VELOS with LDTD source.
     {
@@ -153,13 +146,13 @@ public class MsAnalysis implements Data, Serializable {
       velosLdtd.get(VerificationType.INSTRUMENT).add("drainingVialVolume");
       velosLdtd.get(VerificationType.SAMPLE).add("sampleVsSpot");
       velosLdtd.get(VerificationType.SAMPLE).add("acquisitionFile");
-      velosList.put(Source.LDTD, velosLdtd);
+      velosList.put(MassDetectionInstrumentSource.LDTD, velosLdtd);
     }
     VERIFICATION_LIST.put(MassDetectionInstrument.VELOS, velosList);
 
     // LTQ_ORBI_TRAP.
-    Map<Source, Map<VerificationType, Set<String>>> ltqorbitrapList =
-        new HashMap<Source, Map<VerificationType, Set<String>>>();
+    Map<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>> ltqorbitrapList =
+        new HashMap<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>>();
     // LTQ_ORBI_TRAP with NSI source.
     {
       Map<VerificationType, Set<String>> ltqorbitrapNsi =
@@ -182,7 +175,7 @@ public class MsAnalysis implements Data, Serializable {
       ltqorbitrapNsi.get(VerificationType.SAMPLE).add("sampleVsSpot");
       ltqorbitrapNsi.get(VerificationType.SAMPLE).add("acquisitionFile");
       ltqorbitrapNsi.get(VerificationType.SAMPLE).add("volume");
-      ltqorbitrapList.put(Source.NSI, ltqorbitrapNsi);
+      ltqorbitrapList.put(MassDetectionInstrumentSource.NSI, ltqorbitrapNsi);
     }
     // LTQ_ORBI_TRAP with ESI source.
     {
@@ -206,7 +199,7 @@ public class MsAnalysis implements Data, Serializable {
       ltqorbitrapEsi.get(VerificationType.SAMPLE).add("sampleVsSpot");
       ltqorbitrapEsi.get(VerificationType.SAMPLE).add("acquisitionFile");
       ltqorbitrapEsi.get(VerificationType.SAMPLE).add("volume");
-      ltqorbitrapList.put(Source.ESI, ltqorbitrapEsi);
+      ltqorbitrapList.put(MassDetectionInstrumentSource.ESI, ltqorbitrapEsi);
     }
     // LTQ_ORBI_TRAP with LDTD source.
     {
@@ -228,13 +221,13 @@ public class MsAnalysis implements Data, Serializable {
       ltqorbitrapLdtd.get(VerificationType.INSTRUMENT).add("drainingVialVolume");
       ltqorbitrapLdtd.get(VerificationType.SAMPLE).add("sampleVsSpot");
       ltqorbitrapLdtd.get(VerificationType.SAMPLE).add("acquisitionFile");
-      ltqorbitrapList.put(Source.LDTD, ltqorbitrapLdtd);
+      ltqorbitrapList.put(MassDetectionInstrumentSource.LDTD, ltqorbitrapLdtd);
     }
     VERIFICATION_LIST.put(MassDetectionInstrument.LTQ_ORBI_TRAP, ltqorbitrapList);
 
     // Q_TOF.
-    Map<Source, Map<VerificationType, Set<String>>> qtofList =
-        new HashMap<Source, Map<VerificationType, Set<String>>>();
+    Map<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>> qtofList =
+        new HashMap<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>>();
     // Q_TOF with NSI source.
     {
       Map<VerificationType, Set<String>> qtofNsi = new HashMap<VerificationType, Set<String>>();
@@ -262,7 +255,7 @@ public class MsAnalysis implements Data, Serializable {
       qtofNsi.get(VerificationType.SAMPLE).add("clMethod");
       qtofNsi.get(VerificationType.SAMPLE).add("msMethod");
       qtofNsi.get(VerificationType.SAMPLE).add("volume");
-      qtofList.put(Source.NSI, qtofNsi);
+      qtofList.put(MassDetectionInstrumentSource.NSI, qtofNsi);
     }
     // Q_TOF with ESI source.
     {
@@ -291,7 +284,7 @@ public class MsAnalysis implements Data, Serializable {
       qtofEsi.get(VerificationType.SAMPLE).add("clMethod");
       qtofEsi.get(VerificationType.SAMPLE).add("msMethod");
       qtofEsi.get(VerificationType.SAMPLE).add("volume");
-      qtofList.put(Source.ESI, qtofEsi);
+      qtofList.put(MassDetectionInstrumentSource.ESI, qtofEsi);
     }
     // Q_TOF with LDTD source.
     {
@@ -317,13 +310,13 @@ public class MsAnalysis implements Data, Serializable {
       qtofLdtd.get(VerificationType.SAMPLE).add("sampleVsSpot");
       qtofLdtd.get(VerificationType.SAMPLE).add("clMethod");
       qtofLdtd.get(VerificationType.SAMPLE).add("msMethod");
-      qtofList.put(Source.LDTD, qtofLdtd);
+      qtofList.put(MassDetectionInstrumentSource.LDTD, qtofLdtd);
     }
     VERIFICATION_LIST.put(MassDetectionInstrument.Q_TOF, qtofList);
 
     // TOF.
-    Map<Source, Map<VerificationType, Set<String>>> tofList =
-        new HashMap<Source, Map<VerificationType, Set<String>>>();
+    Map<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>> tofList =
+        new HashMap<MassDetectionInstrumentSource, Map<VerificationType, Set<String>>>();
     // TOF with no source.
     {
       Map<VerificationType, Set<String>> tofNull = new HashMap<VerificationType, Set<String>>();
@@ -367,7 +360,7 @@ public class MsAnalysis implements Data, Serializable {
    */
   @Column(name = "source")
   @Enumerated(STRING)
-  private Source source;
+  private MassDetectionInstrumentSource source;
   /**
    * Time when analysis was inserted.
    */
@@ -423,11 +416,11 @@ public class MsAnalysis implements Data, Serializable {
     this.id = id;
   }
 
-  public Source getSource() {
+  public MassDetectionInstrumentSource getSource() {
     return source;
   }
 
-  public void setSource(Source source) {
+  public void setSource(MassDetectionInstrumentSource source) {
     this.source = source;
   }
 

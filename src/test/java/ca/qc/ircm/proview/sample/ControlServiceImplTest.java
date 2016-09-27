@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
@@ -94,7 +93,7 @@ public class ControlServiceImplTest {
     assertEquals("CONTROL.1", control.getLims());
     assertEquals("control_01", control.getName());
     assertEquals(ControlType.NEGATIVE_CONTROL, control.getControlType());
-    assertEquals(Sample.Support.GEL, control.getSupport());
+    assertEquals(SampleSupport.GEL, control.getSupport());
     assertEquals(null, control.getVolume());
     assertEquals(null, control.getQuantity());
     assertEquals(true, control.getOriginalContainer() instanceof Tube);
@@ -113,7 +112,7 @@ public class ControlServiceImplTest {
     Control control = new Control();
     control.setName("nc_test_000001");
     control.setControlType(ControlType.NEGATIVE_CONTROL);
-    control.setSupport(Support.GEL);
+    control.setSupport(SampleSupport.GEL);
     control.setVolume(20.0);
     control.setQuantity("12.0 μg");
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
@@ -131,14 +130,14 @@ public class ControlServiceImplTest {
     Control testControl = controlServiceImpl.get(control.getId());
     assertEquals(true, testControl.getLims().toUpperCase().startsWith("CONTROL"));
     assertEquals("nc_test_000001", testControl.getName());
-    assertEquals(Support.GEL, testControl.getSupport());
+    assertEquals(SampleSupport.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
     assertEquals("12.0 μg", testControl.getQuantity());
     assertEquals(0, testControl.getStandards().size());
     // Validate log.
     testControl = controlCaptor.getValue();
     assertEquals("nc_test_000001", testControl.getName());
-    assertEquals(Support.GEL, testControl.getSupport());
+    assertEquals(SampleSupport.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
     assertEquals("12.0 μg", testControl.getQuantity());
     assertEquals(true, testControl.getStandards() == null || testControl.getStandards().isEmpty());
@@ -150,7 +149,7 @@ public class ControlServiceImplTest {
     entityManager.detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
-    control.setSupport(Support.SOLUTION);
+    control.setSupport(SampleSupport.SOLUTION);
     control.setVolume(2.0);
     control.setQuantity("40 μg");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
@@ -166,7 +165,7 @@ public class ControlServiceImplTest {
     entityManager.refresh(test);
     assertEquals("nc_test_000001", test.getName());
     assertEquals(ControlType.POSITIVE_CONTROL, test.getControlType());
-    assertEquals(Support.SOLUTION, test.getSupport());
+    assertEquals(SampleSupport.SOLUTION, test.getSupport());
     assertEquals((Double) 2.0, test.getVolume());
     assertEquals("40 μg", test.getQuantity());
     assertEquals(0, test.getStandards().size());
@@ -176,7 +175,7 @@ public class ControlServiceImplTest {
     Control newControl = (Control) newSample;
     assertEquals("nc_test_000001", newControl.getName());
     assertEquals(ControlType.POSITIVE_CONTROL, newControl.getControlType());
-    assertEquals(Support.SOLUTION, newControl.getSupport());
+    assertEquals(SampleSupport.SOLUTION, newControl.getSupport());
     assertEquals((Double) 2.0, newControl.getVolume());
     assertEquals("40 μg", newControl.getQuantity());
     assertEquals(0, newControl.getStandards().size());

@@ -36,20 +36,19 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.mail.HtmlEmail;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -219,7 +218,7 @@ public class SubmissionServiceImplTest {
     assertEquals("FAM119A_band_01", sample.getName());
     assertEquals((Long) 1L, sample.getOriginalContainer().getId());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
-    assertEquals(Sample.Support.GEL, sample.getSupport());
+    assertEquals(SampleSupport.GEL, sample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, sample.getType());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(submission, sample.getSubmission());
@@ -237,7 +236,7 @@ public class SubmissionServiceImplTest {
     assertEquals(null, submission.getExperience());
     assertEquals(null, submission.getGoal());
     assertEquals(null, submission.getMassDetectionInstrument());
-    assertEquals(Source.ESI, submission.getSource());
+    assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(null, submission.getSampleNumberProtein());
     assertEquals(null, submission.getProteolyticDigestionMethod());
     assertEquals(null, submission.getUsedProteolyticDigestionMethod());
@@ -293,7 +292,7 @@ public class SubmissionServiceImplTest {
     assertEquals("CAP_20111013_05", sample.getName());
     assertEquals((Long) 3L, sample.getOriginalContainer().getId());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
-    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, sample.getType());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(submission, sample.getSubmission());
@@ -838,7 +837,7 @@ public class SubmissionServiceImplTest {
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
-    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -846,7 +845,7 @@ public class SubmissionServiceImplTest {
     submission = find(submissions, 33).get();
     assertEquals((Long) 33L, submission.getId());
     assertEquals(Service.SMALL_MOLECULE, submission.getService());
-    assertEquals(MsAnalysis.Source.ESI, submission.getSource());
+    assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals((Double) 654.654, submission.getMonoisotopicMass());
     assertEquals("MeOH/TFA 0.1%", submission.getSolutionSolvent());
     assertEquals(StorageTemperature.MEDIUM, submission.getStorageTemperature());
@@ -859,7 +858,7 @@ public class SubmissionServiceImplTest {
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
-    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -877,7 +876,7 @@ public class SubmissionServiceImplTest {
     assertEquals("christian.poitras@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("IRC20111017_4", sample.getLims());
     assertEquals("CAP_20111017_01", sample.getName());
-    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 17, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -1331,7 +1330,7 @@ public class SubmissionServiceImplTest {
     submission.setExperience("experience");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
-    submission.setSource(Source.ESI);
+    submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setSampleNumberProtein(10);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
@@ -1377,7 +1376,7 @@ public class SubmissionServiceImplTest {
     assertEquals("experience", submission.getExperience());
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
-    assertEquals(Source.ESI, submission.getSource());
+    assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(new Integer(10), submission.getSampleNumberProtein());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
@@ -1433,12 +1432,12 @@ public class SubmissionServiceImplTest {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
-    sample.setSupport(Support.SOLUTION);
+    sample.setSupport(SampleSupport.SOLUTION);
     sample.setVolume(10.0);
     sample.setQuantity("2.0 μg");
     SubmissionSample sample2 = new SubmissionSample();
     sample2.setName("unit_test_eluate_02");
-    sample2.setSupport(Support.SOLUTION);
+    sample2.setSupport(SampleSupport.SOLUTION);
     sample2.setVolume(10.0);
     sample2.setQuantity("2.0 μg");
     List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
@@ -1486,7 +1485,7 @@ public class SubmissionServiceImplTest {
     submission.setExperience("experience");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
-    submission.setSource(Source.ESI);
+    submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setSampleNumberProtein(10);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
@@ -1527,7 +1526,7 @@ public class SubmissionServiceImplTest {
     assertEquals("experience", submission.getExperience());
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
-    assertEquals(Source.ESI, submission.getSource());
+    assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(new Integer(10), submission.getSampleNumberProtein());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
@@ -1550,7 +1549,7 @@ public class SubmissionServiceImplTest {
     assertNotNull(submissionSample.getLims());
     assertEquals(true, LIMS_PATTERN.matcher(submissionSample.getLims()).matches());
     assertEquals("unit_test_eluate_01", submissionSample.getName());
-    assertEquals(Support.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
     contaminants = submissionSample.getContaminants();
@@ -1586,7 +1585,7 @@ public class SubmissionServiceImplTest {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_molecule_01");
-    sample.setSupport(Support.SOLUTION);
+    sample.setSupport(SampleSupport.SOLUTION);
     List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
     samples.add(sample);
     final Set<String> excludes = new HashSet<>();
@@ -1607,7 +1606,7 @@ public class SubmissionServiceImplTest {
     submission.setExperience("experience");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
-    submission.setSource(Source.ESI);
+    submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setLowResolution(true);
     submission.setHighResolution(true);
     submission.setMsms(true);
@@ -1655,7 +1654,7 @@ public class SubmissionServiceImplTest {
     assertEquals("experience", submission.getExperience());
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
-    assertEquals(Source.ESI, submission.getSource());
+    assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(true, submission.isLowResolution());
     assertEquals(true, submission.isHighResolution());
     assertEquals(true, submission.isMsms());
@@ -1681,7 +1680,7 @@ public class SubmissionServiceImplTest {
     assertNotNull(submissionSample.getLims());
     assertEquals(true, LIMS_PATTERN.matcher(submissionSample.getLims()).matches());
     assertEquals("unit_test_molecule_01", submissionSample.getName());
-    assertEquals(Support.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     Tube tube = (Tube) submissionSample.getOriginalContainer();
     assertNotNull(tube);
     assertEquals("unit_test_molecule_01", tube.getName());
@@ -1702,7 +1701,7 @@ public class SubmissionServiceImplTest {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
-    sample.setSupport(Support.SOLUTION);
+    sample.setSupport(SampleSupport.SOLUTION);
     sample.setVolume(10.0);
     sample.setQuantity("2.0 μg");
     List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
@@ -1731,7 +1730,7 @@ public class SubmissionServiceImplTest {
     submission.setExperience("experience");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
-    submission.setSource(Source.ESI);
+    submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setSampleNumberProtein(10);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");

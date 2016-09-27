@@ -31,7 +31,6 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
-import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
@@ -104,7 +103,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("FAM119A_band_01", gelSample.getName());
     assertEquals(true, gelSample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 1L, gelSample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.GEL, gelSample.getSupport());
+    assertEquals(SampleSupport.GEL, gelSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
     assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
     assertEquals((Long) 1L, gelSample.getSubmission().getId());
@@ -122,7 +121,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("CAP_20111013_01", eluateSample.getName());
     assertEquals(true, eluateSample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.SOLUTION, eluateSample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, eluateSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, eluateSample.getType());
     assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
@@ -147,7 +146,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("FAM119A_band_01", sample.getName());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 1L, sample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.GEL, sample.getSupport());
+    assertEquals(SampleSupport.GEL, sample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, sample.getType());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals((Long) 1L, sample.getSubmission().getId());
@@ -163,7 +162,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 2L, sample.getOriginalContainer().getId());
-    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, sample.getType());
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals((Long) 32L, sample.getSubmission().getId());
@@ -725,7 +724,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
-    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -737,7 +736,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
-    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -749,7 +748,7 @@ public class SubmissionSampleServiceImplTest {
     assertEquals("christian.poitras@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("IRC20111017_4", sample.getLims());
     assertEquals("CAP_20111017_01", sample.getName());
-    assertEquals(Sample.Support.SOLUTION, sample.getSupport());
+    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 17, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -1218,7 +1217,7 @@ public class SubmissionSampleServiceImplTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
     entityManager.detach(sample);
     sample.setName("new_solution_tag_0001");
-    sample.setSupport(Support.DRY);
+    sample.setSupport(SampleSupport.DRY);
     sample.setQuantity("12 pmol");
     sample.setVolume(70.0);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
@@ -1233,7 +1232,7 @@ public class SubmissionSampleServiceImplTest {
     SubmissionSample test = entityManager.find(SubmissionSample.class, sample.getId());
     entityManager.refresh(test);
     assertEquals("new_solution_tag_0001", test.getName());
-    assertEquals(Support.DRY, test.getSupport());
+    assertEquals(SampleSupport.DRY, test.getSupport());
     assertEquals("12 pmol", test.getQuantity());
     assertEquals((Double) 70.0, test.getVolume());
     // Validate log.
@@ -1241,7 +1240,7 @@ public class SubmissionSampleServiceImplTest {
     assertTrue(newSample instanceof SubmissionSample);
     SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
     assertEquals("new_solution_tag_0001", newSubmissionSample.getName());
-    assertEquals(Support.DRY, newSubmissionSample.getSupport());
+    assertEquals(SampleSupport.DRY, newSubmissionSample.getSupport());
     assertEquals("12 pmol", newSubmissionSample.getQuantity());
     assertEquals((Double) 70.0, newSubmissionSample.getVolume());
   }

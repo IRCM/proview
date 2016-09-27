@@ -26,10 +26,13 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class SubmissionFormDesign extends VerticalLayout {
   protected Label headerLabel;
-  protected Label serviceLabel;
   protected Label sampleTypeLabel;
   protected Label inactiveLabel;
-  protected Panel sampleCountPanel;
+  protected Panel servicePanel;
+  protected OptionGroup serviceOptions;
+  protected Panel samplesPanel;
+  protected Label sampleSupportLabel;
+  protected OptionGroup sampleSupportOptions;
   protected TextField sampleCountField;
   protected Table sampleNamesTable;
   protected Button fillSampleNamesButton;
@@ -57,6 +60,9 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected VerticalLayout digestionOptionsLayout;
   protected Label enrichmentLabel;
   protected Label exclusionsLabel;
+  protected TextField sampleNumberProteinField;
+  protected Label sourceLabel;
+  protected OptionGroup sourceOptions;
   protected Label instrumentLabel;
   protected OptionGroup instrumentOptions;
   protected Label proteinIdentificationLabel;

@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.UpdateActivity;
-import ca.qc.ircm.proview.sample.Sample.Support;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
@@ -67,7 +66,7 @@ public class SampleActivityServiceImplTest {
     control.setId(123456L);
     control.setName("unit_test_control");
     control.setQuantity("200.0 μg");
-    control.setSupport(Sample.Support.SOLUTION);
+    control.setSupport(SampleSupport.SOLUTION);
     control.setControlType(ControlType.NEGATIVE_CONTROL);
     control.setVolume(300.0);
 
@@ -86,7 +85,7 @@ public class SampleActivityServiceImplTest {
     SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 442L);
     entityManager.detach(submissionSample);
     submissionSample.setName("new_solution_tag_0001");
-    submissionSample.setSupport(Support.DRY);
+    submissionSample.setSupport(SampleSupport.DRY);
     submissionSample.setQuantity("12 pmol");
     submissionSample.setVolume(70.0);
 
@@ -114,8 +113,8 @@ public class SampleActivityServiceImplTest {
     supportActivity.setTableName("sample");
     supportActivity.setRecordId(submissionSample.getId());
     supportActivity.setColumn("support");
-    supportActivity.setOldValue(Sample.Support.SOLUTION.name());
-    supportActivity.setNewValue(Support.DRY.name());
+    supportActivity.setOldValue(SampleSupport.SOLUTION.name());
+    supportActivity.setNewValue(SampleSupport.DRY.name());
     expectedUpdateActivities.add(supportActivity);
     UpdateActivity quantityActivity = new UpdateActivity();
     quantityActivity.setActionType(ActionType.UPDATE);
@@ -354,7 +353,7 @@ public class SampleActivityServiceImplTest {
     entityManager.detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
-    control.setSupport(Support.SOLUTION);
+    control.setSupport(SampleSupport.SOLUTION);
     control.setVolume(2.0);
     control.setQuantity("40 μg");
 
@@ -389,8 +388,8 @@ public class SampleActivityServiceImplTest {
     supportActivity.setTableName("sample");
     supportActivity.setRecordId(control.getId());
     supportActivity.setColumn("support");
-    supportActivity.setOldValue(Support.GEL.name());
-    supportActivity.setNewValue(Support.SOLUTION.name());
+    supportActivity.setOldValue(SampleSupport.GEL.name());
+    supportActivity.setNewValue(SampleSupport.SOLUTION.name());
     expectedUpdateActivities.add(supportActivity);
     UpdateActivity volumeActivity = new UpdateActivity();
     volumeActivity.setActionType(ActionType.UPDATE);

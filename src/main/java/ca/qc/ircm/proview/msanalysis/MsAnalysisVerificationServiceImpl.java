@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.msanalysis;
 
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.Source;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 import ca.qc.ircm.proview.utils.xml.StackSaxHandler;
 import org.springframework.stereotype.Component;
@@ -45,7 +44,7 @@ import javax.xml.parsers.SAXParserFactory;
 public class MsAnalysisVerificationServiceImpl implements MsAnalysisVerificationService {
   private static class Verification {
     private final String name;
-    private Map<MassDetectionInstrument, Set<Source>> applies = new HashMap<>();
+    private Map<MassDetectionInstrument, Set<MassDetectionInstrumentSource>> applies = new HashMap<>();
 
     public Verification(String name) {
       this.name = name;
@@ -60,14 +59,14 @@ public class MsAnalysisVerificationServiceImpl implements MsAnalysisVerification
       applies.put(instrument, null);
     }
 
-    public void addApply(MassDetectionInstrument instrument, Source source) {
+    public void addApply(MassDetectionInstrument instrument, MassDetectionInstrumentSource source) {
       if (!applies.containsKey(instrument)) {
-        applies.put(instrument, new HashSet<Source>());
+        applies.put(instrument, new HashSet<MassDetectionInstrumentSource>());
       }
       applies.get(instrument).add(source);
     }
 
-    public boolean applies(MassDetectionInstrument instrument, Source source) {
+    public boolean applies(MassDetectionInstrument instrument, MassDetectionInstrumentSource source) {
       if (source == null) {
         return applies.containsKey(instrument);
       } else {
@@ -136,7 +135,7 @@ public class MsAnalysisVerificationServiceImpl implements MsAnalysisVerification
             break;
           case "source":
             anySourceForInstrument = true;
-            verification.addApply(instrument, Enum.valueOf(Source.class, attribute("name")));
+            verification.addApply(instrument, Enum.valueOf(MassDetectionInstrumentSource.class, attribute("name")));
             break;
           default:
             break;
@@ -154,7 +153,7 @@ public class MsAnalysisVerificationServiceImpl implements MsAnalysisVerification
 
   @Override
   public Map<VerificationType, Set<String>> verifications(MassDetectionInstrument instrument,
-      Source source) {
+      MassDetectionInstrumentSource source) {
     Map<VerificationType, Set<String>> verifications = new HashMap<>();
     for (VerificationType verificationType : VerificationType.values()) {
       verifications.put(verificationType, new HashSet<String>());
