@@ -48,7 +48,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "plate")
-public class Plate implements Data, Serializable, Named, Comparable<Plate> {
+public class Plate implements Data, Serializable, Named {
 
   /**
    * Plate types.
@@ -248,37 +248,8 @@ public class Plate implements Data, Serializable, Named, Comparable<Plate> {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Plate) {
-      Plate other = (Plate) obj;
-      return this.name != null && this.name.equalsIgnoreCase(other.getName());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.name == null ? 0 : this.name.toUpperCase().hashCode();
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("Plate(");
-    buff.append(id);
-    buff.append(",");
-    buff.append(name);
-    buff.append(",");
-    buff.append(type);
-    buff.append(")");
-    return buff.toString();
-  }
-
-  @Override
-  public int compareTo(Plate other) {
-    return name.compareToIgnoreCase(other.getName());
+    return "Plate [id=" + id + ", name=" + name + ", type=" + type + "]";
   }
 
   @Override

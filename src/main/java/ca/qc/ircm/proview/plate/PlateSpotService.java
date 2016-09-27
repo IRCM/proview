@@ -72,25 +72,6 @@ public interface PlateSpotService {
     }
 
     @Override
-    public int hashCode() {
-      return -234968302 + row + column;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (obj instanceof SpotLocation) {
-        SpotLocation other = (SpotLocation) obj;
-        boolean equals = row == other.getRow();
-        equals &= column == other.getColumn();
-        return equals;
-      }
-      return false;
-    }
-
-    @Override
     public String toString() {
       return ((char) ('a' + row)) + "-" + (column + 1);
     }

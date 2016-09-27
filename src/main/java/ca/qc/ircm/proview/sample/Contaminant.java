@@ -36,7 +36,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "contaminant")
-public class Contaminant implements Data, Named, Cloneable, Serializable {
+public class Contaminant implements Data, Named, Serializable {
   private static final long serialVersionUID = 7596363652613794846L;
 
   /**
@@ -70,35 +70,8 @@ public class Contaminant implements Data, Named, Cloneable, Serializable {
   private boolean deleted;
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Contaminant) {
-      Contaminant other = (Contaminant) obj;
-      return this.name != null && this.name.equalsIgnoreCase(other.getName());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.name != null ? this.name.toUpperCase().hashCode() : 0;
-  }
-
-  @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder("Contaminant(");
-    builder.append(id);
-    builder.append(",");
-    builder.append(name);
-    builder.append(")");
-    return builder.toString();
-  }
-
-  @Override
-  public Object clone() throws CloneNotSupportedException {
-    return super.clone();
+    return "Contaminant [id=" + id + ", name=" + name + "]";
   }
 
   @Override

@@ -40,28 +40,8 @@ public class SampleTransfer extends TreatmentSample implements Data {
   private SampleContainer destinationContainer;
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof SampleTransfer) {
-      SampleTransfer other = (SampleTransfer) obj;
-      return this.getId() != null && this.getId().equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return getId() != null ? getId().intValue() : 0;
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("SampleTransfer(");
-    buff.append(getId());
-    buff.append(")");
-    return buff.toString();
+    return "SampleTransfer [getId()=" + getId() + "]";
   }
 
   public SampleContainer getDestinationContainer() {

@@ -32,7 +32,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("TUBE")
-public class Tube extends SampleContainer implements Data, Named, Serializable, Comparable<Tube> {
+public class Tube extends SampleContainer implements Data, Named, Serializable {
   private static final long serialVersionUID = 2723772707033001099L;
 
   /**
@@ -54,30 +54,8 @@ public class Tube extends SampleContainer implements Data, Named, Serializable, 
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Tube) {
-      Tube other = (Tube) obj;
-      return this.name != null && this.name.equalsIgnoreCase(other.getName());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return name != null ? name.toUpperCase().hashCode() : 0;
-  }
-
-  @Override
   public String toString() {
     return "Tube [name=" + name + ", getId()=" + getId() + "]";
-  }
-
-  @Override
-  public int compareTo(Tube other) {
-    return this.name.compareToIgnoreCase(other.getName());
   }
 
   @Override

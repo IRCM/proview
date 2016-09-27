@@ -41,7 +41,7 @@ import javax.validation.constraints.Size;
 @Table(name = "protocol")
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
-public abstract class Protocol implements Data, Serializable, Named, Comparable<Protocol> {
+public abstract class Protocol implements Data, Serializable, Named {
   /**
    * Protocol types.
    */
@@ -85,38 +85,8 @@ public abstract class Protocol implements Data, Serializable, Named, Comparable<
   public abstract Type getType();
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Protocol) {
-      Protocol other = (Protocol) obj;
-      return this.name != null && this.name.equalsIgnoreCase(other.getName());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.name == null ? 0 : this.name.toUpperCase().hashCode();
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder(getClass().getSimpleName());
-    buff.append("(");
-    buff.append(id);
-    buff.append(",");
-    buff.append(name);
-    buff.append(",");
-    buff.append(getType());
-    buff.append(")");
-    return buff.toString();
-  }
-
-  @Override
-  public int compareTo(Protocol other) {
-    return name.compareToIgnoreCase(other.getName());
+    return "Protocol [id=" + id + ", name=" + name + "]";
   }
 
   @Override

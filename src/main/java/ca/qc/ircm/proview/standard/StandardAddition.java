@@ -38,28 +38,8 @@ public class StandardAddition extends Treatment<AddedStandard> implements Data {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof StandardAddition) {
-      StandardAddition other = (StandardAddition) obj;
-      return this.getId() != null && this.getId().equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return getId() != null ? getId().intValue() : 0;
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("StandardAddition(");
-    buff.append(getId());
-    buff.append(")");
-    return buff.toString();
+    return "StandardAddition [getId()=" + getId() + "]";
   }
 
   @Override

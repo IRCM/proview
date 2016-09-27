@@ -67,10 +67,11 @@ public class MsAnalysis implements Data, Serializable {
     /**
      * Digestion information was not entered correctly.
      */
-    ERRONEOUS, /**
-                * Digestion failed due to an experimental problem. An attempt was made to do the
-                * digestion but something went wrong.
-                */
+    ERRONEOUS,
+    /**
+     * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
+     * something went wrong.
+     */
     FAILED;
   }
 
@@ -409,28 +410,8 @@ public class MsAnalysis implements Data, Serializable {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof MsAnalysis) {
-      MsAnalysis other = (MsAnalysis) obj;
-      return this.id != null && this.id.equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.id == null ? 0 : this.id.intValue();
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("MSAnalysis(");
-    buff.append(id);
-    buff.append(")");
-    return buff.toString();
+    return "MsAnalysis [id=" + id + "]";
   }
 
   @Override

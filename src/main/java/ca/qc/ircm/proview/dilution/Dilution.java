@@ -36,28 +36,8 @@ public class Dilution extends Treatment<DilutedSample> {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Dilution) {
-      Dilution other = (Dilution) obj;
-      return this.getId() != null && this.getId().equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return getId() != null ? getId().intValue() : 0;
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("Dilution(");
-    buff.append(getId());
-    buff.append(")");
-    return buff.toString();
+    return "Dilution [getId()=" + getId() + "]";
   }
 
   @Override

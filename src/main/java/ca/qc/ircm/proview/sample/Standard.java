@@ -36,7 +36,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "standard")
-public class Standard implements Data, Cloneable, Serializable, Named {
+public class Standard implements Data, Serializable, Named {
   private static final long serialVersionUID = 1027734850465332430L;
 
   /**
@@ -70,35 +70,8 @@ public class Standard implements Data, Cloneable, Serializable, Named {
   private boolean deleted;
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Standard) {
-      Standard other = (Standard) obj;
-      return this.name != null && this.name.equalsIgnoreCase(other.getName());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.name != null ? this.name.toUpperCase().hashCode() : 0;
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("Standard(");
-    buff.append(id);
-    buff.append(",");
-    buff.append(name);
-    buff.append(")");
-    return buff.toString();
-  }
-
-  @Override
-  public Object clone() throws CloneNotSupportedException {
-    return super.clone();
+    return "Standard [id=" + id + ", name=" + name + "]";
   }
 
   @Override

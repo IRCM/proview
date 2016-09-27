@@ -38,27 +38,8 @@ public class Solubilisation extends Treatment<SolubilisedSample> implements Data
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == this) {
-      return true;
-    }
-    if (obj instanceof Solubilisation) {
-      Solubilisation other = (Solubilisation) obj;
-      return getId() != null && getId().equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return -490850960 + (getId() != null ? getId().intValue() : 0);
-  }
-
-  @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder("Solubilisation_");
-    builder.append(getId());
-    return super.toString();
+    return "Solubilisation [getId()=" + getId() + "]";
   }
 
   @Override

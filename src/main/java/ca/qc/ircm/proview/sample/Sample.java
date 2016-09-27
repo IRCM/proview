@@ -49,7 +49,7 @@ import javax.validation.constraints.Size;
 @Table(name = "sample")
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "sampleType")
-public abstract class Sample implements Data, Named, Comparable<Sample>, Serializable {
+public abstract class Sample implements Data, Named, Serializable {
   /**
    * Sample type.
    */
@@ -57,9 +57,10 @@ public abstract class Sample implements Data, Named, Comparable<Sample>, Seriali
     /**
      * Submission of sample to analyse.
      */
-    SUBMISSION, /**
-                 * Control.
-                 */
+    SUBMISSION,
+    /**
+     * Control.
+     */
     CONTROL
   }
 
@@ -70,12 +71,14 @@ public abstract class Sample implements Data, Named, Comparable<Sample>, Seriali
     /**
      * Sample is dry.
      */
-    DRY, /**
-          * Sample is in solution.
-          */
-    SOLUTION, /**
-               * Sample is in a Gel.
-               */
+    DRY,
+    /**
+     * Sample is in solution.
+     */
+    SOLUTION,
+    /**
+     * Sample is in a Gel.
+     */
     GEL
   }
 
@@ -151,30 +154,8 @@ public abstract class Sample implements Data, Named, Comparable<Sample>, Seriali
   public abstract Type getType();
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Sample) {
-      Sample other = (Sample) obj;
-      return lims != null && lims.equalsIgnoreCase(other.getLims());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return lims == null ? 0 : lims.toUpperCase().hashCode();
-  }
-
-  @Override
   public String toString() {
     return "Sample [id=" + id + ", lims=" + lims + ", name=" + name + "]";
-  }
-
-  @Override
-  public int compareTo(Sample other) {
-    return lims.compareToIgnoreCase(other.getLims());
   }
 
   @Override

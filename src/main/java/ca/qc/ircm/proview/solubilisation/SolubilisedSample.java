@@ -42,27 +42,8 @@ public class SolubilisedSample extends TreatmentSample implements Data {
   private Double solventVolume;
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == this) {
-      return true;
-    }
-    if (obj instanceof SolubilisedSample) {
-      SolubilisedSample other = (SolubilisedSample) obj;
-      return getId() != null && getId().equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return -1857400014 + (getId() != null ? getId().intValue() : 0);
-  }
-
-  @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder("SolubilisedSample_");
-    builder.append(getId());
-    return super.toString();
+    return "SolubilisedSample [getId()=" + getId() + "]";
   }
 
   public String getSolvent() {

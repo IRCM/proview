@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.sample;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,40 +53,6 @@ public class Structure implements Serializable {
    */
   @Column(name = "content", nullable = false)
   private byte[] content;
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + Arrays.hashCode(content);
-    result = prime * result + ((filename == null) ? 0 : filename.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    Structure other = (Structure) obj;
-    if (!Arrays.equals(content, other.content)) {
-      return false;
-    }
-    if (filename == null) {
-      if (other.filename != null) {
-        return false;
-      }
-    } else if (!filename.equals(other.filename)) {
-      return false;
-    }
-    return true;
-  }
 
   public String getFilename() {
     return filename;

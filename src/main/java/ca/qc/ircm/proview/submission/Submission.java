@@ -371,28 +371,8 @@ public class Submission implements Data, LaboratoryData, Serializable {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Submission) {
-      Submission other = (Submission) obj;
-      return this.id != null && this.id.equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.id == null ? 0 : this.id.intValue();
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("Submission(");
-    buff.append(id);
-    buff.append(")");
-    return buff.toString();
+    return "Submission [id=" + id + ", service=" + service + ", experience=" + experience + "]";
   }
 
   @Override

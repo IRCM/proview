@@ -37,28 +37,8 @@ public class Transfer extends Treatment<SampleTransfer> {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Transfer) {
-      Transfer other = (Transfer) obj;
-      return this.getId() != null && this.getId().equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return getId() != null ? getId().intValue() : 0;
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("Transfer(");
-    buff.append(getId());
-    buff.append(")");
-    return buff.toString();
+    return "Transfer [getId()=" + getId() + "]";
   }
 
   @Override

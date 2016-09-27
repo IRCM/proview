@@ -45,28 +45,8 @@ public class Digestion extends Treatment<DigestedSample> {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Digestion) {
-      Digestion other = (Digestion) obj;
-      return this.getId() != null && this.getId().equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.getId() == null ? 0 : this.getId().intValue();
-  }
-
-  @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("Digestion(");
-    buff.append(getId());
-    buff.append(")");
-    return buff.toString();
+    return "Digestion [getId()=" + getId() + "]";
   }
 
   @Override

@@ -48,12 +48,14 @@ public class DataAnalysis implements Data, Serializable {
     /**
      * Analysis made only to confirm very probable protein presence.
      */
-    PROTEIN, /**
-              * Analysis made to confirm correctiveness of specific peptides.
-              */
-    PEPTIDE, /**
-              * Analyse both protein and and peptides.
-              */
+    PROTEIN,
+    /**
+     * Analysis made to confirm correctiveness of specific peptides.
+     */
+    PEPTIDE,
+    /**
+     * Analyse both protein and and peptides.
+     */
     PROTEIN_PEPTIDE;
   }
 
@@ -64,12 +66,14 @@ public class DataAnalysis implements Data, Serializable {
     /**
      * Data has to be analysed.
      */
-    TO_DO, /**
-            * Data is analysed.
-            */
-    ANALYSED, /**
-               * Data analysis was cancelled.
-               */
+    TO_DO,
+    /**
+     * Data is analysed.
+     */
+    ANALYSED,
+    /**
+     * Data analysis was cancelled.
+     */
     CANCELLED;
   }
 
@@ -136,20 +140,8 @@ public class DataAnalysis implements Data, Serializable {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof DataAnalysis) {
-      DataAnalysis other = (DataAnalysis) obj;
-      return this.id != null && this.id.equals(other.getId());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.id == null ? 0 : id.intValue();
+  public String toString() {
+    return "DataAnalysis [id=" + id + "]";
   }
 
   @Override
