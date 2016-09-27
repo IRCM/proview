@@ -243,8 +243,8 @@ public class SubmissionFormPresenter {
     view.standardsTable.setContainerDataSource(standardsContainer);
     view.standardsTable.setPageLength(STANDARDS_TABLE_LENGTH);
     view.contaminantsTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
-    view.contaminantsTable.setContainerDataSource(standardsContainer);
-    view.standardsTable.setPageLength(CONTAMINANTS_TABLE_LENGTH);
+    view.contaminantsTable.setContainerDataSource(contaminantsContainer);
+    view.contaminantsTable.setPageLength(CONTAMINANTS_TABLE_LENGTH);
   }
 
   private void addFieldListeners() {
@@ -424,7 +424,7 @@ public class SubmissionFormPresenter {
 
   private void updateStandardsTable() {
     Integer count = (Integer) view.standardCountField.getConvertedValue();
-    if (count == null) {
+    if (count == null || count < 0) {
       count = 0;
     }
     while (standardsContainer.size() > count) {
@@ -438,7 +438,7 @@ public class SubmissionFormPresenter {
 
   private void updateContaminantsTable() {
     Integer count = (Integer) view.contaminantCountField.getConvertedValue();
-    if (count == null) {
+    if (count == null || count < 0) {
       count = 0;
     }
     while (contaminantsContainer.size() > count) {
@@ -542,7 +542,7 @@ public class SubmissionFormPresenter {
         .getContainerProperty(first, STANDARD_QUANTITY_PROPERTY).getValue();
     String comments = (String) standardsContainer
         .getContainerProperty(first, STANDARD_COMMENTS_PROPERTY).getValue();
-    for (Object itemId : standardsContainer.getItemIds().subList(1, samplesContainer.size())) {
+    for (Object itemId : standardsContainer.getItemIds().subList(1, standardsContainer.size())) {
       name = incrementLastNumber(name);
       standardsContainer.getContainerProperty(itemId, STANDARD_NAME_PROPERTY).setValue(name);
       standardsContainer.getContainerProperty(itemId, STANDARD_QUANTITY_PROPERTY)
@@ -561,7 +561,8 @@ public class SubmissionFormPresenter {
         .getContainerProperty(first, CONTAMINANT_QUANTITY_PROPERTY).getValue();
     String comments = (String) contaminantsContainer
         .getContainerProperty(first, CONTAMINANT_COMMENTS_PROPERTY).getValue();
-    for (Object itemId : contaminantsContainer.getItemIds().subList(1, samplesContainer.size())) {
+    for (Object itemId : contaminantsContainer.getItemIds().subList(1,
+        contaminantsContainer.size())) {
       name = incrementLastNumber(name);
       contaminantsContainer.getContainerProperty(itemId, CONTAMINANT_NAME_PROPERTY).setValue(name);
       contaminantsContainer.getContainerProperty(itemId, CONTAMINANT_QUANTITY_PROPERTY)
@@ -572,12 +573,12 @@ public class SubmissionFormPresenter {
   }
 
   private String incrementLastNumber(String value) {
-    Pattern pattern = Pattern.compile("(.*\\D)(\\d+)(\\D*)");
+    Pattern pattern = Pattern.compile("(.*\\D)?(\\d+)(\\D*)");
     Matcher matcher = pattern.matcher(value);
     if (matcher.matches()) {
       try {
         StringBuilder builder = new StringBuilder();
-        builder.append(matcher.group(1));
+        builder.append(matcher.group(1) != null ? matcher.group(1) : "");
         int number = Integer.parseInt(matcher.group(2));
         int length = matcher.group(2).length();
         String newNumber = String.valueOf(number + 1);
