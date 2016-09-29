@@ -41,9 +41,17 @@ public enum Service {
                    * Intact protein analysis.
                    */
   INTACT_PROTEIN;
+  private static MessageResource getResources(Locale locale) {
+    return new MessageResource(Service.class, locale);
+  }
+
+  public static String getNullLabel(Locale locale) {
+    MessageResource resources = getResources(locale);
+    return resources.message("NULL");
+  }
 
   public String getLabel(Locale locale) {
-    MessageResource resources = new MessageResource(Service.class, locale);
+    MessageResource resources = getResources(locale);
     return resources.message(name());
   }
 }

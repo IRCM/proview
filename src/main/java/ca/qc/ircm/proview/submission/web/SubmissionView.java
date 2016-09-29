@@ -47,6 +47,7 @@ public class SubmissionView extends SubmissionViewDesign implements MessageResou
     menuLayout.addComponent(menu);
     submissionFormLayout.addComponent(submissionForm);
     submissionForm.setPresenter(submissionFormPresenter);
+    submissionFormPresenter.setEditable(true);
   }
 
   @Override

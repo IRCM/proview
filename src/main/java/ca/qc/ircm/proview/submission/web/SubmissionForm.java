@@ -28,6 +28,14 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.UNIPROT;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
+import static ca.qc.ircm.proview.sample.SampleSupport.DRY;
+import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
+import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
+import static ca.qc.ircm.proview.submission.GelSeparation.ONE_DIMENSION;
+import static ca.qc.ircm.proview.submission.GelSeparation.TWO_DIMENSION;
+import static ca.qc.ircm.proview.submission.GelThickness.ONE;
+import static ca.qc.ircm.proview.submission.GelThickness.ONE_HALF;
+import static ca.qc.ircm.proview.submission.GelThickness.TWO;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
@@ -37,6 +45,9 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.submission.GelColoration;
+import ca.qc.ircm.proview.submission.GelSeparation;
+import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import com.vaadin.shared.ui.MarginInfo;
@@ -64,8 +75,13 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
       new ProteinIdentification[] { REFSEQ, UNIPROT, ProteinIdentification.OTHER };
   public static final Service[] SERVICES =
       new Service[] { LC_MS_MS, SMALL_MOLECULE, INTACT_PROTEIN };
-  public static final SampleSupport[] SUPPORT =
-      new SampleSupport[] { SampleSupport.SOLUTION, SampleSupport.DRY, SampleSupport.GEL };
+  public static final SampleSupport[] SUPPORT = new SampleSupport[] { SOLUTION, DRY, GEL };
+  public static final GelSeparation[] SEPARATION =
+      new GelSeparation[] { ONE_DIMENSION, TWO_DIMENSION };
+  public static final GelThickness[] THICKNESS = new GelThickness[] { ONE, ONE_HALF, TWO };
+  public static final GelColoration[] COLORATION =
+      new GelColoration[] { GelColoration.COOMASSIE, GelColoration.SYPRO, GelColoration.SILVER,
+          GelColoration.SILVER_INVITROGEN, GelColoration.OTHER };
   public static final MassDetectionInstrumentSource[] SOURCES =
       new MassDetectionInstrumentSource[] { ESI, NSI };
   public static final MassDetectionInstrument[] INSTRUMENTS = new MassDetectionInstrument[] { VELOS,
@@ -85,6 +101,9 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     this.presenter = presenter;
   }
 
+  /**
+   * Creates SubmissionForm.
+   */
   public SubmissionForm() {
     for (ProteolyticDigestion digestion : DIGESTIONS) {
       digestionFlexibleOptions.addItem(digestion);

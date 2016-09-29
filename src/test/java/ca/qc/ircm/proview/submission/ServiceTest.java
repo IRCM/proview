@@ -25,6 +25,12 @@ import java.util.Locale;
 
 public class ServiceTest {
   @Test
+  public void getNullLabel() {
+    assertEquals("Undetermined", Service.getNullLabel(Locale.ENGLISH));
+    assertEquals("Indéterminé", Service.getNullLabel(Locale.FRENCH));
+  }
+
+  @Test
   public void getLabel() {
     Locale locale = Locale.CANADA;
 

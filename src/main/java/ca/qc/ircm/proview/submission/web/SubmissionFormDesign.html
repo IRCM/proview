@@ -18,6 +18,9 @@
    </vaadin-label> 
    <vaadin-panel caption="Service" size-auto _id="servicePanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
+     <vaadin-label size-auto plain-text _id="serviceLabel">
+       LC/MS/MS 
+     </vaadin-label> 
      <vaadin-option-group item-caption-mode="id" _id="serviceOptions"> 
       <option>LC/MS/MS</option> 
       <option>Small molecule</option> 
@@ -28,9 +31,7 @@
    <vaadin-panel caption="Samples" size-auto _id="samplesPanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-label caption="Sample support" size-auto plain-text _id="sampleSupportLabel">
-        Label 
-      </vaadin-label> 
+      <vaadin-text-field caption="Sample type" _id="sampleSupportText"></vaadin-text-field> 
       <vaadin-option-group caption="Sample type" item-caption-mode="id" _id="sampleSupportOptions"> 
        <option>Solution</option> 
        <option>Dry</option> 
@@ -88,12 +89,35 @@
      </vaadin-horizontal-layout> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
+   <vaadin-panel caption="Gel details" size-auto _id="gelPanel"> 
+    <vaadin-vertical-layout spacing size-auto margin> 
+     <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
+      <vaadin-combo-box caption="Electrophoresis gel separation" item-caption-mode="id" _id="separationField"> 
+       <option>Option 1</option> 
+       <option>Option 2</option> 
+       <option>Option 3</option> 
+      </vaadin-combo-box> 
+      <vaadin-combo-box caption="Gel thickness (mm)" item-caption-mode="id" _id="thicknessField"> 
+       <option>Option 1</option> 
+       <option>Option 2</option> 
+       <option>Option 3</option> 
+      </vaadin-combo-box> 
+      <vaadin-combo-box caption="Coloration" item-caption-mode="id" _id="colorationField"> 
+       <option>Option 1</option> 
+       <option>Option 2</option> 
+       <option>Option 3</option> 
+      </vaadin-combo-box> 
+      <vaadin-text-field caption="Development time" null-representation="" _id="developmentTimeField"></vaadin-text-field> 
+      <vaadin-check-box caption="Destained" _id="decolorationField"></vaadin-check-box> 
+      <vaadin-text-field caption="Weight marker quantity (µg)" null-representation="" _id="weightMarkerQuantityField"></vaadin-text-field> 
+      <vaadin-text-field caption="Total protein quantity in gel" null-representation="" _id="proteinQuantityField"></vaadin-text-field> 
+     </vaadin-form-layout> 
+    </vaadin-vertical-layout> 
+   </vaadin-panel> 
    <vaadin-panel caption="Services" size-auto _id="servicesPanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-label caption="Digestion" size-auto plain-text _id="digestionLabel">
-        Trypsin 
-      </vaadin-label> 
+      <vaadin-text-field caption="Digestion" _id="digestionText"></vaadin-text-field> 
       <vaadin-vertical-layout caption="Digestion" spacing size-auto _id="digestionOptionsLayout"></vaadin-vertical-layout> 
       <vaadin-label caption="Enrichment" size-auto plain-text _id="enrichmentLabel">
         Coming soon 
@@ -102,24 +126,18 @@
         Coming soon 
       </vaadin-label> 
       <vaadin-text-field caption="Number of proteins in the sample" null-representation="" _id="sampleNumberProteinField"></vaadin-text-field> 
-      <vaadin-label caption="Source" size-auto plain-text _id="sourceLabel">
-        Label 
-      </vaadin-label> 
+      <vaadin-text-field caption="Source" _id="sourceText"></vaadin-text-field> 
       <vaadin-option-group caption="Source" item-caption-mode="id" _id="sourceOptions"> 
        <option>ESI</option> 
        <option>NSI</option> 
       </vaadin-option-group> 
-      <vaadin-label caption="Instrument" size-auto plain-text _id="instrumentLabel">
-        Q-Exactive 
-      </vaadin-label> 
+      <vaadin-text-field caption="Instrument" _id="instrumentText"></vaadin-text-field> 
       <vaadin-option-group caption="Instrument" item-caption-mode="id" _id="instrumentOptions"> 
        <option>LTQ-Orbitrap-Velos</option> 
        <option>Q-Exactive</option> 
        <option>LTQ-Orbitrap-Fusion</option> 
       </vaadin-option-group> 
-      <vaadin-label caption="Protein identification database" size-auto plain-text _id="proteinIdentificationLabel">
-        RefSeq 
-      </vaadin-label> 
+      <vaadin-text-field caption="Protein identification database" _id="proteinIdentificationText"></vaadin-text-field> 
       <vaadin-vertical-layout caption="Protein identification database" spacing size-auto _id="proteinIdentificationOptionsLayout"></vaadin-vertical-layout> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
