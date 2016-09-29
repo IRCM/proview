@@ -38,14 +38,12 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
     /**
      * Compare by name.
      */
-    NAME,
-    /**
-     * Plate with most empty spot will be first.
-     */
-    EMPTY_SPOT,
-    /**
-     * Plate with low timestamp will be first.
-     */
+    NAME, /**
+           * Plate with most empty spot will be first.
+           */
+    EMPTY_SPOT, /**
+                 * Plate with low timestamp will be first.
+                 */
     TIME_STAMP;
   }
 
@@ -77,7 +75,7 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
       case NAME:
         return namedComparator.compare(o1, o2);
       case EMPTY_SPOT: {
-        int compare = o2.getEmptySpotCount().compareTo(o1.getEmptySpotCount());
+        int compare = Integer.compare(o2.getEmptySpotCount(), o1.getEmptySpotCount());
         compare = compare == 0 ? namedComparator.compare(o1, o2) : compare;
         return compare;
       }

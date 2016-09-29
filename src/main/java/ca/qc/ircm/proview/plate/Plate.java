@@ -22,16 +22,15 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
-import ca.qc.ircm.proview.plate.PlateSpotService.SimpleSpotLocation;
 import ca.qc.ircm.proview.plate.PlateSpotService.SpotLocation;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
@@ -179,24 +178,14 @@ public class Plate implements Data, Serializable, Named {
    * @return spots from the 'from' location up to the 'to' location
    */
   public List<PlateSpot> spots(SpotLocation from, SpotLocation to) {
-    // Find all locations that are to be included.
-    Collection<SpotLocation> locations = new HashSet<SpotLocation>();
-    for (int column = from.getColumn(); column <= to.getColumn(); column++) {
-      int endRow = column == to.getColumn() ? to.getRow() : this.getRowCount() - 1;
-      for (int row = column == from.getColumn() ? from.getRow() : 0; row <= endRow; row++) {
-        locations.add(new SimpleSpotLocation(row, column));
-      }
-    }
-    // Add all spots that are on locations to include.
-    List<PlateSpot> spots = new ArrayList<PlateSpot>();
-    for (PlateSpot spot : getSpots()) {
-      SpotLocation spotLocation = new SimpleSpotLocation(spot.getRow(), spot.getColumn());
-      if (locations.contains(spotLocation)) {
-        spots.add(spot);
-      }
-    }
-    Collections.sort(spots, new PlateSpotComparator(PlateSpotComparator.Compare.LOCATION));
-    return spots;
+    Predicate<PlateSpot> afterOrEqualsFrom =
+        s -> (s.getColumn() == from.getColumn() && s.getRow() >= from.getRow())
+            || s.getColumn() > from.getColumn();
+    Predicate<PlateSpot> beforeOrEqualsTo =
+        s -> (s.getColumn() == to.getColumn() && s.getRow() <= to.getRow())
+            || s.getColumn() < to.getColumn();
+    return spots.stream().filter(afterOrEqualsFrom.and(beforeOrEqualsTo))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -222,8 +211,8 @@ public class Plate implements Data, Serializable, Named {
    *
    * @return number of empty spots on plate
    */
-  public Integer getEmptySpotCount() {
-    Integer count = 0;
+  public int getEmptySpotCount() {
+    int count = 0;
     for (PlateSpot spot : this.spots) {
       if (spot.getSample() == null && !spot.isBanned()) {
         count++;
@@ -237,8 +226,8 @@ public class Plate implements Data, Serializable, Named {
    *
    * @return number of spots containing a sample on plate
    */
-  public Integer getSampleCount() {
-    Integer count = 0;
+  public int getSampleCount() {
+    int count = 0;
     for (PlateSpot spot : this.spots) {
       if (spot.getSample() != null && !spot.isBanned()) {
         count++;

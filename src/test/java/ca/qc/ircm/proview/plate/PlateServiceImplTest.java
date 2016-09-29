@@ -130,8 +130,8 @@ public class PlateServiceImplTest {
     PlateSpot spot = plate.spot(2, 3);
     assertEquals(2, spot.getRow());
     assertEquals(3, spot.getColumn());
-    assertEquals((Integer) 91, plate.getEmptySpotCount());
-    assertEquals((Integer) 2, plate.getSampleCount());
+    assertEquals(91, plate.getEmptySpotCount());
+    assertEquals(2, plate.getSampleCount());
   }
 
   @Test
