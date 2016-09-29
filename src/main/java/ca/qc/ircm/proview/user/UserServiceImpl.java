@@ -386,13 +386,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public void deactivate(Collection<User> users) throws DeactivateManagerException {
     for (User user : users) {
-      user = entityManager.merge(user);
-      entityManager.refresh(user);
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
-
       if (authorizationService.hasManagerRole(user)) {
         throw new DeactivateManagerException(user);
       }
+
+      user = entityManager.merge(user);
+      entityManager.refresh(user);
     }
 
     for (User user : users) {

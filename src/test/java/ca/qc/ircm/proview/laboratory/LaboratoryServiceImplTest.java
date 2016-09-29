@@ -18,10 +18,13 @@
 package ca.qc.ircm.proview.laboratory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.cache.CacheFlusher;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -36,7 +39,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -61,6 +66,10 @@ public class LaboratoryServiceImplTest {
   public void beforeTest() {
     laboratoryServiceImpl =
         new LaboratoryServiceImpl(entityManager, cacheFlusher, authorizationService);
+  }
+
+  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
+    return datas.stream().filter(d -> d.getId() == id).findAny();
   }
 
   @Test
@@ -131,7 +140,7 @@ public class LaboratoryServiceImplTest {
     verify(cacheFlusher).flushShiroCache();
     laboratory = entityManager.find(Laboratory.class, 2L);
     List<User> testManagers = laboratory.getManagers();
-    assertEquals(true, testManagers.contains(user));
+    assertTrue(find(testManagers, user.getId()).isPresent());
   }
 
   @Test
@@ -151,7 +160,7 @@ public class LaboratoryServiceImplTest {
     laboratory = entityManager.find(Laboratory.class, 2L);
     List<User> testManagers = laboratory.getManagers();
     User testUser = entityManager.find(User.class, 12L);
-    assertEquals(true, testManagers.contains(user));
+    assertTrue(find(testManagers, user.getId()).isPresent());
     assertEquals(true, testUser.isActive());
   }
 
@@ -162,7 +171,7 @@ public class LaboratoryServiceImplTest {
     User user = entityManager.find(User.class, 3L);
     entityManager.detach(user);
     List<User> managers = laboratory.getManagers();
-    assertEquals(true, managers.contains(user));
+    assertTrue(find(managers, user.getId()).isPresent());
 
     laboratoryServiceImpl.addManager(laboratory, user);
 
@@ -170,7 +179,7 @@ public class LaboratoryServiceImplTest {
     verify(authorizationService).checkAdminRole();
     laboratory = entityManager.find(Laboratory.class, 2L);
     List<User> testManagers = laboratory.getManagers();
-    assertEquals(true, testManagers.contains(user));
+    assertTrue(find(testManagers, user.getId()).isPresent());
   }
 
   @Test(expected = UserNotMemberOfLaboratoryException.class)
@@ -207,7 +216,7 @@ public class LaboratoryServiceImplTest {
     laboratory = entityManager.find(Laboratory.class, 1L);
     verify(cacheFlusher).flushShiroCache();
     List<User> testManagers = laboratory.getManagers();
-    assertEquals(false, testManagers.contains(user));
+    assertFalse(find(testManagers, user.getId()).isPresent());
   }
 
   @Test
@@ -232,7 +241,7 @@ public class LaboratoryServiceImplTest {
     User user = entityManager.find(User.class, 27L);
     entityManager.detach(user);
     List<User> managers = laboratory.getManagers();
-    assertEquals(true, managers.contains(user));
+    assertTrue(find(managers, user.getId()).isPresent());
 
     laboratoryServiceImpl.removeManager(laboratory, user);
 
@@ -241,7 +250,7 @@ public class LaboratoryServiceImplTest {
     laboratory = entityManager.find(Laboratory.class, 2L);
     verify(cacheFlusher).flushShiroCache();
     List<User> testManagers = laboratory.getManagers();
-    assertEquals(false, testManagers.contains(user));
+    assertFalse(find(testManagers, user.getId()).isPresent());
   }
 
   @Test
@@ -259,7 +268,7 @@ public class LaboratoryServiceImplTest {
     verify(authorizationService).checkAdminRole();
     laboratory = entityManager.find(Laboratory.class, 2L);
     List<User> testManagers = laboratory.getManagers();
-    assertEquals(false, testManagers.contains(user));
+    assertFalse(find(testManagers, user.getId()).isPresent());
   }
 
   @Test(expected = UserNotMemberOfLaboratoryException.class)

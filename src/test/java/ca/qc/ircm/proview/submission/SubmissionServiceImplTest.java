@@ -44,11 +44,11 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
-import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -1824,14 +1824,14 @@ public class SubmissionServiceImplTest {
     submission = entityManager.find(Submission.class, 1L);
     entityManager.refresh(submission);
     assertEquals((Long) 1L, submission.getId());
-    assertEquals(user, submission.getUser());
+    assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals(newInstant, submission.getSubmissionDate());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
     assertEquals((Long) 1L, submissionLogged.getId());
-    assertEquals(user, submissionLogged.getUser());
+    assertEquals(user.getId(), submissionLogged.getUser().getId());
     assertEquals((Long) 2L, submissionLogged.getLaboratory().getId());
     assertEquals(newInstant, submissionLogged.getSubmissionDate());
   }
@@ -1856,14 +1856,14 @@ public class SubmissionServiceImplTest {
     submission = entityManager.find(Submission.class, 1L);
     entityManager.refresh(submission);
     assertEquals((Long) 1L, submission.getId());
-    assertEquals(oldUser, submission.getUser());
+    assertEquals(oldUser.getId(), submission.getUser().getId());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals(newInstant, submission.getSubmissionDate());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
     assertEquals((Long) 1L, submissionLogged.getId());
-    assertEquals(oldUser, submissionLogged.getUser());
+    assertEquals(oldUser.getId(), submissionLogged.getUser().getId());
     assertEquals((Long) 2L, submissionLogged.getLaboratory().getId());
     assertEquals(newInstant, submissionLogged.getSubmissionDate());
   }
