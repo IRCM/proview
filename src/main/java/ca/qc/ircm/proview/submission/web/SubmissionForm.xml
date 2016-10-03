@@ -26,7 +26,15 @@
   <entry key="samplesPanel">Samples</entry>
   <entry key="sampleCount">Number of samples</entry>
   <entry key="support">Sample type</entry>
-  <entry key="name">Sample names</entry>
+  <entry key="name">Sample name</entry>
+  <entry key="solutionSolvent">Solvent</entry>
+  <entry key="formula">Empiric formula</entry>
+  <entry key="monoisotopicMass">Monoisotopic molecular mass</entry>
+  <entry key="averageMass">Average mass</entry>
+  <entry key="toxicity">Toxicity</entry>
+  <entry key="lightSensitive">Light sensitive</entry>
+  <entry key="storageTemperature">Storage temperature</entry>
+  <entry key="names">Sample names</entry>
   <entry key="fillSampleNames">Fill down</entry>
   <entry key="experiencePanel">Sample details</entry>
   <entry key="experience">Experience</entry>
@@ -59,7 +67,7 @@
   <entry key="coloration">Coloration</entry>
   <entry key="otherColoration">Used coloration</entry>
   <entry key="developmentTime">Development time</entry>
-  <entry key="developmentTime.example">150 s</entry>
+  <entry key="developmentTime.example">300 s</entry>
   <entry key="decoloration">Destained</entry>
   <entry key="weightMarkerQuantity">Weight marker quantity (μg)</entry>
   <entry key="weightMarkerQuantity.example">200</entry>

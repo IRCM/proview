@@ -39,6 +39,8 @@ import static ca.qc.ircm.proview.submission.GelThickness.TWO;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
+import static ca.qc.ircm.proview.submission.StorageTemperature.LOW;
+import static ca.qc.ircm.proview.submission.StorageTemperature.MEDIUM;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -49,6 +51,7 @@ import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.Service;
+import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.AbstractLayout;
@@ -76,6 +79,8 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   public static final Service[] SERVICES =
       new Service[] { LC_MS_MS, SMALL_MOLECULE, INTACT_PROTEIN };
   public static final SampleSupport[] SUPPORT = new SampleSupport[] { SOLUTION, DRY, GEL };
+  public static final StorageTemperature[] STORAGE_TEMPERATURES =
+      new StorageTemperature[] { MEDIUM, LOW };
   public static final GelSeparation[] SEPARATION =
       new GelSeparation[] { ONE_DIMENSION, TWO_DIMENSION };
   public static final GelThickness[] THICKNESS = new GelThickness[] { ONE, ONE_HALF, TWO };

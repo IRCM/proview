@@ -17,39 +17,30 @@
 
 package ca.qc.ircm.proview.submission;
 
-import ca.qc.ircm.utils.MessageResource;
+import static ca.qc.ircm.proview.submission.StorageTemperature.LOW;
+import static ca.qc.ircm.proview.submission.StorageTemperature.MEDIUM;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 import java.util.Locale;
 
-/**
- * Available storage temperatures.
- */
-public enum StorageTemperature {
-  MEDIUM(4), LOW(-20);
-  StorageTemperature(int temperature) {
-    this.temperature = temperature;
+public class StorageTemperatureTest {
+  @Test
+  public void getNullLabel() {
+    assertEquals("Undetermined", StorageTemperature.getNullLabel(Locale.ENGLISH));
+    assertEquals("Indéterminé", StorageTemperature.getNullLabel(Locale.FRENCH));
   }
 
-  /**
-   * Real temperature of this enum.
-   */
-  private int temperature;
-
-  public int getTemperature() {
-    return temperature;
+  @Test
+  public void getLabel_Medium() {
+    assertEquals("4 °C", MEDIUM.getLabel(Locale.ENGLISH));
+    assertEquals("4 °C", MEDIUM.getLabel(Locale.FRENCH));
   }
 
-  private static MessageResource getResources(Locale locale) {
-    return new MessageResource(StorageTemperature.class, locale);
-  }
-
-  public static String getNullLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
-    return resources.message("NULL");
-  }
-
-  public String getLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
-    return resources.message(name());
+  @Test
+  public void getLabel_Low() {
+    assertEquals("-20 °C", LOW.getLabel(Locale.ENGLISH));
+    assertEquals("-20 °C", LOW.getLabel(Locale.FRENCH));
   }
 }

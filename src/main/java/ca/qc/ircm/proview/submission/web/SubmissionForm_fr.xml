@@ -26,7 +26,15 @@
   <entry key="samplesPanel">Échantillons</entry>
   <entry key="sampleCount">Nombre d'échantillons</entry>
   <entry key="support">Type d'échantillons</entry>
-  <entry key="name">Nom des échantillons</entry>
+  <entry key="name">Nom de l'échantillon</entry>
+  <entry key="solutionSolvent">Solvent</entry>
+  <entry key="formula">Formule empirique</entry>
+  <entry key="monoisotopicMass">Masse monoisotopique</entry>
+  <entry key="averageMass">Masse moléculaire moyenne</entry>
+  <entry key="toxicity">Toxicité</entry>
+  <entry key="lightSensitive">Sensible à la lumière</entry>
+  <entry key="storageTemperature">Température de stockage</entry>
+  <entry key="names">Nom des échantillons</entry>
   <entry key="fillSampleNames">Copier vers le bas</entry>
   <entry key="experiencePanel">Détails à propos des échantillons</entry>
   <entry key="experience">Expérience</entry>
@@ -58,7 +66,7 @@
   <entry key="coloration">Coloration</entry>
   <entry key="otherColoration">Coloration utilisée</entry>
   <entry key="developmentTime">Temps de développement</entry>
-  <entry key="developmentTime.example">150 μg</entry>
+  <entry key="developmentTime.example">300 s</entry>
   <entry key="decoloration">Décoloré</entry>
   <entry key="weightMarkerQuantity">Quantité de marqueur de poids moléculaire (μg)</entry>
   <entry key="weightMarkerQuantity.example">200</entry>

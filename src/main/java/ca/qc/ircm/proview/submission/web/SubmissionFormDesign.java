@@ -36,7 +36,17 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Panel samplesPanel;
   protected TextField sampleSupportText;
   protected OptionGroup sampleSupportOptions;
+  protected TextField solutionSolventField;
   protected TextField sampleCountField;
+  protected TextField sampleNameField;
+  protected TextField formulaField;
+  protected TextField monoisotopicMassField;
+  protected TextField averageMassField;
+  protected TextField toxicityField;
+  protected CheckBox lightSensitiveField;
+  protected TextField storageTemperatureText;
+  protected OptionGroup storageTemperatureOptions;
+  protected HorizontalLayout sampleNamesLayout;
   protected Table sampleNamesTable;
   protected Button fillSampleNamesButton;
   protected Panel experiencePanel;
