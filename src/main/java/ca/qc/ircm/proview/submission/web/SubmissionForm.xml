@@ -74,6 +74,12 @@
   <entry key="proteinQuantity">Total protein quantity in gel</entry>
   <entry key="proteinQuantityUnit">Total protein quantity unit in gel</entry>
   <entry key="proteinQuantity.example">150 μg</entry>
+  <entry key="gelImages">Gel image(s)</entry>
+  <entry key="gelImages.filename">File</entry>
+  <entry key="gelImages.removeGelImage">Remove</entry>
+  <entry key="gelImages.error">File {0} could not be uploaded</entry>
+  <entry key="gelImages.overMaximumSize">File {0} size not below {1}</entry>
+  <entry key="gelImages.overMaximumCount">Maximum of {0} allowed files</entry>
   <entry key="servicesPanel">Services</entry>
   <entry key="proteolyticDigestionMethod">Proteolytic digestion</entry>
   <entry key="proteolyticDigestionMethod.DIGESTED.value">- used enzyme</entry>

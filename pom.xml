@@ -68,6 +68,7 @@
     <flexibleoptiongroup.version>2.3.0</flexibleoptiongroup.version>
     <popupbutton.version>2.6.0</popupbutton.version>
     <componentrenderer.version>1.0.2</componentrenderer.version>
+    <plupload-vaadin.version>2.0.0</plupload-vaadin.version>
     <guava.version>19.0</guava.version>
     <commons-lang3.version>3.4</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
@@ -353,6 +354,11 @@
       <groupId>de.datenhahn.vaadin</groupId>
       <artifactId>componentrenderer</artifactId>
       <version>${componentrenderer.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pl.exsio</groupId>
+      <artifactId>plupload-vaadin</artifactId>
+      <version>${plupload-vaadin.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>

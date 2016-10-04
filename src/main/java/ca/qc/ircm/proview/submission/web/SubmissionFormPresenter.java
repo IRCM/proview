@@ -30,10 +30,12 @@ import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
 import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
 import static ca.qc.ircm.proview.submission.GelSeparation.ONE_DIMENSION;
 import static ca.qc.ircm.proview.submission.GelThickness.ONE;
+import static ca.qc.ircm.proview.submission.QGelImage.gelImage;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -44,6 +46,7 @@ import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.GelColoration;
+import ca.qc.ircm.proview.submission.GelImage;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.Service;
@@ -58,18 +61,29 @@ import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import pl.exsio.plupload.PluploadError;
+import pl.exsio.plupload.PluploadFile;
+import pl.exsio.plupload.handler.memory.ByteArrayChunkHandlerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -160,6 +174,12 @@ public class SubmissionFormPresenter {
   public static final String PROTEIN_QUANTITY_PROPERTY =
       submission.proteinQuantity.getMetadata().getName();
   public static final String GEL_IMAGE_PROPERTY = submission.gelImages.getMetadata().getName();
+  public static final String MAXIMUM_GEL_IMAGES_SIZE = "10MB";
+  public static final int MAXIMUM_GEL_IMAGES_COUNT = 4;
+  public static final int GEL_IMAGES_TABLE_LENGTH = 3;
+  public static final String GEL_IMAGE_FILENAME_PROPERTY =
+      gelImage.filename.getMetadata().getName();
+  public static final String REMOVE_GEL_IMAGE_FILENAME = "removeGelImage";
   public static final String SERVICES_PANEL_ID = "servicesPanel";
   public static final String DIGESTION_TEXT =
       submission.proteolyticDigestionMethod.getMetadata().getName() + "Label";
@@ -189,6 +209,9 @@ public class SubmissionFormPresenter {
       STANDARD_QUANTITY_PROPERTY, STANDARD_COMMENTS_PROPERTY };
   private static final Object[] contaminantsColumns = new Object[] { CONTAMINANT_NAME_PROPERTY,
       CONTAMINANT_QUANTITY_PROPERTY, CONTAMINANT_COMMENTS_PROPERTY };
+  private static final Object[] gelImagesColumns =
+      new Object[] { GEL_IMAGE_FILENAME_PROPERTY, REMOVE_GEL_IMAGE_FILENAME };
+  private static final Logger logger = LoggerFactory.getLogger(SubmissionFormPresenter.class);
   private SubmissionForm view;
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<Submission> submissionFieldGroup = new BeanFieldGroup<>(Submission.class);
@@ -199,6 +222,9 @@ public class SubmissionFormPresenter {
   private BeanItemContainer<Standard> standardsContainer = new BeanItemContainer<>(Standard.class);
   private BeanItemContainer<Contaminant> contaminantsContainer =
       new BeanItemContainer<>(Contaminant.class);
+  private BeanItemContainer<GelImage> gelImagesContainer = new BeanItemContainer<>(GelImage.class);
+  private GeneratedPropertyContainer gelImagesGeneratedContainer =
+      new GeneratedPropertyContainer(gelImagesContainer);
   @Inject
   private SubmissionService submissionService;
 
@@ -269,6 +295,7 @@ public class SubmissionFormPresenter {
     view.decolorationField.setId(DECOLORATION_PROPERTY);
     view.weightMarkerQuantityField.setId(WEIGHT_MARKER_QUANTITY_PROPERTY);
     view.proteinQuantityField.setId(PROTEIN_QUANTITY_PROPERTY);
+    view.gelImagesUploader.setId(GEL_IMAGE_PROPERTY);
     view.servicesPanel.setId(SERVICES_PANEL_ID);
     view.digestionText.setId(DIGESTION_TEXT);
     view.digestionOptionsLayout.setId(DIGESTION_PROPERTY);
@@ -355,16 +382,17 @@ public class SubmissionFormPresenter {
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
     submissionFieldGroup.bind(view.serviceOptions, SERVICE_PROPERTY);
     view.sampleCountField
-        .setRequiredError(generalResources.message("required", view.sampleCountField.getCaption()));
+        .setRequiredError(generalResources.message(REQUIRED, view.sampleCountField.getCaption()));
     view.sampleNamesTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
     view.sampleNamesTable.setContainerDataSource(samplesContainer);
     view.sampleNamesTable.setPageLength(SAMPLES_NAMES_TABLE_LENGTH);
+    view.sampleNamesTable.setVisibleColumns(SAMPLE_NAME_PROPERTY);
     view.experienceField
-        .setRequiredError(generalResources.message("required", view.experienceField.getCaption()));
+        .setRequiredError(generalResources.message(REQUIRED, view.experienceField.getCaption()));
     submissionFieldGroup.bind(view.experienceField, EXPERIENCE_PROPERTY);
     submissionFieldGroup.bind(view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
     view.taxonomyField
-        .setRequiredError(generalResources.message("required", view.taxonomyField.getCaption()));
+        .setRequiredError(generalResources.message(REQUIRED, view.taxonomyField.getCaption()));
     submissionFieldGroup.bind(view.taxonomyField, TAXONOMY_PROPERTY);
     submissionFieldGroup.bind(view.proteinNameField, PROTEIN_NAME_PROPERTY);
     submissionFieldGroup.bind(view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
@@ -382,18 +410,61 @@ public class SubmissionFormPresenter {
     firstSampleFieldGroup.bind(view.sampleVolumeField, SAMPLE_VOLUME_PROPERTY);
     firstSampleFieldGroup.bind(view.sampleQuantityField, SAMPLE_QUANTITY_PROPERTY);
     view.separationField
-        .setRequiredError(generalResources.message("required", view.separationField.getCaption()));
+        .setRequiredError(generalResources.message(REQUIRED, view.separationField.getCaption()));
     submissionFieldGroup.bind(view.separationField, SEPARATION_PROPERTY);
     view.thicknessField
-        .setRequiredError(generalResources.message("required", view.thicknessField.getCaption()));
+        .setRequiredError(generalResources.message(REQUIRED, view.thicknessField.getCaption()));
     submissionFieldGroup.bind(view.thicknessField, THICKNESS_PROPERTY);
     view.colorationField
-        .setRequiredError(generalResources.message("required", view.colorationField.getCaption()));
+        .setRequiredError(generalResources.message(REQUIRED, view.colorationField.getCaption()));
     submissionFieldGroup.bind(view.colorationField, COLORATION_PROPERTY);
     submissionFieldGroup.bind(view.developmentTimeField, DEVELOPMENT_TIME_PROPERTY);
     submissionFieldGroup.bind(view.decolorationField, DECOLORATION_PROPERTY);
     submissionFieldGroup.bind(view.weightMarkerQuantityField, WEIGHT_MARKER_QUANTITY_PROPERTY);
     submissionFieldGroup.bind(view.proteinQuantityField, PROTEIN_QUANTITY_PROPERTY);
+    view.gelImagesUploader.setMaxFileSize(MAXIMUM_GEL_IMAGES_SIZE);
+    view.gelImagesUploader.setChunkHandlerFactory(new ByteArrayChunkHandlerFactory());
+    gelImagesGeneratedContainer.addGeneratedProperty(GEL_IMAGE_FILENAME_PROPERTY,
+        new PropertyValueGenerator<Button>() {
+          @Override
+          public Button getValue(Item item, Object itemId, Object propertyId) {
+            GelImage gelImage = (GelImage) itemId;
+            Button button = new Button();
+            button.setCaption(gelImage.getFilename());
+            StreamResource resource = new StreamResource(
+                () -> new ByteArrayInputStream(gelImage.getContent()), gelImage.getFilename());
+            FileDownloader fileDownloader = new FileDownloader(resource);
+            fileDownloader.extend(button);
+            return button;
+          }
+
+          @Override
+          public Class<Button> getType() {
+            return Button.class;
+          }
+        });
+    gelImagesGeneratedContainer.addGeneratedProperty(REMOVE_GEL_IMAGE_FILENAME,
+        new PropertyValueGenerator<Button>() {
+          @Override
+          public Button getValue(Item item, Object itemId, Object propertyId) {
+            MessageResource resources = view.getResources();
+            GelImage gelImage = (GelImage) itemId;
+            Button button = new Button();
+            button.setCaption(
+                resources.message(GEL_IMAGE_PROPERTY + "." + REMOVE_GEL_IMAGE_FILENAME));
+            button.addClickListener(e -> gelImagesContainer.removeItem(gelImage));
+            return button;
+          }
+
+          @Override
+          public Class<Button> getType() {
+            return Button.class;
+          }
+        });
+    view.gelImagesTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
+    view.gelImagesTable.setContainerDataSource(gelImagesGeneratedContainer);
+    view.gelImagesTable.setPageLength(GEL_IMAGES_TABLE_LENGTH);
+    view.gelImagesTable.setVisibleColumns(gelImagesColumns);
     submissionFieldGroup.bind(view.digestionFlexibleOptions, DIGESTION_PROPERTY);
     submissionFieldGroup.bind(view.instrumentOptions, INSTRUMENT_PROPERTY);
     submissionFieldGroup.bind(view.proteinIdentificationFlexibleOptions,
@@ -413,6 +484,7 @@ public class SubmissionFormPresenter {
     });
     view.standardsTable.setContainerDataSource(standardsContainer);
     view.standardsTable.setPageLength(STANDARDS_TABLE_LENGTH);
+    view.standardsTable.setVisibleColumns(standardsColumns);
     view.contaminantsTable.setTableFieldFactory(new EmptyNullTableFieldFactory() {
       @Override
       public Field<?> createField(Container container, Object itemId, Object propertyId,
@@ -427,6 +499,7 @@ public class SubmissionFormPresenter {
     });
     view.contaminantsTable.setContainerDataSource(contaminantsContainer);
     view.contaminantsTable.setPageLength(CONTAMINANTS_TABLE_LENGTH);
+    view.contaminantsTable.setVisibleColumns(contaminantsColumns);
   }
 
   private void addFieldListeners() {
@@ -445,6 +518,14 @@ public class SubmissionFormPresenter {
         e -> updateContaminantsTable(view.contaminantCountField.getValue()));
     view.contaminantCountField.addTextChangeListener(e -> updateContaminantsTable(e.getText()));
     view.fillContaminantsButton.addClickListener(e -> fillContaminants());
+    view.gelImagesUploader.addFilesAddedListener(files -> view.gelImagesUploader.start());
+    view.gelImagesUploader.addFileUploadedListener(file -> gelImageReceived(file));
+    view.gelImagesUploader.addUploadStartListener(() -> view.gelImageProgress.setVisible(true));
+    view.gelImagesUploader.addUploadCompleteListener(() -> view.gelImageProgress.setVisible(false));
+    view.gelImagesUploader.addUploadCompleteListener(() -> warnIfGelImageAtMaximum());
+    view.gelImagesUploader.addUploadProgressListener(
+        file -> view.gelImageProgress.setValue((float) file.getSize() / file.getOrigSize()));
+    view.gelImagesUploader.addErrorListener(error -> gelImageError(error));
     for (ProteolyticDigestion digestion : SubmissionForm.DIGESTIONS) {
       view.digestionOptionTextField.get(digestion)
           .addValueChangeListener(e -> selectDigestion(digestion));
@@ -482,7 +563,6 @@ public class SubmissionFormPresenter {
     view.storageTemperatureText.setCaption(resources.message(STORAGE_TEMPERATURE_PROPERTY));
     view.storageTemperatureOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.storageTemperatureOptions.setCaption(resources.message(STORAGE_TEMPERATURE_PROPERTY));
-    view.sampleNamesTable.setVisibleColumns(SAMPLE_NAME_PROPERTY);
     view.sampleNamesTable.setColumnHeader(SAMPLE_NAME_PROPERTY,
         resources.message(SAMPLE_NAMES_PROPERTY));
     view.fillSampleNamesButton.setCaption(resources.message(FILL_SAMPLE_NAMES_PROPERTY));
@@ -500,7 +580,6 @@ public class SubmissionFormPresenter {
         .setInputPrompt(resources.message(SAMPLE_QUANTITY_PROPERTY + "." + EXAMPLE));
     view.standardsPanel.setCaption(resources.message(STANDARDS_PANEL_ID));
     view.standardCountField.setCaption(resources.message(STANDARD_COUNT_PROPERTY));
-    view.standardsTable.setVisibleColumns(standardsColumns);
     for (Object column : standardsColumns) {
       view.standardsTable.setColumnHeader(column,
           resources.message(STANDARD_PROPERTY + "." + column));
@@ -508,7 +587,6 @@ public class SubmissionFormPresenter {
     view.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS_PROPERTY));
     view.contaminantsPanel.setCaption(resources.message(CONTAMINANTS_PANEL_ID));
     view.contaminantCountField.setCaption(resources.message(CONTAMINANT_COUNT_PROPERTY));
-    view.contaminantsTable.setVisibleColumns(contaminantsColumns);
     for (Object column : contaminantsColumns) {
       view.contaminantsTable.setColumnHeader(column,
           resources.message(CONTAMINANT_PROPERTY + "." + column));
@@ -531,6 +609,11 @@ public class SubmissionFormPresenter {
     view.proteinQuantityField.setCaption(resources.message(PROTEIN_QUANTITY_PROPERTY));
     view.proteinQuantityField
         .setInputPrompt(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE));
+    view.gelImagesUploader.setCaption(resources.message(GEL_IMAGE_PROPERTY));
+    for (Object column : gelImagesColumns) {
+      view.gelImagesTable.setColumnHeader(column,
+          resources.message(GEL_IMAGE_PROPERTY + "." + column));
+    }
     view.servicesPanel.setCaption(resources.message(SERVICES_PANEL_ID));
     view.digestionText.setCaption(resources.message(DIGESTION_PROPERTY));
     view.digestionOptionsLayout.setCaption(resources.message(DIGESTION_PROPERTY));
@@ -676,6 +759,7 @@ public class SubmissionFormPresenter {
     view.inactiveLabel.setVisible(editable);
     view.sampleSupportText.setVisible(!editable);
     view.sampleSupportOptions.setVisible(editable);
+    view.sampleSupportOptions.setItemEnabled(GEL, service != SMALL_MOLECULE);
     view.solutionSolventField
         .setVisible(service == SMALL_MOLECULE && support == SampleSupport.SOLUTION);
     view.sampleCountField.setVisible(service != SMALL_MOLECULE);
@@ -893,6 +977,34 @@ public class SubmissionFormPresenter {
       }
     } else {
       return value;
+    }
+  }
+
+  private void gelImageReceived(PluploadFile file) {
+    if (gelImagesContainer.size() < MAXIMUM_GEL_IMAGES_COUNT) {
+      GelImage gelImage = new GelImage();
+      gelImage.setFilename(file.getName());
+      gelImage.setContent((byte[]) file.getUploadedFile());
+      gelImagesContainer.addBean(gelImage);
+    }
+  }
+
+  private void gelImageError(PluploadError error) {
+    logger.debug("gelImagesUploader error {} of type {}", error.getMessage(), error.getType());
+    MessageResource resources = view.getResources();
+    if (error.getType() == PluploadError.Type.FILE_SIZE_ERROR) {
+      view.showError(resources.message(GEL_IMAGE_PROPERTY + ".overMaximumSize",
+          error.getFile().getName(), MAXIMUM_GEL_IMAGES_SIZE));
+    } else {
+      view.showError(resources.message(GEL_IMAGE_PROPERTY + ".error", error.getFile().getName()));
+    }
+  }
+
+  private void warnIfGelImageAtMaximum() {
+    if (gelImagesContainer.size() >= MAXIMUM_GEL_IMAGES_COUNT) {
+      MessageResource resources = view.getResources();
+      view.showWarning(
+          resources.message(GEL_IMAGE_PROPERTY + ".overMaximumCount", MAXIMUM_GEL_IMAGES_COUNT));
     }
   }
 

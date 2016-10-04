@@ -35,6 +35,8 @@ spring:
 #     url: jdbc:mysql://localhost/test
 #     username: dbuser
 #     password: dbpass
+multipart:
+  enabled: false
 
 # Web server.
 server:

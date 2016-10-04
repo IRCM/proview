@@ -35,4 +35,6 @@
     <inherits name="de.datenhahn.vaadin.componentrenderer.ComponentRendererWidgetSet" />
 
     <inherits name="org.vaadin.hene.popupbutton.widgetset.PopupbuttonWidgetset" />
+
+    <inherits name="pl.exsio.plupload.PluploadWidgetSet" />
 </module>

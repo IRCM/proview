@@ -72,6 +72,12 @@
   <entry key="weightMarkerQuantity.example">200</entry>
   <entry key="proteinQuantity">Quantité totale de protéine dans le gel</entry>
   <entry key="proteinQuantity.example">150 μg</entry>
+  <entry key="gelImages">Image(s) du gel</entry>
+  <entry key="gelImages.filename">Fichier</entry>
+  <entry key="gelImages.removeGelImage">Retirer</entry>
+  <entry key="gelImages.error">Fichier {0} n'a pu être envoyé</entry>
+  <entry key="gelImages.overMaximumSize">Fichier {0} n'a pas une taille inférieure à {1}</entry>
+  <entry key="gelImages.overMaximumCount">Maximum de {0} fichiers permis</entry>
   <entry key="servicesPanel">Services</entry>
   <entry key="proteolyticDigestionMethod">Digestion</entry>
   <entry key="proteolyticDigestionMethod.DIGESTED.value">- enzyme utilisé</entry>

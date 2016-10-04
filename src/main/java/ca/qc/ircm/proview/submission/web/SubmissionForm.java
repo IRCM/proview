@@ -92,14 +92,16 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   public static final MassDetectionInstrument[] INSTRUMENTS = new MassDetectionInstrument[] { VELOS,
       Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION, LTQ_ORBI_TRAP };
   private SubmissionFormPresenter presenter;
-  protected FlexibleOptionGroup digestionFlexibleOptions = new FlexibleOptionGroup();
-  protected FlexibleOptionGroup proteinIdentificationFlexibleOptions = new FlexibleOptionGroup();
-  protected Map<ProteolyticDigestion, HorizontalLayout> digestionOptionTextLayout = new HashMap<>();
-  protected Map<ProteolyticDigestion, TextField> digestionOptionTextField = new HashMap<>();
-  protected Map<ProteolyticDigestion, Label> digestionOptionNoteLabel = new HashMap<>();
-  protected Map<ProteinIdentification, FormLayout> proteinIdentificationOptionTextLayout =
+  protected final FlexibleOptionGroup digestionFlexibleOptions = new FlexibleOptionGroup();
+  protected final FlexibleOptionGroup proteinIdentificationFlexibleOptions =
+      new FlexibleOptionGroup();
+  protected final Map<ProteolyticDigestion, HorizontalLayout> digestionOptionTextLayout =
       new HashMap<>();
-  protected Map<ProteinIdentification, TextField> proteinIdentificationOptionTextField =
+  protected final Map<ProteolyticDigestion, TextField> digestionOptionTextField = new HashMap<>();
+  protected final Map<ProteolyticDigestion, Label> digestionOptionNoteLabel = new HashMap<>();
+  protected final Map<ProteinIdentification, FormLayout> proteinIdentificationOptionTextLayout =
+      new HashMap<>();
+  protected final Map<ProteinIdentification, TextField> proteinIdentificationOptionTextField =
       new HashMap<>();
 
   public void setPresenter(SubmissionFormPresenter presenter) {
@@ -183,5 +185,9 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
 
   public void showError(String message) {
     Notification.show(message, Notification.Type.ERROR_MESSAGE);
+  }
+
+  public void showWarning(String message) {
+    Notification.show(message, Notification.Type.WARNING_MESSAGE);
   }
 }

@@ -26,6 +26,7 @@ import java.util.Set;
  */
 public class WebConstants {
   public static final String GENERAL_MESSAGES = "VaadinMessages";
+  public static final String REQUIRED = "required";
 
   /**
    * Returns all valid locales for program.

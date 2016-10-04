@@ -4,6 +4,7 @@
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_hene_flexibleoptiongroup:org.vaadin.hene.flexibleoptiongroup">
+  <meta charset="UTF-8" name="package-mapping" content="pl_exsio_plupload:pl.exsio.plupload">
  </head> 
  <body> 
   <vaadin-vertical-layout spacing size-auto> 
@@ -32,21 +33,21 @@
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
       <vaadin-text-field caption="Sample type" style-name="borderless" null-representation="" readonly _id="sampleSupportText"></vaadin-text-field> 
-      <vaadin-option-group caption="Sample type" required item-caption-mode="id" _id="sampleSupportOptions"> 
+      <vaadin-option-group caption="Sample type" required item-caption-mode="id" immediate _id="sampleSupportOptions"> 
        <option>Solution</option> 
        <option>Dry</option> 
        <option>Gel</option> 
       </vaadin-option-group> 
-      <vaadin-text-field caption="Sample solvent" required null-representation="" _id="solutionSolventField"></vaadin-text-field> 
+      <vaadin-text-field caption="Sample solvent" required null-representation="" immediate _id="solutionSolventField"></vaadin-text-field> 
       <vaadin-text-field caption="Number of samples" required null-representation="" immediate _id="sampleCountField"></vaadin-text-field> 
-      <vaadin-text-field caption="Sample name" required null-representation="" _id="sampleNameField"></vaadin-text-field> 
-      <vaadin-text-field caption="Formula" required null-representation="" _id="formulaField"></vaadin-text-field> 
-      <vaadin-text-field caption="Monoisotopic molecular mass" required null-representation="" _id="monoisotopicMassField"></vaadin-text-field> 
+      <vaadin-text-field caption="Sample name" required null-representation="" immediate _id="sampleNameField"></vaadin-text-field> 
+      <vaadin-text-field caption="Formula" required null-representation="" immediate _id="formulaField"></vaadin-text-field> 
+      <vaadin-text-field caption="Monoisotopic molecular mass" required null-representation="" immediate _id="monoisotopicMassField"></vaadin-text-field> 
       <vaadin-text-field caption="Average mass" null-representation="" _id="averageMassField"></vaadin-text-field> 
       <vaadin-text-field caption="Toxicity" null-representation="" _id="toxicityField"></vaadin-text-field> 
       <vaadin-check-box caption="Light sensitive" _id="lightSensitiveField"></vaadin-check-box> 
       <vaadin-text-field caption="Storage temperature" style-name="borderless" null-representation="" readonly _id="storageTemperatureText"></vaadin-text-field> 
-      <vaadin-option-group caption="Storage temperature" required item-caption-mode="id" _id="storageTemperatureOptions"> 
+      <vaadin-option-group caption="Storage temperature" required item-caption-mode="id" immediate _id="storageTemperatureOptions"> 
        <option>-20</option> 
        <option>4</option> 
       </vaadin-option-group> 
@@ -124,6 +125,13 @@
       <vaadin-text-field caption="Weight marker quantity (µg)" null-representation="" _id="weightMarkerQuantityField"></vaadin-text-field> 
       <vaadin-text-field caption="Total protein quantity in gel" null-representation="" _id="proteinQuantityField"></vaadin-text-field> 
      </vaadin-form-layout> 
+     <vaadin-vertical-layout spacing size-auto> 
+      <vaadin-horizontal-layout spacing> 
+       <pl_exsio_plupload-plupload icon="fonticon://FontAwesome/f0c5" caption="Gel images" _id="gelImagesUploader"></pl_exsio_plupload-plupload> 
+       <vaadin-progress-bar icon="fonticon://FontAwesome/f0ed" visible="false" _id="gelImageProgress"></vaadin-progress-bar> 
+      </vaadin-horizontal-layout> 
+      <vaadin-table _id="gelImagesTable"></vaadin-table> 
+     </vaadin-vertical-layout> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
    <vaadin-panel caption="Services" size-auto _id="servicesPanel"> 
