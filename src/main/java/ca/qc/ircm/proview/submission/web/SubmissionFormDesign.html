@@ -5,6 +5,7 @@
   <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_hene_flexibleoptiongroup:org.vaadin.hene.flexibleoptiongroup">
   <meta charset="UTF-8" name="package-mapping" content="pl_exsio_plupload:pl.exsio.plupload">
+  <meta charset="UTF-8" name="package-mapping" content="pl_exsio_plupload_field:pl.exsio.plupload.field">
  </head> 
  <body> 
   <vaadin-vertical-layout spacing size-auto> 
@@ -42,6 +43,15 @@
       <vaadin-text-field caption="Number of samples" required null-representation="" immediate _id="sampleCountField"></vaadin-text-field> 
       <vaadin-text-field caption="Sample name" required null-representation="" immediate _id="sampleNameField"></vaadin-text-field> 
       <vaadin-text-field caption="Formula" required null-representation="" immediate _id="formulaField"></vaadin-text-field> 
+      <vaadin-vertical-layout caption="Structure" style-name="required" spacing size-auto _id="structureLayout"> 
+       <vaadin-button visible="false" icon="fonticon://FontAwesome/f019" plain-text _id="structureButton">
+         Structure filename 
+       </vaadin-button> 
+       <vaadin-horizontal-layout> 
+        <pl_exsio_plupload-plupload icon="fonticon://FontAwesome/f016" caption="Structure" _id="structureUploader"></pl_exsio_plupload-plupload> 
+        <vaadin-progress-bar icon="fonticon://FontAwesome/f0ed" visible="false" _id="structureProgress"></vaadin-progress-bar> 
+       </vaadin-horizontal-layout> 
+      </vaadin-vertical-layout> 
       <vaadin-text-field caption="Monoisotopic molecular mass" required null-representation="" immediate _id="monoisotopicMassField"></vaadin-text-field> 
       <vaadin-text-field caption="Average mass" null-representation="" _id="averageMassField"></vaadin-text-field> 
       <vaadin-text-field caption="Toxicity" null-representation="" _id="toxicityField"></vaadin-text-field> 
@@ -55,7 +65,7 @@
      <vaadin-horizontal-layout spacing _id="sampleNamesLayout"> 
       <vaadin-table _id="sampleNamesTable"></vaadin-table> 
       <vaadin-vertical-layout spacing size-auto> 
-       <vaadin-button plain-text _id="fillSampleNamesButton">
+       <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillSampleNamesButton">
          Fill Down 
        </vaadin-button> 
       </vaadin-vertical-layout> 
@@ -83,7 +93,7 @@
      </vaadin-form-layout> 
      <vaadin-horizontal-layout spacing _id="standardsTableLayout"> 
       <vaadin-table height="220px" _id="standardsTable"></vaadin-table> 
-      <vaadin-button plain-text _id="fillStandardsButton">
+      <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillStandardsButton">
         Fill down 
       </vaadin-button> 
      </vaadin-horizontal-layout> 
@@ -96,7 +106,7 @@
      </vaadin-form-layout> 
      <vaadin-horizontal-layout spacing _id="contaminantsTableLayout"> 
       <vaadin-table height="220px" _id="contaminantsTable"></vaadin-table> 
-      <vaadin-button plain-text _id="fillContaminantsButton">
+      <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillContaminantsButton">
         Fill down 
       </vaadin-button> 
      </vaadin-horizontal-layout> 
@@ -127,7 +137,7 @@
      </vaadin-form-layout> 
      <vaadin-vertical-layout spacing size-auto> 
       <vaadin-horizontal-layout spacing> 
-       <pl_exsio_plupload-plupload icon="fonticon://FontAwesome/f0c5" caption="Gel images" _id="gelImagesUploader"></pl_exsio_plupload-plupload> 
+       <pl_exsio_plupload-plupload icon="fonticon://FontAwesome/f0c5" caption="Gel images" style-name="required" _id="gelImagesUploader"></pl_exsio_plupload-plupload> 
        <vaadin-progress-bar icon="fonticon://FontAwesome/f0ed" visible="false" _id="gelImageProgress"></vaadin-progress-bar> 
       </vaadin-horizontal-layout> 
       <vaadin-table _id="gelImagesTable"></vaadin-table> 
@@ -159,6 +169,26 @@
       </vaadin-option-group> 
       <vaadin-text-field caption="Protein identification database" style-name="borderless" readonly _id="proteinIdentificationText"></vaadin-text-field> 
       <vaadin-vertical-layout caption="Protein identification database" spacing size-auto _id="proteinIdentificationOptionsLayout"></vaadin-vertical-layout> 
+      <vaadin-option-group caption="Analysis" item-caption-mode="id" _id="highResolutionOptions"> 
+       <option>Nominal mass</option> 
+       <option>Accurate mass measurement</option> 
+      </vaadin-option-group> 
+      <vaadin-vertical-layout caption="Soluble in" spacing size-auto _id="solventsLayout"> 
+       <vaadin-check-box caption="Acetonitrile" _id="acetonitrileSolventsField"></vaadin-check-box> 
+       <vaadin-check-box caption="Methanol" _id="methanolSolventsField"></vaadin-check-box> 
+       <vaadin-check-box caption="CHCL3" _id="chclSolventsField"></vaadin-check-box> 
+       <vaadin-vertical-layout size-auto _id="otherSolventLayout"> 
+        <vaadin-check-box caption="Other" _id="otherSolventsField"></vaadin-check-box> 
+        <vaadin-horizontal-layout spacing margin-left> 
+         <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
+          <vaadin-text-field caption="- specify other solvent" null-representation="" _id="otherSolventField"></vaadin-text-field> 
+         </vaadin-form-layout> 
+         <vaadin-label style-name="formcaption" size-auto plain-text _id="dmsoWarning" :middle>
+           (DMSO is not compatible with MS analysis) 
+         </vaadin-label> 
+        </vaadin-horizontal-layout> 
+       </vaadin-vertical-layout> 
+      </vaadin-vertical-layout> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 

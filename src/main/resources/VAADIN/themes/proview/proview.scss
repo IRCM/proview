@@ -73,7 +73,15 @@
   .v-label-formcaption {
     font-weight: normal;
   }
+  .v-caption-required::after {
+    content: " *";
+    color: $v-required-field-indicator-color;
+  }
 
+  .v-button-required .v-button-wrap::after {
+    content: " *";
+    color: $v-required-field-indicator-color;
+  }
   .v-button-skip-row {
     margin-top: 43px;
   }

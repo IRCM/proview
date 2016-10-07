@@ -266,9 +266,9 @@ public class SubmissionServiceImplTest {
     assertEquals(654.654, submission.getMonoisotopicMass(), 0.0001);
     assertEquals(654.654, submission.getAverageMass(), 0.0001);
     assertEquals("MeOH/TFA 0.1%", submission.getSolutionSolvent());
-    assertNotNull(submission.getSolventList());
-    assertEquals(1, submission.getSolventList().size());
-    assertNotNull(find(submission.getSolventList(), Solvent.METHANOL));
+    assertNotNull(submission.getSolvents());
+    assertEquals(1, submission.getSolvents().size());
+    assertNotNull(find(submission.getSolvents(), Solvent.METHANOL));
     assertEquals(null, submission.getOtherSolvent());
     assertEquals(null, submission.getToxicity());
     assertEquals(false, submission.isLightSensitive());
@@ -849,8 +849,8 @@ public class SubmissionServiceImplTest {
     assertEquals((Double) 654.654, submission.getMonoisotopicMass());
     assertEquals("MeOH/TFA 0.1%", submission.getSolutionSolvent());
     assertEquals(StorageTemperature.MEDIUM, submission.getStorageTemperature());
-    assertEquals(1, submission.getSolventList().size());
-    assertNotNull(find(submission.getSolventList(), Solvent.METHANOL));
+    assertEquals(1, submission.getSolvents().size());
+    assertNotNull(find(submission.getSolvents(), Solvent.METHANOL));
     sample = submission.getSamples().get(0);
     assertEquals((Long) 443L, sample.getId());
     assertEquals((Long) 2L, sample.getLaboratory().getId());
@@ -1628,7 +1628,7 @@ public class SubmissionServiceImplTest {
     submission.setStructure(structure);
     List<SampleSolvent> solvents = new ArrayList<SampleSolvent>();
     solvents.add(new SampleSolvent(Solvent.ACETONITRILE));
-    submission.setSolventList(solvents);
+    submission.setSolvents(solvents);
     submission.setOtherSolvent("chrisanol");
     submission.setComments("comments");
     submission.setSamples(samples);
@@ -1663,8 +1663,8 @@ public class SubmissionServiceImplTest {
     assertEquals(new Double(18.0), submission.getMonoisotopicMass());
     assertEquals(new Double(18.1), submission.getAverageMass());
     assertEquals("ch3oh", submission.getSolutionSolvent());
-    assertEquals(1, submission.getSolventList().size());
-    assertNotNull(find(submission.getSolventList(), Solvent.ACETONITRILE));
+    assertEquals(1, submission.getSolvents().size());
+    assertNotNull(find(submission.getSolvents(), Solvent.ACETONITRILE));
     assertEquals("chrisanol", submission.getOtherSolvent());
     assertEquals("none", submission.getToxicity());
     assertEquals(true, submission.isLightSensitive());

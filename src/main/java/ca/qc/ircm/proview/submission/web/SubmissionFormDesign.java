@@ -42,6 +42,10 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextField sampleCountField;
   protected TextField sampleNameField;
   protected TextField formulaField;
+  protected VerticalLayout structureLayout;
+  protected Button structureButton;
+  protected Plupload structureUploader;
+  protected ProgressBar structureProgress;
   protected TextField monoisotopicMassField;
   protected TextField averageMassField;
   protected TextField toxicityField;
@@ -93,6 +97,15 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected OptionGroup instrumentOptions;
   protected TextField proteinIdentificationText;
   protected VerticalLayout proteinIdentificationOptionsLayout;
+  protected OptionGroup highResolutionOptions;
+  protected VerticalLayout solventsLayout;
+  protected CheckBox acetonitrileSolventsField;
+  protected CheckBox methanolSolventsField;
+  protected CheckBox chclSolventsField;
+  protected VerticalLayout otherSolventLayout;
+  protected CheckBox otherSolventsField;
+  protected TextField otherSolventField;
+  protected Label dmsoWarning;
   protected Panel commentsPanel;
   protected TextArea commentsField;
   protected HorizontalLayout buttonsLayout;

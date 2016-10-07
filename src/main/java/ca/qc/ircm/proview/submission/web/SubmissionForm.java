@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.ORBITRAP_FUSION;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.Q_EXACTIVE;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TSQ_VANTAGE;
@@ -89,8 +88,8 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
           GelColoration.SILVER_INVITROGEN, GelColoration.OTHER };
   public static final MassDetectionInstrumentSource[] SOURCES =
       new MassDetectionInstrumentSource[] { ESI, NSI };
-  public static final MassDetectionInstrument[] INSTRUMENTS = new MassDetectionInstrument[] { VELOS,
-      Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION, LTQ_ORBI_TRAP };
+  public static final MassDetectionInstrument[] INSTRUMENTS =
+      new MassDetectionInstrument[] { VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION };
   private SubmissionFormPresenter presenter;
   protected final FlexibleOptionGroup digestionFlexibleOptions = new FlexibleOptionGroup();
   protected final FlexibleOptionGroup proteinIdentificationFlexibleOptions =
@@ -144,12 +143,9 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     TextField text = new TextField();
     textLayout.addComponent(text);
     digestionOptionTextField.put(digestion, text);
-    FormLayout noteLayout = new FormLayout();
-    noteLayout.setMargin(false);
-    textAndNoteLayout.addComponent(noteLayout);
     Label note = new Label();
     note.setStyleName("formcaption");
-    noteLayout.addComponent(note);
+    textAndNoteLayout.addComponent(note);
     digestionOptionNoteLabel.put(digestion, note);
     return optionTextLayout;
   }

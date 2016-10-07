@@ -289,7 +289,7 @@ public class Submission implements Data, LaboratoryData, Serializable {
    */
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "submissionId")
-  private List<SampleSolvent> solventList;
+  private List<SampleSolvent> solvents;
   /**
    * Other solvent value for Solvent.OTHER in solventList.
    */
@@ -777,11 +777,11 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.structure = structure;
   }
 
-  public List<SampleSolvent> getSolventList() {
-    return solventList;
+  public List<SampleSolvent> getSolvents() {
+    return solvents;
   }
 
-  public void setSolventList(List<SampleSolvent> solventList) {
-    this.solventList = solventList;
+  public void setSolvents(List<SampleSolvent> solvents) {
+    this.solvents = solvents;
   }
 }

@@ -203,10 +203,10 @@ public class SubmissionActivityServiceImpl implements SubmissionActivityService 
           .oldValue(oldStructure.getFilename()).newValue(newStructure.getFilename()));
     }
     // Solvents.
-    List<SampleSolvent> oldSolvents = oldSubmission.getSolventList() != null
-        ? oldSubmission.getSolventList() : new ArrayList<SampleSolvent>();
-    List<SampleSolvent> newSolvents = newSubmission.getSolventList() != null
-        ? newSubmission.getSolventList() : new ArrayList<SampleSolvent>();
+    List<SampleSolvent> oldSolvents = oldSubmission.getSolvents() != null
+        ? oldSubmission.getSolvents() : new ArrayList<SampleSolvent>();
+    List<SampleSolvent> newSolvents = newSubmission.getSolvents() != null
+        ? newSubmission.getSolvents() : new ArrayList<SampleSolvent>();
     for (SampleSolvent solvent : oldSolvents) {
       if (!newSolvents.contains(solvent)) {
         updateBuilders.add(new SolventUpdateActivityBuilder().recordId(solvent.getId())

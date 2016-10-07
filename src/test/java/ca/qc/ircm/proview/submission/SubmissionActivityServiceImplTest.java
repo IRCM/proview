@@ -539,7 +539,7 @@ public class SubmissionActivityServiceImplTest {
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
     SampleSolvent solvent = new SampleSolvent(203L, Solvent.OTHER);
-    submission.getSolventList().add(solvent);
+    submission.getSolvents().add(solvent);
     submission.setOtherSolvent("ch3oh");
     entityManager.flush();
     Long solventId = solvent.getId();
@@ -576,8 +576,8 @@ public class SubmissionActivityServiceImplTest {
   public void update_MoleculeSample_RemoveSolvent() throws Throwable {
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
-    SampleSolvent solvent = find(submission.getSolventList(), Solvent.METHANOL);
-    submission.getSolventList().remove(solvent);
+    SampleSolvent solvent = find(submission.getSolvents(), Solvent.METHANOL);
+    submission.getSolvents().remove(solvent);
     entityManager.flush();
     final Long solventId = solvent.getId();
 

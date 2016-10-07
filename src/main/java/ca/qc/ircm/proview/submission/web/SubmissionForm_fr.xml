@@ -29,6 +29,10 @@
   <entry key="name">Nom de l'échantillon</entry>
   <entry key="solutionSolvent">Solvent</entry>
   <entry key="formula">Formule empirique</entry>
+  <entry key="structure">Structure</entry>
+  <entry key="structure.error">Fichier {0} n'a pu être envoyé</entry>
+  <entry key="structure.overMaximumSize">Fichier {0} n'a pas une taille inférieure à {1}</entry>
+  <entry key="structureUploader">Télécharger structure</entry>
   <entry key="monoisotopicMass">Masse monoisotopique</entry>
   <entry key="averageMass">Masse moléculaire moyenne</entry>
   <entry key="toxicity">Toxicité</entry>
@@ -92,6 +96,12 @@
   <entry key="massDetectionInstrument">Sélection d'instrument</entry>
   <entry key="proteinIdentification">Base de données d'identification de protéines</entry>
   <entry key="proteinIdentification.OTHER.value">- lien pour télécharger la base de données</entry>
+  <entry key="highResolution">Analyse</entry>
+  <entry key="highResolution.false">Masse nominale</entry>
+  <entry key="highResolution.true">Mesure de masse précise</entry>
+  <entry key="solvents">Soluble dans</entry>
+  <entry key="otherSolvent">- spécifier autre solvent</entry>
+  <entry key="otherSolvent.note">(DMSO n'est pas compatible avec l'analyse MS)</entry>
   <entry key="commentsPanel">Commentaires</entry>
   <entry key="submit">Soumettre</entry>
 </properties>
