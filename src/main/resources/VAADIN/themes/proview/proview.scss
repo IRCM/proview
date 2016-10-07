@@ -93,7 +93,7 @@
     box-shadow: none;
   }
   
-	.v-radiobutton-disabled  > label, .v-radiobutton-disabled  > .v-icon {
+	.v-flexibleoptiongroupitemcomponent.v-disabled .v-radiobutton-disabled > label {
 		cursor: default;
 		opacity: 0.5;
 		filter: alpha(opacity=50);
