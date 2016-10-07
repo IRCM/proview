@@ -20,9 +20,6 @@
    </vaadin-label> 
    <vaadin-panel caption="Service" size-auto _id="servicePanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
-     <vaadin-label size-auto plain-text _id="serviceLabel">
-       LC/MS/MS 
-     </vaadin-label> 
      <vaadin-option-group item-caption-mode="id" _id="serviceOptions"> 
       <option>LC/MS/MS</option> 
       <option>Small molecule</option> 
@@ -33,7 +30,6 @@
    <vaadin-panel caption="Samples" size-auto _id="samplesPanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-text-field caption="Sample type" style-name="borderless" null-representation="" readonly _id="sampleSupportText"></vaadin-text-field> 
       <vaadin-option-group caption="Sample type" required item-caption-mode="id" immediate _id="sampleSupportOptions"> 
        <option>Solution</option> 
        <option>Dry</option> 
@@ -56,7 +52,6 @@
       <vaadin-text-field caption="Average mass" null-representation="" _id="averageMassField"></vaadin-text-field> 
       <vaadin-text-field caption="Toxicity" null-representation="" _id="toxicityField"></vaadin-text-field> 
       <vaadin-check-box caption="Light sensitive" _id="lightSensitiveField"></vaadin-check-box> 
-      <vaadin-text-field caption="Storage temperature" style-name="borderless" null-representation="" readonly _id="storageTemperatureText"></vaadin-text-field> 
       <vaadin-option-group caption="Storage temperature" required item-caption-mode="id" immediate _id="storageTemperatureOptions"> 
        <option>-20</option> 
        <option>4</option> 
@@ -135,20 +130,19 @@
       <vaadin-text-field caption="Weight marker quantity (µg)" null-representation="" _id="weightMarkerQuantityField"></vaadin-text-field> 
       <vaadin-text-field caption="Total protein quantity in gel" null-representation="" _id="proteinQuantityField"></vaadin-text-field> 
      </vaadin-form-layout> 
-     <vaadin-vertical-layout spacing size-auto> 
+     <vaadin-vertical-layout spacing> 
       <vaadin-horizontal-layout spacing> 
        <pl_exsio_plupload-plupload icon="fonticon://FontAwesome/f0c5" caption="Gel images" style-name="required" _id="gelImagesUploader"></pl_exsio_plupload-plupload> 
        <vaadin-progress-bar icon="fonticon://FontAwesome/f0ed" visible="false" _id="gelImageProgress"></vaadin-progress-bar> 
       </vaadin-horizontal-layout> 
-      <vaadin-table _id="gelImagesTable"></vaadin-table> 
+      <vaadin-table width-full _id="gelImagesTable"></vaadin-table> 
      </vaadin-vertical-layout> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
    <vaadin-panel caption="Services" size-auto _id="servicesPanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-text-field caption="Digestion" style-name="borderless" readonly _id="digestionText"></vaadin-text-field> 
-      <vaadin-vertical-layout caption="Digestion" spacing size-auto _id="digestionOptionsLayout"></vaadin-vertical-layout> 
+      <vaadin-vertical-layout caption="Digestion" size-auto _id="digestionOptionsLayout"></vaadin-vertical-layout> 
       <vaadin-label caption="Enrichment" size-auto plain-text _id="enrichmentLabel">
         Coming soon 
       </vaadin-label> 
@@ -156,38 +150,33 @@
         Coming soon 
       </vaadin-label> 
       <vaadin-text-field caption="Number of proteins in the sample" null-representation="" _id="sampleNumberProteinField"></vaadin-text-field> 
-      <vaadin-text-field caption="Source" style-name="borderless" readonly _id="sourceText"></vaadin-text-field> 
       <vaadin-option-group caption="Source" item-caption-mode="id" _id="sourceOptions"> 
        <option>ESI</option> 
        <option>NSI</option> 
       </vaadin-option-group> 
-      <vaadin-text-field caption="Instrument" style-name="borderless" readonly _id="instrumentText"></vaadin-text-field> 
       <vaadin-option-group caption="Instrument" item-caption-mode="id" _id="instrumentOptions"> 
        <option>LTQ-Orbitrap-Velos</option> 
        <option>Q-Exactive</option> 
        <option>LTQ-Orbitrap-Fusion</option> 
       </vaadin-option-group> 
-      <vaadin-text-field caption="Protein identification database" style-name="borderless" readonly _id="proteinIdentificationText"></vaadin-text-field> 
-      <vaadin-vertical-layout caption="Protein identification database" spacing size-auto _id="proteinIdentificationOptionsLayout"></vaadin-vertical-layout> 
+      <vaadin-vertical-layout caption="Protein identification database" size-auto _id="proteinIdentificationOptionsLayout"></vaadin-vertical-layout> 
       <vaadin-option-group caption="Analysis" item-caption-mode="id" _id="highResolutionOptions"> 
        <option>Nominal mass</option> 
        <option>Accurate mass measurement</option> 
       </vaadin-option-group> 
-      <vaadin-vertical-layout caption="Soluble in" spacing size-auto _id="solventsLayout"> 
-       <vaadin-check-box caption="Acetonitrile" _id="acetonitrileSolventsField"></vaadin-check-box> 
-       <vaadin-check-box caption="Methanol" _id="methanolSolventsField"></vaadin-check-box> 
-       <vaadin-check-box caption="CHCL3" _id="chclSolventsField"></vaadin-check-box> 
-       <vaadin-vertical-layout size-auto _id="otherSolventLayout"> 
-        <vaadin-check-box caption="Other" _id="otherSolventsField"></vaadin-check-box> 
-        <vaadin-horizontal-layout spacing margin-left> 
-         <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-          <vaadin-text-field caption="- specify other solvent" null-representation="" _id="otherSolventField"></vaadin-text-field> 
-         </vaadin-form-layout> 
-         <vaadin-label style-name="formcaption" size-auto plain-text _id="dmsoWarning" :middle>
-           (DMSO is not compatible with MS analysis) 
-         </vaadin-label> 
-        </vaadin-horizontal-layout> 
-       </vaadin-vertical-layout> 
+      <vaadin-vertical-layout caption="Soluble in" size-auto _id="solventsLayout"> 
+       <vaadin-check-box caption="Acetonitrile" style-name="flexible-option" _id="acetonitrileSolventsField"></vaadin-check-box> 
+       <vaadin-check-box caption="Methanol" style-name="flexible-option" _id="methanolSolventsField"></vaadin-check-box> 
+       <vaadin-check-box caption="CHCL3" style-name="flexible-option" _id="chclSolventsField"></vaadin-check-box> 
+       <vaadin-horizontal-layout spacing _id="otherSolventLayout"> 
+        <vaadin-check-box caption="Other" _id="otherSolventsField" :middle></vaadin-check-box> 
+        <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
+         <vaadin-text-field caption="- specify other solvent" style-name="small" null-representation="" _id="otherSolventField"></vaadin-text-field> 
+        </vaadin-form-layout> 
+        <vaadin-label style-name="formcaption" size-auto plain-text _id="dmsoWarning" :middle>
+          (DMSO is not compatible with MS analysis) 
+        </vaadin-label> 
+       </vaadin-horizontal-layout> 
       </vaadin-vertical-layout> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 

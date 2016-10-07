@@ -51,7 +51,8 @@ public class SubmissionViewPresenter {
     logger.debug("Submission view");
     this.view = view;
     setCaptions();
-    //view.submissionFormPresenter.setEditable(true);
+    view.editableCheckbox.addValueChangeListener(
+        e -> view.submissionFormPresenter.setEditable(view.editableCheckbox.getValue()));
   }
 
   private void setCaptions() {

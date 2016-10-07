@@ -51,15 +51,17 @@ import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
+import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.AbstractLayout;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 import org.vaadin.hene.flexibleoptiongroup.FlexibleOptionGroup;
 import org.vaadin.hene.flexibleoptiongroup.FlexibleOptionGroupItemComponent;
 
@@ -94,14 +96,13 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   protected final FlexibleOptionGroup digestionFlexibleOptions = new FlexibleOptionGroup();
   protected final FlexibleOptionGroup proteinIdentificationFlexibleOptions =
       new FlexibleOptionGroup();
-  protected final Map<ProteolyticDigestion, HorizontalLayout> digestionOptionTextLayout =
-      new HashMap<>();
   protected final Map<ProteolyticDigestion, TextField> digestionOptionTextField = new HashMap<>();
   protected final Map<ProteolyticDigestion, Label> digestionOptionNoteLabel = new HashMap<>();
-  protected final Map<ProteinIdentification, FormLayout> proteinIdentificationOptionTextLayout =
+  protected final Map<ProteinIdentification, Label> proteinIdentificationOptionLabel =
       new HashMap<>();
   protected final Map<ProteinIdentification, TextField> proteinIdentificationOptionTextField =
       new HashMap<>();
+  protected final Map<Solvent, CheckBox> solventsFields = new HashMap<Solvent, CheckBox>();
 
   public void setPresenter(SubmissionFormPresenter presenter) {
     this.presenter = presenter;
@@ -119,58 +120,71 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
       proteinIdentificationFlexibleOptions.addItem(proteinIdentification);
       createProteinIdentificationOptionLayout(proteinIdentification);
     }
+    solventsFields.put(Solvent.ACETONITRILE, acetonitrileSolventsField);
+    solventsFields.put(Solvent.METHANOL, methanolSolventsField);
+    solventsFields.put(Solvent.CHCL3, chclSolventsField);
+    solventsFields.put(Solvent.OTHER, otherSolventsField);
   }
 
   private AbstractLayout createDigestionOptionLayout(ProteolyticDigestion digestion) {
-    VerticalLayout optionTextLayout = new VerticalLayout();
-    digestionOptionsLayout.addComponent(optionTextLayout);
     HorizontalLayout optionLayout = new HorizontalLayout();
-    optionTextLayout.addComponent(optionLayout);
+    optionLayout.setSpacing(true);
+    digestionOptionsLayout.addComponent(optionLayout);
+    HorizontalLayout optionAndLabelLayout = new HorizontalLayout();
+    optionLayout.addComponent(optionAndLabelLayout);
+    optionLayout.setComponentAlignment(optionAndLabelLayout, Alignment.MIDDLE_LEFT);
     FlexibleOptionGroupItemComponent comp = digestionFlexibleOptions.getItemComponent(digestion);
-    optionLayout.addComponent(comp);
+    comp.addStyleName("flexible-option");
+    optionAndLabelLayout.addComponent(comp);
+    optionAndLabelLayout.setComponentAlignment(comp, Alignment.MIDDLE_LEFT);
     Label captionLabel = new Label();
-    captionLabel.setStyleName("formcaption");
+    captionLabel.addStyleName("formcaption");
     captionLabel.setValue(comp.getCaption());
-    optionLayout.addComponent(captionLabel);
-    HorizontalLayout textAndNoteLayout = new HorizontalLayout();
-    textAndNoteLayout.setMargin(new MarginInfo(false, false, false, true));
-    textAndNoteLayout.setSpacing(true);
-    optionTextLayout.addComponent(textAndNoteLayout);
-    digestionOptionTextLayout.put(digestion, textAndNoteLayout);
+    optionAndLabelLayout.addComponent(captionLabel);
+    optionAndLabelLayout.setComponentAlignment(captionLabel, Alignment.MIDDLE_LEFT);
     FormLayout textLayout = new FormLayout();
     textLayout.setMargin(false);
-    textAndNoteLayout.addComponent(textLayout);
+    optionLayout.addComponent(textLayout);
     TextField text = new TextField();
+    text.addStyleName(ValoTheme.TEXTFIELD_SMALL);
     textLayout.addComponent(text);
     digestionOptionTextField.put(digestion, text);
     Label note = new Label();
-    note.setStyleName("formcaption");
-    textAndNoteLayout.addComponent(note);
+    note.addStyleName("formcaption");
+    optionLayout.addComponent(note);
+    optionLayout.setComponentAlignment(note, Alignment.MIDDLE_LEFT);
     digestionOptionNoteLabel.put(digestion, note);
-    return optionTextLayout;
+    return optionLayout;
   }
 
-  private AbstractLayout
+  protected AbstractLayout
       createProteinIdentificationOptionLayout(ProteinIdentification proteinIdentification) {
-    VerticalLayout optionTextLayout = new VerticalLayout();
-    proteinIdentificationOptionsLayout.addComponent(optionTextLayout);
     HorizontalLayout optionLayout = new HorizontalLayout();
-    optionTextLayout.addComponent(optionLayout);
+    optionLayout.setSpacing(true);
+    proteinIdentificationOptionsLayout.addComponent(optionLayout);
+    HorizontalLayout optionAndLabelLayout = new HorizontalLayout();
+    optionLayout.addComponent(optionAndLabelLayout);
+    optionLayout.setComponentAlignment(optionAndLabelLayout, Alignment.MIDDLE_LEFT);
     FlexibleOptionGroupItemComponent comp =
         proteinIdentificationFlexibleOptions.getItemComponent(proteinIdentification);
-    optionLayout.addComponent(comp);
+    comp.addStyleName("flexible-option");
+    optionAndLabelLayout.addComponent(comp);
+    optionAndLabelLayout.setComponentAlignment(comp, Alignment.MIDDLE_LEFT);
     Label captionLabel = new Label();
-    captionLabel.setStyleName("formcaption");
+    captionLabel.addStyleName("formcaption");
     captionLabel.setValue(comp.getCaption());
-    optionLayout.addComponent(captionLabel);
+    proteinIdentificationOptionLabel.put(proteinIdentification, captionLabel);
+    optionAndLabelLayout.addComponent(captionLabel);
+    optionAndLabelLayout.setComponentAlignment(captionLabel, Alignment.MIDDLE_LEFT);
     FormLayout textLayout = new FormLayout();
-    textLayout.setMargin(new MarginInfo(false, false, false, true));
-    optionTextLayout.addComponent(textLayout);
-    proteinIdentificationOptionTextLayout.put(proteinIdentification, textLayout);
+    textLayout.setMargin(false);
+    optionLayout.addComponent(textLayout);
     TextField text = new TextField();
+    text.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+    text.setColumns(30);
     textLayout.addComponent(text);
     proteinIdentificationOptionTextField.put(proteinIdentification, text);
-    return optionTextLayout;
+    return optionLayout;
   }
 
   @Override
