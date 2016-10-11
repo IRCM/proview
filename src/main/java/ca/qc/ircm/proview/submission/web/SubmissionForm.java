@@ -151,6 +151,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     optionLayout.addComponent(textLayout);
     TextField text = new TextField();
     text.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+    text.setNullRepresentation("");
     textLayout.addComponent(text);
     digestionOptionTextField.put(digestion, text);
     Label note = new Label();
@@ -185,6 +186,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     optionLayout.addComponent(textLayout);
     TextField text = new TextField();
     text.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+    text.setNullRepresentation("");
     text.setColumns(30);
     textLayout.addComponent(text);
     proteinIdentificationOptionTextField.put(proteinIdentification, text);
@@ -203,5 +205,10 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
 
   public void showWarning(String message) {
     Notification.show(message, Notification.Type.WARNING_MESSAGE);
+  }
+
+  public void afterSuccessfulSave(String message) {
+    Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
+    getUI().getNavigator().navigateTo(SubmissionsView.VIEW_NAME);
   }
 }

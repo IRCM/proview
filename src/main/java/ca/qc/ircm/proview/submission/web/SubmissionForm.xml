@@ -54,14 +54,18 @@
   <entry key="standardsPanel">Standards</entry>
   <entry key="standardCount">Number of standards</entry>
   <entry key="standards.name">Name</entry>
+  <entry key="standards.name.required">Standards name is a required field</entry>
   <entry key="standards.quantity">Quantity</entry>
+  <entry key="standards.quantity.required">Standards quantity is a required field</entry>
   <entry key="standards.quantity.example">10 μg</entry>
   <entry key="standards.comments">Comments</entry>
   <entry key="fillStandards">Fill down</entry>
   <entry key="contaminantsPanel">Contaminants</entry>
   <entry key="contaminantCount">Number of contaminants</entry>
   <entry key="contaminants.name">Name</entry>
+  <entry key="contaminants.name.required">Contaminants name is a required field</entry>
   <entry key="contaminants.quantity">Quantity</entry>
+  <entry key="contaminants.quantity.required">Contaminants quantity is a required field</entry>
   <entry key="contaminants.quantity.example">10 μg</entry>
   <entry key="contaminants.comments">Comments</entry>
   <entry key="fillContaminants">Fill down</entry>
@@ -111,4 +115,5 @@ Light: None</entry>
   <entry key="otherSolvent.note">(DMSO is not compatible with MS analysis)</entry>
   <entry key="commentsPanel">Comments</entry>
   <entry key="submit">Submit</entry>
+  <entry key="save">Saved submission {0}</entry>
 </properties>
