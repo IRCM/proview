@@ -98,6 +98,11 @@
   <entry key="massDetectionInstrument">Instrument selection</entry>
   <entry key="proteinIdentification">Protein identification database</entry>
   <entry key="proteinIdentification.OTHER.value">- link to download database</entry>
+  <entry key="quantification">Quantification</entry>
+  <entry key="quantificationLabels">Quantification labels (if Silac)</entry>
+  <entry key="quantificationLabels.example">Heavy: Lys8, Arg10
+Medium: Lys4, Arg6
+Light: None</entry>
   <entry key="highResolution">Analysis</entry>
   <entry key="highResolution.false">Nominal mass</entry>
   <entry key="highResolution.true">Accurate mass measurement</entry>

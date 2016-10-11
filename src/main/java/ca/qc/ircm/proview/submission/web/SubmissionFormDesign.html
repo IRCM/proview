@@ -77,7 +77,7 @@
       <vaadin-text-field caption="Protein weight" null-representation="" _id="proteinWeightField"></vaadin-text-field> 
       <vaadin-text-field caption="Post translational modification" null-representation="" _id="postTranslationModificationField"></vaadin-text-field> 
       <vaadin-text-field caption="Protein quantity" required null-representation="" immediate _id="sampleQuantityField"></vaadin-text-field> 
-      <vaadin-text-field caption="Volume" required null-representation="" _id="sampleVolumeField"></vaadin-text-field> 
+      <vaadin-text-field caption="Volume" required null-representation="" immediate _id="sampleVolumeField"></vaadin-text-field> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
@@ -149,18 +149,24 @@
       <vaadin-label caption="Exclusions and inclusions" size-auto plain-text _id="exclusionsLabel">
         Coming soon 
       </vaadin-label> 
-      <vaadin-text-field caption="Number of proteins in the sample" required null-representation="" _id="sampleNumberProteinField"></vaadin-text-field> 
-      <vaadin-option-group caption="Source" required item-caption-mode="id" _id="sourceOptions"> 
+      <vaadin-text-field caption="Number of proteins in the sample" required null-representation="" immediate _id="sampleNumberProteinField"></vaadin-text-field> 
+      <vaadin-option-group caption="Source" required item-caption-mode="id" immediate _id="sourceOptions"> 
        <option>ESI</option> 
        <option>NSI</option> 
       </vaadin-option-group> 
-      <vaadin-option-group caption="Instrument" required item-caption-mode="id" _id="instrumentOptions"> 
+      <vaadin-option-group caption="Instrument" required item-caption-mode="id" immediate _id="instrumentOptions"> 
        <option>LTQ-Orbitrap-Velos</option> 
        <option>Q-Exactive</option> 
        <option>LTQ-Orbitrap-Fusion</option> 
       </vaadin-option-group> 
       <vaadin-vertical-layout caption="Protein identification database" style-name="required" size-auto _id="proteinIdentificationOptionsLayout"></vaadin-vertical-layout> 
-      <vaadin-option-group caption="Analysis" required item-caption-mode="id" _id="highResolutionOptions"> 
+      <vaadin-option-group caption="Quantification" item-caption-mode="id" _id="quantificationOptions"> 
+       <option>None</option> 
+       <option>Label-free</option> 
+       <option>Silac</option> 
+      </vaadin-option-group> 
+      <vaadin-text-area caption="Quantification labels (if Silac)" null-representation="" _id="quantificationLabelsField"></vaadin-text-area> 
+      <vaadin-option-group caption="Analysis" required item-caption-mode="id" immediate _id="highResolutionOptions"> 
        <option>Nominal mass</option> 
        <option>Accurate mass measurement</option> 
       </vaadin-option-group> 

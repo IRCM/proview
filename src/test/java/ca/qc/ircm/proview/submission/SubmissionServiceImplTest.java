@@ -202,6 +202,8 @@ public class SubmissionServiceImplTest {
     assertEquals(false, submission.isDecoloration());
     assertEquals(null, submission.getWeightMarkerQuantity());
     assertEquals(null, submission.getProteinQuantity());
+    assertEquals(null, submission.getQuantification());
+    assertEquals(null, submission.getQuantificationLabels());
     assertEquals("Philippe", submission.getComments());
     assertEquals(
         LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -273,6 +275,8 @@ public class SubmissionServiceImplTest {
     assertEquals(null, submission.getToxicity());
     assertEquals(false, submission.isLightSensitive());
     assertEquals(StorageTemperature.MEDIUM, submission.getStorageTemperature());
+    assertEquals(null, submission.getQuantification());
+    assertEquals(null, submission.getQuantificationLabels());
     assertEquals(null, submission.getComments());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),

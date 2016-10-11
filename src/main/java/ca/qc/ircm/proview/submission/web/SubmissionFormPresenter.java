@@ -51,6 +51,7 @@ import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelImage;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
+import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
@@ -198,6 +199,10 @@ public class SubmissionFormPresenter {
       submission.massDetectionInstrument.getMetadata().getName();
   public static final String PROTEIN_IDENTIFICATION_PROPERTY =
       submission.proteinIdentification.getMetadata().getName();
+  public static final String QUANTIFICATION_PROPERTY =
+      submission.quantification.getMetadata().getName();
+  public static final String QUANTIFICATION_LABELS_PROPERTY =
+      submission.quantificationLabels.getMetadata().getName();
   public static final String HIGH_RESOLUTION_PROPERTY =
       submission.highResolution.getMetadata().getName();
   public static final String SOLVENTS_PROPERTY = submission.solvents.getMetadata().getName();
@@ -309,6 +314,8 @@ public class SubmissionFormPresenter {
     view.sourceOptions.setId(SOURCE_PROPERTY);
     view.instrumentOptions.setId(INSTRUMENT_PROPERTY);
     view.proteinIdentificationOptionsLayout.setId(PROTEIN_IDENTIFICATION_PROPERTY);
+    view.quantificationOptions.setId(QUANTIFICATION_PROPERTY);
+    view.quantificationLabelsField.setId(QUANTIFICATION_LABELS_PROPERTY);
     view.highResolutionOptions.setId(HIGH_RESOLUTION_PROPERTY);
     view.acetonitrileSolventsField.setId(SOLVENTS_PROPERTY + "." + Solvent.ACETONITRILE.name());
     view.methanolSolventsField.setId(SOLVENTS_PROPERTY + "." + Solvent.METHANOL.name());
@@ -380,6 +387,16 @@ public class SubmissionFormPresenter {
     for (MassDetectionInstrument instrument : SubmissionForm.INSTRUMENTS) {
       view.instrumentOptions.addItem(instrument);
       view.instrumentOptions.setItemCaption(instrument, instrument.getLabel(locale));
+    }
+    view.quantificationOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
+    view.quantificationOptions.removeAllItems();
+    view.quantificationOptions.setNullSelectionItemId(NULL_ID);
+    view.quantificationOptions.setItemCaption(NULL_ID, Quantification.getNullLabel(locale));
+    view.quantificationOptions.addItem(view.quantificationOptions.getNullSelectionItemId());
+    view.quantificationOptions.setNullSelectionAllowed(true);
+    for (Quantification quantification : SubmissionForm.QUANTIFICATION) {
+      view.quantificationOptions.addItem(quantification);
+      view.quantificationOptions.setItemCaption(quantification, quantification.getLabel(locale));
     }
     view.highResolutionOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.highResolutionOptions.removeAllItems();
@@ -527,6 +544,8 @@ public class SubmissionFormPresenter {
     submissionFieldGroup.bind(view.proteinIdentificationFlexibleOptions,
         PROTEIN_IDENTIFICATION_PROPERTY);
     submissionFieldGroup.bind(view.otherSolventField, OTHER_SOLVENT_PROPERTY);
+    submissionFieldGroup.bind(view.quantificationOptions, QUANTIFICATION_PROPERTY);
+    submissionFieldGroup.bind(view.quantificationLabelsField, QUANTIFICATION_LABELS_PROPERTY);
     submissionFieldGroup.bind(view.highResolutionOptions, HIGH_RESOLUTION_PROPERTY);
     submissionFieldGroup.bind(view.commentsField, COMMENTS_PROPERTY);
   }
@@ -681,6 +700,10 @@ public class SubmissionFormPresenter {
             PROTEIN_IDENTIFICATION_PROPERTY + "." + proteinIdentification.name() + ".value"));
       }
     }
+    view.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
+    view.quantificationLabelsField.setCaption(resources.message(QUANTIFICATION_LABELS_PROPERTY));
+    view.quantificationLabelsField
+        .setInputPrompt(resources.message(QUANTIFICATION_LABELS_PROPERTY + "." + EXAMPLE));
     view.highResolutionOptions.setCaption(resources.message(HIGH_RESOLUTION_PROPERTY));
     view.solventsLayout.setCaption(resources.message(SOLVENTS_PROPERTY));
     view.acetonitrileSolventsField.setCaption(Solvent.ACETONITRILE.getLabel(locale));

@@ -314,6 +314,17 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Enumerated(STRING)
   private StorageTemperature storageTemperature;
   /**
+   * Quantification.
+   */
+  @Column(name = "quantification")
+  @Enumerated(STRING)
+  private Quantification quantification;
+  /**
+   * Quantification labels.
+   */
+  @Column(name = "quantificationLabels")
+  private String quantificationLabels;
+  /**
    * Any comments on this sample.
    */
   @Column(name = "comments")
@@ -783,5 +794,21 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setSolvents(List<SampleSolvent> solvents) {
     this.solvents = solvents;
+  }
+
+  public Quantification getQuantification() {
+    return quantification;
+  }
+
+  public void setQuantification(Quantification quantification) {
+    this.quantification = quantification;
+  }
+
+  public String getQuantificationLabels() {
+    return quantificationLabels;
+  }
+
+  public void setQuantificationLabels(String quantificationLabels) {
+    this.quantificationLabels = quantificationLabels;
   }
 }

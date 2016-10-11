@@ -35,6 +35,8 @@ import static ca.qc.ircm.proview.submission.GelSeparation.TWO_DIMENSION;
 import static ca.qc.ircm.proview.submission.GelThickness.ONE;
 import static ca.qc.ircm.proview.submission.GelThickness.ONE_HALF;
 import static ca.qc.ircm.proview.submission.GelThickness.TWO;
+import static ca.qc.ircm.proview.submission.Quantification.LABEL_FREE;
+import static ca.qc.ircm.proview.submission.Quantification.SILAC;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
@@ -49,6 +51,7 @@ import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
+import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -92,6 +95,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
       new MassDetectionInstrumentSource[] { ESI, NSI };
   public static final MassDetectionInstrument[] INSTRUMENTS =
       new MassDetectionInstrument[] { VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION };
+  public static final Quantification[] QUANTIFICATION = new Quantification[] { LABEL_FREE, SILAC };
   private SubmissionFormPresenter presenter;
   protected final FlexibleOptionGroup digestionFlexibleOptions = new FlexibleOptionGroup();
   protected final FlexibleOptionGroup proteinIdentificationFlexibleOptions =

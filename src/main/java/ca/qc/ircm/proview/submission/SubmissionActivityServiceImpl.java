@@ -184,6 +184,11 @@ public class SubmissionActivityServiceImpl implements SubmissionActivityService 
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("storageTemperature")
         .oldValue(oldSubmission.getStorageTemperature())
         .newValue(newSubmission.getStorageTemperature()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantification")
+        .oldValue(oldSubmission.getQuantification()).newValue(newSubmission.getQuantification()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantificationLabels")
+        .oldValue(oldSubmission.getQuantificationLabels())
+        .newValue(newSubmission.getQuantificationLabels()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("comments")
         .oldValue(oldSubmission.getComments()).newValue(newSubmission.getComments()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("additionalPrice")

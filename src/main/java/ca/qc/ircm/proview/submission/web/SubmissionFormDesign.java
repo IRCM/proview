@@ -90,6 +90,8 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected OptionGroup sourceOptions;
   protected OptionGroup instrumentOptions;
   protected VerticalLayout proteinIdentificationOptionsLayout;
+  protected OptionGroup quantificationOptions;
+  protected TextArea quantificationLabelsField;
   protected OptionGroup highResolutionOptions;
   protected VerticalLayout solventsLayout;
   protected CheckBox acetonitrileSolventsField;

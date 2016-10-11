@@ -19,19 +19,19 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="header">Soumission d'échantillons</entry>
-  <entry key="sampleTypeLabel">Avant de remplir ce formulaire, assurez-vous que tous vos échantillons sont du même type. Tous les échnatillons d'une soumission doivent être en solution, sec ou en gel. Toutes les analyses doivent être les mêmes pour les échantillons soumis. Si ce n'est pas le cas, vous pouvez remplir ce formulaire plusieurs fois.</entry>
+  <entry key="header">Soumission d''échantillons</entry>
+  <entry key="sampleTypeLabel">Avant de remplir ce formulaire, assurez-vous que tous vos échantillons sont du même type. Tous les échnatillons d''une soumission doivent être en solution, sec ou en gel. Toutes les analyses doivent être les mêmes pour les échantillons soumis. Si ce n''est pas le cas, vous pouvez remplir ce formulaire plusieurs fois.</entry>
   <entry key="inactive">Si votre fureteur est inactif pendant plus de 30 minutes avant que vous ayez compléter la soumission, vous pouvez perdre les informations non-confirmées.</entry>
-  <entry key="service">Proteomic platform service</entry>
+  <entry key="service">Service de la plateforme de protéomique</entry>
   <entry key="samplesPanel">Échantillons</entry>
-  <entry key="sampleCount">Nombre d'échantillons</entry>
-  <entry key="support">Type d'échantillons</entry>
-  <entry key="name">Nom de l'échantillon</entry>
+  <entry key="sampleCount">Nombre d''échantillons</entry>
+  <entry key="support">Type d''échantillons</entry>
+  <entry key="name">Nom de l''échantillon</entry>
   <entry key="solutionSolvent">Solvent</entry>
   <entry key="formula">Formule empirique</entry>
   <entry key="structure">Structure</entry>
-  <entry key="structure.error">Fichier {0} n'a pu être envoyé</entry>
-  <entry key="structure.overMaximumSize">Fichier {0} n'a pas une taille inférieure à {1}</entry>
+  <entry key="structure.error">Fichier {0} n''a pu être envoyé</entry>
+  <entry key="structure.overMaximumSize">Fichier {0} n''a pas une taille inférieure à {1}</entry>
   <entry key="structureUploader">Télécharger structure</entry>
   <entry key="monoisotopicMass">Masse monoisotopique</entry>
   <entry key="averageMass">Masse moléculaire moyenne</entry>
@@ -42,7 +42,7 @@
   <entry key="fillSampleNames">Copier vers le bas</entry>
   <entry key="experiencePanel">Détails à propos des échantillons</entry>
   <entry key="experience">Expérience</entry>
-  <entry key="goal">But de l'expérience</entry>
+  <entry key="goal">But de l''expérience</entry>
   <entry key="taxonomy">Taxonomie (espèce)</entry>
   <entry key="protein">Nom ou identifiant de protéine</entry>
   <entry key="molecularWeight">Poids moléculaire</entry>
@@ -65,7 +65,7 @@
   <entry key="contaminants.comments">Commentaires</entry>
   <entry key="fillContaminants">Copier vers le bas</entry>
   <entry key="gelPanel">Détails à propos du gel</entry>
-  <entry key="separation">Séparation sur gel d'électrophorèse</entry>
+  <entry key="separation">Séparation sur gel d''électrophorèse</entry>
   <entry key="thickness">Épaisseur de gel (mm)</entry>
   <entry key="coloration">Coloration</entry>
   <entry key="otherColoration">Coloration utilisée</entry>
@@ -79,8 +79,8 @@
   <entry key="gelImages">Image(s) du gel</entry>
   <entry key="gelImages.filename">Fichier</entry>
   <entry key="gelImages.removeGelImage">Retirer</entry>
-  <entry key="gelImages.error">Fichier {0} n'a pu être envoyé</entry>
-  <entry key="gelImages.overMaximumSize">Fichier {0} n'a pas une taille inférieure à {1}</entry>
+  <entry key="gelImages.error">Fichier {0} n''a pu être envoyé</entry>
+  <entry key="gelImages.overMaximumSize">Fichier {0} n''a pas une taille inférieure à {1}</entry>
   <entry key="gelImages.overMaximumCount">Maximum de {0} fichiers permis</entry>
   <entry key="servicesPanel">Services</entry>
   <entry key="proteolyticDigestionMethod">Digestion</entry>
@@ -92,16 +92,21 @@
   <entry key="exclusions">Exclusion et inclusion LC MSMS</entry>
   <entry key="exclusions.value">Les exclusions/inclusions pour le LC MSMS seront ajoutés dans le futur. Pour ces options, contactez Denis Faubert dans la page de contact.</entry>
   <entry key="sampleNumberProtein">Nombre de protéines dans les échantillons</entry>
-  <entry key="source">Source d'ionisation</entry>
-  <entry key="massDetectionInstrument">Sélection d'instrument</entry>
-  <entry key="proteinIdentification">Base de données d'identification de protéines</entry>
+  <entry key="source">Source d''ionisation</entry>
+  <entry key="massDetectionInstrument">Sélection d''instrument</entry>
+  <entry key="proteinIdentification">Base de données d''identification de protéines</entry>
   <entry key="proteinIdentification.OTHER.value">- lien pour télécharger la base de données</entry>
+  <entry key="quantification">Quantification</entry>
+  <entry key="quantificationLabels">Marqueurs pour la quantification (si Silac)</entry>
+  <entry key="quantificationLabels.example">Lourd: Lys8, Arg10
+Médium: Lys4, Arg6
+Léger: Aucun</entry>
   <entry key="highResolution">Analyse</entry>
   <entry key="highResolution.false">Masse nominale</entry>
   <entry key="highResolution.true">Mesure de masse précise</entry>
   <entry key="solvents">Soluble dans</entry>
   <entry key="otherSolvent">- spécifier autre solvent</entry>
-  <entry key="otherSolvent.note">(DMSO n'est pas compatible avec l'analyse MS)</entry>
+  <entry key="otherSolvent.note">(DMSO n''est pas compatible avec l''analyse MS)</entry>
   <entry key="commentsPanel">Commentaires</entry>
   <entry key="submit">Soumettre</entry>
 </properties>
