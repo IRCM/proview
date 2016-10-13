@@ -36,8 +36,11 @@ import javax.inject.Inject;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionViewPresenter {
   public static final String TITLE = "title";
+  public static final String SUBMIT_ID = "submit";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);
   private SubmissionView view;
+  @Inject
+  protected SubmissionFormPresenter submissionFormPresenter;
   @Inject
   private SubmissionService submissionService;
 
@@ -50,9 +53,11 @@ public class SubmissionViewPresenter {
   public void init(SubmissionView view) {
     logger.debug("Submission view");
     this.view = view;
+    view.submissionForm.setPresenter(submissionFormPresenter);
+    submissionFormPresenter.setEditable(true);
     setCaptions();
     view.editableCheckbox.addValueChangeListener(
-        e -> view.submissionFormPresenter.setEditable(view.editableCheckbox.getValue()));
+        e -> submissionFormPresenter.setEditable(view.editableCheckbox.getValue()));
   }
 
   private void setCaptions() {
@@ -62,6 +67,6 @@ public class SubmissionViewPresenter {
 
   void setSubmissionById(Long id) {
     Submission submission = submissionService.get(id);
-    view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
+    submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
   }
 }

@@ -9,7 +9,7 @@
  </head> 
  <body> 
   <vaadin-vertical-layout spacing size-auto> 
-   <vaadin-label style-name="h1" size-auto plain-text _id="headerLabel">
+   <vaadin-label size-auto plain-text _id="headerLabel">
      Sample submission 
    </vaadin-label> 
    <vaadin-label size-auto plain-text _id="sampleTypeLabel">
@@ -18,7 +18,7 @@
    <vaadin-label size-auto plain-text _id="inactiveLabel">
      If browser is inactive for more than 30 minutes, submission data may be lost. 
    </vaadin-label> 
-   <vaadin-panel caption="Service" style-name="required" size-auto _id="servicePanel"> 
+   <vaadin-panel caption="Service" size-auto _id="servicePanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-option-group item-caption-mode="id" _id="serviceOptions"> 
       <option>LC/MS/MS</option> 
@@ -30,35 +30,35 @@
    <vaadin-panel caption="Samples" size-auto _id="samplesPanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-option-group caption="Sample type" required item-caption-mode="id" immediate _id="sampleSupportOptions"> 
+      <vaadin-option-group caption="Sample type" item-caption-mode="id" immediate _id="sampleSupportOptions"> 
        <option>Solution</option> 
        <option>Dry</option> 
        <option>Gel</option> 
       </vaadin-option-group> 
-      <vaadin-text-field caption="Sample solvent" required null-representation="" immediate _id="solutionSolventField"></vaadin-text-field> 
-      <vaadin-text-field caption="Number of samples" required null-representation="" immediate _id="sampleCountField"></vaadin-text-field> 
-      <vaadin-text-field caption="Sample name" required null-representation="" immediate _id="sampleNameField"></vaadin-text-field> 
-      <vaadin-text-field caption="Formula" required null-representation="" immediate _id="formulaField"></vaadin-text-field> 
-      <vaadin-vertical-layout caption="Structure" style-name="required" spacing size-auto _id="structureLayout"> 
+      <vaadin-text-field caption="Sample solvent" null-representation="" immediate _id="solutionSolventField"></vaadin-text-field> 
+      <vaadin-text-field caption="Number of samples" null-representation="" immediate _id="sampleCountField"></vaadin-text-field> 
+      <vaadin-text-field caption="Sample name" null-representation="" immediate _id="sampleNameField"></vaadin-text-field> 
+      <vaadin-text-field caption="Formula" null-representation="" immediate _id="formulaField"></vaadin-text-field> 
+      <vaadin-vertical-layout caption="Structure" size-auto _id="structureLayout"> 
        <vaadin-button visible="false" icon="fonticon://FontAwesome/f019" plain-text _id="structureButton">
          Structure filename 
        </vaadin-button> 
        <vaadin-horizontal-layout> 
-        <pl_exsio_plupload-plupload icon="fonticon://FontAwesome/f016" caption="Structure" _id="structureUploader"></pl_exsio_plupload-plupload> 
+        <vaadin-vertical-layout size-auto _id="structureUploaderLayout"></vaadin-vertical-layout> 
         <vaadin-progress-bar icon="fonticon://FontAwesome/f0ed" visible="false" _id="structureProgress"></vaadin-progress-bar> 
        </vaadin-horizontal-layout> 
       </vaadin-vertical-layout> 
-      <vaadin-text-field caption="Monoisotopic molecular mass" required null-representation="" immediate _id="monoisotopicMassField"></vaadin-text-field> 
+      <vaadin-text-field caption="Monoisotopic molecular mass" null-representation="" immediate _id="monoisotopicMassField"></vaadin-text-field> 
       <vaadin-text-field caption="Average mass" null-representation="" _id="averageMassField"></vaadin-text-field> 
       <vaadin-text-field caption="Toxicity" null-representation="" _id="toxicityField"></vaadin-text-field> 
       <vaadin-check-box caption="Light sensitive" _id="lightSensitiveField"></vaadin-check-box> 
-      <vaadin-option-group caption="Storage temperature" required item-caption-mode="id" immediate _id="storageTemperatureOptions"> 
+      <vaadin-option-group caption="Storage temperature" item-caption-mode="id" immediate _id="storageTemperatureOptions"> 
        <option>-20</option> 
        <option>4</option> 
       </vaadin-option-group> 
      </vaadin-form-layout> 
      <vaadin-horizontal-layout spacing _id="sampleNamesLayout"> 
-      <vaadin-table required _id="sampleNamesTable"></vaadin-table> 
+      <vaadin-table immediate _id="sampleNamesTable"></vaadin-table> 
       <vaadin-vertical-layout spacing size-auto> 
        <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillSampleNamesButton">
          Fill Down 
@@ -70,14 +70,14 @@
    <vaadin-panel caption="Experience" size-auto _id="experiencePanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-text-field caption="Experience" required null-representation="" immediate _id="experienceField"></vaadin-text-field> 
+      <vaadin-text-field caption="Experience" null-representation="" immediate _id="experienceField"></vaadin-text-field> 
       <vaadin-text-field caption="Experience goal" null-representation="" _id="experienceGoalField"></vaadin-text-field> 
-      <vaadin-text-field caption="Taxonomy (specie)" required null-representation="" immediate _id="taxonomyField"></vaadin-text-field> 
+      <vaadin-text-field caption="Taxonomy (specie)" null-representation="" immediate _id="taxonomyField"></vaadin-text-field> 
       <vaadin-text-field caption="Protein name" null-representation="" _id="proteinNameField"></vaadin-text-field> 
       <vaadin-text-field caption="Protein weight" null-representation="" _id="proteinWeightField"></vaadin-text-field> 
       <vaadin-text-field caption="Post translational modification" null-representation="" _id="postTranslationModificationField"></vaadin-text-field> 
-      <vaadin-text-field caption="Protein quantity" required null-representation="" immediate _id="sampleQuantityField"></vaadin-text-field> 
-      <vaadin-text-field caption="Volume" required null-representation="" immediate _id="sampleVolumeField"></vaadin-text-field> 
+      <vaadin-text-field caption="Protein quantity" null-representation="" immediate _id="sampleQuantityField"></vaadin-text-field> 
+      <vaadin-text-field caption="Volume" null-representation="" immediate _id="sampleVolumeField"></vaadin-text-field> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
@@ -110,12 +110,12 @@
    <vaadin-panel caption="Gel details" size-auto _id="gelPanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-combo-box caption="Electrophoresis gel separation" required item-caption-mode="id" _id="separationField"> 
+      <vaadin-combo-box caption="Electrophoresis gel separation" item-caption-mode="id" _id="separationField"> 
        <option>Option 1</option> 
        <option>Option 2</option> 
        <option>Option 3</option> 
       </vaadin-combo-box> 
-      <vaadin-combo-box caption="Gel thickness (mm)" required item-caption-mode="id" _id="thicknessField"> 
+      <vaadin-combo-box caption="Gel thickness (mm)" item-caption-mode="id" _id="thicknessField"> 
        <option>Option 1</option> 
        <option>Option 2</option> 
        <option>Option 3</option> 
@@ -132,7 +132,7 @@
      </vaadin-form-layout> 
      <vaadin-vertical-layout spacing> 
       <vaadin-horizontal-layout spacing> 
-       <pl_exsio_plupload-plupload icon="fonticon://FontAwesome/f0c5" caption="Gel images" style-name="required" _id="gelImagesUploader"></pl_exsio_plupload-plupload> 
+       <vaadin-vertical-layout size-auto _id="gelImagesUploaderLayout"></vaadin-vertical-layout> 
        <vaadin-progress-bar icon="fonticon://FontAwesome/f0ed" visible="false" _id="gelImageProgress"></vaadin-progress-bar> 
       </vaadin-horizontal-layout> 
       <vaadin-table width-full _id="gelImagesTable"></vaadin-table> 
@@ -142,44 +142,107 @@
    <vaadin-panel caption="Services" size-auto _id="servicesPanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-vertical-layout caption="Digestion" style-name="required" size-auto _id="digestionOptionsLayout"></vaadin-vertical-layout> 
+      <vaadin-vertical-layout caption="Digestion" size-auto _id="digestionOptionsLayout"> 
+       <vaadin-horizontal-layout spacing> 
+        <vaadin-horizontal-layout _id="trypsinDigestionOptionLayout" :middle> 
+         <vaadin-label size-auto plain-text _id="trypsinDigestionOptionLabel" :middle>
+           Trypsin 
+         </vaadin-label> 
+        </vaadin-horizontal-layout> 
+       </vaadin-horizontal-layout> 
+       <vaadin-horizontal-layout spacing> 
+        <vaadin-horizontal-layout _id="digestedDigestionOptionLayout" :middle> 
+         <vaadin-label size-auto plain-text _id="digestedDigestionOptionLabel" :middle>
+           Digested 
+         </vaadin-label> 
+        </vaadin-horizontal-layout> 
+        <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
+         <vaadin-text-field caption="used enzyme" null-representation="" _id="usedProteolyticDigestionMethodField"></vaadin-text-field> 
+        </vaadin-form-layout> 
+       </vaadin-horizontal-layout> 
+       <vaadin-horizontal-layout spacing> 
+        <vaadin-horizontal-layout _id="otherDigestionOptionLayout" :middle> 
+         <vaadin-label size-auto plain-text _id="otherDigestionOptionLabel" :middle>
+           Other 
+         </vaadin-label> 
+        </vaadin-horizontal-layout> 
+        <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
+         <vaadin-text-field caption="enzyme to use" null-representation="" _id="otherProteolyticDigestionMethodField"></vaadin-text-field> 
+        </vaadin-form-layout> 
+        <vaadin-label size-auto plain-text _id="otherDigestionNote" :middle>
+          Enzymes must be supplied 
+        </vaadin-label> 
+       </vaadin-horizontal-layout> 
+      </vaadin-vertical-layout> 
       <vaadin-label caption="Enrichment" size-auto plain-text _id="enrichmentLabel">
         Coming soon 
       </vaadin-label> 
       <vaadin-label caption="Exclusions and inclusions" size-auto plain-text _id="exclusionsLabel">
         Coming soon 
       </vaadin-label> 
-      <vaadin-text-field caption="Number of proteins in the sample" required null-representation="" immediate _id="sampleNumberProteinField"></vaadin-text-field> 
-      <vaadin-option-group caption="Source" required item-caption-mode="id" immediate _id="sourceOptions"> 
+      <vaadin-text-field caption="Number of proteins in the sample" null-representation="" immediate _id="sampleNumberProteinField"></vaadin-text-field> 
+      <vaadin-option-group caption="Source" item-caption-mode="id" immediate _id="sourceOptions"> 
        <option>ESI</option> 
        <option>NSI</option> 
       </vaadin-option-group> 
-      <vaadin-option-group caption="Instrument" required item-caption-mode="id" immediate _id="instrumentOptions"> 
+      <vaadin-option-group caption="Instrument" item-caption-mode="id" immediate _id="instrumentOptions"> 
        <option>LTQ-Orbitrap-Velos</option> 
        <option>Q-Exactive</option> 
        <option>LTQ-Orbitrap-Fusion</option> 
       </vaadin-option-group> 
-      <vaadin-vertical-layout caption="Protein identification database" style-name="required" size-auto _id="proteinIdentificationOptionsLayout"></vaadin-vertical-layout> 
+      <vaadin-vertical-layout caption="Protein identification database" size-auto _id="proteinIdentificationOptionsLayout"> 
+       <vaadin-horizontal-layout spacing> 
+        <vaadin-horizontal-layout _id="refseqProteinIdentificationOptionLayout" :middle> 
+         <vaadin-label size-auto plain-text _id="refseqProteinIdentificationOptionLabel" :middle>
+           RefSeq 
+         </vaadin-label> 
+        </vaadin-horizontal-layout> 
+       </vaadin-horizontal-layout> 
+       <vaadin-horizontal-layout spacing> 
+        <vaadin-horizontal-layout _id="uniprotProteinIdentificationOptionLayout" :middle> 
+         <vaadin-label size-auto plain-text _id="uniprotProteinIdentificationOptionLabel" :middle>
+           UniProt 
+         </vaadin-label> 
+        </vaadin-horizontal-layout> 
+       </vaadin-horizontal-layout> 
+       <vaadin-horizontal-layout spacing> 
+        <vaadin-horizontal-layout _id="otherProteinIdentificationOptionLayout" :middle> 
+         <vaadin-label size-auto plain-text _id="otherProteinIdentificationOptionLabel" :middle>
+           Other 
+         </vaadin-label> 
+        </vaadin-horizontal-layout> 
+        <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
+         <vaadin-text-field caption="Link to protein database" null-representation="" _id="proteinIdentificationLink" :middle></vaadin-text-field> 
+        </vaadin-form-layout> 
+       </vaadin-horizontal-layout> 
+       <vaadin-horizontal-layout spacing _id="disabledProteinIdentificationLayout"> 
+        <vaadin-horizontal-layout _id="disabledProteinIdentificationOptionLayout" :middle> 
+         <vaadin-label size-auto plain-text _id="disabledProteinIdentificationOptionLabel" :middle>
+           UniProt 
+         </vaadin-label> 
+        </vaadin-horizontal-layout> 
+       </vaadin-horizontal-layout> 
+      </vaadin-vertical-layout> 
       <vaadin-option-group caption="Quantification" item-caption-mode="id" _id="quantificationOptions"> 
        <option>None</option> 
        <option>Label-free</option> 
        <option>Silac</option> 
       </vaadin-option-group> 
       <vaadin-text-area caption="Quantification labels (if Silac)" null-representation="" _id="quantificationLabelsField"></vaadin-text-area> 
-      <vaadin-option-group caption="Analysis" required item-caption-mode="id" immediate _id="highResolutionOptions"> 
+      <vaadin-option-group caption="Analysis" item-caption-mode="id" immediate _id="highResolutionOptions"> 
        <option>Nominal mass</option> 
        <option>Accurate mass measurement</option> 
       </vaadin-option-group> 
-      <vaadin-vertical-layout caption="Soluble in" style-name="required" size-auto _id="solventsLayout"> 
-       <vaadin-check-box caption="Acetonitrile" style-name="flexible-option" _id="acetonitrileSolventsField"></vaadin-check-box> 
-       <vaadin-check-box caption="Methanol" style-name="flexible-option" _id="methanolSolventsField"></vaadin-check-box> 
-       <vaadin-check-box caption="CHCL3" style-name="flexible-option" _id="chclSolventsField"></vaadin-check-box> 
+      <vaadin-vertical-layout caption="Soluble in" size-auto _id="solventsLayout"> 
+       <vaadin-check-box caption="Acetonitrile" _id="acetonitrileSolventsField"></vaadin-check-box> 
+       <vaadin-check-box caption="Methanol" _id="methanolSolventsField"></vaadin-check-box> 
+       <vaadin-check-box caption="CHCL3" _id="chclSolventsField"></vaadin-check-box> 
        <vaadin-horizontal-layout spacing _id="otherSolventLayout"> 
         <vaadin-check-box caption="Other" _id="otherSolventsField" :middle></vaadin-check-box> 
         <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-         <vaadin-text-field caption="- specify other solvent" style-name="small" null-representation="" _id="otherSolventField"></vaadin-text-field> 
+         <vaadin-text-field caption="- specify other solvent" null-representation="" _id="otherSolventField"></vaadin-text-field> 
         </vaadin-form-layout> 
-        <vaadin-label style-name="formcaption" size-auto plain-text _id="dmsoWarning" :middle>
+        <vaadin-label size-auto plain-text _id="otherSolventNoteLabel" :middle>
           (DMSO is not compatible with MS analysis) 
         </vaadin-label> 
        </vaadin-horizontal-layout> 

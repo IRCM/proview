@@ -76,6 +76,10 @@
   .v-label-formcaption {
     font-weight: normal;
   }
+  // Clickable layout.
+  .v-layout.clickable {
+    cursor: pointer;
+  }
   
   // Required mark for panels, layouts and buttons.
   .v-panel-caption-required::after {
