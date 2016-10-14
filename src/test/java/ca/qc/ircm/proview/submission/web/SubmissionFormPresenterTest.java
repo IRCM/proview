@@ -354,7 +354,7 @@ public class SubmissionFormPresenterTest {
   private String contaminantComment2 = "contaminant 2 comment";
   private GelSeparation gelSeparation = GelSeparation.TWO_DIMENSION;
   private GelThickness gelThickness = GelThickness.ONE_HALF;
-  private GelColoration gelColoration = GelColoration.SILVER;
+  private GelColoration gelColoration = GelColoration.OTHER;
   private String otherColoration = "my coloration";
   private String developmentTime = "300 seconds";
   private boolean decoloration = true;
@@ -1517,8 +1517,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(GEL, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
-    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getVolume());
+    assertEquals(null, sample.getQuantity());
     assertEquals(null, sample.getOriginalContainer());
     assertTrue(sample.getStandards() == null || sample.getStandards().isEmpty());
     assertEquals(null, sample.getStatus());
@@ -1529,8 +1529,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(GEL, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
-    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getVolume());
+    assertEquals(null, sample.getQuantity());
     assertEquals(null, sample.getOriginalContainer());
     assertTrue(sample.getStandards() == null || sample.getStandards().isEmpty());
     assertEquals(null, sample.getStatus());

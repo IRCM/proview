@@ -314,7 +314,9 @@ public class SubmissionFormPresenter {
     prepareFields();
     addFieldListeners();
     setDefaults();
-    updateVisibleAndEditable();
+    bindFields();
+    updateVisible();
+    updateEditable();
   }
 
   private void initFlexibleOptions() {
@@ -894,9 +896,12 @@ public class SubmissionFormPresenter {
   }
 
   private void addFieldListeners() {
-    editableProperty.addValueChangeListener(e -> updateVisibleAndEditable());
-    view.serviceOptions.addValueChangeListener(e -> updateVisibleAndEditable());
-    view.sampleSupportOptions.addValueChangeListener(e -> updateVisibleAndEditable());
+    editableProperty.addValueChangeListener(e -> {
+      updateVisible();
+      updateEditable();
+    });
+    view.serviceOptions.addValueChangeListener(e -> updateVisible());
+    view.sampleSupportOptions.addValueChangeListener(e -> updateVisible());
     view.sampleCountField
         .addValueChangeListener(e -> updateSampleCount(view.sampleCountField.getValue()));
     view.sampleCountField.addTextChangeListener(e -> updateSampleCount(e.getText()));
@@ -917,6 +922,7 @@ public class SubmissionFormPresenter {
         e -> updateContaminantsTable(view.contaminantCountField.getValue()));
     view.contaminantCountField.addTextChangeListener(e -> updateContaminantsTable(e.getText()));
     view.fillContaminantsButton.addClickListener(e -> fillContaminants());
+    view.colorationField.addValueChangeListener(e -> updateVisible());
     view.gelImagesUploader.addFilesAddedListener(files -> view.gelImagesUploader.start());
     view.gelImagesUploader.addFileUploadedListener(file -> gelImageReceived(file));
     view.gelImagesUploader.addUploadStartListener(() -> view.gelImageProgress.setVisible(true));
@@ -1051,6 +1057,124 @@ public class SubmissionFormPresenter {
     view.solventsFields.values().forEach(c -> c.setValue(false));
     solvents.stream().filter(s -> !s.isDeleted()).map(s -> s.getSolvent())
         .forEach(s -> view.solventsFields.get(s).setValue(true));
+  }
+
+  private void updateVisible() {
+    final boolean editable = editableProperty.getValue();
+    final Service service = (Service) view.serviceOptions.getValue();
+    final SampleSupport support = (SampleSupport) view.sampleSupportOptions.getValue();
+    view.sampleTypeLabel.setVisible(editable);
+    view.inactiveLabel.setVisible(editable);
+    view.sampleSupportOptions.setItemEnabled(GEL, service != SMALL_MOLECULE);
+    view.solutionSolventField
+        .setVisible(service == SMALL_MOLECULE && support == SampleSupport.SOLUTION);
+    view.sampleNameField.setVisible(service == SMALL_MOLECULE);
+    view.formulaField.setVisible(service == SMALL_MOLECULE);
+    view.structureLayout.setVisible(service == SMALL_MOLECULE);
+    view.structureUploader.setVisible(editable);
+    view.monoisotopicMassField.setVisible(service == SMALL_MOLECULE);
+    view.averageMassField.setVisible(service == SMALL_MOLECULE);
+    view.toxicityField.setVisible(service == SMALL_MOLECULE);
+    view.lightSensitiveField.setVisible(service == SMALL_MOLECULE);
+    view.storageTemperatureOptions.setVisible(service == SMALL_MOLECULE);
+    view.sampleCountField.setVisible(service != SMALL_MOLECULE);
+    view.sampleNamesLayout.setVisible(service != SMALL_MOLECULE);
+    view.fillSampleNamesButton.setVisible(editable);
+    view.experiencePanel.setVisible(service != SMALL_MOLECULE);
+    view.experienceField.setVisible(service != SMALL_MOLECULE);
+    view.experienceGoalField.setVisible(service != SMALL_MOLECULE);
+    view.taxonomyField.setVisible(service != SMALL_MOLECULE);
+    view.proteinNameField.setVisible(service != SMALL_MOLECULE);
+    view.proteinWeightField.setVisible(service != SMALL_MOLECULE);
+    view.postTranslationModificationField.setVisible(service != SMALL_MOLECULE);
+    view.sampleQuantityField
+        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+    view.sampleVolumeField.setVisible(service != SMALL_MOLECULE && support == SOLUTION);
+    view.standardsPanel
+        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+    view.fillStandardsButton.setVisible(editable);
+    view.contaminantsPanel
+        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+    view.fillContaminantsButton.setVisible(editable);
+    view.gelPanel.setVisible(service != SMALL_MOLECULE && support == GEL);
+    view.separationField.setVisible(service != SMALL_MOLECULE && support == GEL);
+    view.thicknessField.setVisible(service != SMALL_MOLECULE && support == GEL);
+    view.colorationField.setVisible(service != SMALL_MOLECULE && support == GEL);
+    view.otherColorationField.setVisible(
+        view.colorationField.isVisible() && view.colorationField.getValue() == GelColoration.OTHER);
+    view.developmentTimeField.setVisible(service != SMALL_MOLECULE && support == GEL);
+    view.decolorationField.setVisible(service != SMALL_MOLECULE && support == GEL);
+    view.weightMarkerQuantityField.setVisible(service != SMALL_MOLECULE && support == GEL);
+    view.proteinQuantityField.setVisible(service != SMALL_MOLECULE && support == GEL);
+    view.gelImagesUploader.setVisible(service != SMALL_MOLECULE && support == GEL && editable);
+    view.gelImagesTable.setVisibleColumns(editable ? editableGelImagesColumns : gelImagesColumns);
+    view.digestionOptionsLayout.setVisible(service == LC_MS_MS);
+    view.digestionFlexibleOptions.setVisible(service == LC_MS_MS);
+    view.usedProteolyticDigestionMethodField.setVisible(service == LC_MS_MS);
+    view.otherProteolyticDigestionMethodField.setVisible(service == LC_MS_MS);
+    view.enrichmentLabel.setVisible(editable && service == LC_MS_MS);
+    view.exclusionsLabel.setVisible(editable && service == LC_MS_MS);
+    view.sampleNumberProteinField.setVisible(service == INTACT_PROTEIN);
+    view.sourceOptions.setVisible(service == INTACT_PROTEIN);
+    view.instrumentOptions.setVisible(service != SMALL_MOLECULE);
+    view.proteinIdentificationOptionsLayout.setVisible(service == LC_MS_MS);
+    view.proteinIdentificationFlexibleOptions.setVisible(service == LC_MS_MS);
+    view.proteinIdentificationLinkField.setVisible(service == LC_MS_MS);
+    view.quantificationOptions.setVisible(service == LC_MS_MS);
+    view.quantificationLabelsField.setVisible(service == LC_MS_MS);
+    view.highResolutionOptions.setVisible(service == SMALL_MOLECULE);
+    view.solventsLayout.setVisible(service == SMALL_MOLECULE);
+    view.otherSolventField.setVisible(service == SMALL_MOLECULE);
+    view.buttonsLayout.setVisible(editable);
+  }
+
+  private void updateEditable() {
+    final boolean editable = editableProperty.getValue();
+    view.serviceOptions.setReadOnly(!editable);
+    view.sampleSupportOptions.setReadOnly(!editable);
+    view.solutionSolventField.setReadOnly(!editable);
+    view.sampleNameField.setReadOnly(!editable);
+    view.formulaField.setReadOnly(!editable);
+    view.monoisotopicMassField.setReadOnly(!editable);
+    view.averageMassField.setReadOnly(!editable);
+    view.toxicityField.setReadOnly(!editable);
+    view.lightSensitiveField.setReadOnly(!editable);
+    view.storageTemperatureOptions.setReadOnly(!editable);
+    view.sampleCountField.setReadOnly(!editable);
+    view.sampleNamesTable.setEditable(editable);
+    view.fillSampleNamesButton.setVisible(editable);
+    view.experienceField.setReadOnly(!editable);
+    view.experienceGoalField.setReadOnly(!editable);
+    view.taxonomyField.setReadOnly(!editable);
+    view.proteinNameField.setReadOnly(!editable);
+    view.proteinWeightField.setReadOnly(!editable);
+    view.postTranslationModificationField.setReadOnly(!editable);
+    view.sampleQuantityField.setReadOnly(!editable);
+    view.sampleVolumeField.setReadOnly(!editable);
+    view.standardsTable.setEditable(editable);
+    view.contaminantsTable.setEditable(editable);
+    view.separationField.setReadOnly(!editable);
+    view.thicknessField.setReadOnly(!editable);
+    view.colorationField.setReadOnly(!editable);
+    view.otherColorationField.setReadOnly(!editable);
+    view.developmentTimeField.setReadOnly(!editable);
+    view.decolorationField.setReadOnly(!editable);
+    view.weightMarkerQuantityField.setReadOnly(!editable);
+    view.proteinQuantityField.setReadOnly(!editable);
+    view.digestionFlexibleOptions.setReadOnly(!editable);
+    view.usedProteolyticDigestionMethodField.setReadOnly(!editable);
+    view.otherProteolyticDigestionMethodField.setReadOnly(!editable);
+    view.sampleNumberProteinField.setReadOnly(!editable);
+    view.sourceOptions.setReadOnly(!editable);
+    view.instrumentOptions.setReadOnly(!editable);
+    view.proteinIdentificationFlexibleOptions.setReadOnly(!editable);
+    view.proteinIdentificationLinkField.setReadOnly(!editable);
+    view.highResolutionOptions.setReadOnly(!editable);
+    view.solventsFields.values().forEach(c -> c.setReadOnly(!editable));
+    view.commentsField.setReadOnly(!editable);
+  }
+
+  private void bindFields() {
     submissionFieldGroup.bind(view.serviceOptions, SERVICE_PROPERTY);
     firstSampleFieldGroup.bind(view.sampleSupportOptions, SAMPLE_SUPPORT_PROPERTY);
     submissionFieldGroup.bind(view.solutionSolventField, SOLUTION_SOLVENT_PROPERTY);
@@ -1093,160 +1217,53 @@ public class SubmissionFormPresenter {
     submissionFieldGroup.bind(view.quantificationLabelsField, QUANTIFICATION_LABELS_PROPERTY);
     submissionFieldGroup.bind(view.highResolutionOptions, HIGH_RESOLUTION_PROPERTY);
     submissionFieldGroup.bind(view.commentsField, COMMENTS_PROPERTY);
-    updateVisibleAndEditable();
   }
 
-  private void updateVisibleAndEditable() {
-    final boolean editable = editableProperty.getValue();
-    final Service service = (Service) view.serviceOptions.getValue();
-    final SampleSupport support = (SampleSupport) view.sampleSupportOptions.getValue();
-    view.sampleTypeLabel.setVisible(editable);
-    view.inactiveLabel.setVisible(editable);
-    view.serviceOptions.setReadOnly(!editable);
-    view.sampleSupportOptions.setItemEnabled(GEL, service != SMALL_MOLECULE);
-    view.sampleSupportOptions.setReadOnly(!editable);
-    view.solutionSolventField
-        .setVisible(service == SMALL_MOLECULE && support == SampleSupport.SOLUTION);
-    view.solutionSolventField.setReadOnly(!editable);
+  private void bindVisibleFields() {
     bindVisible(submissionFieldGroup, view.solutionSolventField, SOLUTION_SOLVENT_PROPERTY);
-    view.sampleNameField.setVisible(service == SMALL_MOLECULE);
-    view.sampleNameField.setReadOnly(!editable);
     bindVisible(firstSampleFieldGroup, view.sampleNameField, SAMPLE_NAME_PROPERTY);
-    view.formulaField.setVisible(service == SMALL_MOLECULE);
-    view.formulaField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.formulaField, FORMULA_PROPERTY);
-    view.structureLayout.setVisible(service == SMALL_MOLECULE);
-    view.structureUploader.setVisible(editable);
-    view.monoisotopicMassField.setVisible(service == SMALL_MOLECULE);
-    view.monoisotopicMassField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.monoisotopicMassField, MONOISOTOPIC_MASS_PROPERTY);
-    view.averageMassField.setVisible(service == SMALL_MOLECULE);
-    view.averageMassField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.averageMassField, AVERAGE_MASS_PROPERTY);
-    view.toxicityField.setVisible(service == SMALL_MOLECULE);
-    view.toxicityField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.toxicityField, TOXICITY_PROPERTY);
-    view.lightSensitiveField.setVisible(service == SMALL_MOLECULE);
-    view.lightSensitiveField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.lightSensitiveField, LIGHT_SENSITIVE_PROPERTY);
-    view.storageTemperatureOptions.setVisible(service == SMALL_MOLECULE);
-    view.storageTemperatureOptions.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.storageTemperatureOptions, STORAGE_TEMPERATURE_PROPERTY);
-    view.sampleCountField.setVisible(service != SMALL_MOLECULE);
-    view.sampleCountField.setReadOnly(!editable);
-    view.sampleNamesLayout.setVisible(service != SMALL_MOLECULE);
-    view.sampleNamesTable.setEditable(editable);
-    view.fillSampleNamesButton.setVisible(editable);
-    view.experiencePanel.setVisible(service != SMALL_MOLECULE);
-    view.experienceField.setVisible(service != SMALL_MOLECULE);
-    view.experienceField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.experienceField, EXPERIENCE_PROPERTY);
-    view.experienceGoalField.setVisible(service != SMALL_MOLECULE);
-    view.experienceGoalField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
-    view.taxonomyField.setVisible(service != SMALL_MOLECULE);
-    view.taxonomyField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.taxonomyField, TAXONOMY_PROPERTY);
-    view.proteinNameField.setVisible(service != SMALL_MOLECULE);
-    view.proteinNameField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.proteinNameField, PROTEIN_NAME_PROPERTY);
-    view.proteinWeightField.setVisible(service != SMALL_MOLECULE);
-    view.proteinWeightField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
-    view.postTranslationModificationField.setVisible(service != SMALL_MOLECULE);
-    view.postTranslationModificationField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.postTranslationModificationField,
         POST_TRANSLATION_MODIFICATION_PROPERTY);
-    view.sampleQuantityField
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.sampleQuantityField.setReadOnly(!editable);
     bindVisible(firstSampleFieldGroup, view.sampleQuantityField, SAMPLE_QUANTITY_PROPERTY);
-    view.sampleVolumeField.setVisible(service != SMALL_MOLECULE && support == SOLUTION);
-    view.sampleVolumeField.setReadOnly(!editable);
     bindVisible(firstSampleFieldGroup, view.sampleVolumeField, SAMPLE_VOLUME_PROPERTY);
-    view.standardsPanel
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.standardsTable.setEditable(editable);
-    view.fillStandardsButton.setVisible(editable);
-    view.contaminantsPanel
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.contaminantsTable.setEditable(editable);
-    view.fillContaminantsButton.setVisible(editable);
-    view.gelPanel.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.separationField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.separationField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.separationField, SEPARATION_PROPERTY);
-    view.thicknessField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.thicknessField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.thicknessField, THICKNESS_PROPERTY);
-    view.colorationField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.colorationField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.colorationField, COLORATION_PROPERTY);
-    view.otherColorationField.setVisible(
-        view.colorationField.isVisible() && view.colorationField.getValue() == GelColoration.OTHER);
     bindVisible(submissionFieldGroup, view.otherColorationField, OTHER_COLORATION_PROPERTY);
-    view.developmentTimeField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.developmentTimeField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.developmentTimeField, DEVELOPMENT_TIME_PROPERTY);
-    view.decolorationField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.decolorationField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.decolorationField, DECOLORATION_PROPERTY);
-    view.weightMarkerQuantityField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.weightMarkerQuantityField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.weightMarkerQuantityField,
         WEIGHT_MARKER_QUANTITY_PROPERTY);
-    view.proteinQuantityField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.proteinQuantityField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.proteinQuantityField, PROTEIN_QUANTITY_PROPERTY);
-    view.gelImagesUploader.setVisible(service != SMALL_MOLECULE && support == GEL && editable);
-    view.gelImagesTable.setVisibleColumns(editable ? editableGelImagesColumns : gelImagesColumns);
-    view.digestionOptionsLayout.setVisible(service == LC_MS_MS);
-    view.digestionFlexibleOptions.setVisible(service == LC_MS_MS);
-    view.digestionFlexibleOptions.setReadOnly(!editable);
-    view.usedProteolyticDigestionMethodField.setVisible(service == LC_MS_MS);
-    view.usedProteolyticDigestionMethodField.setReadOnly(!editable);
-    view.otherProteolyticDigestionMethodField.setVisible(service == LC_MS_MS);
-    view.otherProteolyticDigestionMethodField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.usedProteolyticDigestionMethodField,
         USED_DIGESTION_PROPERTY);
     bindVisible(submissionFieldGroup, view.otherProteolyticDigestionMethodField,
         OTHER_DIGESTION_PROPERTY);
     bindVisible(submissionFieldGroup, view.digestionFlexibleOptions, DIGESTION_PROPERTY);
-    view.enrichmentLabel.setVisible(editable && service == LC_MS_MS);
-    view.exclusionsLabel.setVisible(editable && service == LC_MS_MS);
-    view.sampleNumberProteinField.setVisible(service == INTACT_PROTEIN);
-    view.sampleNumberProteinField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.sampleNumberProteinField,
         SAMPLE_NUMBER_PROTEIN_PROPERTY);
-    view.sourceOptions.setVisible(service == INTACT_PROTEIN);
-    view.sourceOptions.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.sourceOptions, SOURCE_PROPERTY);
-    view.instrumentOptions.setVisible(service != SMALL_MOLECULE);
-    view.instrumentOptions.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.instrumentOptions, INSTRUMENT_PROPERTY);
-    view.proteinIdentificationOptionsLayout.setVisible(service == LC_MS_MS);
-    view.proteinIdentificationFlexibleOptions.setVisible(service == LC_MS_MS);
-    view.proteinIdentificationFlexibleOptions.setReadOnly(!editable);
-    view.proteinIdentificationLinkField.setVisible(service == LC_MS_MS);
-    view.proteinIdentificationLinkField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.proteinIdentificationLinkField,
         PROTEIN_IDENTIFICATION_LINK_PROPERTY);
     bindVisible(submissionFieldGroup, view.proteinIdentificationFlexibleOptions,
         PROTEIN_IDENTIFICATION_PROPERTY);
-    view.quantificationOptions.setVisible(service == LC_MS_MS);
     bindVisible(submissionFieldGroup, view.quantificationOptions, QUANTIFICATION_PROPERTY);
-    view.quantificationLabelsField.setVisible(service == LC_MS_MS);
     bindVisible(submissionFieldGroup, view.quantificationLabelsField,
         QUANTIFICATION_LABELS_PROPERTY);
-    view.highResolutionOptions.setVisible(service == SMALL_MOLECULE);
-    view.highResolutionOptions.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.highResolutionOptions, HIGH_RESOLUTION_PROPERTY);
-    view.solventsLayout.setVisible(service == SMALL_MOLECULE);
-    view.solventsFields.values().forEach(c -> c.setReadOnly(!editable));
-    view.otherSolventField.setVisible(service == SMALL_MOLECULE);
     bindVisible(submissionFieldGroup, view.otherSolventField, OTHER_SOLVENT_PROPERTY);
-    view.commentsField.setReadOnly(!editable);
-    view.buttonsLayout.setVisible(editable);
   }
 
   private void bindVisible(FieldGroup fieldGroup, Field<?> field, Object propertyId) {
@@ -1583,49 +1600,56 @@ public class SubmissionFormPresenter {
   }
 
   private void saveSubmission() {
-    if (validate()) {
-      Submission submission = submissionFieldGroup.getItemDataSource().getBean();
-      SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
-      if (submission.getService() == LC_MS_MS) {
-        copySamplesFromTableToSubmission(submission);
-      } else {
-        submission.setProteolyticDigestionMethod(null);
-        submission.setProteinIdentification(null);
-      }
-      if (submission.getService() == SMALL_MOLECULE) {
-        submission.setMassDetectionInstrument(null);
-        submission.setExperience(firstSample.getName());
-        submission.setSamples(Arrays.asList(firstSample));
-        submission.setSolvents(new ArrayList<>());
-        if (view.acetonitrileSolventsField.getValue()) {
-          submission.getSolvents().add(new SampleSolvent(ACETONITRILE));
+    try {
+      bindVisibleFields();
+      if (validate()) {
+        Submission submission = submissionFieldGroup.getItemDataSource().getBean();
+        SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
+        if (submission.getService() == LC_MS_MS) {
+          copySamplesFromTableToSubmission(submission);
+        } else {
+          submission.setProteolyticDigestionMethod(null);
+          submission.setProteinIdentification(null);
         }
-        if (view.methanolSolventsField.getValue()) {
-          submission.getSolvents().add(new SampleSolvent(METHANOL));
+        if (submission.getService() == SMALL_MOLECULE) {
+          submission.setMassDetectionInstrument(null);
+          submission.setExperience(firstSample.getName());
+          submission.setSamples(Arrays.asList(firstSample));
+          submission.setSolvents(new ArrayList<>());
+          if (view.acetonitrileSolventsField.getValue()) {
+            submission.getSolvents().add(new SampleSolvent(ACETONITRILE));
+          }
+          if (view.methanolSolventsField.getValue()) {
+            submission.getSolvents().add(new SampleSolvent(METHANOL));
+          }
+          if (view.chclSolventsField.getValue()) {
+            submission.getSolvents().add(new SampleSolvent(CHCL3));
+          }
+          if (view.otherSolventsField.getValue()) {
+            submission.getSolvents().add(new SampleSolvent(Solvent.OTHER));
+          }
+        } else {
+          submission.setStructure(null);
+          submission.setStorageTemperature(null);
         }
-        if (view.chclSolventsField.getValue()) {
-          submission.getSolvents().add(new SampleSolvent(CHCL3));
+        if (submission.getService() == INTACT_PROTEIN) {
+          copySamplesFromTableToSubmission(submission);
+        } else {
+          submission.setSource(null);
         }
-        if (view.otherSolventsField.getValue()) {
-          submission.getSolvents().add(new SampleSolvent(Solvent.OTHER));
+        if (firstSample.getSupport() == GEL) {
+          submission.setGelImages(gelImagesContainer.getItemIds());
+        } else {
+          submission.setSeparation(null);
+          submission.setThickness(null);
         }
-      } else {
-        submission.setStructure(null);
-        submission.setStorageTemperature(null);
+        logger.debug("Save submission {}", submission);
+        submissionService.insert(submission);
+        MessageResource resources = view.getResources();
+        view.afterSuccessfulSave(resources.message("save", submission.getExperience()));
       }
-      if (submission.getService() == INTACT_PROTEIN) {
-        copySamplesFromTableToSubmission(submission);
-      } else {
-        submission.setSource(null);
-      }
-      if (firstSample.getSupport() != GEL) {
-        submission.setSeparation(null);
-        submission.setThickness(null);
-      }
-      logger.debug("Save submission {}", submission);
-      submissionService.insert(submission);
-      MessageResource resources = view.getResources();
-      view.afterSuccessfulSave(resources.message("save", submission.getExperience()));
+    } finally {
+      bindFields();
     }
   }
 
@@ -1636,8 +1660,10 @@ public class SubmissionFormPresenter {
       sample.setSupport(firstSample.getSupport());
       sample.setQuantity(firstSample.getQuantity());
       sample.setVolume(firstSample.getVolume());
-      copyStandardsFromTableToSample(sample);
-      copyContaminantsFromTableToSample(sample);
+      if (firstSample.getSupport() != GEL) {
+        copyStandardsFromTableToSample(sample);
+        copyContaminantsFromTableToSample(sample);
+      }
       submission.getSamples().add(sample);
     }
   }
@@ -1671,6 +1697,8 @@ public class SubmissionFormPresenter {
   public void setItemDataSource(Item item) {
     submissionFieldGroup.setItemDataSource(item != null ? item : new BeanItem<>(new Submission()));
     setDefaults();
+    bindFields();
+    updateVisible();
   }
 
   public boolean isEditable() {
