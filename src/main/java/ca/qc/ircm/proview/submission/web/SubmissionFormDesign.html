@@ -20,7 +20,7 @@
    </vaadin-label> 
    <vaadin-panel caption="Service" size-auto _id="servicePanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
-     <vaadin-option-group item-caption-mode="id" _id="serviceOptions"> 
+     <vaadin-option-group required item-caption-mode="id" immediate _id="serviceOptions"> 
       <option>LC/MS/MS</option> 
       <option>Small molecule</option> 
       <option>Intact protein</option> 
@@ -76,7 +76,7 @@
       <vaadin-text-field caption="Protein name" null-representation="" _id="proteinNameField"></vaadin-text-field> 
       <vaadin-text-field caption="Protein weight" null-representation="" _id="proteinWeightField"></vaadin-text-field> 
       <vaadin-text-field caption="Post translational modification" null-representation="" _id="postTranslationModificationField"></vaadin-text-field> 
-      <vaadin-text-field caption="Protein quantity" null-representation="" immediate _id="sampleQuantityField"></vaadin-text-field> 
+      <vaadin-text-field caption="Sample quantity" null-representation="" immediate _id="sampleQuantityField"></vaadin-text-field> 
       <vaadin-text-field caption="Volume" null-representation="" immediate _id="sampleVolumeField"></vaadin-text-field> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
@@ -125,6 +125,7 @@
        <option>Option 2</option> 
        <option>Option 3</option> 
       </vaadin-combo-box> 
+      <vaadin-text-field caption="Other coloration" null-representation="" _id="otherColorationField"></vaadin-text-field> 
       <vaadin-text-field caption="Development time" null-representation="" _id="developmentTimeField"></vaadin-text-field> 
       <vaadin-check-box caption="Destained" width="100px" _id="decolorationField"></vaadin-check-box> 
       <vaadin-text-field caption="Weight marker quantity (µg)" null-representation="" _id="weightMarkerQuantityField"></vaadin-text-field> 
@@ -212,7 +213,7 @@
          </vaadin-label> 
         </vaadin-horizontal-layout> 
         <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-         <vaadin-text-field caption="Link to protein database" null-representation="" _id="proteinIdentificationLink" :middle></vaadin-text-field> 
+         <vaadin-text-field caption="Link to protein database" null-representation="" _id="proteinIdentificationLinkField" :middle></vaadin-text-field> 
         </vaadin-form-layout> 
        </vaadin-horizontal-layout> 
        <vaadin-horizontal-layout spacing _id="disabledProteinIdentificationLayout"> 

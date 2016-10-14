@@ -105,7 +105,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
    */
   public SubmissionForm() {
     structureUploader = new Plupload();
-    structureUploader = new Plupload();
+    gelImagesUploader = new Plupload();
     solventsFields.put(Solvent.ACETONITRILE, acetonitrileSolventsField);
     solventsFields.put(Solvent.METHANOL, methanolSolventsField);
     solventsFields.put(Solvent.CHCL3, chclSolventsField);

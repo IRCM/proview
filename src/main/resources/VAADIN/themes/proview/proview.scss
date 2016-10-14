@@ -94,6 +94,9 @@
     content: " *";
     color: $v-required-field-indicator-color;
   }
+  .v-caption-hide-required {
+    display: none;
+  }
   
   // Position button at the height of the first row of the table beside it.
   .v-button-skip-row {

@@ -21,7 +21,10 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.UNIPROT;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
+import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
 import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
+import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
+import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION_PROPERTY;
@@ -58,6 +61,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUME
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.NULL_ID;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_PROPERTY;
@@ -108,8 +112,10 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -120,12 +126,14 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
+import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.GelColoration;
+import ca.qc.ircm.proview.submission.GelImage;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.Quantification;
@@ -171,7 +179,9 @@ import pl.exsio.plupload.Plupload;
 import pl.exsio.plupload.Plupload.FileUploadedListener;
 import pl.exsio.plupload.PluploadFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -250,6 +260,7 @@ public class SubmissionFormPresenterTest {
   private ComboBox separationField = new ComboBox();
   private ComboBox thicknessField = new ComboBox();
   private ComboBox colorationField = new ComboBox();
+  private TextField otherColorationField = new TextField();
   private TextField developmentTimeField = new TextField();
   private CheckBox decolorationField = new CheckBox();
   private TextField weightMarkerQuantityField = new TextField();
@@ -281,7 +292,7 @@ public class SubmissionFormPresenterTest {
   private Label uniprotProteinIdentificationOptionLabel = new Label();
   private HorizontalLayout otherProteinIdentificationOptionLayout = new HorizontalLayout();
   private Label otherProteinIdentificationOptionLabel = new Label();
-  private TextField proteinIdentificationLink = new TextField();
+  private TextField proteinIdentificationLinkField = new TextField();
   private HorizontalLayout disabledProteinIdentificationLayout = new HorizontalLayout();
   private HorizontalLayout disabledProteinIdentificationOptionLayout = new HorizontalLayout();
   private Label disabledProteinIdentificationOptionLabel = new Label();
@@ -305,6 +316,71 @@ public class SubmissionFormPresenterTest {
   private MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private Random random = new Random();
+  private SampleSupport support = SOLUTION;
+  private int sampleCount = 2;
+  private String solutionSolvent = "h2o";
+  private String sampleName = "my_sample";
+  private String sampleName1 = "my_sample_1";
+  private String sampleName2 = "my_sample_2";
+  private String formula = "ch3oh";
+  private String structureFilename = "ch3oh.png";
+  private byte[] structureContent = new byte[2048];
+  private double monoisotopicMass = 32.04;
+  private double averageMass = 32.08;
+  private String toxicity = "non-toxic";
+  private boolean lightSensitive = true;
+  private StorageTemperature storageTemperature = StorageTemperature.LOW;
+  private String experience = "my_experience";
+  private String experienceGoal = "to succeed!";
+  private String taxonomy = "human";
+  private String proteinName = "PORL2A";
+  private double proteinWeight = 217076;
+  private String postTranslationModification = "Methylation on A75";
+  private String sampleQuantity = "150 ug";
+  private double sampleVolume = 21.5;
+  private int standardsCount = 2;
+  private String standardName1 = "ADH";
+  private String standardQuantity1 = "5 ug";
+  private String standardComment1 = "standard 1 comment";
+  private String standardName2 = "CBS";
+  private String standardQuantity2 = "8 ug";
+  private String standardComment2 = "standard 2 comment";
+  private int contaminantsCount = 2;
+  private String contaminantName1 = "KRT1";
+  private String contaminantQuantity1 = "3 ug";
+  private String contaminantComment1 = "contaminant 1 comment";
+  private String contaminantName2 = "KRT8";
+  private String contaminantQuantity2 = "4 ug";
+  private String contaminantComment2 = "contaminant 2 comment";
+  private GelSeparation gelSeparation = GelSeparation.TWO_DIMENSION;
+  private GelThickness gelThickness = GelThickness.ONE_HALF;
+  private GelColoration gelColoration = GelColoration.SILVER;
+  private String otherColoration = "my coloration";
+  private String developmentTime = "300 seconds";
+  private boolean decoloration = true;
+  private double weightMarkerQuantity = 300;
+  private String proteinQuantity = "30 ug";
+  private String gelImageFilename1 = "gel1.png";
+  private byte[] gelImageContent1 = new byte[3072];
+  private String gelImageFilename2 = "gel2.png";
+  private byte[] gelImageContent2 = new byte[4096];
+  private ProteolyticDigestion digestion = DIGESTED;
+  private String usedDigestion = "typsinP";
+  private String otherDigestion = "typsinP/Y";
+  private int sampleNumberProtein = 2;
+  private MassDetectionInstrumentSource source = MassDetectionInstrumentSource.NSI;
+  private MassDetectionInstrument instrument = MassDetectionInstrument.ORBITRAP_FUSION;
+  private ProteinIdentification proteinIdentification = ProteinIdentification.UNIPROT;
+  private String proteinIdentificationLink = "NR at ftp://ftp.ncbi.nlm.nih.gov/blast/db/";
+  private Quantification quantification = Quantification.SILAC;
+  private String quantificationLabels = "Heavy: Lys8, Arg10\nLight: None";
+  private boolean highResolution = true;
+  private boolean acetonitrileSolvents = true;
+  private boolean methanolSolvents = true;
+  private boolean chclSolvents = true;
+  private boolean otherSolvents = true;
+  private String otherSolvent = "acetone";
+  private String comments = "my comment\nmy comment second line";
 
   /**
    * Before test.
@@ -359,6 +435,7 @@ public class SubmissionFormPresenterTest {
     view.separationField = separationField;
     view.thicknessField = thicknessField;
     view.colorationField = colorationField;
+    view.otherColorationField = otherColorationField;
     view.developmentTimeField = developmentTimeField;
     view.decolorationField = decolorationField;
     view.weightMarkerQuantityField = weightMarkerQuantityField;
@@ -391,7 +468,7 @@ public class SubmissionFormPresenterTest {
     view.uniprotProteinIdentificationOptionLabel = uniprotProteinIdentificationOptionLabel;
     view.otherProteinIdentificationOptionLayout = otherProteinIdentificationOptionLayout;
     view.otherProteinIdentificationOptionLabel = otherProteinIdentificationOptionLabel;
-    view.proteinIdentificationLink = proteinIdentificationLink;
+    view.proteinIdentificationLinkField = proteinIdentificationLinkField;
     view.disabledProteinIdentificationLayout = disabledProteinIdentificationLayout;
     view.disabledProteinIdentificationOptionLayout = disabledProteinIdentificationOptionLayout;
     view.disabledProteinIdentificationOptionLabel = disabledProteinIdentificationOptionLabel;
@@ -418,6 +495,163 @@ public class SubmissionFormPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
+    VaadinUtils realVaadinUtils = new VaadinUtils();
+    when(vaadinUtils.getFieldMessage(any(), any(Locale.class))).thenAnswer(i -> {
+      CommitException exception = (CommitException) i.getArguments()[0];
+      Locale locale = (Locale) i.getArguments()[1];
+      return realVaadinUtils.getFieldMessage(exception, locale);
+    });
+  }
+
+  private void setFields() {
+    view.solutionSolventField.setValue(solutionSolvent);
+    view.sampleNameField.setValue(sampleName);
+    view.formulaField.setValue(formula);
+    view.monoisotopicMassField.setValue(String.valueOf(monoisotopicMass));
+    view.averageMassField.setValue(String.valueOf(averageMass));
+    view.toxicityField.setValue(toxicity);
+    view.lightSensitiveField.setValue(lightSensitive);
+    view.storageTemperatureOptions.setValue(storageTemperature);
+    view.sampleCountField.setValue(String.valueOf(sampleCount));
+    setValuesInSamplesTable();
+    view.experienceField.setValue(experience);
+    view.experienceGoalField.setValue(experienceGoal);
+    view.taxonomyField.setValue(taxonomy);
+    view.proteinNameField.setValue(proteinName);
+    view.proteinWeightField.setValue(String.valueOf(proteinWeight));
+    view.postTranslationModificationField.setValue(postTranslationModification);
+    view.sampleQuantityField.setValue(sampleQuantity);
+    view.sampleVolumeField.setValue(String.valueOf(sampleVolume));
+    view.standardCountField.setValue(String.valueOf(standardsCount));
+    setValuesInStandardsTable();
+    view.contaminantCountField.setValue(String.valueOf(contaminantsCount));
+    setValuesInContaminantsTable();
+    view.separationField.setValue(gelSeparation);
+    view.thicknessField.setValue(gelThickness);
+    view.colorationField.setValue(gelColoration);
+    view.otherColorationField.setValue(otherColoration);
+    view.developmentTimeField.setValue(developmentTime);
+    view.decolorationField.setValue(decoloration);
+    view.weightMarkerQuantityField.setValue(String.valueOf(weightMarkerQuantity));
+    view.proteinQuantityField.setValue(proteinQuantity);
+    view.digestionFlexibleOptions.setValue(digestion);
+    view.usedProteolyticDigestionMethodField.setValue(usedDigestion);
+    view.otherProteolyticDigestionMethodField.setValue(otherDigestion);
+    view.sampleNumberProteinField.setValue(String.valueOf(sampleNumberProtein));
+    view.sourceOptions.setValue(source);
+    view.instrumentOptions.setValue(instrument);
+    view.proteinIdentificationFlexibleOptions.setValue(proteinIdentification);
+    view.proteinIdentificationLinkField.setValue(proteinIdentificationLink);
+    view.quantificationOptions.setValue(quantification);
+    view.quantificationLabelsField.setValue(quantificationLabels);
+    view.highResolutionOptions.setValue(highResolution);
+    view.acetonitrileSolventsField.setValue(acetonitrileSolvents);
+    view.methanolSolventsField.setValue(methanolSolvents);
+    view.chclSolventsField.setValue(chclSolvents);
+    view.otherSolventsField.setValue(otherSolvents);
+    view.otherSolventField.setValue(otherSolvent);
+    view.commentsField.setValue(comments);
+  }
+
+  private void setValuesInSamplesTable() {
+    Container samplesContainer = view.sampleNamesTable.getContainerDataSource();
+    List<?> samples = new ArrayList<>(samplesContainer.getItemIds());
+    SubmissionSample sample = (SubmissionSample) samples.get(0);
+    setValuesInSamplesTable(samplesContainer, sample, sampleName1);
+    sample = (SubmissionSample) samples.get(1);
+    setValuesInSamplesTable(samplesContainer, sample, sampleName2);
+  }
+
+  private void setValuesInSamplesTable(Container samplesContainer, SubmissionSample sample,
+      String name) {
+    TextField sampleNameTableField = (TextField) view.sampleNamesTable.getTableFieldFactory()
+        .createField(samplesContainer, sample, SAMPLE_NAME_PROPERTY, view.sampleNamesTable);
+    sampleNameTableField
+        .setPropertyDataSource(samplesContainer.getContainerProperty(sample, SAMPLE_NAME_PROPERTY));
+    sampleNameTableField.setValue(name);
+  }
+
+  private void setValuesInStandardsTable() {
+    Container standardsContainer = view.standardsTable.getContainerDataSource();
+    List<?> standards = new ArrayList<>(standardsContainer.getItemIds());
+    Standard standard = (Standard) standards.get(0);
+    setValuesInStandardsTable(standardsContainer, standard, standardName1, standardQuantity1,
+        standardComment1);
+    standard = (Standard) standards.get(1);
+    setValuesInStandardsTable(standardsContainer, standard, standardName2, standardQuantity2,
+        standardComment2);
+  }
+
+  private void setValuesInStandardsTable(Container standardsContainer, Standard standard,
+      String name, String quantity, String comments) {
+    TextField standardNameTableField = (TextField) view.standardsTable.getTableFieldFactory()
+        .createField(standardsContainer, standard, STANDARD_NAME_PROPERTY, view.standardsTable);
+    standardNameTableField.setPropertyDataSource(
+        standardsContainer.getContainerProperty(standard, STANDARD_NAME_PROPERTY));
+    standardNameTableField.setValue(name);
+    TextField standardQuantityTableField = (TextField) view.standardsTable.getTableFieldFactory()
+        .createField(standardsContainer, standard, STANDARD_QUANTITY_PROPERTY, view.standardsTable);
+    standardQuantityTableField.setPropertyDataSource(
+        standardsContainer.getContainerProperty(standard, STANDARD_QUANTITY_PROPERTY));
+    standardQuantityTableField.setValue(quantity);
+    TextField standardCommentsTableField = (TextField) view.standardsTable.getTableFieldFactory()
+        .createField(standardsContainer, standard, STANDARD_COMMENTS_PROPERTY, view.standardsTable);
+    standardCommentsTableField.setPropertyDataSource(
+        standardsContainer.getContainerProperty(standard, STANDARD_COMMENTS_PROPERTY));
+    standardCommentsTableField.setValue(comments);
+  }
+
+  private void setValuesInContaminantsTable() {
+    Container contaminantsContainer = view.contaminantsTable.getContainerDataSource();
+    List<?> contaminants = new ArrayList<>(contaminantsContainer.getItemIds());
+    Contaminant contaminant = (Contaminant) contaminants.get(0);
+    setValuesInContaminantsTable(contaminantsContainer, contaminant, contaminantName1,
+        contaminantQuantity1, contaminantComment1);
+    contaminant = (Contaminant) contaminants.get(1);
+    setValuesInContaminantsTable(contaminantsContainer, contaminant, contaminantName2,
+        contaminantQuantity2, contaminantComment2);
+  }
+
+  private void setValuesInContaminantsTable(Container contaminantsContainer,
+      Contaminant contaminant, String name, String quantity, String comments) {
+    TextField contaminantNameTableField =
+        (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
+            contaminant, CONTAMINANT_NAME_PROPERTY, view.contaminantsTable);
+    contaminantNameTableField.setPropertyDataSource(
+        contaminantsContainer.getContainerProperty(contaminant, CONTAMINANT_NAME_PROPERTY));
+    contaminantNameTableField.setValue(name);
+    TextField contaminantQuantityTableField =
+        (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
+            contaminant, CONTAMINANT_QUANTITY_PROPERTY, view.contaminantsTable);
+    contaminantQuantityTableField.setPropertyDataSource(
+        contaminantsContainer.getContainerProperty(contaminant, CONTAMINANT_QUANTITY_PROPERTY));
+    contaminantQuantityTableField.setValue(quantity);
+    TextField contaminantCommentsTableField =
+        (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
+            contaminant, CONTAMINANT_COMMENTS_PROPERTY, view.contaminantsTable);
+    contaminantCommentsTableField.setPropertyDataSource(
+        contaminantsContainer.getContainerProperty(contaminant, CONTAMINANT_COMMENTS_PROPERTY));
+    contaminantCommentsTableField.setValue(comments);
+  }
+
+  private void uploadStructure() {
+    when(pluploadFile.getName()).thenReturn(structureFilename);
+    random.nextBytes(structureContent);
+    when(pluploadFile.getUploadedFile()).thenReturn(structureContent);
+    verify(structureUploader).addFileUploadedListener(fileUploadedListenerCaptor.capture());
+    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
+  }
+
+  private void uploadGelImages() {
+    verify(gelImagesUploader).addFileUploadedListener(fileUploadedListenerCaptor.capture());
+    when(pluploadFile.getName()).thenReturn(gelImageFilename1);
+    random.nextBytes(gelImageContent1);
+    when(pluploadFile.getUploadedFile()).thenReturn(gelImageContent1);
+    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
+    when(pluploadFile.getName()).thenReturn(gelImageFilename2);
+    random.nextBytes(gelImageContent2);
+    when(pluploadFile.getUploadedFile()).thenReturn(gelImageContent2);
+    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
   }
 
   @Test
@@ -580,6 +814,9 @@ public class SubmissionFormPresenterTest {
     assertEquals(generalResources.message(REQUIRED, view.thicknessField.getCaption()),
         view.thicknessField.getRequiredError());
     assertFalse(view.colorationField.isRequired());
+    assertTrue(view.otherColorationField.isRequired());
+    assertEquals(generalResources.message(REQUIRED, view.otherColorationField.getCaption()),
+        view.otherColorationField.getRequiredError());
     assertFalse(view.developmentTimeField.isRequired());
     assertFalse(view.decolorationField.isRequired());
     assertFalse(view.weightMarkerQuantityField.isRequired());
@@ -608,9 +845,10 @@ public class SubmissionFormPresenterTest {
     assertEquals(
         generalResources.message(REQUIRED, view.proteinIdentificationFlexibleOptions.getCaption()),
         view.proteinIdentificationFlexibleOptions.getRequiredError());
-    assertFalse(view.proteinIdentificationLink.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.proteinIdentificationLink.getCaption()),
-        view.proteinIdentificationLink.getRequiredError());
+    assertFalse(view.proteinIdentificationLinkField.isRequired());
+    assertEquals(
+        generalResources.message(REQUIRED, view.proteinIdentificationLinkField.getCaption()),
+        view.proteinIdentificationLinkField.getRequiredError());
     assertFalse(view.quantificationOptions.isRequired());
     assertFalse(view.quantificationLabelsField.isRequired());
     assertEquals(generalResources.message(REQUIRED, view.quantificationLabelsField.getCaption()),
@@ -644,6 +882,11 @@ public class SubmissionFormPresenterTest {
         .isAssignableFrom(view.averageMassField.getConverter().getClass()));
     assertEquals(generalResources.message(INVALID_NUMBER, view.averageMassField.getCaption()),
         view.averageMassField.getConversionError());
+    assertNotNull(view.proteinWeightField.getConverter());
+    assertTrue(StringToDoubleConverter.class
+        .isAssignableFrom(view.proteinWeightField.getConverter().getClass()));
+    assertEquals(generalResources.message(INVALID_NUMBER, view.proteinWeightField.getCaption()),
+        view.proteinWeightField.getConversionError());
     assertNotNull(view.sampleVolumeField.getConverter());
     assertTrue(StringToDoubleConverter.class
         .isAssignableFrom(view.sampleVolumeField.getConverter().getClass()));
@@ -659,6 +902,12 @@ public class SubmissionFormPresenterTest {
         .isAssignableFrom(view.contaminantCountField.getConverter().getClass()));
     assertEquals(generalResources.message(INVALID_INTEGER, view.contaminantCountField.getCaption()),
         view.contaminantCountField.getConversionError());
+    assertNotNull(view.weightMarkerQuantityField.getConverter());
+    assertTrue(StringToDoubleConverter.class
+        .isAssignableFrom(view.weightMarkerQuantityField.getConverter().getClass()));
+    assertEquals(
+        generalResources.message(INVALID_NUMBER, view.weightMarkerQuantityField.getCaption()),
+        view.weightMarkerQuantityField.getConversionError());
     assertNotNull(view.sampleNumberProteinField.getConverter());
     assertTrue(StringToIntegerConverter.class
         .isAssignableFrom(view.sampleNumberProteinField.getConverter().getClass()));
@@ -727,11 +976,11 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
 
     view.proteinIdentificationFlexibleOptions.setValue(REFSEQ);
-    assertFalse(view.proteinIdentificationLink.isRequired());
+    assertFalse(view.proteinIdentificationLinkField.isRequired());
     view.proteinIdentificationFlexibleOptions.setValue(UNIPROT);
-    assertFalse(view.proteinIdentificationLink.isRequired());
+    assertFalse(view.proteinIdentificationLinkField.isRequired());
     view.proteinIdentificationFlexibleOptions.setValue(ProteinIdentification.OTHER);
-    assertTrue(view.proteinIdentificationLink.isRequired());
+    assertTrue(view.proteinIdentificationLinkField.isRequired());
   }
 
   @Test
@@ -808,6 +1057,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.separationField.getStyleName().contains(SEPARATION_PROPERTY));
     assertTrue(view.thicknessField.getStyleName().contains(THICKNESS_PROPERTY));
     assertTrue(view.colorationField.getStyleName().contains(COLORATION_PROPERTY));
+    assertTrue(view.otherColorationField.getStyleName().contains(OTHER_COLORATION_PROPERTY));
     assertTrue(view.developmentTimeField.getStyleName().contains(DEVELOPMENT_TIME_PROPERTY));
     assertTrue(view.decolorationField.getStyleName().contains(DECOLORATION_PROPERTY));
     assertTrue(
@@ -846,9 +1096,10 @@ public class SubmissionFormPresenterTest {
           .getStyleName()
           .contains(PROTEIN_IDENTIFICATION_PROPERTY + "-" + proteinIdentification.name()));
     }
-    assertTrue(view.proteinIdentificationLink.getStyleName()
+    assertTrue(view.proteinIdentificationLinkField.getStyleName()
         .contains(PROTEIN_IDENTIFICATION_LINK_PROPERTY));
-    assertTrue(view.proteinIdentificationLink.getStyleName().contains(ValoTheme.TEXTFIELD_SMALL));
+    assertTrue(
+        view.proteinIdentificationLinkField.getStyleName().contains(ValoTheme.TEXTFIELD_SMALL));
     assertTrue(view.quantificationOptions.getStyleName().contains(QUANTIFICATION_PROPERTY));
     assertTrue(
         view.quantificationLabelsField.getStyleName().contains(QUANTIFICATION_LABELS_PROPERTY));
@@ -963,6 +1214,8 @@ public class SubmissionFormPresenterTest {
     for (GelColoration coloration : SubmissionForm.COLORATION) {
       assertEquals(coloration.getLabel(locale), view.colorationField.getItemCaption(coloration));
     }
+    assertEquals(resources.message(OTHER_COLORATION_PROPERTY),
+        view.otherColorationField.getCaption());
     assertEquals(resources.message(DEVELOPMENT_TIME_PROPERTY),
         view.developmentTimeField.getCaption());
     assertEquals(resources.message(DEVELOPMENT_TIME_PROPERTY + "." + EXAMPLE),
@@ -1032,7 +1285,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(
         resources.message(
             PROTEIN_IDENTIFICATION_PROPERTY + "." + ProteinIdentification.OTHER.name() + ".value"),
-        view.proteinIdentificationLink.getCaption());
+        view.proteinIdentificationLinkField.getCaption());
     assertEquals(resources.message(QUANTIFICATION_PROPERTY),
         view.quantificationOptions.getCaption());
     assertEquals(Quantification.getNullLabel(locale),
@@ -1064,42 +1317,249 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void submit_SmallMolecule() {
+  public void submit_Lcmsms_Solution() {
     presenter.setEditable(true);
-    final String sampleName = "my_sample";
-    view.serviceOptions.setValue(SMALL_MOLECULE);
-    view.sampleSupportOptions.setValue(SOLUTION);
-    view.solutionSolventField.setValue("h2o");
-    view.sampleNameField.setValue(sampleName);
-    view.formulaField.setValue("ch3oh");
-    verify(structureUploader).addFileUploadedListener(fileUploadedListenerCaptor.capture());
-    when(pluploadFile.getName()).thenReturn("ch3oh.png");
-    byte[] structureContent = new byte[2048];
-    random.nextBytes(structureContent);
-    when(pluploadFile.getUploadedFile()).thenReturn(structureContent);
-    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
-    view.monoisotopicMassField.setValue("32.04");
-    view.averageMassField.setValue("32.08");
-    view.toxicityField.setValue("non-toxic");
-    view.lightSensitiveField.setValue(true);
-    view.storageTemperatureOptions.setValue(StorageTemperature.MEDIUM);
-    view.highResolutionOptions.setValue(true);
-    view.acetonitrileSolventsField.setValue(true);
-    view.otherSolventsField.setValue(true);
-    view.otherSolventField.setValue("acetone");
-    view.commentsField.setValue("my comment");
-    VaadinUtils realVaadinUtils = new VaadinUtils();
-    when(vaadinUtils.getFieldMessage(any(), any(Locale.class))).thenAnswer(i -> {
-      CommitException exception = (CommitException) i.getArguments()[0];
-      Locale locale = (Locale) i.getArguments()[1];
-      return realVaadinUtils.getFieldMessage(exception, locale);
-    });
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    uploadStructure();
+    uploadGelImages();
 
     view.submitButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
-    verify(submissionSampleService).exists(sampleName);
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
+    verify(submissionService).insert(submissionCaptor.capture());
+    Submission submission = submissionCaptor.getValue();
+    assertEquals(null, submission.getId());
+    assertEquals(LC_MS_MS, submission.getService());
+    assertEquals(taxonomy, submission.getTaxonomy());
+    assertEquals(null, submission.getProject());
+    assertEquals(experience, submission.getExperience());
+    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(instrument, submission.getMassDetectionInstrument());
+    assertEquals(null, submission.getSource());
+    assertEquals(null, submission.getSampleNumberProtein());
+    assertEquals(digestion, submission.getProteolyticDigestionMethod());
+    assertEquals(usedDigestion, submission.getUsedProteolyticDigestionMethod());
+    assertEquals(otherDigestion, submission.getOtherProteolyticDigestionMethod());
+    assertEquals(proteinIdentification, submission.getProteinIdentification());
+    assertEquals(proteinIdentificationLink, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getEnrichmentType());
+    assertEquals(false, submission.isLowResolution());
+    assertEquals(false, submission.isHighResolution());
+    assertEquals(false, submission.isMsms());
+    assertEquals(false, submission.isExactMsms());
+    assertEquals(null, submission.getMudPitFraction());
+    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinName, submission.getProtein());
+    assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
+    assertEquals(postTranslationModification, submission.getPostTranslationModification());
+    assertEquals(null, submission.getSeparation());
+    assertEquals(null, submission.getThickness());
+    assertEquals(null, submission.getColoration());
+    assertEquals(null, submission.getOtherColoration());
+    assertEquals(null, submission.getDevelopmentTime());
+    assertEquals(false, submission.isDecoloration());
+    assertEquals(null, submission.getWeightMarkerQuantity());
+    assertEquals(null, submission.getProteinQuantity());
+    assertEquals(null, submission.getFormula());
+    assertEquals(null, submission.getMonoisotopicMass());
+    assertEquals(null, submission.getAverageMass());
+    assertEquals(null, submission.getSolutionSolvent());
+    assertTrue(submission.getSolvents() == null || submission.getSolvents().isEmpty());
+    assertEquals(null, submission.getOtherSolvent());
+    assertEquals(null, submission.getToxicity());
+    assertEquals(false, submission.isLightSensitive());
+    assertEquals(null, submission.getStorageTemperature());
+    assertEquals(quantification, submission.getQuantification());
+    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(comments, submission.getComments());
+    assertEquals(null, submission.getSubmissionDate());
+    assertEquals(null, submission.getPrice());
+    assertEquals(null, submission.getAdditionalPrice());
+    assertEquals(null, submission.getUser());
+    assertEquals(null, submission.getLaboratory());
+    assertNotNull(submission.getSamples());
+    assertEquals(2, submission.getSamples().size());
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals(null, sample.getId());
+    assertEquals(null, sample.getLims());
+    assertEquals(sampleName1, sample.getName());
+    assertEquals(support, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getOriginalContainer());
+    assertEquals(2, sample.getStandards().size());
+    Standard standard = sample.getStandards().get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    assertEquals(standardComment1, standard.getComments());
+    standard = sample.getStandards().get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals(standardComment2, standard.getComments());
+    assertEquals(null, sample.getStatus());
+    assertEquals(null, sample.getSubmission());
+    assertEquals(2, sample.getContaminants().size());
+    Contaminant contaminant = sample.getContaminants().get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    assertEquals(contaminantComment1, contaminant.getComments());
+    contaminant = sample.getContaminants().get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(contaminantComment2, contaminant.getComments());
+    sample = submission.getSamples().get(1);
+    assertEquals(null, sample.getId());
+    assertEquals(null, sample.getLims());
+    assertEquals(sampleName2, sample.getName());
+    assertEquals(support, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getOriginalContainer());
+    assertEquals(2, sample.getStandards().size());
+    standard = sample.getStandards().get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    assertEquals(standardComment1, standard.getComments());
+    standard = sample.getStandards().get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals(standardComment2, standard.getComments());
+    assertEquals(null, sample.getStatus());
+    assertEquals(null, sample.getSubmission());
+    assertEquals(2, sample.getContaminants().size());
+    contaminant = sample.getContaminants().get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    assertEquals(contaminantComment1, contaminant.getComments());
+    contaminant = sample.getContaminants().get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(contaminantComment2, contaminant.getComments());
+    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
+    assertNull(submission.getStructure());
+  }
+
+  @Test
+  public void submit_Lcmsms_Gel() {
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+    setFields();
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view, never()).showError(any());
+    verify(view, never()).showWarning(any());
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
+    verify(submissionService).insert(submissionCaptor.capture());
+    Submission submission = submissionCaptor.getValue();
+    assertEquals(null, submission.getId());
+    assertEquals(LC_MS_MS, submission.getService());
+    assertEquals(taxonomy, submission.getTaxonomy());
+    assertEquals(null, submission.getProject());
+    assertEquals(experience, submission.getExperience());
+    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(instrument, submission.getMassDetectionInstrument());
+    assertEquals(null, submission.getSource());
+    assertEquals(null, submission.getSampleNumberProtein());
+    assertEquals(digestion, submission.getProteolyticDigestionMethod());
+    assertEquals(usedDigestion, submission.getUsedProteolyticDigestionMethod());
+    assertEquals(otherDigestion, submission.getOtherProteolyticDigestionMethod());
+    assertEquals(proteinIdentification, submission.getProteinIdentification());
+    assertEquals(proteinIdentificationLink, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getEnrichmentType());
+    assertEquals(false, submission.isLowResolution());
+    assertEquals(false, submission.isHighResolution());
+    assertEquals(false, submission.isMsms());
+    assertEquals(false, submission.isExactMsms());
+    assertEquals(null, submission.getMudPitFraction());
+    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinName, submission.getProtein());
+    assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
+    assertEquals(postTranslationModification, submission.getPostTranslationModification());
+    assertEquals(gelSeparation, submission.getSeparation());
+    assertEquals(gelThickness, submission.getThickness());
+    assertEquals(gelColoration, submission.getColoration());
+    assertEquals(otherColoration, submission.getOtherColoration());
+    assertEquals(developmentTime, submission.getDevelopmentTime());
+    assertEquals(decoloration, submission.isDecoloration());
+    assertEquals(weightMarkerQuantity, submission.getWeightMarkerQuantity(), 0.0001);
+    assertEquals(proteinQuantity, submission.getProteinQuantity());
+    assertEquals(null, submission.getFormula());
+    assertEquals(null, submission.getMonoisotopicMass());
+    assertEquals(null, submission.getAverageMass());
+    assertEquals(null, submission.getSolutionSolvent());
+    assertTrue(submission.getSolvents() == null || submission.getSolvents().isEmpty());
+    assertEquals(null, submission.getOtherSolvent());
+    assertEquals(null, submission.getToxicity());
+    assertEquals(false, submission.isLightSensitive());
+    assertEquals(null, submission.getStorageTemperature());
+    assertEquals(quantification, submission.getQuantification());
+    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(comments, submission.getComments());
+    assertEquals(null, submission.getSubmissionDate());
+    assertEquals(null, submission.getPrice());
+    assertEquals(null, submission.getAdditionalPrice());
+    assertEquals(null, submission.getUser());
+    assertEquals(null, submission.getLaboratory());
+    assertNotNull(submission.getSamples());
+    assertEquals(2, submission.getSamples().size());
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals(null, sample.getId());
+    assertEquals(null, sample.getLims());
+    assertEquals(sampleName1, sample.getName());
+    assertEquals(GEL, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getOriginalContainer());
+    assertTrue(sample.getStandards() == null || sample.getStandards().isEmpty());
+    assertEquals(null, sample.getStatus());
+    assertEquals(null, sample.getSubmission());
+    assertTrue(sample.getContaminants() == null || sample.getContaminants().isEmpty());
+    sample = submission.getSamples().get(1);
+    assertEquals(null, sample.getId());
+    assertEquals(null, sample.getLims());
+    assertEquals(sampleName2, sample.getName());
+    assertEquals(GEL, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getOriginalContainer());
+    assertTrue(sample.getStandards() == null || sample.getStandards().isEmpty());
+    assertEquals(null, sample.getStatus());
+    assertEquals(null, sample.getSubmission());
+    assertTrue(sample.getContaminants() == null || sample.getContaminants().isEmpty());
+    assertEquals(2, submission.getGelImages().size());
+    GelImage gelImage = submission.getGelImages().get(0);
+    assertEquals(gelImageFilename1, gelImage.getFilename());
+    assertArrayEquals(gelImageContent1, gelImage.getContent());
+    gelImage = submission.getGelImages().get(1);
+    assertEquals(gelImageFilename2, gelImage.getFilename());
+    assertArrayEquals(gelImageContent2, gelImage.getContent());
+    assertNull(submission.getStructure());
+  }
+
+  @Test
+  public void submit_SmallMolecule_Solution() {
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view, never()).showError(any());
+    verify(view, never()).showWarning(any());
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName);
     verify(submissionService).insert(submissionCaptor.capture());
     Submission submission = submissionCaptor.getValue();
     assertEquals(null, submission.getId());
@@ -1118,7 +1578,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getProteinIdentificationLink());
     assertEquals(null, submission.getEnrichmentType());
     assertEquals(false, submission.isLowResolution());
-    assertEquals(true, submission.isHighResolution());
+    assertEquals(highResolution, submission.isHighResolution());
     assertEquals(false, submission.isMsms());
     assertEquals(false, submission.isExactMsms());
     assertEquals(null, submission.getMudPitFraction());
@@ -1134,18 +1594,34 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isDecoloration());
     assertEquals(null, submission.getWeightMarkerQuantity());
     assertEquals(null, submission.getProteinQuantity());
-    assertEquals("ch3oh", submission.getFormula());
-    assertEquals("32.04", submission.getMonoisotopicMass());
-    assertEquals("32.08", submission.getAverageMass());
-    assertEquals("h2o", submission.getSolutionSolvent());
-    assertEquals("", submission.getSolvents());
-    assertEquals("acetone", submission.getOtherSolvent());
-    assertEquals("non-toxic", submission.getToxicity());
-    assertEquals(true, submission.isLightSensitive());
-    assertEquals(StorageTemperature.MEDIUM, submission.getStorageTemperature());
+    assertEquals(formula, submission.getFormula());
+    assertEquals(monoisotopicMass, submission.getMonoisotopicMass(), 0.0001);
+    assertEquals(averageMass, submission.getAverageMass(), 0.0001);
+    assertEquals(solutionSolvent, submission.getSolutionSolvent());
+    assertEquals(4, submission.getSolvents().size());
+    SampleSolvent sampleSolvent = submission.getSolvents().get(0);
+    assertEquals(null, sampleSolvent.getId());
+    assertEquals(Solvent.ACETONITRILE, sampleSolvent.getSolvent());
+    assertEquals(false, sampleSolvent.isDeleted());
+    sampleSolvent = submission.getSolvents().get(1);
+    assertEquals(null, sampleSolvent.getId());
+    assertEquals(Solvent.METHANOL, sampleSolvent.getSolvent());
+    assertEquals(false, sampleSolvent.isDeleted());
+    sampleSolvent = submission.getSolvents().get(2);
+    assertEquals(null, sampleSolvent.getId());
+    assertEquals(Solvent.CHCL3, sampleSolvent.getSolvent());
+    assertEquals(false, sampleSolvent.isDeleted());
+    sampleSolvent = submission.getSolvents().get(3);
+    assertEquals(null, sampleSolvent.getId());
+    assertEquals(Solvent.OTHER, sampleSolvent.getSolvent());
+    assertEquals(false, sampleSolvent.isDeleted());
+    assertEquals(otherSolvent, submission.getOtherSolvent());
+    assertEquals(toxicity, submission.getToxicity());
+    assertEquals(lightSensitive, submission.isLightSensitive());
+    assertEquals(storageTemperature, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationLabels());
-    assertEquals("my comment", submission.getComments());
+    assertEquals(comments, submission.getComments());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -1157,7 +1633,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(null, sample.getLims());
     assertEquals(sampleName, sample.getName());
-    assertEquals(SOLUTION, sample.getSupport());
+    assertEquals(support, sample.getSupport());
     assertEquals(null, sample.getVolume());
     assertEquals(null, sample.getQuantity());
     assertEquals(null, sample.getOriginalContainer());
@@ -1168,8 +1644,136 @@ public class SubmissionFormPresenterTest {
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNotNull(submission.getStructure());
     Structure structure = submission.getStructure();
-    assertEquals("ch3oh.png", structure.getFilename());
+    assertEquals(structureFilename, structure.getFilename());
     assertArrayEquals(structureContent, structure.getContent());
     verify(view).afterSuccessfulSave(resources.message("save", sampleName));
+  }
+
+  @Test
+  public void submit_Intactprotein_Solution() {
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view, never()).showError(any());
+    verify(view, never()).showWarning(any());
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
+    verify(submissionService).insert(submissionCaptor.capture());
+    Submission submission = submissionCaptor.getValue();
+    assertEquals(null, submission.getId());
+    assertEquals(INTACT_PROTEIN, submission.getService());
+    assertEquals(taxonomy, submission.getTaxonomy());
+    assertEquals(null, submission.getProject());
+    assertEquals(experience, submission.getExperience());
+    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(instrument, submission.getMassDetectionInstrument());
+    assertEquals(source, submission.getSource());
+    assertEquals((Integer) sampleNumberProtein, submission.getSampleNumberProtein());
+    assertEquals(null, submission.getProteolyticDigestionMethod());
+    assertEquals(null, submission.getUsedProteolyticDigestionMethod());
+    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
+    assertEquals(null, submission.getProteinIdentification());
+    assertEquals(null, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getEnrichmentType());
+    assertEquals(false, submission.isLowResolution());
+    assertEquals(false, submission.isHighResolution());
+    assertEquals(false, submission.isMsms());
+    assertEquals(false, submission.isExactMsms());
+    assertEquals(null, submission.getMudPitFraction());
+    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinName, submission.getProtein());
+    assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
+    assertEquals(postTranslationModification, submission.getPostTranslationModification());
+    assertEquals(null, submission.getSeparation());
+    assertEquals(null, submission.getThickness());
+    assertEquals(null, submission.getColoration());
+    assertEquals(null, submission.getOtherColoration());
+    assertEquals(null, submission.getDevelopmentTime());
+    assertEquals(false, submission.isDecoloration());
+    assertEquals(null, submission.getWeightMarkerQuantity());
+    assertEquals(null, submission.getProteinQuantity());
+    assertEquals(null, submission.getFormula());
+    assertEquals(null, submission.getMonoisotopicMass());
+    assertEquals(null, submission.getAverageMass());
+    assertEquals(null, submission.getSolutionSolvent());
+    assertTrue(submission.getSolvents() == null || submission.getSolvents().isEmpty());
+    assertEquals(null, submission.getOtherSolvent());
+    assertEquals(null, submission.getToxicity());
+    assertEquals(false, submission.isLightSensitive());
+    assertEquals(null, submission.getStorageTemperature());
+    assertEquals(null, submission.getQuantification());
+    assertEquals(null, submission.getQuantificationLabels());
+    assertEquals(comments, submission.getComments());
+    assertEquals(null, submission.getSubmissionDate());
+    assertEquals(null, submission.getPrice());
+    assertEquals(null, submission.getAdditionalPrice());
+    assertEquals(null, submission.getUser());
+    assertEquals(null, submission.getLaboratory());
+    assertNotNull(submission.getSamples());
+    assertEquals(2, submission.getSamples().size());
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals(null, sample.getId());
+    assertEquals(null, sample.getLims());
+    assertEquals(sampleName1, sample.getName());
+    assertEquals(support, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getOriginalContainer());
+    assertEquals(2, sample.getStandards().size());
+    Standard standard = sample.getStandards().get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    assertEquals(standardComment1, standard.getComments());
+    standard = sample.getStandards().get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals(standardComment2, standard.getComments());
+    assertEquals(null, sample.getStatus());
+    assertEquals(null, sample.getSubmission());
+    assertEquals(2, sample.getContaminants().size());
+    Contaminant contaminant = sample.getContaminants().get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    assertEquals(contaminantComment1, contaminant.getComments());
+    contaminant = sample.getContaminants().get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(contaminantComment2, contaminant.getComments());
+    sample = submission.getSamples().get(1);
+    assertEquals(null, sample.getId());
+    assertEquals(null, sample.getLims());
+    assertEquals(sampleName2, sample.getName());
+    assertEquals(support, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getOriginalContainer());
+    assertEquals(2, sample.getStandards().size());
+    standard = sample.getStandards().get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    assertEquals(standardComment1, standard.getComments());
+    standard = sample.getStandards().get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals(standardComment2, standard.getComments());
+    assertEquals(null, sample.getStatus());
+    assertEquals(null, sample.getSubmission());
+    assertEquals(2, sample.getContaminants().size());
+    contaminant = sample.getContaminants().get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    assertEquals(contaminantComment1, contaminant.getComments());
+    contaminant = sample.getContaminants().get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(contaminantComment2, contaminant.getComments());
+    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
+    assertNull(submission.getStructure());
   }
 }

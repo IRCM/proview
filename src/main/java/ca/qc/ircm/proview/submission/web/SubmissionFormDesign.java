@@ -74,6 +74,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected ComboBox separationField;
   protected ComboBox thicknessField;
   protected ComboBox colorationField;
+  protected TextField otherColorationField;
   protected TextField developmentTimeField;
   protected CheckBox decolorationField;
   protected TextField weightMarkerQuantityField;
@@ -104,7 +105,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Label uniprotProteinIdentificationOptionLabel;
   protected HorizontalLayout otherProteinIdentificationOptionLayout;
   protected Label otherProteinIdentificationOptionLabel;
-  protected TextField proteinIdentificationLink;
+  protected TextField proteinIdentificationLinkField;
   protected HorizontalLayout disabledProteinIdentificationLayout;
   protected HorizontalLayout disabledProteinIdentificationOptionLayout;
   protected Label disabledProteinIdentificationOptionLabel;

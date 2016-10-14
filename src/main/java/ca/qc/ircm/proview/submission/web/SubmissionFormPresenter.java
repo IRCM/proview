@@ -37,6 +37,9 @@ import static ca.qc.ircm.proview.submission.Quantification.SILAC;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
+import static ca.qc.ircm.proview.treatment.Solvent.ACETONITRILE;
+import static ca.qc.ircm.proview.treatment.Solvent.CHCL3;
+import static ca.qc.ircm.proview.treatment.Solvent.METHANOL;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
@@ -106,6 +109,7 @@ import pl.exsio.plupload.handler.memory.ByteArrayChunkHandlerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -190,6 +194,8 @@ public class SubmissionFormPresenter {
   public static final String SEPARATION_PROPERTY = submission.separation.getMetadata().getName();
   public static final String THICKNESS_PROPERTY = submission.thickness.getMetadata().getName();
   public static final String COLORATION_PROPERTY = submission.coloration.getMetadata().getName();
+  public static final String OTHER_COLORATION_PROPERTY =
+      submission.otherColoration.getMetadata().getName();
   public static final String DEVELOPMENT_TIME_PROPERTY =
       submission.developmentTime.getMetadata().getName();
   public static final String DECOLORATION_PROPERTY =
@@ -246,6 +252,7 @@ public class SubmissionFormPresenter {
   public static final String FLEXIBLE_OPTION_STYLE = "flexible-option";
   public static final String FORM_CAPTION_STYLE = "formcaption";
   public static final String CLICKABLE_STYLE = "clickable";
+  public static final String HIDE_REQUIRED_STYLE = "hide-required";
   private static final Object[] standardsColumns = new Object[] { STANDARD_NAME_PROPERTY,
       STANDARD_QUANTITY_PROPERTY, STANDARD_COMMENTS_PROPERTY };
   private static final Object[] contaminantsColumns = new Object[] { CONTAMINANT_NAME_PROPERTY,
@@ -357,6 +364,7 @@ public class SubmissionFormPresenter {
     view.servicePanel.addStyleName(SERVICES_PANEL);
     view.servicePanel.addStyleName(REQUIRED);
     view.serviceOptions.addStyleName(SERVICE_PROPERTY);
+    view.serviceOptions.addStyleName(HIDE_REQUIRED_STYLE);
     view.samplesPanel.addStyleName(SAMPLES_PANEL);
     view.sampleSupportOptions.addStyleName(SAMPLE_SUPPORT_PROPERTY);
     view.solutionSolventField.addStyleName(SOLUTION_SOLVENT_PROPERTY);
@@ -398,6 +406,7 @@ public class SubmissionFormPresenter {
     view.separationField.addStyleName(SEPARATION_PROPERTY);
     view.thicknessField.addStyleName(THICKNESS_PROPERTY);
     view.colorationField.addStyleName(COLORATION_PROPERTY);
+    view.otherColorationField.addStyleName(OTHER_COLORATION_PROPERTY);
     view.developmentTimeField.addStyleName(DEVELOPMENT_TIME_PROPERTY);
     view.decolorationField.addStyleName(DECOLORATION_PROPERTY);
     view.weightMarkerQuantityField.addStyleName(WEIGHT_MARKER_QUANTITY_PROPERTY);
@@ -446,8 +455,8 @@ public class SubmissionFormPresenter {
     otherProteinIdentificationOption.addStyleName(FLEXIBLE_OPTION_STYLE);
     view.otherProteinIdentificationOptionLabel.addStyleName(FORM_CAPTION_STYLE);
     view.otherProteinIdentificationOptionLayout.addStyleName(CLICKABLE_STYLE);
-    view.proteinIdentificationLink.addStyleName(PROTEIN_IDENTIFICATION_LINK_PROPERTY);
-    view.proteinIdentificationLink.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+    view.proteinIdentificationLinkField.addStyleName(PROTEIN_IDENTIFICATION_LINK_PROPERTY);
+    view.proteinIdentificationLinkField.addStyleName(ValoTheme.TEXTFIELD_SMALL);
     view.quantificationOptions.addStyleName(QUANTIFICATION_PROPERTY);
     view.quantificationLabelsField.addStyleName(QUANTIFICATION_LABELS_PROPERTY);
     view.highResolutionOptions.addStyleName(HIGH_RESOLUTION_PROPERTY);
@@ -525,6 +534,7 @@ public class SubmissionFormPresenter {
     view.separationField.setCaption(resources.message(SEPARATION_PROPERTY));
     view.thicknessField.setCaption(resources.message(THICKNESS_PROPERTY));
     view.colorationField.setCaption(resources.message(COLORATION_PROPERTY));
+    view.otherColorationField.setCaption(resources.message(OTHER_COLORATION_PROPERTY));
     view.developmentTimeField.setCaption(resources.message(DEVELOPMENT_TIME_PROPERTY));
     view.developmentTimeField
         .setInputPrompt(resources.message(DEVELOPMENT_TIME_PROPERTY + "." + EXAMPLE));
@@ -573,7 +583,7 @@ public class SubmissionFormPresenter {
     view.uniprotProteinIdentificationOptionLabel.setValue(UNIPROT.getLabel(locale));
     view.otherProteinIdentificationOptionLabel
         .setValue(ProteinIdentification.OTHER.getLabel(locale));
-    view.proteinIdentificationLink.setCaption(resources.message(
+    view.proteinIdentificationLinkField.setCaption(resources.message(
         PROTEIN_IDENTIFICATION_PROPERTY + "." + ProteinIdentification.OTHER.name() + ".value"));
     view.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
     view.quantificationLabelsField.setCaption(resources.message(QUANTIFICATION_LABELS_PROPERTY));
@@ -675,6 +685,9 @@ public class SubmissionFormPresenter {
     view.taxonomyField.setRequired(true);
     view.taxonomyField
         .setRequiredError(generalResources.message(REQUIRED, view.taxonomyField.getCaption()));
+    view.proteinWeightField.setConverter(new StringToDoubleConverter());
+    view.proteinWeightField.setConversionError(
+        generalResources.message(INVALID_NUMBER, view.proteinWeightField.getCaption()));
     view.sampleVolumeField.setConverter(new StringToDoubleConverter());
     view.sampleVolumeField.setConversionError(
         generalResources.message(INVALID_NUMBER, view.sampleVolumeField.getCaption()));
@@ -770,6 +783,12 @@ public class SubmissionFormPresenter {
       view.colorationField.addItem(coloration);
       view.colorationField.setItemCaption(coloration, coloration.getLabel(locale));
     }
+    view.otherColorationField.setRequired(true);
+    view.otherColorationField.setRequiredError(
+        generalResources.message(REQUIRED, view.otherColorationField.getCaption()));
+    view.weightMarkerQuantityField.setConverter(new StringToDoubleConverter());
+    view.weightMarkerQuantityField.setConversionError(
+        generalResources.message(INVALID_NUMBER, view.weightMarkerQuantityField.getCaption()));
     view.gelImagesUploader.setMaxFileSize(MAXIMUM_GEL_IMAGES_SIZE);
     view.gelImagesUploader.setChunkHandlerFactory(new ByteArrayChunkHandlerFactory());
     gelImagesGeneratedContainer.addGeneratedProperty(GEL_IMAGE_FILENAME_PROPERTY,
@@ -846,8 +865,8 @@ public class SubmissionFormPresenter {
     view.proteinIdentificationFlexibleOptions.setRequired(true);
     view.proteinIdentificationFlexibleOptions.setRequiredError(
         generalResources.message(REQUIRED, view.proteinIdentificationFlexibleOptions.getCaption()));
-    view.proteinIdentificationLink.setRequiredError(
-        generalResources.message(REQUIRED, view.proteinIdentificationLink.getCaption()));
+    view.proteinIdentificationLinkField.setRequiredError(
+        generalResources.message(REQUIRED, view.proteinIdentificationLinkField.getCaption()));
     view.quantificationOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.quantificationOptions.removeAllItems();
     view.quantificationOptions.setNullSelectionItemId(NULL_ID);
@@ -922,7 +941,7 @@ public class SubmissionFormPresenter {
         .addLayoutClickListener(e -> selectProteinIdentification(UNIPROT));
     view.otherProteinIdentificationOptionLayout
         .addLayoutClickListener(e -> selectProteinIdentification(ProteinIdentification.OTHER));
-    view.proteinIdentificationLink
+    view.proteinIdentificationLinkField
         .addTextChangeListener(e -> selectProteinIdentification(ProteinIdentification.OTHER));
     view.quantificationOptions.addValueChangeListener(e -> view.quantificationLabelsField
         .setRequired(view.quantificationOptions.getValue() == SILAC));
@@ -1054,6 +1073,7 @@ public class SubmissionFormPresenter {
     submissionFieldGroup.bind(view.separationField, SEPARATION_PROPERTY);
     submissionFieldGroup.bind(view.thicknessField, THICKNESS_PROPERTY);
     submissionFieldGroup.bind(view.colorationField, COLORATION_PROPERTY);
+    submissionFieldGroup.bind(view.otherColorationField, OTHER_COLORATION_PROPERTY);
     submissionFieldGroup.bind(view.developmentTimeField, DEVELOPMENT_TIME_PROPERTY);
     submissionFieldGroup.bind(view.decolorationField, DECOLORATION_PROPERTY);
     submissionFieldGroup.bind(view.weightMarkerQuantityField, WEIGHT_MARKER_QUANTITY_PROPERTY);
@@ -1064,7 +1084,8 @@ public class SubmissionFormPresenter {
     submissionFieldGroup.bind(view.sampleNumberProteinField, SAMPLE_NUMBER_PROTEIN_PROPERTY);
     submissionFieldGroup.bind(view.sourceOptions, SOURCE_PROPERTY);
     submissionFieldGroup.bind(view.instrumentOptions, INSTRUMENT_PROPERTY);
-    submissionFieldGroup.bind(view.proteinIdentificationLink, PROTEIN_IDENTIFICATION_LINK_PROPERTY);
+    submissionFieldGroup.bind(view.proteinIdentificationLinkField,
+        PROTEIN_IDENTIFICATION_LINK_PROPERTY);
     submissionFieldGroup.bind(view.proteinIdentificationFlexibleOptions,
         PROTEIN_IDENTIFICATION_PROPERTY);
     submissionFieldGroup.bind(view.otherSolventField, OTHER_SOLVENT_PROPERTY);
@@ -1161,6 +1182,9 @@ public class SubmissionFormPresenter {
     view.colorationField.setVisible(service != SMALL_MOLECULE && support == GEL);
     view.colorationField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.colorationField, COLORATION_PROPERTY);
+    view.otherColorationField.setVisible(
+        view.colorationField.isVisible() && view.colorationField.getValue() == GelColoration.OTHER);
+    bindVisible(submissionFieldGroup, view.otherColorationField, OTHER_COLORATION_PROPERTY);
     view.developmentTimeField.setVisible(service != SMALL_MOLECULE && support == GEL);
     view.developmentTimeField.setReadOnly(!editable);
     bindVisible(submissionFieldGroup, view.developmentTimeField, DEVELOPMENT_TIME_PROPERTY);
@@ -1203,9 +1227,9 @@ public class SubmissionFormPresenter {
     view.proteinIdentificationOptionsLayout.setVisible(service == LC_MS_MS);
     view.proteinIdentificationFlexibleOptions.setVisible(service == LC_MS_MS);
     view.proteinIdentificationFlexibleOptions.setReadOnly(!editable);
-    view.proteinIdentificationLink.setVisible(service == LC_MS_MS);
-    view.proteinIdentificationLink.setReadOnly(!editable);
-    bindVisible(submissionFieldGroup, view.proteinIdentificationLink,
+    view.proteinIdentificationLinkField.setVisible(service == LC_MS_MS);
+    view.proteinIdentificationLinkField.setReadOnly(!editable);
+    bindVisible(submissionFieldGroup, view.proteinIdentificationLinkField,
         PROTEIN_IDENTIFICATION_LINK_PROPERTY);
     bindVisible(submissionFieldGroup, view.proteinIdentificationFlexibleOptions,
         PROTEIN_IDENTIFICATION_PROPERTY);
@@ -1448,9 +1472,9 @@ public class SubmissionFormPresenter {
 
   private void proteinIdentificationValueChanged() {
     Object proteinIdentification = view.proteinIdentificationFlexibleOptions.getValue();
-    view.proteinIdentificationLink.setRequired(false);
+    view.proteinIdentificationLinkField.setRequired(false);
     if (proteinIdentification == ProteinIdentification.OTHER) {
-      view.proteinIdentificationLink.setRequired(true);
+      view.proteinIdentificationLinkField.setRequired(true);
     }
   }
 
@@ -1497,6 +1521,7 @@ public class SubmissionFormPresenter {
       }
       if (submission.getService() == Service.SMALL_MOLECULE) {
         validateStructure(submission);
+        validateSolvents();
       }
       SubmissionSample sample = firstSampleFieldGroup.getItemDataSource().getBean();
       if (sample.getSupport() == SampleSupport.GEL) {
@@ -1547,17 +1572,95 @@ public class SubmissionFormPresenter {
     }
   }
 
+  private void validateSolvents() {
+    MessageResource generalResources =
+        new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
+    if (!view.acetonitrileSolventsField.getValue() && !view.methanolSolventsField.getValue()
+        && !view.chclSolventsField.getValue() && !view.otherSolventsField.getValue()) {
+      throw new InvalidValueException(
+          generalResources.message(REQUIRED, view.solventsLayout.getCaption()));
+    }
+  }
+
   private void saveSubmission() {
     if (validate()) {
       Submission submission = submissionFieldGroup.getItemDataSource().getBean();
       SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
+      if (submission.getService() == LC_MS_MS) {
+        copySamplesFromTableToSubmission(submission);
+      } else {
+        submission.setProteolyticDigestionMethod(null);
+        submission.setProteinIdentification(null);
+      }
       if (submission.getService() == SMALL_MOLECULE) {
+        submission.setMassDetectionInstrument(null);
         submission.setExperience(firstSample.getName());
+        submission.setSamples(Arrays.asList(firstSample));
+        submission.setSolvents(new ArrayList<>());
+        if (view.acetonitrileSolventsField.getValue()) {
+          submission.getSolvents().add(new SampleSolvent(ACETONITRILE));
+        }
+        if (view.methanolSolventsField.getValue()) {
+          submission.getSolvents().add(new SampleSolvent(METHANOL));
+        }
+        if (view.chclSolventsField.getValue()) {
+          submission.getSolvents().add(new SampleSolvent(CHCL3));
+        }
+        if (view.otherSolventsField.getValue()) {
+          submission.getSolvents().add(new SampleSolvent(Solvent.OTHER));
+        }
+      } else {
+        submission.setStructure(null);
+        submission.setStorageTemperature(null);
+      }
+      if (submission.getService() == INTACT_PROTEIN) {
+        copySamplesFromTableToSubmission(submission);
+      } else {
+        submission.setSource(null);
+      }
+      if (firstSample.getSupport() != GEL) {
+        submission.setSeparation(null);
+        submission.setThickness(null);
       }
       logger.debug("Save submission {}", submission);
       submissionService.insert(submission);
       MessageResource resources = view.getResources();
       view.afterSuccessfulSave(resources.message("save", submission.getExperience()));
+    }
+  }
+
+  private void copySamplesFromTableToSubmission(Submission submission) {
+    SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
+    submission.setSamples(new ArrayList<>());
+    for (SubmissionSample sample : samplesContainer.getItemIds()) {
+      sample.setSupport(firstSample.getSupport());
+      sample.setQuantity(firstSample.getQuantity());
+      sample.setVolume(firstSample.getVolume());
+      copyStandardsFromTableToSample(sample);
+      copyContaminantsFromTableToSample(sample);
+      submission.getSamples().add(sample);
+    }
+  }
+
+  private void copyStandardsFromTableToSample(SubmissionSample sample) {
+    sample.setStandards(new ArrayList<>());
+    for (Standard standard : standardsContainer.getItemIds()) {
+      Standard copy = new Standard();
+      copy.setName(standard.getName());
+      copy.setQuantity(standard.getQuantity());
+      copy.setComments(standard.getComments());
+      sample.getStandards().add(copy);
+    }
+  }
+
+  private void copyContaminantsFromTableToSample(SubmissionSample sample) {
+    sample.setContaminants(new ArrayList<>());
+    for (Contaminant contaminant : contaminantsContainer.getItemIds()) {
+      Contaminant copy = new Contaminant();
+      copy.setName(contaminant.getName());
+      copy.setQuantity(contaminant.getQuantity());
+      copy.setComments(contaminant.getComments());
+      sample.getContaminants().add(copy);
     }
   }
 

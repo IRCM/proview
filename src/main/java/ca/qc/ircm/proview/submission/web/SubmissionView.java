@@ -34,6 +34,8 @@ public class SubmissionView extends SubmissionViewDesign implements MessageResou
   private static final long serialVersionUID = -6009778227571187664L;
   @Inject
   private SubmissionViewPresenter presenter;
+  @Inject
+  protected SubmissionFormPresenter submissionFormPresenter;
   protected Menu menu = new Menu();
   protected SubmissionForm submissionForm = new SubmissionForm();
 
@@ -43,6 +45,7 @@ public class SubmissionView extends SubmissionViewDesign implements MessageResou
   @PostConstruct
   public void init() {
     menuLayout.addComponent(menu);
+    submissionForm.setPresenter(submissionFormPresenter);
     submissionFormLayout.addComponent(submissionForm);
   }
 

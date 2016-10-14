@@ -40,8 +40,6 @@ public class SubmissionViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);
   private SubmissionView view;
   @Inject
-  protected SubmissionFormPresenter submissionFormPresenter;
-  @Inject
   private SubmissionService submissionService;
 
   /**
@@ -53,11 +51,10 @@ public class SubmissionViewPresenter {
   public void init(SubmissionView view) {
     logger.debug("Submission view");
     this.view = view;
-    view.submissionForm.setPresenter(submissionFormPresenter);
-    submissionFormPresenter.setEditable(true);
+    view.submissionFormPresenter.setEditable(true);
     setCaptions();
     view.editableCheckbox.addValueChangeListener(
-        e -> submissionFormPresenter.setEditable(view.editableCheckbox.getValue()));
+        e -> view.submissionFormPresenter.setEditable(view.editableCheckbox.getValue()));
   }
 
   private void setCaptions() {
@@ -67,6 +64,6 @@ public class SubmissionViewPresenter {
 
   void setSubmissionById(Long id) {
     Submission submission = submissionService.get(id);
-    submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
+    view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
   }
 }
