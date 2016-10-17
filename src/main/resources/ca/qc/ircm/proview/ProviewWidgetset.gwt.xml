@@ -26,7 +26,7 @@
 
     <inherits name="com.vaadin.DefaultWidgetSet" />
 
-    <inherits name="org.vaadin.hene.flexibleoptiongroup.widgetset.FlexibleOptionGroupWidgetset" />
+    
 
     
 

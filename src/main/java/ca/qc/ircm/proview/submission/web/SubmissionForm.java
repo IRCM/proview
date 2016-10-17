@@ -58,7 +58,6 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Notification;
-import org.vaadin.hene.flexibleoptiongroup.FlexibleOptionGroup;
 import pl.exsio.plupload.Plupload;
 
 import java.util.HashMap;
@@ -92,8 +91,6 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   private SubmissionFormPresenter presenter;
   protected Plupload structureUploader;
   protected Plupload gelImagesUploader;
-  protected FlexibleOptionGroup digestionFlexibleOptions = new FlexibleOptionGroup();
-  protected FlexibleOptionGroup proteinIdentificationFlexibleOptions = new FlexibleOptionGroup();
   protected Map<Solvent, CheckBox> solventsFields = new HashMap<Solvent, CheckBox>();
 
   public void setPresenter(SubmissionFormPresenter presenter) {

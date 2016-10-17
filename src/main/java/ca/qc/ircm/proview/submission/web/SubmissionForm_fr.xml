@@ -88,9 +88,9 @@
   <entry key="gelImages.overMaximumCount">Maximum de {0} fichiers permis</entry>
   <entry key="servicesPanel">Services</entry>
   <entry key="proteolyticDigestionMethod">Digestion</entry>
-  <entry key="proteolyticDigestionMethod.DIGESTED.value">- enzyme utilisé</entry>
-  <entry key="proteolyticDigestionMethod.OTHER.value">- enzyme à utiliser</entry>
-  <entry key="proteolyticDigestionMethod.OTHER.note">(les enzymes, réactifs et protocoles doivent être fournis avec les échantillons)</entry>
+  <entry key="usedProteolyticDigestionMethod">Enzyme utilisé</entry>
+  <entry key="otherProteolyticDigestionMethod">Enzyme à utiliser</entry>
+  <entry key="otherProteolyticDigestionMethod.note">(les enzymes, réactifs et protocoles doivent être fournis avec les échantillons)</entry>
   <entry key="enrichment">Enrichissement de peptide avec modifications post-traductionnelle</entry>
   <entry key="enrichment.value">À venir!</entry>
   <entry key="exclusions">Exclusion et inclusion LC MSMS</entry>
@@ -99,7 +99,7 @@
   <entry key="source">Source d''ionisation</entry>
   <entry key="massDetectionInstrument">Sélection d''instrument</entry>
   <entry key="proteinIdentification">Base de données d''identification de protéines</entry>
-  <entry key="proteinIdentification.OTHER.value">- lien pour télécharger la base de données</entry>
+  <entry key="proteinIdentificationLink">Lien pour télécharger la base de données</entry>
   <entry key="quantification">Quantification</entry>
   <entry key="quantificationLabels">Marqueurs pour la quantification (si Silac)</entry>
   <entry key="quantificationLabels.example">Lourd: Lys8, Arg10

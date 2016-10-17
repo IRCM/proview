@@ -90,9 +90,9 @@
   <entry key="gelImages.overMaximumCount">Maximum of {0} allowed files</entry>
   <entry key="servicesPanel">Services</entry>
   <entry key="proteolyticDigestionMethod">Proteolytic digestion</entry>
-  <entry key="proteolyticDigestionMethod.DIGESTED.value">- used enzyme</entry>
-  <entry key="proteolyticDigestionMethod.OTHER.value">- enzyme to use</entry>
-  <entry key="proteolyticDigestionMethod.OTHER.note">(enzymes, reactives and protocol must be supplied with samples)</entry>
+  <entry key="usedProteolyticDigestionMethod">Used enzyme</entry>
+  <entry key="otherProteolyticDigestionMethod">Enzyme to use</entry>
+  <entry key="otherProteolyticDigestionMethod.note">(enzymes, reactives and protocol must be supplied with samples)</entry>
   <entry key="enrichment">Peptide enrichment with post-translationnal modifications</entry>
   <entry key="enrichment.value">Coming soon!</entry>
   <entry key="exclusions">LC MSMS exclusion and inclusion</entry>
@@ -101,7 +101,7 @@
   <entry key="source">Ionization source</entry>
   <entry key="massDetectionInstrument">Instrument selection</entry>
   <entry key="proteinIdentification">Protein identification database</entry>
-  <entry key="proteinIdentification.OTHER.value">- link to download database</entry>
+  <entry key="proteinIdentificationLink">Link to download database</entry>
   <entry key="quantification">Quantification</entry>
   <entry key="quantificationLabels">Quantification labels (if Silac)</entry>
   <entry key="quantificationLabels.example">Heavy: Lys8, Arg10

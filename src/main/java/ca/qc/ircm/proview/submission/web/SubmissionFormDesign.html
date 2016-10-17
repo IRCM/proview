@@ -143,38 +143,16 @@
    <vaadin-panel caption="Services" size-auto _id="servicesPanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-vertical-layout caption="Digestion" size-auto _id="digestionOptionsLayout"> 
-       <vaadin-horizontal-layout spacing> 
-        <vaadin-horizontal-layout _id="trypsinDigestionOptionLayout" :middle> 
-         <vaadin-label size-auto plain-text _id="trypsinDigestionOptionLabel" :middle>
-           Trypsin 
-         </vaadin-label> 
-        </vaadin-horizontal-layout> 
-       </vaadin-horizontal-layout> 
-       <vaadin-horizontal-layout spacing> 
-        <vaadin-horizontal-layout _id="digestedDigestionOptionLayout" :middle> 
-         <vaadin-label size-auto plain-text _id="digestedDigestionOptionLabel" :middle>
-           Digested 
-         </vaadin-label> 
-        </vaadin-horizontal-layout> 
-        <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-         <vaadin-text-field caption="used enzyme" null-representation="" _id="usedProteolyticDigestionMethodField"></vaadin-text-field> 
-        </vaadin-form-layout> 
-       </vaadin-horizontal-layout> 
-       <vaadin-horizontal-layout spacing> 
-        <vaadin-horizontal-layout _id="otherDigestionOptionLayout" :middle> 
-         <vaadin-label size-auto plain-text _id="otherDigestionOptionLabel" :middle>
-           Other 
-         </vaadin-label> 
-        </vaadin-horizontal-layout> 
-        <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-         <vaadin-text-field caption="enzyme to use" null-representation="" _id="otherProteolyticDigestionMethodField"></vaadin-text-field> 
-        </vaadin-form-layout> 
-        <vaadin-label size-auto plain-text _id="otherDigestionNote" :middle>
-          Enzymes must be supplied 
-        </vaadin-label> 
-       </vaadin-horizontal-layout> 
-      </vaadin-vertical-layout> 
+      <vaadin-option-group caption="Digestion" item-caption-mode="id" _id="digestionOptions"> 
+       <option>Trypsin</option> 
+       <option>Digested</option> 
+       <option>Other</option> 
+      </vaadin-option-group> 
+      <vaadin-text-field caption="Enzyme used for digestion" null-representation="" _id="usedProteolyticDigestionMethodField"></vaadin-text-field> 
+      <vaadin-text-field caption="Enzyme to use for digestion" null-representation="" _id="otherProteolyticDigestionMethodField"></vaadin-text-field> 
+      <vaadin-label size-auto plain-text _id="otherProteolyticDigestionMethodNote">
+        (enzymes, reactors and protocol must be supplied with samples) 
+      </vaadin-label> 
       <vaadin-label caption="Enrichment" size-auto plain-text _id="enrichmentLabel">
         Coming soon 
       </vaadin-label> 
@@ -191,39 +169,12 @@
        <option>Q-Exactive</option> 
        <option>LTQ-Orbitrap-Fusion</option> 
       </vaadin-option-group> 
-      <vaadin-vertical-layout caption="Protein identification database" size-auto _id="proteinIdentificationOptionsLayout"> 
-       <vaadin-horizontal-layout spacing> 
-        <vaadin-horizontal-layout _id="refseqProteinIdentificationOptionLayout" :middle> 
-         <vaadin-label size-auto plain-text _id="refseqProteinIdentificationOptionLabel" :middle>
-           RefSeq 
-         </vaadin-label> 
-        </vaadin-horizontal-layout> 
-       </vaadin-horizontal-layout> 
-       <vaadin-horizontal-layout spacing> 
-        <vaadin-horizontal-layout _id="uniprotProteinIdentificationOptionLayout" :middle> 
-         <vaadin-label size-auto plain-text _id="uniprotProteinIdentificationOptionLabel" :middle>
-           UniProt 
-         </vaadin-label> 
-        </vaadin-horizontal-layout> 
-       </vaadin-horizontal-layout> 
-       <vaadin-horizontal-layout spacing> 
-        <vaadin-horizontal-layout _id="otherProteinIdentificationOptionLayout" :middle> 
-         <vaadin-label size-auto plain-text _id="otherProteinIdentificationOptionLabel" :middle>
-           Other 
-         </vaadin-label> 
-        </vaadin-horizontal-layout> 
-        <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-         <vaadin-text-field caption="Link to protein database" null-representation="" _id="proteinIdentificationLinkField" :middle></vaadin-text-field> 
-        </vaadin-form-layout> 
-       </vaadin-horizontal-layout> 
-       <vaadin-horizontal-layout spacing _id="disabledProteinIdentificationLayout"> 
-        <vaadin-horizontal-layout _id="disabledProteinIdentificationOptionLayout" :middle> 
-         <vaadin-label size-auto plain-text _id="disabledProteinIdentificationOptionLabel" :middle>
-           UniProt 
-         </vaadin-label> 
-        </vaadin-horizontal-layout> 
-       </vaadin-horizontal-layout> 
-      </vaadin-vertical-layout> 
+      <vaadin-option-group item-caption-mode="id" _id="proteinIdentificationOptions"> 
+       <option>RefSeq</option> 
+       <option>UniProt</option> 
+       <option>Other</option> 
+      </vaadin-option-group> 
+      <vaadin-text-field caption="Link to download protein database" null-representation="" _id="proteinIdentificationLinkField"></vaadin-text-field> 
       <vaadin-option-group caption="Quantification" item-caption-mode="id" _id="quantificationOptions"> 
        <option>None</option> 
        <option>Label-free</option> 
