@@ -21,6 +21,7 @@ import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Notification;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -59,12 +60,19 @@ public class SubmissionView extends SubmissionViewDesign implements MessageResou
     getUI().getPage().setTitle(title);
   }
 
+  public void showWarning(String message) {
+    Notification.show(message, Notification.Type.WARNING_MESSAGE);
+  }
+
   @Override
   public void enter(ViewChangeEvent event) {
-    try {
-      Long id = Long.valueOf(event.getParameters());
-      presenter.setSubmissionById(id);
-    } catch (NumberFormatException e) {
+    if (event.getParameters() != null && !event.getParameters().isEmpty()) {
+      try {
+        Long id = Long.valueOf(event.getParameters());
+        presenter.setSubmissionById(id);
+      } catch (NumberFormatException e) {
+        showWarning(getResources().message("submission.invalid"));
+      }
     }
   }
 }

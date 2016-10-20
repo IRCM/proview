@@ -53,8 +53,6 @@ public class SubmissionViewPresenter {
     this.view = view;
     view.submissionFormPresenter.setEditable(true);
     setCaptions();
-    view.editableCheckbox.addValueChangeListener(
-        e -> view.submissionFormPresenter.setEditable(view.editableCheckbox.getValue()));
   }
 
   private void setCaptions() {
@@ -62,7 +60,7 @@ public class SubmissionViewPresenter {
     view.setTitle(resources.message(TITLE));
   }
 
-  void setSubmissionById(Long id) {
+  public void setSubmissionById(Long id) {
     Submission submission = submissionService.get(id);
     view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
   }

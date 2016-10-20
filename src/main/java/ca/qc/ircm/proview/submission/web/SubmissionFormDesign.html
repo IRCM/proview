@@ -130,12 +130,12 @@
       <vaadin-check-box caption="Destained" width="100px" _id="decolorationField"></vaadin-check-box> 
       <vaadin-text-field caption="Weight marker quantity (µg)" null-representation="" _id="weightMarkerQuantityField"></vaadin-text-field> 
       <vaadin-text-field caption="Total protein quantity in gel" null-representation="" _id="proteinQuantityField"></vaadin-text-field> 
-     </vaadin-form-layout> 
-     <vaadin-vertical-layout spacing> 
-      <vaadin-horizontal-layout spacing> 
+      <vaadin-horizontal-layout caption="Gel images" _id="gelImagesLayout"> 
        <vaadin-vertical-layout size-auto _id="gelImagesUploaderLayout"></vaadin-vertical-layout> 
        <vaadin-progress-bar icon="fonticon://FontAwesome/f0ed" visible="false" _id="gelImageProgress"></vaadin-progress-bar> 
       </vaadin-horizontal-layout> 
+     </vaadin-form-layout> 
+     <vaadin-vertical-layout spacing> 
       <vaadin-table width-full _id="gelImagesTable"></vaadin-table> 
      </vaadin-vertical-layout> 
     </vaadin-vertical-layout> 
@@ -169,7 +169,7 @@
        <option>Q-Exactive</option> 
        <option>LTQ-Orbitrap-Fusion</option> 
       </vaadin-option-group> 
-      <vaadin-option-group item-caption-mode="id" _id="proteinIdentificationOptions"> 
+      <vaadin-option-group caption="Protein identification database" item-caption-mode="id" _id="proteinIdentificationOptions"> 
        <option>RefSeq</option> 
        <option>UniProt</option> 
        <option>Other</option> 

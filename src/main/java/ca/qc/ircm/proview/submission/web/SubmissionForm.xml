@@ -30,6 +30,7 @@
   <entry key="solutionSolvent">Solvent</entry>
   <entry key="formula">Empiric formula</entry>
   <entry key="structure">Structure</entry>
+  <entry key="structure.required">Structure may not be empty</entry>
   <entry key="structure.error">File {0} could not be uploaded</entry>
   <entry key="structure.overMaximumSize">File {0} size not below {1}</entry>
   <entry key="structureUploader">Upload structure</entry>
@@ -39,6 +40,7 @@
   <entry key="lightSensitive">Light sensitive</entry>
   <entry key="storageTemperature">Storage temperature</entry>
   <entry key="names">Sample names</entry>
+  <entry key="names.duplicate">Sample name {0} cannot be used more than once</entry>
   <entry key="fillSampleNames">Fill down</entry>
   <entry key="experiencePanel">Sample details</entry>
   <entry key="experience">Experience</entry>
@@ -85,9 +87,11 @@
   <entry key="gelImages">Gel image(s)</entry>
   <entry key="gelImages.filename">File</entry>
   <entry key="gelImages.removeGelImage">Remove</entry>
+  <entry key="gelImages.required">Gel image(s) may not be empty</entry>
   <entry key="gelImages.error">File {0} could not be uploaded</entry>
   <entry key="gelImages.overMaximumSize">File {0} size not below {1}</entry>
   <entry key="gelImages.overMaximumCount">Maximum of {0} allowed files</entry>
+  <entry key="gelImagesUploader">Upload gel images</entry>
   <entry key="servicesPanel">Services</entry>
   <entry key="proteolyticDigestionMethod">Proteolytic digestion</entry>
   <entry key="usedProteolyticDigestionMethod">Used enzyme</entry>
@@ -111,6 +115,7 @@ Light: None</entry>
   <entry key="highResolution.false">Nominal mass</entry>
   <entry key="highResolution.true">Accurate mass measurement</entry>
   <entry key="solvents">Soluble in</entry>
+  <entry key="solvents.required">Soluble in may not be empty</entry>
   <entry key="otherSolvent">- specify other solvent</entry>
   <entry key="otherSolvent.note">(DMSO is not compatible with MS analysis)</entry>
   <entry key="commentsPanel">Comments</entry>

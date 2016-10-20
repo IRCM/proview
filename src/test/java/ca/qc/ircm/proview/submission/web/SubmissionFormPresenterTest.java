@@ -53,6 +53,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STA
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_TABLE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_UPLOADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_UPLOADER_PROGRESS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILENAME_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
@@ -119,9 +120,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -152,11 +150,9 @@ import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Container;
-import com.vaadin.data.Property;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.server.FontAwesome;
@@ -180,13 +176,14 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.exsio.plupload.Plupload;
 import pl.exsio.plupload.Plupload.FileUploadedListener;
 import pl.exsio.plupload.PluploadFile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -199,6 +196,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionFormPresenterTest {
+  private static final Logger logger = LoggerFactory.getLogger(SubmissionFormPresenterTest.class);
   private SubmissionFormPresenter presenter;
   @PersistenceContext
   private EntityManager entityManager;
@@ -218,6 +216,8 @@ public class SubmissionFormPresenterTest {
   private PluploadFile pluploadFile;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
+  @Captor
+  private ArgumentCaptor<Boolean> booleanCaptor;
   @Captor
   private ArgumentCaptor<FileUploadedListener> fileUploadedListenerCaptor;
   @Captor
@@ -272,6 +272,7 @@ public class SubmissionFormPresenterTest {
   private CheckBox decolorationField = new CheckBox();
   private TextField weightMarkerQuantityField = new TextField();
   private TextField proteinQuantityField = new TextField();
+  private HorizontalLayout gelImagesLayout = new HorizontalLayout();
   private ProgressBar gelImageProgress = new ProgressBar();
   private Table gelImagesTable = new Table();
   private Panel servicesPanel = new Panel();
@@ -373,6 +374,14 @@ public class SubmissionFormPresenterTest {
   private String comments = "my comment\nmy comment second line";
   private TextField sampleNameField1;
   private TextField sampleNameField2;
+  private TextField standardNameField1;
+  private TextField standardNameField2;
+  private TextField standardQuantityField1;
+  private TextField standardQuantityField2;
+  private TextField contaminantNameField1;
+  private TextField contaminantNameField2;
+  private TextField contaminantQuantityField1;
+  private TextField contaminantQuantityField2;
 
   /**
    * Before test.
@@ -432,6 +441,7 @@ public class SubmissionFormPresenterTest {
     view.decolorationField = decolorationField;
     view.weightMarkerQuantityField = weightMarkerQuantityField;
     view.proteinQuantityField = proteinQuantityField;
+    view.gelImagesLayout = gelImagesLayout;
     view.gelImagesUploader = gelImagesUploader;
     view.gelImageProgress = gelImageProgress;
     view.gelImagesTable = gelImagesTable;
@@ -474,8 +484,8 @@ public class SubmissionFormPresenterTest {
       CommitException exception = (CommitException) i.getArguments()[0];
       Locale locale = (Locale) i.getArguments()[1];
       Map<Field<?>, InvalidValueException> fieldExceptions = exception.getInvalidFields();
-      fieldExceptions.keySet().forEach(f -> System.out.println(f.getCaption()));
-      fieldExceptions.values().forEach(e -> System.out.println(e.getMessage()));
+      fieldExceptions.forEach((field, value) -> logger.debug("field {} in error: {}",
+          field.getCaption(), value.getMessage()));
       return realVaadinUtils.getFieldMessage(exception, locale);
     });
   }
@@ -553,63 +563,56 @@ public class SubmissionFormPresenterTest {
     Container standardsContainer = view.standardsTable.getContainerDataSource();
     List<?> standards = new ArrayList<>(standardsContainer.getItemIds());
     Standard standard = (Standard) standards.get(0);
-    setValuesInStandardsTable(standardsContainer, standard, standardName1, standardQuantity1,
-        standardComment1);
+    standardNameField1 = setValueInStandardsTable(standardsContainer, standard, standardName1,
+        STANDARD_NAME_PROPERTY);
+    standardQuantityField1 = setValueInStandardsTable(standardsContainer, standard,
+        standardQuantity1, STANDARD_QUANTITY_PROPERTY);
+    setValueInStandardsTable(standardsContainer, standard, standardComment1,
+        STANDARD_COMMENTS_PROPERTY);
     standard = (Standard) standards.get(1);
-    setValuesInStandardsTable(standardsContainer, standard, standardName2, standardQuantity2,
-        standardComment2);
+    standardNameField2 = setValueInStandardsTable(standardsContainer, standard, standardName2,
+        STANDARD_NAME_PROPERTY);
+    standardQuantityField2 = setValueInStandardsTable(standardsContainer, standard,
+        standardQuantity2, STANDARD_QUANTITY_PROPERTY);
+    setValueInStandardsTable(standardsContainer, standard, standardComment2,
+        STANDARD_COMMENTS_PROPERTY);
   }
 
-  private void setValuesInStandardsTable(Container standardsContainer, Standard standard,
-      String name, String quantity, String comments) {
-    TextField standardNameTableField = (TextField) view.standardsTable.getTableFieldFactory()
-        .createField(standardsContainer, standard, STANDARD_NAME_PROPERTY, view.standardsTable);
-    standardNameTableField.setPropertyDataSource(
-        standardsContainer.getContainerProperty(standard, STANDARD_NAME_PROPERTY));
-    standardNameTableField.setValue(name);
-    TextField standardQuantityTableField = (TextField) view.standardsTable.getTableFieldFactory()
-        .createField(standardsContainer, standard, STANDARD_QUANTITY_PROPERTY, view.standardsTable);
-    standardQuantityTableField.setPropertyDataSource(
-        standardsContainer.getContainerProperty(standard, STANDARD_QUANTITY_PROPERTY));
-    standardQuantityTableField.setValue(quantity);
-    TextField standardCommentsTableField = (TextField) view.standardsTable.getTableFieldFactory()
-        .createField(standardsContainer, standard, STANDARD_COMMENTS_PROPERTY, view.standardsTable);
-    standardCommentsTableField.setPropertyDataSource(
-        standardsContainer.getContainerProperty(standard, STANDARD_COMMENTS_PROPERTY));
-    standardCommentsTableField.setValue(comments);
+  private TextField setValueInStandardsTable(Container standardsContainer, Standard standard,
+      String value, String property) {
+    TextField field = (TextField) view.standardsTable.getTableFieldFactory()
+        .createField(standardsContainer, standard, property, view.standardsTable);
+    field.setPropertyDataSource(standardsContainer.getContainerProperty(standard, property));
+    field.setValue(value);
+    return field;
   }
 
   private void setValuesInContaminantsTable() {
     Container contaminantsContainer = view.contaminantsTable.getContainerDataSource();
     List<?> contaminants = new ArrayList<>(contaminantsContainer.getItemIds());
     Contaminant contaminant = (Contaminant) contaminants.get(0);
-    setValuesInContaminantsTable(contaminantsContainer, contaminant, contaminantName1,
-        contaminantQuantity1, contaminantComment1);
+    contaminantNameField1 = setValueInContaminantsTable(contaminantsContainer, contaminant,
+        contaminantName1, CONTAMINANT_NAME_PROPERTY);
+    contaminantQuantityField1 = setValueInContaminantsTable(contaminantsContainer, contaminant,
+        contaminantQuantity1, CONTAMINANT_QUANTITY_PROPERTY);
+    setValueInContaminantsTable(contaminantsContainer, contaminant, contaminantComment1,
+        CONTAMINANT_COMMENTS_PROPERTY);
     contaminant = (Contaminant) contaminants.get(1);
-    setValuesInContaminantsTable(contaminantsContainer, contaminant, contaminantName2,
-        contaminantQuantity2, contaminantComment2);
+    contaminantNameField2 = setValueInContaminantsTable(contaminantsContainer, contaminant,
+        contaminantName2, CONTAMINANT_NAME_PROPERTY);
+    contaminantQuantityField2 = setValueInContaminantsTable(contaminantsContainer, contaminant,
+        contaminantQuantity2, CONTAMINANT_QUANTITY_PROPERTY);
+    setValueInContaminantsTable(contaminantsContainer, contaminant, contaminantComment2,
+        CONTAMINANT_COMMENTS_PROPERTY);
   }
 
-  private void setValuesInContaminantsTable(Container contaminantsContainer,
-      Contaminant contaminant, String name, String quantity, String comments) {
-    TextField contaminantNameTableField =
-        (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
-            contaminant, CONTAMINANT_NAME_PROPERTY, view.contaminantsTable);
-    contaminantNameTableField.setPropertyDataSource(
-        contaminantsContainer.getContainerProperty(contaminant, CONTAMINANT_NAME_PROPERTY));
-    contaminantNameTableField.setValue(name);
-    TextField contaminantQuantityTableField =
-        (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
-            contaminant, CONTAMINANT_QUANTITY_PROPERTY, view.contaminantsTable);
-    contaminantQuantityTableField.setPropertyDataSource(
-        contaminantsContainer.getContainerProperty(contaminant, CONTAMINANT_QUANTITY_PROPERTY));
-    contaminantQuantityTableField.setValue(quantity);
-    TextField contaminantCommentsTableField =
-        (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
-            contaminant, CONTAMINANT_COMMENTS_PROPERTY, view.contaminantsTable);
-    contaminantCommentsTableField.setPropertyDataSource(
-        contaminantsContainer.getContainerProperty(contaminant, CONTAMINANT_COMMENTS_PROPERTY));
-    contaminantCommentsTableField.setValue(comments);
+  private TextField setValueInContaminantsTable(Container contaminantsContainer,
+      Contaminant contaminant, String value, String property) {
+    TextField field = (TextField) view.contaminantsTable.getTableFieldFactory()
+        .createField(contaminantsContainer, contaminant, property, view.contaminantsTable);
+    field.setPropertyDataSource(contaminantsContainer.getContainerProperty(contaminant, property));
+    field.setValue(value);
+    return field;
   }
 
   private void uploadStructure() {
@@ -693,31 +696,24 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
 
     assertTrue(view.serviceOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.servicePanel.getCaption()),
-        view.serviceOptions.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.serviceOptions.getRequiredError());
     assertTrue(view.sampleSupportOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.sampleSupportOptions.getCaption()),
-        view.sampleSupportOptions.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.sampleSupportOptions.getRequiredError());
     assertTrue(view.solutionSolventField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.solutionSolventField.getCaption()),
-        view.solutionSolventField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.solutionSolventField.getRequiredError());
     assertTrue(view.sampleCountField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.sampleCountField.getCaption()),
-        view.sampleCountField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.sampleCountField.getRequiredError());
     assertTrue(view.sampleNameField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.sampleNameField.getCaption()),
-        view.sampleNameField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.sampleNameField.getRequiredError());
     assertTrue(view.formulaField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.formulaField.getCaption()),
-        view.formulaField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.formulaField.getRequiredError());
     assertTrue(view.monoisotopicMassField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.monoisotopicMassField.getCaption()),
-        view.monoisotopicMassField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.monoisotopicMassField.getRequiredError());
     assertFalse(view.averageMassField.isRequired());
     assertFalse(view.toxicityField.isRequired());
     assertFalse(view.lightSensitiveField.isRequired());
     assertTrue(view.storageTemperatureOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.storageTemperatureOptions.getCaption()),
+    assertEquals(generalResources.message(REQUIRED),
         view.storageTemperatureOptions.getRequiredError());
     Container samplesContainer = view.sampleNamesTable.getContainerDataSource();
     if (samplesContainer.size() < 1) {
@@ -728,24 +724,19 @@ public class SubmissionFormPresenterTest {
     TextField sampleNameTableField = (TextField) view.sampleNamesTable.getTableFieldFactory()
         .createField(samplesContainer, firstSample, SAMPLE_NAME_PROPERTY, view.sampleNamesTable);
     assertTrue(sampleNameTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, sampleNameTableField.getCaption()),
-        sampleNameTableField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), sampleNameTableField.getRequiredError());
     assertTrue(view.experienceField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.experienceField.getCaption()),
-        view.experienceField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.experienceField.getRequiredError());
     assertFalse(view.experienceGoalField.isRequired());
     assertTrue(view.taxonomyField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.taxonomyField.getCaption()),
-        view.taxonomyField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.taxonomyField.getRequiredError());
     assertFalse(view.proteinNameField.isRequired());
     assertFalse(view.proteinWeightField.isRequired());
     assertFalse(view.postTranslationModificationField.isRequired());
     assertTrue(view.sampleQuantityField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.sampleQuantityField.getCaption()),
-        view.sampleQuantityField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.sampleQuantityField.getRequiredError());
     assertTrue(view.sampleVolumeField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.sampleVolumeField.getCaption()),
-        view.sampleVolumeField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.sampleVolumeField.getRequiredError());
     assertFalse(view.standardCountField.isRequired());
     Container standardsContainer = view.standardsTable.getContainerDataSource();
     if (standardsContainer.size() < 1) {
@@ -756,16 +747,12 @@ public class SubmissionFormPresenterTest {
         (TextField) view.standardsTable.getTableFieldFactory().createField(standardsContainer,
             firstStandard, STANDARD_NAME_PROPERTY, view.standardsTable);
     assertTrue(standardNameTableField.isRequired());
-    assertEquals(
-        resources.message(STANDARD_PROPERTY + "." + STANDARD_NAME_PROPERTY + "." + REQUIRED),
-        standardNameTableField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), standardNameTableField.getRequiredError());
     TextField standardQuantityTableField =
         (TextField) view.standardsTable.getTableFieldFactory().createField(standardsContainer,
             firstStandard, STANDARD_QUANTITY_PROPERTY, view.standardsTable);
     assertTrue(standardQuantityTableField.isRequired());
-    assertEquals(
-        resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY + "." + REQUIRED),
-        standardQuantityTableField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), standardQuantityTableField.getRequiredError());
     TextField standardCommentsTableField =
         (TextField) view.standardsTable.getTableFieldFactory().createField(standardsContainer,
             firstStandard, STANDARD_COMMENTS_PROPERTY, view.standardsTable);
@@ -781,76 +768,61 @@ public class SubmissionFormPresenterTest {
         (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
             firstContaminant, CONTAMINANT_NAME_PROPERTY, view.contaminantsTable);
     assertTrue(contaminantNameTableField.isRequired());
-    assertEquals(
-        resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_NAME_PROPERTY + "." + REQUIRED),
-        contaminantNameTableField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), contaminantNameTableField.getRequiredError());
     TextField contaminantQuantityTableField =
         (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
             firstContaminant, CONTAMINANT_QUANTITY_PROPERTY, view.contaminantsTable);
     assertTrue(contaminantQuantityTableField.isRequired());
-    assertEquals(
-        resources
-            .message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY + "." + REQUIRED),
+    assertEquals(generalResources.message(REQUIRED),
         contaminantQuantityTableField.getRequiredError());
     TextField contaminantCommentsTableField =
         (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
             firstContaminant, CONTAMINANT_COMMENTS_PROPERTY, view.contaminantsTable);
     assertFalse(contaminantCommentsTableField.isRequired());
     assertTrue(view.separationField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.separationField.getCaption()),
-        view.separationField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.separationField.getRequiredError());
     assertTrue(view.thicknessField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.thicknessField.getCaption()),
-        view.thicknessField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.thicknessField.getRequiredError());
     assertFalse(view.colorationField.isRequired());
     assertTrue(view.otherColorationField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.otherColorationField.getCaption()),
-        view.otherColorationField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.otherColorationField.getRequiredError());
     assertFalse(view.developmentTimeField.isRequired());
     assertFalse(view.decolorationField.isRequired());
     assertFalse(view.weightMarkerQuantityField.isRequired());
     assertFalse(view.proteinQuantityField.isRequired());
     assertTrue(view.digestionOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.digestionOptions.getCaption()),
-        view.digestionOptions.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.digestionOptions.getRequiredError());
     assertTrue(view.usedProteolyticDigestionMethodField.isRequired());
-    assertEquals(
-        generalResources.message(REQUIRED, view.usedProteolyticDigestionMethodField.getCaption()),
+    assertEquals(generalResources.message(REQUIRED),
         view.usedProteolyticDigestionMethodField.getRequiredError());
     assertTrue(view.otherProteolyticDigestionMethodField.isRequired());
-    assertEquals(
-        generalResources.message(REQUIRED, view.otherProteolyticDigestionMethodField.getCaption()),
+    assertEquals(generalResources.message(REQUIRED),
         view.otherProteolyticDigestionMethodField.getRequiredError());
     assertTrue(view.sampleNumberProteinField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.sampleNumberProteinField.getCaption()),
+    assertEquals(generalResources.message(REQUIRED),
         view.sampleNumberProteinField.getRequiredError());
     assertTrue(view.sourceOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.sourceOptions.getCaption()),
-        view.sourceOptions.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.sourceOptions.getRequiredError());
     assertTrue(view.instrumentOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.instrumentOptions.getCaption()),
-        view.instrumentOptions.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.instrumentOptions.getRequiredError());
     assertTrue(view.proteinIdentificationOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.proteinIdentificationOptions.getCaption()),
+    assertEquals(generalResources.message(REQUIRED),
         view.proteinIdentificationOptions.getRequiredError());
     assertTrue(view.proteinIdentificationLinkField.isRequired());
-    assertEquals(
-        generalResources.message(REQUIRED, view.proteinIdentificationLinkField.getCaption()),
+    assertEquals(generalResources.message(REQUIRED),
         view.proteinIdentificationLinkField.getRequiredError());
     assertFalse(view.quantificationOptions.isRequired());
     assertFalse(view.quantificationLabelsField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.quantificationLabelsField.getCaption()),
+    assertEquals(generalResources.message(REQUIRED),
         view.quantificationLabelsField.getRequiredError());
     assertTrue(view.highResolutionOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.highResolutionOptions.getCaption()),
-        view.highResolutionOptions.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.highResolutionOptions.getRequiredError());
     assertFalse(view.acetonitrileSolventsField.isRequired());
     assertFalse(view.methanolSolventsField.isRequired());
     assertFalse(view.chclSolventsField.isRequired());
     assertFalse(view.otherSolventsField.isRequired());
     assertFalse(view.otherSolventField.isRequired());
-    assertEquals(generalResources.message(REQUIRED, view.otherSolventField.getCaption()),
-        view.otherSolventField.getRequiredError());
+    assertEquals(generalResources.message(REQUIRED), view.otherSolventField.getRequiredError());
   }
 
   @Test
@@ -860,50 +832,66 @@ public class SubmissionFormPresenterTest {
     assertNotNull(view.sampleCountField.getConverter());
     assertTrue(StringToIntegerConverter.class
         .isAssignableFrom(view.sampleCountField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER, view.sampleCountField.getCaption()),
+    assertEquals(generalResources.message(INVALID_INTEGER),
         view.sampleCountField.getConversionError());
     assertNotNull(view.monoisotopicMassField.getConverter());
     assertTrue(StringToDoubleConverter.class
         .isAssignableFrom(view.monoisotopicMassField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER, view.monoisotopicMassField.getCaption()),
+    assertEquals(generalResources.message(INVALID_NUMBER),
         view.monoisotopicMassField.getConversionError());
     assertNotNull(view.averageMassField.getConverter());
     assertTrue(StringToDoubleConverter.class
         .isAssignableFrom(view.averageMassField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER, view.averageMassField.getCaption()),
+    assertEquals(generalResources.message(INVALID_NUMBER),
         view.averageMassField.getConversionError());
     assertNotNull(view.proteinWeightField.getConverter());
     assertTrue(StringToDoubleConverter.class
         .isAssignableFrom(view.proteinWeightField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER, view.proteinWeightField.getCaption()),
+    assertEquals(generalResources.message(INVALID_NUMBER),
         view.proteinWeightField.getConversionError());
     assertNotNull(view.sampleVolumeField.getConverter());
     assertTrue(StringToDoubleConverter.class
         .isAssignableFrom(view.sampleVolumeField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER, view.sampleVolumeField.getCaption()),
+    assertEquals(generalResources.message(INVALID_NUMBER),
         view.sampleVolumeField.getConversionError());
     assertNotNull(view.standardCountField.getConverter());
     assertTrue(StringToIntegerConverter.class
         .isAssignableFrom(view.standardCountField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER, view.standardCountField.getCaption()),
+    assertEquals(generalResources.message(INVALID_INTEGER),
         view.standardCountField.getConversionError());
     assertNotNull(view.contaminantCountField.getConverter());
     assertTrue(StringToIntegerConverter.class
         .isAssignableFrom(view.contaminantCountField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER, view.contaminantCountField.getCaption()),
+    assertEquals(generalResources.message(INVALID_INTEGER),
         view.contaminantCountField.getConversionError());
     assertNotNull(view.weightMarkerQuantityField.getConverter());
     assertTrue(StringToDoubleConverter.class
         .isAssignableFrom(view.weightMarkerQuantityField.getConverter().getClass()));
-    assertEquals(
-        generalResources.message(INVALID_NUMBER, view.weightMarkerQuantityField.getCaption()),
+    assertEquals(generalResources.message(INVALID_NUMBER),
         view.weightMarkerQuantityField.getConversionError());
     assertNotNull(view.sampleNumberProteinField.getConverter());
     assertTrue(StringToIntegerConverter.class
         .isAssignableFrom(view.sampleNumberProteinField.getConverter().getClass()));
-    assertEquals(
-        generalResources.message(INVALID_INTEGER, view.sampleNumberProteinField.getCaption()),
+    assertEquals(generalResources.message(INVALID_INTEGER),
         view.sampleNumberProteinField.getConversionError());
+  }
+
+  @Test
+  public void gelSupportDisabled_Smallmolecule() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+
+    assertFalse(view.sampleSupportOptions.isItemEnabled(GEL));
+  }
+
+  @Test
+  public void gelSupportDisabled_Intactprotein() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+
+    assertFalse(view.sampleSupportOptions.isItemEnabled(GEL));
   }
 
   @Test
@@ -936,25 +924,16 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void instrument_DisabledOption() {
-    view.instrumentOptions = mock(OptionGroup.class);
     instrument = MassDetectionInstrument.TOF;
     Submission submission = new Submission();
     submission.setMassDetectionInstrument(instrument);
-    doReturn(Arrays.asList(SubmissionForm.INSTRUMENTS)).when(view.instrumentOptions).getItemIds();
-    ObjectProperty<Property<?>> dataSource = new ObjectProperty(null, Property.class);
-    doAnswer(i -> {
-      dataSource.setValue((Property<?>) i.getArguments()[0]);
-      return null;
-    }).when(view.instrumentOptions).setPropertyDataSource(any());
-    when(view.instrumentOptions.getPropertyDataSource()).thenAnswer(i -> dataSource.getValue());
 
-    presenter.init(view);
     presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.init(view);
 
-    verify(view.instrumentOptions).addItem(instrument);
-    verify(view.instrumentOptions).setItemEnabled(instrument, false);
+    assertTrue(view.instrumentOptions.getItemIds().contains(instrument));
+    assertFalse(view.instrumentOptions.isItemEnabled(instrument));
   }
 
   @Test
@@ -970,27 +949,16 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   public void proteinIdentification_DisabledOption() {
-    view.proteinIdentificationOptions = mock(OptionGroup.class);
     proteinIdentification = ProteinIdentification.NCBINR;
     Submission submission = new Submission();
     submission.setProteinIdentification(proteinIdentification);
-    doReturn(Arrays.asList(SubmissionForm.PROTEIN_IDENTIFICATIONS))
-        .when(view.proteinIdentificationOptions).getItemIds();
-    ObjectProperty<Property<?>> dataSource = new ObjectProperty(null, Property.class);
-    doAnswer(i -> {
-      dataSource.setValue((Property<?>) i.getArguments()[0]);
-      return null;
-    }).when(view.proteinIdentificationOptions).setPropertyDataSource(any());
-    when(view.proteinIdentificationOptions.getPropertyDataSource())
-        .thenAnswer(i -> dataSource.getValue());
 
-    presenter.init(view);
     presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.init(view);
 
-    verify(view.proteinIdentificationOptions).addItem(proteinIdentification);
-    verify(view.proteinIdentificationOptions).setItemEnabled(proteinIdentification, false);
+    assertTrue(view.proteinIdentificationOptions.getItemIds().contains(proteinIdentification));
+    assertFalse(view.proteinIdentificationOptions.isItemEnabled(proteinIdentification));
   }
 
   @Test
@@ -1090,8 +1058,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(
         view.weightMarkerQuantityField.getStyleName().contains(WEIGHT_MARKER_QUANTITY_PROPERTY));
     assertTrue(view.proteinQuantityField.getStyleName().contains(PROTEIN_QUANTITY_PROPERTY));
+    assertTrue(view.gelImagesLayout.getStyleName().contains(REQUIRED));
     verify(view.gelImagesUploader).addStyleName(GEL_IMAGES_PROPERTY);
-    verify(view.gelImagesUploader).addStyleName(REQUIRED);
     assertTrue(view.gelImageProgress.getStyleName().contains(GEL_IMAGES_UPLOADER_PROGRESS));
     assertTrue(view.gelImagesTable.getStyleName().contains(GEL_IMAGES_TABLE));
     assertTrue(view.servicesPanel.getStyleName().contains(SERVICES_PANEL));
@@ -1241,7 +1209,8 @@ public class SubmissionFormPresenterTest {
         view.proteinQuantityField.getCaption());
     assertEquals(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE),
         view.proteinQuantityField.getInputPrompt());
-    verify(view.gelImagesUploader).setCaption(resources.message(GEL_IMAGES_PROPERTY));
+    assertEquals(resources.message(GEL_IMAGES_PROPERTY), view.gelImagesLayout.getCaption());
+    verify(view.gelImagesUploader).setCaption(resources.message(GEL_IMAGES_UPLOADER));
     verify(view.gelImagesUploader).setIcon(FontAwesome.FILES_O);
     assertEquals(null, view.gelImageProgress.getCaption());
     assertEquals(FontAwesome.CLOUD_DOWNLOAD, view.gelImageProgress.getIcon());
@@ -1316,6 +1285,561 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void visible_Lcmsms_Solution() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+
+    assertTrue(view.serviceOptions.isVisible());
+    assertTrue(view.sampleSupportOptions.isVisible());
+    assertFalse(view.solutionSolventField.isVisible());
+    assertTrue(view.sampleCountField.isVisible());
+    assertFalse(view.sampleNameField.isVisible());
+    assertFalse(view.formulaField.isVisible());
+    assertFalse(view.structureLayout.isVisible());
+    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.structureButton.isVisible());
+    assertFalse(view.monoisotopicMassField.isVisible());
+    assertFalse(view.averageMassField.isVisible());
+    assertFalse(view.toxicityField.isVisible());
+    assertFalse(view.lightSensitiveField.isVisible());
+    assertFalse(view.storageTemperatureOptions.isVisible());
+    assertTrue(view.sampleNamesLayout.isVisible());
+    assertTrue(view.sampleNamesTable.isVisible());
+    assertTrue(view.fillSampleNamesButton.isVisible());
+    assertTrue(view.experienceField.isVisible());
+    assertTrue(view.experienceGoalField.isVisible());
+    assertTrue(view.taxonomyField.isVisible());
+    assertTrue(view.proteinNameField.isVisible());
+    assertTrue(view.proteinWeightField.isVisible());
+    assertTrue(view.postTranslationModificationField.isVisible());
+    assertTrue(view.sampleQuantityField.isVisible());
+    assertTrue(view.sampleVolumeField.isVisible());
+    assertTrue(view.standardsPanel.isVisible());
+    assertTrue(view.standardCountField.isVisible());
+    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.fillStandardsButton.isVisible());
+    assertTrue(view.contaminantsPanel.isVisible());
+    assertTrue(view.contaminantCountField.isVisible());
+    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.fillContaminantsButton.isVisible());
+    assertFalse(view.separationField.isVisible());
+    assertFalse(view.thicknessField.isVisible());
+    assertFalse(view.colorationField.isVisible());
+    assertFalse(view.otherColorationField.isVisible());
+    assertFalse(view.developmentTimeField.isVisible());
+    assertFalse(view.decolorationField.isVisible());
+    assertFalse(view.weightMarkerQuantityField.isVisible());
+    assertFalse(view.proteinQuantityField.isVisible());
+    assertFalse(view.gelImagesLayout.isVisible());
+    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.gelImagesTable.isVisible());
+    assertTrue(view.digestionOptions.isVisible());
+    assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
+    assertTrue(view.enrichmentLabel.isVisible());
+    assertTrue(view.exclusionsLabel.isVisible());
+    assertFalse(view.sampleNumberProteinField.isVisible());
+    assertFalse(view.sourceOptions.isVisible());
+    assertTrue(view.instrumentOptions.isVisible());
+    assertTrue(view.proteinIdentificationOptions.isVisible());
+    assertFalse(view.proteinIdentificationLinkField.isVisible());
+    assertTrue(view.quantificationOptions.isVisible());
+    assertTrue(view.quantificationLabelsField.isVisible());
+    assertFalse(view.highResolutionOptions.isVisible());
+    assertFalse(view.acetonitrileSolventsField.isVisible());
+    assertFalse(view.methanolSolventsField.isVisible());
+    assertFalse(view.chclSolventsField.isVisible());
+    assertFalse(view.otherSolventsField.isVisible());
+    assertFalse(view.otherSolventField.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_UsedDigestion() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+
+    view.digestionOptions.setValue(DIGESTED);
+
+    assertTrue(view.usedProteolyticDigestionMethodField.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_OtherDigestion() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+
+    view.digestionOptions.setValue(ProteolyticDigestion.OTHER);
+
+    assertTrue(view.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(view.otherProteolyticDigestionMethodNote.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_Dry() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(DRY);
+
+    assertTrue(view.serviceOptions.isVisible());
+    assertTrue(view.sampleSupportOptions.isVisible());
+    assertFalse(view.solutionSolventField.isVisible());
+    assertTrue(view.sampleCountField.isVisible());
+    assertFalse(view.sampleNameField.isVisible());
+    assertFalse(view.formulaField.isVisible());
+    assertFalse(view.structureLayout.isVisible());
+    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.structureButton.isVisible());
+    assertFalse(view.monoisotopicMassField.isVisible());
+    assertFalse(view.averageMassField.isVisible());
+    assertFalse(view.toxicityField.isVisible());
+    assertFalse(view.lightSensitiveField.isVisible());
+    assertFalse(view.storageTemperatureOptions.isVisible());
+    assertTrue(view.sampleNamesLayout.isVisible());
+    assertTrue(view.sampleNamesTable.isVisible());
+    assertTrue(view.fillSampleNamesButton.isVisible());
+    assertTrue(view.experienceField.isVisible());
+    assertTrue(view.experienceGoalField.isVisible());
+    assertTrue(view.taxonomyField.isVisible());
+    assertTrue(view.proteinNameField.isVisible());
+    assertTrue(view.proteinWeightField.isVisible());
+    assertTrue(view.postTranslationModificationField.isVisible());
+    assertTrue(view.sampleQuantityField.isVisible());
+    assertFalse(view.sampleVolumeField.isVisible());
+    assertTrue(view.standardsPanel.isVisible());
+    assertTrue(view.standardCountField.isVisible());
+    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.fillStandardsButton.isVisible());
+    assertTrue(view.contaminantsPanel.isVisible());
+    assertTrue(view.contaminantCountField.isVisible());
+    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.fillContaminantsButton.isVisible());
+    assertFalse(view.separationField.isVisible());
+    assertFalse(view.thicknessField.isVisible());
+    assertFalse(view.colorationField.isVisible());
+    assertFalse(view.otherColorationField.isVisible());
+    assertFalse(view.developmentTimeField.isVisible());
+    assertFalse(view.decolorationField.isVisible());
+    assertFalse(view.weightMarkerQuantityField.isVisible());
+    assertFalse(view.proteinQuantityField.isVisible());
+    assertFalse(view.gelImagesLayout.isVisible());
+    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.gelImagesTable.isVisible());
+    assertTrue(view.digestionOptions.isVisible());
+    assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
+    assertTrue(view.enrichmentLabel.isVisible());
+    assertTrue(view.exclusionsLabel.isVisible());
+    assertFalse(view.sampleNumberProteinField.isVisible());
+    assertFalse(view.sourceOptions.isVisible());
+    assertTrue(view.instrumentOptions.isVisible());
+    assertTrue(view.proteinIdentificationOptions.isVisible());
+    assertFalse(view.proteinIdentificationLinkField.isVisible());
+    assertTrue(view.quantificationOptions.isVisible());
+    assertTrue(view.quantificationLabelsField.isVisible());
+    assertFalse(view.highResolutionOptions.isVisible());
+    assertFalse(view.acetonitrileSolventsField.isVisible());
+    assertFalse(view.methanolSolventsField.isVisible());
+    assertFalse(view.chclSolventsField.isVisible());
+    assertFalse(view.otherSolventsField.isVisible());
+    assertFalse(view.otherSolventField.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_Gel() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+
+    assertTrue(view.serviceOptions.isVisible());
+    assertTrue(view.sampleSupportOptions.isVisible());
+    assertFalse(view.solutionSolventField.isVisible());
+    assertTrue(view.sampleCountField.isVisible());
+    assertFalse(view.sampleNameField.isVisible());
+    assertFalse(view.formulaField.isVisible());
+    assertFalse(view.structureLayout.isVisible());
+    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.structureButton.isVisible());
+    assertFalse(view.monoisotopicMassField.isVisible());
+    assertFalse(view.averageMassField.isVisible());
+    assertFalse(view.toxicityField.isVisible());
+    assertFalse(view.lightSensitiveField.isVisible());
+    assertFalse(view.storageTemperatureOptions.isVisible());
+    assertTrue(view.sampleNamesLayout.isVisible());
+    assertTrue(view.sampleNamesTable.isVisible());
+    assertTrue(view.fillSampleNamesButton.isVisible());
+    assertTrue(view.experienceField.isVisible());
+    assertTrue(view.experienceGoalField.isVisible());
+    assertTrue(view.taxonomyField.isVisible());
+    assertTrue(view.proteinNameField.isVisible());
+    assertTrue(view.proteinWeightField.isVisible());
+    assertTrue(view.postTranslationModificationField.isVisible());
+    assertFalse(view.sampleQuantityField.isVisible());
+    assertFalse(view.sampleVolumeField.isVisible());
+    assertFalse(view.standardsPanel.isVisible());
+    assertFalse(view.standardCountField.isVisible());
+    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.fillStandardsButton.isVisible());
+    assertFalse(view.contaminantsPanel.isVisible());
+    assertFalse(view.contaminantCountField.isVisible());
+    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.fillContaminantsButton.isVisible());
+    assertTrue(view.separationField.isVisible());
+    assertTrue(view.thicknessField.isVisible());
+    assertTrue(view.colorationField.isVisible());
+    assertFalse(view.otherColorationField.isVisible());
+    assertTrue(view.developmentTimeField.isVisible());
+    assertTrue(view.decolorationField.isVisible());
+    assertTrue(view.weightMarkerQuantityField.isVisible());
+    assertTrue(view.proteinQuantityField.isVisible());
+    assertTrue(view.gelImagesLayout.isVisible());
+    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
+    assertTrue(view.gelImagesTable.isVisible());
+    assertTrue(view.digestionOptions.isVisible());
+    assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
+    assertTrue(view.enrichmentLabel.isVisible());
+    assertTrue(view.exclusionsLabel.isVisible());
+    assertFalse(view.sampleNumberProteinField.isVisible());
+    assertFalse(view.sourceOptions.isVisible());
+    assertTrue(view.instrumentOptions.isVisible());
+    assertTrue(view.proteinIdentificationOptions.isVisible());
+    assertFalse(view.proteinIdentificationLinkField.isVisible());
+    assertTrue(view.quantificationOptions.isVisible());
+    assertTrue(view.quantificationLabelsField.isVisible());
+    assertFalse(view.highResolutionOptions.isVisible());
+    assertFalse(view.acetonitrileSolventsField.isVisible());
+    assertFalse(view.methanolSolventsField.isVisible());
+    assertFalse(view.chclSolventsField.isVisible());
+    assertFalse(view.otherSolventsField.isVisible());
+    assertFalse(view.otherSolventField.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_Gel_OtherColoration() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+
+    view.colorationField.setValue(GelColoration.OTHER);
+
+    assertTrue(view.otherColorationField.isVisible());
+  }
+
+  @Test
+  public void visible_Smallmolecule_Solution() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+    view.sampleSupportOptions.setValue(support);
+
+    assertTrue(view.serviceOptions.isVisible());
+    assertTrue(view.sampleSupportOptions.isVisible());
+    assertTrue(view.solutionSolventField.isVisible());
+    assertFalse(view.sampleCountField.isVisible());
+    assertTrue(view.sampleNameField.isVisible());
+    assertTrue(view.formulaField.isVisible());
+    assertTrue(view.structureLayout.isVisible());
+    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
+    assertTrue(view.structureButton.isVisible());
+    assertTrue(view.monoisotopicMassField.isVisible());
+    assertTrue(view.averageMassField.isVisible());
+    assertTrue(view.toxicityField.isVisible());
+    assertTrue(view.lightSensitiveField.isVisible());
+    assertTrue(view.storageTemperatureOptions.isVisible());
+    assertFalse(view.sampleNamesLayout.isVisible());
+    assertFalse(view.sampleNamesTable.isVisible());
+    assertFalse(view.fillSampleNamesButton.isVisible());
+    assertFalse(view.experienceField.isVisible());
+    assertFalse(view.experienceGoalField.isVisible());
+    assertFalse(view.taxonomyField.isVisible());
+    assertFalse(view.proteinNameField.isVisible());
+    assertFalse(view.proteinWeightField.isVisible());
+    assertFalse(view.postTranslationModificationField.isVisible());
+    assertFalse(view.sampleQuantityField.isVisible());
+    assertFalse(view.sampleVolumeField.isVisible());
+    assertFalse(view.standardsPanel.isVisible());
+    assertFalse(view.standardCountField.isVisible());
+    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.fillStandardsButton.isVisible());
+    assertFalse(view.contaminantsPanel.isVisible());
+    assertFalse(view.contaminantCountField.isVisible());
+    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.fillContaminantsButton.isVisible());
+    assertFalse(view.separationField.isVisible());
+    assertFalse(view.thicknessField.isVisible());
+    assertFalse(view.colorationField.isVisible());
+    assertFalse(view.otherColorationField.isVisible());
+    assertFalse(view.developmentTimeField.isVisible());
+    assertFalse(view.decolorationField.isVisible());
+    assertFalse(view.weightMarkerQuantityField.isVisible());
+    assertFalse(view.proteinQuantityField.isVisible());
+    assertFalse(view.gelImagesLayout.isVisible());
+    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.digestionOptions.isVisible());
+    assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
+    assertFalse(view.enrichmentLabel.isVisible());
+    assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.sampleNumberProteinField.isVisible());
+    assertFalse(view.sourceOptions.isVisible());
+    assertFalse(view.instrumentOptions.isVisible());
+    assertFalse(view.proteinIdentificationOptions.isVisible());
+    assertFalse(view.proteinIdentificationLinkField.isVisible());
+    assertFalse(view.quantificationOptions.isVisible());
+    assertFalse(view.quantificationLabelsField.isVisible());
+    assertTrue(view.highResolutionOptions.isVisible());
+    assertTrue(view.acetonitrileSolventsField.isVisible());
+    assertTrue(view.methanolSolventsField.isVisible());
+    assertTrue(view.chclSolventsField.isVisible());
+    assertTrue(view.otherSolventsField.isVisible());
+    assertTrue(view.otherSolventField.isVisible());
+  }
+
+  @Test
+  public void visible_Smallmolecule_Dry() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+    view.sampleSupportOptions.setValue(DRY);
+
+    assertTrue(view.serviceOptions.isVisible());
+    assertTrue(view.sampleSupportOptions.isVisible());
+    assertFalse(view.solutionSolventField.isVisible());
+    assertFalse(view.sampleCountField.isVisible());
+    assertTrue(view.sampleNameField.isVisible());
+    assertTrue(view.formulaField.isVisible());
+    assertTrue(view.structureLayout.isVisible());
+    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
+    assertTrue(view.structureButton.isVisible());
+    assertTrue(view.monoisotopicMassField.isVisible());
+    assertTrue(view.averageMassField.isVisible());
+    assertTrue(view.toxicityField.isVisible());
+    assertTrue(view.lightSensitiveField.isVisible());
+    assertTrue(view.storageTemperatureOptions.isVisible());
+    assertFalse(view.sampleNamesLayout.isVisible());
+    assertFalse(view.sampleNamesTable.isVisible());
+    assertFalse(view.fillSampleNamesButton.isVisible());
+    assertFalse(view.experienceField.isVisible());
+    assertFalse(view.experienceGoalField.isVisible());
+    assertFalse(view.taxonomyField.isVisible());
+    assertFalse(view.proteinNameField.isVisible());
+    assertFalse(view.proteinWeightField.isVisible());
+    assertFalse(view.postTranslationModificationField.isVisible());
+    assertFalse(view.sampleQuantityField.isVisible());
+    assertFalse(view.sampleVolumeField.isVisible());
+    assertFalse(view.standardsPanel.isVisible());
+    assertFalse(view.standardCountField.isVisible());
+    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.fillStandardsButton.isVisible());
+    assertFalse(view.contaminantsPanel.isVisible());
+    assertFalse(view.contaminantCountField.isVisible());
+    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.fillContaminantsButton.isVisible());
+    assertFalse(view.separationField.isVisible());
+    assertFalse(view.thicknessField.isVisible());
+    assertFalse(view.colorationField.isVisible());
+    assertFalse(view.otherColorationField.isVisible());
+    assertFalse(view.developmentTimeField.isVisible());
+    assertFalse(view.decolorationField.isVisible());
+    assertFalse(view.weightMarkerQuantityField.isVisible());
+    assertFalse(view.proteinQuantityField.isVisible());
+    assertFalse(view.gelImagesLayout.isVisible());
+    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.digestionOptions.isVisible());
+    assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
+    assertFalse(view.enrichmentLabel.isVisible());
+    assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.sampleNumberProteinField.isVisible());
+    assertFalse(view.sourceOptions.isVisible());
+    assertFalse(view.instrumentOptions.isVisible());
+    assertFalse(view.proteinIdentificationOptions.isVisible());
+    assertFalse(view.proteinIdentificationLinkField.isVisible());
+    assertFalse(view.quantificationOptions.isVisible());
+    assertFalse(view.quantificationLabelsField.isVisible());
+    assertTrue(view.highResolutionOptions.isVisible());
+    assertTrue(view.acetonitrileSolventsField.isVisible());
+    assertTrue(view.methanolSolventsField.isVisible());
+    assertTrue(view.chclSolventsField.isVisible());
+    assertTrue(view.otherSolventsField.isVisible());
+    assertTrue(view.otherSolventField.isVisible());
+  }
+
+  @Test
+  public void visible_Intactprotein_Solution() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(support);
+
+    assertTrue(view.serviceOptions.isVisible());
+    assertTrue(view.sampleSupportOptions.isVisible());
+    assertFalse(view.solutionSolventField.isVisible());
+    assertTrue(view.sampleCountField.isVisible());
+    assertFalse(view.sampleNameField.isVisible());
+    assertFalse(view.formulaField.isVisible());
+    assertFalse(view.structureLayout.isVisible());
+    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.structureButton.isVisible());
+    assertFalse(view.monoisotopicMassField.isVisible());
+    assertFalse(view.averageMassField.isVisible());
+    assertFalse(view.toxicityField.isVisible());
+    assertFalse(view.lightSensitiveField.isVisible());
+    assertFalse(view.storageTemperatureOptions.isVisible());
+    assertTrue(view.sampleNamesLayout.isVisible());
+    assertTrue(view.sampleNamesTable.isVisible());
+    assertTrue(view.fillSampleNamesButton.isVisible());
+    assertTrue(view.experienceField.isVisible());
+    assertTrue(view.experienceGoalField.isVisible());
+    assertTrue(view.taxonomyField.isVisible());
+    assertTrue(view.proteinNameField.isVisible());
+    assertTrue(view.proteinWeightField.isVisible());
+    assertTrue(view.postTranslationModificationField.isVisible());
+    assertTrue(view.sampleQuantityField.isVisible());
+    assertTrue(view.sampleVolumeField.isVisible());
+    assertTrue(view.standardsPanel.isVisible());
+    assertTrue(view.standardCountField.isVisible());
+    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.fillStandardsButton.isVisible());
+    assertTrue(view.contaminantsPanel.isVisible());
+    assertTrue(view.contaminantCountField.isVisible());
+    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.fillContaminantsButton.isVisible());
+    assertFalse(view.separationField.isVisible());
+    assertFalse(view.thicknessField.isVisible());
+    assertFalse(view.colorationField.isVisible());
+    assertFalse(view.otherColorationField.isVisible());
+    assertFalse(view.developmentTimeField.isVisible());
+    assertFalse(view.decolorationField.isVisible());
+    assertFalse(view.weightMarkerQuantityField.isVisible());
+    assertFalse(view.proteinQuantityField.isVisible());
+    assertFalse(view.gelImagesLayout.isVisible());
+    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.digestionOptions.isVisible());
+    assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
+    assertFalse(view.enrichmentLabel.isVisible());
+    assertFalse(view.exclusionsLabel.isVisible());
+    assertTrue(view.sampleNumberProteinField.isVisible());
+    assertTrue(view.sourceOptions.isVisible());
+    assertTrue(view.instrumentOptions.isVisible());
+    assertFalse(view.proteinIdentificationOptions.isVisible());
+    assertFalse(view.proteinIdentificationLinkField.isVisible());
+    assertFalse(view.quantificationOptions.isVisible());
+    assertFalse(view.quantificationLabelsField.isVisible());
+    assertFalse(view.highResolutionOptions.isVisible());
+    assertFalse(view.acetonitrileSolventsField.isVisible());
+    assertFalse(view.methanolSolventsField.isVisible());
+    assertFalse(view.chclSolventsField.isVisible());
+    assertFalse(view.otherSolventsField.isVisible());
+    assertFalse(view.otherSolventField.isVisible());
+  }
+
+  @Test
+  public void visible_Intactprotein_Dry() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(DRY);
+
+    assertTrue(view.serviceOptions.isVisible());
+    assertTrue(view.sampleSupportOptions.isVisible());
+    assertFalse(view.solutionSolventField.isVisible());
+    assertTrue(view.sampleCountField.isVisible());
+    assertFalse(view.sampleNameField.isVisible());
+    assertFalse(view.formulaField.isVisible());
+    assertFalse(view.structureLayout.isVisible());
+    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.structureButton.isVisible());
+    assertFalse(view.monoisotopicMassField.isVisible());
+    assertFalse(view.averageMassField.isVisible());
+    assertFalse(view.toxicityField.isVisible());
+    assertFalse(view.lightSensitiveField.isVisible());
+    assertFalse(view.storageTemperatureOptions.isVisible());
+    assertTrue(view.sampleNamesLayout.isVisible());
+    assertTrue(view.sampleNamesTable.isVisible());
+    assertTrue(view.fillSampleNamesButton.isVisible());
+    assertTrue(view.experienceField.isVisible());
+    assertTrue(view.experienceGoalField.isVisible());
+    assertTrue(view.taxonomyField.isVisible());
+    assertTrue(view.proteinNameField.isVisible());
+    assertTrue(view.proteinWeightField.isVisible());
+    assertTrue(view.postTranslationModificationField.isVisible());
+    assertTrue(view.sampleQuantityField.isVisible());
+    assertFalse(view.sampleVolumeField.isVisible());
+    assertTrue(view.standardsPanel.isVisible());
+    assertTrue(view.standardCountField.isVisible());
+    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.fillStandardsButton.isVisible());
+    assertTrue(view.contaminantsPanel.isVisible());
+    assertTrue(view.contaminantCountField.isVisible());
+    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.fillContaminantsButton.isVisible());
+    assertFalse(view.separationField.isVisible());
+    assertFalse(view.thicknessField.isVisible());
+    assertFalse(view.colorationField.isVisible());
+    assertFalse(view.otherColorationField.isVisible());
+    assertFalse(view.developmentTimeField.isVisible());
+    assertFalse(view.decolorationField.isVisible());
+    assertFalse(view.weightMarkerQuantityField.isVisible());
+    assertFalse(view.proteinQuantityField.isVisible());
+    assertFalse(view.gelImagesLayout.isVisible());
+    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.digestionOptions.isVisible());
+    assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
+    assertFalse(view.enrichmentLabel.isVisible());
+    assertFalse(view.exclusionsLabel.isVisible());
+    assertTrue(view.sampleNumberProteinField.isVisible());
+    assertTrue(view.sourceOptions.isVisible());
+    assertTrue(view.instrumentOptions.isVisible());
+    assertFalse(view.proteinIdentificationOptions.isVisible());
+    assertFalse(view.proteinIdentificationLinkField.isVisible());
+    assertFalse(view.quantificationOptions.isVisible());
+    assertFalse(view.quantificationLabelsField.isVisible());
+    assertFalse(view.highResolutionOptions.isVisible());
+    assertFalse(view.acetonitrileSolventsField.isVisible());
+    assertFalse(view.methanolSolventsField.isVisible());
+    assertFalse(view.chclSolventsField.isVisible());
+    assertFalse(view.otherSolventsField.isVisible());
+    assertFalse(view.otherSolventField.isVisible());
+  }
+
+  @Test
   public void submit_MissingService() {
     presenter.init(view);
     presenter.setEditable(true);
@@ -1328,8 +1852,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED, view.servicePanel.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.serviceOptions.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1346,8 +1870,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED, view.sampleSupportOptions.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.sampleSupportOptions.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1365,8 +1889,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED, view.solutionSolventField.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.solutionSolventField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1384,8 +1908,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED, view.sampleCountField.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.sampleCountField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1403,8 +1927,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER, view.sampleCountField.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
+    assertNotNull(view.sampleCountField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1422,8 +1946,27 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(OUT_OF_RANGE, view.sampleCountField.getCaption(), 1, 200),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(OUT_OF_RANGE, 1, 200), stringCaptor.getValue());
+    assertNotNull(view.sampleCountField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_AboveMaxSampleCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleCountField.setValue("200000");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(OUT_OF_RANGE, 1, 200), stringCaptor.getValue());
+    assertNotNull(view.sampleCountField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1441,8 +1984,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER, view.sampleCountField.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
+    assertNotNull(view.sampleCountField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1460,8 +2003,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED, view.sampleNameField.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.sampleNameField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1479,9 +2022,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(
-        generalResources.message(ALREADY_EXISTS, view.sampleNameField.getCaption(), sampleName),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(ALREADY_EXISTS), stringCaptor.getValue());
+    assertNotNull(view.sampleNameField.getErrorMessage());
     verify(submissionSampleService, atLeastOnce()).exists(sampleName);
     verify(submissionService, never()).insert(any());
   }
@@ -1500,8 +2042,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED, view.formulaField.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.formulaField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1517,8 +2059,7 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED, view.structureLayout.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(resources.message(STRUCTURE_PROPERTY + "." + REQUIRED), stringCaptor.getValue());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1536,8 +2077,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED, view.monoisotopicMassField.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.monoisotopicMassField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1555,8 +2096,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_NUMBER, view.monoisotopicMassField.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
+    assertNotNull(view.monoisotopicMassField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1574,8 +2115,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(OUT_OF_RANGE, view.monoisotopicMassField.getCaption(),
-        0.0, 1000000.0), stringCaptor.getValue());
+    assertNotNull(stringCaptor.getValue());
+    assertNotNull(view.monoisotopicMassField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1593,8 +2134,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER, view.averageMassField.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
+    assertNotNull(view.averageMassField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1612,9 +2153,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(
-        generalResources.message(OUT_OF_RANGE, view.averageMassField.getCaption(), 0.0, 1000000.0),
-        stringCaptor.getValue());
+    assertNotNull(stringCaptor.getValue());
+    assertNotNull(view.averageMassField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1632,8 +2172,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED, view.storageTemperatureOptions.getCaption()),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.storageTemperatureOptions.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1651,8 +2191,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED,
-        view.sampleNamesTable.getColumnHeader(SAMPLE_NAME_PROPERTY)), stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(sampleNameField1.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1670,10 +2210,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(
-        generalResources.message(ALREADY_EXISTS,
-            view.sampleNamesTable.getColumnHeader(SAMPLE_NAME_PROPERTY), sampleName1),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(ALREADY_EXISTS), stringCaptor.getValue());
+    assertNotNull(sampleNameField1.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1691,8 +2229,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED,
-        view.sampleNamesTable.getColumnHeader(SAMPLE_NAME_PROPERTY)), stringCaptor.getValue());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(sampleNameField2.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1710,10 +2248,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(
-        generalResources.message(ALREADY_EXISTS,
-            view.sampleNamesTable.getColumnHeader(SAMPLE_NAME_PROPERTY), sampleName2),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(ALREADY_EXISTS), stringCaptor.getValue());
+    assertNotNull(sampleNameField2.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1730,7 +2266,922 @@ public class SubmissionFormPresenterTest {
 
     view.submitButton.click();
 
-    verify(view, atLeastOnce()).showError(any());
+    verify(view, atLeastOnce()).showError(stringCaptor.capture());
+    assertEquals(resources.message(SAMPLE_NAMES_PROPERTY + ".duplicate"), stringCaptor.getValue());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingExperience() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.experienceField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.experienceField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingTaxonomy() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.taxonomyField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.taxonomyField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_InvalidProteinWeight() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.proteinWeightField.setValue("a");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
+    assertNotNull(view.proteinWeightField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_BelowZeroProteinWeight() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.proteinWeightField.setValue("-1");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertNotNull(stringCaptor.getValue());
+    assertNotNull(view.proteinWeightField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingSampleQuantity() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleQuantityField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.sampleQuantityField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingSampleVolume() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleVolumeField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.sampleVolumeField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_InvalidSampleVolume() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleVolumeField.setValue("a");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
+    assertNotNull(view.sampleVolumeField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_BelowZeroSampleVolume() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleVolumeField.setValue("-1");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertNotNull(stringCaptor.getValue());
+    assertNotNull(view.sampleVolumeField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingStandardCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.standardCountField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(submissionService).insert(any());
+  }
+
+  @Test
+  public void submit_InvalidStandardCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.standardCountField.setValue("a");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
+    assertNotNull(view.standardCountField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_BelowZeroStandardCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.standardCountField.setValue("-1");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(OUT_OF_RANGE, 0, 10), stringCaptor.getValue());
+    assertNotNull(view.standardCountField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_AboveMaxStandardCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.standardCountField.setValue("200");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(OUT_OF_RANGE, 0, 10), stringCaptor.getValue());
+    assertNotNull(view.standardCountField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_DoubleStandardCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.standardCountField.setValue("1.2");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
+    assertNotNull(view.standardCountField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingStandardName_1() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    standardNameField1.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(standardNameField1.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingStandardName_2() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    standardNameField2.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(standardNameField2.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingStandardQuantity_1() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    standardQuantityField1.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(standardQuantityField1.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingStandardQuantity_2() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    standardQuantityField2.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(standardQuantityField2.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingContaminantCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.contaminantCountField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(submissionService).insert(any());
+  }
+
+  @Test
+  public void submit_InvalidContaminantCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.contaminantCountField.setValue("a");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
+    assertNotNull(view.contaminantCountField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_BelowZeroContaminantCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.contaminantCountField.setValue("-1");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(OUT_OF_RANGE, 0, 10), stringCaptor.getValue());
+    assertNotNull(view.contaminantCountField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_AboveMaxContaminantCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.contaminantCountField.setValue("200");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(OUT_OF_RANGE, 0, 10), stringCaptor.getValue());
+    assertNotNull(view.contaminantCountField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_DoubleContaminantCount() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.contaminantCountField.setValue("1.2");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
+    assertNotNull(view.contaminantCountField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingContaminantName_1() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    contaminantNameField1.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(contaminantNameField1.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingContaminantName_2() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    contaminantNameField2.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(contaminantNameField2.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingContaminantQuantity_1() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    contaminantQuantityField1.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(contaminantQuantityField1.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingContaminantQuantity_2() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    contaminantQuantityField2.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(contaminantQuantityField2.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingGelSeparation() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+    setFields();
+    view.separationField.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.separationField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_InvalidGelSeparation() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+    setFields();
+
+    view.separationField.setValue("abc");
+
+    assertEquals(gelSeparation, view.separationField.getValue());
+  }
+
+  @Test
+  public void submit_MissingGelThickness() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+    setFields();
+    view.thicknessField.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.thicknessField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_InvalidGelThickness() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+    setFields();
+
+    view.thicknessField.setValue("a");
+
+    assertEquals(gelThickness, view.thicknessField.getValue());
+  }
+
+  @Test
+  public void submit_InvalidGelColoration() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+    setFields();
+
+    view.colorationField.setValue("a");
+
+    assertEquals(gelColoration, view.colorationField.getValue());
+  }
+
+  @Test
+  public void submit_MissingOtherGelColoration() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+    setFields();
+    view.colorationField.setValue(GelColoration.OTHER);
+    view.otherColorationField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.otherColorationField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_InvalidWeightMarkerQuantity() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+    setFields();
+    view.weightMarkerQuantityField.setValue("a");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
+    assertNotNull(view.weightMarkerQuantityField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingGelImages() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(GEL);
+    setFields();
+    uploadStructure();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED), stringCaptor.getValue());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingDigestion() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.digestionOptions.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.digestionOptions.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingUsedDigestion() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.digestionOptions.setValue(DIGESTED);
+    view.usedProteolyticDigestionMethodField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.usedProteolyticDigestionMethodField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingOtherDigestion() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.digestionOptions.setValue(ProteolyticDigestion.OTHER);
+    view.otherProteolyticDigestionMethodField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.otherProteolyticDigestionMethodField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingSampleNumberProtein() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleNumberProteinField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.sampleNumberProteinField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_InvalidSampleNumberProtein() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleNumberProteinField.setValue("a");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
+    assertNotNull(view.sampleNumberProteinField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_BelowZeroSampleNumberProtein() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleNumberProteinField.setValue("-1");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertNotNull(stringCaptor.getValue());
+    assertNotNull(view.sampleNumberProteinField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_DoubleSampleNumberProtein() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleNumberProteinField.setValue("1.2");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
+    assertNotNull(view.sampleNumberProteinField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingSource() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sourceOptions.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.sourceOptions.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingInstrument() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.instrumentOptions.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.instrumentOptions.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingProteinIdentification() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.proteinIdentificationOptions.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.proteinIdentificationOptions.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingProteinIdentificationLink() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.proteinIdentificationOptions.setValue(ProteinIdentification.OTHER);
+    view.proteinIdentificationLinkField.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.proteinIdentificationLinkField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingQuantificationLabels() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.quantificationOptions.setValue(Quantification.SILAC);
+    view.quantificationLabelsField.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.quantificationLabelsField.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingHighResolution() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.highResolutionOptions.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.highResolutionOptions.getErrorMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingSolvents() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.acetonitrileSolventsField.setValue(false);
+    view.methanolSolventsField.setValue(false);
+    view.chclSolventsField.setValue(false);
+    view.otherSolventsField.setValue(false);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(resources.message(SOLVENTS_PROPERTY + "." + REQUIRED), stringCaptor.getValue());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingOtherSolvent() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.otherSolventsField.setValue(true);
+    view.otherSolventField.setValue("");
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
+    assertNotNull(view.otherSolventField.getErrorMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -1872,6 +3323,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.digestionOptions.setValue(digestion);
+    view.otherProteolyticDigestionMethodField.setValue(otherDigestion);
     uploadStructure();
     uploadGelImages();
 

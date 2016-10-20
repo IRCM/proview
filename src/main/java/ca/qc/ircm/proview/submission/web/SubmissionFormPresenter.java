@@ -45,7 +45,6 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
-import static ca.qc.ircm.proview.web.WebConstants.VALUE_TOO_SHORT;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -87,7 +86,6 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
-import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FontAwesome;
@@ -205,6 +203,8 @@ public class SubmissionFormPresenter {
   public static final String PROTEIN_QUANTITY_PROPERTY =
       submission.proteinQuantity.getMetadata().getName();
   public static final String GEL_IMAGES_PROPERTY = submission.gelImages.getMetadata().getName();
+  public static final String GEL_IMAGES_UPLOADER =
+      submission.gelImages.getMetadata().getName() + "Uploader";
   public static final String GEL_IMAGES_UPLOADER_PROGRESS =
       submission.gelImages.getMetadata().getName() + "UploaderProgress";
   public static final String GEL_IMAGES_TABLE = GEL_IMAGES_PROPERTY + "Table";
@@ -261,7 +261,8 @@ public class SubmissionFormPresenter {
   private static final Object[] editableGelImagesColumns =
       new Object[] { GEL_IMAGE_FILENAME_PROPERTY, REMOVE_GEL_IMAGE };
   private static final int MAX_SAMPLE_COUNT = 200;
-  private static final double MAX_MASS = 1000000;
+  private static final int MAX_STANDARD_COUNT = 10;
+  private static final int MAX_CONTAMINANT_COUNT = 10;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionFormPresenter.class);
   private SubmissionForm view;
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
@@ -308,11 +309,14 @@ public class SubmissionFormPresenter {
     setStyles();
     setCaptions();
     prepareFields();
-    addFieldListeners();
     setDefaults();
     bindFields();
+    addFieldListeners();
     updateVisible();
     updateEditable();
+    updateSampleCount(view.sampleCountField.getValue());
+    updateStandardsTable(view.standardCountField.getValue());
+    updateContaminantsTable(view.contaminantCountField.getValue());
   }
 
   private void initFlexibleOptions() {
@@ -373,8 +377,8 @@ public class SubmissionFormPresenter {
     view.decolorationField.addStyleName(DECOLORATION_PROPERTY);
     view.weightMarkerQuantityField.addStyleName(WEIGHT_MARKER_QUANTITY_PROPERTY);
     view.proteinQuantityField.addStyleName(PROTEIN_QUANTITY_PROPERTY);
+    view.gelImagesLayout.addStyleName(REQUIRED);
     view.gelImagesUploader.addStyleName(GEL_IMAGES_PROPERTY);
-    view.gelImagesUploader.addStyleName(REQUIRED);
     view.gelImagesTable.addStyleName(GEL_IMAGES_TABLE);
     view.gelImageProgress.addStyleName(GEL_IMAGES_UPLOADER_PROGRESS);
     view.servicesPanel.addStyleName(SERVICES_PANEL);
@@ -476,7 +480,8 @@ public class SubmissionFormPresenter {
     view.proteinQuantityField.setCaption(resources.message(PROTEIN_QUANTITY_PROPERTY));
     view.proteinQuantityField
         .setInputPrompt(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE));
-    view.gelImagesUploader.setCaption(resources.message(GEL_IMAGES_PROPERTY));
+    view.gelImagesLayout.setCaption(resources.message(GEL_IMAGES_PROPERTY));
+    view.gelImagesUploader.setCaption(resources.message(GEL_IMAGES_UPLOADER));
     view.gelImagesUploader.setIcon(FontAwesome.FILES_O);
     view.gelImageProgress.setIcon(FontAwesome.CLOUD_DOWNLOAD);
     for (Object column : editableGelImagesColumns) {
@@ -538,8 +543,7 @@ public class SubmissionFormPresenter {
       view.serviceOptions.setItemCaption(service, service.getLabel(locale));
     }
     view.serviceOptions.setRequired(true);
-    view.serviceOptions
-        .setRequiredError(generalResources.message(REQUIRED, view.servicePanel.getCaption()));
+    view.serviceOptions.setRequiredError(generalResources.message(REQUIRED));
     view.sampleSupportOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.sampleSupportOptions.removeAllItems();
     for (SampleSupport support : SubmissionForm.SUPPORT) {
@@ -547,47 +551,28 @@ public class SubmissionFormPresenter {
       view.sampleSupportOptions.setItemCaption(support, support.getLabel(locale));
     }
     view.sampleSupportOptions.setRequired(true);
-    view.sampleSupportOptions.setRequiredError(
-        generalResources.message(REQUIRED, view.sampleSupportOptions.getCaption()));
+    view.sampleSupportOptions.setRequiredError(generalResources.message(REQUIRED));
     view.solutionSolventField.setRequired(true);
-    view.solutionSolventField.setRequiredError(
-        generalResources.message(REQUIRED, view.solutionSolventField.getCaption()));
+    view.solutionSolventField.setRequiredError(generalResources.message(REQUIRED));
     view.sampleCountField.setConverter(new StringToIntegerConverter());
-    view.sampleCountField.setConversionError(
-        generalResources.message(INVALID_INTEGER, view.sampleCountField.getCaption()));
-    view.sampleCountField
-        .addValidator(new IntegerRangeValidator(generalResources.message(OUT_OF_RANGE,
-            view.sampleCountField.getCaption(), 1, MAX_SAMPLE_COUNT), 1, MAX_SAMPLE_COUNT));
+    view.sampleCountField.setConversionError(generalResources.message(INVALID_INTEGER));
+    view.sampleCountField.addValidator(new IntegerRangeValidator(
+        generalResources.message(OUT_OF_RANGE, 1, MAX_SAMPLE_COUNT), 1, MAX_SAMPLE_COUNT));
     view.sampleCountField.setRequired(true);
-    view.sampleCountField
-        .setRequiredError(generalResources.message(REQUIRED, view.sampleCountField.getCaption()));
+    view.sampleCountField.setRequiredError(generalResources.message(REQUIRED));
     view.sampleNameField.setRequired(true);
-    view.sampleNameField
-        .setRequiredError(generalResources.message(REQUIRED, view.sampleNameField.getCaption()));
-    view.sampleNameField
-        .addValidator(v -> validateSampleName((String) v, view.sampleNameField.getCaption()));
+    view.sampleNameField.setRequiredError(generalResources.message(REQUIRED));
+    view.sampleNameField.addValidator(v -> validateSampleName((String) v));
     view.formulaField.setRequired(true);
-    view.formulaField
-        .setRequiredError(generalResources.message(REQUIRED, view.formulaField.getCaption()));
+    view.formulaField.setRequiredError(generalResources.message(REQUIRED));
     view.structureUploader.setMaxFileSize(MAXIMUM_STRUCTURE_SIZE);
     view.structureUploader.setChunkHandlerFactory(new ByteArrayChunkHandlerFactory());
     view.monoisotopicMassField.setConverter(new StringToDoubleConverter());
-    view.monoisotopicMassField.setConversionError(
-        generalResources.message(INVALID_NUMBER, view.monoisotopicMassField.getCaption()));
+    view.monoisotopicMassField.setConversionError(generalResources.message(INVALID_NUMBER));
     view.monoisotopicMassField.setRequired(true);
-    view.monoisotopicMassField.setRequiredError(
-        generalResources.message(REQUIRED, view.monoisotopicMassField.getCaption()));
-    /*
-    view.monoisotopicMassField
-        .addValidator(new DoubleRangeValidator(generalResources.message(OUT_OF_RANGE,
-            view.monoisotopicMassField.getCaption(), 0.0, MAX_MASS), 0.0, MAX_MASS));
-            */
+    view.monoisotopicMassField.setRequiredError(generalResources.message(REQUIRED));
     view.averageMassField.setConverter(new StringToDoubleConverter());
-    view.averageMassField.setConversionError(
-        generalResources.message(INVALID_NUMBER, view.averageMassField.getCaption()));
-    view.averageMassField.addValidator(new DoubleRangeValidator(
-        generalResources.message(OUT_OF_RANGE, view.averageMassField.getCaption(), 0.0, MAX_MASS),
-        0.0, MAX_MASS));
+    view.averageMassField.setConversionError(generalResources.message(INVALID_NUMBER));
     view.storageTemperatureOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.storageTemperatureOptions.removeAllItems();
     for (StorageTemperature storageTemperature : SubmissionForm.STORAGE_TEMPERATURES) {
@@ -596,8 +581,7 @@ public class SubmissionFormPresenter {
           storageTemperature.getLabel(locale));
     }
     view.storageTemperatureOptions.setRequired(true);
-    view.storageTemperatureOptions.setRequiredError(
-        generalResources.message(REQUIRED, view.storageTemperatureOptions.getCaption()));
+    view.storageTemperatureOptions.setRequiredError(generalResources.message(REQUIRED));
     sampleTableFieldFactory = new ValidatableTableFieldFactory(new EmptyNullTableFieldFactory() {
       @Override
       public Field<?> createField(Container container, Object itemId, Object propertyId,
@@ -605,8 +589,8 @@ public class SubmissionFormPresenter {
         TextField field = (TextField) super.createField(container, itemId, propertyId, uiContext);
         field.setCaption(resources.message(SAMPLE_NAMES_PROPERTY));
         field.setRequired(true);
-        field.setRequiredError(generalResources.message(REQUIRED, field.getCaption()));
-        field.addValidator(v -> validateSampleName((String) v, field.getCaption()));
+        field.setRequiredError(generalResources.message(REQUIRED));
+        field.addValidator(v -> validateSampleName((String) v));
         return field;
       }
     });
@@ -615,26 +599,21 @@ public class SubmissionFormPresenter {
     view.sampleNamesTable.setPageLength(SAMPLES_NAMES_TABLE_LENGTH);
     view.sampleNamesTable.setVisibleColumns(SAMPLE_NAME_PROPERTY);
     view.experienceField.setRequired(true);
-    view.experienceField
-        .setRequiredError(generalResources.message(REQUIRED, view.experienceField.getCaption()));
+    view.experienceField.setRequiredError(generalResources.message(REQUIRED));
     view.taxonomyField.setRequired(true);
-    view.taxonomyField
-        .setRequiredError(generalResources.message(REQUIRED, view.taxonomyField.getCaption()));
+    view.taxonomyField.setRequiredError(generalResources.message(REQUIRED));
     view.proteinWeightField.setConverter(new StringToDoubleConverter());
-    view.proteinWeightField.setConversionError(
-        generalResources.message(INVALID_NUMBER, view.proteinWeightField.getCaption()));
+    view.proteinWeightField.setConversionError(generalResources.message(INVALID_NUMBER));
     view.sampleVolumeField.setConverter(new StringToDoubleConverter());
-    view.sampleVolumeField.setConversionError(
-        generalResources.message(INVALID_NUMBER, view.sampleVolumeField.getCaption()));
+    view.sampleVolumeField.setConversionError(generalResources.message(INVALID_NUMBER));
     view.sampleVolumeField.setRequired(true);
-    view.sampleVolumeField
-        .setRequiredError(generalResources.message(REQUIRED, view.sampleVolumeField.getCaption()));
+    view.sampleVolumeField.setRequiredError(generalResources.message(REQUIRED));
     view.sampleQuantityField.setRequired(true);
-    view.sampleQuantityField.setRequiredError(
-        generalResources.message(REQUIRED, view.sampleQuantityField.getCaption()));
+    view.sampleQuantityField.setRequiredError(generalResources.message(REQUIRED));
     view.standardCountField.setConverter(new StringToIntegerConverter());
-    view.standardCountField.setConversionError(
-        generalResources.message(INVALID_INTEGER, view.standardCountField.getCaption()));
+    view.standardCountField.setConversionError(generalResources.message(INVALID_INTEGER));
+    view.standardCountField.addValidator(new IntegerRangeValidator(
+        generalResources.message(OUT_OF_RANGE, 0, MAX_STANDARD_COUNT), 0, MAX_STANDARD_COUNT));
     standardsTableFieldFactory = new ValidatableTableFieldFactory(new EmptyNullTableFieldFactory() {
       @Override
       public Field<?> createField(Container container, Object itemId, Object propertyId,
@@ -648,8 +627,7 @@ public class SubmissionFormPresenter {
         if (propertyId.equals(STANDARD_NAME_PROPERTY)
             || propertyId.equals(STANDARD_QUANTITY_PROPERTY)) {
           field.setRequired(true);
-          field.setRequiredError(
-              resources.message(STANDARD_PROPERTY + "." + propertyId + "." + REQUIRED));
+          field.setRequiredError(generalResources.message(REQUIRED));
         }
         return field;
       }
@@ -659,8 +637,10 @@ public class SubmissionFormPresenter {
     view.standardsTable.setPageLength(STANDARDS_TABLE_LENGTH);
     view.standardsTable.setVisibleColumns(standardsColumns);
     view.contaminantCountField.setConverter(new StringToIntegerConverter());
-    view.contaminantCountField.setConversionError(
-        generalResources.message(INVALID_INTEGER, view.contaminantCountField.getCaption()));
+    view.contaminantCountField.setConversionError(generalResources.message(INVALID_INTEGER));
+    view.contaminantCountField.addValidator(
+        new IntegerRangeValidator(generalResources.message(OUT_OF_RANGE, 0, MAX_CONTAMINANT_COUNT),
+            0, MAX_CONTAMINANT_COUNT));
     contaminantsTableFieldFactory =
         new ValidatableTableFieldFactory(new EmptyNullTableFieldFactory() {
           @Override
@@ -675,8 +655,7 @@ public class SubmissionFormPresenter {
             if (propertyId.equals(CONTAMINANT_NAME_PROPERTY)
                 || propertyId.equals(CONTAMINANT_QUANTITY_PROPERTY)) {
               field.setRequired(true);
-              field.setRequiredError(
-                  resources.message(CONTAMINANT_PROPERTY + "." + propertyId + "." + REQUIRED));
+              field.setRequiredError(generalResources.message(REQUIRED));
             }
             return field;
           }
@@ -694,8 +673,7 @@ public class SubmissionFormPresenter {
       view.separationField.setItemCaption(separation, separation.getLabel(locale));
     }
     view.separationField.setRequired(true);
-    view.separationField
-        .setRequiredError(generalResources.message(REQUIRED, view.separationField.getCaption()));
+    view.separationField.setRequiredError(generalResources.message(REQUIRED));
     view.thicknessField.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.thicknessField.removeAllItems();
     view.thicknessField.setNullSelectionAllowed(false);
@@ -705,8 +683,7 @@ public class SubmissionFormPresenter {
       view.thicknessField.setItemCaption(thickness, thickness.getLabel(locale));
     }
     view.thicknessField.setRequired(true);
-    view.thicknessField
-        .setRequiredError(generalResources.message(REQUIRED, view.thicknessField.getCaption()));
+    view.thicknessField.setRequiredError(generalResources.message(REQUIRED));
     view.colorationField.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.colorationField.removeAllItems();
     view.colorationField.setNullSelectionItemId(NULL_ID);
@@ -719,11 +696,9 @@ public class SubmissionFormPresenter {
       view.colorationField.setItemCaption(coloration, coloration.getLabel(locale));
     }
     view.otherColorationField.setRequired(true);
-    view.otherColorationField.setRequiredError(
-        generalResources.message(REQUIRED, view.otherColorationField.getCaption()));
+    view.otherColorationField.setRequiredError(generalResources.message(REQUIRED));
     view.weightMarkerQuantityField.setConverter(new StringToDoubleConverter());
-    view.weightMarkerQuantityField.setConversionError(
-        generalResources.message(INVALID_NUMBER, view.weightMarkerQuantityField.getCaption()));
+    view.weightMarkerQuantityField.setConversionError(generalResources.message(INVALID_NUMBER));
     view.gelImagesUploader.setMaxFileSize(MAXIMUM_GEL_IMAGES_SIZE);
     view.gelImagesUploader.setChunkHandlerFactory(new ByteArrayChunkHandlerFactory());
     gelImagesGeneratedContainer.addGeneratedProperty(GEL_IMAGE_FILENAME_PROPERTY,
@@ -773,20 +748,15 @@ public class SubmissionFormPresenter {
       view.digestionOptions.setItemCaption(digestion, digestion.getLabel(locale));
     }
     view.digestionOptions.setRequired(true);
-    view.digestionOptions
-        .setRequiredError(generalResources.message(REQUIRED, view.digestionOptions.getCaption()));
+    view.digestionOptions.setRequiredError(generalResources.message(REQUIRED));
     view.usedProteolyticDigestionMethodField.setRequired(true);
-    view.usedProteolyticDigestionMethodField.setRequiredError(
-        generalResources.message(REQUIRED, view.usedProteolyticDigestionMethodField.getCaption()));
+    view.usedProteolyticDigestionMethodField.setRequiredError(generalResources.message(REQUIRED));
     view.otherProteolyticDigestionMethodField.setRequired(true);
-    view.otherProteolyticDigestionMethodField.setRequiredError(
-        generalResources.message(REQUIRED, view.otherProteolyticDigestionMethodField.getCaption()));
+    view.otherProteolyticDigestionMethodField.setRequiredError(generalResources.message(REQUIRED));
     view.sampleNumberProteinField.setConverter(new StringToIntegerConverter());
-    view.sampleNumberProteinField.setConversionError(
-        generalResources.message(INVALID_INTEGER, view.sampleNumberProteinField.getCaption()));
+    view.sampleNumberProteinField.setConversionError(generalResources.message(INVALID_INTEGER));
     view.sampleNumberProteinField.setRequired(true);
-    view.sampleNumberProteinField.setRequiredError(
-        generalResources.message(REQUIRED, view.sampleNumberProteinField.getCaption()));
+    view.sampleNumberProteinField.setRequiredError(generalResources.message(REQUIRED));
     view.sourceOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.sourceOptions.removeAllItems();
     for (MassDetectionInstrumentSource source : SubmissionForm.SOURCES) {
@@ -794,8 +764,7 @@ public class SubmissionFormPresenter {
       view.sourceOptions.setItemCaption(source, source.getLabel(locale));
     }
     view.sourceOptions.setRequired(true);
-    view.sourceOptions
-        .setRequiredError(generalResources.message(REQUIRED, view.sourceOptions.getCaption()));
+    view.sourceOptions.setRequiredError(generalResources.message(REQUIRED));
     view.instrumentOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.instrumentOptions.removeAllItems();
     for (MassDetectionInstrument instrument : SubmissionForm.INSTRUMENTS) {
@@ -803,19 +772,16 @@ public class SubmissionFormPresenter {
       view.instrumentOptions.setItemCaption(instrument, instrument.getLabel(locale));
     }
     view.instrumentOptions.setRequired(true);
-    view.instrumentOptions
-        .setRequiredError(generalResources.message(REQUIRED, view.instrumentOptions.getCaption()));
+    view.instrumentOptions.setRequiredError(generalResources.message(REQUIRED));
     view.proteinIdentificationOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.proteinIdentificationOptions.removeAllItems();
     for (ProteinIdentification proteinIdentification : SubmissionForm.PROTEIN_IDENTIFICATIONS) {
       view.proteinIdentificationOptions.addItem(proteinIdentification);
     }
     view.proteinIdentificationOptions.setRequired(true);
-    view.proteinIdentificationOptions.setRequiredError(
-        generalResources.message(REQUIRED, view.proteinIdentificationOptions.getCaption()));
+    view.proteinIdentificationOptions.setRequiredError(generalResources.message(REQUIRED));
     view.proteinIdentificationLinkField.setRequired(true);
-    view.proteinIdentificationLinkField.setRequiredError(
-        generalResources.message(REQUIRED, view.proteinIdentificationLinkField.getCaption()));
+    view.proteinIdentificationLinkField.setRequiredError(generalResources.message(REQUIRED));
     view.quantificationOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.quantificationOptions.removeAllItems();
     view.quantificationOptions.setNullSelectionItemId(NULL_ID);
@@ -826,8 +792,7 @@ public class SubmissionFormPresenter {
       view.quantificationOptions.addItem(quantification);
       view.quantificationOptions.setItemCaption(quantification, quantification.getLabel(locale));
     }
-    view.quantificationLabelsField.setRequiredError(
-        generalResources.message(REQUIRED, view.quantificationLabelsField.getCaption()));
+    view.quantificationLabelsField.setRequiredError(generalResources.message(REQUIRED));
     view.highResolutionOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.highResolutionOptions.removeAllItems();
     for (boolean value : new boolean[] { false, true }) {
@@ -836,10 +801,8 @@ public class SubmissionFormPresenter {
           resources.message(HIGH_RESOLUTION_PROPERTY + "." + value));
     }
     view.highResolutionOptions.setRequired(true);
-    view.highResolutionOptions.setRequiredError(
-        generalResources.message(REQUIRED, view.highResolutionOptions.getCaption()));
-    view.otherSolventField
-        .setRequiredError(generalResources.message(REQUIRED, view.otherSolventField.getCaption()));
+    view.highResolutionOptions.setRequiredError(generalResources.message(REQUIRED));
+    view.otherSolventField.setRequiredError(generalResources.message(REQUIRED));
   }
 
   private void addFieldListeners() {
@@ -992,13 +955,15 @@ public class SubmissionFormPresenter {
     final SampleSupport support = (SampleSupport) view.sampleSupportOptions.getValue();
     view.sampleTypeLabel.setVisible(editable);
     view.inactiveLabel.setVisible(editable);
-    view.sampleSupportOptions.setItemEnabled(GEL, service != SMALL_MOLECULE);
+    view.sampleSupportOptions.setItemEnabled(GEL, service == LC_MS_MS);
     view.solutionSolventField
         .setVisible(service == SMALL_MOLECULE && support == SampleSupport.SOLUTION);
     view.sampleNameField.setVisible(service == SMALL_MOLECULE);
     view.formulaField.setVisible(service == SMALL_MOLECULE);
     view.structureLayout.setVisible(service == SMALL_MOLECULE);
-    view.structureUploader.setVisible(editable);
+    view.structureUploader.setVisible(service == SMALL_MOLECULE && editable);
+    view.structureButton
+        .setVisible(service == SMALL_MOLECULE && view.structureButton.getCaption() != null);
     view.monoisotopicMassField.setVisible(service == SMALL_MOLECULE);
     view.averageMassField.setVisible(service == SMALL_MOLECULE);
     view.toxicityField.setVisible(service == SMALL_MOLECULE);
@@ -1006,7 +971,8 @@ public class SubmissionFormPresenter {
     view.storageTemperatureOptions.setVisible(service == SMALL_MOLECULE);
     view.sampleCountField.setVisible(service != SMALL_MOLECULE);
     view.sampleNamesLayout.setVisible(service != SMALL_MOLECULE);
-    view.fillSampleNamesButton.setVisible(editable);
+    view.sampleNamesTable.setVisible(service != SMALL_MOLECULE);
+    view.fillSampleNamesButton.setVisible(service != SMALL_MOLECULE && editable);
     view.experiencePanel.setVisible(service != SMALL_MOLECULE);
     view.experienceField.setVisible(service != SMALL_MOLECULE);
     view.experienceGoalField.setVisible(service != SMALL_MOLECULE);
@@ -1019,21 +985,33 @@ public class SubmissionFormPresenter {
     view.sampleVolumeField.setVisible(service != SMALL_MOLECULE && support == SOLUTION);
     view.standardsPanel
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.fillStandardsButton.setVisible(editable);
+    view.standardCountField
+        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+    view.standardsTable
+        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+    view.fillStandardsButton.setVisible(
+        service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && editable);
     view.contaminantsPanel
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.fillContaminantsButton.setVisible(editable);
-    view.gelPanel.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.separationField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.thicknessField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.colorationField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.otherColorationField.setVisible(
-        view.colorationField.isVisible() && view.colorationField.getValue() == GelColoration.OTHER);
-    view.developmentTimeField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.decolorationField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.weightMarkerQuantityField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.proteinQuantityField.setVisible(service != SMALL_MOLECULE && support == GEL);
-    view.gelImagesUploader.setVisible(service != SMALL_MOLECULE && support == GEL && editable);
+    view.contaminantCountField
+        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+    view.contaminantsTable
+        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+    view.fillContaminantsButton.setVisible(
+        service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && editable);
+    view.gelPanel.setVisible(service == LC_MS_MS && support == GEL);
+    view.separationField.setVisible(service == LC_MS_MS && support == GEL);
+    view.thicknessField.setVisible(service == LC_MS_MS && support == GEL);
+    view.colorationField.setVisible(service == LC_MS_MS && support == GEL);
+    view.otherColorationField.setVisible(service == LC_MS_MS && support == GEL
+        && view.colorationField.getValue() == GelColoration.OTHER);
+    view.developmentTimeField.setVisible(service == LC_MS_MS && support == GEL);
+    view.decolorationField.setVisible(service == LC_MS_MS && support == GEL);
+    view.weightMarkerQuantityField.setVisible(service == LC_MS_MS && support == GEL);
+    view.proteinQuantityField.setVisible(service == LC_MS_MS && support == GEL);
+    view.gelImagesLayout.setVisible(service == LC_MS_MS && support == GEL);
+    view.gelImagesUploader.setVisible(service == LC_MS_MS && support == GEL && editable);
+    view.gelImagesTable.setVisible(service == LC_MS_MS && support == GEL && editable);
     view.gelImagesTable.setVisibleColumns(editable ? editableGelImagesColumns : gelImagesColumns);
     view.digestionOptions.setVisible(service == LC_MS_MS);
     view.usedProteolyticDigestionMethodField.setVisible(
@@ -1054,8 +1032,13 @@ public class SubmissionFormPresenter {
     view.quantificationLabelsField.setVisible(service == LC_MS_MS);
     view.highResolutionOptions.setVisible(service == SMALL_MOLECULE);
     view.solventsLayout.setVisible(service == SMALL_MOLECULE);
+    view.acetonitrileSolventsField.setVisible(service == SMALL_MOLECULE);
+    view.methanolSolventsField.setVisible(service == SMALL_MOLECULE);
+    view.chclSolventsField.setVisible(service == SMALL_MOLECULE);
+    view.otherSolventsField.setVisible(service == SMALL_MOLECULE);
     view.otherSolventField.setVisible(service == SMALL_MOLECULE);
     view.buttonsLayout.setVisible(editable);
+    bindVisibleFields();
   }
 
   private void updateEditable() {
@@ -1137,65 +1120,68 @@ public class SubmissionFormPresenter {
     submissionFieldGroup.bind(view.otherProteolyticDigestionMethodField, OTHER_DIGESTION_PROPERTY);
     submissionFieldGroup.bind(view.sampleNumberProteinField, SAMPLE_NUMBER_PROTEIN_PROPERTY);
     submissionFieldGroup.bind(view.sourceOptions, SOURCE_PROPERTY);
+    view.instrumentOptions.setReadOnly(false);
     submissionFieldGroup.bind(view.instrumentOptions, INSTRUMENT_PROPERTY);
+    view.proteinIdentificationOptions.setReadOnly(false);
+    submissionFieldGroup.bind(view.proteinIdentificationOptions, PROTEIN_IDENTIFICATION_PROPERTY);
     submissionFieldGroup.bind(view.proteinIdentificationLinkField,
         PROTEIN_IDENTIFICATION_LINK_PROPERTY);
-    submissionFieldGroup.bind(view.proteinIdentificationOptions, PROTEIN_IDENTIFICATION_PROPERTY);
-    submissionFieldGroup.bind(view.otherSolventField, OTHER_SOLVENT_PROPERTY);
     submissionFieldGroup.bind(view.quantificationOptions, QUANTIFICATION_PROPERTY);
     submissionFieldGroup.bind(view.quantificationLabelsField, QUANTIFICATION_LABELS_PROPERTY);
     submissionFieldGroup.bind(view.highResolutionOptions, HIGH_RESOLUTION_PROPERTY);
+    submissionFieldGroup.bind(view.otherSolventField, OTHER_SOLVENT_PROPERTY);
     submissionFieldGroup.bind(view.commentsField, COMMENTS_PROPERTY);
   }
 
   private void bindVisibleFields() {
-    bindVisible(submissionFieldGroup, view.solutionSolventField, SOLUTION_SOLVENT_PROPERTY);
-    bindVisible(firstSampleFieldGroup, view.sampleNameField, SAMPLE_NAME_PROPERTY);
-    bindVisible(submissionFieldGroup, view.formulaField, FORMULA_PROPERTY);
-    bindVisible(submissionFieldGroup, view.monoisotopicMassField, MONOISOTOPIC_MASS_PROPERTY);
-    bindVisible(submissionFieldGroup, view.averageMassField, AVERAGE_MASS_PROPERTY);
-    bindVisible(submissionFieldGroup, view.toxicityField, TOXICITY_PROPERTY);
-    bindVisible(submissionFieldGroup, view.lightSensitiveField, LIGHT_SENSITIVE_PROPERTY);
-    bindVisible(submissionFieldGroup, view.storageTemperatureOptions, STORAGE_TEMPERATURE_PROPERTY);
-    bindVisible(submissionFieldGroup, view.experienceField, EXPERIENCE_PROPERTY);
-    bindVisible(submissionFieldGroup, view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
-    bindVisible(submissionFieldGroup, view.taxonomyField, TAXONOMY_PROPERTY);
-    bindVisible(submissionFieldGroup, view.proteinNameField, PROTEIN_NAME_PROPERTY);
-    bindVisible(submissionFieldGroup, view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
-    bindVisible(submissionFieldGroup, view.postTranslationModificationField,
+    bindVisibleField(submissionFieldGroup, view.solutionSolventField, SOLUTION_SOLVENT_PROPERTY);
+    bindVisibleField(firstSampleFieldGroup, view.sampleNameField, SAMPLE_NAME_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.formulaField, FORMULA_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.monoisotopicMassField, MONOISOTOPIC_MASS_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.averageMassField, AVERAGE_MASS_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.toxicityField, TOXICITY_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.lightSensitiveField, LIGHT_SENSITIVE_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.storageTemperatureOptions,
+        STORAGE_TEMPERATURE_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.experienceField, EXPERIENCE_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.taxonomyField, TAXONOMY_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.proteinNameField, PROTEIN_NAME_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.postTranslationModificationField,
         POST_TRANSLATION_MODIFICATION_PROPERTY);
-    bindVisible(firstSampleFieldGroup, view.sampleQuantityField, SAMPLE_QUANTITY_PROPERTY);
-    bindVisible(firstSampleFieldGroup, view.sampleVolumeField, SAMPLE_VOLUME_PROPERTY);
-    bindVisible(submissionFieldGroup, view.separationField, SEPARATION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.thicknessField, THICKNESS_PROPERTY);
-    bindVisible(submissionFieldGroup, view.colorationField, COLORATION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.otherColorationField, OTHER_COLORATION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.developmentTimeField, DEVELOPMENT_TIME_PROPERTY);
-    bindVisible(submissionFieldGroup, view.decolorationField, DECOLORATION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.weightMarkerQuantityField,
+    bindVisibleField(firstSampleFieldGroup, view.sampleQuantityField, SAMPLE_QUANTITY_PROPERTY);
+    bindVisibleField(firstSampleFieldGroup, view.sampleVolumeField, SAMPLE_VOLUME_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.separationField, SEPARATION_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.thicknessField, THICKNESS_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.colorationField, COLORATION_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.otherColorationField, OTHER_COLORATION_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.developmentTimeField, DEVELOPMENT_TIME_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.decolorationField, DECOLORATION_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.weightMarkerQuantityField,
         WEIGHT_MARKER_QUANTITY_PROPERTY);
-    bindVisible(submissionFieldGroup, view.proteinQuantityField, PROTEIN_QUANTITY_PROPERTY);
-    bindVisible(submissionFieldGroup, view.digestionOptions, DIGESTION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.usedProteolyticDigestionMethodField,
+    bindVisibleField(submissionFieldGroup, view.proteinQuantityField, PROTEIN_QUANTITY_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.digestionOptions, DIGESTION_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.usedProteolyticDigestionMethodField,
         USED_DIGESTION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.otherProteolyticDigestionMethodField,
+    bindVisibleField(submissionFieldGroup, view.otherProteolyticDigestionMethodField,
         OTHER_DIGESTION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.sampleNumberProteinField,
+    bindVisibleField(submissionFieldGroup, view.sampleNumberProteinField,
         SAMPLE_NUMBER_PROTEIN_PROPERTY);
-    bindVisible(submissionFieldGroup, view.sourceOptions, SOURCE_PROPERTY);
-    bindVisible(submissionFieldGroup, view.instrumentOptions, INSTRUMENT_PROPERTY);
-    bindVisible(submissionFieldGroup, view.proteinIdentificationLinkField,
+    bindVisibleField(submissionFieldGroup, view.sourceOptions, SOURCE_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.instrumentOptions, INSTRUMENT_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.proteinIdentificationLinkField,
         PROTEIN_IDENTIFICATION_LINK_PROPERTY);
-    bindVisible(submissionFieldGroup, view.proteinIdentificationOptions,
+    bindVisibleField(submissionFieldGroup, view.proteinIdentificationOptions,
         PROTEIN_IDENTIFICATION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.quantificationOptions, QUANTIFICATION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.quantificationLabelsField,
+    bindVisibleField(submissionFieldGroup, view.quantificationOptions, QUANTIFICATION_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.quantificationLabelsField,
         QUANTIFICATION_LABELS_PROPERTY);
-    bindVisible(submissionFieldGroup, view.highResolutionOptions, HIGH_RESOLUTION_PROPERTY);
-    bindVisible(submissionFieldGroup, view.otherSolventField, OTHER_SOLVENT_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.highResolutionOptions, HIGH_RESOLUTION_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.otherSolventField, OTHER_SOLVENT_PROPERTY);
   }
 
-  private void bindVisible(FieldGroup fieldGroup, Field<?> field, Object propertyId) {
+  private void bindVisibleField(FieldGroup fieldGroup, Field<?> field, Object propertyId) {
     if (field.isVisible()) {
       if (fieldGroup.getField(propertyId) == null) {
         fieldGroup.bind(field, propertyId);
@@ -1399,20 +1385,17 @@ public class SubmissionFormPresenter {
     }
   }
 
-  private void validateSampleName(String name, String caption) {
-    if (name == null) {
+  private void validateSampleName(String name) {
+    if (name == null || name.isEmpty()) {
       return;
     }
     MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
-    if (name.length() < 3) {
-      throw new InvalidValueException(generalResources.message(VALUE_TOO_SHORT, caption, 3));
-    }
     if (!Pattern.matches("\\w*", name)) {
-      throw new InvalidValueException(generalResources.message(ONLY_WORDS, caption));
+      throw new InvalidValueException(generalResources.message(ONLY_WORDS));
     }
     if (submissionSampleService.exists(name)) {
-      throw new InvalidValueException(generalResources.message(ALREADY_EXISTS, caption, name));
+      throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
     }
   }
 
@@ -1455,98 +1438,83 @@ public class SubmissionFormPresenter {
   }
 
   private void validateSampleNames() {
-    MessageResource generalResources =
-        new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
     MessageResource resources = view.getResources();
-    String nameCaption = resources.message(SAMPLE_NAME_PROPERTY);
     Set<String> names = new HashSet<>();
     for (SubmissionSample sample : samplesContainer.getItemIds()) {
       if (!names.add(sample.getName())) {
-        throw new InvalidValueException(
-            generalResources.message(ALREADY_EXISTS, nameCaption, sample.getName()));
+        throw new InvalidValueException(resources.message(SAMPLE_NAMES_PROPERTY + ".duplicate"));
       }
     }
   }
 
   private void validateStructure(Submission submission) {
-    MessageResource generalResources =
-        new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
     if (submission.getStructure() == null || submission.getStructure().getFilename() == null) {
-      throw new InvalidValueException(
-          generalResources.message(REQUIRED, view.structureLayout.getCaption()));
+      MessageResource resources = view.getResources();
+      throw new InvalidValueException(resources.message(STRUCTURE_PROPERTY + "." + REQUIRED));
     }
   }
 
   private void validateGelImages(Submission submission) {
-    MessageResource generalResources =
-        new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
     if (gelImagesContainer.size() == 0) {
-      throw new InvalidValueException(
-          generalResources.message(REQUIRED, view.gelImagesUploader.getCaption()));
+      MessageResource resources = view.getResources();
+      throw new InvalidValueException(resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED));
     }
   }
 
   private void validateSolvents() {
-    MessageResource generalResources =
-        new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
     if (!view.acetonitrileSolventsField.getValue() && !view.methanolSolventsField.getValue()
         && !view.chclSolventsField.getValue() && !view.otherSolventsField.getValue()) {
-      throw new InvalidValueException(
-          generalResources.message(REQUIRED, view.solventsLayout.getCaption()));
+      MessageResource resources = view.getResources();
+      throw new InvalidValueException(resources.message(SOLVENTS_PROPERTY + "." + REQUIRED));
     }
   }
 
   private void saveSubmission() {
-    try {
-      bindVisibleFields();
-      if (validate()) {
-        Submission submission = submissionFieldGroup.getItemDataSource().getBean();
-        SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
-        if (submission.getService() == LC_MS_MS) {
-          copySamplesFromTableToSubmission(submission);
-        } else {
-          submission.setProteolyticDigestionMethod(null);
-          submission.setProteinIdentification(null);
-        }
-        if (submission.getService() == SMALL_MOLECULE) {
-          submission.setMassDetectionInstrument(null);
-          submission.setExperience(firstSample.getName());
-          submission.setSamples(Arrays.asList(firstSample));
-          submission.setSolvents(new ArrayList<>());
-          if (view.acetonitrileSolventsField.getValue()) {
-            submission.getSolvents().add(new SampleSolvent(ACETONITRILE));
-          }
-          if (view.methanolSolventsField.getValue()) {
-            submission.getSolvents().add(new SampleSolvent(METHANOL));
-          }
-          if (view.chclSolventsField.getValue()) {
-            submission.getSolvents().add(new SampleSolvent(CHCL3));
-          }
-          if (view.otherSolventsField.getValue()) {
-            submission.getSolvents().add(new SampleSolvent(Solvent.OTHER));
-          }
-        } else {
-          submission.setStructure(null);
-          submission.setStorageTemperature(null);
-        }
-        if (submission.getService() == INTACT_PROTEIN) {
-          copySamplesFromTableToSubmission(submission);
-        } else {
-          submission.setSource(null);
-        }
-        if (firstSample.getSupport() == GEL) {
-          submission.setGelImages(gelImagesContainer.getItemIds());
-        } else {
-          submission.setSeparation(null);
-          submission.setThickness(null);
-        }
-        logger.debug("Save submission {}", submission);
-        submissionService.insert(submission);
-        MessageResource resources = view.getResources();
-        view.afterSuccessfulSave(resources.message("save", submission.getExperience()));
+    if (validate()) {
+      Submission submission = submissionFieldGroup.getItemDataSource().getBean();
+      SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
+      if (submission.getService() == LC_MS_MS) {
+        copySamplesFromTableToSubmission(submission);
+      } else {
+        submission.setProteolyticDigestionMethod(null);
+        submission.setProteinIdentification(null);
       }
-    } finally {
-      bindFields();
+      if (submission.getService() == SMALL_MOLECULE) {
+        submission.setMassDetectionInstrument(null);
+        submission.setExperience(firstSample.getName());
+        submission.setSamples(Arrays.asList(firstSample));
+        submission.setSolvents(new ArrayList<>());
+        if (view.acetonitrileSolventsField.getValue()) {
+          submission.getSolvents().add(new SampleSolvent(ACETONITRILE));
+        }
+        if (view.methanolSolventsField.getValue()) {
+          submission.getSolvents().add(new SampleSolvent(METHANOL));
+        }
+        if (view.chclSolventsField.getValue()) {
+          submission.getSolvents().add(new SampleSolvent(CHCL3));
+        }
+        if (view.otherSolventsField.getValue()) {
+          submission.getSolvents().add(new SampleSolvent(Solvent.OTHER));
+        }
+      } else {
+        submission.setStructure(null);
+        submission.setStorageTemperature(null);
+      }
+      if (submission.getService() == INTACT_PROTEIN) {
+        copySamplesFromTableToSubmission(submission);
+      } else {
+        submission.setSource(null);
+      }
+      if (firstSample.getSupport() == GEL) {
+        submission.setGelImages(gelImagesContainer.getItemIds());
+      } else {
+        submission.setSeparation(null);
+        submission.setThickness(null);
+      }
+      logger.debug("Save submission {}", submission);
+      submissionService.insert(submission);
+      MessageResource resources = view.getResources();
+      view.afterSuccessfulSave(resources.message("save", submission.getExperience()));
     }
   }
 
@@ -1593,9 +1561,6 @@ public class SubmissionFormPresenter {
 
   public void setItemDataSource(Item item) {
     submissionFieldGroup.setItemDataSource(item != null ? item : new BeanItem<>(new Submission()));
-    setDefaults();
-    bindFields();
-    updateVisible();
   }
 
   public boolean isEditable() {

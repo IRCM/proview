@@ -30,6 +30,7 @@
   <entry key="solutionSolvent">Solvent</entry>
   <entry key="formula">Formule empirique</entry>
   <entry key="structure">Structure</entry>
+  <entry key="structure.required">Structure ne peut pas être vide</entry>
   <entry key="structure.error">Fichier {0} n''a pu être envoyé</entry>
   <entry key="structure.overMaximumSize">Fichier {0} n''a pas une taille inférieure à {1}</entry>
   <entry key="structureUploader">Télécharger structure</entry>
@@ -39,6 +40,7 @@
   <entry key="lightSensitive">Sensible à la lumière</entry>
   <entry key="storageTemperature">Température de stockage</entry>
   <entry key="names">Nom des échantillons</entry>
+  <entry key="names.duplicate">Nom d''échantillon {0} ne peut être présent plus d''une fois</entry>
   <entry key="fillSampleNames">Copier vers le bas</entry>
   <entry key="experiencePanel">Détails à propos des échantillons</entry>
   <entry key="experience">Expérience</entry>
@@ -83,9 +85,11 @@
   <entry key="gelImages">Image(s) du gel</entry>
   <entry key="gelImages.filename">Fichier</entry>
   <entry key="gelImages.removeGelImage">Retirer</entry>
+  <entry key="gelImages.required">Image(s) du gel ne peut pas être vide</entry>
   <entry key="gelImages.error">Fichier {0} n''a pu être envoyé</entry>
   <entry key="gelImages.overMaximumSize">Fichier {0} n''a pas une taille inférieure à {1}</entry>
   <entry key="gelImages.overMaximumCount">Maximum de {0} fichiers permis</entry>
+  <entry key="gelImagesUploader">Télécharger images du gel</entry>
   <entry key="servicesPanel">Services</entry>
   <entry key="proteolyticDigestionMethod">Digestion</entry>
   <entry key="usedProteolyticDigestionMethod">Enzyme utilisé</entry>
@@ -109,6 +113,7 @@ Léger: Aucun</entry>
   <entry key="highResolution.false">Masse nominale</entry>
   <entry key="highResolution.true">Mesure de masse précise</entry>
   <entry key="solvents">Soluble dans</entry>
+  <entry key="solvents.required">Soluble dans ne peut pas être vide</entry>
   <entry key="otherSolvent">- spécifier autre solvent</entry>
   <entry key="otherSolvent.note">(DMSO n''est pas compatible avec l''analyse MS)</entry>
   <entry key="commentsPanel">Commentaires</entry>

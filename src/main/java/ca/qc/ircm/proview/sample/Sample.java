@@ -57,10 +57,9 @@ public abstract class Sample implements Data, Named, Serializable {
     /**
      * Submission of sample to analyse.
      */
-    SUBMISSION,
-    /**
-     * Control.
-     */
+    SUBMISSION, /**
+                 * Control.
+                 */
     CONTROL
   }
 
@@ -83,7 +82,7 @@ public abstract class Sample implements Data, Named, Serializable {
    * Sample's name.
    */
   @Column(name = "name")
-  @Size(max = 150)
+  @Size(min = 3, max = 150)
   private String name;
   /**
    * Support for this molecule.

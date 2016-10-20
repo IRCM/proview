@@ -79,6 +79,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected CheckBox decolorationField;
   protected TextField weightMarkerQuantityField;
   protected TextField proteinQuantityField;
+  protected HorizontalLayout gelImagesLayout;
   protected VerticalLayout gelImagesUploaderLayout;
   protected ProgressBar gelImageProgress;
   protected Table gelImagesTable;
