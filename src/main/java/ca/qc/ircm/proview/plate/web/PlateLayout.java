@@ -7,6 +7,7 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
@@ -35,6 +36,7 @@ public class PlateLayout extends CustomComponent
   private VerticalLayout[] rowHeaderLayouts;
   private Label[] rowHeaders;
   private VerticalLayout[][] wellLayouts;
+  private DragAndDropWrapper[][] wellDragAndDropWrappers;
 
   /**
    * Constructor for a plate of given size (number of columns and rows).
@@ -53,6 +55,7 @@ public class PlateLayout extends CustomComponent
     rowHeaderLayouts = new VerticalLayout[rowsCount];
     rowHeaders = new Label[rowsCount];
     wellLayouts = new VerticalLayout[columnsCount][rowsCount];
+    wellDragAndDropWrappers = new DragAndDropWrapper[columnsCount][rowsCount];
     setCompositionRoot(gridLayout);
     init();
   }
@@ -75,13 +78,17 @@ public class PlateLayout extends CustomComponent
     });
     IntStream.range(0, wellLayouts.length).forEach(i -> IntStream.range(0, wellLayouts[i].length)
         .forEach(j -> wellLayouts[i][j] = wellLayout()));
+    IntStream.range(0, wellDragAndDropWrappers.length)
+        .forEach(i -> IntStream.range(0, wellDragAndDropWrappers[i].length).forEach(
+            j -> wellDragAndDropWrappers[i][j] = wellDragAndDropWrapper(wellLayouts[i][j])));
+
     gridLayout.addComponent(headerLayout(new Label()), 0, 0);
     IntStream.range(1, columnsCount + 1)
         .forEach(i -> gridLayout.addComponent(columnHeaderLayouts[i - 1], i, 0));
     IntStream.range(1, rowsCount + 1)
         .forEach(i -> gridLayout.addComponent(rowHeaderLayouts[i - 1], 0, i));
     IntStream.range(1, columnsCount + 1).forEach(i -> IntStream.range(1, rowsCount + 1)
-        .forEach(j -> gridLayout.addComponent(wellLayouts[i - 1][j - 1], i, j)));
+        .forEach(j -> gridLayout.addComponent(wellDragAndDropWrappers[i - 1][j - 1], i, j)));
   }
 
   private VerticalLayout headerLayout(Component component) {
@@ -96,6 +103,12 @@ public class PlateLayout extends CustomComponent
     VerticalLayout layout = new VerticalLayout();
     layout.addStyleName(WELL_STYLE);
     return layout;
+  }
+
+  private DragAndDropWrapper wellDragAndDropWrapper(Component well) {
+    DragAndDropWrapper wellWrapper = new DragAndDropWrapper(well);
+    wellWrapper.addStyleName(WELL_STYLE);
+    return wellWrapper;
   }
 
   private Stream<VerticalLayout> wells() {
@@ -113,11 +126,15 @@ public class PlateLayout extends CustomComponent
         "Component must be added to layout before using setComponentAlignment()"));
   }
 
-  public void addComponent(Component component, int column, int row) {
+  public void addWellComponent(Component component, int column, int row) {
     wellLayouts[column][row].addComponent(component);
   }
 
-  public void removeComponent(Component component, int column, int row) {
+  public void removeAllWellComponents(int column, int row) {
+    wellLayouts[column][row].removeAllComponents();
+  }
+
+  public void removeWellComponent(Component component, int column, int row) {
     wellLayouts[column][row].removeComponent(component);
   }
 
@@ -131,6 +148,22 @@ public class PlateLayout extends CustomComponent
 
   public void removeWellClickListener(LayoutClickListener listener, int column, int row) {
     wellLayouts[column][row].removeLayoutClickListener(listener);
+  }
+
+  public void addWellStyleName(String style, int column, int row) {
+    wellLayouts[column][row].addStyleName(style);
+  }
+
+  public String getWellStyleName(int column, int row) {
+    return wellLayouts[column][row].getStyleName();
+  }
+
+  public void removeWellStyleName(String style, int column, int row) {
+    wellLayouts[column][row].removeStyleName(style);
+  }
+
+  public DragAndDropWrapper getWellDragAndDropWrapper(int column, int row) {
+    return wellDragAndDropWrappers[column][row];
   }
 
   public String getColumnHeaderCaption(int column) {

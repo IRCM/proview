@@ -144,9 +144,11 @@
   }
   
   // Plate.
-  .v-layout.plate-header, .v-layout.plate-well {
+  .v-layout.plate-header, .v-layout.plate-well, .v-ddwrapper.plate-well {
     width: 100%;
     height: 100%;
+  }
+  .v-layout.plate-header, .v-layout.plate-well {
     padding: 3px;
     border: valo-border($border: $v-panel-border, $color: darkest-color($v-panel-background-color, $v-app-background-color), $strength: 0.7);
     @if $v-table-border-radius > 0 {
@@ -168,6 +170,9 @@
   .v-layout.plate-well {
     border-left: none;
     border-top: none;
+  }
+  .v-layout.plate-well.selected {
+    background-color: $v-selection-color;
   }
 
   // Instant filter.

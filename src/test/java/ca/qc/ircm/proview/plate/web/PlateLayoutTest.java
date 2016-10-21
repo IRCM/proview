@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.plate.web.PlateLayout.STYLE;
 import static ca.qc.ircm.proview.plate.web.PlateLayout.WELL_STYLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -14,6 +15,8 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.DragAndDropWrapper;
+import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -84,6 +87,8 @@ public class PlateLayoutTest {
         assertTrue(well.getStyleName().contains(WELL_STYLE));
       }
     }
+    columns().forEach(column -> rows().forEach(row -> assertTrue(
+        plateLayout.getWellDragAndDropWrapper(column, row).getStyleName().contains(WELL_STYLE))));
   }
 
   @Test
@@ -114,15 +119,15 @@ public class PlateLayoutTest {
   }
 
   @Test
-  public void addComponent() throws Throwable {
+  public void addWellComponent() throws Throwable {
     Label label00 = new Label("test");
-    plateLayout.addComponent(label00, 0, 0);
+    plateLayout.addWellComponent(label00, 0, 0);
     Label label110 = new Label("test");
-    plateLayout.addComponent(label110, 11, 0);
+    plateLayout.addWellComponent(label110, 11, 0);
     Label label14 = new Label("test");
-    plateLayout.addComponent(label14, 1, 4);
+    plateLayout.addWellComponent(label14, 1, 4);
     Label label117 = new Label("test");
-    plateLayout.addComponent(label117, 11, 7);
+    plateLayout.addWellComponent(label117, 11, 7);
 
     VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
     assertEquals(0, wellLayouts[0][0].getComponentIndex(label00));
@@ -132,21 +137,45 @@ public class PlateLayoutTest {
   }
 
   @Test(expected = ArrayIndexOutOfBoundsException.class)
-  public void addComponent_InvalidColumn() {
-    plateLayout.addComponent(new Label(), columns, 0);
+  public void addWellComponent_InvalidColumn() {
+    plateLayout.addWellComponent(new Label(), columns, 0);
   }
 
   @Test(expected = ArrayIndexOutOfBoundsException.class)
-  public void addComponent_InvalidRow() {
-    plateLayout.addComponent(new Label(), 0, rows);
+  public void addWellComponent_InvalidRow() {
+    plateLayout.addWellComponent(new Label(), 0, rows);
   }
 
   @Test
-  public void removeComponent() throws Throwable {
-    Label label00 = new Label("test");
-    plateLayout.addComponent(label00, 0, 0);
+  public void addWellComponent_Multiple() throws Throwable {
+    Label label1 = new Label("test1");
+    Label label2 = new Label("test2");
 
-    plateLayout.removeComponent(label00, 0, 0);
+    plateLayout.addWellComponent(label1, 0, 0);
+    plateLayout.addWellComponent(label2, 0, 0);
+
+    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
+    assertEquals(0, wellLayouts[0][0].getComponentIndex(label1));
+    assertEquals(1, wellLayouts[0][0].getComponentIndex(label2));
+  }
+
+  @Test
+  public void removeAllWellComponents() throws Throwable {
+    plateLayout.addWellComponent(new Label("test1"), 0, 0);
+    plateLayout.addWellComponent(new Label("test2"), 0, 0);
+
+    plateLayout.removeAllWellComponents(0, 0);
+
+    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
+    assertFalse(wellLayouts[0][0].iterator().hasNext());
+  }
+
+  @Test
+  public void removeWellComponent() throws Throwable {
+    Label label00 = new Label("test");
+    plateLayout.addWellComponent(label00, 0, 0);
+
+    plateLayout.removeWellComponent(label00, 0, 0);
 
     VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
     assertEquals(-1, wellLayouts[0][0].getComponentIndex(label00));
@@ -178,6 +207,40 @@ public class PlateLayoutTest {
     VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
     assertFalse(
         wellLayouts[0][0].getListeners(LayoutClickEvent.class).contains(layoutClickListener));
+  }
+
+  @Test
+  public void addWellStyleName() throws Throwable {
+    plateLayout.addWellStyleName("test", 0, 0);
+
+    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
+    assertTrue(wellLayouts[0][0].getStyleName().contains("test"));
+  }
+
+  @Test
+  public void getWellStyleName() throws Throwable {
+    plateLayout.addWellStyleName("test", 0, 0);
+
+    assertTrue(plateLayout.getWellStyleName(0, 0).contains(WELL_STYLE));
+    assertTrue(plateLayout.getWellStyleName(0, 0).contains("test"));
+  }
+
+  @Test
+  public void removeWellStyleName() throws Throwable {
+    plateLayout.addWellStyleName("test", 0, 0);
+
+    plateLayout.removeWellStyleName("test", 0, 0);
+
+    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
+    assertFalse(wellLayouts[0][0].getStyleName().contains("test"));
+  }
+
+  @Test
+  public void getWellDragAndDropWrapper() {
+    DragAndDropWrapper wellWrapper = plateLayout.getWellDragAndDropWrapper(0, 0);
+
+    assertNotNull(wellWrapper);
+    assertEquals(DragStartMode.NONE, wellWrapper.getDragStartMode());
   }
 
   @Test
@@ -314,7 +377,7 @@ public class PlateLayoutTest {
   public void setComponentAlignment() throws Throwable {
     Alignment alignment = Alignment.MIDDLE_CENTER;
     Label label = new Label();
-    plateLayout.addComponent(label, 0, 0);
+    plateLayout.addWellComponent(label, 0, 0);
 
     plateLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
 
@@ -326,7 +389,7 @@ public class PlateLayoutTest {
   public void getComponentAlignment() throws Throwable {
     Alignment alignment = Alignment.MIDDLE_CENTER;
     Label label = new Label();
-    plateLayout.addComponent(label, 0, 0);
+    plateLayout.addWellComponent(label, 0, 0);
     plateLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
 
     assertEquals(alignment, plateLayout.getComponentAlignment(label));
