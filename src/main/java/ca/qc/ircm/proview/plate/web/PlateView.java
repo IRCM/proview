@@ -25,6 +25,8 @@ public class PlateView extends PlateViewDesign implements MessageResourcesView {
   private PlateComponent plateComponent;
   @Inject
   private PlateService plateService;
+  @Inject
+  private PlateComponentPresenter plateComponentPresenter;
 
   public PlateView() {
     menuLayout.addComponent(menu);
@@ -36,7 +38,8 @@ public class PlateView extends PlateViewDesign implements MessageResourcesView {
   @Override
   public void attach() {
     Plate plate = plateService.get(1L);
-    plateComponent = new PlateComponent(plate);
+    plateComponent = new PlateComponent();
+    plateComponent.setPresenter(plateComponentPresenter);
     plateComponentPanel.setCaption(plate.getName());
     plateComponentPanel.setContent(plateComponent);
   }

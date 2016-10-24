@@ -7,13 +7,14 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -31,12 +32,18 @@ public class PlateLayout extends CustomComponent
   private final int columnsCount;
   private final int rowsCount;
   private GridLayout gridLayout;
-  private VerticalLayout[] columnHeaderLayouts;
-  private Label[] columnHeaders;
-  private VerticalLayout[] rowHeaderLayouts;
-  private Label[] rowHeaders;
-  private VerticalLayout[][] wellLayouts;
-  private DragAndDropWrapper[][] wellDragAndDropWrappers;
+  private List<VerticalLayout> columnHeaderLayouts;
+  private List<Label> columnHeaders;
+  private List<VerticalLayout> rowHeaderLayouts;
+  private List<Label> rowHeaders;
+  private List<List<VerticalLayout>> wellLayouts;
+
+  /**
+   * Constructor for a plate.
+   */
+  public PlateLayout() {
+    this(12, 8);
+  }
 
   /**
    * Constructor for a plate of given size (number of columns and rows).
@@ -50,45 +57,85 @@ public class PlateLayout extends CustomComponent
     this.columnsCount = columns;
     this.rowsCount = rows;
     gridLayout = new GridLayout(columnsCount + 1, rowsCount + 1);
-    columnHeaderLayouts = new VerticalLayout[columnsCount];
-    columnHeaders = new Label[columnsCount];
-    rowHeaderLayouts = new VerticalLayout[rowsCount];
-    rowHeaders = new Label[rowsCount];
-    wellLayouts = new VerticalLayout[columnsCount][rowsCount];
-    wellDragAndDropWrappers = new DragAndDropWrapper[columnsCount][rowsCount];
+    columnHeaderLayouts = new ArrayList<>();
+    columnHeaders = new ArrayList<>();
+    rowHeaderLayouts = new ArrayList<>();
+    rowHeaders = new ArrayList<>();
+    wellLayouts = new ArrayList<>();
     setCompositionRoot(gridLayout);
     init();
   }
 
   private void init() {
     addStyleName(STYLE);
-    IntStream.range(0, columnHeaders.length)
-        .forEach(i -> columnHeaders[i] = new Label(String.valueOf(i + 1)));
-    IntStream.range(0, columnHeaderLayouts.length).forEach(i -> {
-      VerticalLayout layout = headerLayout(columnHeaders[i]);
-      layout.addStyleName(HEADER_COLUMN_STYLE);
-      columnHeaderLayouts[i] = layout;
-    });
-    IntStream.range(0, rowHeaders.length)
-        .forEach(i -> rowHeaders[i] = new Label(String.valueOf((char) ('A' + i))));
-    IntStream.range(0, rowHeaderLayouts.length).forEach(i -> {
-      VerticalLayout layout = headerLayout(rowHeaders[i]);
-      layout.addStyleName(HEADER_ROW_STYLE);
-      rowHeaderLayouts[i] = layout;
-    });
-    IntStream.range(0, wellLayouts.length).forEach(i -> IntStream.range(0, wellLayouts[i].length)
-        .forEach(j -> wellLayouts[i][j] = wellLayout()));
-    IntStream.range(0, wellDragAndDropWrappers.length)
-        .forEach(i -> IntStream.range(0, wellDragAndDropWrappers[i].length).forEach(
-            j -> wellDragAndDropWrappers[i][j] = wellDragAndDropWrapper(wellLayouts[i][j])));
-
     gridLayout.addComponent(headerLayout(new Label()), 0, 0);
-    IntStream.range(1, columnsCount + 1)
-        .forEach(i -> gridLayout.addComponent(columnHeaderLayouts[i - 1], i, 0));
-    IntStream.range(1, rowsCount + 1)
-        .forEach(i -> gridLayout.addComponent(rowHeaderLayouts[i - 1], 0, i));
-    IntStream.range(1, columnsCount + 1).forEach(i -> IntStream.range(1, rowsCount + 1)
-        .forEach(j -> gridLayout.addComponent(wellDragAndDropWrappers[i - 1][j - 1], i, j)));
+    changeGridSize(gridLayout.getColumns() - 1, gridLayout.getRows() - 1);
+  }
+
+  private void changeGridSize(int columns, int rows) {
+    while (gridLayout.getColumns() - 1 > columns) {
+      IntStream.range(0, gridLayout.getRows())
+          .forEach(row -> gridLayout.removeComponent(gridLayout.getColumns() - 1, row));
+      gridLayout.setColumns(gridLayout.getColumns() - 1);
+    }
+    while (gridLayout.getRows() - 1 > rows) {
+      IntStream.range(0, gridLayout.getColumns())
+          .forEach(column -> gridLayout.removeComponent(column, gridLayout.getRows() - 1));
+      gridLayout.setRows(gridLayout.getRows() - 1);
+    }
+    gridLayout.setColumns(columns + 1);
+    gridLayout.setRows(rows + 1);
+
+    while (columnHeaders.size() < columns) {
+      columnHeaders.add(new Label(String.valueOf(columnHeaders.size() + 1)));
+    }
+    while (columnHeaders.size() > columns) {
+      columnHeaders.remove(columnHeaders.size() - 1);
+    }
+    while (columnHeaderLayouts.size() < columns) {
+      int column = columnHeaderLayouts.size();
+      VerticalLayout layout = headerLayout(columnHeaders.get(column));
+      layout.addStyleName(HEADER_COLUMN_STYLE);
+      columnHeaderLayouts.add(layout);
+      gridLayout.addComponent(layout, column + 1, 0);
+    }
+    while (columnHeaderLayouts.size() > columns) {
+      columnHeaderLayouts.remove(columnHeaderLayouts.size() - 1);
+    }
+    while (rowHeaders.size() < rows) {
+      rowHeaders.add(new Label(String.valueOf((char) ('A' + rowHeaders.size()))));
+    }
+    while (rowHeaders.size() > rows) {
+      rowHeaders.remove(rowHeaders.size() - 1);
+    }
+    while (rowHeaderLayouts.size() < rows) {
+      int row = rowHeaderLayouts.size();
+      VerticalLayout layout = headerLayout(rowHeaders.get(row));
+      layout.addStyleName(HEADER_ROW_STYLE);
+      rowHeaderLayouts.add(layout);
+      gridLayout.addComponent(layout, 0, row + 1);
+    }
+    while (rowHeaderLayouts.size() > rows) {
+      rowHeaderLayouts.remove(rowHeaderLayouts.size() - 1);
+    }
+    while (wellLayouts.size() < columns) {
+      wellLayouts.add(new ArrayList<>());
+    }
+    while (wellLayouts.size() > columns) {
+      wellLayouts.remove(wellLayouts.size() - 1);
+    }
+    IntStream.range(0, columns).forEach(column -> {
+      List<VerticalLayout> columnWellLayouts = wellLayouts.get(column);
+      while (columnWellLayouts.size() < rows) {
+        int row = columnWellLayouts.size();
+        VerticalLayout layout = wellLayout();
+        gridLayout.addComponent(layout, column + 1, row + 1);
+        columnWellLayouts.add(layout);
+      }
+      while (columnWellLayouts.size() > rows) {
+        columnWellLayouts.remove(columnWellLayouts.size() - 1);
+      }
+    });
   }
 
   private VerticalLayout headerLayout(Component component) {
@@ -105,14 +152,8 @@ public class PlateLayout extends CustomComponent
     return layout;
   }
 
-  private DragAndDropWrapper wellDragAndDropWrapper(Component well) {
-    DragAndDropWrapper wellWrapper = new DragAndDropWrapper(well);
-    wellWrapper.addStyleName(WELL_STYLE);
-    return wellWrapper;
-  }
-
   private Stream<VerticalLayout> wells() {
-    return Stream.of(wellLayouts).flatMap(array -> Stream.of(array));
+    return wellLayouts.stream().flatMap(list -> list.stream());
   }
 
   private VerticalLayout findWellByComponent(Component childComponent) {
@@ -127,83 +168,87 @@ public class PlateLayout extends CustomComponent
   }
 
   public void addWellComponent(Component component, int column, int row) {
-    wellLayouts[column][row].addComponent(component);
+    wellLayouts.get(column).get(row).addComponent(component);
   }
 
   public void removeAllWellComponents(int column, int row) {
-    wellLayouts[column][row].removeAllComponents();
+    wellLayouts.get(column).get(row).removeAllComponents();
   }
 
   public void removeWellComponent(Component component, int column, int row) {
-    wellLayouts[column][row].removeComponent(component);
+    wellLayouts.get(column).get(row).removeComponent(component);
   }
 
   public void addWellClickListener(LayoutClickListener listener, int column, int row) {
-    wellLayouts[column][row].addLayoutClickListener(listener);
+    wellLayouts.get(column).get(row).addLayoutClickListener(listener);
   }
 
   public Collection<?> getWellListener(Class<?> eventType, int column, int row) {
-    return wellLayouts[column][row].getListeners(eventType);
+    return wellLayouts.get(column).get(row).getListeners(eventType);
   }
 
   public void removeWellClickListener(LayoutClickListener listener, int column, int row) {
-    wellLayouts[column][row].removeLayoutClickListener(listener);
+    wellLayouts.get(column).get(row).removeLayoutClickListener(listener);
   }
 
   public void addWellStyleName(String style, int column, int row) {
-    wellLayouts[column][row].addStyleName(style);
+    wellLayouts.get(column).get(row).addStyleName(style);
   }
 
   public String getWellStyleName(int column, int row) {
-    return wellLayouts[column][row].getStyleName();
+    return wellLayouts.get(column).get(row).getStyleName();
   }
 
   public void removeWellStyleName(String style, int column, int row) {
-    wellLayouts[column][row].removeStyleName(style);
-  }
-
-  public DragAndDropWrapper getWellDragAndDropWrapper(int column, int row) {
-    return wellDragAndDropWrappers[column][row];
+    wellLayouts.get(column).get(row).removeStyleName(style);
   }
 
   public String getColumnHeaderCaption(int column) {
-    return columnHeaders[column].getValue();
+    return columnHeaders.get(column).getValue();
   }
 
   public void setColumnHeaderCaption(String caption, int column) {
-    columnHeaders[column].setValue(caption);
+    columnHeaders.get(column).setValue(caption);
   }
 
   public void addColumnHeaderClickListener(LayoutClickListener listener, int column) {
-    columnHeaderLayouts[column].addLayoutClickListener(listener);
+    columnHeaderLayouts.get(column).addLayoutClickListener(listener);
   }
 
   public Collection<?> getColumnHeaderListener(Class<?> eventType, int column) {
-    return columnHeaderLayouts[column].getListeners(eventType);
+    return columnHeaderLayouts.get(column).getListeners(eventType);
   }
 
   public void removeColumnHeaderClickListener(LayoutClickListener listener, int column) {
-    columnHeaderLayouts[column].removeLayoutClickListener(listener);
+    columnHeaderLayouts.get(column).removeLayoutClickListener(listener);
   }
 
   public String getRowHeaderCaption(int row) {
-    return rowHeaders[row].getValue();
+    return rowHeaders.get(row).getValue();
   }
 
   public void setRowHeaderCaption(String caption, int row) {
-    rowHeaders[row].setValue(caption);
+    rowHeaders.get(row).setValue(caption);
   }
 
   public void addRowHeaderClickListener(LayoutClickListener listener, int row) {
-    rowHeaderLayouts[row].addLayoutClickListener(listener);
+    rowHeaderLayouts.get(row).addLayoutClickListener(listener);
   }
 
   public Collection<?> getRowHeaderListener(Class<?> eventType, int row) {
-    return rowHeaderLayouts[row].getListeners(eventType);
+    return rowHeaderLayouts.get(row).getListeners(eventType);
   }
 
   public void removeRowHeaderClickListener(LayoutClickListener listener, int row) {
-    rowHeaderLayouts[row].removeLayoutClickListener(listener);
+    rowHeaderLayouts.get(row).removeLayoutClickListener(listener);
+  }
+
+  public void setColumns(int columns) {
+    changeGridSize(columns, gridLayout.getRows() - 1);
+  }
+
+  public void setRows(int rows) {
+    changeGridSize(gridLayout.getColumns() - 1, rows);
   }
 
   @Override

@@ -7,7 +7,6 @@ import static ca.qc.ircm.proview.plate.web.PlateLayout.STYLE;
 import static ca.qc.ircm.proview.plate.web.PlateLayout.WELL_STYLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -15,8 +14,6 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.DragAndDropWrapper;
-import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -28,14 +25,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PlateLayoutTest {
   private static final String GRID_LAYOUTS_FIELD = "gridLayout";
+  private static final String COLUMN_HEADERS_FIELD = "columnHeaders";
   private static final String COLUMN_HEADER_LAYOUTS_FIELD = "columnHeaderLayouts";
+  private static final String ROW_HEADERS_FIELD = "rowHeaders";
   private static final String ROW_HEADER_LAYOUTS_FIELD = "rowHeaderLayouts";
   private static final String WELL_LAYOUTS_FIELD = "wellLayouts";
   private PlateLayout plateLayout;
@@ -57,10 +56,6 @@ public class PlateLayoutTest {
     return IntStream.range(0, rows);
   }
 
-  private <T> Stream<T> matrixStream(T[][] matrix) {
-    return Stream.of(matrix).flatMap(array -> Stream.of(array));
-  }
-
   private Object getField(String fieldName) throws NoSuchFieldException, SecurityException,
       IllegalArgumentException, IllegalAccessException {
     Field field = PlateLayout.class.getDeclaredField(fieldName);
@@ -68,39 +63,73 @@ public class PlateLayoutTest {
     return field.get(plateLayout);
   }
 
+  private GridLayout gridLayout() throws NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    return (GridLayout) getField(GRID_LAYOUTS_FIELD);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<Label> columnHeaders() throws NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    return (List<Label>) getField(COLUMN_HEADERS_FIELD);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<VerticalLayout> columnHeaderLayouts() throws NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    return (List<VerticalLayout>) getField(COLUMN_HEADER_LAYOUTS_FIELD);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<Label> rowHeaders() throws NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    return (List<Label>) getField(ROW_HEADERS_FIELD);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<VerticalLayout> rowHeaderLayouts() throws NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    return (List<VerticalLayout>) getField(ROW_HEADER_LAYOUTS_FIELD);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<List<VerticalLayout>> wellLayouts() throws NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    return (List<List<VerticalLayout>>) getField(WELL_LAYOUTS_FIELD);
+  }
+
   @Test
   public void styles() throws Throwable {
     assertTrue(plateLayout.getStyleName().contains(STYLE));
-    VerticalLayout[] columnHeaderLayouts = (VerticalLayout[]) getField(COLUMN_HEADER_LAYOUTS_FIELD);
+    List<VerticalLayout> columnHeaderLayouts = columnHeaderLayouts();
     for (VerticalLayout header : columnHeaderLayouts) {
       assertTrue(header.getStyleName().contains(HEADER_STYLE));
       assertTrue(header.getStyleName().contains(HEADER_COLUMN_STYLE));
     }
-    VerticalLayout[] rowHeaderLayouts = (VerticalLayout[]) getField(ROW_HEADER_LAYOUTS_FIELD);
+    List<VerticalLayout> rowHeaderLayouts = rowHeaderLayouts();
     for (VerticalLayout header : rowHeaderLayouts) {
       assertTrue(header.getStyleName().contains(HEADER_STYLE));
       assertTrue(header.getStyleName().contains(HEADER_ROW_STYLE));
     }
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    for (VerticalLayout[] array : wellLayouts) {
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    for (List<VerticalLayout> array : wellLayouts) {
       for (VerticalLayout well : array) {
         assertTrue(well.getStyleName().contains(WELL_STYLE));
       }
     }
-    columns().forEach(column -> rows().forEach(row -> assertTrue(
-        plateLayout.getWellDragAndDropWrapper(column, row).getStyleName().contains(WELL_STYLE))));
   }
 
   @Test
   public void captions() throws Throwable {
     columns()
         .forEach(i -> assertEquals(String.valueOf(1 + i), plateLayout.getColumnHeaderCaption(i)));
-    Label[] columnHeaders = (Label[]) getField("columnHeaders");
-    columns().forEach(i -> assertEquals(String.valueOf(1 + i), columnHeaders[i].getValue()));
+    List<Label> columnHeaders = columnHeaders();
+    columns().forEach(i -> assertEquals(String.valueOf(1 + i), columnHeaders.get(i).getValue()));
     rows().forEach(
         i -> assertEquals(String.valueOf((char) ('A' + i)), plateLayout.getRowHeaderCaption(i)));
-    Label[] rowHeaders = (Label[]) getField("rowHeaders");
-    rows().forEach(i -> assertEquals(String.valueOf((char) ('A' + i)), rowHeaders[i].getValue()));
+    List<Label> rowHeaders = rowHeaders();
+    rows()
+        .forEach(i -> assertEquals(String.valueOf((char) ('A' + i)), rowHeaders.get(i).getValue()));
   }
 
   @Test
@@ -110,12 +139,12 @@ public class PlateLayoutTest {
 
     columns().forEach(
         i -> assertEquals(String.valueOf((char) ('E' + i)), plateLayout.getColumnHeaderCaption(i)));
-    Label[] columnHeaders = (Label[]) getField("columnHeaders");
-    columns()
-        .forEach(i -> assertEquals(String.valueOf((char) ('E' + i)), columnHeaders[i].getValue()));
+    List<Label> columnHeaders = columnHeaders();
+    columns().forEach(
+        i -> assertEquals(String.valueOf((char) ('E' + i)), columnHeaders.get(i).getValue()));
     rows().forEach(i -> assertEquals(String.valueOf(22 + i), plateLayout.getRowHeaderCaption(i)));
-    Label[] rowHeaders = (Label[]) getField("rowHeaders");
-    rows().forEach(i -> assertEquals(String.valueOf(22 + i), rowHeaders[i].getValue()));
+    List<Label> rowHeaders = rowHeaders();
+    rows().forEach(i -> assertEquals(String.valueOf(22 + i), rowHeaders.get(i).getValue()));
   }
 
   @Test
@@ -129,19 +158,19 @@ public class PlateLayoutTest {
     Label label117 = new Label("test");
     plateLayout.addWellComponent(label117, 11, 7);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    assertEquals(0, wellLayouts[0][0].getComponentIndex(label00));
-    assertEquals(0, wellLayouts[11][0].getComponentIndex(label110));
-    assertEquals(0, wellLayouts[1][4].getComponentIndex(label14));
-    assertEquals(0, wellLayouts[11][7].getComponentIndex(label117));
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertEquals(0, wellLayouts.get(0).get(0).getComponentIndex(label00));
+    assertEquals(0, wellLayouts.get(11).get(0).getComponentIndex(label110));
+    assertEquals(0, wellLayouts.get(1).get(4).getComponentIndex(label14));
+    assertEquals(0, wellLayouts.get(11).get(7).getComponentIndex(label117));
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test(expected = IndexOutOfBoundsException.class)
   public void addWellComponent_InvalidColumn() {
     plateLayout.addWellComponent(new Label(), columns, 0);
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test(expected = IndexOutOfBoundsException.class)
   public void addWellComponent_InvalidRow() {
     plateLayout.addWellComponent(new Label(), 0, rows);
   }
@@ -154,9 +183,9 @@ public class PlateLayoutTest {
     plateLayout.addWellComponent(label1, 0, 0);
     plateLayout.addWellComponent(label2, 0, 0);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    assertEquals(0, wellLayouts[0][0].getComponentIndex(label1));
-    assertEquals(1, wellLayouts[0][0].getComponentIndex(label2));
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertEquals(0, wellLayouts.get(0).get(0).getComponentIndex(label1));
+    assertEquals(1, wellLayouts.get(0).get(0).getComponentIndex(label2));
   }
 
   @Test
@@ -166,8 +195,8 @@ public class PlateLayoutTest {
 
     plateLayout.removeAllWellComponents(0, 0);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    assertFalse(wellLayouts[0][0].iterator().hasNext());
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertFalse(wellLayouts.get(0).get(0).iterator().hasNext());
   }
 
   @Test
@@ -177,17 +206,17 @@ public class PlateLayoutTest {
 
     plateLayout.removeWellComponent(label00, 0, 0);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    assertEquals(-1, wellLayouts[0][0].getComponentIndex(label00));
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertEquals(-1, wellLayouts.get(0).get(0).getComponentIndex(label00));
   }
 
   @Test
   public void addWellClickListener() throws Throwable {
     plateLayout.addWellClickListener(layoutClickListener, 0, 0);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    assertTrue(
-        wellLayouts[0][0].getListeners(LayoutClickEvent.class).contains(layoutClickListener));
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertTrue(wellLayouts.get(0).get(0).getListeners(LayoutClickEvent.class)
+        .contains(layoutClickListener));
   }
 
   @Test
@@ -204,17 +233,17 @@ public class PlateLayoutTest {
 
     plateLayout.removeWellClickListener(layoutClickListener, 0, 0);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    assertFalse(
-        wellLayouts[0][0].getListeners(LayoutClickEvent.class).contains(layoutClickListener));
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertFalse(wellLayouts.get(0).get(0).getListeners(LayoutClickEvent.class)
+        .contains(layoutClickListener));
   }
 
   @Test
   public void addWellStyleName() throws Throwable {
     plateLayout.addWellStyleName("test", 0, 0);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    assertTrue(wellLayouts[0][0].getStyleName().contains("test"));
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertTrue(wellLayouts.get(0).get(0).getStyleName().contains("test"));
   }
 
   @Test
@@ -231,25 +260,17 @@ public class PlateLayoutTest {
 
     plateLayout.removeWellStyleName("test", 0, 0);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    assertFalse(wellLayouts[0][0].getStyleName().contains("test"));
-  }
-
-  @Test
-  public void getWellDragAndDropWrapper() {
-    DragAndDropWrapper wellWrapper = plateLayout.getWellDragAndDropWrapper(0, 0);
-
-    assertNotNull(wellWrapper);
-    assertEquals(DragStartMode.NONE, wellWrapper.getDragStartMode());
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertFalse(wellLayouts.get(0).get(0).getStyleName().contains("test"));
   }
 
   @Test
   public void addColumnHeaderClickListener() throws Throwable {
     plateLayout.addColumnHeaderClickListener(layoutClickListener, 0);
 
-    VerticalLayout[] columnHeaderLayouts = (VerticalLayout[]) getField(COLUMN_HEADER_LAYOUTS_FIELD);
-    assertTrue(
-        columnHeaderLayouts[0].getListeners(LayoutClickEvent.class).contains(layoutClickListener));
+    List<VerticalLayout> columnHeaderLayouts = columnHeaderLayouts();
+    assertTrue(columnHeaderLayouts.get(0).getListeners(LayoutClickEvent.class)
+        .contains(layoutClickListener));
   }
 
   @Test
@@ -266,18 +287,18 @@ public class PlateLayoutTest {
 
     plateLayout.removeColumnHeaderClickListener(layoutClickListener, 0);
 
-    VerticalLayout[] columnHeaderLayouts = (VerticalLayout[]) getField(COLUMN_HEADER_LAYOUTS_FIELD);
-    assertFalse(
-        columnHeaderLayouts[0].getListeners(LayoutClickEvent.class).contains(layoutClickListener));
+    List<VerticalLayout> columnHeaderLayouts = columnHeaderLayouts();
+    assertFalse(columnHeaderLayouts.get(0).getListeners(LayoutClickEvent.class)
+        .contains(layoutClickListener));
   }
 
   @Test
   public void addRowHeaderClickListener() throws Throwable {
     plateLayout.addRowHeaderClickListener(layoutClickListener, 0);
 
-    VerticalLayout[] rowHeaderLayouts = (VerticalLayout[]) getField(ROW_HEADER_LAYOUTS_FIELD);
+    List<VerticalLayout> rowHeaderLayouts = rowHeaderLayouts();
     assertTrue(
-        rowHeaderLayouts[0].getListeners(LayoutClickEvent.class).contains(layoutClickListener));
+        rowHeaderLayouts.get(0).getListeners(LayoutClickEvent.class).contains(layoutClickListener));
   }
 
   @Test
@@ -294,16 +315,168 @@ public class PlateLayoutTest {
 
     plateLayout.removeRowHeaderClickListener(layoutClickListener, 0);
 
-    VerticalLayout[] rowHeaderLayouts = (VerticalLayout[]) getField(ROW_HEADER_LAYOUTS_FIELD);
+    List<VerticalLayout> rowHeaderLayouts = rowHeaderLayouts();
     assertFalse(
-        rowHeaderLayouts[0].getListeners(LayoutClickEvent.class).contains(layoutClickListener));
+        rowHeaderLayouts.get(0).getListeners(LayoutClickEvent.class).contains(layoutClickListener));
+  }
+
+  @Test
+  public void setColumns_Increase() throws Throwable {
+    int columns = this.columns + 2;
+
+    plateLayout.setColumns(columns);
+
+    GridLayout gridLayout = gridLayout();
+    assertEquals(columns + 1, gridLayout.getColumns());
+    assertEquals(rows + 1, gridLayout.getRows());
+    List<VerticalLayout> columnHeaderLayouts = columnHeaderLayouts();
+    assertEquals(columns, columnHeaderLayouts.size());
+    for (int column = 0; column < columns; column++) {
+      VerticalLayout header = columnHeaderLayouts.get(column);
+      assertTrue(header.getStyleName().contains(HEADER_STYLE));
+      assertTrue(header.getStyleName().contains(HEADER_COLUMN_STYLE));
+      assertEquals(header, gridLayout.getComponent(column + 1, 0));
+    }
+    List<VerticalLayout> rowHeaderLayouts = rowHeaderLayouts();
+    assertEquals(rows, rowHeaderLayouts.size());
+    for (int row = 0; row < rows; row++) {
+      VerticalLayout header = rowHeaderLayouts.get(row);
+      assertTrue(header.getStyleName().contains(HEADER_STYLE));
+      assertTrue(header.getStyleName().contains(HEADER_ROW_STYLE));
+      assertEquals(header, gridLayout.getComponent(0, row + 1));
+    }
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertEquals(columns, wellLayouts.size());
+    for (int column = 0; column < columns; column++) {
+      List<VerticalLayout> array = wellLayouts.get(column);
+      assertEquals(rows, array.size());
+      for (int row = 0; row < rows; row++) {
+        VerticalLayout well = array.get(row);
+        assertTrue(well.getStyleName().contains(WELL_STYLE));
+        assertEquals(well, gridLayout.getComponent(column + 1, row + 1));
+      }
+    }
+  }
+
+  @Test
+  public void setColumns_Decrease() throws Throwable {
+    int columns = this.columns - 2;
+
+    plateLayout.setColumns(columns);
+
+    GridLayout gridLayout = gridLayout();
+    assertEquals(columns + 1, gridLayout.getColumns());
+    assertEquals(rows + 1, gridLayout.getRows());
+    List<VerticalLayout> columnHeaderLayouts = columnHeaderLayouts();
+    assertEquals(columns, columnHeaderLayouts.size());
+    for (int column = 0; column < columns; column++) {
+      VerticalLayout header = columnHeaderLayouts.get(column);
+      assertTrue(header.getStyleName().contains(HEADER_STYLE));
+      assertTrue(header.getStyleName().contains(HEADER_COLUMN_STYLE));
+      assertEquals(header, gridLayout.getComponent(column + 1, 0));
+    }
+    List<VerticalLayout> rowHeaderLayouts = rowHeaderLayouts();
+    assertEquals(rows, rowHeaderLayouts.size());
+    for (int row = 0; row < rows; row++) {
+      VerticalLayout header = rowHeaderLayouts.get(row);
+      assertTrue(header.getStyleName().contains(HEADER_STYLE));
+      assertTrue(header.getStyleName().contains(HEADER_ROW_STYLE));
+      assertEquals(header, gridLayout.getComponent(0, row + 1));
+    }
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertEquals(columns, wellLayouts.size());
+    for (int column = 0; column < columns; column++) {
+      List<VerticalLayout> array = wellLayouts.get(column);
+      assertEquals(rows, array.size());
+      for (int row = 0; row < rows; row++) {
+        VerticalLayout well = array.get(row);
+        assertTrue(well.getStyleName().contains(WELL_STYLE));
+        assertEquals(well, gridLayout.getComponent(column + 1, row + 1));
+      }
+    }
+  }
+
+  @Test
+  public void setRows_Increase() throws Throwable {
+    int rows = this.rows + 2;
+
+    plateLayout.setRows(rows);
+
+    GridLayout gridLayout = gridLayout();
+    assertEquals(columns + 1, gridLayout.getColumns());
+    assertEquals(rows + 1, gridLayout.getRows());
+    List<VerticalLayout> columnHeaderLayouts = columnHeaderLayouts();
+    assertEquals(columns, columnHeaderLayouts.size());
+    for (int column = 0; column < columns; column++) {
+      VerticalLayout header = columnHeaderLayouts.get(column);
+      assertTrue(header.getStyleName().contains(HEADER_STYLE));
+      assertTrue(header.getStyleName().contains(HEADER_COLUMN_STYLE));
+      assertEquals(header, gridLayout.getComponent(column + 1, 0));
+    }
+    List<VerticalLayout> rowHeaderLayouts = rowHeaderLayouts();
+    assertEquals(rows, rowHeaderLayouts.size());
+    for (int row = 0; row < rows; row++) {
+      VerticalLayout header = rowHeaderLayouts.get(row);
+      assertTrue(header.getStyleName().contains(HEADER_STYLE));
+      assertTrue(header.getStyleName().contains(HEADER_ROW_STYLE));
+      assertEquals(header, gridLayout.getComponent(0, row + 1));
+    }
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertEquals(columns, wellLayouts.size());
+    for (int column = 0; column < columns; column++) {
+      List<VerticalLayout> array = wellLayouts.get(column);
+      assertEquals(rows, array.size());
+      for (int row = 0; row < rows; row++) {
+        VerticalLayout well = array.get(row);
+        assertTrue(well.getStyleName().contains(WELL_STYLE));
+        assertEquals(well, gridLayout.getComponent(column + 1, row + 1));
+      }
+    }
+  }
+
+  @Test
+  public void setRows_Decrease() throws Throwable {
+    int rows = this.rows - 2;
+
+    plateLayout.setRows(rows);
+
+    GridLayout gridLayout = gridLayout();
+    assertEquals(columns + 1, gridLayout.getColumns());
+    assertEquals(rows + 1, gridLayout.getRows());
+    List<VerticalLayout> columnHeaderLayouts = columnHeaderLayouts();
+    assertEquals(columns, columnHeaderLayouts.size());
+    for (int column = 0; column < columns; column++) {
+      VerticalLayout header = columnHeaderLayouts.get(column);
+      assertTrue(header.getStyleName().contains(HEADER_STYLE));
+      assertTrue(header.getStyleName().contains(HEADER_COLUMN_STYLE));
+      assertEquals(header, gridLayout.getComponent(column + 1, 0));
+    }
+    List<VerticalLayout> rowHeaderLayouts = rowHeaderLayouts();
+    assertEquals(rows, rowHeaderLayouts.size());
+    for (int row = 0; row < rows; row++) {
+      VerticalLayout header = rowHeaderLayouts.get(row);
+      assertTrue(header.getStyleName().contains(HEADER_STYLE));
+      assertTrue(header.getStyleName().contains(HEADER_ROW_STYLE));
+      assertEquals(header, gridLayout.getComponent(0, row + 1));
+    }
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertEquals(columns, wellLayouts.size());
+    for (int column = 0; column < columns; column++) {
+      List<VerticalLayout> array = wellLayouts.get(column);
+      assertEquals(rows, array.size());
+      for (int row = 0; row < rows; row++) {
+        VerticalLayout well = array.get(row);
+        assertTrue(well.getStyleName().contains(WELL_STYLE));
+        assertEquals(well, gridLayout.getComponent(column + 1, row + 1));
+      }
+    }
   }
 
   @Test
   public void addLayoutClickListener() throws Throwable {
     plateLayout.addLayoutClickListener(layoutClickListener);
 
-    GridLayout gridLayout = (GridLayout) getField(GRID_LAYOUTS_FIELD);
+    GridLayout gridLayout = gridLayout();
     assertTrue(gridLayout.getListeners(LayoutClickEvent.class).contains(layoutClickListener));
   }
 
@@ -312,7 +485,7 @@ public class PlateLayoutTest {
   public void addListener() throws Throwable {
     plateLayout.addListener(layoutClickListener);
 
-    GridLayout gridLayout = (GridLayout) getField(GRID_LAYOUTS_FIELD);
+    GridLayout gridLayout = gridLayout();
     assertTrue(gridLayout.getListeners(LayoutClickEvent.class).contains(layoutClickListener));
   }
 
@@ -330,7 +503,7 @@ public class PlateLayoutTest {
 
     plateLayout.removeLayoutClickListener(layoutClickListener);
 
-    GridLayout gridLayout = (GridLayout) getField(GRID_LAYOUTS_FIELD);
+    GridLayout gridLayout = gridLayout();
     assertFalse(gridLayout.getListeners(LayoutClickEvent.class).contains(layoutClickListener));
   }
 
@@ -341,13 +514,13 @@ public class PlateLayoutTest {
 
     plateLayout.removeListener(layoutClickListener);
 
-    GridLayout gridLayout = (GridLayout) getField(GRID_LAYOUTS_FIELD);
+    GridLayout gridLayout = gridLayout();
     assertFalse(gridLayout.getListeners(LayoutClickEvent.class).contains(layoutClickListener));
   }
 
   @Test
   public void setMargin_Boolean() throws Throwable {
-    GridLayout gridLayout = (GridLayout) getField(GRID_LAYOUTS_FIELD);
+    GridLayout gridLayout = gridLayout();
     assertFalse(gridLayout.getMargin().hasAll());
 
     plateLayout.setMargin(true);
@@ -361,7 +534,7 @@ public class PlateLayoutTest {
 
     plateLayout.setMargin(marginInfo);
 
-    GridLayout gridLayout = (GridLayout) getField(GRID_LAYOUTS_FIELD);
+    GridLayout gridLayout = gridLayout();
     assertEquals(marginInfo, gridLayout.getMargin());
   }
 
@@ -381,8 +554,8 @@ public class PlateLayoutTest {
 
     plateLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    assertEquals(alignment, wellLayouts[0][0].getComponentAlignment(label));
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    assertEquals(alignment, wellLayouts.get(0).get(0).getComponentAlignment(label));
   }
 
   @Test
@@ -401,8 +574,8 @@ public class PlateLayoutTest {
 
     plateLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 
-    VerticalLayout[][] wellLayouts = (VerticalLayout[][]) getField(WELL_LAYOUTS_FIELD);
-    matrixStream(wellLayouts)
+    List<List<VerticalLayout>> wellLayouts = wellLayouts();
+    wellLayouts.stream().flatMap(list -> list.stream())
         .forEach(well -> assertEquals(alignment, well.getDefaultComponentAlignment()));
   }
 
