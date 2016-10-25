@@ -32,30 +32,24 @@ public interface SubmissionSampleService {
     /**
      * Laboratory that submitted sample.
      */
-    LABORATORY,
-    /**
-     * Director of laboratory that submitted sample.
-     */
-    USER,
-    /**
-     * Submission date.
-     */
-    SUBMISSION,
-    /**
-     * Sample lims.
-     */
-    LIMS,
-    /**
-     * Sample name.
-     */
-    NAME,
-    /**
-     * Sample status.
-     */
-    STATUS,
-    /**
-     * Sample support.
-     */
+    LABORATORY, /**
+                 * Director of laboratory that submitted sample.
+                 */
+    USER, /**
+           * Submission date.
+           */
+    SUBMISSION, /**
+                 * Sample lims.
+                 */
+    LIMS, /**
+           * Sample name.
+           */
+    NAME, /**
+           * Sample status.
+           */
+    STATUS, /**
+             * Sample support.
+             */
     SUPPORT;
   }
 
@@ -64,28 +58,24 @@ public interface SubmissionSampleService {
    */
   public static enum Support {
     /**
-     * @see ca.qc.ircm.proview.sample.Sample.Support#SOLUTION
+     * @see ca.qc.ircm.proview.sample.SampleSupport#SOLUTION
      */
-    SOLUTION,
-    /**
-     * @see ca.qc.ircm.proview.sample.Sample.Support#GEL
-     */
-    GEL,
-    /**
-     * Small molecule to analyse with high resolution.
-     *
-     * @see ca.qc.ircm.proview.submission.Submission#isHighResolution()
-     */
-    MOLECULE_HIGH,
-    /**
-     * Small molecule to analyse with low resolution.
-     *
-     * @see ca.qc.ircm.proview.submission.Submission#isLowResolution()
-     */
-    MOLECULE_LOW,
-    /**
-     * @see ca.qc.ircm.proview.submission.Service#INTACT_PROTEIN
-     */
+    SOLUTION, /**
+               * @see ca.qc.ircm.proview.sample.SampleSupport#GEL
+               */
+    GEL, /**
+          * Small molecule to analyse with high resolution.
+          *
+          * @see ca.qc.ircm.proview.submission.Submission#isHighResolution()
+          */
+    MOLECULE_HIGH, /**
+                    * Small molecule to analyse with low resolution.
+                    *
+                    * @see ca.qc.ircm.proview.submission.Submission#isLowResolution()
+                    */
+    MOLECULE_LOW, /**
+                   * @see ca.qc.ircm.proview.submission.Service#INTACT_PROTEIN
+                   */
     INTACT_PROTEIN;
   }
 
