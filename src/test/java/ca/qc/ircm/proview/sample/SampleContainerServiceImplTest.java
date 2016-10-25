@@ -75,7 +75,7 @@ public class SampleContainerServiceImplTest {
     assertEquals((Long) 1L, container.getId());
     assertEquals((Long) 1L, container.getSample().getId());
     assertEquals(null, container.getTreatmentSample());
-    assertEquals(SampleContainer.Type.TUBE, container.getType());
+    assertEquals(SampleContainerType.TUBE, container.getType());
     assertEquals(
         LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
         container.getTimestamp());
@@ -98,7 +98,7 @@ public class SampleContainerServiceImplTest {
     assertEquals((Long) 129L, container.getId());
     assertEquals((Long) 1L, container.getSample().getId());
     assertEquals((Long) 9L, container.getTreatmentSample().getId());
-    assertEquals(SampleContainer.Type.SPOT, container.getType());
+    assertEquals(SampleContainerType.SPOT, container.getType());
     assertEquals(
         LocalDateTime.of(2011, 11, 16, 15, 7, 34, 0).atZone(ZoneId.systemDefault()).toInstant(),
         container.getTimestamp());

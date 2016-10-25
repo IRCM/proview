@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.tube;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerType;
 
 import java.io.Serializable;
 
@@ -59,8 +60,8 @@ public class Tube extends SampleContainer implements Data, Named, Serializable {
   }
 
   @Override
-  public SampleContainer.Type getType() {
-    return SampleContainer.Type.TUBE;
+  public SampleContainerType getType() {
+    return SampleContainerType.TUBE;
   }
 
   @Override

@@ -27,6 +27,7 @@
   <entry key="sampleCount">Number of samples</entry>
   <entry key="support">Sample type</entry>
   <entry key="name">Sample name</entry>
+  <entry key="name.duplicate">Sample name {0} cannot be used more than once</entry>
   <entry key="solutionSolvent">Solvent</entry>
   <entry key="formula">Empiric formula</entry>
   <entry key="structure">Structure</entry>
@@ -39,9 +40,11 @@
   <entry key="toxicity">Toxicity</entry>
   <entry key="lightSensitive">Light sensitive</entry>
   <entry key="storageTemperature">Storage temperature</entry>
-  <entry key="names">Sample names</entry>
-  <entry key="names.duplicate">Sample name {0} cannot be used more than once</entry>
-  <entry key="fillSampleNames">Fill down</entry>
+  <entry key="samplesContainerType">Samples are submitted in</entry>
+  <entry key="samplesContainerType.TUBE">Tubes</entry>
+  <entry key="samplesContainerType.SPOT">Plate</entry>
+  <entry key="samples">Samples</entry>
+  <entry key="fillSamples">Fill down</entry>
   <entry key="experiencePanel">Sample details</entry>
   <entry key="experience">Experience</entry>
   <entry key="goal">Experience goal</entry>

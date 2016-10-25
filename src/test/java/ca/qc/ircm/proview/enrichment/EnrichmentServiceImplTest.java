@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -90,7 +91,7 @@ public class EnrichmentServiceImplTest {
   }
 
   private SampleContainer findContainer(Collection<SampleContainer> containers,
-      SampleContainer.Type type, long id) {
+      SampleContainerType type, long id) {
     for (SampleContainer container : containers) {
       if (container.getId() == id && container.getType() == type) {
         return container;
@@ -119,7 +120,7 @@ public class EnrichmentServiceImplTest {
     assertEquals(1, enrichedSamples.size());
     EnrichedSample enrichedSample = enrichedSamples.get(0);
     assertEquals((Long) 444L, enrichedSample.getSample().getId());
-    assertEquals(SampleContainer.Type.TUBE, enrichedSample.getContainer().getType());
+    assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
     assertEquals((Long) 4L, enrichedSample.getContainer().getId());
     assertEquals(null, enrichedSample.getComments());
   }
@@ -198,7 +199,7 @@ public class EnrichmentServiceImplTest {
     enrichedSample = enrichment.getTreatmentSamples().get(0);
     assertEquals("unit test", enrichedSample.getComments());
     assertEquals((Long) 1L, enrichedSample.getSample().getId());
-    assertEquals(SampleContainer.Type.TUBE, enrichedSample.getContainer().getType());
+    assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
     assertEquals((Long) 1L, enrichedSample.getContainer().getId());
   }
 
@@ -238,7 +239,7 @@ public class EnrichmentServiceImplTest {
     enrichedSample = enrichment.getTreatmentSamples().get(0);
     assertEquals("unit test", enrichedSample.getComments());
     assertEquals((Long) 1L, enrichedSample.getSample().getId());
-    assertEquals(SampleContainer.Type.SPOT, enrichedSample.getContainer().getType());
+    assertEquals(SampleContainerType.SPOT, enrichedSample.getContainer().getType());
     assertEquals((Long) 128L, enrichedSample.getContainer().getId());
   }
 
@@ -310,8 +311,8 @@ public class EnrichmentServiceImplTest {
     assertEquals(true, spot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 800L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 812L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 800L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 812L));
   }
 
   @Test
@@ -343,10 +344,10 @@ public class EnrichmentServiceImplTest {
     assertEquals(true, spot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 801L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 813L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 896L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 908L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 801L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 813L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 896L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 908L));
   }
 
   @Test
@@ -382,12 +383,12 @@ public class EnrichmentServiceImplTest {
     assertEquals(true, spot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 825L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 837L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 897L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 909L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 921L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 933L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 825L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 837L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 897L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 909L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 921L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 933L));
   }
 
   @Test
@@ -426,14 +427,14 @@ public class EnrichmentServiceImplTest {
     assertEquals(true, spot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 849L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 861L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 898L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 910L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 803L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 815L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 827L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 839L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 849L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 861L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 898L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 910L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 803L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 815L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 827L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 839L));
   }
 
   @Test
@@ -476,15 +477,15 @@ public class EnrichmentServiceImplTest {
     assertEquals(true, spot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 873L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 885L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 899L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 911L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 923L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 935L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 802L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 814L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 826L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 838L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 873L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 885L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 899L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 911L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 923L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 935L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 802L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 814L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 826L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 838L));
   }
 }

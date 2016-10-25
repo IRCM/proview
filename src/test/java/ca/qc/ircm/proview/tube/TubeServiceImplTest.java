@@ -24,8 +24,8 @@ import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -81,7 +81,7 @@ public class TubeServiceImplTest {
     assertEquals("FAM119A_band_01", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
     assertEquals(null, tube.getTreatmentSample());
-    assertEquals(SampleContainer.Type.TUBE, tube.getType());
+    assertEquals(SampleContainerType.TUBE, tube.getType());
     assertEquals(
         LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
         tube.getTimestamp());
@@ -103,7 +103,7 @@ public class TubeServiceImplTest {
     assertEquals("FAM119A_band_01", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
     assertEquals(null, tube.getTreatmentSample());
-    assertEquals(SampleContainer.Type.TUBE, tube.getType());
+    assertEquals(SampleContainerType.TUBE, tube.getType());
     assertEquals(
         LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
         tube.getTimestamp());
@@ -127,7 +127,7 @@ public class TubeServiceImplTest {
     assertEquals("FAM119A_band_01", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
     assertEquals(null, tube.getTreatmentSample());
-    assertEquals(SampleContainer.Type.TUBE, tube.getType());
+    assertEquals(SampleContainerType.TUBE, tube.getType());
     assertEquals(
         LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
         tube.getTimestamp());
@@ -151,7 +151,7 @@ public class TubeServiceImplTest {
     assertEquals("FAM119A_band_01_T1", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
     assertEquals((Long) 3L, tube.getTreatmentSample().getId());
-    assertEquals(SampleContainer.Type.TUBE, tube.getType());
+    assertEquals(SampleContainerType.TUBE, tube.getType());
     assertEquals(
         LocalDateTime.of(2011, 10, 19, 15, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         tube.getTimestamp());

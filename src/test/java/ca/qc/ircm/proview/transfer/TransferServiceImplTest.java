@@ -34,6 +34,7 @@ import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -91,7 +92,7 @@ public class TransferServiceImplTest {
   }
 
   private SampleContainer findContainer(Collection<SampleContainer> containers,
-      SampleContainer.Type type, long id) {
+      SampleContainerType type, long id) {
     for (SampleContainer container : containers) {
       if (container.getId() == id && container.getType() == type) {
         return container;
@@ -118,9 +119,9 @@ public class TransferServiceImplTest {
     SampleTransfer sampleTransfer = transfer.getTreatmentSamples().get(0);
     assertEquals((Long) 3L, sampleTransfer.getId());
     assertEquals((Long) 1L, sampleTransfer.getSample().getId());
-    assertEquals(SampleContainer.Type.TUBE, sampleTransfer.getContainer().getType());
+    assertEquals(SampleContainerType.TUBE, sampleTransfer.getContainer().getType());
     assertEquals((Long) 1L, sampleTransfer.getContainer().getId());
-    assertEquals(SampleContainer.Type.TUBE, sampleTransfer.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.TUBE, sampleTransfer.getDestinationContainer().getType());
     assertEquals((Long) 7L, sampleTransfer.getDestinationContainer().getId());
     assertEquals(null, sampleTransfer.getComments());
   }
@@ -187,9 +188,9 @@ public class TransferServiceImplTest {
     assertEquals(1, transfer.getTreatmentSamples().size());
     sampleTransfer = transfer.getTreatmentSamples().get(0);
     assertEquals((Long) 1L, sampleTransfer.getSample().getId());
-    assertEquals(SampleContainer.Type.TUBE, sampleTransfer.getContainer().getType());
+    assertEquals(SampleContainerType.TUBE, sampleTransfer.getContainer().getType());
     assertEquals((Long) 1L, sampleTransfer.getContainer().getId());
-    assertEquals(SampleContainer.Type.TUBE, sampleTransfer.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.TUBE, sampleTransfer.getDestinationContainer().getType());
     assertNotNull(destinationTube.getId());
     assertEquals(destinationTube.getId(), sampleTransfer.getDestinationContainer().getId());
     assertEquals(sampleTransfer.getId(),
@@ -229,9 +230,9 @@ public class TransferServiceImplTest {
     assertEquals(1, transfer.getTreatmentSamples().size());
     sampleTransfer = transfer.getTreatmentSamples().get(0);
     assertEquals((Long) 1L, sampleTransfer.getSample().getId());
-    assertEquals(SampleContainer.Type.TUBE, sampleTransfer.getContainer().getType());
+    assertEquals(SampleContainerType.TUBE, sampleTransfer.getContainer().getType());
     assertEquals((Long) 1L, sampleTransfer.getContainer().getId());
-    assertEquals(SampleContainer.Type.SPOT, sampleTransfer.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.SPOT, sampleTransfer.getDestinationContainer().getType());
     assertEquals((Long) 134L, sampleTransfer.getDestinationContainer().getId());
     assertEquals(sampleTransfer.getId(),
         sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
@@ -273,9 +274,9 @@ public class TransferServiceImplTest {
     assertEquals(1, transfer.getTreatmentSamples().size());
     sampleTransfer = transfer.getTreatmentSamples().get(0);
     assertEquals((Long) 1L, sampleTransfer.getSample().getId());
-    assertEquals(SampleContainer.Type.SPOT, sampleTransfer.getContainer().getType());
+    assertEquals(SampleContainerType.SPOT, sampleTransfer.getContainer().getType());
     assertEquals((Long) 128L, sampleTransfer.getContainer().getId());
-    assertEquals(SampleContainer.Type.TUBE, sampleTransfer.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.TUBE, sampleTransfer.getDestinationContainer().getType());
     assertNotNull(destinationTube.getId());
     assertEquals(destinationTube.getId(), sampleTransfer.getDestinationContainer().getId());
     assertEquals(sampleTransfer.getId(),
@@ -317,9 +318,9 @@ public class TransferServiceImplTest {
     assertEquals(1, transfer.getTreatmentSamples().size());
     sampleTransfer = transfer.getTreatmentSamples().get(0);
     assertEquals((Long) 1L, sampleTransfer.getSample().getId());
-    assertEquals(SampleContainer.Type.SPOT, sampleTransfer.getContainer().getType());
+    assertEquals(SampleContainerType.SPOT, sampleTransfer.getContainer().getType());
     assertEquals((Long) 128L, sampleTransfer.getContainer().getId());
-    assertEquals(SampleContainer.Type.SPOT, sampleTransfer.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.SPOT, sampleTransfer.getDestinationContainer().getType());
     assertEquals((Long) 134L, sampleTransfer.getDestinationContainer().getId());
     assertEquals(sampleTransfer.getId(),
         sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
@@ -355,7 +356,7 @@ public class TransferServiceImplTest {
     assertNull(destinationTube.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(1, samplesRemoved.size());
-    assertNotNull(findContainer(samplesRemoved, SampleContainer.Type.TUBE, 7L));
+    assertNotNull(findContainer(samplesRemoved, SampleContainerType.TUBE, 7L));
   }
 
   @Test
@@ -388,8 +389,8 @@ public class TransferServiceImplTest {
     assertNull(destinationSpot.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(2, samplesRemoved.size());
-    assertNotNull(findContainer(samplesRemoved, SampleContainer.Type.SPOT, 998L));
-    assertNotNull(findContainer(samplesRemoved, SampleContainer.Type.SPOT, 1010L));
+    assertNotNull(findContainer(samplesRemoved, SampleContainerType.SPOT, 998L));
+    assertNotNull(findContainer(samplesRemoved, SampleContainerType.SPOT, 1010L));
   }
 
   @Test
@@ -402,7 +403,7 @@ public class TransferServiceImplTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainer.Type.TUBE, 65L));
+      assertNotNull(findContainer(e.containers, SampleContainerType.TUBE, 65L));
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -417,7 +418,7 @@ public class TransferServiceImplTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainer.Type.TUBE, 66L));
+      assertNotNull(findContainer(e.containers, SampleContainerType.TUBE, 66L));
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -432,7 +433,7 @@ public class TransferServiceImplTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainer.Type.SPOT, 1076L));
+      assertNotNull(findContainer(e.containers, SampleContainerType.SPOT, 1076L));
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -447,7 +448,7 @@ public class TransferServiceImplTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainer.Type.SPOT, 1077));
+      assertNotNull(findContainer(e.containers, SampleContainerType.SPOT, 1077));
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -527,7 +528,7 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationTube.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(1, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 7L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 7L));
   }
 
   @Test
@@ -555,8 +556,8 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationSpot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 998L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1010L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 998L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1010L));
   }
 
   @Test
@@ -586,9 +587,9 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationSpot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 67L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 75L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1208L));
+    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 67L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 75L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1208L));
   }
 
   @Test
@@ -618,9 +619,9 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationSpot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 68L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1184L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1160L));
+    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 68L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1184L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1160L));
   }
 
   @Test
@@ -652,10 +653,10 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationSpot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(3, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 69L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 76L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1188L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1200L));
+    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 69L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 76L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1188L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1200L));
   }
 
   @Test
@@ -687,10 +688,10 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationSpot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(3, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 70L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1185L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1161L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1173L));
+    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 70L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1185L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1161L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1173L));
   }
 
   @Test
@@ -724,11 +725,11 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationSpot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 71L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 77L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1189L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1163L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1175L));
+    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 71L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 77L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1189L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1163L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1175L));
   }
 
   @Test
@@ -762,11 +763,11 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationSpot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 72L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1186L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1162L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1190L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1202L));
+    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 72L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1186L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1162L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1190L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1202L));
   }
 
   @Test
@@ -802,12 +803,12 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationSpot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(5, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 73L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 78L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1191L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1203L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1165L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1177L));
+    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 73L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 78L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1191L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1203L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1165L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1177L));
   }
 
   @Test
@@ -840,10 +841,10 @@ public class TransferServiceImplTest {
     assertEquals(true, destinationSpot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(5, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 74L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1164L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1176L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1192L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 1204L));
+    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 74L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1164L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1176L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1192L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1204L));
   }
 }

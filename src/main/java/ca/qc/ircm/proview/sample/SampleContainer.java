@@ -49,13 +49,6 @@ public abstract class SampleContainer implements Data, Named, Serializable {
   private static final long serialVersionUID = -2976707906426974263L;
 
   /**
-   * Type of {@link SampleContainer}.
-   */
-  public static enum Type {
-    TUBE, SPOT;
-  }
-
-  /**
    * Database identifier.
    */
   @Id
@@ -97,7 +90,7 @@ public abstract class SampleContainer implements Data, Named, Serializable {
    *
    * @return sample's container type
    */
-  public abstract Type getType();
+  public abstract SampleContainerType getType();
 
   @Override
   public Long getId() {

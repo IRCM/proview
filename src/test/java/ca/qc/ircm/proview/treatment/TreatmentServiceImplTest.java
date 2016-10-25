@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.fractionation.FractionationDetail;
-import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
@@ -75,7 +75,7 @@ public class TreatmentServiceImplTest {
     assertEquals(1, solubilisedSamples.size());
     SolubilisedSample solubilisedSample = solubilisedSamples.get(0);
     assertEquals((Long) 1L, solubilisedSample.getSample().getId());
-    assertEquals(SampleContainer.Type.TUBE, solubilisedSample.getContainer().getType());
+    assertEquals(SampleContainerType.TUBE, solubilisedSample.getContainer().getType());
     assertEquals((Long) 1L, solubilisedSample.getContainer().getId());
     assertEquals(null, solubilisedSample.getComments());
     assertEquals("Methanol", solubilisedSample.getSolvent());
@@ -101,9 +101,9 @@ public class TreatmentServiceImplTest {
     assertEquals(Fractionation.FractionationType.MUDPIT, fractionation.getFractionationType());
     FractionationDetail fractionationDetail = fractionation.getTreatmentSamples().get(0);
     assertEquals((Long) 2L, fractionationDetail.getId());
-    assertEquals(SampleContainer.Type.TUBE, fractionationDetail.getContainer().getType());
+    assertEquals(SampleContainerType.TUBE, fractionationDetail.getContainer().getType());
     assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
-    assertEquals(SampleContainer.Type.TUBE,
+    assertEquals(SampleContainerType.TUBE,
         fractionationDetail.getDestinationContainer().getType());
     assertEquals((Long) 6L, fractionationDetail.getDestinationContainer().getId());
     assertEquals(null, fractionationDetail.getComments());

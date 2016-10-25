@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -90,7 +91,7 @@ public class DigestionServiceImplTest {
   }
 
   private SampleContainer findContainer(Collection<SampleContainer> containers,
-      SampleContainer.Type type, long id) {
+      SampleContainerType type, long id) {
     for (SampleContainer container : containers) {
       if (container.getId() == id && container.getType() == type) {
         return container;
@@ -118,7 +119,7 @@ public class DigestionServiceImplTest {
     assertEquals(1, digestedSamples.size());
     DigestedSample digestedSample = digestedSamples.get(0);
     assertEquals((Long) 444L, digestedSample.getSample().getId());
-    assertEquals(SampleContainer.Type.TUBE, digestedSample.getContainer().getType());
+    assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
     assertEquals((Long) 4L, digestedSample.getContainer().getId());
     assertEquals(null, digestedSample.getComments());
   }
@@ -197,7 +198,7 @@ public class DigestionServiceImplTest {
     digestedSample = digestion.getTreatmentSamples().get(0);
     assertEquals("unit test", digestedSample.getComments());
     assertEquals((Long) 1L, digestedSample.getSample().getId());
-    assertEquals(SampleContainer.Type.TUBE, digestedSample.getContainer().getType());
+    assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
     assertEquals((Long) 1L, digestedSample.getContainer().getId());
   }
 
@@ -237,7 +238,7 @@ public class DigestionServiceImplTest {
     digestedSample = digestion.getTreatmentSamples().get(0);
     assertEquals("unit test", digestedSample.getComments());
     assertEquals((Long) 1L, digestedSample.getSample().getId());
-    assertEquals(SampleContainer.Type.SPOT, digestedSample.getContainer().getType());
+    assertEquals(SampleContainerType.SPOT, digestedSample.getContainer().getType());
     assertEquals((Long) 128L, digestedSample.getContainer().getId());
   }
 
@@ -311,8 +312,8 @@ public class DigestionServiceImplTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 224L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 236L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 224L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 236L));
   }
 
   @Test
@@ -345,10 +346,10 @@ public class DigestionServiceImplTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 13L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 14L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 320L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 332L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 13L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 14L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 320L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 332L));
   }
 
   @Test
@@ -385,12 +386,12 @@ public class DigestionServiceImplTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 15L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 16L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 322L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 334L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 346L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 358L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 15L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 16L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 322L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 334L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 346L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 358L));
   }
 
   @Test
@@ -432,14 +433,14 @@ public class DigestionServiceImplTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 17L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 18L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 321L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 333L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 416L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 428L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 440L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 452L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 17L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 18L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 321L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 333L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 416L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 428L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 440L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 452L));
   }
 
   @Test
@@ -485,16 +486,16 @@ public class DigestionServiceImplTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 19L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 20L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 323L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 335L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 347L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 359L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 417L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 429L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 441L));
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.SPOT, 453L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 19L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 20L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 323L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 335L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 347L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 359L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 417L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 429L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 441L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 453L));
   }
 
   @Test
@@ -524,6 +525,6 @@ public class DigestionServiceImplTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(1, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainer.Type.TUBE, 2279L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 2279L));
   }
 }

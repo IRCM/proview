@@ -48,9 +48,12 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextField toxicityField;
   protected CheckBox lightSensitiveField;
   protected OptionGroup storageTemperatureOptions;
-  protected HorizontalLayout sampleNamesLayout;
-  protected Table sampleNamesTable;
-  protected Button fillSampleNamesButton;
+  protected OptionGroup sampleContainerTypeOptions;
+  protected Label samplesLabel;
+  protected HorizontalLayout samplesTableLayout;
+  protected Table samplesTable;
+  protected Button fillSamplesButton;
+  protected VerticalLayout samplesPlateContainer;
   protected Panel experiencePanel;
   protected TextField experienceField;
   protected TextField experienceGoalField;

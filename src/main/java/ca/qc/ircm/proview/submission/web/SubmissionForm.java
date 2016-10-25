@@ -45,6 +45,7 @@ import static ca.qc.ircm.proview.submission.StorageTemperature.MEDIUM;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
+import ca.qc.ircm.proview.plate.web.PlateLayout;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleSupport;
@@ -54,14 +55,9 @@ import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
-import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Notification;
 import pl.exsio.plupload.Plupload;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Submission form.
@@ -91,7 +87,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   private SubmissionFormPresenter presenter;
   protected Plupload structureUploader;
   protected Plupload gelImagesUploader;
-  protected Map<Solvent, CheckBox> solventsFields = new HashMap<Solvent, CheckBox>();
+  protected PlateLayout samplesPlateLayout = new PlateLayout();
 
   public void setPresenter(SubmissionFormPresenter presenter) {
     this.presenter = presenter;
@@ -105,10 +101,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     gelImagesUploader = new Plupload();
     structureUploaderLayout.addComponent(structureUploader);
     gelImagesUploaderLayout.addComponent(gelImagesUploader);
-    solventsFields.put(Solvent.ACETONITRILE, acetonitrileSolventsField);
-    solventsFields.put(Solvent.METHANOL, methanolSolventsField);
-    solventsFields.put(Solvent.CHCL3, chclSolventsField);
-    solventsFields.put(Solvent.OTHER, otherSolventsField);
+    samplesPlateContainer.addComponent(samplesPlateLayout);
   }
 
   @Override

@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.plate;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerType;
 
 import java.io.Serializable;
 
@@ -90,8 +91,8 @@ public class PlateSpot extends SampleContainer implements Data, Named, Serializa
   }
 
   @Override
-  public SampleContainer.Type getType() {
-    return SampleContainer.Type.SPOT;
+  public SampleContainerType getType() {
+    return SampleContainerType.SPOT;
   }
 
   public Plate getPlate() {
