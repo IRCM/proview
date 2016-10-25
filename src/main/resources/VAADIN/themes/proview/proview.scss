@@ -111,22 +111,6 @@
     box-shadow: none;
   }
 
-  // Show option as disabled for flexible option group.  
-	.v-flexibleoptiongroupitemcomponent.v-disabled .v-radiobutton-disabled > label {
-		cursor: default;
-		opacity: 0.5;
-		filter: alpha(opacity=50);
-	}
-  // Fixes height of elements in flexible option group.
-  .v-flexibleoptiongroupitemcomponent-flexible-option {
-    margin-top: 9px;
-  	height: 27px;
-  }
-  .v-checkbox-flexible-option {
-    margin-top: 9px;
-  	height: 27px;
-  }
-
   // Hides default grid selection.
   .v-grid-hide-selection {
     td:first-child,th:first-child {
