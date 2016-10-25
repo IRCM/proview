@@ -142,6 +142,38 @@
     height: 45px;
     line-height: 45px;
   }
+  
+  // Plate.
+  .v-layout.plate-header, .v-layout.plate-well, .v-ddwrapper.plate-well {
+    width: 100%;
+    height: 100%;
+  }
+  .v-layout.plate-header, .v-layout.plate-well {
+    padding: 3px;
+    border: valo-border($border: $v-panel-border, $color: darkest-color($v-panel-background-color, $v-app-background-color), $strength: 0.7);
+    @if $v-table-border-radius > 0 {
+      border-radius: $v-table-border-radius;
+    }
+  }
+  .v-layout.plate-header {
+    @include valo-gradient($v-background-color);
+  }
+  .v-layout.plate-header-column {
+    border-left: none;
+  }
+  .v-layout.plate-header-row {
+    border-top: none;
+  }
+  .v-label-plate-header {
+    font-size: $v-table-header-font-size;
+  }
+  .v-layout.plate-well {
+    border-left: none;
+    border-top: none;
+  }
+  .v-layout.plate-well.selected {
+    background-color: $v-selection-color;
+  }
 
   // Instant filter.
   .filter-instant .v-popupbutton {
