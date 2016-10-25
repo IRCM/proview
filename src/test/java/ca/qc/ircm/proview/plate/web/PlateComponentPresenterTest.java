@@ -3,8 +3,8 @@ package ca.qc.ircm.proview.plate.web;
 import static ca.qc.ircm.proview.plate.web.PlateComponentPresenter.SELECTED_STYLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,13 +29,15 @@ public class PlateComponentPresenterTest {
   private int columns = Plate.Type.A.getColumnCount();
   private int rows = Plate.Type.A.getRowCount();
 
+  /**
+   * Before test.
+   */
   @Before
   public void beforeTest() {
     initPlate();
     presenter = new PlateComponentPresenter();
     view.setPresenter(presenter);
     presenter.setPlate(plate);
-    presenter.init(view);
   }
 
   private void initPlate() {
@@ -48,6 +51,7 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void selectWell() {
+    presenter.init(view);
     PlateSpot spot = plate.spot(0, 0);
 
     presenter.selectWell(spot);
@@ -60,6 +64,7 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void deselectWell() {
+    presenter.init(view);
     PlateSpot spot = plate.spot(0, 0);
     presenter.selectWell(spot);
 
@@ -72,6 +77,7 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void deselectAllWells() {
+    presenter.init(view);
     presenter.setMultiSelect(true);
     PlateSpot spot1 = plate.spot(0, 0);
     presenter.selectWell(spot1);
@@ -89,6 +95,7 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void selectColumn_Multi() {
+    presenter.init(view);
     presenter.setMultiSelect(true);
     int column = 0;
 
@@ -105,6 +112,7 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void selectColumn_NotMulti() {
+    presenter.init(view);
     int column = 0;
 
     presenter.selectColumn(column);
@@ -117,10 +125,12 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void deselectColumn_Multi() {
+    presenter.init(view);
+    presenter.setMultiSelect(true);
     int column = 0;
     presenter.selectWell(plate.spot(0, column));
 
-    presenter.selectColumn(column);
+    presenter.deselectColumn(column);
 
     for (int row = 0; row < rows; row++) {
       assertFalse(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
@@ -130,10 +140,11 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void deselectColumn_NotMulti() {
+    presenter.init(view);
     int column = 0;
     presenter.selectWell(plate.spot(0, column));
 
-    presenter.selectColumn(column);
+    presenter.deselectColumn(column);
 
     assertTrue(view.plateLayout.getWellStyleName(column, 0).contains(SELECTED_STYLE));
     for (int row = 1; row < rows; row++) {
@@ -145,6 +156,7 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void selectRow_Multi() {
+    presenter.init(view);
     presenter.setMultiSelect(true);
     int row = 0;
 
@@ -153,7 +165,7 @@ public class PlateComponentPresenterTest {
     for (int column = 0; column < columns; column++) {
       assertTrue(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
     }
-    assertEquals(rows, presenter.getSelectedSpots().size());
+    assertEquals(columns, presenter.getSelectedSpots().size());
     for (int column = 0; column < columns; column++) {
       assertTrue(presenter.getSelectedSpots().contains(plate.spot(row, column)));
     }
@@ -161,6 +173,7 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void selectRow_NotMulti() {
+    presenter.init(view);
     int row = 0;
 
     presenter.selectRow(row);
@@ -173,10 +186,12 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void deselectRow_Multi() {
+    presenter.init(view);
+    presenter.setMultiSelect(true);
     int row = 0;
     presenter.selectWell(plate.spot(row, 0));
 
-    presenter.selectRow(row);
+    presenter.deselectRow(row);
 
     for (int column = 0; column < columns; column++) {
       assertFalse(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
@@ -186,10 +201,11 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void deselectRow_NotNulti() {
+    presenter.init(view);
     int row = 0;
     presenter.selectWell(plate.spot(row, 0));
 
-    presenter.selectRow(row);
+    presenter.deselectRow(row);
 
     assertTrue(view.plateLayout.getWellStyleName(0, row).contains(SELECTED_STYLE));
     for (int column = 1; column < columns; column++) {
@@ -201,6 +217,8 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void isMultiSelect() {
+    presenter.init(view);
+
     assertFalse(presenter.isMultiSelect());
 
     presenter.setMultiSelect(true);
@@ -212,6 +230,8 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void setMultiSelect() {
+    presenter.init(view);
+
     presenter.setMultiSelect(true);
 
     PlateSpot spot1 = plate.spot(0, 0);
@@ -229,6 +249,7 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void getSelectedSpots_Multi() {
+    presenter.init(view);
     presenter.setMultiSelect(true);
     PlateSpot spot1 = plate.spot(0, 0);
     presenter.selectWell(spot1);
@@ -244,6 +265,7 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void getSelectedSpots_NotMulti() {
+    presenter.init(view);
     PlateSpot spot1 = plate.spot(0, 0);
     presenter.selectWell(spot1);
     PlateSpot spot2 = plate.spot(1, 1);
@@ -257,17 +279,63 @@ public class PlateComponentPresenterTest {
   }
 
   @Test
-  public void setSelectedSpots() {
-    fail("Program test");
+  public void setSelectedSpots_Multi() {
+    presenter.init(view);
+    presenter.setMultiSelect(true);
+    PlateSpot spot1 = plate.spot(0, 0);
+    PlateSpot spot2 = plate.spot(1, 1);
+    List<PlateSpot> spots = new ArrayList<>();
+    spots.add(spot1);
+    spots.add(spot2);
+
+    presenter.setSelectedSpots(spots);
+
+    Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
+    assertEquals(2, selectedSpots.size());
+    assertTrue(selectedSpots.contains(spot1));
+    assertTrue(selectedSpots.contains(spot2));
+    assertTrue(view.plateLayout.getWellStyleName(spot1.getColumn(), spot1.getRow())
+        .contains(SELECTED_STYLE));
+    assertTrue(view.plateLayout.getWellStyleName(spot2.getColumn(), spot2.getRow())
+        .contains(SELECTED_STYLE));
+  }
+
+  @Test
+  public void setSelectedSpots_NotMulti() {
+    presenter.init(view);
+    PlateSpot spot1 = plate.spot(0, 0);
+    PlateSpot spot2 = plate.spot(1, 1);
+    List<PlateSpot> spots = new ArrayList<>();
+    spots.add(spot1);
+    spots.add(spot2);
+
+    presenter.setSelectedSpots(spots);
+
+    Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
+    assertEquals(1, selectedSpots.size());
+    assertFalse(selectedSpots.contains(spot1));
+    assertTrue(selectedSpots.contains(spot2));
+    assertFalse(view.plateLayout.getWellStyleName(spot1.getColumn(), spot1.getRow())
+        .contains(SELECTED_STYLE));
+    assertTrue(view.plateLayout.getWellStyleName(spot2.getColumn(), spot2.getRow())
+        .contains(SELECTED_STYLE));
   }
 
   @Test
   public void getPlate() {
-    fail("Program test");
+    presenter.init(view);
+
+    assertSame(plate, presenter.getPlate());
   }
 
   @Test
   public void setPlate() {
-    fail("Program test");
+    initPlate();
+    presenter.setPlate(plate);
+    presenter.init(view);
+
+    presenter.setPlate(plate);
+
+    assertSame(plate, presenter.getPlate());
   }
 }

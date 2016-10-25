@@ -22,7 +22,7 @@ public class PlateView extends PlateViewDesign implements MessageResourcesView {
   private static final long serialVersionUID = -7006664525905554582L;
   private Menu menu = new Menu();
   private PlateLayout plateLayout = new PlateLayout(12, 8);
-  private PlateComponent plateComponent;
+  private PlateComponent plateComponent = new PlateComponent();
   @Inject
   private PlateService plateService;
   @Inject
@@ -38,8 +38,10 @@ public class PlateView extends PlateViewDesign implements MessageResourcesView {
   @Override
   public void attach() {
     Plate plate = plateService.get(1L);
-    plateComponent = new PlateComponent();
+    plateComponentPresenter.setPlate(plate);
+    plateComponentPresenter.setMultiSelect(true);
     plateComponent.setPresenter(plateComponentPresenter);
+    super.attach();
     plateComponentPanel.setCaption(plate.getName());
     plateComponentPanel.setContent(plateComponent);
   }

@@ -213,7 +213,8 @@ public class PlateComponentPresenter {
   }
 
   public void setSelectedSpots(Collection<PlateSpot> selectedSpots) {
-    this.selectedSpots = new HashSet<>(selectedSpots);
+    new ArrayList<>(this.selectedSpots).forEach(spot -> deselectWell(spot));
+    selectedSpots.forEach(spot -> selectWell(spot));
   }
 
   public Plate getPlate() {
