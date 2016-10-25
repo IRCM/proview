@@ -67,7 +67,7 @@
     <loginform.version>0.6.2</loginform.version>
     <popupbutton.version>2.6.0</popupbutton.version>
     <componentrenderer.version>1.0.2</componentrenderer.version>
-    <plupload-vaadin.version>2.0.0</plupload-vaadin.version>
+    <plupload-vaadin.version>2.1.0</plupload-vaadin.version>
     <guava.version>19.0</guava.version>
     <commons-lang3.version>3.4</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
