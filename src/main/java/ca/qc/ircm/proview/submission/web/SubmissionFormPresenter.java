@@ -963,7 +963,8 @@ public class SubmissionFormPresenter {
     view.structureLayout.setVisible(service == SMALL_MOLECULE);
     view.structureUploader.setVisible(service == SMALL_MOLECULE && editable);
     view.structureButton
-        .setVisible(service == SMALL_MOLECULE && view.structureButton.getCaption() != null);
+        .setVisible(service == SMALL_MOLECULE && view.structureButton.getCaption() != null
+            && !view.structureButton.getCaption().isEmpty());
     view.monoisotopicMassField.setVisible(service == SMALL_MOLECULE);
     view.averageMassField.setVisible(service == SMALL_MOLECULE);
     view.toxicityField.setVisible(service == SMALL_MOLECULE);

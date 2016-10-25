@@ -1549,6 +1549,7 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
+    uploadStructure();
 
     assertTrue(view.serviceOptions.isVisible());
     assertTrue(view.sampleSupportOptions.isVisible());
@@ -1618,11 +1619,86 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void visible_Smallmolecule_Solution_NoStructure() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+    view.sampleSupportOptions.setValue(support);
+
+    assertTrue(view.serviceOptions.isVisible());
+    assertTrue(view.sampleSupportOptions.isVisible());
+    assertTrue(view.solutionSolventField.isVisible());
+    assertFalse(view.sampleCountField.isVisible());
+    assertTrue(view.sampleNameField.isVisible());
+    assertTrue(view.formulaField.isVisible());
+    assertTrue(view.structureLayout.isVisible());
+    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
+    assertFalse(view.structureButton.isVisible());
+    assertTrue(view.monoisotopicMassField.isVisible());
+    assertTrue(view.averageMassField.isVisible());
+    assertTrue(view.toxicityField.isVisible());
+    assertTrue(view.lightSensitiveField.isVisible());
+    assertTrue(view.storageTemperatureOptions.isVisible());
+    assertFalse(view.sampleNamesLayout.isVisible());
+    assertFalse(view.sampleNamesTable.isVisible());
+    assertFalse(view.fillSampleNamesButton.isVisible());
+    assertFalse(view.experienceField.isVisible());
+    assertFalse(view.experienceGoalField.isVisible());
+    assertFalse(view.taxonomyField.isVisible());
+    assertFalse(view.proteinNameField.isVisible());
+    assertFalse(view.proteinWeightField.isVisible());
+    assertFalse(view.postTranslationModificationField.isVisible());
+    assertFalse(view.sampleQuantityField.isVisible());
+    assertFalse(view.sampleVolumeField.isVisible());
+    assertFalse(view.standardsPanel.isVisible());
+    assertFalse(view.standardCountField.isVisible());
+    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.fillStandardsButton.isVisible());
+    assertFalse(view.contaminantsPanel.isVisible());
+    assertFalse(view.contaminantCountField.isVisible());
+    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.fillContaminantsButton.isVisible());
+    assertFalse(view.separationField.isVisible());
+    assertFalse(view.thicknessField.isVisible());
+    assertFalse(view.colorationField.isVisible());
+    assertFalse(view.otherColorationField.isVisible());
+    assertFalse(view.developmentTimeField.isVisible());
+    assertFalse(view.decolorationField.isVisible());
+    assertFalse(view.weightMarkerQuantityField.isVisible());
+    assertFalse(view.proteinQuantityField.isVisible());
+    assertFalse(view.gelImagesLayout.isVisible());
+    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.digestionOptions.isVisible());
+    assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
+    assertFalse(view.enrichmentLabel.isVisible());
+    assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.sampleNumberProteinField.isVisible());
+    assertFalse(view.sourceOptions.isVisible());
+    assertFalse(view.instrumentOptions.isVisible());
+    assertFalse(view.proteinIdentificationOptions.isVisible());
+    assertFalse(view.proteinIdentificationLinkField.isVisible());
+    assertFalse(view.quantificationOptions.isVisible());
+    assertFalse(view.quantificationLabelsField.isVisible());
+    assertTrue(view.highResolutionOptions.isVisible());
+    assertTrue(view.acetonitrileSolventsField.isVisible());
+    assertTrue(view.methanolSolventsField.isVisible());
+    assertTrue(view.chclSolventsField.isVisible());
+    assertTrue(view.otherSolventsField.isVisible());
+    assertTrue(view.otherSolventField.isVisible());
+  }
+
+  @Test
   public void visible_Smallmolecule_Dry() {
     presenter.init(view);
     presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(DRY);
+    uploadStructure();
 
     assertTrue(view.serviceOptions.isVisible());
     assertTrue(view.sampleSupportOptions.isVisible());
