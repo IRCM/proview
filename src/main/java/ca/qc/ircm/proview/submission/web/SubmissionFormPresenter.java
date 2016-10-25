@@ -249,7 +249,6 @@ public class SubmissionFormPresenter {
   public static final int NULL_ID = -1;
   public static final String EXAMPLE = "example";
   public static final String FILL_BUTTON_STYLE = "skip-row";
-  public static final String FLEXIBLE_OPTION_STYLE = "flexible-option";
   public static final String FORM_CAPTION_STYLE = "formcaption";
   public static final String CLICKABLE_STYLE = "clickable";
   public static final String HIDE_REQUIRED_STYLE = "hide-required";
@@ -398,13 +397,9 @@ public class SubmissionFormPresenter {
     view.solventsLayout.addStyleName(REQUIRED);
     view.acetonitrileSolventsField
         .addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.ACETONITRILE.name());
-    view.acetonitrileSolventsField.addStyleName(FLEXIBLE_OPTION_STYLE);
     view.methanolSolventsField.addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.METHANOL.name());
-    view.methanolSolventsField.addStyleName(FLEXIBLE_OPTION_STYLE);
     view.chclSolventsField.addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.CHCL3.name());
-    view.chclSolventsField.addStyleName(FLEXIBLE_OPTION_STYLE);
     view.otherSolventsField.addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.OTHER.name());
-    view.otherSolventsField.addStyleName(FLEXIBLE_OPTION_STYLE);
     view.otherSolventField.addStyleName(OTHER_SOLVENT_PROPERTY);
     view.otherSolventField.addStyleName(ValoTheme.TEXTFIELD_SMALL);
     view.otherSolventNoteLabel.addStyleName(OTHER_SOLVENT_NOTE);
@@ -802,6 +797,7 @@ public class SubmissionFormPresenter {
     }
     view.highResolutionOptions.setRequired(true);
     view.highResolutionOptions.setRequiredError(generalResources.message(REQUIRED));
+    view.otherSolventField.setRequired(true);
     view.otherSolventField.setRequiredError(generalResources.message(REQUIRED));
   }
 
@@ -845,8 +841,7 @@ public class SubmissionFormPresenter {
     view.proteinIdentificationOptions.addValueChangeListener(e -> updateVisible());
     view.quantificationOptions.addValueChangeListener(e -> view.quantificationLabelsField
         .setRequired(view.quantificationOptions.getValue() == SILAC));
-    view.otherSolventsField.addValueChangeListener(
-        e -> view.otherSolventField.setRequired(view.otherSolventsField.getValue()));
+    view.otherSolventsField.addValueChangeListener(e -> updateVisible());
     view.submitButton.addClickListener(e -> saveSubmission());
   }
 
@@ -1037,7 +1032,10 @@ public class SubmissionFormPresenter {
     view.methanolSolventsField.setVisible(service == SMALL_MOLECULE);
     view.chclSolventsField.setVisible(service == SMALL_MOLECULE);
     view.otherSolventsField.setVisible(service == SMALL_MOLECULE);
-    view.otherSolventField.setVisible(service == SMALL_MOLECULE);
+    view.otherSolventField
+        .setVisible(service == SMALL_MOLECULE && view.otherSolventsField.getValue());
+    view.otherSolventNoteLabel
+        .setVisible(service == SMALL_MOLECULE && view.otherSolventsField.getValue());
     view.buttonsLayout.setVisible(editable);
     bindVisibleFields();
   }

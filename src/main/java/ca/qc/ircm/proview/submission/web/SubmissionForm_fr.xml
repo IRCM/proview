@@ -114,7 +114,7 @@ Léger: Aucun</entry>
   <entry key="highResolution.true">Mesure de masse précise</entry>
   <entry key="solvents">Soluble dans</entry>
   <entry key="solvents.required">Soluble dans ne peut pas être vide</entry>
-  <entry key="otherSolvent">- spécifier autre solvent</entry>
+  <entry key="otherSolvent">Spécifier autre solvent</entry>
   <entry key="otherSolvent.note">(DMSO n''est pas compatible avec l''analyse MS)</entry>
   <entry key="commentsPanel">Commentaires</entry>
   <entry key="submit">Soumettre</entry>

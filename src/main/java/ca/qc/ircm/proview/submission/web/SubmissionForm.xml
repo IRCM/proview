@@ -116,7 +116,7 @@ Light: None</entry>
   <entry key="highResolution.true">Accurate mass measurement</entry>
   <entry key="solvents">Soluble in</entry>
   <entry key="solvents.required">Soluble in may not be empty</entry>
-  <entry key="otherSolvent">- specify other solvent</entry>
+  <entry key="otherSolvent">Specify other solvent</entry>
   <entry key="otherSolvent.note">(DMSO is not compatible with MS analysis)</entry>
   <entry key="commentsPanel">Comments</entry>
   <entry key="submit">Submit</entry>

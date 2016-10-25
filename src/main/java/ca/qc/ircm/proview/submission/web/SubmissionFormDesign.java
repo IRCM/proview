@@ -102,7 +102,6 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected CheckBox acetonitrileSolventsField;
   protected CheckBox methanolSolventsField;
   protected CheckBox chclSolventsField;
-  protected HorizontalLayout otherSolventLayout;
   protected CheckBox otherSolventsField;
   protected TextField otherSolventField;
   protected Label otherSolventNoteLabel;

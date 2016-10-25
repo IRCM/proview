@@ -294,7 +294,6 @@ public class SubmissionFormPresenterTest {
   private CheckBox acetonitrileSolventsField = new CheckBox();
   private CheckBox methanolSolventsField = new CheckBox();
   private CheckBox chclSolventsField = new CheckBox();
-  private HorizontalLayout otherSolventLayout = new HorizontalLayout();
   private CheckBox otherSolventsField = new CheckBox();
   private TextField otherSolventField = new TextField();
   private Label otherSolventNoteLabel = new Label();
@@ -464,7 +463,6 @@ public class SubmissionFormPresenterTest {
     view.acetonitrileSolventsField = acetonitrileSolventsField;
     view.methanolSolventsField = methanolSolventsField;
     view.chclSolventsField = chclSolventsField;
-    view.otherSolventLayout = otherSolventLayout;
     view.otherSolventsField = otherSolventsField;
     view.otherSolventField = otherSolventField;
     view.solventsFields = new HashMap<>();
@@ -821,7 +819,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.methanolSolventsField.isRequired());
     assertFalse(view.chclSolventsField.isRequired());
     assertFalse(view.otherSolventsField.isRequired());
-    assertFalse(view.otherSolventField.isRequired());
+    assertTrue(view.otherSolventField.isRequired());
     assertEquals(generalResources.message(REQUIRED), view.otherSolventField.getRequiredError());
   }
 
@@ -985,17 +983,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.quantificationLabelsField.isRequired());
     view.quantificationOptions.setValue(Quantification.SILAC);
     assertTrue(view.quantificationLabelsField.isRequired());
-  }
-
-  @Test
-  public void solvents_RequiredText() {
-    presenter.init(view);
-    presenter.setEditable(true);
-
-    view.otherSolventsField.setValue(false);
-    assertFalse(view.otherSolventField.isRequired());
-    view.otherSolventsField.setValue(true);
-    assertTrue(view.otherSolventField.isRequired());
   }
 
   @Test
@@ -1356,6 +1343,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.chclSolventsField.isVisible());
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
+    assertFalse(view.otherSolventNoteLabel.isVisible());
   }
 
   @Test
@@ -1455,6 +1443,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.chclSolventsField.isVisible());
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
+    assertFalse(view.otherSolventNoteLabel.isVisible());
   }
 
   @Test
@@ -1529,6 +1518,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.chclSolventsField.isVisible());
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
+    assertFalse(view.otherSolventNoteLabel.isVisible());
   }
 
   @Test
@@ -1615,7 +1605,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.methanolSolventsField.isVisible());
     assertTrue(view.chclSolventsField.isVisible());
     assertTrue(view.otherSolventsField.isVisible());
-    assertTrue(view.otherSolventField.isVisible());
+    assertFalse(view.otherSolventField.isVisible());
+    assertFalse(view.otherSolventNoteLabel.isVisible());
   }
 
   @Test
@@ -1624,72 +1615,22 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
+    view.otherSolventsField.setValue(true);
 
-    assertTrue(view.serviceOptions.isVisible());
-    assertTrue(view.sampleSupportOptions.isVisible());
-    assertTrue(view.solutionSolventField.isVisible());
-    assertFalse(view.sampleCountField.isVisible());
-    assertTrue(view.sampleNameField.isVisible());
-    assertTrue(view.formulaField.isVisible());
-    assertTrue(view.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
     assertFalse(view.structureButton.isVisible());
-    assertTrue(view.monoisotopicMassField.isVisible());
-    assertTrue(view.averageMassField.isVisible());
-    assertTrue(view.toxicityField.isVisible());
-    assertTrue(view.lightSensitiveField.isVisible());
-    assertTrue(view.storageTemperatureOptions.isVisible());
-    assertFalse(view.sampleNamesLayout.isVisible());
-    assertFalse(view.sampleNamesTable.isVisible());
-    assertFalse(view.fillSampleNamesButton.isVisible());
-    assertFalse(view.experienceField.isVisible());
-    assertFalse(view.experienceGoalField.isVisible());
-    assertFalse(view.taxonomyField.isVisible());
-    assertFalse(view.proteinNameField.isVisible());
-    assertFalse(view.proteinWeightField.isVisible());
-    assertFalse(view.postTranslationModificationField.isVisible());
-    assertFalse(view.sampleQuantityField.isVisible());
-    assertFalse(view.sampleVolumeField.isVisible());
-    assertFalse(view.standardsPanel.isVisible());
-    assertFalse(view.standardCountField.isVisible());
-    assertFalse(view.standardsTable.isVisible());
-    assertFalse(view.fillStandardsButton.isVisible());
-    assertFalse(view.contaminantsPanel.isVisible());
-    assertFalse(view.contaminantCountField.isVisible());
-    assertFalse(view.contaminantsTable.isVisible());
-    assertFalse(view.fillContaminantsButton.isVisible());
-    assertFalse(view.separationField.isVisible());
-    assertFalse(view.thicknessField.isVisible());
-    assertFalse(view.colorationField.isVisible());
-    assertFalse(view.otherColorationField.isVisible());
-    assertFalse(view.developmentTimeField.isVisible());
-    assertFalse(view.decolorationField.isVisible());
-    assertFalse(view.weightMarkerQuantityField.isVisible());
-    assertFalse(view.proteinQuantityField.isVisible());
-    assertFalse(view.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
-    assertFalse(view.digestionOptions.isVisible());
-    assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
-    assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(view.enrichmentLabel.isVisible());
-    assertFalse(view.exclusionsLabel.isVisible());
-    assertFalse(view.sampleNumberProteinField.isVisible());
-    assertFalse(view.sourceOptions.isVisible());
-    assertFalse(view.instrumentOptions.isVisible());
-    assertFalse(view.proteinIdentificationOptions.isVisible());
-    assertFalse(view.proteinIdentificationLinkField.isVisible());
-    assertFalse(view.quantificationOptions.isVisible());
-    assertFalse(view.quantificationLabelsField.isVisible());
-    assertTrue(view.highResolutionOptions.isVisible());
-    assertTrue(view.acetonitrileSolventsField.isVisible());
-    assertTrue(view.methanolSolventsField.isVisible());
-    assertTrue(view.chclSolventsField.isVisible());
-    assertTrue(view.otherSolventsField.isVisible());
+  }
+
+  @Test
+  public void visible_Smallmolecule_Solution_OtherSolvents() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+    view.sampleSupportOptions.setValue(support);
+    uploadStructure();
+    view.otherSolventsField.setValue(true);
+
     assertTrue(view.otherSolventField.isVisible());
+    assertTrue(view.otherSolventNoteLabel.isVisible());
   }
 
   @Test
@@ -1764,7 +1705,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.methanolSolventsField.isVisible());
     assertTrue(view.chclSolventsField.isVisible());
     assertTrue(view.otherSolventsField.isVisible());
-    assertTrue(view.otherSolventField.isVisible());
+    assertFalse(view.otherSolventField.isVisible());
+    assertFalse(view.otherSolventNoteLabel.isVisible());
   }
 
   @Test
@@ -1839,6 +1781,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.chclSolventsField.isVisible());
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
+    assertFalse(view.otherSolventNoteLabel.isVisible());
   }
 
   @Test
@@ -1913,6 +1856,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.chclSolventsField.isVisible());
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
+    assertFalse(view.otherSolventNoteLabel.isVisible());
   }
 
   @Test

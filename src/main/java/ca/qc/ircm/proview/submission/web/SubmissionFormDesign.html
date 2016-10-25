@@ -189,16 +189,12 @@
        <vaadin-check-box caption="Acetonitrile" _id="acetonitrileSolventsField"></vaadin-check-box> 
        <vaadin-check-box caption="Methanol" _id="methanolSolventsField"></vaadin-check-box> 
        <vaadin-check-box caption="CHCL3" _id="chclSolventsField"></vaadin-check-box> 
-       <vaadin-horizontal-layout spacing _id="otherSolventLayout"> 
-        <vaadin-check-box caption="Other" _id="otherSolventsField" :middle></vaadin-check-box> 
-        <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-         <vaadin-text-field caption="- specify other solvent" null-representation="" _id="otherSolventField"></vaadin-text-field> 
-        </vaadin-form-layout> 
-        <vaadin-label size-auto plain-text _id="otherSolventNoteLabel" :middle>
-          (DMSO is not compatible with MS analysis) 
-        </vaadin-label> 
-       </vaadin-horizontal-layout> 
+       <vaadin-check-box caption="Other" _id="otherSolventsField" :middle></vaadin-check-box> 
       </vaadin-vertical-layout> 
+      <vaadin-text-field caption="Specify other solvent" null-representation="" _id="otherSolventField"></vaadin-text-field> 
+      <vaadin-label size-auto plain-text _id="otherSolventNoteLabel" :middle>
+        (DMSO is not compatible with MS analysis) 
+      </vaadin-label> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
