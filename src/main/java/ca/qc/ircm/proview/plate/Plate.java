@@ -53,7 +53,7 @@ public class Plate implements Data, Serializable, Named {
    * Plate types.
    */
   public static enum Type {
-    PM(8, 12), G(8, 12), A(8, 12);
+    PM(8, 12), G(8, 12), A(8, 12), SUBMISSION(8, 12);
     Type(int rowCount, int columnCount) {
       this.rowCount = rowCount;
       this.columnCount = columnCount;

@@ -51,7 +51,7 @@ public class SubmissionViewPresenter {
   public void init(SubmissionView view) {
     logger.debug("Submission view");
     this.view = view;
-    view.submissionFormPresenter.setEditable(true);
+    view.submissionFormPresenter.setEditable(false);
     setCaptions();
   }
 
@@ -61,6 +61,7 @@ public class SubmissionViewPresenter {
   }
 
   public void setSubmissionById(Long id) {
+    logger.debug("Set submission {}", id);
     Submission submission = submissionService.get(id);
     view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
   }

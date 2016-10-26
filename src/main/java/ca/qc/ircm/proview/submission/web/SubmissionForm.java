@@ -45,6 +45,7 @@ import static ca.qc.ircm.proview.submission.StorageTemperature.MEDIUM;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
+import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.web.PlateLayout;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -57,7 +58,12 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextField;
 import pl.exsio.plupload.Plupload;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Submission form.
@@ -87,7 +93,8 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   private SubmissionFormPresenter presenter;
   protected Plupload structureUploader;
   protected Plupload gelImagesUploader;
-  protected PlateLayout samplesPlateLayout = new PlateLayout();
+  protected PlateLayout samplesPlateLayout;
+  protected List<List<TextField>> plateSampleNameFields = new ArrayList<>();
 
   public void setPresenter(SubmissionFormPresenter presenter) {
     this.presenter = presenter;
@@ -101,7 +108,23 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     gelImagesUploader = new Plupload();
     structureUploaderLayout.addComponent(structureUploader);
     gelImagesUploaderLayout.addComponent(gelImagesUploader);
+    initPlateLayout();
     samplesPlateContainer.addComponent(samplesPlateLayout);
+  }
+
+  private void initPlateLayout() {
+    int columns = Plate.Type.SUBMISSION.getColumnCount();
+    int rows = Plate.Type.SUBMISSION.getRowCount();
+    samplesPlateLayout = new PlateLayout(columns, rows);
+    IntStream.range(0, columns).forEach(column -> {
+      List<TextField> columnPlateSampleNameFields = new ArrayList<>();
+      IntStream.range(0, rows).forEach(row -> {
+        TextField nameField = new TextField();
+        columnPlateSampleNameFields.add(nameField);
+        samplesPlateLayout.addWellComponent(nameField, column, row);
+      });
+      plateSampleNameFields.add(columnPlateSampleNameFields);
+    });
   }
 
   @Override

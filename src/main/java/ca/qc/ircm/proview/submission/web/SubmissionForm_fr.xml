@@ -44,6 +44,7 @@
   <entry key="samplesContainerType.TUBE">Tubes</entry>
   <entry key="samplesContainerType.SPOT">Plaque</entry>
   <entry key="samples">Échantillons</entry>
+  <entry key="samples.missing">Remplissez la plate avec {0} échantillons</entry>
   <entry key="fillSamples">Copier vers le bas</entry>
   <entry key="experiencePanel">Détails à propos des échantillons</entry>
   <entry key="experience">Expérience</entry>

@@ -44,6 +44,7 @@
   <entry key="samplesContainerType.TUBE">Tubes</entry>
   <entry key="samplesContainerType.SPOT">Plate</entry>
   <entry key="samples">Samples</entry>
+  <entry key="samples.missing">Fill plate with {0} samples</entry>
   <entry key="fillSamples">Fill down</entry>
   <entry key="experiencePanel">Sample details</entry>
   <entry key="experience">Experience</entry>
