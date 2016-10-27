@@ -27,6 +27,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +38,8 @@ import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.mail.HtmlEmail;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
@@ -1304,7 +1307,7 @@ public class SubmissionServiceImplTest {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_gel_01");
-    List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
+    List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     GelImage gelImage = new GelImage();
     gelImage.setFilename("my_gel_image.jpg");
@@ -1313,7 +1316,7 @@ public class SubmissionServiceImplTest {
       imageContent[i] = (byte) random.nextInt();
     }
     gelImage.setContent(imageContent);
-    List<GelImage> gelImages = new LinkedList<GelImage>();
+    List<GelImage> gelImages = new LinkedList<>();
     gelImages.add(gelImage);
     final Set<String> excludes = new HashSet<>();
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
@@ -1444,21 +1447,21 @@ public class SubmissionServiceImplTest {
     sample2.setSupport(SampleSupport.SOLUTION);
     sample2.setVolume(10.0);
     sample2.setQuantity("2.0 μg");
-    List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
+    List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     samples.add(sample2);
     Contaminant contaminant = new Contaminant();
     contaminant.setName("contaminant1");
     contaminant.setQuantity("1.0 μg");
     contaminant.setComments("comments");
-    List<Contaminant> contaminants = new ArrayList<Contaminant>();
+    List<Contaminant> contaminants = new ArrayList<>();
     contaminants.add(contaminant);
     sample.setContaminants(contaminants);
     Standard standard = new Standard();
     standard.setName("standard1");
     standard.setQuantity("1.0 μg");
     standard.setComments("comments");
-    List<Standard> standards = new ArrayList<Standard>();
+    List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
     final Set<String> excludes1 = new HashSet<>();
@@ -1585,12 +1588,147 @@ public class SubmissionServiceImplTest {
   }
 
   @Test
+  public void insert_EluateSubmission_Plate() throws Exception {
+    // Create new submission.
+    SubmissionSample sample = new SubmissionSample();
+    sample.setName("unit_test_eluate_01");
+    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setVolume(10.0);
+    sample.setQuantity("2.0 μg");
+    sample.setOriginalContainer(new PlateSpot(0, 0));
+    SubmissionSample sample2 = new SubmissionSample();
+    sample2.setName("unit_test_eluate_02");
+    sample2.setSupport(SampleSupport.SOLUTION);
+    sample2.setVolume(10.0);
+    sample2.setQuantity("2.0 μg");
+    sample2.setOriginalContainer(new PlateSpot(1, 0));
+    List<SubmissionSample> samples = new LinkedList<>();
+    samples.add(sample);
+    samples.add(sample2);
+    Contaminant contaminant = new Contaminant();
+    contaminant.setName("contaminant1");
+    contaminant.setQuantity("1.0 μg");
+    contaminant.setComments("comments");
+    List<Contaminant> contaminants = new ArrayList<>();
+    contaminants.add(contaminant);
+    sample.setContaminants(contaminants);
+    Standard standard = new Standard();
+    standard.setName("standard1");
+    standard.setQuantity("1.0 μg");
+    standard.setComments("comments");
+    List<Standard> standards = new ArrayList<>();
+    standards.add(standard);
+    sample.setStandards(standards);
+    when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
+    Submission submission = new Submission();
+    submission.setService(Service.LC_MS_MS);
+    submission.setTaxonomy("human");
+    submission.setProject("project");
+    submission.setExperience("experience");
+    submission.setGoal("goal");
+    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setSampleNumberProtein(10);
+    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
+    submission.setOtherProteolyticDigestionMethod("other digestion");
+    submission.setProteinIdentification(ProteinIdentification.NCBINR);
+    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
+    submission.setOtherEnrichmentType("other enrichment");
+    submission.setProtein("protein");
+    submission.setMolecularWeight(120.0);
+    submission.setPostTranslationModification("my_modification");
+    submission.setMudPitFraction(MudPitFraction.EIGHT);
+    submission.setProteinContent(ProteinContent.MEDIUM);
+    submission.setComments("comments");
+    submission.setSamples(samples);
+    Instant instant = Instant.now();
+    submission.setSubmissionDate(instant);
+
+    submissionServiceImpl.insert(submission);
+
+    entityManager.flush();
+    verify(authorizationService).checkUserRole();
+    verify(submissionActivityService).insert(submissionCaptor.capture());
+    verify(tubeService, never()).generateTubeName(any(), any());
+    verify(activityService).insert(activity);
+    verify(pricingEvaluator).computePrice(submission, instant);
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    assertEquals(user, submission.getUser());
+    assertEquals((Long) 1L, submission.getLaboratory().getId());
+    assertEquals(Service.LC_MS_MS, submission.getService());
+    assertEquals("human", submission.getTaxonomy());
+    assertEquals("project", submission.getProject());
+    assertEquals("experience", submission.getExperience());
+    assertEquals("goal", submission.getGoal());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
+    assertEquals(new Integer(10), submission.getSampleNumberProtein());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
+    assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
+    assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
+    assertEquals(ProteinIdentification.NCBINR, submission.getProteinIdentification());
+    assertEquals("http://localhost/my_site", submission.getProteinIdentificationLink());
+    assertEquals(EnrichmentType.PHOSPHOPEPTIDES, submission.getEnrichmentType());
+    assertEquals("other enrichment", submission.getOtherEnrichmentType());
+    assertEquals("protein", submission.getProtein());
+    assertEquals(new Double(120.0), submission.getMolecularWeight());
+    assertEquals("my_modification", submission.getPostTranslationModification());
+    assertEquals(MudPitFraction.EIGHT, submission.getMudPitFraction());
+    assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
+    assertEquals("comments", submission.getComments());
+    assertEquals(instant, submission.getSubmissionDate());
+    assertEquals(submission.getId(), submission.getId());
+    samples = submission.getSamples();
+    assertEquals(2, samples.size());
+    SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
+    assertNotNull(submissionSample.getLims());
+    assertEquals(true, LIMS_PATTERN.matcher(submissionSample.getLims()).matches());
+    assertEquals("unit_test_eluate_01", submissionSample.getName());
+    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(new Double(10.0), submissionSample.getVolume());
+    assertEquals("2.0 μg", submissionSample.getQuantity());
+    contaminants = submissionSample.getContaminants();
+    assertEquals(1, contaminants.size());
+    contaminant = contaminants.get(0);
+    assertEquals("contaminant1", contaminant.getName());
+    assertEquals("1.0 μg", contaminant.getQuantity());
+    assertEquals("comments", contaminant.getComments());
+    standards = submissionSample.getStandards();
+    assertEquals(1, standards.size());
+    standard = standards.get(0);
+    assertEquals("standard1", standard.getName());
+    assertEquals("1.0 μg", standard.getQuantity());
+    assertEquals("comments", standard.getComments());
+    PlateSpot spot = (PlateSpot) submissionSample.getOriginalContainer();
+    assertNotNull(spot);
+    assertEquals(submission.getExperience(), spot.getPlate().getName());
+    assertEquals(Plate.Type.SUBMISSION, spot.getPlate().getType());
+    assertEquals(96, spot.getPlate().getSpots().size());
+    assertEquals(submissionSample, spot.getSample());
+    assertEquals(0, spot.getRow());
+    assertEquals(0, spot.getColumn());
+    assertEquals(false, spot.isBanned());
+    List<GelImage> gelImages = submission.getGelImages();
+    assertEquals(0, gelImages.size());
+
+    // Validate log.
+    Submission submissionLogged = submissionCaptor.getValue();
+    assertEquals(submission, submissionLogged);
+
+    // Validate email that is sent to proteomic users.
+    verify(emailService).sendHtmlEmail(any(HtmlEmail.class));
+  }
+
+  @Test
   public void insert_MoleculeSubmission() throws Exception {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_molecule_01");
     sample.setSupport(SampleSupport.SOLUTION);
-    List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
+    List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     final Set<String> excludes = new HashSet<>();
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
@@ -1630,7 +1768,7 @@ public class SubmissionServiceImplTest {
     }
     structure.setContent(imageContent);
     submission.setStructure(structure);
-    List<SampleSolvent> solvents = new ArrayList<SampleSolvent>();
+    List<SampleSolvent> solvents = new ArrayList<>();
     solvents.add(new SampleSolvent(Solvent.ACETONITRILE));
     submission.setSolvents(solvents);
     submission.setOtherSolvent("chrisanol");
@@ -1708,20 +1846,20 @@ public class SubmissionServiceImplTest {
     sample.setSupport(SampleSupport.SOLUTION);
     sample.setVolume(10.0);
     sample.setQuantity("2.0 μg");
-    List<SubmissionSample> samples = new LinkedList<SubmissionSample>();
+    List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     Contaminant contaminant = new Contaminant();
     contaminant.setName("contaminant1");
     contaminant.setQuantity("1.0 μg");
     contaminant.setComments("comments");
-    List<Contaminant> contaminants = new ArrayList<Contaminant>();
+    List<Contaminant> contaminants = new ArrayList<>();
     contaminants.add(contaminant);
     sample.setContaminants(contaminants);
     Standard standard = new Standard();
     standard.setName("standard1");
     standard.setQuantity("1.0 μg");
     standard.setComments("comments");
-    List<Standard> standards = new ArrayList<Standard>();
+    List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
@@ -1762,7 +1900,7 @@ public class SubmissionServiceImplTest {
     // Validate email that is sent to proteomic users.
     verify(emailService, atLeastOnce()).sendHtmlEmail(htmlEmailCaptor.capture());
     List<HtmlEmail> htmlEmails = htmlEmailCaptor.getAllValues();
-    Collection<String> receivers = new HashSet<String>();
+    Collection<String> receivers = new HashSet<>();
     for (HtmlEmail email : htmlEmails) {
       receivers.addAll(email.getReceivers());
     }

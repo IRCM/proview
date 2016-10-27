@@ -30,11 +30,14 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.mail.HtmlEmailDefault;
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
+import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
-import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
@@ -52,11 +55,11 @@ import org.thymeleaf.context.Context;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -280,35 +283,47 @@ public class SubmissionServiceImpl implements SubmissionService {
     submission.setLaboratory(laboratory);
     submission.setUser(user);
     submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
-    Set<String> otherSampleLims = new HashSet<String>();
-    Set<String> otherTubeNames = new HashSet<String>();
+    Set<String> otherSampleLims = new HashSet<>();
+    Set<String> otherTubeNames = new HashSet<>();
+    Plate plate = null;
     for (SubmissionSample sample : submission.getSamples()) {
       generateLims(sample, laboratory, otherSampleLims);
       sample.setSubmission(submission);
       sample.setStatus(SampleStatus.TO_APPROVE);
-      Tube tube = new Tube();
-      tube.setSample(sample);
-      tube.setName(tubeService.generateTubeName(sample, otherTubeNames));
-      tube.setTimestamp(Instant.now());
-      otherTubeNames.add(tube.getName());
-      sample.setOriginalContainer(tube);
+      if (sample.getOriginalContainer() == null) {
+        Tube tube = new Tube();
+        tube.setSample(sample);
+        tube.setName(tubeService.generateTubeName(sample, otherTubeNames));
+        tube.setTimestamp(Instant.now());
+        otherTubeNames.add(tube.getName());
+        sample.setOriginalContainer(tube);
+      } else if (sample.getOriginalContainer().getType() == SampleContainerType.SPOT) {
+        if (plate == null) {
+          plate = createSubmissionPlate(submission);
+        }
+        PlateSpot sourceSpot = (PlateSpot) sample.getOriginalContainer();
+        PlateSpot spot = plate.spot(sourceSpot.getRow(), sourceSpot.getColumn());
+        spot.setSample(sample);
+        sample.setOriginalContainer(spot);
+      }
     }
 
     entityManager.persist(submission);
+    if (plate != null) {
+      entityManager.persist(plate);
+    }
     for (SubmissionSample sample : submission.getSamples()) {
       entityManager.persist(sample);
-      entityManager.persist(sample.getOriginalContainer());
+      if (sample.getOriginalContainer().getType() == SampleContainerType.TUBE) {
+        entityManager.persist(sample.getOriginalContainer());
+      }
     }
 
     logger.info("Submission {} added to database", submission);
 
     // Send email to protemic users to inform them of the submission.
     try {
-      Map<SubmissionSample, Tube> samplesWithTubes = new LinkedHashMap<SubmissionSample, Tube>();
-      for (SubmissionSample submissionSample : submission.getSamples()) {
-        samplesWithTubes.put(submissionSample, (Tube) submissionSample.getOriginalContainer());
-      }
-      this.sendSubmissionToProteomicUsers(samplesWithTubes, user);
+      this.sendSubmissionToProteomicUsers(submission.getSamples(), user);
     } catch (EmailException e) {
       logger.error("Could not send email containing new submitted samples", e);
     }
@@ -343,6 +358,24 @@ public class SubmissionServiceImpl implements SubmissionService {
     sample.setLims(lims);
   }
 
+  private Plate createSubmissionPlate(Submission submission) {
+    Plate plate = new Plate();
+    plate.setType(Plate.Type.SUBMISSION);
+    plate.setName(submission.getExperience());
+    plate.setInsertTime(Instant.now());
+    List<PlateSpot> spots = new ArrayList<>();
+    for (int row = 0; row < plate.getRowCount(); row++) {
+      for (int column = 0; column < plate.getColumnCount(); column++) {
+        PlateSpot plateSpot = new PlateSpot(row, column);
+        plateSpot.setTimestamp(Instant.now());
+        plateSpot.setPlate(plate);
+        spots.add(plateSpot);
+      }
+    }
+    plate.setSpots(spots);
+    return plate;
+  }
+
   private List<User> adminUsers() {
     JPAQuery<User> query = queryFactory.select(user);
     query.from(user);
@@ -361,14 +394,14 @@ public class SubmissionServiceImpl implements SubmissionService {
    * @param user
    *          user who submitted samples
    */
-  private void sendSubmissionToProteomicUsers(Map<SubmissionSample, Tube> samplesWithTubes,
-      User user) throws EmailException {
+  private void sendSubmissionToProteomicUsers(List<SubmissionSample> samples, User user)
+      throws EmailException {
     Context context = new Context();
     context.setVariable("tab", "\t");
     context.setVariable("user", user);
-    context.setVariable("sampleCount", samplesWithTubes.keySet().size());
-    context.setVariable("samples", samplesWithTubes.keySet());
-    context.setVariable("tubes", samplesWithTubes);
+    context.setVariable("sampleCount", samples.size());
+    context.setVariable("samples", samples);
+    context.setVariable("containerType", samples.get(0).getOriginalContainer().getType());
 
     final List<User> proteomicUsers = adminUsers();
     HtmlEmailDefault email = new HtmlEmailDefault();

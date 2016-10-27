@@ -33,7 +33,10 @@
                     <th>
                         Sample name
                     </th>
-                    <th>
+                    <th th:if="${containerType.name() == 'SPOT'}">
+                        Plate
+                    </th>
+                    <th th:if="${containerType.name() == 'TUBE'}">
                         Tube
                     </th>
                 </tr>
@@ -46,8 +49,12 @@
                     <td>
                         [[${sample.name}]]
                     </td>
-                    <td>
-                        [[${tubes.get(sample).name}]]
+                    <td th:if="${containerType.name() == 'SPOT'}">
+                        [[${sample.originalContainer.plate.name}]]
+                        ([[${sample.originalContainer.name}]])
+                    </td>
+                    <td th:if="${containerType.name() == 'TUBE'}">
+                        [[${sample.originalContainer.name}]]
                     </td>
                 </tr>
             </tbody>
