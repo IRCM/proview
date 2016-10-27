@@ -26,6 +26,7 @@ import java.util.Set;
  */
 public class WebConstants {
   public static final String GENERAL_MESSAGES = "VaadinMessages";
+  public static final String FIELD_NOTIFICATION = "field.notification";
   public static final String REQUIRED = "required";
   public static final String REQUIRED_CAPTION = "required.caption";
   public static final String INVALID_NUMBER = "invalidNumber";

@@ -112,6 +112,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIG
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY_PROPERTY;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
+import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
@@ -156,20 +157,18 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
-import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Container;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
+import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
@@ -186,8 +185,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.exsio.plupload.Plupload;
 import pl.exsio.plupload.Plupload.FileUploadedListener;
@@ -197,7 +194,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -207,7 +203,6 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionFormPresenterTest {
-  private static final Logger logger = LoggerFactory.getLogger(SubmissionFormPresenterTest.class);
   private SubmissionFormPresenter presenter;
   @PersistenceContext
   private EntityManager entityManager;
@@ -215,8 +210,6 @@ public class SubmissionFormPresenterTest {
   private SubmissionService submissionService;
   @Mock
   private SubmissionSampleService submissionSampleService;
-  @Mock
-  private VaadinUtils vaadinUtils;
   @Mock
   private SubmissionForm view;
   @Mock
@@ -320,8 +313,7 @@ public class SubmissionFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter =
-        new SubmissionFormPresenter(submissionService, submissionSampleService, vaadinUtils);
+    presenter = new SubmissionFormPresenter(submissionService, submissionSampleService);
     view.headerLabel = new Label();
     view.sampleTypeLabel = new Label();
     view.inactiveLabel = new Label();
@@ -423,15 +415,6 @@ public class SubmissionFormPresenterTest {
     view.submitButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    VaadinUtils realVaadinUtils = new VaadinUtils();
-    when(vaadinUtils.getFieldMessage(any(), any(Locale.class))).thenAnswer(i -> {
-      CommitException exception = (CommitException) i.getArguments()[0];
-      Locale locale = (Locale) i.getArguments()[1];
-      Map<Field<?>, InvalidValueException> fieldExceptions = exception.getInvalidFields();
-      fieldExceptions.forEach((field, value) -> logger.debug("field {} in error: {}",
-          field.getCaption(), value.getMessage()));
-      return realVaadinUtils.getFieldMessage(exception, locale);
-    });
   }
 
   private void setFields() {
@@ -580,6 +563,10 @@ public class SubmissionFormPresenterTest {
     random.nextBytes(gelImageContent2);
     when(pluploadFile.getUploadedFile()).thenReturn(gelImageContent2);
     fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
+  }
+
+  private String errorMessage(String message) {
+    return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
   }
 
   @Test
@@ -884,8 +871,8 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setMassDetectionInstrument(instrument);
 
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertTrue(view.instrumentOptions.getItemIds().contains(instrument));
     assertFalse(view.instrumentOptions.isItemEnabled(instrument));
@@ -909,8 +896,8 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setProteinIdentification(proteinIdentification);
 
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertTrue(view.proteinIdentificationOptions.getItemIds().contains(proteinIdentification));
     assertFalse(view.proteinIdentificationOptions.isItemEnabled(proteinIdentification));
@@ -1259,8 +1246,8 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(support);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertTrue(view.serviceOptions.isReadOnly());
     assertTrue(view.sampleSupportOptions.isReadOnly());
@@ -1331,9 +1318,9 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(support);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    presenter.setItemDataSource(new BeanItem<>(submission));
-    presenter.setEditable(true);
     presenter.init(view);
+    presenter.setEditable(true);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertFalse(view.serviceOptions.isReadOnly());
     assertFalse(view.sampleSupportOptions.isReadOnly());
@@ -1405,8 +1392,8 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(support);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -1609,8 +1596,8 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(DRY);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -1773,8 +1760,8 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(GEL);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -1951,8 +1938,8 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     submission.setStructure(new Structure());
     submission.getStructure().setFilename("structure.png");
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2142,8 +2129,8 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     submission.setStructure(new Structure());
     submission.getStructure().setFilename("structure.png");
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2307,8 +2294,8 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(SOLUTION);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2471,8 +2458,8 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(DRY);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    presenter.setItemDataSource(new BeanItem<>(submission));
     presenter.init(view);
+    presenter.setItemDataSource(new BeanItem<>(submission));
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2640,8 +2627,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.serviceOptions.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.serviceOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2658,8 +2646,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.sampleSupportOptions.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.sampleSupportOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2677,8 +2666,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.solutionSolventField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.solutionSolventField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2696,8 +2686,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.sampleCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2715,8 +2706,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
-    assertNotNull(view.sampleCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        view.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2734,8 +2726,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(OUT_OF_RANGE, 1, 200), stringCaptor.getValue());
-    assertNotNull(view.sampleCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 1, 200)),
+        view.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2753,8 +2746,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(OUT_OF_RANGE, 1, 200), stringCaptor.getValue());
-    assertNotNull(view.sampleCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 1, 200)),
+        view.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2772,8 +2766,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
-    assertNotNull(view.sampleCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        view.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2791,8 +2786,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.sampleNameField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.sampleNameField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2810,8 +2806,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(ALREADY_EXISTS), stringCaptor.getValue());
-    assertNotNull(view.sampleNameField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName)),
+        view.sampleNameField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionSampleService, atLeastOnce()).exists(sampleName);
     verify(submissionService, never()).insert(any());
   }
@@ -2830,8 +2827,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.formulaField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.formulaField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2865,8 +2863,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.monoisotopicMassField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.monoisotopicMassField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2884,8 +2883,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
-    assertNotNull(view.monoisotopicMassField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
+        view.monoisotopicMassField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2903,8 +2903,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertNotNull(stringCaptor.getValue());
-    assertNotNull(view.monoisotopicMassField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertNotNull(view.monoisotopicMassField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2922,8 +2922,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
-    assertNotNull(view.averageMassField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
+        view.averageMassField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2941,8 +2942,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertNotNull(stringCaptor.getValue());
-    assertNotNull(view.averageMassField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertNotNull(view.averageMassField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2960,8 +2961,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.storageTemperatureOptions.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.storageTemperatureOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2979,8 +2981,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.sampleContainerTypeOptions.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.sampleContainerTypeOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2998,8 +3001,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(sampleNameField1.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        sampleNameField1.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3017,8 +3021,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(ALREADY_EXISTS), stringCaptor.getValue());
-    assertNotNull(sampleNameField1.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName1)),
+        sampleNameField1.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3036,8 +3041,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(sampleNameField2.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        sampleNameField2.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3055,8 +3061,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(ALREADY_EXISTS), stringCaptor.getValue());
-    assertNotNull(sampleNameField2.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName2)),
+        sampleNameField2.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3074,7 +3081,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view, atLeastOnce()).showError(stringCaptor.capture());
-    assertEquals(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate"), stringCaptor.getValue());
+    assertEquals(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1),
+        stringCaptor.getValue());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3093,7 +3101,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(resources.message(SAMPLES_PROPERTY + ".missing"), stringCaptor.getValue());
+    assertEquals(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount),
+        stringCaptor.getValue());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3112,8 +3121,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(ALREADY_EXISTS), stringCaptor.getValue());
-    assertNotNull(view.plateSampleNameFields.get(0).get(0).getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName1)),
+        view.plateSampleNameFields.get(0).get(0).getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3132,7 +3142,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(resources.message(SAMPLES_PROPERTY + ".missing"), stringCaptor.getValue());
+    assertEquals(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount),
+        stringCaptor.getValue());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3151,8 +3162,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(ALREADY_EXISTS), stringCaptor.getValue());
-    assertNotNull(view.plateSampleNameFields.get(0).get(1).getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName2)),
+        view.plateSampleNameFields.get(0).get(1).getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3171,7 +3183,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view, atLeastOnce()).showError(stringCaptor.capture());
-    assertEquals(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate"), stringCaptor.getValue());
+    assertEquals(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1),
+        stringCaptor.getValue());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3189,8 +3202,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.experienceField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.experienceField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3208,8 +3222,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.taxonomyField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.taxonomyField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3227,8 +3242,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
-    assertNotNull(view.proteinWeightField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
+        view.proteinWeightField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3246,8 +3262,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertNotNull(stringCaptor.getValue());
-    assertNotNull(view.proteinWeightField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertNotNull(view.proteinWeightField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3265,8 +3281,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.sampleQuantityField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.sampleQuantityField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3284,8 +3301,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.sampleVolumeField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.sampleVolumeField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3303,8 +3321,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
-    assertNotNull(view.sampleVolumeField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
+        view.sampleVolumeField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3322,8 +3341,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertNotNull(stringCaptor.getValue());
-    assertNotNull(view.sampleVolumeField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertNotNull(view.sampleVolumeField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3358,8 +3377,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
-    assertNotNull(view.standardCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        view.standardCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3377,8 +3397,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(OUT_OF_RANGE, 0, 10), stringCaptor.getValue());
-    assertNotNull(view.standardCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
+        view.standardCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3396,8 +3417,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(OUT_OF_RANGE, 0, 10), stringCaptor.getValue());
-    assertNotNull(view.standardCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
+        view.standardCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3415,8 +3437,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
-    assertNotNull(view.standardCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        view.standardCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3434,8 +3457,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(standardNameField1.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        standardNameField1.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3453,8 +3477,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(standardNameField2.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        standardNameField2.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3472,8 +3497,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(standardQuantityField1.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        standardQuantityField1.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3491,8 +3517,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(standardQuantityField2.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        standardQuantityField2.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3527,8 +3554,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
-    assertNotNull(view.contaminantCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        view.contaminantCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3546,8 +3574,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(OUT_OF_RANGE, 0, 10), stringCaptor.getValue());
-    assertNotNull(view.contaminantCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
+        view.contaminantCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3565,8 +3594,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(OUT_OF_RANGE, 0, 10), stringCaptor.getValue());
-    assertNotNull(view.contaminantCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
+        view.contaminantCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3584,8 +3614,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
-    assertNotNull(view.contaminantCountField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        view.contaminantCountField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3603,8 +3634,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(contaminantNameField1.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        contaminantNameField1.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3622,8 +3654,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(contaminantNameField2.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        contaminantNameField2.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3641,8 +3674,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(contaminantQuantityField1.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        contaminantQuantityField1.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3660,8 +3694,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(contaminantQuantityField2.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        contaminantQuantityField2.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3679,8 +3714,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.separationField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.separationField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3711,8 +3747,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.thicknessField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.thicknessField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3757,8 +3794,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.otherColorationField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.otherColorationField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3776,8 +3814,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_NUMBER), stringCaptor.getValue());
-    assertNotNull(view.weightMarkerQuantityField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
+        view.weightMarkerQuantityField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3811,8 +3850,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.digestionOptions.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.digestionOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3831,8 +3871,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.usedProteolyticDigestionMethodField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.usedProteolyticDigestionMethodField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3851,8 +3892,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.otherProteolyticDigestionMethodField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.otherProteolyticDigestionMethodField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3870,8 +3912,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.sampleNumberProteinField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.sampleNumberProteinField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3889,8 +3932,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
-    assertNotNull(view.sampleNumberProteinField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        view.sampleNumberProteinField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3908,8 +3952,8 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertNotNull(stringCaptor.getValue());
-    assertNotNull(view.sampleNumberProteinField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertNotNull(view.sampleNumberProteinField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3927,8 +3971,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(INVALID_INTEGER), stringCaptor.getValue());
-    assertNotNull(view.sampleNumberProteinField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        view.sampleNumberProteinField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3946,8 +3991,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.sourceOptions.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.sourceOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3965,8 +4011,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.instrumentOptions.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.instrumentOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3984,8 +4031,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.proteinIdentificationOptions.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.proteinIdentificationOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4004,8 +4052,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.proteinIdentificationLinkField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.proteinIdentificationLinkField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4024,8 +4073,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.quantificationLabelsField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.quantificationLabelsField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4043,8 +4093,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.highResolutionOptions.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.highResolutionOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4084,8 +4135,9 @@ public class SubmissionFormPresenterTest {
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(REQUIRED), stringCaptor.getValue());
-    assertNotNull(view.otherSolventField.getErrorMessage());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.otherSolventField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
