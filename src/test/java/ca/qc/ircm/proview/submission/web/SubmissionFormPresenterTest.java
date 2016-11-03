@@ -745,8 +745,7 @@ public class SubmissionFormPresenterTest {
         view.sampleNumberProteinField.getRequiredError());
     assertTrue(view.sourceOptions.isRequired());
     assertEquals(generalResources.message(REQUIRED), view.sourceOptions.getRequiredError());
-    assertTrue(view.instrumentOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.instrumentOptions.getRequiredError());
+    assertFalse(view.instrumentOptions.isRequired());
     assertTrue(view.proteinIdentificationOptions.isRequired());
     assertEquals(generalResources.message(REQUIRED),
         view.proteinIdentificationOptions.getRequiredError());
@@ -4010,11 +4009,8 @@ public class SubmissionFormPresenterTest {
 
     view.submitButton.click();
 
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.instrumentOptions.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(submissionService).insert(any());
   }
 
   @Test

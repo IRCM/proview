@@ -33,8 +33,8 @@ import java.util.Locale;
 public class MassDetectionInstrumentTest {
   @Test
   public void getNullLabel() {
-    assertEquals("Undetermined", MassDetectionInstrument.getNullLabel(Locale.ENGLISH));
-    assertEquals("Indéterminé", MassDetectionInstrument.getNullLabel(Locale.FRENCH));
+    assertEquals("Specialist's choice", MassDetectionInstrument.getNullLabel(Locale.ENGLISH));
+    assertEquals("Choix du spécialiste", MassDetectionInstrument.getNullLabel(Locale.FRENCH));
   }
 
   @Test

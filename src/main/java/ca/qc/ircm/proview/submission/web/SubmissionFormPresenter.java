@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.VELOS;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.ESI;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
@@ -784,12 +783,14 @@ public class SubmissionFormPresenter {
     view.sourceOptions.setRequiredError(generalResources.message(REQUIRED));
     view.instrumentOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.instrumentOptions.removeAllItems();
+    view.instrumentOptions.setNullSelectionItemId(NULL_ID);
+    view.instrumentOptions.setItemCaption(NULL_ID, MassDetectionInstrument.getNullLabel(locale));
+    view.instrumentOptions.addItem(view.instrumentOptions.getNullSelectionItemId());
+    view.instrumentOptions.setNullSelectionAllowed(true);
     for (MassDetectionInstrument instrument : SubmissionForm.INSTRUMENTS) {
       view.instrumentOptions.addItem(instrument);
       view.instrumentOptions.setItemCaption(instrument, instrument.getLabel(locale));
     }
-    view.instrumentOptions.setRequired(true);
-    view.instrumentOptions.setRequiredError(generalResources.message(REQUIRED));
     view.proteinIdentificationOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.proteinIdentificationOptions.removeAllItems();
     for (ProteinIdentification proteinIdentification : SubmissionForm.PROTEIN_IDENTIFICATIONS) {
@@ -1588,7 +1589,6 @@ public class SubmissionFormPresenter {
       submission.setThickness(ONE);
       submission.setProteolyticDigestionMethod(TRYPSIN);
       submission.setSource(ESI);
-      submission.setMassDetectionInstrument(VELOS);
       submission.setProteinIdentification(REFSEQ);
       item = new BeanItem<>(submission);
     }
