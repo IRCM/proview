@@ -53,6 +53,7 @@ import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
+import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
@@ -87,6 +88,8 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
           GelColoration.SILVER_INVITROGEN, GelColoration.OTHER };
   public static final MassDetectionInstrumentSource[] SOURCES =
       new MassDetectionInstrumentSource[] { ESI, NSI };
+  public static final ProteinContent[] PROTEIN_CONTENTS = new ProteinContent[] {
+      ProteinContent.SMALL, ProteinContent.MEDIUM, ProteinContent.LARGE, ProteinContent.XLARGE };
   public static final MassDetectionInstrument[] INSTRUMENTS =
       new MassDetectionInstrument[] { VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION };
   public static final Quantification[] QUANTIFICATION = new Quantification[] { LABEL_FREE, SILAC };

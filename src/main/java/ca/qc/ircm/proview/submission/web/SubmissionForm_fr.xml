@@ -105,6 +105,7 @@
   <entry key="exclusions.value">Les exclusions/inclusions pour le LC MSMS seront ajoutés dans le futur. Pour ces options, contactez Denis Faubert dans la page de contact.</entry>
   <entry key="sampleNumberProtein">Nombre de protéines dans les échantillons</entry>
   <entry key="source">Source d''ionisation</entry>
+  <entry key="proteinContent">Pour nous aidez à choisir la meilleure chromatographie LC-MS pour vos échantillons veuillez choisir l'option la plus appropriée</entry>
   <entry key="massDetectionInstrument">Sélection d''instrument</entry>
   <entry key="proteinIdentification">Base de données d''identification de protéines</entry>
   <entry key="proteinIdentificationLink">Lien pour télécharger la base de données</entry>

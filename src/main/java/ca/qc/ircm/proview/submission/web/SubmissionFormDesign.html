@@ -171,6 +171,11 @@
        <option>ESI</option> 
        <option>NSI</option> 
       </vaadin-option-group> 
+      <vaadin-option-group caption="Protein content" _id="proteinContentOptions"> 
+       <option>1 to 4</option> 
+       <option>5 to 8</option> 
+       <option>More</option> 
+      </vaadin-option-group> 
       <vaadin-option-group caption="Instrument" item-caption-mode="id" immediate _id="instrumentOptions"> 
        <option>LTQ-Orbitrap-Velos</option> 
        <option>Q-Exactive</option> 
@@ -199,7 +204,7 @@
        <vaadin-check-box caption="Other" _id="otherSolventsField" :middle></vaadin-check-box> 
       </vaadin-vertical-layout> 
       <vaadin-text-field caption="Specify other solvent" null-representation="" _id="otherSolventField"></vaadin-text-field> 
-      <vaadin-label size-auto plain-text _id="otherSolventNoteLabel" :middle>
+      <vaadin-label size-auto plain-text _id="otherSolventNoteLabel">
         (DMSO is not compatible with MS analysis) 
       </vaadin-label> 
      </vaadin-form-layout> 

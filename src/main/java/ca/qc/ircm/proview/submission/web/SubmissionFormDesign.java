@@ -95,6 +95,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Label exclusionsLabel;
   protected TextField sampleNumberProteinField;
   protected OptionGroup sourceOptions;
+  protected OptionGroup proteinContentOptions;
   protected OptionGroup instrumentOptions;
   protected OptionGroup proteinIdentificationOptions;
   protected TextField proteinIdentificationLinkField;

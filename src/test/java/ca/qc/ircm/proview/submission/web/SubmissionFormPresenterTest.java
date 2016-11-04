@@ -69,6 +69,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DI
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME_PROPERTY;
@@ -149,6 +150,7 @@ import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelImage;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
+import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
@@ -285,6 +287,7 @@ public class SubmissionFormPresenterTest {
   private String otherDigestion = "typsinP/Y";
   private int sampleNumberProtein = 2;
   private MassDetectionInstrumentSource source = MassDetectionInstrumentSource.NSI;
+  private ProteinContent proteinContent = ProteinContent.LARGE;
   private MassDetectionInstrument instrument = MassDetectionInstrument.ORBITRAP_FUSION;
   private ProteinIdentification proteinIdentification = ProteinIdentification.OTHER;
   private String proteinIdentificationLink = "NR at ftp://ftp.ncbi.nlm.nih.gov/blast/db/";
@@ -396,6 +399,7 @@ public class SubmissionFormPresenterTest {
     view.exclusionsLabel = new Label();
     view.sampleNumberProteinField = new TextField();
     view.sourceOptions = new OptionGroup();
+    view.proteinContentOptions = new OptionGroup();
     view.instrumentOptions = new OptionGroup();
     view.proteinIdentificationOptions = new OptionGroup();
     view.proteinIdentificationLinkField = new TextField();
@@ -456,6 +460,7 @@ public class SubmissionFormPresenterTest {
     view.otherProteolyticDigestionMethodField.setValue(otherDigestion);
     view.sampleNumberProteinField.setValue(String.valueOf(sampleNumberProtein));
     view.sourceOptions.setValue(source);
+    view.proteinContentOptions.setValue(proteinContent);
     view.instrumentOptions.setValue(instrument);
     view.proteinIdentificationOptions.setValue(proteinIdentification);
     view.proteinIdentificationLinkField.setValue(proteinIdentificationLink);
@@ -745,6 +750,8 @@ public class SubmissionFormPresenterTest {
         view.sampleNumberProteinField.getRequiredError());
     assertTrue(view.sourceOptions.isRequired());
     assertEquals(generalResources.message(REQUIRED), view.sourceOptions.getRequiredError());
+    assertTrue(view.proteinContentOptions.isRequired());
+    assertEquals(generalResources.message(REQUIRED), view.proteinContentOptions.getRequiredError());
     assertFalse(view.instrumentOptions.isRequired());
     assertTrue(view.proteinIdentificationOptions.isRequired());
     assertEquals(generalResources.message(REQUIRED),
@@ -1014,6 +1021,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(
         view.sampleNumberProteinField.getStyleName().contains(SAMPLE_NUMBER_PROTEIN_PROPERTY));
     assertTrue(view.sourceOptions.getStyleName().contains(SOURCE_PROPERTY));
+    assertTrue(view.proteinContentOptions.getStyleName().contains(PROTEIN_CONTENT_PROPERTY));
     assertTrue(view.instrumentOptions.getStyleName().contains(INSTRUMENT_PROPERTY));
     assertTrue(
         view.proteinIdentificationOptions.getStyleName().contains(PROTEIN_IDENTIFICATION_PROPERTY));
@@ -1195,6 +1203,12 @@ public class SubmissionFormPresenterTest {
     for (MassDetectionInstrumentSource source : SubmissionForm.SOURCES) {
       assertEquals(source.getLabel(locale), view.sourceOptions.getItemCaption(source));
     }
+    assertEquals(resources.message(PROTEIN_CONTENT_PROPERTY),
+        view.proteinContentOptions.getCaption());
+    for (ProteinContent proteinContent : ProteinContent.values()) {
+      assertEquals(proteinContent.getLabel(locale),
+          view.proteinContentOptions.getItemCaption(proteinContent));
+    }
     assertEquals(resources.message(INSTRUMENT_PROPERTY), view.instrumentOptions.getCaption());
     for (MassDetectionInstrument instrument : SubmissionForm.INSTRUMENTS) {
       assertEquals(instrument.getLabel(locale), view.instrumentOptions.getItemCaption(instrument));
@@ -1295,6 +1309,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherProteolyticDigestionMethodField.isReadOnly());
     assertTrue(view.sampleNumberProteinField.isReadOnly());
     assertTrue(view.sourceOptions.isReadOnly());
+    assertTrue(view.proteinContentOptions.isReadOnly());
     assertTrue(view.instrumentOptions.isReadOnly());
     assertTrue(view.proteinIdentificationOptions.isReadOnly());
     assertTrue(view.proteinIdentificationLinkField.isReadOnly());
@@ -1369,6 +1384,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodField.isReadOnly());
     assertFalse(view.sampleNumberProteinField.isReadOnly());
     assertFalse(view.sourceOptions.isReadOnly());
+    assertFalse(view.proteinContentOptions.isReadOnly());
     assertFalse(view.instrumentOptions.isReadOnly());
     assertFalse(view.proteinIdentificationOptions.isReadOnly());
     assertFalse(view.proteinIdentificationLinkField.isReadOnly());
@@ -1453,6 +1469,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertTrue(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -1533,6 +1550,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertTrue(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -1657,6 +1675,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertTrue(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -1737,6 +1756,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertTrue(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -1821,6 +1841,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertTrue(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -1901,6 +1922,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertTrue(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -1999,6 +2021,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertFalse(view.proteinContentOptions.isVisible());
     assertFalse(view.instrumentOptions.isVisible());
     assertFalse(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -2080,6 +2103,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertFalse(view.proteinContentOptions.isVisible());
     assertFalse(view.instrumentOptions.isVisible());
     assertFalse(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -2190,6 +2214,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertFalse(view.proteinContentOptions.isVisible());
     assertFalse(view.instrumentOptions.isVisible());
     assertFalse(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -2271,6 +2296,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertFalse(view.sampleNumberProteinField.isVisible());
     assertFalse(view.sourceOptions.isVisible());
+    assertFalse(view.proteinContentOptions.isVisible());
     assertFalse(view.instrumentOptions.isVisible());
     assertFalse(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -2355,6 +2381,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertTrue(view.sampleNumberProteinField.isVisible());
     assertTrue(view.sourceOptions.isVisible());
+    assertFalse(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertFalse(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -2435,6 +2462,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertTrue(view.sampleNumberProteinField.isVisible());
     assertTrue(view.sourceOptions.isVisible());
+    assertFalse(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertFalse(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -2519,6 +2547,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertTrue(view.sampleNumberProteinField.isVisible());
     assertTrue(view.sourceOptions.isVisible());
+    assertFalse(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertFalse(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -2599,6 +2628,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.exclusionsLabel.isVisible());
     assertTrue(view.sampleNumberProteinField.isVisible());
     assertTrue(view.sourceOptions.isVisible());
+    assertFalse(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
     assertFalse(view.proteinIdentificationOptions.isVisible());
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -3997,6 +4027,26 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void submit_MissingProteinContent() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.proteinContentOptions.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.proteinContentOptions.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
   public void submit_MissingInstrument() {
     presenter.init(view);
     presenter.setEditable(true);
@@ -4175,7 +4225,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isMsms());
     assertEquals(false, submission.isExactMsms());
     assertEquals(null, submission.getMudPitFraction());
-    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinContent, submission.getProteinContent());
     assertEquals(proteinName, submission.getProtein());
     assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
@@ -4305,7 +4355,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isMsms());
     assertEquals(false, submission.isExactMsms());
     assertEquals(null, submission.getMudPitFraction());
-    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinContent, submission.getProteinContent());
     assertEquals(proteinName, submission.getProtein());
     assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
@@ -4447,7 +4497,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isMsms());
     assertEquals(false, submission.isExactMsms());
     assertEquals(null, submission.getMudPitFraction());
-    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinContent, submission.getProteinContent());
     assertEquals(proteinName, submission.getProtein());
     assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
@@ -4577,7 +4627,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isMsms());
     assertEquals(false, submission.isExactMsms());
     assertEquals(null, submission.getMudPitFraction());
-    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinContent, submission.getProteinContent());
     assertEquals(proteinName, submission.getProtein());
     assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
@@ -4708,7 +4758,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isMsms());
     assertEquals(false, submission.isExactMsms());
     assertEquals(null, submission.getMudPitFraction());
-    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinContent, submission.getProteinContent());
     assertEquals(proteinName, submission.getProtein());
     assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
@@ -4847,7 +4897,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isMsms());
     assertEquals(false, submission.isExactMsms());
     assertEquals(null, submission.getMudPitFraction());
-    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinContent, submission.getProteinContent());
     assertEquals(proteinName, submission.getProtein());
     assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
@@ -4951,7 +5001,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isMsms());
     assertEquals(false, submission.isExactMsms());
     assertEquals(null, submission.getMudPitFraction());
-    assertEquals(null, submission.getProteinContent());
+    assertEquals(proteinContent, submission.getProteinContent());
     assertEquals(proteinName, submission.getProtein());
     assertEquals(proteinWeight, submission.getMolecularWeight(), 0.0001);
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
