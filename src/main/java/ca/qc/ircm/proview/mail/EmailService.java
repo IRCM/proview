@@ -19,9 +19,10 @@ package ca.qc.ircm.proview.mail;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
-import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.util.MimeMessageParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -60,54 +61,55 @@ public class EmailService {
   }
 
   /**
-   * Sends an email with text content only.
+   * Creates a plain text email.
    *
-   * @param email
-   *          email with text content only
-   * @throws EmailException
-   *           could not send email
+   * @return plain text email
+   * @throws MessagingException
+   *           could not create email
    */
-  public void sendTextEmail(TextEmail email) throws EmailException {
-    if (!mailConfiguration.isEnabled()) {
-      return;
-    }
-
-    try {
-      MimeMessage springEmail = new MimeMessage(templateMessage);
-      MimeMessageHelper helper = new MimeMessageHelper(springEmail);
-      helper.setTo(email.getReceivers().toArray(new String[0]));
-      helper.setSubject(email.getSubject());
-      helper.setText(email.getTextMessage());
-      // Send email.
-      mailSender.send(springEmail);
-    } catch (MessagingException e) {
-      logger.error("Could not send error email with content {}", email.getTextMessage(), e);
-    }
+  public MimeMessageHelper textEmail() throws MessagingException {
+    MimeMessage message = new MimeMessage(templateMessage);
+    return new MimeMessageHelper(message);
   }
 
   /**
-   * Sends an email with HTML content.
+   * Creates a multipart email.
+   *
+   * @return multipart email
+   * @throws MessagingException
+   *           could not create email
+   */
+  public MimeMessageHelper htmlEmail() throws MessagingException {
+    MimeMessage message = new MimeMessage(templateMessage);
+    return new MimeMessageHelper(message, true);
+  }
+
+  /**
+   * Sends an email.
    *
    * @param email
-   *          email with HTML content
-   * @throws EmailException
+   *          email with text content only
+   * @throws MessagingException
    *           could not send email
    */
-  public void sendHtmlEmail(final HtmlEmail email) throws EmailException {
+  public void send(MimeMessageHelper email) throws MessagingException {
     if (!mailConfiguration.isEnabled()) {
       return;
     }
 
     try {
-      MimeMessage springEmail = new MimeMessage(templateMessage);
-      MimeMessageHelper helper = new MimeMessageHelper(springEmail, true);
-      helper.setTo(email.getReceivers().toArray(new String[0]));
-      helper.setSubject(email.getSubject());
-      helper.setText(email.getTextMessage(), email.getHtmlMessage());
-      // Send email.
-      mailSender.send(springEmail);
-    } catch (MessagingException e) {
-      logger.error("Could not send error email with content {}", email.getTextMessage(), e);
+      mailSender.send(email.getMimeMessage());
+    } catch (MailException e) {
+      logger.error("Could not send error email with content {}", message(email), e);
+    }
+  }
+
+  private String message(MimeMessageHelper email) {
+    MimeMessageParser parser = new MimeMessageParser(email.getMimeMessage());
+    if (parser.getPlainContent() != null) {
+      return parser.getPlainContent();
+    } else {
+      return parser.getHtmlContent();
     }
   }
 
@@ -137,11 +139,10 @@ public class EmailService {
     error.printStackTrace(new PrintWriter(stringWriter));
     message.append(stringWriter.toString());
     try {
-      MimeMessage email = new MimeMessage(templateMessage);
-      MimeMessageHelper helper = new MimeMessageHelper(email);
-      helper.setText(message.toString());
-      // Send email.
-      mailSender.send(email);
+      MimeMessageHelper email = textEmail();
+      email.setTo(mailConfiguration.getTo());
+      email.setText(message.toString());
+      send(email);
     } catch (MessagingException e) {
       logger.error("Could not send error email with content {}", message.toString(), e);
     }

@@ -35,7 +35,6 @@ import ca.qc.ircm.proview.SpringConfiguration;
 import ca.qc.ircm.proview.cache.CacheFlusher;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.mail.HtmlEmail;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.HashedPassword;
@@ -51,6 +50,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.TemplateEngine;
 
@@ -90,15 +90,17 @@ public class UserServiceTest {
   private AuthorizationService authorizationService;
   @Mock
   private CacheFlusher cacheFlusher;
+  @Mock
+  private MimeMessageHelper email;
   @Captor
-  private ArgumentCaptor<HtmlEmail> emailCaptor;
+  private ArgumentCaptor<String> stringCaptor;
   private HashedPassword hashedPassword;
 
   /**
    * Before test.
    */
   @Before
-  public void beforeTest() {
+  public void beforeTest() throws Throwable {
     SpringConfiguration springConfiguration = new SpringConfiguration();
     TemplateEngine templateEngine = springConfiguration.templateEngine();
     userServiceImpl = new UserService(entityManager, authenticationService, templateEngine,
@@ -111,6 +113,7 @@ public class UserServiceTest {
     });
     hashedPassword = new HashedPassword("da78f3a74658706", "4ae8470fc73a83f369fed012", 1);
     when(authenticationService.hashPassword(any(String.class))).thenReturn(hashedPassword);
+    when(emailService.htmlEmail()).thenReturn(email);
   }
 
   private <D extends Data> D find(Collection<D> datas, long id) {
@@ -511,24 +514,27 @@ public class UserServiceTest {
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     assertEquals(false, user.isAdmin());
-    verify(emailService).sendHtmlEmail(emailCaptor.capture());
-    HtmlEmail email = emailCaptor.getValue();
-    email.getReceivers().contains("benoit.coulombe@ircm.qc.ca");
+    verify(emailService).htmlEmail();
+    verify(emailService).send(email);
+    verify(email).addTo("benoit.coulombe@ircm.qc.ca");
     MessageResource messageResource =
         new MessageResource(UserService.class.getName() + "_Email", Locale.CANADA_FRENCH);
-    assertEquals(messageResource.message("email.subject"), email.getSubject());
-    email.getHtmlMessage().contains("Christian");
-    email.getHtmlMessage().contains("Poitras");
-    email.getTextMessage().contains("Christian");
-    email.getTextMessage().contains("Poitras");
+    verify(email).setSubject(messageResource.message("email.subject"));
+    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
+    String textContent = stringCaptor.getAllValues().get(0);
+    String htmlContent = stringCaptor.getAllValues().get(1);
+    htmlContent.contains("Christian");
+    htmlContent.contains("Poitras");
+    textContent.contains("Christian");
+    textContent.contains("Poitras");
     String url =
         applicationConfiguration.getUrl(webContext.getValidateUserUrl(Locale.CANADA_FRENCH));
-    assertTrue(email.getTextMessage().contains(url));
-    assertTrue(email.getHtmlMessage().contains(url));
-    assertFalse(email.getTextMessage().contains("???"));
-    assertFalse(email.getHtmlMessage().contains("???"));
-    assertFalse(email.getTextMessage().contains("$resourceTool"));
-    assertFalse(email.getHtmlMessage().contains("$resourceTool"));
+    assertTrue(textContent.contains(url));
+    assertTrue(htmlContent.contains(url));
+    assertFalse(textContent.contains("???"));
+    assertFalse(htmlContent.contains("???"));
+    assertFalse(textContent.contains("$resourceTool"));
+    assertFalse(htmlContent.contains("$resourceTool"));
   }
 
   @Test
@@ -625,8 +631,8 @@ public class UserServiceTest {
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     assertEquals(false, user.isAdmin());
-    verify(emailService, times(3)).sendHtmlEmail(emailCaptor.capture());
-    Set<String> receivers = new HashSet<>();
+    verify(emailService, times(3)).htmlEmail();
+    verify(emailService, times(3)).send(email);
     Set<String> subjects = new HashSet<>();
     MessageResource frenchMessageResource =
         new MessageResource(UserService.class.getName() + "_Email", Locale.CANADA_FRENCH);
@@ -634,24 +640,22 @@ public class UserServiceTest {
     MessageResource englishMessageResource =
         new MessageResource(UserService.class.getName() + "_Email", Locale.ENGLISH);
     subjects.add(englishMessageResource.message("newLaboratory.email.subject"));
-    for (HtmlEmail email : emailCaptor.getAllValues()) {
-      receivers.addAll(email.getReceivers());
-      assertTrue(subjects.contains(email.getSubject()));
-      email.getHtmlMessage().contains("Christian");
-      email.getHtmlMessage().contains("Poitras");
-      email.getTextMessage().contains("Christian");
-      email.getTextMessage().contains("Poitras");
-      String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(Locale.CANADA));
-      assertTrue(email.getTextMessage().contains(url));
-      assertTrue(email.getHtmlMessage().contains(url));
-      assertFalse(email.getTextMessage().contains("???"));
-      assertFalse(email.getHtmlMessage().contains("???"));
-      assertFalse(email.getTextMessage().contains("$resourceTool"));
-      assertFalse(email.getHtmlMessage().contains("$resourceTool"));
+    verify(email).addTo("christian.poitras@ircm.qc.ca");
+    verify(email).addTo("liam.li@ircm.qc.ca");
+    verify(email).addTo("jackson.smith@ircm.qc.ca");
+    verify(email, times(3)).setSubject(stringCaptor.capture());
+    for (String subject : stringCaptor.getAllValues()) {
+      assertTrue(subjects.contains(subject));
     }
-    receivers.contains("christian.poitras@ircm.qc.ca");
-    receivers.contains("liam.li@ircm.qc.ca");
-    receivers.contains("jackson.smith@ircm.qc.ca");
+    stringCaptor.getAllValues().clear();
+    verify(email, times(3)).setText(stringCaptor.capture(), stringCaptor.capture());
+    String textContent = stringCaptor.getAllValues().get(0);
+    String htmlContent = stringCaptor.getAllValues().get(1);
+    String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(Locale.CANADA));
+    assertTrue(textContent.contains(url));
+    assertTrue(htmlContent.contains(url));
+    assertFalse(textContent.contains("???"));
+    assertFalse(htmlContent.contains("???"));
   }
 
   @Test

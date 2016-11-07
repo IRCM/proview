@@ -19,8 +19,10 @@ package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.mail.MailConfiguration;
 import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -104,9 +106,23 @@ public class SpringConfiguration {
     MimeMessage message = mailSender().createMimeMessage();
     MimeMessageHelper helper = new MimeMessageHelper(message);
     helper.setFrom(mailConfiguration.getFrom());
-    helper.setTo(mailConfiguration.getTo());
     helper.setSubject(mailConfiguration.getSubject());
     helper.setText("");
     return message;
+  }
+
+  /**
+   * Template message.
+   *
+   * @return template message
+   * @throws MessagingException
+   *           could not create template message
+   */
+  @Bean
+  @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public MimeMessageHelper emailHelper() throws MessagingException {
+    MimeMessage message = new MimeMessage(templateMessage());
+    MimeMessageHelper helper = new MimeMessageHelper(message);
+    return helper;
   }
 }

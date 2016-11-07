@@ -29,7 +29,6 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.mail.HtmlEmailDefault;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
@@ -46,9 +45,9 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.mail.EmailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -66,6 +65,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -357,7 +357,7 @@ public class SubmissionService {
     // Send email to protemic users to inform them of the submission.
     try {
       this.sendSubmissionToProteomicUsers(submission.getSamples(), user);
-    } catch (EmailException e) {
+    } catch (MessagingException e) {
       logger.error("Could not send email containing new submitted samples", e);
     }
 
@@ -428,7 +428,7 @@ public class SubmissionService {
    *          user who submitted samples
    */
   private void sendSubmissionToProteomicUsers(List<SubmissionSample> samples, User user)
-      throws EmailException {
+      throws MessagingException {
     Context context = new Context();
     context.setVariable("tab", "\t");
     context.setVariable("user", user);
@@ -437,20 +437,19 @@ public class SubmissionService {
     context.setVariable("containerType", samples.get(0).getOriginalContainer().getType());
 
     final List<User> proteomicUsers = adminUsers();
-    HtmlEmailDefault email = new HtmlEmailDefault();
+    MimeMessageHelper email = emailService.htmlEmail();
     email.setSubject("New samples were submitted");
     String htmlTemplateLocation =
         "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.html";
     String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
-    email.setHtmlMessage(htmlEmail);
     String textTemplateLocation =
         "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.txt";
     String textEmail = templateEngine.process(textTemplateLocation, context);
-    email.setTextMessage(textEmail);
+    email.setText(textEmail, htmlEmail);
     for (User proteomicUser : proteomicUsers) {
-      email.addReceiver(proteomicUser.getEmail());
+      email.addTo(proteomicUser.getEmail());
     }
-    emailService.sendHtmlEmail(email);
+    emailService.send(email);
   }
 
   /**

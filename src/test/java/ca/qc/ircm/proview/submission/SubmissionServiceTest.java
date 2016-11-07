@@ -35,7 +35,6 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.mail.HtmlEmail;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
@@ -67,6 +66,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.TemplateEngine;
 
@@ -119,10 +119,12 @@ public class SubmissionServiceTest {
   private PricingEvaluator pricingEvaluator;
   @Mock
   private Activity activity;
+  @Mock
+  private MimeMessageHelper email;
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
   @Captor
-  private ArgumentCaptor<HtmlEmail> htmlEmailCaptor;
+  private ArgumentCaptor<String> stringCaptor;
   private User user;
   private final Random random = new Random();
   private Optional<Activity> optionalActivity;
@@ -131,12 +133,13 @@ public class SubmissionServiceTest {
    * Before test.
    */
   @Before
-  public void beforeTest() {
+  public void beforeTest() throws Throwable {
     submissionServiceImpl = new SubmissionService(entityManager, queryFactory,
         submissionActivityService, activityService, pricingEvaluator, templateEngine, tubeService,
         emailService, authorizationService);
     user = entityManager.find(User.class, 4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(emailService.htmlEmail()).thenReturn(email);
     optionalActivity = Optional.of(activity);
   }
 
@@ -1431,7 +1434,8 @@ public class SubmissionServiceTest {
     assertEquals(submission, submissionLogged);
 
     // Validate email that is sent to proteomic users.
-    verify(emailService, atLeastOnce()).sendHtmlEmail(any(HtmlEmail.class));
+    verify(emailService, atLeastOnce()).htmlEmail();
+    verify(emailService).send(email);
   }
 
   @Test
@@ -1584,7 +1588,8 @@ public class SubmissionServiceTest {
     assertEquals(submission, submissionLogged);
 
     // Validate email that is sent to proteomic users.
-    verify(emailService).sendHtmlEmail(any(HtmlEmail.class));
+    verify(emailService, atLeastOnce()).htmlEmail();
+    verify(emailService).send(email);
   }
 
   @Test
@@ -1719,7 +1724,8 @@ public class SubmissionServiceTest {
     assertEquals(submission, submissionLogged);
 
     // Validate email that is sent to proteomic users.
-    verify(emailService).sendHtmlEmail(any(HtmlEmail.class));
+    verify(emailService, atLeastOnce()).htmlEmail();
+    verify(emailService).send(email);
   }
 
   @Test
@@ -1835,7 +1841,8 @@ public class SubmissionServiceTest {
     Submission submissionLogged = submissionCaptor.getValue();
     assertEquals(submission, submissionLogged);
 
-    verify(emailService).sendHtmlEmail(any(HtmlEmail.class));
+    verify(emailService, atLeastOnce()).htmlEmail();
+    verify(emailService).send(email);
   }
 
   @Test
@@ -1898,22 +1905,20 @@ public class SubmissionServiceTest {
     verify(submissionActivityService).insert(any(Submission.class));
     verify(activityService).insert(activity);
     // Validate email that is sent to proteomic users.
-    verify(emailService, atLeastOnce()).sendHtmlEmail(htmlEmailCaptor.capture());
-    List<HtmlEmail> htmlEmails = htmlEmailCaptor.getAllValues();
-    Collection<String> receivers = new HashSet<>();
-    for (HtmlEmail email : htmlEmails) {
-      receivers.addAll(email.getReceivers());
-    }
-    assertEquals(true, receivers.contains("christian.poitras@ircm.qc.ca"));
-    assertEquals(true, receivers.contains("liam.li@ircm.qc.ca"));
-    assertEquals(true, receivers.contains("jackson.smith@ircm.qc.ca"));
-    assertEquals(false, receivers.contains("benoit.coulombe@ircm.qc.ca"));
-    HtmlEmail htmlEmail = htmlEmails.get(0);
-    assertEquals("New samples were submitted", htmlEmail.getSubject());
-    assertEquals(true, htmlEmail.getHtmlMessage().contains("unit_test_eluate_01"));
-    assertEquals(true, htmlEmail.getTextMessage().contains("unit_test_eluate_01"));
-    assertFalse(htmlEmail.getTextMessage().contains("???"));
-    assertFalse(htmlEmail.getHtmlMessage().contains("???"));
+    verify(emailService, atLeastOnce()).htmlEmail();
+    verify(emailService, atLeastOnce()).send(email);
+    verify(email).addTo("christian.poitras@ircm.qc.ca");
+    verify(email).addTo("liam.li@ircm.qc.ca");
+    verify(email).addTo("jackson.smith@ircm.qc.ca");
+    verify(email, never()).addTo("benoit.coulombe@ircm.qc.ca");
+    verify(email).setSubject("New samples were submitted");
+    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
+    String textContent = stringCaptor.getAllValues().get(0);
+    String htmlContent = stringCaptor.getAllValues().get(1);
+    assertEquals(true, textContent.contains("unit_test_eluate_01"));
+    assertEquals(true, htmlContent.contains("unit_test_eluate_01"));
+    assertFalse(textContent.contains("???"));
+    assertFalse(htmlContent.contains("???"));
   }
 
   @Test

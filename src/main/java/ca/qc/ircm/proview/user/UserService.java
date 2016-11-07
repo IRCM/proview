@@ -24,16 +24,15 @@ import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.cache.CacheFlusher;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.mail.HtmlEmailDefault;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
-import org.apache.commons.mail.EmailException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
@@ -45,6 +44,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -74,9 +74,8 @@ public class UserService {
   protected UserService() {
   }
 
-  protected UserService(EntityManager entityManager,
-      AuthenticationService authenticationService, TemplateEngine templateEngine,
-      EmailService emailService, CacheFlusher cacheFlusher,
+  protected UserService(EntityManager entityManager, AuthenticationService authenticationService,
+      TemplateEngine templateEngine, EmailService emailService, CacheFlusher cacheFlusher,
       ApplicationConfiguration applicationConfiguration,
       AuthorizationService authorizationService) {
     this.entityManager = entityManager;
@@ -265,7 +264,7 @@ public class UserService {
     // Send email to manager to inform him that a new user has registered.
     try {
       this.sendEmailForNewUser(user, manager, webContext);
-    } catch (Throwable e) {
+    } catch (MessagingException e) {
       logger.warn(e.getMessage(), e);
     }
 
@@ -273,7 +272,7 @@ public class UserService {
   }
 
   private void sendEmailForNewUser(final User user, final User manager,
-      final RegisterUserWebContext webContext) throws EmailException {
+      final RegisterUserWebContext webContext) throws MessagingException {
     // Get manager's prefered locale.
     Locale locale = Locale.CANADA;
     if (manager.getLocale() != null) {
@@ -284,8 +283,8 @@ public class UserService {
     final String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(locale));
 
     // Prepare email content.
-    HtmlEmailDefault email = new HtmlEmailDefault();
-    email.addReceiver(manager.getEmail());
+    MimeMessageHelper email = emailService.htmlEmail();
+    email.addTo(manager.getEmail());
     MessageResource messageResource =
         new MessageResource(UserService.class.getName() + "_Email", locale);
     String subject = messageResource.message("email.subject");
@@ -297,13 +296,12 @@ public class UserService {
     String htmlTemplateLocation =
         "/" + UserService.class.getName().replace(".", "/") + "_Email.html";
     String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
-    email.setHtmlMessage(htmlEmail);
     String textTemplateLocation =
         "/" + UserService.class.getName().replace(".", "/") + "_Email.txt";
     String textEmail = templateEngine.process(textTemplateLocation, context);
-    email.setTextMessage(textEmail);
+    email.setText(textEmail, htmlEmail);
 
-    emailService.sendHtmlEmail(email);
+    emailService.send(email);
   }
 
   private void registerNewLaboratory(User manager, String password,
@@ -336,7 +334,7 @@ public class UserService {
   }
 
   private void sendEmailForNewLaboratory(final Laboratory laboratory, final User manager,
-      final RegisterUserWebContext webContext) throws EmailException {
+      final RegisterUserWebContext webContext) throws MessagingException {
     List<User> adminUsers = adminUsers();
 
     for (final User adminUser : adminUsers) {
@@ -348,24 +346,23 @@ public class UserService {
       // Prepare URL used to validate laboratory.
       final String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(locale));
       // Prepare email content.
-      HtmlEmailDefault email = new HtmlEmailDefault();
+      MimeMessageHelper email = emailService.htmlEmail();
       MessageResource messageResource =
           new MessageResource(UserService.class.getName() + "_Email", locale);
       String subject = messageResource.message("newLaboratory.email.subject");
       email.setSubject(subject);
-      email.addReceiver(adminUser.getEmail());
+      email.addTo(adminUser.getEmail());
       Context context = new Context();
       context.setVariable("user", manager);
       context.setVariable("newLaboratory", true);
       context.setVariable("url", url);
       String htmlTemplateLocation = UserService.class.getName().replace(".", "/") + "_Email.html";
       String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
-      email.setHtmlMessage(htmlEmail);
       String textTemplateLocation = UserService.class.getName().replace(".", "/") + "_Email.txt";
       String textEmail = templateEngine.process(textTemplateLocation, context);
-      email.setTextMessage(textEmail);
+      email.setText(textEmail, htmlEmail);
 
-      emailService.sendHtmlEmail(email);
+      emailService.send(email);
     }
   }
 
