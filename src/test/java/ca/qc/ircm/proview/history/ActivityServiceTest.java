@@ -193,7 +193,7 @@ public class ActivityServiceTest {
 
   @Test
   public void search() throws Exception {
-    ActivitySearchParametersBuilder parameters = new ActivitySearchParametersBuilder();
+    ActivityFilterBuilder parameters = new ActivityFilterBuilder();
     parameters.actionType(ActionType.INSERT);
     parameters.tableName("submission");
     parameters.recordId(1L);
@@ -1046,7 +1046,7 @@ public class ActivityServiceTest {
     activityServiceImpl.insert(activity);
 
     entityManager.flush();
-    ActivitySearchParametersBuilder parameters = new ActivitySearchParametersBuilder();
+    ActivityFilterBuilder parameters = new ActivityFilterBuilder();
     parameters.actionType(ActionType.INSERT);
     parameters.tableName("sample");
     parameters.recordId(45L);
@@ -1100,7 +1100,7 @@ public class ActivityServiceTest {
     activityServiceImpl.insert(activity);
 
     entityManager.flush();
-    ActivitySearchParametersBuilder parameters = new ActivitySearchParametersBuilder();
+    ActivityFilterBuilder parameters = new ActivityFilterBuilder();
     parameters.actionType(ActionType.INSERT);
     parameters.tableName("sample");
     parameters.recordId(45L);

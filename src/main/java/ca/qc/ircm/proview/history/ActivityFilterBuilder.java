@@ -22,8 +22,8 @@ import ca.qc.ircm.proview.history.Activity.ActionType;
 /**
  * Search parameters for activity searches.
  */
-public class ActivitySearchParametersBuilder {
-  private static class ActivitySearchParametersDefault implements ActivitySearchParameters {
+public class ActivityFilterBuilder {
+  private static class ActivitySearchParametersDefault implements ActivityFilter {
     private ActionType actionType;
     private String tableName;
     private Long recordId;
@@ -46,22 +46,22 @@ public class ActivitySearchParametersBuilder {
 
   private final ActivitySearchParametersDefault parameters = new ActivitySearchParametersDefault();
 
-  public ActivitySearchParametersBuilder actionType(ActionType actionType) {
+  public ActivityFilterBuilder actionType(ActionType actionType) {
     parameters.actionType = actionType;
     return this;
   }
 
-  public ActivitySearchParametersBuilder tableName(String tableName) {
+  public ActivityFilterBuilder tableName(String tableName) {
     parameters.tableName = tableName;
     return this;
   }
 
-  public ActivitySearchParametersBuilder recordId(Long recordId) {
+  public ActivityFilterBuilder recordId(Long recordId) {
     parameters.recordId = recordId;
     return this;
   }
 
-  public ActivitySearchParameters build() {
+  public ActivityFilter build() {
     return parameters;
   }
 }

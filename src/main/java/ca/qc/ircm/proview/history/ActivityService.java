@@ -149,7 +149,7 @@ public class ActivityService {
    *          search parameters
    * @return all activities that matches search parameters
    */
-  public List<Activity> search(ActivitySearchParameters parameters) {
+  public List<Activity> search(ActivityFilter parameters) {
     if (parameters == null) {
       return new ArrayList<>();
     }
