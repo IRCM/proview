@@ -32,8 +32,8 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -84,8 +84,8 @@ public class DilutionServiceTest {
    */
   @Before
   public void beforeTest() {
-    dilutionServiceImpl = new DilutionService(entityManager, queryFactory,
-        dilutionActivityService, activityService, authorizationService);
+    dilutionServiceImpl = new DilutionService(entityManager, queryFactory, dilutionActivityService,
+        activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -166,7 +166,7 @@ public class DilutionServiceTest {
   public void insert_Tube() {
     SubmissionSample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
-    final List<DilutedSample> dilutedSamples = new ArrayList<DilutedSample>();
+    final List<DilutedSample> dilutedSamples = new ArrayList<>();
     DilutedSample dilutedSample = new DilutedSample();
     dilutedSample.setComments("unit test");
     dilutedSample.setSample(sample);
@@ -210,7 +210,7 @@ public class DilutionServiceTest {
   public void insert_Spot() {
     SubmissionSample sample = new SubmissionSample(1L);
     PlateSpot spot = new PlateSpot(128L);
-    final List<DilutedSample> dilutedSamples = new ArrayList<DilutedSample>();
+    final List<DilutedSample> dilutedSamples = new ArrayList<>();
     DilutedSample dilutedSample = new DilutedSample();
     dilutedSample.setComments("unit test");
     dilutedSample.setSample(sample);

@@ -32,8 +32,8 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -168,7 +168,7 @@ public class DigestionServiceTest {
     digestion.setProtocol(new DigestionProtocol(1L));
     SubmissionSample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
-    final List<DigestedSample> digestedSamples = new ArrayList<DigestedSample>();
+    final List<DigestedSample> digestedSamples = new ArrayList<>();
     DigestedSample digestedSample = new DigestedSample();
     digestedSample.setComments("unit test");
     digestedSample.setSample(sample);
@@ -208,7 +208,7 @@ public class DigestionServiceTest {
     digestion.setProtocol(new DigestionProtocol(1L));
     SubmissionSample sample = new SubmissionSample(1L);
     PlateSpot spot = new PlateSpot(128L);
-    final List<DigestedSample> digestedSamples = new ArrayList<DigestedSample>();
+    final List<DigestedSample> digestedSamples = new ArrayList<>();
     DigestedSample digestedSample = new DigestedSample();
     digestedSample.setComments("unit test");
     digestedSample.setSample(sample);

@@ -33,8 +33,8 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.DestinationUsedInTreatmentException;
@@ -93,7 +93,8 @@ public class FractionationServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
-  private Optional<Fractionation> find(Collection<Fractionation> fractionations, long id) {
+  private Optional<Fractionation> findFractionation(Collection<Fractionation> fractionations,
+      long id) {
     return fractionations.stream().filter(f -> f.getId() == id).findFirst();
   }
 
@@ -126,8 +127,7 @@ public class FractionationServiceTest {
     assertEquals((Long) 2L, fractionationDetail.getId());
     assertEquals(SampleContainerType.TUBE, fractionationDetail.getContainer().getType());
     assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
-    assertEquals(SampleContainerType.TUBE,
-        fractionationDetail.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.TUBE, fractionationDetail.getDestinationContainer().getType());
     assertEquals((Long) 6L, fractionationDetail.getDestinationContainer().getId());
     assertEquals(null, fractionationDetail.getComments());
     assertEquals((Integer) 1, fractionationDetail.getPosition());
@@ -183,8 +183,8 @@ public class FractionationServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, fractionations.size());
-    assertTrue(find(fractionations, 2).isPresent());
-    assertTrue(find(fractionations, 8).isPresent());
+    assertTrue(findFractionation(fractionations, 2).isPresent());
+    assertTrue(findFractionation(fractionations, 8).isPresent());
   }
 
   @Test
@@ -198,7 +198,7 @@ public class FractionationServiceTest {
   public void insert_Tube() {
     Fractionation fractionation = new Fractionation();
     fractionation.setFractionationType(Fractionation.FractionationType.MUDPIT);
-    final List<FractionationDetail> fractionationDetails = new ArrayList<FractionationDetail>();
+    final List<FractionationDetail> fractionationDetails = new ArrayList<>();
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     final Tube sourceTube = new Tube(1L);
     Tube destinationTube = new Tube();
@@ -221,7 +221,7 @@ public class FractionationServiceTest {
 
   @Test
   public void insert_Spot() {
-    final List<FractionationDetail> fractionationDetails = new ArrayList<FractionationDetail>();
+    final List<FractionationDetail> fractionationDetails = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     final Tube sourceTube = new Tube(1L);
     PlateSpot destinationSpot1 = new PlateSpot(134L);
@@ -265,8 +265,7 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, fractionationDetail.getSample().getId());
     assertEquals(SampleContainerType.TUBE, fractionationDetail.getContainer().getType());
     assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
-    assertEquals(SampleContainerType.SPOT,
-        fractionationDetail.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.SPOT, fractionationDetail.getDestinationContainer().getType());
     assertEquals((Long) 134L, fractionationDetail.getDestinationContainer().getId());
     assertEquals(fractionationDetail.getId(),
         fractionationDetail.getDestinationContainer().getTreatmentSample().getId());
@@ -276,8 +275,7 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, fractionationDetail.getSample().getId());
     assertEquals(SampleContainerType.TUBE, fractionationDetail.getContainer().getType());
     assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
-    assertEquals(SampleContainerType.SPOT,
-        fractionationDetail.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.SPOT, fractionationDetail.getDestinationContainer().getType());
     assertEquals((Long) 135L, fractionationDetail.getDestinationContainer().getId());
     assertEquals(fractionationDetail.getId(),
         fractionationDetail.getDestinationContainer().getTreatmentSample().getId());

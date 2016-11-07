@@ -32,8 +32,8 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -166,7 +166,7 @@ public class SolubilisationServiceTest {
 
   @Test
   public void insert_Tube() {
-    final List<SolubilisedSample> solubilisedSamples = new ArrayList<SolubilisedSample>();
+    final List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
     SolubilisedSample solubilisedSample = new SolubilisedSample();
@@ -208,7 +208,7 @@ public class SolubilisationServiceTest {
 
   @Test
   public void insert_Spot() {
-    final List<SolubilisedSample> solubilisedSamples = new ArrayList<SolubilisedSample>();
+    final List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
     SubmissionSample sample = new SubmissionSample(1L);
     PlateSpot spot = new PlateSpot(128L);
     SolubilisedSample solubilisedSample = new SolubilisedSample();

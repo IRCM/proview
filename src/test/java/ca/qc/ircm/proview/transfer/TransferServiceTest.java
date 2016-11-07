@@ -33,8 +33,8 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -85,8 +85,8 @@ public class TransferServiceTest {
    */
   @Before
   public void beforeTest() {
-    transferServiceImpl = new TransferService(entityManager, queryFactory,
-        transferActivityService, activityService, authorizationService);
+    transferServiceImpl = new TransferService(entityManager, queryFactory, transferActivityService,
+        activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -154,7 +154,7 @@ public class TransferServiceTest {
 
   @Test
   public void insert_TubeToTube() {
-    final List<SampleTransfer> sampleTransfers = new ArrayList<SampleTransfer>();
+    final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     final Tube sourceTube = new Tube(1L);
     Tube destinationTube = new Tube();
@@ -201,7 +201,7 @@ public class TransferServiceTest {
 
   @Test
   public void insert_TubeToSpot() {
-    final List<SampleTransfer> sampleTransfers = new ArrayList<SampleTransfer>();
+    final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
     PlateSpot destinationSpot = new PlateSpot(134L);
@@ -244,7 +244,7 @@ public class TransferServiceTest {
 
   @Test
   public void insert_SpotToTube() {
-    final List<SampleTransfer> sampleTransfers = new ArrayList<SampleTransfer>();
+    final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     final PlateSpot sourceSpot = new PlateSpot(128L);
     Tube destinationTube = new Tube();
@@ -289,7 +289,7 @@ public class TransferServiceTest {
 
   @Test
   public void insert_SpotToSpot() {
-    final List<SampleTransfer> sampleTransfers = new ArrayList<SampleTransfer>();
+    final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     PlateSpot sourceSpot = new PlateSpot(128L);
     PlateSpot destinationSpot = new PlateSpot(134L);

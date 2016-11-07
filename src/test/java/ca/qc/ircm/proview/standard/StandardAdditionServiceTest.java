@@ -32,8 +32,8 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -166,7 +166,7 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void insert_Tube() {
-    final List<AddedStandard> addedStandards = new ArrayList<AddedStandard>();
+    final List<AddedStandard> addedStandards = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
     AddedStandard addedStandard = new AddedStandard();
@@ -208,7 +208,7 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void insert_Spot() {
-    final List<AddedStandard> addedStandards = new ArrayList<AddedStandard>();
+    final List<AddedStandard> addedStandards = new ArrayList<>();
     SubmissionSample sample = new SubmissionSample(1L);
     PlateSpot spot = new PlateSpot(128L);
     AddedStandard addedStandard = new AddedStandard();

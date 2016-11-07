@@ -24,8 +24,8 @@ import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -218,7 +218,7 @@ public class TubeServiceTest {
   @Test
   public void generateTubeName_1WithExcludes() throws Throwable {
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
-    Set<String> exludes = new HashSet<String>();
+    Set<String> exludes = new HashSet<>();
     exludes.add("FAM119A_band_01_1");
 
     String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
@@ -230,7 +230,7 @@ public class TubeServiceTest {
   @Test
   public void generateTubeName_1WithRandomExcludes() throws Throwable {
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
-    Set<String> exludes = new HashSet<String>();
+    Set<String> exludes = new HashSet<>();
     exludes.add("test");
 
     String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
@@ -253,7 +253,7 @@ public class TubeServiceTest {
   @Test
   public void generateTubeName_NewWithExcludes() throws Throwable {
     Sample sample = new SubmissionSample(null, "test");
-    Set<String> exludes = new HashSet<String>();
+    Set<String> exludes = new HashSet<>();
     exludes.add("test");
     exludes.add("test_1");
     exludes.add("test_2");
@@ -267,7 +267,7 @@ public class TubeServiceTest {
   @Test
   public void generateTubeName_NewWithRandomExcludes() throws Throwable {
     Sample sample = new SubmissionSample(null, "test");
-    Set<String> exludes = new HashSet<String>();
+    Set<String> exludes = new HashSet<>();
     exludes.add("abc");
     exludes.add("abc_1");
     exludes.add("abc_2");
