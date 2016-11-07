@@ -284,7 +284,7 @@ public class UserServiceTest {
   @Test
   public void all_InvalidInLaboratory() throws Throwable {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyInvalid().inLaboratory(laboratory);
 
     List<User> users = userServiceImpl.all(parameters);
@@ -296,7 +296,7 @@ public class UserServiceTest {
 
   @Test
   public void all_Invalid() throws Throwable {
-    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyInvalid();
 
     List<User> users = userServiceImpl.all(parameters);
@@ -310,7 +310,7 @@ public class UserServiceTest {
   @Test
   public void all_ValidInLaboratory() throws Throwable {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyValid().inLaboratory(laboratory);
 
     List<User> users = userServiceImpl.all(parameters);
@@ -325,7 +325,7 @@ public class UserServiceTest {
 
   @Test
   public void all_Valid() throws Throwable {
-    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyValid();
 
     List<User> users = userServiceImpl.all(parameters);
@@ -348,7 +348,7 @@ public class UserServiceTest {
 
   @Test
   public void all_NonAdmin() throws Throwable {
-    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyNonAdmin();
 
     List<User> users = userServiceImpl.all(parameters);

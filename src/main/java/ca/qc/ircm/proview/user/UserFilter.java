@@ -22,7 +22,7 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 /**
  * Parameters to search users.
  */
-public interface SearchUserParameters {
+public interface UserFilter {
   public Laboratory getLaboratory();
 
   public boolean isActive();

@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.user;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
 
-public class SearchUserParametersBuilder implements SearchUserParameters {
+public class UserFilterBuilder implements UserFilter {
   private Laboratory laboratory;
   private boolean active;
   private boolean invalid;
@@ -31,7 +31,7 @@ public class SearchUserParametersBuilder implements SearchUserParameters {
     return laboratory;
   }
 
-  public SearchUserParametersBuilder inLaboratory(Laboratory laboratory) {
+  public UserFilterBuilder inLaboratory(Laboratory laboratory) {
     this.laboratory = laboratory;
     return this;
   }
@@ -41,7 +41,7 @@ public class SearchUserParametersBuilder implements SearchUserParameters {
     return active;
   }
 
-  public SearchUserParametersBuilder onlyActive() {
+  public UserFilterBuilder onlyActive() {
     this.active = true;
     return this;
   }
@@ -51,7 +51,7 @@ public class SearchUserParametersBuilder implements SearchUserParameters {
     return invalid;
   }
 
-  public SearchUserParametersBuilder onlyInvalid() {
+  public UserFilterBuilder onlyInvalid() {
     this.invalid = true;
     return this;
   }
@@ -61,7 +61,7 @@ public class SearchUserParametersBuilder implements SearchUserParameters {
     return valid;
   }
 
-  public SearchUserParametersBuilder onlyValid() {
+  public UserFilterBuilder onlyValid() {
     this.valid = true;
     return this;
   }
@@ -71,7 +71,7 @@ public class SearchUserParametersBuilder implements SearchUserParameters {
     return nonAdmin;
   }
 
-  public SearchUserParametersBuilder onlyNonAdmin() {
+  public UserFilterBuilder onlyNonAdmin() {
     this.nonAdmin = true;
     return this;
   }

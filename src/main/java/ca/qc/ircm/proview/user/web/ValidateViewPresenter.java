@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.QUser;
-import ca.qc.ircm.proview.user.SearchUserParametersBuilder;
+import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.Signed;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
@@ -180,7 +180,7 @@ public class ValidateViewPresenter {
   }
 
   private List<User> searchUsers() {
-    SearchUserParametersBuilder parameters = new SearchUserParametersBuilder();
+    UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyInvalid();
     if (!authorizationService.hasAdminRole()) {
       parameters = parameters.inLaboratory(signed.getUser().getLaboratory());

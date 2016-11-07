@@ -189,9 +189,9 @@ public class UserService {
    *          parameters
    * @return all users that match parameters
    */
-  public List<User> all(SearchUserParameters parameters) {
+  public List<User> all(UserFilter parameters) {
     if (parameters == null) {
-      parameters = new SearchUserParametersBuilder();
+      parameters = new UserFilterBuilder();
     }
     if (parameters.getLaboratory() == null) {
       authorizationService.checkAdminRole();
