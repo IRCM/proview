@@ -17,44 +17,13 @@
 
 package ca.qc.ircm.proview.security;
 
-import java.io.Serializable;
-
 /**
  * Password's versions.
  */
-public class PasswordVersion implements Serializable {
-  private static final long serialVersionUID = 3312553159341536042L;
-  private int version;
-  private String algorithm;
-  private int iterations;
+public interface PasswordVersion {
+  public int getVersion();
 
-  @Override
-  public String toString() {
-    return "PasswordVersionBean [version=" + version + ", algorithm=" + algorithm + ", iterations="
-        + iterations + "]";
-  }
+  public String getAlgorithm();
 
-  public int getVersion() {
-    return version;
-  }
-
-  public void setVersion(int version) {
-    this.version = version;
-  }
-
-  public String getAlgorithm() {
-    return algorithm;
-  }
-
-  public void setAlgorithm(String algorithm) {
-    this.algorithm = algorithm;
-  }
-
-  public int getIterations() {
-    return iterations;
-  }
-
-  public void setIterations(int iterations) {
-    this.iterations = iterations;
-  }
+  public int getIterations();
 }

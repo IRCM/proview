@@ -57,24 +57,22 @@ public class SecurityConfigurationTest {
 
   @Test
   public void base64CipherKey() throws Throwable {
-    securityConfiguration.setCipherKey("AcEG7RqLxcP6enoSBJKNjA==");
+    ((SecurityConfigurationSpringBoot) securityConfiguration)
+        .setCipherKey("AcEG7RqLxcP6enoSBJKNjA==");
     assertArrayEquals(Base64.decode("AcEG7RqLxcP6enoSBJKNjA=="),
         securityConfiguration.getCipherKeyBytes());
   }
 
   @Test
   public void multiplePasswordVersions() throws Throwable {
-    securityConfiguration = new SecurityConfiguration();
-    List<PasswordVersion> passwords = new ArrayList<>();
-    passwords
-        .add(new PasswordVersionBuilder().version(1).algorithm("SHA-256").iterations(1000).build());
-    passwords.add(
-        new PasswordVersionBuilder().version(4).algorithm("SHA-512").iterations(262144).build());
-    passwords
-        .add(new PasswordVersionBuilder().version(3).algorithm("SHA-512").iterations(1234).build());
-    securityConfiguration.setPasswords(passwords);
+    securityConfiguration = new SecurityConfigurationSpringBoot();
+    List<PasswordVersionSpringBoot> passwords = new ArrayList<>();
+    passwords.add(new PasswordVersionSpringBoot(1, "SHA-256", 1000));
+    passwords.add(new PasswordVersionSpringBoot(4, "SHA-512", 262144));
+    passwords.add(new PasswordVersionSpringBoot(3, "SHA-512", 1234));
+    ((SecurityConfigurationSpringBoot) securityConfiguration).setPasswords(passwords);
 
-    securityConfiguration.processPasswords();
+    ((SecurityConfigurationSpringBoot) securityConfiguration).processPasswords();
 
     PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
     assertEquals(4, passwordVersion.getVersion());
@@ -98,51 +96,50 @@ public class SecurityConfigurationTest {
 
   @Test(expected = IllegalStateException.class)
   public void noPasswords() throws Throwable {
-    securityConfiguration = new SecurityConfiguration();
-    List<PasswordVersion> passwords = new ArrayList<>();
-    securityConfiguration.setPasswords(passwords);
+    securityConfiguration = new SecurityConfigurationSpringBoot();
+    List<PasswordVersionSpringBoot> passwords = new ArrayList<>();
+    ((SecurityConfigurationSpringBoot) securityConfiguration).setPasswords(passwords);
 
-    securityConfiguration.processPasswords();
+    ((SecurityConfigurationSpringBoot) securityConfiguration).processPasswords();
   }
 
   @Test(expected = IllegalStateException.class)
   public void versionMissing() throws Throwable {
-    securityConfiguration = new SecurityConfiguration();
-    List<PasswordVersion> passwords = new ArrayList<>();
-    passwords.add(new PasswordVersionBuilder().algorithm("SHA-256").iterations(1000).build());
-    securityConfiguration.setPasswords(passwords);
+    securityConfiguration = new SecurityConfigurationSpringBoot();
+    List<PasswordVersionSpringBoot> passwords = new ArrayList<>();
+    passwords.add(new PasswordVersionSpringBoot(0, "SHA-256", 1000));
+    ((SecurityConfigurationSpringBoot) securityConfiguration).setPasswords(passwords);
 
-    securityConfiguration.processPasswords();
+    ((SecurityConfigurationSpringBoot) securityConfiguration).processPasswords();
   }
 
   @Test(expected = IllegalStateException.class)
   public void algorithmMissing() throws Throwable {
-    securityConfiguration = new SecurityConfiguration();
-    List<PasswordVersion> passwords = new ArrayList<>();
-    passwords.add(new PasswordVersionBuilder().version(1).iterations(1000).build());
-    securityConfiguration.setPasswords(passwords);
+    securityConfiguration = new SecurityConfigurationSpringBoot();
+    List<PasswordVersionSpringBoot> passwords = new ArrayList<>();
+    passwords.add(new PasswordVersionSpringBoot(1, null, 1000));
+    ((SecurityConfigurationSpringBoot) securityConfiguration).setPasswords(passwords);
 
-    securityConfiguration.processPasswords();
+    ((SecurityConfigurationSpringBoot) securityConfiguration).processPasswords();
   }
 
   @Test(expected = IllegalStateException.class)
   public void algorithmInvalid() throws Throwable {
-    securityConfiguration = new SecurityConfiguration();
-    List<PasswordVersion> passwords = new ArrayList<>();
-    passwords
-        .add(new PasswordVersionBuilder().version(1).algorithm("AAA").iterations(1000).build());
-    securityConfiguration.setPasswords(passwords);
+    securityConfiguration = new SecurityConfigurationSpringBoot();
+    List<PasswordVersionSpringBoot> passwords = new ArrayList<>();
+    passwords.add(new PasswordVersionSpringBoot(1, "AAA", 1000));
+    ((SecurityConfigurationSpringBoot) securityConfiguration).setPasswords(passwords);
 
-    securityConfiguration.processPasswords();
+    ((SecurityConfigurationSpringBoot) securityConfiguration).processPasswords();
   }
 
   @Test(expected = IllegalStateException.class)
   public void iterationsMissing() throws Throwable {
-    securityConfiguration = new SecurityConfiguration();
-    List<PasswordVersion> passwords = new ArrayList<>();
-    passwords.add(new PasswordVersionBuilder().version(1).algorithm("AAA").build());
-    securityConfiguration.setPasswords(passwords);
+    securityConfiguration = new SecurityConfigurationSpringBoot();
+    List<PasswordVersionSpringBoot> passwords = new ArrayList<>();
+    passwords.add(new PasswordVersionSpringBoot(1, "SHA-256", 0));
+    ((SecurityConfigurationSpringBoot) securityConfiguration).setPasswords(passwords);
 
-    securityConfiguration.processPasswords();
+    ((SecurityConfigurationSpringBoot) securityConfiguration).processPasswords();
   }
 }
