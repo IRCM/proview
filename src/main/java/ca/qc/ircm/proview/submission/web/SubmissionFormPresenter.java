@@ -1480,6 +1480,7 @@ public class SubmissionFormPresenter {
         copySamplesToSubmission(submission);
       } else {
         submission.setProteolyticDigestionMethod(null);
+        submission.setProteinContent(null);
         submission.setProteinIdentification(null);
       }
       if (submission.getService() == SMALL_MOLECULE) {
