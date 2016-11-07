@@ -34,13 +34,13 @@ public class SampleContainerTypeTest {
 
   @Test
   public void getLabel_Tube() {
-    assertEquals("To approve", TUBE.getLabel(Locale.ENGLISH));
-    assertEquals("À approuver", TUBE.getLabel(Locale.FRENCH));
+    assertEquals("Tube", TUBE.getLabel(Locale.ENGLISH));
+    assertEquals("Tube", TUBE.getLabel(Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Spot() {
-    assertEquals("To receive", SPOT.getLabel(Locale.ENGLISH));
-    assertEquals("À recevoir", SPOT.getLabel(Locale.FRENCH));
+    assertEquals("Spot", SPOT.getLabel(Locale.ENGLISH));
+    assertEquals("Puit", SPOT.getLabel(Locale.FRENCH));
   }
 }
