@@ -26,7 +26,7 @@ public class UpdateActivityBuilder {
   private String column;
   private Object oldValue;
   private Object newValue;
-  private DatabaseConverter converter = new DatabaseConverterImpl();
+  private DatabaseConverter converter = new DatabaseConverter();
 
   public UpdateActivityBuilder() {
   }

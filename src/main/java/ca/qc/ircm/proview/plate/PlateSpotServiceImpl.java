@@ -35,11 +35,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- * Default implementation of plate's spots services.
+ * Services for plate's spots.
  */
 @Service
 @Transactional
-public class PlateSpotServiceImpl implements PlateSpotService {
+public class PlateSpotServiceImpl {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -57,7 +57,13 @@ public class PlateSpotServiceImpl implements PlateSpotService {
     this.authorizationService = authorizationService;
   }
 
-  @Override
+  /**
+   * Selects spot from database.
+   *
+   * @param id
+   *          database identifier of spot
+   * @return spot
+   */
   public PlateSpot get(Long id) {
     if (id == null) {
       return null;
@@ -67,7 +73,15 @@ public class PlateSpotServiceImpl implements PlateSpotService {
     return entityManager.find(PlateSpot.class, id);
   }
 
-  @Override
+  /**
+   * Returns PlateSpot on plate at specified location.
+   *
+   * @param plateParam
+   *          spot's plate
+   * @param location
+   *          spot's location on plate
+   * @return plateSpot on plate at specified location
+   */
   public PlateSpot get(Plate plateParam, SpotLocation location) {
     if (plateParam == null || location == null) {
       return null;
@@ -83,7 +97,13 @@ public class PlateSpotServiceImpl implements PlateSpotService {
     return query.fetchOne();
   }
 
-  @Override
+  /**
+   * Selects most recent spot where sample was put.
+   *
+   * @param sample
+   *          sample
+   * @return most recent spot where sample was put
+   */
   public PlateSpot last(Sample sample) {
     if (sample == null) {
       return null;
@@ -98,7 +118,13 @@ public class PlateSpotServiceImpl implements PlateSpotService {
     return query.fetchOne();
   }
 
-  @Override
+  /**
+   * Selects all plate's spots.
+   *
+   * @param plate
+   *          plate
+   * @return all plate's spots
+   */
   public List<PlateSpot> all(Plate plate) {
     if (plate == null) {
       return new ArrayList<>();
@@ -111,7 +137,15 @@ public class PlateSpotServiceImpl implements PlateSpotService {
     return query.fetch();
   }
 
-  @Override
+  /**
+   * Returns spots where sample is located on plate.
+   *
+   * @param sample
+   *          sample
+   * @param plate
+   *          plate
+   * @return Spots where sample is located.
+   */
   public List<PlateSpot> location(final Sample sample, final Plate plate) {
     if (sample == null || plate == null) {
       return new ArrayList<>();

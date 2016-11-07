@@ -26,58 +26,6 @@ import java.util.List;
  */
 public interface PlateSpotService {
   /**
-   * Spot location on a plate.
-   */
-  public static interface SpotLocation {
-    /**
-     * Returns spot's row.
-     *
-     * @return spot's row
-     */
-    public int getRow();
-
-    /**
-     * Returns spot's column.
-     *
-     * @return spot's column
-     */
-    public int getColumn();
-  }
-
-  /**
-   * Simple implementation of {@link SpotLocation}.
-   */
-  public static class SimpleSpotLocation implements SpotLocation {
-    public final int row;
-    public final int column;
-
-    public SimpleSpotLocation(PlateSpot spot) {
-      this.row = spot.getRow();
-      this.column = spot.getColumn();
-    }
-
-    public SimpleSpotLocation(int row, int column) {
-      this.row = row;
-      this.column = column;
-    }
-
-    @Override
-    public int getRow() {
-      return row;
-    }
-
-    @Override
-    public int getColumn() {
-      return column;
-    }
-
-    @Override
-    public String toString() {
-      return ((char) ('a' + row)) + "-" + (column + 1);
-    }
-  }
-
-  /**
    * Selects spot from database.
    *
    * @param id

@@ -17,30 +17,64 @@
 
 package ca.qc.ircm.proview.security;
 
+import org.apache.shiro.crypto.hash.SimpleHash;
+
 /**
  * Represents an hashed password that can be saved in database.
  */
-public interface HashedPassword {
+public class HashedPassword {
   /**
-   * Returns hashed password (salt was already added). Password is encoded in Hex so it is safe to
-   * save it in a database.
-   *
-   * @return hashed password
+   * Hex encrypted hashed password.
    */
-  public String getPassword();
+  private final String password;
+  /**
+   * Salt added to password before hashing.
+   */
+  private final String salt;
+  /**
+   * Password version in case encryption changes.
+   */
+  private final int version;
 
   /**
-   * Returns salt that was added to user's password during hash. Salt is encoded in Hex so it is
-   * safe to save it in a database.
+   * Create hashed password.
    *
-   * @return salt
+   * @param password
+   *          hashed password
+   * @param salt
+   *          salt
+   * @param version
+   *          version
    */
-  public String getSalt();
+  public HashedPassword(String password, String salt, int version) {
+    this.password = password;
+    this.salt = salt;
+    this.version = version;
+  }
 
   /**
-   * Returns password's version.
+   * Create hashed password.
    *
-   * @return password's version
+   * @param hash
+   *          hash containing password and salt
+   * @param version
+   *          version
    */
-  public int getPasswordVersion();
+  public HashedPassword(SimpleHash hash, int version) {
+    this.password = hash.toHex();
+    this.salt = hash.getSalt().toHex();
+    this.version = version;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public String getSalt() {
+    return salt;
+  }
+
+  public int getPasswordVersion() {
+    return version;
+  }
 }

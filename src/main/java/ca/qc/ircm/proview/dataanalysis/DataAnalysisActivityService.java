@@ -18,15 +18,48 @@
 package ca.qc.ircm.proview.dataanalysis;
 
 import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.history.Activity.ActionType;
+import ca.qc.ircm.proview.history.SampleStatusUpdateActivityBuilder;
+import ca.qc.ircm.proview.history.UpdateActivity;
+import ca.qc.ircm.proview.history.UpdateActivityBuilder;
+import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.user.User;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Optional;
 
 import javax.annotation.CheckReturnValue;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Creates activities about {@link DataAnalysis} that can be recorded.
  */
-public interface DataAnalysisActivityService {
+@Service
+@Transactional(propagation = Propagation.REQUIRES_NEW)
+public class DataAnalysisActivityService {
+  @PersistenceContext
+  private EntityManager entityManager;
+  @Inject
+  private AuthorizationService authorizationService;
+
+  protected DataAnalysisActivityService() {
+  }
+
+  protected DataAnalysisActivityService(EntityManager entityManager,
+      AuthorizationService authorizationService) {
+    this.entityManager = entityManager;
+    this.authorizationService = authorizationService;
+  }
+
   /**
    * Creates an activity about insertion of data analysis.
    *
@@ -35,7 +68,34 @@ public interface DataAnalysisActivityService {
    * @return activity about insertion of data analysis
    */
   @CheckReturnValue
-  public Activity insert(DataAnalysis dataAnalysis);
+  public Activity insert(final DataAnalysis dataAnalysis) {
+    final User user = authorizationService.getCurrentUser();
+
+    // Get old sample outside of transaction.
+    SubmissionSample oldSample =
+        entityManager.find(SubmissionSample.class, dataAnalysis.getSample().getId());
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    updateBuilders.add(new SampleStatusUpdateActivityBuilder().oldSample(oldSample)
+        .newValue(SampleStatus.DATA_ANALYSIS));
+
+    // Keep updates that did not change.
+    final Collection<UpdateActivity> updates = new ArrayList<>();
+    for (UpdateActivityBuilder builder : updateBuilders) {
+      if (builder.isChanged()) {
+        updates.add(builder.build());
+      }
+    }
+
+    Activity activity = new Activity();
+    activity.setActionType(ActionType.INSERT);
+    activity.setRecordId(dataAnalysis.getId());
+    activity.setUser(user);
+    activity.setTableName("dataanalysis");
+    activity.setJustification(null);
+    activity.setUpdates(new LinkedList<>(updates));
+    return activity;
+  }
 
   /**
    * Creates an activity about update of a data analysis.
@@ -47,5 +107,58 @@ public interface DataAnalysisActivityService {
    * @return activity about update of a data analysis
    */
   @CheckReturnValue
-  public Optional<Activity> update(DataAnalysis dataAnalysis, String justification);
+  public Optional<Activity> update(final DataAnalysis dataAnalysis, final String justification) {
+    User user = authorizationService.getCurrentUser();
+
+    // Get old data analysis outside of transaction.
+    DataAnalysis oldDataAnalysis = entityManager.find(DataAnalysis.class, dataAnalysis.getId());
+
+    class DataAnalysisUpdateBuilder extends UpdateActivityBuilder {
+      {
+        this.tableName("dataanalysis");
+        this.actionType(ActionType.UPDATE);
+        this.recordId(dataAnalysis.getId());
+      }
+    }
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    updateBuilders.add(new DataAnalysisUpdateBuilder().column("protein")
+        .oldValue(oldDataAnalysis.getProtein()).newValue(dataAnalysis.getProtein()));
+    updateBuilders.add(new DataAnalysisUpdateBuilder().column("peptide")
+        .oldValue(oldDataAnalysis.getPeptide()).newValue(dataAnalysis.getPeptide()));
+    updateBuilders.add(new DataAnalysisUpdateBuilder().column("analysisType")
+        .oldValue(oldDataAnalysis.getType()).newValue(dataAnalysis.getType()));
+    updateBuilders.add(new DataAnalysisUpdateBuilder().column("maxWorkTime")
+        .oldValue(oldDataAnalysis.getMaxWorkTime()).newValue(dataAnalysis.getMaxWorkTime()));
+    updateBuilders.add(new DataAnalysisUpdateBuilder().column("score")
+        .oldValue(oldDataAnalysis.getScore()).newValue(dataAnalysis.getScore()));
+    updateBuilders.add(new DataAnalysisUpdateBuilder().column("workTime")
+        .oldValue(oldDataAnalysis.getWorkTime()).newValue(dataAnalysis.getWorkTime()));
+    updateBuilders.add(new DataAnalysisUpdateBuilder().column("status")
+        .oldValue(oldDataAnalysis.getStatus()).newValue(dataAnalysis.getStatus()));
+    updateBuilders.add(new SampleStatusUpdateActivityBuilder()
+        .oldSample(oldDataAnalysis.getSample()).newSample(dataAnalysis.getSample()));
+
+    // Keep updates that did not change.
+    final Collection<UpdateActivity> updates = new ArrayList<>();
+    for (UpdateActivityBuilder builder : updateBuilders) {
+      if (builder.isChanged()) {
+        updates.add(builder.build());
+      }
+    }
+
+    if (!updates.isEmpty()) {
+      // Log changes.
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(dataAnalysis.getId());
+      activity.setUser(user);
+      activity.setTableName("dataanalysis");
+      activity.setJustification(justification);
+      activity.setUpdates(new LinkedList<>(updates));
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
 }

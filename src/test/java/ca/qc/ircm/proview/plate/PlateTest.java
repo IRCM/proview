@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.plate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.plate.PlateSpotService.SimpleSpotLocation;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import org.junit.Test;
 
@@ -138,23 +137,23 @@ public class PlateTest {
   public void spots_A() {
     Plate plate = createPlate(Plate.Type.A);
 
-    List<PlateSpot> spots = plate.spots(new SimpleSpotLocation(0, 0), new SimpleSpotLocation(0, 0));
+    List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
     assertEquals(1, spots.size());
     assertTrue(find(spots, 0, 0).isPresent());
-    spots = plate.spots(new SimpleSpotLocation(0, 0), new SimpleSpotLocation(1, 0));
+    spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(1, 0));
     assertEquals(2, spots.size());
     assertTrue(find(spots, 0, 0).isPresent());
     assertTrue(find(spots, 1, 0).isPresent());
-    spots = plate.spots(new SimpleSpotLocation(0, 0), new SimpleSpotLocation(0, 1));
+    spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 1));
     assertEquals(Plate.Type.A.getRowCount() + 1, spots.size());
     for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 0).isPresent());
     }
     assertTrue(find(spots, 0, 1).isPresent());
-    spots = plate.spots(new SimpleSpotLocation(0, 0),
-        new SimpleSpotLocation(Plate.Type.A.getRowCount(), Plate.Type.A.getColumnCount()));
+    spots = plate.spots(new SpotLocation(0, 0),
+        new SpotLocation(Plate.Type.A.getRowCount(), Plate.Type.A.getColumnCount()));
     assertEquals(plate.getSpots().size(), spots.size());
-    spots = plate.spots(new SimpleSpotLocation(6, 2), new SimpleSpotLocation(2, 5));
+    spots = plate.spots(new SpotLocation(6, 2), new SpotLocation(2, 5));
     assertEquals(21, spots.size());
     for (int i = 6; i < Plate.Type.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 2).isPresent());
@@ -168,7 +167,7 @@ public class PlateTest {
     for (int i = 0; i < 2; i++) {
       assertTrue(find(spots, i, 5).isPresent());
     }
-    spots = plate.spots(new SimpleSpotLocation(2, 6), new SimpleSpotLocation(5, 2));
+    spots = plate.spots(new SpotLocation(2, 6), new SpotLocation(5, 2));
     assertEquals(0, spots.size());
   }
 
@@ -176,23 +175,23 @@ public class PlateTest {
   public void spots_G() {
     Plate plate = createPlate(Plate.Type.G);
 
-    List<PlateSpot> spots = plate.spots(new SimpleSpotLocation(0, 0), new SimpleSpotLocation(0, 0));
+    List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
     assertEquals(1, spots.size());
     assertTrue(find(spots, 0, 0).isPresent());
-    spots = plate.spots(new SimpleSpotLocation(0, 0), new SimpleSpotLocation(1, 0));
+    spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(1, 0));
     assertEquals(2, spots.size());
     assertTrue(find(spots, 0, 0).isPresent());
     assertTrue(find(spots, 1, 0).isPresent());
-    spots = plate.spots(new SimpleSpotLocation(0, 0), new SimpleSpotLocation(0, 1));
+    spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 1));
     assertEquals(Plate.Type.A.getRowCount() + 1, spots.size());
     for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 0).isPresent());
     }
     assertTrue(find(spots, 0, 1).isPresent());
-    spots = plate.spots(new SimpleSpotLocation(0, 0),
-        new SimpleSpotLocation(Plate.Type.A.getRowCount(), Plate.Type.A.getColumnCount()));
+    spots = plate.spots(new SpotLocation(0, 0),
+        new SpotLocation(Plate.Type.A.getRowCount(), Plate.Type.A.getColumnCount()));
     assertEquals(plate.getSpots().size(), spots.size());
-    spots = plate.spots(new SimpleSpotLocation(6, 2), new SimpleSpotLocation(2, 5));
+    spots = plate.spots(new SpotLocation(6, 2), new SpotLocation(2, 5));
     assertEquals(21, spots.size());
     for (int i = 6; i < Plate.Type.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 2).isPresent());
@@ -206,7 +205,7 @@ public class PlateTest {
     for (int i = 0; i < 2; i++) {
       assertTrue(find(spots, i, 5).isPresent());
     }
-    spots = plate.spots(new SimpleSpotLocation(2, 6), new SimpleSpotLocation(5, 2));
+    spots = plate.spots(new SpotLocation(2, 6), new SpotLocation(5, 2));
     assertEquals(0, spots.size());
   }
 
@@ -214,23 +213,23 @@ public class PlateTest {
   public void spots_Pm() {
     Plate plate = createPlate(Plate.Type.PM);
 
-    List<PlateSpot> spots = plate.spots(new SimpleSpotLocation(0, 0), new SimpleSpotLocation(0, 0));
+    List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
     assertEquals(1, spots.size());
     assertTrue(find(spots, 0, 0).isPresent());
-    spots = plate.spots(new SimpleSpotLocation(0, 0), new SimpleSpotLocation(1, 0));
+    spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(1, 0));
     assertEquals(2, spots.size());
     assertTrue(find(spots, 0, 0).isPresent());
     assertTrue(find(spots, 1, 0).isPresent());
-    spots = plate.spots(new SimpleSpotLocation(0, 0), new SimpleSpotLocation(0, 1));
+    spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 1));
     assertEquals(Plate.Type.A.getRowCount() + 1, spots.size());
     for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 0).isPresent());
     }
     assertTrue(find(spots, 0, 1).isPresent());
-    spots = plate.spots(new SimpleSpotLocation(0, 0),
-        new SimpleSpotLocation(Plate.Type.A.getRowCount(), Plate.Type.A.getColumnCount()));
+    spots = plate.spots(new SpotLocation(0, 0),
+        new SpotLocation(Plate.Type.A.getRowCount(), Plate.Type.A.getColumnCount()));
     assertEquals(plate.getSpots().size(), spots.size());
-    spots = plate.spots(new SimpleSpotLocation(6, 2), new SimpleSpotLocation(2, 5));
+    spots = plate.spots(new SpotLocation(6, 2), new SpotLocation(2, 5));
     assertEquals(21, spots.size());
     for (int i = 6; i < Plate.Type.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 2).isPresent());
@@ -244,7 +243,7 @@ public class PlateTest {
     for (int i = 0; i < 2; i++) {
       assertTrue(find(spots, i, 5).isPresent());
     }
-    spots = plate.spots(new SimpleSpotLocation(2, 6), new SimpleSpotLocation(5, 2));
+    spots = plate.spots(new SpotLocation(2, 6), new SpotLocation(5, 2));
     assertEquals(0, spots.size());
   }
 

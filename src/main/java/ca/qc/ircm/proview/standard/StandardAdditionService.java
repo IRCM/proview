@@ -17,14 +17,62 @@
 
 package ca.qc.ircm.proview.standard;
 
-import ca.qc.ircm.proview.sample.Sample;
+import static ca.qc.ircm.proview.standard.QAddedStandard.addedStandard;
+import static ca.qc.ircm.proview.standard.QStandardAddition.standardAddition;
 
+import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.treatment.BaseTreatmentService;
+import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.user.User;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Services for addition of standards.
  */
-public interface StandardAdditionService {
+@Service
+@Transactional
+public class StandardAdditionService extends BaseTreatmentService {
+  @PersistenceContext
+  private EntityManager entityManager;
+  @Inject
+  private JPAQueryFactory queryFactory;
+  @Inject
+  private StandardAdditionActivityService standardAdditionActivityService;
+  @Inject
+  private ActivityService activityService;
+  @Inject
+  private AuthorizationService authorizationService;
+
+  protected StandardAdditionService() {
+  }
+
+  protected StandardAdditionService(EntityManager entityManager, JPAQueryFactory queryFactory,
+      StandardAdditionActivityService standardAdditionActivityService,
+      ActivityService activityService, AuthorizationService authorizationService) {
+    super(entityManager, queryFactory);
+    this.entityManager = entityManager;
+    this.queryFactory = queryFactory;
+    this.standardAdditionActivityService = standardAdditionActivityService;
+    this.activityService = activityService;
+    this.authorizationService = authorizationService;
+  }
 
   /**
    * Selects standard addition from database.
@@ -33,7 +81,14 @@ public interface StandardAdditionService {
    *          standard addition's database identifier
    * @return standard addition
    */
-  public StandardAddition get(Long id);
+  public StandardAddition get(Long id) {
+    if (id == null) {
+      return null;
+    }
+    authorizationService.checkAdminRole();
+
+    return entityManager.find(StandardAddition.class, id);
+  }
 
   /**
    * Returns all sample's standard addition.
@@ -42,7 +97,19 @@ public interface StandardAdditionService {
    *          sample
    * @return all sample's standard addition
    */
-  public List<StandardAddition> all(Sample sample);
+  public List<StandardAddition> all(Sample sample) {
+    if (sample == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<StandardAddition> query = queryFactory.select(standardAddition);
+    query.from(standardAddition, addedStandard);
+    query.where(addedStandard._super.in(standardAddition.treatmentSamples));
+    query.where(addedStandard.sample.eq(sample));
+    query.where(standardAddition.deleted.eq(false));
+    return query.distinct().fetch();
+  }
 
   /**
    * Inserts standard addition into database.
@@ -50,7 +117,21 @@ public interface StandardAdditionService {
    * @param standardAddition
    *          standard addition
    */
-  public void insert(StandardAddition standardAddition);
+  public void insert(StandardAddition standardAddition) {
+    authorizationService.checkAdminRole();
+    User user = authorizationService.getCurrentUser();
+
+    standardAddition.setInsertTime(Instant.now());
+    standardAddition.setUser(user);
+
+    // Insert standard addition.
+    entityManager.persist(standardAddition);
+
+    // Log insertion of addition of standards.
+    entityManager.flush();
+    Activity activity = standardAdditionActivityService.insert(standardAddition);
+    activityService.insert(activity);
+  }
 
   /**
    * Undo erroneous standard addition that never actually occurred. This method is usually called
@@ -63,7 +144,20 @@ public interface StandardAdditionService {
    * @param justification
    *          explanation of what was incorrect with the standard addition
    */
-  public void undoErroneous(StandardAddition standardAddition, String justification);
+  public void undoErroneous(StandardAddition standardAddition, String justification) {
+    authorizationService.checkAdminRole();
+
+    standardAddition.setDeleted(true);
+    standardAddition.setDeletionType(Treatment.DeletionType.ERRONEOUS);
+    standardAddition.setDeletionJustification(justification);
+
+    // Log changes.
+    Activity activity =
+        standardAdditionActivityService.undoErroneous(standardAddition, justification);
+    activityService.insert(activity);
+
+    entityManager.merge(standardAddition);
+  }
 
   /**
    * Report that a problem occurred during standard addition causing it to fail. Problems usually
@@ -80,5 +174,34 @@ public interface StandardAdditionService {
    *          container were samples were transfered after standard addition
    */
   public void undoFailed(StandardAddition standardAddition, String failedDescription,
-      boolean banContainers);
+      boolean banContainers) {
+    authorizationService.checkAdminRole();
+
+    standardAddition.setDeleted(true);
+    standardAddition.setDeletionType(Treatment.DeletionType.FAILED);
+    standardAddition.setDeletionJustification(failedDescription);
+    Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
+    if (banContainers) {
+      // Ban containers used during standardAddition.
+      for (AddedStandard addedStandard : standardAddition.getTreatmentSamples()) {
+        SampleContainer container = addedStandard.getContainer();
+        container.setBanned(true);
+        bannedContainers.add(container);
+
+        // Ban containers were sample were transfered after
+        // standardAddition.
+        this.banDestinations(container, bannedContainers);
+      }
+    }
+
+    // Log changes.
+    Activity activity = standardAdditionActivityService.undoFailed(standardAddition,
+        failedDescription, bannedContainers);
+    activityService.insert(activity);
+
+    entityManager.merge(standardAddition);
+    for (SampleContainer container : bannedContainers) {
+      entityManager.merge(container);
+    }
+  }
 }

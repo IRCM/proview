@@ -22,7 +22,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
-import ca.qc.ircm.proview.plate.PlateSpotService.SpotLocation;
 
 import java.io.Serializable;
 import java.time.Instant;

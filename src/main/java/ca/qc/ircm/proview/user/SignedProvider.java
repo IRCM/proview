@@ -42,7 +42,7 @@ public class SignedProvider {
 
   @Bean
   @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.INTERFACES)
-  public SignedImpl getSigned() {
-    return new SignedImpl(userService);
+  public SignedShiro getSigned() {
+    return new SignedShiro(userService);
   }
 }

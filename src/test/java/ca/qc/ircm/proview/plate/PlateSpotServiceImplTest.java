@@ -22,8 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.plate.PlateSpotService.SimpleSpotLocation;
-import ca.qc.ircm.proview.plate.PlateSpotService.SpotLocation;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -97,7 +95,7 @@ public class PlateSpotServiceImplTest {
   @Test
   public void get_Location() throws Exception {
     Plate plate = new Plate(26L);
-    SpotLocation location = new SimpleSpotLocation(2, 3);
+    SpotLocation location = new SpotLocation(2, 3);
 
     PlateSpot spot = plateSpotServiceImpl.get(plate, location);
 
@@ -116,7 +114,7 @@ public class PlateSpotServiceImplTest {
 
   @Test
   public void get_LocationNullPlate() throws Exception {
-    SpotLocation location = new SimpleSpotLocation(2, 3);
+    SpotLocation location = new SpotLocation(2, 3);
 
     PlateSpot spot = plateSpotServiceImpl.get(null, location);
 

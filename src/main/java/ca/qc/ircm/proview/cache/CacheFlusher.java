@@ -17,12 +17,28 @@
 
 package ca.qc.ircm.proview.cache;
 
+import ca.qc.ircm.proview.security.ShiroRealm;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.mgt.CachingSecurityManager;
+import org.springframework.stereotype.Component;
+
 /**
  * Flushes different caches.
  */
-public interface CacheFlusher {
+@Component
+public class CacheFlusher {
+  protected CacheFlusher() {
+  }
+
+  private CacheManager getCacheManager() {
+    return ((CachingSecurityManager) SecurityUtils.getSecurityManager()).getCacheManager();
+  }
+
   /**
    * Flushes Shiro and MyBatis caches so that permissions are correct.
    */
-  public void flushShiroCache();
+  public void flushShiroCache() {
+    getCacheManager().getCache(ShiroRealm.CACHE_NAME).clear();
+  }
 }

@@ -68,7 +68,7 @@ public class PlateImageRendererTest {
         });
 
     PlateImageRenderer instance =
-        new PlateImageRenderer(plate, new LocalizedPlateDefault(fractionationService));
+        new PlateImageRenderer(plate, new LocalizedPlate(fractionationService));
     RenderedImage image = instance.render();
 
     File baseDir = new File(System.getProperty("user.home"));

@@ -17,14 +17,63 @@
 
 package ca.qc.ircm.proview.enrichment;
 
-import ca.qc.ircm.proview.sample.Sample;
+import static ca.qc.ircm.proview.enrichment.QEnrichedSample.enrichedSample;
+import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
 
+import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.treatment.BaseTreatmentService;
+import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.user.User;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Service for enrichment.
  */
-public interface EnrichmentService {
+@Service
+@Transactional
+public class EnrichmentService extends BaseTreatmentService {
+  @PersistenceContext
+  private EntityManager entityManager;
+  @Inject
+  private JPAQueryFactory queryFactory;
+  @Inject
+  private EnrichmentActivityService enrichmentActivityService;
+  @Inject
+  private ActivityService activityService;
+  @Inject
+  private AuthorizationService authorizationService;
+
+  protected EnrichmentService() {
+  }
+
+  protected EnrichmentService(EntityManager entityManager, JPAQueryFactory queryFactory,
+      EnrichmentActivityService enrichmentActivityService, ActivityService activityService,
+      AuthorizationService authorizationService) {
+    super(entityManager, queryFactory);
+    this.entityManager = entityManager;
+    this.queryFactory = queryFactory;
+    this.enrichmentActivityService = enrichmentActivityService;
+    this.activityService = activityService;
+    this.authorizationService = authorizationService;
+  }
+
   /**
    * Selects enrichment from database.
    *
@@ -32,7 +81,14 @@ public interface EnrichmentService {
    *          database identifier of enrichment
    * @return enrichment
    */
-  public Enrichment get(Long id);
+  public Enrichment get(Long id) {
+    if (id == null) {
+      return null;
+    }
+    authorizationService.checkAdminRole();
+
+    return entityManager.find(Enrichment.class, id);
+  }
 
   /**
    * Returns all enrichments where sample was enriched.
@@ -41,7 +97,19 @@ public interface EnrichmentService {
    *          sample
    * @return all enrichments where sample was enriched
    */
-  public List<Enrichment> all(Sample sample);
+  public List<Enrichment> all(Sample sample) {
+    if (sample == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Enrichment> query = queryFactory.select(enrichment);
+    query.from(enrichment, enrichedSample);
+    query.where(enrichedSample._super.in(enrichment.treatmentSamples));
+    query.where(enrichedSample.sample.eq(sample));
+    query.where(enrichment.deleted.eq(false));
+    return query.distinct().fetch();
+  }
 
   /**
    * Inserts an enrichment into the database.
@@ -49,7 +117,20 @@ public interface EnrichmentService {
    * @param enrichment
    *          enrichment to insert
    */
-  public void insert(Enrichment enrichment);
+  public void insert(Enrichment enrichment) {
+    authorizationService.checkAdminRole();
+    User user = authorizationService.getCurrentUser();
+
+    enrichment.setInsertTime(Instant.now());
+    enrichment.setUser(user);
+
+    entityManager.persist(enrichment);
+
+    // Log insertion of enrichment.
+    entityManager.flush();
+    Activity activity = enrichmentActivityService.insert(enrichment);
+    activityService.insert(activity);
+  }
 
   /**
    * Undo erroneous enrichment that never actually occurred. This method is usually called shortly
@@ -61,7 +142,19 @@ public interface EnrichmentService {
    * @param justification
    *          explanation of what was incorrect with the enrichment
    */
-  public void undoErroneous(Enrichment enrichment, String justification);
+  public void undoErroneous(Enrichment enrichment, String justification) {
+    authorizationService.checkAdminRole();
+
+    enrichment.setDeleted(true);
+    enrichment.setDeletionType(Treatment.DeletionType.ERRONEOUS);
+    enrichment.setDeletionJustification(justification);
+
+    // Log changes.
+    Activity activity = enrichmentActivityService.undoErroneous(enrichment, justification);
+    activityService.insert(activity);
+
+    entityManager.merge(enrichment);
+  }
 
   /**
    * Report that a problem occurred during enrichment causing it to fail. Problems usually occur
@@ -77,5 +170,33 @@ public interface EnrichmentService {
    *          true if containers used in enrichment should be banned, this will also ban any
    *          container were samples were transfered after enrichment
    */
-  public void undoFailed(Enrichment enrichment, String failedDescription, boolean banContainers);
+  public void undoFailed(Enrichment enrichment, String failedDescription, boolean banContainers) {
+    authorizationService.checkAdminRole();
+
+    enrichment.setDeleted(true);
+    enrichment.setDeletionType(Treatment.DeletionType.FAILED);
+    enrichment.setDeletionJustification(failedDescription);
+    Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
+    if (banContainers) {
+      // Ban containers used during enrichment.
+      for (EnrichedSample enrichedSample : enrichment.getTreatmentSamples()) {
+        SampleContainer container = enrichedSample.getContainer();
+        container.setBanned(true);
+        bannedContainers.add(container);
+
+        // Ban containers were sample were transfered after enrichment.
+        this.banDestinations(container, bannedContainers);
+      }
+    }
+
+    // Log changes.
+    Activity activity =
+        enrichmentActivityService.undoFailed(enrichment, failedDescription, bannedContainers);
+    activityService.insert(activity);
+
+    entityManager.merge(enrichment);
+    for (SampleContainer container : bannedContainers) {
+      entityManager.merge(container);
+    }
+  }
 }

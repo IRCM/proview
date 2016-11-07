@@ -18,13 +18,32 @@
 package ca.qc.ircm.proview.treatment;
 
 import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.history.Activity.ActionType;
+import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.user.User;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.CheckReturnValue;
+import javax.inject.Inject;
 
 /**
  * Creates activities about {@link Protocol} that can be recorded.
  */
-public interface ProtocolActivityService {
+@Service
+@Transactional(propagation = Propagation.REQUIRES_NEW)
+public class ProtocolActivityService {
+  @Inject
+  private AuthorizationService authorizationService;
+
+  protected ProtocolActivityService() {
+  }
+
+  protected ProtocolActivityService(AuthorizationService authorizationService) {
+    this.authorizationService = authorizationService;
+  }
+
   /**
    * Creates an activity about insertion of protocol.
    *
@@ -33,5 +52,16 @@ public interface ProtocolActivityService {
    * @return activity about insertion of protocol
    */
   @CheckReturnValue
-  public Activity insert(Protocol protocol);
+  public Activity insert(final Protocol protocol) {
+    User user = authorizationService.getCurrentUser();
+
+    Activity activity = new Activity();
+    activity.setActionType(ActionType.INSERT);
+    activity.setRecordId(protocol.getId());
+    activity.setUser(user);
+    activity.setTableName("protocol");
+    activity.setJustification(null);
+    activity.setUpdates(null);
+    return activity;
+  }
 }

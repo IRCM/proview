@@ -17,14 +17,58 @@
 
 package ca.qc.ircm.proview.msanalysis;
 
-import ca.qc.ircm.proview.sample.Sample;
+import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMascotFile;
 
+import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.security.AuthorizationService;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Services for Mascot file.
  */
-public interface MascotFileService {
+@Service
+@Transactional
+public class MascotFileService {
+  @PersistenceContext
+  private EntityManager entityManager;
+  @Inject
+  private JPAQueryFactory queryFactory;
+  @Inject
+  private MascotFileActivityService mascotFileActivityService;
+  @Inject
+  private MsAnalysisService msAnalysisService;
+  @Inject
+  private ActivityService activityService;
+  @Inject
+  private AuthorizationService authorizationService;
+
+  protected MascotFileService() {
+  }
+
+  protected MascotFileService(EntityManager entityManager, JPAQueryFactory queryFactory,
+      MascotFileActivityService mascotFileActivityService, MsAnalysisService msAnalysisService,
+      ActivityService activityService, AuthorizationService authorizationService) {
+    this.entityManager = entityManager;
+    this.queryFactory = queryFactory;
+    this.mascotFileActivityService = mascotFileActivityService;
+    this.msAnalysisService = msAnalysisService;
+    this.activityService = activityService;
+    this.authorizationService = authorizationService;
+  }
+
   /**
    * Returns link between acquisistion and mascot file.
    *
@@ -32,7 +76,14 @@ public interface MascotFileService {
    *          link identifier
    * @return link between acquisistion and mascot file
    */
-  public AcquisitionMascotFile get(Long id);
+  public AcquisitionMascotFile get(Long id) {
+    if (id == null) {
+      return null;
+    }
+    authorizationService.checkAdminRole();
+
+    return entityManager.find(AcquisitionMascotFile.class, id);
+  }
 
   /**
    * Returns all links Mascot files linked to acquisition.
@@ -41,7 +92,18 @@ public interface MascotFileService {
    *          acquisition
    * @return all Mascot files linked to acquisition
    */
-  public List<AcquisitionMascotFile> all(Acquisition acquisition);
+  public List<AcquisitionMascotFile> all(Acquisition acquisition) {
+    if (acquisition == null) {
+      return new ArrayList<>();
+    }
+    MsAnalysis msAnalysis = msAnalysisService.get(acquisition);
+    authorizationService.checkMsAnalysisReadPermission(msAnalysis);
+
+    JPAQuery<AcquisitionMascotFile> query = queryFactory.select(acquisitionMascotFile);
+    query.from(acquisitionMascotFile);
+    query.where(acquisitionMascotFile.acquisition.eq(acquisition));
+    return query.fetch();
+  }
 
   /**
    * Returns true if sample is linked to at least one visible Mascot file, false otherwise.
@@ -50,7 +112,20 @@ public interface MascotFileService {
    *          sample
    * @return true if sample is linked to at least one visible Mascot file, false otherwise
    */
-  public boolean exists(Sample sample);
+  public boolean exists(Sample sample) {
+    if (sample == null) {
+      return false;
+    }
+    authorizationService.checkSampleReadPermission(sample);
+
+    JPAQuery<Long> query = queryFactory.select(acquisitionMascotFile.id);
+    query.from(acquisitionMascotFile);
+    query.where(acquisitionMascotFile.acquisition.sample.eq(sample));
+    if (!authorizationService.hasAdminRole()) {
+      query.where(acquisitionMascotFile.visible.eq(true));
+    }
+    return query.fetchCount() > 0;
+  }
 
   /**
    * Updates link between acquisistion and mascot file.
@@ -58,5 +133,15 @@ public interface MascotFileService {
    * @param acquisitionMascotFile
    *          link between acquisistion and mascot file
    */
-  public void update(AcquisitionMascotFile acquisitionMascotFile);
+  public void update(AcquisitionMascotFile acquisitionMascotFile) {
+    authorizationService.checkAdminRole();
+
+    // Log change in database.
+    Optional<Activity> activity = mascotFileActivityService.update(acquisitionMascotFile);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
+    }
+
+    entityManager.merge(acquisitionMascotFile);
+  }
 }

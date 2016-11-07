@@ -17,10 +17,34 @@
 
 package ca.qc.ircm.proview.treatment;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 /**
  * Services for treatments.
  */
-public interface TreatmentService {
+@Service
+@Transactional
+public class TreatmentService {
+  @PersistenceContext
+  private EntityManager entityManager;
+  @Inject
+  private AuthorizationService authorizationService;
+
+  protected TreatmentService() {
+  }
+
+  protected TreatmentService(EntityManager entityManager,
+      AuthorizationService authorizationService) {
+    this.entityManager = entityManager;
+    this.authorizationService = authorizationService;
+  }
+
   /**
    * Selects treatment from database.
    *
@@ -28,5 +52,12 @@ public interface TreatmentService {
    *          database identifier of treatment
    * @return treatment
    */
-  public Treatment<?> get(Long id);
+  public Treatment<?> get(Long id) {
+    if (id == null) {
+      return null;
+    }
+    authorizationService.checkAdminRole();
+
+    return entityManager.find(Treatment.class, id);
+  }
 }

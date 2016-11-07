@@ -25,11 +25,11 @@ import org.junit.Test;
 import java.io.File;
 
 public class PricesServiceTest {
-  private PricesServiceImpl pricesServiceImpl;
+  private PricesService pricesServiceImpl;
 
   @Before
   public void beforeTest() {
-    pricesServiceImpl = new PricesServiceImpl();
+    pricesServiceImpl = new PricesService();
   }
 
   @Test

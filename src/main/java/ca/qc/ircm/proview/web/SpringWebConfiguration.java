@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.logging.MdcFilter;
 import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
-import ca.qc.ircm.proview.user.SignedImpl;
+import ca.qc.ircm.proview.user.SignedShiro;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.SignedFilter;
 import org.apache.shiro.web.servlet.ShiroFilter;
@@ -96,7 +96,7 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
 
   @Bean
   @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.INTERFACES)
-  public SignedImpl getSigned() {
-    return new SignedImpl(userService);
+  public SignedShiro getSigned() {
+    return new SignedShiro(userService);
   }
 }

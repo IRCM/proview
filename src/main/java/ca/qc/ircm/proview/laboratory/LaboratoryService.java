@@ -17,15 +17,45 @@
 
 package ca.qc.ircm.proview.laboratory;
 
+import ca.qc.ircm.proview.cache.CacheFlusher;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.InvalidUserException;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserNotMemberOfLaboratoryException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Laboratory service class.
  */
-public interface LaboratoryService {
+@Service
+@Transactional
+public class LaboratoryService {
+  private final Logger logger = LoggerFactory.getLogger(LaboratoryService.class);
+  @PersistenceContext
+  private EntityManager entityManager;
+  @Inject
+  private CacheFlusher cacheFlusher;
+  @Inject
+  private AuthorizationService authorizationService;
+
+  protected LaboratoryService() {
+  }
+
+  protected LaboratoryService(EntityManager entityManager, CacheFlusher cacheFlusher,
+      AuthorizationService authorizationService) {
+    this.entityManager = entityManager;
+    this.cacheFlusher = cacheFlusher;
+    this.authorizationService = authorizationService;
+  }
+
   /**
    * Selects laboratory from database.
    *
@@ -33,18 +63,33 @@ public interface LaboratoryService {
    *          database identifier of laboratory
    * @return laboratory
    */
-  public Laboratory get(Long id);
+  public Laboratory get(Long id) {
+    if (id == null) {
+      return null;
+    }
+
+    Laboratory laboratory = entityManager.find(Laboratory.class, id);
+    authorizationService.checkLaboratoryReadPermission(laboratory);
+    return laboratory;
+  }
 
   /**
-   * Update laboratory. <strong> Manager will not change. </strong> <strong> Field indicating if
-   * laboratory is inside IRCM will not change. </strong>
+   * Update laboratory.<br>
+   * <strong> Manager will not change. </strong><br>
+   * <strong> Field indicating if laboratory is inside IRCM will not change. </strong>
    *
    * @param laboratory
    *          Laboratory with new information.
    * @throws UnauthorizedException
    *           Exception user's laboratory must match signed user's laboratory
    */
-  public void update(Laboratory laboratory);
+  public void update(Laboratory laboratory) {
+    authorizationService.checkLaboratoryManagerPermission(laboratory);
+
+    entityManager.merge(laboratory);
+
+    logger.info("Laboratory {} updated", laboratory);
+  }
 
   /**
    * Add user to laboratory's managers.
@@ -59,7 +104,28 @@ public interface LaboratoryService {
    *           user is invalid and cannot be a manager of laboratory
    */
   public void addManager(Laboratory laboratory, User user)
-      throws UserNotMemberOfLaboratoryException, InvalidUserException;
+      throws UserNotMemberOfLaboratoryException, InvalidUserException {
+    authorizationService.checkAdminRole();
+
+    laboratory = entityManager.merge(laboratory);
+    entityManager.refresh(laboratory);
+    user = entityManager.merge(user);
+    entityManager.refresh(user);
+
+    if (!laboratory.equals(user.getLaboratory())) {
+      throw new UserNotMemberOfLaboratoryException();
+    }
+    if (!user.isValid()) {
+      throw new InvalidUserException();
+    }
+
+    if (!laboratory.getManagers().contains(user)) {
+      laboratory.getManagers().add(user);
+    }
+    user.setActive(true);
+
+    cacheFlusher.flushShiroCache();
+  }
 
   /**
    * Remove manager from laboratory's managers.
@@ -74,5 +140,24 @@ public interface LaboratoryService {
    *           if laboratory would have no more manager if manager is removed
    */
   public void removeManager(Laboratory laboratory, User manager)
-      throws UserNotMemberOfLaboratoryException, UnmanagedLaboratoryException;
+      throws UserNotMemberOfLaboratoryException, UnmanagedLaboratoryException {
+    authorizationService.checkAdminRole();
+
+    laboratory = entityManager.merge(laboratory);
+    entityManager.refresh(laboratory);
+    manager = entityManager.merge(manager);
+    entityManager.refresh(manager);
+
+    if (!laboratory.equals(manager.getLaboratory())) {
+      throw new UserNotMemberOfLaboratoryException();
+    }
+
+    if (laboratory.getManagers().contains(manager) && laboratory.getManagers().size() <= 1) {
+      throw new UnmanagedLaboratoryException();
+    } else {
+      laboratory.getManagers().remove(manager);
+    }
+
+    cacheFlusher.flushShiroCache();
+  }
 }
