@@ -30,7 +30,7 @@ public class GelThicknessTest {
   @Test
   public void getNullLabel() {
     assertEquals("Undetermined", GelThickness.getNullLabel(Locale.ENGLISH));
-    assertEquals("Indéterminé", GelThickness.getNullLabel(Locale.FRENCH));
+    assertEquals("Indéterminée", GelThickness.getNullLabel(Locale.FRENCH));
   }
 
   @Test

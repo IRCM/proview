@@ -29,7 +29,7 @@ public class StorageTemperatureTest {
   @Test
   public void getNullLabel() {
     assertEquals("Undetermined", StorageTemperature.getNullLabel(Locale.ENGLISH));
-    assertEquals("Indéterminé", StorageTemperature.getNullLabel(Locale.FRENCH));
+    assertEquals("Indéterminée", StorageTemperature.getNullLabel(Locale.FRENCH));
   }
 
   @Test

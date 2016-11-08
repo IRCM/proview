@@ -30,7 +30,7 @@ public class MassDetectionInstrumentSourceTest {
   @Test
   public void getNullLabel() {
     assertEquals("Undetermined", MassDetectionInstrumentSource.getNullLabel(Locale.ENGLISH));
-    assertEquals("Indéterminé", MassDetectionInstrumentSource.getNullLabel(Locale.FRENCH));
+    assertEquals("Indéterminée", MassDetectionInstrumentSource.getNullLabel(Locale.FRENCH));
   }
 
   @Test

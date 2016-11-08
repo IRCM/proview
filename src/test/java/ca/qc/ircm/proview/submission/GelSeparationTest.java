@@ -29,7 +29,7 @@ public class GelSeparationTest {
   @Test
   public void getNullLabel() {
     assertEquals("Undetermined", GelSeparation.getNullLabel(Locale.ENGLISH));
-    assertEquals("Indéterminé", GelSeparation.getNullLabel(Locale.FRENCH));
+    assertEquals("Indéterminée", GelSeparation.getNullLabel(Locale.FRENCH));
   }
 
   @Test

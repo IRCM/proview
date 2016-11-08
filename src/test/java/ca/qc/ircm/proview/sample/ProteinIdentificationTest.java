@@ -32,7 +32,7 @@ public class ProteinIdentificationTest {
   @Test
   public void getNullLabel() {
     assertEquals("Undetermined", ProteinIdentification.getNullLabel(Locale.ENGLISH));
-    assertEquals("Indéterminé", ProteinIdentification.getNullLabel(Locale.FRENCH));
+    assertEquals("Indéterminée", ProteinIdentification.getNullLabel(Locale.FRENCH));
   }
 
   @Test
