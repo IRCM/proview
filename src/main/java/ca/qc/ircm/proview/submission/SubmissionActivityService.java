@@ -125,6 +125,8 @@ public class SubmissionActivityService {
         .newValue(newSubmission.getMassDetectionInstrument()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("source")
         .oldValue(oldSubmission.getSource()).newValue(newSubmission.getSource()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("injectionType")
+        .oldValue(oldSubmission.getInjectionType()).newValue(newSubmission.getInjectionType()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteolyticDigestionMethod")
         .oldValue(oldSubmission.getProteolyticDigestionMethod())
         .newValue(newSubmission.getProteolyticDigestionMethod()));

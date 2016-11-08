@@ -24,6 +24,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.LaboratoryData;
+import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
@@ -109,6 +110,12 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Column(name = "source")
   @Enumerated(STRING)
   private MassDetectionInstrumentSource source;
+  /**
+   * Injection type.
+   */
+  @Column(name = "injectionType")
+  @Enumerated(STRING)
+  private InjectionType injectionType;
   /**
    * Proteolytic digestion method.
    */
@@ -782,5 +789,13 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setQuantificationLabels(String quantificationLabels) {
     this.quantificationLabels = quantificationLabels;
+  }
+
+  public InjectionType getInjectionType() {
+    return injectionType;
+  }
+
+  public void setInjectionType(InjectionType injectionType) {
+    this.injectionType = injectionType;
   }
 }

@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS submission (
   taxonomy varchar(100) DEFAULT NULL,
   massDetectionInstrument varchar(50) DEFAULT NULL,
   source varchar(50) DEFAULT NULL,
+  injectionType varchar(50) DEFAULT NULL,
   proteolyticDigestionMethod varchar(50) DEFAULT NULL,
   usedProteolyticDigestionMethod varchar(100) DEFAULT NULL,
   otherProteolyticDigestionMethod varchar(100) DEFAULT NULL,

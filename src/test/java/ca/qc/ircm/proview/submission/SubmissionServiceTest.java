@@ -35,6 +35,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
+import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
@@ -183,6 +184,7 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
+    assertEquals(null, submission.getInjectionType());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals(null, submission.getUsedProteolyticDigestionMethod());
     assertEquals(null, submission.getOtherProteolyticDigestionMethod());
@@ -245,6 +247,7 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getGoal());
     assertEquals(null, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
+    assertEquals(null, submission.getInjectionType());
     assertEquals(null, submission.getProteolyticDigestionMethod());
     assertEquals(null, submission.getUsedProteolyticDigestionMethod());
     assertEquals(null, submission.getOtherProteolyticDigestionMethod());
@@ -1343,6 +1346,7 @@ public class SubmissionServiceTest {
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setInjectionType(InjectionType.LC_MS);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
     submission.setOtherProteolyticDigestionMethod("other digestion");
@@ -1387,6 +1391,7 @@ public class SubmissionServiceTest {
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
+    assertEquals(InjectionType.LC_MS, submission.getInjectionType());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
     assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
@@ -1501,6 +1506,7 @@ public class SubmissionServiceTest {
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setInjectionType(InjectionType.LC_MS);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
     submission.setOtherProteolyticDigestionMethod("other digestion");
@@ -1540,6 +1546,7 @@ public class SubmissionServiceTest {
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
+    assertEquals(InjectionType.LC_MS, submission.getInjectionType());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
     assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
@@ -1639,6 +1646,7 @@ public class SubmissionServiceTest {
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setInjectionType(InjectionType.LC_MS);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
     submission.setOtherProteolyticDigestionMethod("other digestion");
@@ -1674,6 +1682,7 @@ public class SubmissionServiceTest {
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
+    assertEquals(InjectionType.LC_MS, submission.getInjectionType());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
     assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
@@ -1759,6 +1768,7 @@ public class SubmissionServiceTest {
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setInjectionType(InjectionType.LC_MS);
     submission.setLowResolution(true);
     submission.setHighResolution(true);
     submission.setMsms(true);
@@ -1807,6 +1817,7 @@ public class SubmissionServiceTest {
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
+    assertEquals(InjectionType.LC_MS, submission.getInjectionType());
     assertEquals(true, submission.isLowResolution());
     assertEquals(true, submission.isHighResolution());
     assertEquals(true, submission.isMsms());
@@ -1886,6 +1897,7 @@ public class SubmissionServiceTest {
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setInjectionType(InjectionType.LC_MS);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
     submission.setOtherProteolyticDigestionMethod("other digestion");
