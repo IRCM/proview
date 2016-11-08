@@ -125,9 +125,6 @@ public class SubmissionActivityService {
         .newValue(newSubmission.getMassDetectionInstrument()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("source")
         .oldValue(oldSubmission.getSource()).newValue(newSubmission.getSource()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("sampleNumberProtein")
-        .oldValue(oldSubmission.getSampleNumberProtein())
-        .newValue(newSubmission.getSampleNumberProtein()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteolyticDigestionMethod")
         .oldValue(oldSubmission.getProteolyticDigestionMethod())
         .newValue(newSubmission.getProteolyticDigestionMethod()));
@@ -160,8 +157,6 @@ public class SubmissionActivityService {
         .oldValue(oldSubmission.isExactMsms()).newValue(newSubmission.isExactMsms()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("protein")
         .oldValue(oldSubmission.getProtein()).newValue(newSubmission.getProtein()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("molecularWeight")
-        .oldValue(oldSubmission.getMolecularWeight()).newValue(newSubmission.getMolecularWeight()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("postTranslationModification")
         .oldValue(oldSubmission.getPostTranslationModification())
         .newValue(newSubmission.getPostTranslationModification()));
@@ -228,10 +223,10 @@ public class SubmissionActivityService {
           .oldValue(oldStructure.getFilename()).newValue(newStructure.getFilename()));
     }
     // Solvents.
-    List<SampleSolvent> oldSolvents = oldSubmission.getSolvents() != null
-        ? oldSubmission.getSolvents() : new ArrayList<>();
-    List<SampleSolvent> newSolvents = newSubmission.getSolvents() != null
-        ? newSubmission.getSolvents() : new ArrayList<>();
+    List<SampleSolvent> oldSolvents =
+        oldSubmission.getSolvents() != null ? oldSubmission.getSolvents() : new ArrayList<>();
+    List<SampleSolvent> newSolvents =
+        newSubmission.getSolvents() != null ? newSubmission.getSolvents() : new ArrayList<>();
     for (SampleSolvent solvent : oldSolvents) {
       if (!newSolvents.contains(solvent)) {
         updateBuilders.add(new SolventUpdateActivityBuilder().recordId(solvent.getId())

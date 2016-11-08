@@ -195,6 +195,12 @@ public class SampleActivityService {
       SubmissionSample newSubmission = (SubmissionSample) newSample;
       updateBuilders.add(new SampleUpdateActivityBuilder().column("status")
           .oldValue(oldSubmission.getStatus()).newValue(newSubmission.getStatus()));
+      updateBuilders.add(new SampleUpdateActivityBuilder().column("numberProtein")
+          .oldValue(oldSubmission.getNumberProtein())
+          .newValue(newSubmission.getNumberProtein()));
+      updateBuilders.add(new SampleUpdateActivityBuilder().column("molecularWeight")
+          .oldValue(oldSubmission.getMolecularWeight())
+          .newValue(newSubmission.getMolecularWeight()));
       // Contaminants.
       List<Contaminant> oldContaminants = oldSubmission.getContaminants() != null
           ? oldSubmission.getContaminants() : new ArrayList<>();

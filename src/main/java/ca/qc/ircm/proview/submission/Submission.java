@@ -110,12 +110,6 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Enumerated(STRING)
   private MassDetectionInstrumentSource source;
   /**
-   * Number of Proteins in Sample.
-   */
-  @Column(name = "sampleNumberProtein")
-  @Min(0)
-  private Integer sampleNumberProtein;
-  /**
    * Proteolytic digestion method.
    */
   @Column(name = "proteolyticDigestionMethod")
@@ -202,12 +196,6 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Column(name = "protein")
   @Size(max = 100)
   private String protein;
-  /**
-   * Molecular weight of Protein in Sample.
-   */
-  @Column(name = "molecularWeight")
-  @Min(0)
-  private Double molecularWeight;
   /**
    * Post-translationnal modification to Protein.
    */
@@ -508,14 +496,6 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.exactMsms = exactMsms;
   }
 
-  public Integer getSampleNumberProtein() {
-    return sampleNumberProtein;
-  }
-
-  public void setSampleNumberProtein(Integer sampleNumberProtein) {
-    this.sampleNumberProtein = sampleNumberProtein;
-  }
-
   public ProteolyticDigestion getProteolyticDigestionMethod() {
     return proteolyticDigestionMethod;
   }
@@ -626,14 +606,6 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setTaxonomy(String taxonomy) {
     this.taxonomy = taxonomy;
-  }
-
-  public Double getMolecularWeight() {
-    return molecularWeight;
-  }
-
-  public void setMolecularWeight(Double molecularWeight) {
-    this.molecularWeight = molecularWeight;
   }
 
   public String getProteinQuantity() {

@@ -35,6 +35,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Min;
 
 /**
  * Sample submitted for MS analysis.
@@ -50,6 +51,18 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
   @Column(name = "status", nullable = false)
   @Enumerated(STRING)
   private SampleStatus status;
+  /**
+   * Number of Proteins in Sample.
+   */
+  @Column(name = "numberProtein")
+  @Min(0)
+  private Integer numberProtein;
+  /**
+   * Molecular weight of Protein in Sample.
+   */
+  @Column(name = "molecularWeight")
+  @Min(0)
+  private Double molecularWeight;
   /**
    * Submission of this sample.
    */
@@ -110,5 +123,21 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
 
   public void setContaminants(List<Contaminant> contaminants) {
     this.contaminants = contaminants;
+  }
+
+  public Integer getNumberProtein() {
+    return numberProtein;
+  }
+
+  public void setNumberProtein(Integer numberProtein) {
+    this.numberProtein = numberProtein;
+  }
+
+  public Double getMolecularWeight() {
+    return molecularWeight;
+  }
+
+  public void setMolecularWeight(Double molecularWeight) {
+    this.molecularWeight = molecularWeight;
   }
 }

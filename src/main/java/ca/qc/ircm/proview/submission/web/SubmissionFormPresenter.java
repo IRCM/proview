@@ -90,6 +90,7 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
+import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FontAwesome;
@@ -168,7 +169,7 @@ public class SubmissionFormPresenter {
   public static final String TAXONOMY_PROPERTY = submission.taxonomy.getMetadata().getName();
   public static final String PROTEIN_NAME_PROPERTY = submission.protein.getMetadata().getName();
   public static final String PROTEIN_WEIGHT_PROPERTY =
-      submission.molecularWeight.getMetadata().getName();
+      submissionSample.molecularWeight.getMetadata().getName();
   public static final String POST_TRANSLATION_MODIFICATION_PROPERTY =
       submission.postTranslationModification.getMetadata().getName();
   public static final String SAMPLE_VOLUME_PROPERTY =
@@ -230,7 +231,7 @@ public class SubmissionFormPresenter {
   public static final String ENRICHEMENT_PROPERTY = "enrichment";
   public static final String EXCLUSIONS_PROPERTY = "exclusions";
   public static final String SAMPLE_NUMBER_PROTEIN_PROPERTY =
-      submission.sampleNumberProtein.getMetadata().getName();
+      submissionSample.numberProtein.getMetadata().getName();
   public static final String SOURCE_PROPERTY = submission.source.getMetadata().getName();
   public static final String PROTEIN_CONTENT_PROPERTY =
       submission.proteinContent.getMetadata().getName();
@@ -260,6 +261,9 @@ public class SubmissionFormPresenter {
   public static final String FORM_CAPTION_STYLE = "formcaption";
   public static final String CLICKABLE_STYLE = "clickable";
   public static final String HIDE_REQUIRED_STYLE = "hide-required";
+  private static final Object[] samplesColumns = new Object[] { SAMPLE_NAME_PROPERTY };
+  private static final Object[] intactProteinSamplesColumns = new Object[] { SAMPLE_NAME_PROPERTY,
+      SAMPLE_NUMBER_PROTEIN_PROPERTY, PROTEIN_WEIGHT_PROPERTY };
   private static final Object[] standardsColumns = new Object[] { STANDARD_NAME_PROPERTY,
       STANDARD_QUANTITY_PROPERTY, STANDARD_COMMENTS_PROPERTY };
   private static final Object[] contaminantsColumns = new Object[] { CONTAMINANT_NAME_PROPERTY,
@@ -395,7 +399,6 @@ public class SubmissionFormPresenter {
     view.otherProteolyticDigestionMethodField.addStyleName(OTHER_DIGESTION_PROPERTY);
     view.enrichmentLabel.addStyleName(ENRICHEMENT_PROPERTY);
     view.exclusionsLabel.addStyleName(EXCLUSIONS_PROPERTY);
-    view.sampleNumberProteinField.addStyleName(SAMPLE_NUMBER_PROTEIN_PROPERTY);
     view.sourceOptions.addStyleName(SOURCE_PROPERTY);
     view.proteinContentOptions.addStyleName(PROTEIN_CONTENT_PROPERTY);
     view.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
@@ -445,6 +448,10 @@ public class SubmissionFormPresenter {
     view.samplesLabel.setCaption(resources.message(SAMPLES_PROPERTY));
     view.samplesTable.setColumnHeader(SAMPLE_NAME_PROPERTY,
         resources.message(SAMPLE_NAME_PROPERTY));
+    view.samplesTable.setColumnHeader(SAMPLE_NUMBER_PROTEIN_PROPERTY,
+        resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY));
+    view.samplesTable.setColumnHeader(PROTEIN_WEIGHT_PROPERTY,
+        resources.message(PROTEIN_WEIGHT_PROPERTY));
     view.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
     view.experiencePanel.setCaption(resources.message(EXPERIENCE_PANEL));
     view.experienceField.setCaption(resources.message(EXPERIENCE_PROPERTY));
@@ -509,7 +516,6 @@ public class SubmissionFormPresenter {
     view.enrichmentLabel.setValue(resources.message(ENRICHEMENT_PROPERTY + ".value"));
     view.exclusionsLabel.setCaption(resources.message(EXCLUSIONS_PROPERTY));
     view.exclusionsLabel.setValue(resources.message(EXCLUSIONS_PROPERTY + ".value"));
-    view.sampleNumberProteinField.setCaption(resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY));
     view.sourceOptions.setCaption(resources.message(SOURCE_PROPERTY));
     view.proteinContentOptions.setCaption(resources.message(PROTEIN_CONTENT_PROPERTY));
     view.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
@@ -604,17 +610,25 @@ public class SubmissionFormPresenter {
       public Field<?> createField(Container container, Object itemId, Object propertyId,
           Component uiContext) {
         TextField field = (TextField) super.createField(container, itemId, propertyId, uiContext);
-        field.setCaption(resources.message(SAMPLE_NAME_PROPERTY));
         field.setRequired(true);
         field.setRequiredError(generalResources.message(REQUIRED));
-        field.addValidator(v -> validateSampleName((String) v));
+        field.addValidator(new BeanValidator(SubmissionSample.class, (String) propertyId));
+        if (propertyId == SAMPLE_NAME_PROPERTY) {
+          field.addValidator(v -> validateSampleName((String) v));
+        } else if (propertyId == SAMPLE_NUMBER_PROTEIN_PROPERTY) {
+          field.setConverter(new StringToIntegerConverter());
+          field.setConversionError(generalResources.message(INVALID_INTEGER));
+        } else if (propertyId == PROTEIN_WEIGHT_PROPERTY) {
+          field.setConverter(new StringToDoubleConverter());
+          field.setConversionError(generalResources.message(INVALID_NUMBER));
+        }
         return field;
       }
     });
     view.samplesTable.setTableFieldFactory(sampleTableFieldFactory);
     view.samplesTable.setContainerDataSource(samplesContainer);
     view.samplesTable.setPageLength(SAMPLES_NAMES_TABLE_LENGTH);
-    view.samplesTable.setVisibleColumns(SAMPLE_NAME_PROPERTY);
+    view.samplesTable.setVisibleColumns(samplesColumns);
     view.plateSampleNameFields.forEach(l -> l.forEach(field -> {
       field.setColumns(7);
       field.addValidator(v -> validateSampleName((String) v));
@@ -640,7 +654,7 @@ public class SubmissionFormPresenter {
       public Field<?> createField(Container container, Object itemId, Object propertyId,
           Component uiContext) {
         Field<?> field = super.createField(container, itemId, propertyId, uiContext);
-        field.setCaption(resources.message(STANDARD_PROPERTY + "." + propertyId));
+        field.addValidator(new BeanValidator(Standard.class, (String) propertyId));
         if (propertyId.equals(STANDARD_QUANTITY_PROPERTY)) {
           ((TextField) field).setInputPrompt(resources
               .message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY + "." + EXAMPLE));
@@ -668,7 +682,7 @@ public class SubmissionFormPresenter {
           public Field<?> createField(Container container, Object itemId, Object propertyId,
               Component uiContext) {
             Field<?> field = super.createField(container, itemId, propertyId, uiContext);
-            field.setCaption(resources.message(CONTAMINANT_PROPERTY + "." + propertyId));
+            field.addValidator(new BeanValidator(Contaminant.class, (String) propertyId));
             if (propertyId.equals(CONTAMINANT_QUANTITY_PROPERTY)) {
               ((TextField) field).setInputPrompt(resources.message(
                   CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY + "." + EXAMPLE));
@@ -774,10 +788,6 @@ public class SubmissionFormPresenter {
     view.usedProteolyticDigestionMethodField.setRequiredError(generalResources.message(REQUIRED));
     view.otherProteolyticDigestionMethodField.setRequired(true);
     view.otherProteolyticDigestionMethodField.setRequiredError(generalResources.message(REQUIRED));
-    view.sampleNumberProteinField.setConverter(new StringToIntegerConverter());
-    view.sampleNumberProteinField.setConversionError(generalResources.message(INVALID_INTEGER));
-    view.sampleNumberProteinField.setRequired(true);
-    view.sampleNumberProteinField.setRequiredError(generalResources.message(REQUIRED));
     view.sourceOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.sourceOptions.removeAllItems();
     for (MassDetectionInstrumentSource source : SubmissionForm.SOURCES) {
@@ -910,6 +920,10 @@ public class SubmissionFormPresenter {
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT));
     view.samplesTable.setVisible(service == INTACT_PROTEIN
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT));
+    view.samplesTable.setVisibleColumns(
+        service == INTACT_PROTEIN ? intactProteinSamplesColumns : samplesColumns);
+    sampleTableFieldFactory.getFields(PROTEIN_WEIGHT_PROPERTY)
+        .forEach(f -> f.setRequired(service == INTACT_PROTEIN));
     view.fillSamplesButton.setVisible((service == INTACT_PROTEIN
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT))
         && editable);
@@ -920,7 +934,7 @@ public class SubmissionFormPresenter {
     view.experienceGoalField.setVisible(service != SMALL_MOLECULE);
     view.taxonomyField.setVisible(service != SMALL_MOLECULE);
     view.proteinNameField.setVisible(service != SMALL_MOLECULE);
-    view.proteinWeightField.setVisible(service != SMALL_MOLECULE);
+    view.proteinWeightField.setVisible(service == LC_MS_MS);
     view.postTranslationModificationField.setVisible(service != SMALL_MOLECULE);
     view.sampleQuantityField
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
@@ -964,7 +978,6 @@ public class SubmissionFormPresenter {
         && view.digestionOptions.getValue() == ProteolyticDigestion.OTHER);
     view.enrichmentLabel.setVisible(editable && service == LC_MS_MS);
     view.exclusionsLabel.setVisible(editable && service == LC_MS_MS);
-    view.sampleNumberProteinField.setVisible(service == INTACT_PROTEIN);
     view.sourceOptions.setVisible(service == INTACT_PROTEIN);
     view.proteinContentOptions.setVisible(service == LC_MS_MS);
     view.instrumentOptions.setVisible(service != SMALL_MOLECULE);
@@ -1029,7 +1042,6 @@ public class SubmissionFormPresenter {
     view.digestionOptions.setReadOnly(!editable);
     view.usedProteolyticDigestionMethodField.setReadOnly(!editable);
     view.otherProteolyticDigestionMethodField.setReadOnly(!editable);
-    view.sampleNumberProteinField.setReadOnly(!editable);
     view.sourceOptions.setReadOnly(!editable);
     view.proteinContentOptions.setReadOnly(!editable);
     view.instrumentOptions.setReadOnly(!editable);
@@ -1061,7 +1073,7 @@ public class SubmissionFormPresenter {
     submissionFieldGroup.bind(view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
     submissionFieldGroup.bind(view.taxonomyField, TAXONOMY_PROPERTY);
     submissionFieldGroup.bind(view.proteinNameField, PROTEIN_NAME_PROPERTY);
-    submissionFieldGroup.bind(view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
+    firstSampleFieldGroup.bind(view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
     submissionFieldGroup.bind(view.postTranslationModificationField,
         POST_TRANSLATION_MODIFICATION_PROPERTY);
     firstSampleFieldGroup.bind(view.sampleVolumeField, SAMPLE_VOLUME_PROPERTY);
@@ -1077,7 +1089,6 @@ public class SubmissionFormPresenter {
     submissionFieldGroup.bind(view.digestionOptions, DIGESTION_PROPERTY);
     submissionFieldGroup.bind(view.usedProteolyticDigestionMethodField, USED_DIGESTION_PROPERTY);
     submissionFieldGroup.bind(view.otherProteolyticDigestionMethodField, OTHER_DIGESTION_PROPERTY);
-    submissionFieldGroup.bind(view.sampleNumberProteinField, SAMPLE_NUMBER_PROTEIN_PROPERTY);
     submissionFieldGroup.bind(view.sourceOptions, SOURCE_PROPERTY);
     submissionFieldGroup.bind(view.proteinContentOptions, PROTEIN_CONTENT_PROPERTY);
     submissionFieldGroup.bind(view.instrumentOptions, INSTRUMENT_PROPERTY);
@@ -1105,7 +1116,7 @@ public class SubmissionFormPresenter {
     bindVisibleField(submissionFieldGroup, view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.taxonomyField, TAXONOMY_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.proteinNameField, PROTEIN_NAME_PROPERTY);
-    bindVisibleField(submissionFieldGroup, view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
+    bindVisibleField(firstSampleFieldGroup, view.proteinWeightField, PROTEIN_WEIGHT_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.postTranslationModificationField,
         POST_TRANSLATION_MODIFICATION_PROPERTY);
     bindVisibleField(firstSampleFieldGroup, view.sampleQuantityField, SAMPLE_QUANTITY_PROPERTY);
@@ -1124,8 +1135,6 @@ public class SubmissionFormPresenter {
         USED_DIGESTION_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.otherProteolyticDigestionMethodField,
         OTHER_DIGESTION_PROPERTY);
-    bindVisibleField(submissionFieldGroup, view.sampleNumberProteinField,
-        SAMPLE_NUMBER_PROTEIN_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.sourceOptions, SOURCE_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.proteinContentOptions, PROTEIN_CONTENT_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.instrumentOptions, INSTRUMENT_PROPERTY);
@@ -1160,7 +1169,9 @@ public class SubmissionFormPresenter {
       count = 1;
     }
     while (count > samplesContainer.size()) {
-      samplesContainer.addBean(new SubmissionSample());
+      SubmissionSample sample = new SubmissionSample();
+      sample.setNumberProtein(1);
+      samplesContainer.addBean(sample);
     }
     while (count < samplesContainer.size()) {
       samplesContainer.removeItem(samplesContainer.getIdByIndex(samplesContainer.size() - 1));
@@ -1472,7 +1483,16 @@ public class SubmissionFormPresenter {
     }
   }
 
+  private void clearSamplesTableInvisibleFields() {
+    if (view.serviceOptions.getValue() != INTACT_PROTEIN) {
+      sampleTableFieldFactory.getFields(SAMPLE_NUMBER_PROTEIN_PROPERTY)
+          .forEach(f -> ((TextField) f).setConvertedValue(1));
+      sampleTableFieldFactory.getFields(PROTEIN_WEIGHT_PROPERTY).forEach(f -> f.setValue(null));
+    }
+  }
+
   private void saveSubmission() {
+    clearSamplesTableInvisibleFields();
     if (validate()) {
       Submission submission = submissionFieldGroup.getItemDataSource().getBean();
       SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
@@ -1489,6 +1509,7 @@ public class SubmissionFormPresenter {
         submission.setSamples(Arrays.asList(firstSample));
         submission.setSolvents(new ArrayList<>());
         firstSample.setOriginalContainer(null);
+        firstSample.setNumberProtein(null);
         if (view.acetonitrileSolventsField.getValue()) {
           submission.getSolvents().add(new SampleSolvent(ACETONITRILE));
         }
@@ -1531,6 +1552,10 @@ public class SubmissionFormPresenter {
         sample.setSupport(firstSample.getSupport());
         sample.setQuantity(firstSample.getQuantity());
         sample.setVolume(firstSample.getVolume());
+        if (submission.getService() != INTACT_PROTEIN) {
+          sample.setNumberProtein(null);
+          sample.setMolecularWeight(firstSample.getMolecularWeight());
+        }
         if (firstSample.getSupport() != GEL) {
           copyStandardsFromTableToSample(sample);
           copyContaminantsFromTableToSample(sample);
@@ -1547,6 +1572,8 @@ public class SubmissionFormPresenter {
             sample.setSupport(firstSample.getSupport());
             sample.setQuantity(firstSample.getQuantity());
             sample.setVolume(firstSample.getVolume());
+            sample.setNumberProtein(null);
+            sample.setMolecularWeight(firstSample.getMolecularWeight());
             if (firstSample.getSupport() != GEL) {
               copyStandardsFromTableToSample(sample);
               copyContaminantsFromTableToSample(sample);
@@ -1598,10 +1625,6 @@ public class SubmissionFormPresenter {
       Submission submission = new Submission();
       submission.setService(LC_MS_MS);
       submission.setSamples(new ArrayList<>());
-      SubmissionSample sample = new SubmissionSample();
-      sample.setSupport(SOLUTION);
-      sample.setOriginalContainer(new Tube());
-      submission.getSamples().add(sample);
       submission.setStorageTemperature(StorageTemperature.MEDIUM);
       submission.setSeparation(ONE_DIMENSION);
       submission.setThickness(ONE);
@@ -1611,28 +1634,30 @@ public class SubmissionFormPresenter {
       submission.setProteinIdentification(REFSEQ);
       item = new BeanItem<>(submission);
     }
-
-    submissionFieldGroup.setItemDataSource(item);
-    final Locale locale = view.getLocale();
-    item = submissionFieldGroup.getItemDataSource();
     List<SubmissionSample> samples =
         (List<SubmissionSample>) item.getItemProperty(SAMPLES_PROPERTY).getValue();
     if (samples == null) {
       samples = new ArrayList<>();
     }
-    SubmissionSample firstSample = samples.isEmpty() ? new SubmissionSample() : samples.get(0);
+    SubmissionSample firstSample;
     if (samples.isEmpty()) {
       firstSample = new SubmissionSample();
+      firstSample.setSupport(SOLUTION);
+      firstSample.setNumberProtein(1);
       firstSample.setOriginalContainer(new Tube());
+      samples.add(firstSample);
     } else {
       firstSample = samples.get(0);
     }
-    if (samples.isEmpty()) {
-      samples.add(new SubmissionSample(firstSample.getId(), firstSample.getName()));
-    } else {
-      samples.set(0, new SubmissionSample(firstSample.getId(), firstSample.getName()));
-    }
+    SubmissionSample firstSampleCopy =
+        new SubmissionSample(firstSample.getId(), firstSample.getName());
+    firstSampleCopy.setNumberProtein(firstSample.getNumberProtein());
+    firstSampleCopy.setMolecularWeight(firstSample.getMolecularWeight());
+    samples.set(0, firstSampleCopy);
+
+    submissionFieldGroup.setItemDataSource(item);
     firstSampleFieldGroup.setItemDataSource(new BeanItem<>(firstSample));
+    final Locale locale = view.getLocale();
     samplesContainer.removeAllItems();
     samplesContainer.addAll(samples);
     view.sampleCountField.setReadOnly(false);

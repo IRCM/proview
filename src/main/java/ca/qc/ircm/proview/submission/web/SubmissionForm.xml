@@ -44,6 +44,7 @@
   <entry key="samplesContainerType.TUBE">Tubes</entry>
   <entry key="samplesContainerType.SPOT">Plate</entry>
   <entry key="samples">Samples</entry>
+  <entry key="numberProtein">Number of proteins</entry>
   <entry key="samples.missing">Fill plate with {0} samples</entry>
   <entry key="fillSamples">Fill down</entry>
   <entry key="experiencePanel">Sample details</entry>
@@ -105,7 +106,6 @@
   <entry key="enrichment.value">Coming soon!</entry>
   <entry key="exclusions">LC MSMS exclusion and inclusion</entry>
   <entry key="exclusions.value">LC MSMS exclusion and inclusion will be added to the site in the future. For these options, please contact Denis Faubert in contact us page.</entry>
-  <entry key="sampleNumberProtein">Number of proteins in sample</entry>
   <entry key="source">Ionization source</entry>
   <entry key="proteinContent">To help us choose the best LC-MS chromatography for your samples, choose the most appropriate option below</entry>
   <entry key="massDetectionInstrument">Instrument selection</entry>

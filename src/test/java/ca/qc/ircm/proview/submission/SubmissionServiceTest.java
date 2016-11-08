@@ -183,7 +183,6 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
-    assertEquals(null, submission.getSampleNumberProtein());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals(null, submission.getUsedProteolyticDigestionMethod());
     assertEquals(null, submission.getOtherProteolyticDigestionMethod());
@@ -198,7 +197,6 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getMudPitFraction());
     assertEquals(ProteinContent.XLARGE, submission.getProteinContent());
     assertEquals(null, submission.getProtein());
-    assertEquals(null, submission.getMolecularWeight());
     assertEquals(null, submission.getPostTranslationModification());
     assertEquals(GelSeparation.ONE_DIMENSION, submission.getSeparation());
     assertEquals(GelThickness.ONE, submission.getThickness());
@@ -229,6 +227,8 @@ public class SubmissionServiceTest {
     assertEquals(SampleSupport.GEL, sample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, sample.getType());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(null, sample.getMolecularWeight());
     assertEquals(submission, sample.getSubmission());
   }
 
@@ -245,7 +245,6 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getGoal());
     assertEquals(null, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
-    assertEquals(null, submission.getSampleNumberProtein());
     assertEquals(null, submission.getProteolyticDigestionMethod());
     assertEquals(null, submission.getUsedProteolyticDigestionMethod());
     assertEquals(null, submission.getOtherProteolyticDigestionMethod());
@@ -260,7 +259,6 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getMudPitFraction());
     assertEquals(null, submission.getProteinContent());
     assertEquals(null, submission.getProtein());
-    assertEquals(null, submission.getMolecularWeight());
     assertEquals(null, submission.getPostTranslationModification());
     assertEquals(null, submission.getSeparation());
     assertEquals(null, submission.getThickness());
@@ -305,6 +303,8 @@ public class SubmissionServiceTest {
     assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, sample.getType());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(null, sample.getMolecularWeight());
     assertEquals(submission, sample.getSubmission());
   }
 
@@ -1310,6 +1310,8 @@ public class SubmissionServiceTest {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_gel_01");
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     GelImage gelImage = new GelImage();
@@ -1341,7 +1343,6 @@ public class SubmissionServiceTest {
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
-    submission.setSampleNumberProtein(10);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
     submission.setOtherProteolyticDigestionMethod("other digestion");
@@ -1350,7 +1351,6 @@ public class SubmissionServiceTest {
     submission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
     submission.setOtherEnrichmentType("other enrichment");
     submission.setProtein("protein");
-    submission.setMolecularWeight(120.0);
     submission.setPostTranslationModification("my_modification");
     submission.setMudPitFraction(MudPitFraction.EIGHT);
     submission.setProteinContent(ProteinContent.MEDIUM);
@@ -1387,7 +1387,6 @@ public class SubmissionServiceTest {
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
-    assertEquals(new Integer(10), submission.getSampleNumberProtein());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
     assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
@@ -1396,7 +1395,6 @@ public class SubmissionServiceTest {
     assertEquals(EnrichmentType.PHOSPHOPEPTIDES, submission.getEnrichmentType());
     assertEquals("other enrichment", submission.getOtherEnrichmentType());
     assertEquals("protein", submission.getProtein());
-    assertEquals(new Double(120.0), submission.getMolecularWeight());
     assertEquals("my_modification", submission.getPostTranslationModification());
     assertEquals(MudPitFraction.EIGHT, submission.getMudPitFraction());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
@@ -1418,6 +1416,8 @@ public class SubmissionServiceTest {
     assertNotNull(submissionSample.getLims());
     assertEquals(true, LIMS_PATTERN.matcher(submissionSample.getLims()).matches());
     assertEquals("unit_test_gel_01", submissionSample.getName());
+    assertEquals(new Integer(10), submissionSample.getNumberProtein());
+    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
     Tube tube = (Tube) submissionSample.getOriginalContainer();
     assertNotNull(tube);
     assertEquals("unit_test_gel_01", tube.getName());
@@ -1446,11 +1446,15 @@ public class SubmissionServiceTest {
     sample.setSupport(SampleSupport.SOLUTION);
     sample.setVolume(10.0);
     sample.setQuantity("2.0 μg");
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
     SubmissionSample sample2 = new SubmissionSample();
     sample2.setName("unit_test_eluate_02");
     sample2.setSupport(SampleSupport.SOLUTION);
     sample2.setVolume(10.0);
     sample2.setQuantity("2.0 μg");
+    sample2.setNumberProtein(10);
+    sample2.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     samples.add(sample2);
@@ -1497,7 +1501,6 @@ public class SubmissionServiceTest {
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
-    submission.setSampleNumberProtein(10);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
     submission.setOtherProteolyticDigestionMethod("other digestion");
@@ -1506,7 +1509,6 @@ public class SubmissionServiceTest {
     submission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
     submission.setOtherEnrichmentType("other enrichment");
     submission.setProtein("protein");
-    submission.setMolecularWeight(120.0);
     submission.setPostTranslationModification("my_modification");
     submission.setMudPitFraction(MudPitFraction.EIGHT);
     submission.setProteinContent(ProteinContent.MEDIUM);
@@ -1538,7 +1540,6 @@ public class SubmissionServiceTest {
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
-    assertEquals(new Integer(10), submission.getSampleNumberProtein());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
     assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
@@ -1547,7 +1548,6 @@ public class SubmissionServiceTest {
     assertEquals(EnrichmentType.PHOSPHOPEPTIDES, submission.getEnrichmentType());
     assertEquals("other enrichment", submission.getOtherEnrichmentType());
     assertEquals("protein", submission.getProtein());
-    assertEquals(new Double(120.0), submission.getMolecularWeight());
     assertEquals("my_modification", submission.getPostTranslationModification());
     assertEquals(MudPitFraction.EIGHT, submission.getMudPitFraction());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
@@ -1563,6 +1563,8 @@ public class SubmissionServiceTest {
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
+    assertEquals(new Integer(10), submissionSample.getNumberProtein());
+    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
     contaminants = submissionSample.getContaminants();
     assertEquals(1, contaminants.size());
     contaminant = contaminants.get(0);
@@ -1601,12 +1603,16 @@ public class SubmissionServiceTest {
     sample.setVolume(10.0);
     sample.setQuantity("2.0 μg");
     sample.setOriginalContainer(new PlateSpot(0, 0));
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
     SubmissionSample sample2 = new SubmissionSample();
     sample2.setName("unit_test_eluate_02");
     sample2.setSupport(SampleSupport.SOLUTION);
     sample2.setVolume(10.0);
     sample2.setQuantity("2.0 μg");
     sample2.setOriginalContainer(new PlateSpot(1, 0));
+    sample2.setNumberProtein(10);
+    sample2.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     samples.add(sample2);
@@ -1633,7 +1639,6 @@ public class SubmissionServiceTest {
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
-    submission.setSampleNumberProtein(10);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
     submission.setOtherProteolyticDigestionMethod("other digestion");
@@ -1642,7 +1647,6 @@ public class SubmissionServiceTest {
     submission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
     submission.setOtherEnrichmentType("other enrichment");
     submission.setProtein("protein");
-    submission.setMolecularWeight(120.0);
     submission.setPostTranslationModification("my_modification");
     submission.setMudPitFraction(MudPitFraction.EIGHT);
     submission.setProteinContent(ProteinContent.MEDIUM);
@@ -1670,7 +1674,6 @@ public class SubmissionServiceTest {
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
-    assertEquals(new Integer(10), submission.getSampleNumberProtein());
     assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
     assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
     assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
@@ -1679,7 +1682,6 @@ public class SubmissionServiceTest {
     assertEquals(EnrichmentType.PHOSPHOPEPTIDES, submission.getEnrichmentType());
     assertEquals("other enrichment", submission.getOtherEnrichmentType());
     assertEquals("protein", submission.getProtein());
-    assertEquals(new Double(120.0), submission.getMolecularWeight());
     assertEquals("my_modification", submission.getPostTranslationModification());
     assertEquals(MudPitFraction.EIGHT, submission.getMudPitFraction());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
@@ -1695,6 +1697,8 @@ public class SubmissionServiceTest {
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
+    assertEquals(new Integer(10), submissionSample.getNumberProtein());
+    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
     contaminants = submissionSample.getContaminants();
     assertEquals(1, contaminants.size());
     contaminant = contaminants.get(0);
@@ -1853,6 +1857,8 @@ public class SubmissionServiceTest {
     sample.setSupport(SampleSupport.SOLUTION);
     sample.setVolume(10.0);
     sample.setQuantity("2.0 μg");
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     Contaminant contaminant = new Contaminant();
@@ -1880,7 +1886,6 @@ public class SubmissionServiceTest {
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
-    submission.setSampleNumberProtein(10);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
     submission.setUsedProteolyticDigestionMethod("trypsine was not used");
     submission.setOtherProteolyticDigestionMethod("other digestion");
@@ -1889,7 +1894,6 @@ public class SubmissionServiceTest {
     submission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
     submission.setOtherEnrichmentType("other enrichment");
     submission.setProtein("protein");
-    submission.setMolecularWeight(120.0);
     submission.setPostTranslationModification("my_modification");
     submission.setMudPitFraction(MudPitFraction.EIGHT);
     submission.setProteinContent(ProteinContent.MEDIUM);

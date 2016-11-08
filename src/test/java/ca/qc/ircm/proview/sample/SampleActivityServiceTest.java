@@ -88,6 +88,8 @@ public class SampleActivityServiceTest {
     submissionSample.setSupport(SampleSupport.DRY);
     submissionSample.setQuantity("12 pmol");
     submissionSample.setVolume(70.0);
+    submissionSample.setNumberProtein(2);
+    submissionSample.setMolecularWeight(20.0);
 
     Optional<Activity> optionalActivity =
         sampleActivityServiceImpl.update(submissionSample, "unit_test");
@@ -99,7 +101,7 @@ public class SampleActivityServiceTest {
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameActivity = new UpdateActivity();
     nameActivity.setActionType(ActionType.UPDATE);
     nameActivity.setTableName("sample");
@@ -132,6 +134,22 @@ public class SampleActivityServiceTest {
     volumeActivity.setOldValue("50.0");
     volumeActivity.setNewValue("70.0");
     expectedUpdateActivities.add(volumeActivity);
+    UpdateActivity sampleNumberProteinActivity = new UpdateActivity();
+    sampleNumberProteinActivity.setActionType(ActionType.UPDATE);
+    sampleNumberProteinActivity.setTableName("sample");
+    sampleNumberProteinActivity.setRecordId(submissionSample.getId());
+    sampleNumberProteinActivity.setColumn("numberProtein");
+    sampleNumberProteinActivity.setOldValue(null);
+    sampleNumberProteinActivity.setNewValue("2");
+    expectedUpdateActivities.add(sampleNumberProteinActivity);
+    UpdateActivity molecularWeightActivity = new UpdateActivity();
+    molecularWeightActivity.setActionType(ActionType.UPDATE);
+    molecularWeightActivity.setTableName("sample");
+    molecularWeightActivity.setRecordId(submissionSample.getId());
+    molecularWeightActivity.setColumn("molecularWeight");
+    molecularWeightActivity.setOldValue(null);
+    molecularWeightActivity.setNewValue("20.0");
+    expectedUpdateActivities.add(molecularWeightActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 
@@ -156,7 +174,7 @@ public class SampleActivityServiceTest {
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity addContaminantActivity = new UpdateActivity();
     addContaminantActivity.setActionType(ActionType.INSERT);
     addContaminantActivity.setTableName("contaminant");
@@ -187,7 +205,7 @@ public class SampleActivityServiceTest {
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameActivity = new UpdateActivity();
     nameActivity.setActionType(ActionType.UPDATE);
     nameActivity.setTableName("contaminant");
@@ -232,7 +250,7 @@ public class SampleActivityServiceTest {
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeActivity = new UpdateActivity();
     removeActivity.setActionType(ActionType.DELETE);
     removeActivity.setTableName("contaminant");
@@ -262,7 +280,7 @@ public class SampleActivityServiceTest {
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity addStandardActivity = new UpdateActivity();
     addStandardActivity.setActionType(ActionType.INSERT);
     addStandardActivity.setTableName("standard");
@@ -293,7 +311,7 @@ public class SampleActivityServiceTest {
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameActivity = new UpdateActivity();
     nameActivity.setActionType(ActionType.UPDATE);
     nameActivity.setTableName("standard");
@@ -338,7 +356,7 @@ public class SampleActivityServiceTest {
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeActivity = new UpdateActivity();
     removeActivity.setActionType(ActionType.DELETE);
     removeActivity.setTableName("standard");
@@ -366,7 +384,7 @@ public class SampleActivityServiceTest {
     assertEquals(control.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameActivity = new UpdateActivity();
     nameActivity.setActionType(ActionType.UPDATE);
     nameActivity.setTableName("sample");
@@ -430,7 +448,7 @@ public class SampleActivityServiceTest {
     assertEquals(control.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity addStandardActivity = new UpdateActivity();
     addStandardActivity.setActionType(ActionType.INSERT);
     addStandardActivity.setTableName("standard");
@@ -460,7 +478,7 @@ public class SampleActivityServiceTest {
     assertEquals(control.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameActivity = new UpdateActivity();
     nameActivity.setActionType(ActionType.UPDATE);
     nameActivity.setTableName("standard");
@@ -504,7 +522,7 @@ public class SampleActivityServiceTest {
     assertEquals(control.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeActivity = new UpdateActivity();
     removeActivity.setActionType(ActionType.DELETE);
     removeActivity.setTableName("standard");

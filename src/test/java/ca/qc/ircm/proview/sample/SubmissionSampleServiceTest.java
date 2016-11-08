@@ -106,6 +106,8 @@ public class SubmissionSampleServiceTest {
     assertEquals(SampleSupport.GEL, gelSample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
     assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
+    assertEquals(null, gelSample.getNumberProtein());
+    assertEquals(null, gelSample.getMolecularWeight());
     assertEquals((Long) 1L, gelSample.getSubmission().getId());
   }
 
@@ -127,6 +129,8 @@ public class SubmissionSampleServiceTest {
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
     assertEquals("1.5 μg", eluateSample.getQuantity());
     assertEquals((Double) 50.0, eluateSample.getVolume());
+    assertEquals(null, eluateSample.getNumberProtein());
+    assertEquals(null, eluateSample.getMolecularWeight());
   }
 
   @Test
@@ -149,6 +153,8 @@ public class SubmissionSampleServiceTest {
     assertEquals(SampleSupport.GEL, sample.getSupport());
     assertEquals(Sample.Type.SUBMISSION, sample.getType());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(null, sample.getMolecularWeight());
     assertEquals((Long) 1L, sample.getSubmission().getId());
   }
 
@@ -168,6 +174,8 @@ public class SubmissionSampleServiceTest {
     assertEquals((Long) 32L, sample.getSubmission().getId());
     assertEquals("1.5 μg", sample.getQuantity());
     assertEquals((Double) 50.0, sample.getVolume());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(null, sample.getMolecularWeight());
   }
 
   @Test
@@ -1220,6 +1228,8 @@ public class SubmissionSampleServiceTest {
     sample.setSupport(SampleSupport.DRY);
     sample.setQuantity("12 pmol");
     sample.setVolume(70.0);
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
@@ -1243,6 +1253,8 @@ public class SubmissionSampleServiceTest {
     assertEquals(SampleSupport.DRY, newSubmissionSample.getSupport());
     assertEquals("12 pmol", newSubmissionSample.getQuantity());
     assertEquals((Double) 70.0, newSubmissionSample.getVolume());
+    assertEquals((Integer) 10, newSubmissionSample.getNumberProtein());
+    assertEquals((Double) 120.0, newSubmissionSample.getMolecularWeight());
   }
 
   @Test

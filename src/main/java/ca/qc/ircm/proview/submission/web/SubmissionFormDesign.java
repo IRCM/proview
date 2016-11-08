@@ -93,7 +93,6 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Label otherProteolyticDigestionMethodNote;
   protected Label enrichmentLabel;
   protected Label exclusionsLabel;
-  protected TextField sampleNumberProteinField;
   protected OptionGroup sourceOptions;
   protected OptionGroup proteinContentOptions;
   protected OptionGroup instrumentOptions;

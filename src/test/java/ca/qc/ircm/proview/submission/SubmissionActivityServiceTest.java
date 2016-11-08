@@ -118,7 +118,6 @@ public class SubmissionActivityServiceTest {
     newSubmission.setGoal("new_goal");
     newSubmission.setMassDetectionInstrument(MassDetectionInstrument.TOF);
     newSubmission.setSource(MassDetectionInstrumentSource.LDTD);
-    newSubmission.setSampleNumberProtein(2);
     newSubmission.setProteolyticDigestionMethod(ProteolyticDigestion.DIGESTED);
     newSubmission.setUsedProteolyticDigestionMethod("Trypsine");
     newSubmission.setOtherProteolyticDigestionMethod("None");
@@ -133,7 +132,6 @@ public class SubmissionActivityServiceTest {
     newSubmission.setMudPitFraction(MudPitFraction.TWELVE);
     newSubmission.setProteinContent(ProteinContent.LARGE);
     newSubmission.setProtein("my_protein");
-    newSubmission.setMolecularWeight(20.0);
     newSubmission.setPostTranslationModification("my_modification");
     newSubmission.setSeparation(GelSeparation.TWO_DIMENSION);
     newSubmission.setThickness(GelThickness.ONE_HALF);
@@ -169,7 +167,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(newSubmission.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity serviceActivity = new UpdateActivity();
     serviceActivity.setActionType(ActionType.UPDATE);
     serviceActivity.setTableName("submission");
@@ -226,14 +224,6 @@ public class SubmissionActivityServiceTest {
     sourceActivity.setOldValue(null);
     sourceActivity.setNewValue(MassDetectionInstrumentSource.LDTD.name());
     expectedUpdateActivities.add(sourceActivity);
-    UpdateActivity sampleNumberProteinActivity = new UpdateActivity();
-    sampleNumberProteinActivity.setActionType(ActionType.UPDATE);
-    sampleNumberProteinActivity.setTableName("submission");
-    sampleNumberProteinActivity.setRecordId(newSubmission.getId());
-    sampleNumberProteinActivity.setColumn("sampleNumberProtein");
-    sampleNumberProteinActivity.setOldValue(null);
-    sampleNumberProteinActivity.setNewValue("2");
-    expectedUpdateActivities.add(sampleNumberProteinActivity);
     UpdateActivity proteolyticDigestionMethodActivity = new UpdateActivity();
     proteolyticDigestionMethodActivity.setActionType(ActionType.UPDATE);
     proteolyticDigestionMethodActivity.setTableName("submission");
@@ -346,14 +336,6 @@ public class SubmissionActivityServiceTest {
     proteinActivity.setOldValue(null);
     proteinActivity.setNewValue("my_protein");
     expectedUpdateActivities.add(proteinActivity);
-    UpdateActivity molecularWeightActivity = new UpdateActivity();
-    molecularWeightActivity.setActionType(ActionType.UPDATE);
-    molecularWeightActivity.setTableName("submission");
-    molecularWeightActivity.setRecordId(newSubmission.getId());
-    molecularWeightActivity.setColumn("molecularWeight");
-    molecularWeightActivity.setOldValue(null);
-    molecularWeightActivity.setNewValue("20.0");
-    expectedUpdateActivities.add(molecularWeightActivity);
     UpdateActivity postTranslationModificationActivity = new UpdateActivity();
     postTranslationModificationActivity.setActionType(ActionType.UPDATE);
     postTranslationModificationActivity.setTableName("submission");
@@ -573,7 +555,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(submission.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity otherSolventActivity = new UpdateActivity();
     otherSolventActivity.setActionType(ActionType.UPDATE);
     otherSolventActivity.setTableName("submission");
@@ -609,7 +591,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(submission.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeSolventActivity = new UpdateActivity();
     removeSolventActivity.setActionType(ActionType.DELETE);
     removeSolventActivity.setTableName("solvent");
@@ -640,7 +622,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(submission.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeSolventActivity = new UpdateActivity();
     removeSolventActivity.setActionType(ActionType.UPDATE);
     removeSolventActivity.setTableName("submission");
