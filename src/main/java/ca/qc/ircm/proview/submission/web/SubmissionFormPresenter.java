@@ -1562,45 +1562,57 @@ public class SubmissionFormPresenter {
   }
 
   private void copySamplesToSubmission(Submission submission) {
+    if (submission.getService() == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == SPOT) {
+      submission.setSamples(samplesFromPlate(submission));
+    } else {
+      submission.setSamples(samplesFromTable(submission));
+    }
+  }
+
+  private List<SubmissionSample> samplesFromTable(Submission submission) {
+    List<SubmissionSample> samples = new ArrayList<>();
     SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
-    submission.setSamples(new ArrayList<>());
-    if (view.sampleContainerTypeOptions.getValue() != SPOT) {
-      for (SubmissionSample sample : samplesContainer.getItemIds()) {
-        sample.setSupport(firstSample.getSupport());
-        sample.setQuantity(firstSample.getQuantity());
-        sample.setVolume(firstSample.getVolume());
-        if (submission.getService() != INTACT_PROTEIN) {
+    for (SubmissionSample sample : samplesContainer.getItemIds()) {
+      sample.setSupport(firstSample.getSupport());
+      sample.setQuantity(firstSample.getQuantity());
+      sample.setVolume(firstSample.getVolume());
+      if (submission.getService() != INTACT_PROTEIN) {
+        sample.setNumberProtein(null);
+        sample.setMolecularWeight(firstSample.getMolecularWeight());
+      }
+      if (firstSample.getSupport() != GEL) {
+        copyStandardsFromTableToSample(sample);
+        copyContaminantsFromTableToSample(sample);
+      }
+      samples.add(sample);
+    }
+    return samples;
+  }
+
+  private List<SubmissionSample> samplesFromPlate(Submission submission) {
+    List<SubmissionSample> samples = new ArrayList<>();
+    SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
+    for (int column = 0; column < view.plateSampleNameFields.size(); column++) {
+      for (int row = 0; row < view.plateSampleNameFields.get(column).size(); row++) {
+        TextField nameField = view.plateSampleNameFields.get(column).get(row);
+        if (nameField.getValue() != null && !nameField.getValue().isEmpty()) {
+          SubmissionSample sample = new SubmissionSample();
+          sample.setName(nameField.getValue());
+          sample.setSupport(firstSample.getSupport());
+          sample.setQuantity(firstSample.getQuantity());
+          sample.setVolume(firstSample.getVolume());
           sample.setNumberProtein(null);
           sample.setMolecularWeight(firstSample.getMolecularWeight());
-        }
-        if (firstSample.getSupport() != GEL) {
-          copyStandardsFromTableToSample(sample);
-          copyContaminantsFromTableToSample(sample);
-        }
-        submission.getSamples().add(sample);
-      }
-    } else {
-      for (int column = 0; column < view.plateSampleNameFields.size(); column++) {
-        for (int row = 0; row < view.plateSampleNameFields.get(column).size(); row++) {
-          TextField nameField = view.plateSampleNameFields.get(column).get(row);
-          if (nameField.getValue() != null && !nameField.getValue().isEmpty()) {
-            SubmissionSample sample = new SubmissionSample();
-            sample.setName(nameField.getValue());
-            sample.setSupport(firstSample.getSupport());
-            sample.setQuantity(firstSample.getQuantity());
-            sample.setVolume(firstSample.getVolume());
-            sample.setNumberProtein(null);
-            sample.setMolecularWeight(firstSample.getMolecularWeight());
-            if (firstSample.getSupport() != GEL) {
-              copyStandardsFromTableToSample(sample);
-              copyContaminantsFromTableToSample(sample);
-            }
-            sample.setOriginalContainer(new PlateSpot(row, column));
-            submission.getSamples().add(sample);
+          if (firstSample.getSupport() != GEL) {
+            copyStandardsFromTableToSample(sample);
+            copyContaminantsFromTableToSample(sample);
           }
+          sample.setOriginalContainer(new PlateSpot(row, column));
+          samples.add(sample);
         }
       }
     }
+    return samples;
   }
 
   private void copyStandardsFromTableToSample(SubmissionSample sample) {

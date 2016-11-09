@@ -5514,6 +5514,28 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void submit_SmallMolecule_Plate() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(SMALL_MOLECULE);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleContainerTypeOptions.setValue(SPOT);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view, never()).showError(any());
+    verify(view, never()).showWarning(any());
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName);
+    verify(submissionService).insert(submissionCaptor.capture());
+    Submission submission = submissionCaptor.getValue();
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals(null, sample.getOriginalContainer());
+  }
+
+  @Test
   public void submit_Intactprotein_Solution() {
     presenter.init(view);
     presenter.setEditable(true);
@@ -5642,5 +5664,30 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
+  }
+
+  @Test
+  public void submit_IntactProtein_Plate() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleContainerTypeOptions.setValue(SPOT);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view, never()).showError(any());
+    verify(view, never()).showWarning(any());
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
+    verify(submissionService).insert(submissionCaptor.capture());
+    Submission submission = submissionCaptor.getValue();
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals(null, sample.getOriginalContainer());
+    sample = submission.getSamples().get(1);
+    assertEquals(null, sample.getOriginalContainer());
   }
 }
