@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -158,6 +159,9 @@ public class SubmissionActivityServiceTest {
     newSubmission.setUser(newUser);
     newSubmission.setSubmissionDate(Instant.now());
     newSubmission.setAdditionalPrice(new BigDecimal("21.50"));
+    newSubmission.setGelImages(new ArrayList<>());
+    newSubmission.getGelImages().add(new GelImage("image1.jpg"));
+    newSubmission.getGelImages().add(new GelImage("image2.jpg"));
 
     Optional<Activity> optionalActivity =
         submissionActivityServiceImpl.update(newSubmission, "unit_test");
@@ -541,6 +545,16 @@ public class SubmissionActivityServiceTest {
     additionalPriceActivity.setOldValue(null);
     additionalPriceActivity.setNewValue("21.50");
     expectedUpdateActivities.add(additionalPriceActivity);
+    UpdateActivity gelImagesActivity = new UpdateActivity();
+    gelImagesActivity.setActionType(ActionType.UPDATE);
+    gelImagesActivity.setTableName("submission");
+    gelImagesActivity.setRecordId(newSubmission.getId());
+    gelImagesActivity.setColumn("gelimages");
+    gelImagesActivity.setOldValue(oldSubmission.getGelImages().stream()
+        .map(image -> image.getFilename()).collect(Collectors.toList()).toString());
+    gelImagesActivity.setNewValue(newSubmission.getGelImages().stream()
+        .map(image -> image.getFilename()).collect(Collectors.toList()).toString());
+    expectedUpdateActivities.add(gelImagesActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

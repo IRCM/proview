@@ -54,6 +54,13 @@ public class GelImage implements Serializable {
   @Column(name = "content", nullable = false)
   private byte[] content;
 
+  public GelImage() {
+  }
+
+  public GelImage(String filename) {
+    this.filename = filename;
+  }
+
   public String getFilename() {
     return filename;
   }

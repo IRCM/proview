@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.Activity.ActionType;
+import ca.qc.ircm.proview.history.DatabaseLogUtil;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.SampleSolvent;
@@ -33,6 +34,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -217,6 +219,16 @@ public class SubmissionActivityService {
         .newValue(newSubmission.getLaboratory().getId()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionDate")
         .oldValue(oldSubmission.getSubmissionDate()).newValue(newSubmission.getSubmissionDate()));
+    // Gel images.
+    List<String> oldGelImages =
+        oldSubmission.getGelImages() != null ? oldSubmission.getGelImages().stream()
+            .map(image -> image.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
+    List<String> newGelImages =
+        newSubmission.getGelImages() != null ? newSubmission.getGelImages().stream()
+            .map(image -> image.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("gelimages")
+        .oldValue(DatabaseLogUtil.reduceLength(oldGelImages.toString(), 255))
+        .newValue(DatabaseLogUtil.reduceLength(newGelImages.toString(), 255)));
     // Structure.
     Structure oldStructure = oldSubmission.getStructure();
     Structure newStructure = newSubmission.getStructure();
