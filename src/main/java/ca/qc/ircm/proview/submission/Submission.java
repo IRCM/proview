@@ -357,7 +357,7 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @OneToMany(mappedBy = "submission")
   private List<SubmissionSample> samples;
   /**
-   * Samples that are part of this submission.
+   * Gel images.
    */
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false)
   @JoinColumn(name = "submissionId")
@@ -368,6 +368,12 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @OneToOne(fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "structureId")
   private Structure structure;
+  /**
+   * Additional files related to submission.
+   */
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false)
+  @JoinColumn(name = "submissionId")
+  private List<SubmissionFile> files;
 
   public Submission() {
   }
@@ -797,5 +803,13 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setInjectionType(InjectionType injectionType) {
     this.injectionType = injectionType;
+  }
+
+  public List<SubmissionFile> getFiles() {
+    return files;
+  }
+
+  public void setFiles(List<SubmissionFile> files) {
+    this.files = files;
   }
 }

@@ -33,6 +33,7 @@ DROP TABLE sample IF EXISTS;
 DROP TABLE samplecontainer IF EXISTS;
 DROP TABLE plate IF EXISTS;
 DROP TABLE structure IF EXISTS;
+DROP TABLE submissionfiles IF EXISTS;
 DROP TABLE gelimages IF EXISTS;
 DROP TABLE submission IF EXISTS;
 DROP TABLE forgotpassword IF EXISTS;

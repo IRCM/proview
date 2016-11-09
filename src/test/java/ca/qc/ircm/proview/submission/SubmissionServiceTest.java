@@ -232,6 +232,19 @@ public class SubmissionServiceTest {
     assertEquals(null, sample.getNumberProtein());
     assertEquals(null, sample.getMolecularWeight());
     assertEquals(submission, sample.getSubmission());
+    assertEquals(1, submission.getGelImages().size());
+    GelImage gelImage = submission.getGelImages().get(0);
+    assertEquals((Long) 1L, gelImage.getId());
+    assertEquals("frag.jpg", gelImage.getFilename());
+    assertArrayEquals(Files.readAllBytes(Paths.get(getClass().getResource("/gelimages1").toURI())),
+        gelImage.getContent());
+    assertEquals(1, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals((Long) 1L, file.getId());
+    assertEquals("protocol.txt", file.getFilename());
+    assertArrayEquals(
+        Files.readAllBytes(Paths.get(getClass().getResource("/submissionfile1.txt").toURI())),
+        file.getContent());
   }
 
   @Test
@@ -309,6 +322,8 @@ public class SubmissionServiceTest {
     assertEquals(null, sample.getNumberProtein());
     assertEquals(null, sample.getMolecularWeight());
     assertEquals(submission, sample.getSubmission());
+    assertEquals(0, submission.getGelImages().size());
+    assertEquals(0, submission.getFiles().size());
   }
 
   @Test
@@ -1371,6 +1386,16 @@ public class SubmissionServiceTest {
     Instant instant = Instant.now();
     submission.setSubmissionDate(instant);
     submission.setGelImages(gelImages);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename("my_file.docx");
+    byte[] fileContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      fileContent[i] = (byte) random.nextInt();
+    }
+    file.setContent(fileContent);
+    List<SubmissionFile> files = new LinkedList<>();
+    files.add(file);
+    submission.setFiles(files);
 
     submissionServiceImpl.insert(submission);
 
@@ -1433,6 +1458,11 @@ public class SubmissionServiceTest {
     gelImage = gelImages.get(0);
     assertEquals("my_gel_image.jpg", gelImage.getFilename());
     assertArrayEquals(imageContent, gelImage.getContent());
+    files = submission.getFiles();
+    assertEquals(1, files.size());
+    file = files.get(0);
+    assertEquals("my_file.docx", file.getFilename());
+    assertArrayEquals(fileContent, file.getContent());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -1520,6 +1550,16 @@ public class SubmissionServiceTest {
     submission.setProteinContent(ProteinContent.MEDIUM);
     submission.setComments("comments");
     submission.setSamples(samples);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename("my_file.docx");
+    byte[] fileContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      fileContent[i] = (byte) random.nextInt();
+    }
+    file.setContent(fileContent);
+    List<SubmissionFile> files = new LinkedList<>();
+    files.add(file);
+    submission.setFiles(files);
     Instant instant = Instant.now();
     submission.setSubmissionDate(instant);
 
@@ -1591,6 +1631,11 @@ public class SubmissionServiceTest {
     assertEquals(false, tube.isBanned());
     List<GelImage> gelImages = submission.getGelImages();
     assertEquals(0, gelImages.size());
+    files = submission.getFiles();
+    assertEquals(1, files.size());
+    file = files.get(0);
+    assertEquals("my_file.docx", file.getFilename());
+    assertArrayEquals(fileContent, file.getContent());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -1660,6 +1705,16 @@ public class SubmissionServiceTest {
     submission.setProteinContent(ProteinContent.MEDIUM);
     submission.setComments("comments");
     submission.setSamples(samples);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename("my_file.docx");
+    byte[] fileContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      fileContent[i] = (byte) random.nextInt();
+    }
+    file.setContent(fileContent);
+    List<SubmissionFile> files = new LinkedList<>();
+    files.add(file);
+    submission.setFiles(files);
     Instant instant = Instant.now();
     submission.setSubmissionDate(instant);
 
@@ -1731,6 +1786,11 @@ public class SubmissionServiceTest {
     assertEquals(false, spot.isBanned());
     List<GelImage> gelImages = submission.getGelImages();
     assertEquals(0, gelImages.size());
+    files = submission.getFiles();
+    assertEquals(1, files.size());
+    file = files.get(0);
+    assertEquals("my_file.docx", file.getFilename());
+    assertArrayEquals(fileContent, file.getContent());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -1794,6 +1854,16 @@ public class SubmissionServiceTest {
     submission.setOtherSolvent("chrisanol");
     submission.setComments("comments");
     submission.setSamples(samples);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename("my_file.docx");
+    byte[] fileContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      fileContent[i] = (byte) random.nextInt();
+    }
+    file.setContent(fileContent);
+    List<SubmissionFile> files = new LinkedList<>();
+    files.add(file);
+    submission.setFiles(files);
     Instant instant = Instant.now();
     submission.setSubmissionDate(instant);
 
@@ -1851,6 +1921,11 @@ public class SubmissionServiceTest {
     assertEquals(false, tube.isBanned());
     List<GelImage> gelImages = submission.getGelImages();
     assertEquals(0, gelImages.size());
+    files = submission.getFiles();
+    assertEquals(1, files.size());
+    file = files.get(0);
+    assertEquals("my_file.docx", file.getFilename());
+    assertArrayEquals(fileContent, file.getContent());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -1911,6 +1986,16 @@ public class SubmissionServiceTest {
     submission.setProteinContent(ProteinContent.MEDIUM);
     submission.setComments("comments");
     submission.setSamples(samples);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename("my_file.docx");
+    byte[] fileContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      fileContent[i] = (byte) random.nextInt();
+    }
+    file.setContent(fileContent);
+    List<SubmissionFile> files = new LinkedList<>();
+    files.add(file);
+    submission.setFiles(files);
     Instant instant = Instant.now();
     submission.setSubmissionDate(instant);
 
@@ -1935,6 +2020,11 @@ public class SubmissionServiceTest {
     assertEquals(true, htmlContent.contains("unit_test_eluate_01"));
     assertFalse(textContent.contains("???"));
     assertFalse(htmlContent.contains("???"));
+  }
+
+  @Test
+  public void update() throws Exception {
+    // TODO program unit test.
   }
 
   @Test

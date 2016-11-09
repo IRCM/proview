@@ -151,6 +151,14 @@ CREATE TABLE IF NOT EXISTS gelimages (
   PRIMARY KEY (id),
   CONSTRAINT gelimages_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE TABLE IF NOT EXISTS submissionfiles (
+  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  submissionId bigint(20) DEFAULT NULL,
+  filename varchar(255) NOT NULL,
+  content blob,
+  PRIMARY KEY (id),
+  CONSTRAINT submissionfiles_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 CREATE TABLE IF NOT EXISTS plate (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) NOT NULL,

@@ -162,6 +162,9 @@ public class SubmissionActivityServiceTest {
     newSubmission.setGelImages(new ArrayList<>());
     newSubmission.getGelImages().add(new GelImage("image1.jpg"));
     newSubmission.getGelImages().add(new GelImage("image2.jpg"));
+    newSubmission.setFiles(new ArrayList<>());
+    newSubmission.getFiles().add(new SubmissionFile("my_file.xlsx"));
+    newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
 
     Optional<Activity> optionalActivity =
         submissionActivityServiceImpl.update(newSubmission, "unit_test");
@@ -555,6 +558,16 @@ public class SubmissionActivityServiceTest {
     gelImagesActivity.setNewValue(newSubmission.getGelImages().stream()
         .map(image -> image.getFilename()).collect(Collectors.toList()).toString());
     expectedUpdateActivities.add(gelImagesActivity);
+    UpdateActivity filesActivity = new UpdateActivity();
+    filesActivity.setActionType(ActionType.UPDATE);
+    filesActivity.setTableName("submission");
+    filesActivity.setRecordId(newSubmission.getId());
+    filesActivity.setColumn("submissionfiles");
+    filesActivity.setOldValue(oldSubmission.getFiles().stream().map(file -> file.getFilename())
+        .collect(Collectors.toList()).toString());
+    filesActivity.setNewValue(newSubmission.getFiles().stream().map(file -> file.getFilename())
+        .collect(Collectors.toList()).toString());
+    expectedUpdateActivities.add(filesActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

@@ -61,6 +61,7 @@
     <class>ca.qc.ircm.proview.standard.StandardAddition</class>
     <class>ca.qc.ircm.proview.submission.GelImage</class>
     <class>ca.qc.ircm.proview.submission.Submission</class>
+    <class>ca.qc.ircm.proview.submission.SubmissionFile</class>
     <class>ca.qc.ircm.proview.treatment.Protocol</class>
     <class>ca.qc.ircm.proview.treatment.Treatment</class>
     <class>ca.qc.ircm.proview.treatment.TreatmentSample</class>

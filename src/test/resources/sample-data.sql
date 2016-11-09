@@ -55,6 +55,8 @@ INSERT INTO submission (id,service,project,experience,goal,taxonomy,massDetectio
 VALUES (162,'LC_MS_MS','Flag','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'LABEL_FREE',NULL,NULL,'2015-05-27',NULL,NULL,NULL,2,10);
 INSERT INTO gelimages (id,submissionId,filename,content)
 VALUES (1,1,'frag.jpg',FILE_READ('${project.build.testOutputDirectory}/gelimages1'));
+INSERT INTO submissionfiles (id,submissionId,filename,content)
+VALUES (1,1,'protocol.txt',FILE_READ('${project.build.testOutputDirectory}/submissionfile1.txt'));
 INSERT INTO plate (id,name,type,insertTime)
 VALUES (26,'A_20111108','A','2011-11-08 13:33:21');
 INSERT INTO plate (id,name,type,insertTime)

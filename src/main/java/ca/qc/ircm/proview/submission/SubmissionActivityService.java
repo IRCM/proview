@@ -253,6 +253,14 @@ public class SubmissionActivityService {
             .actionType(ActionType.INSERT));
       }
     }
+    // Files.
+    List<String> oldFiles = oldSubmission.getFiles() != null ? oldSubmission.getFiles().stream()
+        .map(file -> file.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
+    List<String> newFiles = newSubmission.getFiles() != null ? newSubmission.getFiles().stream()
+        .map(file -> file.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionfiles")
+        .oldValue(DatabaseLogUtil.reduceLength(oldFiles.toString(), 255))
+        .newValue(DatabaseLogUtil.reduceLength(newFiles.toString(), 255)));
 
     // Keep updates that did not change.
     final Collection<UpdateActivity> updates = new ArrayList<>();

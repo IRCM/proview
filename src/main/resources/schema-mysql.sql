@@ -151,6 +151,14 @@ CREATE TABLE IF NOT EXISTS gelimages (
   PRIMARY KEY (id),
   FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE TABLE IF NOT EXISTS submissionfiles (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  submissionId bigint(20) DEFAULT NULL,
+  filename varchar(255) NOT NULL,
+  content longblob,
+  PRIMARY KEY (id),
+  FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 CREATE TABLE IF NOT EXISTS plate (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,
