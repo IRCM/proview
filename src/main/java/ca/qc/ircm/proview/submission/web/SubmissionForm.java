@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.msanalysis.InjectionType.DIRECT_INFUSION;
+import static ca.qc.ircm.proview.msanalysis.InjectionType.LC_MS;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.ORBITRAP_FUSION;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.Q_EXACTIVE;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TSQ_VANTAGE;
@@ -43,6 +45,7 @@ import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.StorageTemperature.LOW;
 import static ca.qc.ircm.proview.submission.StorageTemperature.MEDIUM;
 
+import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
@@ -86,6 +89,8 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   public static final GelColoration[] COLORATION =
       new GelColoration[] { GelColoration.COOMASSIE, GelColoration.SYPRO, GelColoration.SILVER,
           GelColoration.SILVER_INVITROGEN, GelColoration.OTHER };
+  public static final InjectionType[] INJECTION_TYPES =
+      new InjectionType[] { LC_MS, DIRECT_INFUSION };
   public static final MassDetectionInstrumentSource[] SOURCES =
       new MassDetectionInstrumentSource[] { ESI, NSI };
   public static final ProteinContent[] PROTEIN_CONTENTS = new ProteinContent[] {

@@ -60,6 +60,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAG
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_LABEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTION_TYPE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS_PROPERTY;
@@ -130,6 +131,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
@@ -289,6 +291,7 @@ public class SubmissionFormPresenterTest {
   private ProteolyticDigestion digestion = DIGESTED;
   private String usedDigestion = "typsinP";
   private String otherDigestion = "typsinP/Y";
+  private InjectionType injectionType = InjectionType.DIRECT_INFUSION;
   private MassDetectionInstrumentSource source = MassDetectionInstrumentSource.NSI;
   private ProteinContent proteinContent = ProteinContent.LARGE;
   private MassDetectionInstrument instrument = MassDetectionInstrument.ORBITRAP_FUSION;
@@ -404,6 +407,7 @@ public class SubmissionFormPresenterTest {
     view.otherProteolyticDigestionMethodNote = new Label();
     view.enrichmentLabel = new Label();
     view.exclusionsLabel = new Label();
+    view.injectionTypeOptions = new OptionGroup();
     view.sourceOptions = new OptionGroup();
     view.proteinContentOptions = new OptionGroup();
     view.instrumentOptions = new OptionGroup();
@@ -464,6 +468,7 @@ public class SubmissionFormPresenterTest {
     view.digestionOptions.setValue(digestion);
     view.usedProteolyticDigestionMethodField.setValue(usedDigestion);
     view.otherProteolyticDigestionMethodField.setValue(otherDigestion);
+    view.injectionTypeOptions.setValue(injectionType);
     view.sourceOptions.setValue(source);
     view.proteinContentOptions.setValue(proteinContent);
     view.instrumentOptions.setValue(instrument);
@@ -784,6 +789,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherProteolyticDigestionMethodField.isRequired());
     assertEquals(generalResources.message(REQUIRED),
         view.otherProteolyticDigestionMethodField.getRequiredError());
+    assertTrue(view.injectionTypeOptions.isRequired());
+    assertEquals(generalResources.message(REQUIRED), view.injectionTypeOptions.getRequiredError());
     assertTrue(view.sourceOptions.isRequired());
     assertEquals(generalResources.message(REQUIRED), view.sourceOptions.getRequiredError());
     assertTrue(view.proteinContentOptions.isRequired());
@@ -1106,6 +1113,7 @@ public class SubmissionFormPresenterTest {
         .contains(OTHER_DIGESTION_PROPERTY));
     assertTrue(view.enrichmentLabel.getStyleName().contains(ENRICHEMENT_PROPERTY));
     assertTrue(view.exclusionsLabel.getStyleName().contains(EXCLUSIONS_PROPERTY));
+    assertTrue(view.injectionTypeOptions.getStyleName().contains(INJECTION_TYPE_PROPERTY));
     assertTrue(view.sourceOptions.getStyleName().contains(SOURCE_PROPERTY));
     assertTrue(view.proteinContentOptions.getStyleName().contains(PROTEIN_CONTENT_PROPERTY));
     assertTrue(view.instrumentOptions.getStyleName().contains(INSTRUMENT_PROPERTY));
@@ -1287,6 +1295,12 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(EXCLUSIONS_PROPERTY), view.exclusionsLabel.getCaption());
     assertEquals(resources.message(EXCLUSIONS_PROPERTY + ".value"),
         view.exclusionsLabel.getValue());
+    assertEquals(resources.message(INJECTION_TYPE_PROPERTY),
+        view.injectionTypeOptions.getCaption());
+    for (InjectionType injectionType : SubmissionForm.INJECTION_TYPES) {
+      assertEquals(injectionType.getLabel(locale),
+          view.injectionTypeOptions.getItemCaption(injectionType));
+    }
     assertEquals(resources.message(SOURCE_PROPERTY), view.sourceOptions.getCaption());
     for (MassDetectionInstrumentSource source : SubmissionForm.SOURCES) {
       assertEquals(source.getLabel(locale), view.sourceOptions.getItemCaption(source));
@@ -1395,6 +1409,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.digestionOptions.isReadOnly());
     assertTrue(view.usedProteolyticDigestionMethodField.isReadOnly());
     assertTrue(view.otherProteolyticDigestionMethodField.isReadOnly());
+    assertTrue(view.injectionTypeOptions.isReadOnly());
     assertTrue(view.sourceOptions.isReadOnly());
     assertTrue(view.proteinContentOptions.isReadOnly());
     assertTrue(view.instrumentOptions.isReadOnly());
@@ -1469,6 +1484,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.digestionOptions.isReadOnly());
     assertFalse(view.usedProteolyticDigestionMethodField.isReadOnly());
     assertFalse(view.otherProteolyticDigestionMethodField.isReadOnly());
+    assertFalse(view.injectionTypeOptions.isReadOnly());
     assertFalse(view.sourceOptions.isReadOnly());
     assertFalse(view.proteinContentOptions.isReadOnly());
     assertFalse(view.instrumentOptions.isReadOnly());
@@ -1553,6 +1569,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -1633,6 +1650,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertTrue(view.enrichmentLabel.isVisible());
     assertTrue(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -1757,6 +1775,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -1837,6 +1856,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertTrue(view.enrichmentLabel.isVisible());
     assertTrue(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -1921,6 +1941,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -2001,6 +2022,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertTrue(view.enrichmentLabel.isVisible());
     assertTrue(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertTrue(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -2099,6 +2121,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertFalse(view.proteinContentOptions.isVisible());
     assertFalse(view.instrumentOptions.isVisible());
@@ -2180,6 +2203,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertFalse(view.proteinContentOptions.isVisible());
     assertFalse(view.instrumentOptions.isVisible());
@@ -2290,6 +2314,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertFalse(view.proteinContentOptions.isVisible());
     assertFalse(view.instrumentOptions.isVisible());
@@ -2371,6 +2396,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertFalse(view.injectionTypeOptions.isVisible());
     assertFalse(view.sourceOptions.isVisible());
     assertFalse(view.proteinContentOptions.isVisible());
     assertFalse(view.instrumentOptions.isVisible());
@@ -2455,6 +2481,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertTrue(view.injectionTypeOptions.isVisible());
     assertTrue(view.sourceOptions.isVisible());
     assertFalse(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -2535,6 +2562,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertTrue(view.injectionTypeOptions.isVisible());
     assertTrue(view.sourceOptions.isVisible());
     assertFalse(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -2619,6 +2647,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertTrue(view.injectionTypeOptions.isVisible());
     assertTrue(view.sourceOptions.isVisible());
     assertFalse(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -2699,6 +2728,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherProteolyticDigestionMethodNote.isVisible());
     assertFalse(view.enrichmentLabel.isVisible());
     assertFalse(view.exclusionsLabel.isVisible());
+    assertTrue(view.injectionTypeOptions.isVisible());
     assertTrue(view.sourceOptions.isVisible());
     assertFalse(view.proteinContentOptions.isVisible());
     assertTrue(view.instrumentOptions.isVisible());
@@ -4272,6 +4302,26 @@ public class SubmissionFormPresenterTest {
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         view.otherProteolyticDigestionMethodField.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingInjectionType() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(INTACT_PROTEIN);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.injectionTypeOptions.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.injectionTypeOptions.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 

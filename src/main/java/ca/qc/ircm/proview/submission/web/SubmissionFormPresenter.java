@@ -48,6 +48,7 @@ import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.PlateSpot;
@@ -232,6 +233,8 @@ public class SubmissionFormPresenter {
   public static final String EXCLUSIONS_PROPERTY = "exclusions";
   public static final String SAMPLE_NUMBER_PROTEIN_PROPERTY =
       submissionSample.numberProtein.getMetadata().getName();
+  public static final String INJECTION_TYPE_PROPERTY =
+      submission.injectionType.getMetadata().getName();
   public static final String SOURCE_PROPERTY = submission.source.getMetadata().getName();
   public static final String PROTEIN_CONTENT_PROPERTY =
       submission.proteinContent.getMetadata().getName();
@@ -399,6 +402,7 @@ public class SubmissionFormPresenter {
     view.otherProteolyticDigestionMethodField.addStyleName(OTHER_DIGESTION_PROPERTY);
     view.enrichmentLabel.addStyleName(ENRICHEMENT_PROPERTY);
     view.exclusionsLabel.addStyleName(EXCLUSIONS_PROPERTY);
+    view.injectionTypeOptions.addStyleName(INJECTION_TYPE_PROPERTY);
     view.sourceOptions.addStyleName(SOURCE_PROPERTY);
     view.proteinContentOptions.addStyleName(PROTEIN_CONTENT_PROPERTY);
     view.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
@@ -516,6 +520,7 @@ public class SubmissionFormPresenter {
     view.enrichmentLabel.setValue(resources.message(ENRICHEMENT_PROPERTY + ".value"));
     view.exclusionsLabel.setCaption(resources.message(EXCLUSIONS_PROPERTY));
     view.exclusionsLabel.setValue(resources.message(EXCLUSIONS_PROPERTY + ".value"));
+    view.injectionTypeOptions.setCaption(resources.message(INJECTION_TYPE_PROPERTY));
     view.sourceOptions.setCaption(resources.message(SOURCE_PROPERTY));
     view.proteinContentOptions.setCaption(resources.message(PROTEIN_CONTENT_PROPERTY));
     view.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
@@ -788,6 +793,14 @@ public class SubmissionFormPresenter {
     view.usedProteolyticDigestionMethodField.setRequiredError(generalResources.message(REQUIRED));
     view.otherProteolyticDigestionMethodField.setRequired(true);
     view.otherProteolyticDigestionMethodField.setRequiredError(generalResources.message(REQUIRED));
+    view.injectionTypeOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
+    view.injectionTypeOptions.removeAllItems();
+    for (InjectionType injectionType : SubmissionForm.INJECTION_TYPES) {
+      view.injectionTypeOptions.addItem(injectionType);
+      view.injectionTypeOptions.setItemCaption(injectionType, injectionType.getLabel(locale));
+    }
+    view.injectionTypeOptions.setRequired(true);
+    view.injectionTypeOptions.setRequiredError(generalResources.message(REQUIRED));
     view.sourceOptions.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
     view.sourceOptions.removeAllItems();
     for (MassDetectionInstrumentSource source : SubmissionForm.SOURCES) {
@@ -978,6 +991,7 @@ public class SubmissionFormPresenter {
         && view.digestionOptions.getValue() == ProteolyticDigestion.OTHER);
     view.enrichmentLabel.setVisible(editable && service == LC_MS_MS);
     view.exclusionsLabel.setVisible(editable && service == LC_MS_MS);
+    view.injectionTypeOptions.setVisible(service == INTACT_PROTEIN);
     view.sourceOptions.setVisible(service == INTACT_PROTEIN);
     view.proteinContentOptions.setVisible(service == LC_MS_MS);
     view.instrumentOptions.setVisible(service != SMALL_MOLECULE);
@@ -1042,6 +1056,7 @@ public class SubmissionFormPresenter {
     view.digestionOptions.setReadOnly(!editable);
     view.usedProteolyticDigestionMethodField.setReadOnly(!editable);
     view.otherProteolyticDigestionMethodField.setReadOnly(!editable);
+    view.injectionTypeOptions.setReadOnly(!editable);
     view.sourceOptions.setReadOnly(!editable);
     view.proteinContentOptions.setReadOnly(!editable);
     view.instrumentOptions.setReadOnly(!editable);
@@ -1089,6 +1104,7 @@ public class SubmissionFormPresenter {
     submissionFieldGroup.bind(view.digestionOptions, DIGESTION_PROPERTY);
     submissionFieldGroup.bind(view.usedProteolyticDigestionMethodField, USED_DIGESTION_PROPERTY);
     submissionFieldGroup.bind(view.otherProteolyticDigestionMethodField, OTHER_DIGESTION_PROPERTY);
+    submissionFieldGroup.bind(view.injectionTypeOptions, INJECTION_TYPE_PROPERTY);
     submissionFieldGroup.bind(view.sourceOptions, SOURCE_PROPERTY);
     submissionFieldGroup.bind(view.proteinContentOptions, PROTEIN_CONTENT_PROPERTY);
     submissionFieldGroup.bind(view.instrumentOptions, INSTRUMENT_PROPERTY);
@@ -1135,6 +1151,7 @@ public class SubmissionFormPresenter {
         USED_DIGESTION_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.otherProteolyticDigestionMethodField,
         OTHER_DIGESTION_PROPERTY);
+    bindVisibleField(submissionFieldGroup, view.injectionTypeOptions, INJECTION_TYPE_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.sourceOptions, SOURCE_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.proteinContentOptions, PROTEIN_CONTENT_PROPERTY);
     bindVisibleField(submissionFieldGroup, view.instrumentOptions, INSTRUMENT_PROPERTY);
@@ -1629,6 +1646,7 @@ public class SubmissionFormPresenter {
       submission.setSeparation(ONE_DIMENSION);
       submission.setThickness(ONE);
       submission.setProteolyticDigestionMethod(TRYPSIN);
+      submission.setInjectionType(InjectionType.LC_MS);
       submission.setSource(ESI);
       submission.setProteinContent(ProteinContent.SMALL);
       submission.setProteinIdentification(REFSEQ);

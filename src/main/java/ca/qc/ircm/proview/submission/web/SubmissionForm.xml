@@ -106,6 +106,7 @@
   <entry key="enrichment.value">Coming soon!</entry>
   <entry key="exclusions">LC MSMS exclusion and inclusion</entry>
   <entry key="exclusions.value">LC MSMS exclusion and inclusion will be added to the site in the future. For these options, please contact Denis Faubert in contact us page.</entry>
+  <entry key="injectionType">Injection</entry>
   <entry key="source">Ionization source</entry>
   <entry key="proteinContent">To help us choose the best LC-MS chromatography for your samples, choose the most appropriate option below</entry>
   <entry key="massDetectionInstrument">Instrument selection</entry>
