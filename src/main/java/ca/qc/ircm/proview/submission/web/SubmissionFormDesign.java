@@ -49,6 +49,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected CheckBox lightSensitiveField;
   protected OptionGroup storageTemperatureOptions;
   protected OptionGroup sampleContainerTypeOptions;
+  protected TextField plateNameField;
   protected Label samplesLabel;
   protected HorizontalLayout samplesTableLayout;
   protected Table samplesTable;

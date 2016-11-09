@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.ESI;
+import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
@@ -51,10 +52,13 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
+import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleSupport;
@@ -162,6 +166,8 @@ public class SubmissionFormPresenter {
   public static final String SAMPLES_CONTAINER_TYPE_PROPERTY = SAMPLES_PROPERTY + "ContainerType";
   public static final String SAMPLES_TABLE = SAMPLES_PROPERTY + "Table";
   public static final String SAMPLES_PLATE = SAMPLES_PROPERTY + "Plate";
+  public static final String PLATE_PROPERTY = plate.getMetadata().getName();
+  public static final String PLATE_NAME_PROPERTY = plate.name.getMetadata().getName();
   public static final String FILL_SAMPLES_PROPERTY = "fillSamples";
   public static final String EXPERIENCE_PANEL = "experiencePanel";
   public static final String EXPERIENCE_PROPERTY = submission.experience.getMetadata().getName();
@@ -283,6 +289,7 @@ public class SubmissionFormPresenter {
   private BeanFieldGroup<Submission> submissionFieldGroup = new BeanFieldGroup<>(Submission.class);
   private BeanFieldGroup<SubmissionSample> firstSampleFieldGroup =
       new BeanFieldGroup<>(SubmissionSample.class);
+  private BeanFieldGroup<Plate> plateFieldGroup = new BeanFieldGroup<>(Plate.class);
   private BeanItemContainer<SubmissionSample> samplesContainer =
       new BeanItemContainer<>(SubmissionSample.class);
   private ValidatableTableFieldFactory sampleTableFieldFactory;
@@ -299,14 +306,17 @@ public class SubmissionFormPresenter {
   private SubmissionService submissionService;
   @Inject
   private SubmissionSampleService submissionSampleService;
+  @Inject
+  private PlateService plateService;
 
   protected SubmissionFormPresenter() {
   }
 
   protected SubmissionFormPresenter(SubmissionService submissionService,
-      SubmissionSampleService submissionSampleService) {
+      SubmissionSampleService submissionSampleService, PlateService plateService) {
     this.submissionService = submissionService;
     this.submissionSampleService = submissionSampleService;
+    this.plateService = plateService;
   }
 
   /**
@@ -355,6 +365,7 @@ public class SubmissionFormPresenter {
     view.lightSensitiveField.addStyleName(LIGHT_SENSITIVE_PROPERTY);
     view.storageTemperatureOptions.addStyleName(STORAGE_TEMPERATURE_PROPERTY);
     view.sampleContainerTypeOptions.addStyleName(SAMPLES_CONTAINER_TYPE_PROPERTY);
+    view.plateNameField.addStyleName(PLATE_PROPERTY + "-" + PLATE_NAME_PROPERTY);
     view.samplesLabel.addStyleName(SAMPLES_PROPERTY);
     view.samplesTable.addStyleName(SAMPLES_TABLE);
     view.fillSamplesButton.addStyleName(FILL_SAMPLES_PROPERTY);
@@ -449,6 +460,7 @@ public class SubmissionFormPresenter {
     view.lightSensitiveField.setCaption(resources.message(LIGHT_SENSITIVE_PROPERTY));
     view.storageTemperatureOptions.setCaption(resources.message(STORAGE_TEMPERATURE_PROPERTY));
     view.sampleContainerTypeOptions.setCaption(resources.message(SAMPLES_CONTAINER_TYPE_PROPERTY));
+    view.plateNameField.setCaption(resources.message(PLATE_PROPERTY + "." + PLATE_NAME_PROPERTY));
     view.samplesLabel.setCaption(resources.message(SAMPLES_PROPERTY));
     view.samplesTable.setColumnHeader(SAMPLE_NAME_PROPERTY,
         resources.message(SAMPLE_NAME_PROPERTY));
@@ -581,7 +593,7 @@ public class SubmissionFormPresenter {
     view.sampleCountField.setRequiredError(generalResources.message(REQUIRED));
     view.sampleNameField.setRequired(true);
     view.sampleNameField.setRequiredError(generalResources.message(REQUIRED));
-    view.sampleNameField.addValidator(v -> validateSampleName((String) v));
+    view.sampleNameField.addValidator(v -> validateSampleName((String) v, true));
     view.formulaField.setRequired(true);
     view.formulaField.setRequiredError(generalResources.message(REQUIRED));
     view.structureUploader.setMaxFileSize(MAXIMUM_STRUCTURE_SIZE);
@@ -610,6 +622,9 @@ public class SubmissionFormPresenter {
     }
     view.sampleContainerTypeOptions.setRequired(true);
     view.sampleContainerTypeOptions.setRequiredError(generalResources.message(REQUIRED));
+    view.plateNameField.setRequired(true);
+    view.plateNameField.setRequiredError(generalResources.message(REQUIRED));
+    view.plateNameField.addValidator(name -> validatePlateName((String) name));
     sampleTableFieldFactory = new ValidatableTableFieldFactory(new EmptyNullTableFieldFactory() {
       @Override
       public Field<?> createField(Container container, Object itemId, Object propertyId,
@@ -619,7 +634,7 @@ public class SubmissionFormPresenter {
         field.setRequiredError(generalResources.message(REQUIRED));
         field.addValidator(new BeanValidator(SubmissionSample.class, (String) propertyId));
         if (propertyId == SAMPLE_NAME_PROPERTY) {
-          field.addValidator(v -> validateSampleName((String) v));
+          field.addValidator(v -> validateSampleName((String) v, true));
         } else if (propertyId == SAMPLE_NUMBER_PROTEIN_PROPERTY) {
           field.setConverter(new StringToIntegerConverter());
           field.setConversionError(generalResources.message(INVALID_INTEGER));
@@ -636,7 +651,7 @@ public class SubmissionFormPresenter {
     view.samplesTable.setVisibleColumns(samplesColumns);
     view.plateSampleNameFields.forEach(l -> l.forEach(field -> {
       field.setColumns(7);
-      field.addValidator(v -> validateSampleName((String) v));
+      field.addValidator(v -> validateSampleName((String) v, false));
     }));
     view.experienceField.setRequired(true);
     view.experienceField.setRequiredError(generalResources.message(REQUIRED));
@@ -928,6 +943,8 @@ public class SubmissionFormPresenter {
     view.storageTemperatureOptions.setVisible(service == SMALL_MOLECULE);
     view.sampleCountField.setVisible(service != SMALL_MOLECULE);
     view.sampleContainerTypeOptions.setVisible(service == LC_MS_MS);
+    view.plateNameField
+        .setVisible(service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == SPOT);
     view.samplesLabel.setVisible(service != SMALL_MOLECULE);
     view.samplesTableLayout.setVisible(service == INTACT_PROTEIN
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT));
@@ -1029,6 +1046,7 @@ public class SubmissionFormPresenter {
     view.lightSensitiveField.setReadOnly(!editable);
     view.storageTemperatureOptions.setReadOnly(!editable);
     view.sampleContainerTypeOptions.setReadOnly(!editable);
+    view.plateNameField.setReadOnly(!editable);
     view.sampleCountField.setReadOnly(!editable);
     view.samplesTable.setEditable(editable);
     view.fillSamplesButton.setVisible(editable);
@@ -1084,6 +1102,7 @@ public class SubmissionFormPresenter {
     submissionFieldGroup.bind(view.toxicityField, TOXICITY_PROPERTY);
     submissionFieldGroup.bind(view.lightSensitiveField, LIGHT_SENSITIVE_PROPERTY);
     submissionFieldGroup.bind(view.storageTemperatureOptions, STORAGE_TEMPERATURE_PROPERTY);
+    plateFieldGroup.bind(view.plateNameField, PLATE_NAME_PROPERTY);
     submissionFieldGroup.bind(view.experienceField, EXPERIENCE_PROPERTY);
     submissionFieldGroup.bind(view.experienceGoalField, EXPERIENCE_GOAL_PROPERTY);
     submissionFieldGroup.bind(view.taxonomyField, TAXONOMY_PROPERTY);
@@ -1372,7 +1391,7 @@ public class SubmissionFormPresenter {
     }
   }
 
-  private void validateSampleName(String name) {
+  private void validateSampleName(String name, boolean testExists) {
     if (name == null || name.isEmpty()) {
       return;
     }
@@ -1380,7 +1399,17 @@ public class SubmissionFormPresenter {
     if (!Pattern.matches("\\w*", name)) {
       throw new InvalidValueException(generalResources.message(ONLY_WORDS));
     }
-    if (submissionSampleService.exists(name)) {
+    if (testExists && submissionSampleService.exists(name)) {
+      throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
+    }
+  }
+
+  private void validatePlateName(String name) {
+    if (name == null || name.isEmpty()) {
+      return;
+    }
+    MessageResource generalResources = new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    if (!plateService.nameAvailable(name)) {
       throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
     }
   }
@@ -1399,6 +1428,7 @@ public class SubmissionFormPresenter {
         if (view.sampleContainerTypeOptions.getValue() != SPOT) {
           sampleTableFieldFactory.commit();
         } else {
+          plateFieldGroup.commit();
           for (List<TextField> sampleNameFields : view.plateSampleNameFields) {
             for (TextField sampleNameField : sampleNameFields) {
               sampleNameField.validate();
@@ -1592,6 +1622,7 @@ public class SubmissionFormPresenter {
   private List<SubmissionSample> samplesFromPlate(Submission submission) {
     List<SubmissionSample> samples = new ArrayList<>();
     SubmissionSample firstSample = firstSampleFieldGroup.getItemDataSource().getBean();
+    Plate plate = plateFieldGroup.getItemDataSource().getBean();
     for (int column = 0; column < view.plateSampleNameFields.size(); column++) {
       for (int row = 0; row < view.plateSampleNameFields.get(column).size(); row++) {
         TextField nameField = view.plateSampleNameFields.get(column).get(row);
@@ -1607,7 +1638,9 @@ public class SubmissionFormPresenter {
             copyStandardsFromTableToSample(sample);
             copyContaminantsFromTableToSample(sample);
           }
-          sample.setOriginalContainer(new PlateSpot(row, column));
+          PlateSpot container = new PlateSpot(row, column);
+          container.setPlate(plate);
+          sample.setOriginalContainer(container);
           samples.add(sample);
         }
       }
@@ -1684,9 +1717,15 @@ public class SubmissionFormPresenter {
     firstSampleCopy.setNumberProtein(firstSample.getNumberProtein());
     firstSampleCopy.setMolecularWeight(firstSample.getMolecularWeight());
     samples.set(0, firstSampleCopy);
+    SampleContainer container = firstSample.getOriginalContainer();
 
     submissionFieldGroup.setItemDataSource(item);
     firstSampleFieldGroup.setItemDataSource(new BeanItem<>(firstSample));
+    if (container instanceof PlateSpot) {
+      plateFieldGroup.setItemDataSource(new BeanItem<>(((PlateSpot) container).getPlate()));
+    } else {
+      plateFieldGroup.setItemDataSource(new BeanItem<>(new Plate()));
+    }
     final Locale locale = view.getLocale();
     samplesContainer.removeAllItems();
     samplesContainer.addAll(samples);

@@ -41,8 +41,7 @@
   <entry key="lightSensitive">Light sensitive</entry>
   <entry key="storageTemperature">Storage temperature</entry>
   <entry key="samplesContainerType">Samples are submitted in</entry>
-  <entry key="samplesContainerType.TUBE">Tubes</entry>
-  <entry key="samplesContainerType.SPOT">Plate</entry>
+  <entry key="plate.name">Plate name</entry>
   <entry key="samples">Samples</entry>
   <entry key="numberProtein">Number of proteins</entry>
   <entry key="samples.missing">Fill plate with {0} samples</entry>

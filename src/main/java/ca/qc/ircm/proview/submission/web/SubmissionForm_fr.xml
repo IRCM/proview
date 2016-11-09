@@ -41,8 +41,7 @@
   <entry key="lightSensitive">Sensible à la lumière</entry>
   <entry key="storageTemperature">Température de stockage</entry>
   <entry key="samplesContainerType">Les échantillons sont soumis dans</entry>
-  <entry key="samplesContainerType.TUBE">Tubes</entry>
-  <entry key="samplesContainerType.SPOT">Plaque</entry>
+  <entry key="plate.name">Nom de la plaque</entry>
   <entry key="samples">Échantillons</entry>
   <entry key="numberProtein">Nombre de protéines</entry>
   <entry key="samples.missing">Remplissez la plate avec {0} échantillons</entry>

@@ -69,6 +69,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_CO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NAME_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK_PROPERTY;
@@ -135,6 +137,7 @@ import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.plate.web.PlateLayout;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -215,6 +218,8 @@ public class SubmissionFormPresenterTest {
   @Mock
   private SubmissionSampleService submissionSampleService;
   @Mock
+  private PlateService plateService;
+  @Mock
   private SubmissionForm view;
   @Mock
   private Plupload structureUploader;
@@ -254,6 +259,7 @@ public class SubmissionFormPresenterTest {
   private boolean lightSensitive = true;
   private StorageTemperature storageTemperature = StorageTemperature.LOW;
   private SampleContainerType sampleContainerType = SampleContainerType.TUBE;
+  private String plateName = "my_plate";
   private String experience = "my_experience";
   private String experienceGoal = "to succeed!";
   private String taxonomy = "human";
@@ -326,7 +332,8 @@ public class SubmissionFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionFormPresenter(submissionService, submissionSampleService);
+    presenter =
+        new SubmissionFormPresenter(submissionService, submissionSampleService, plateService);
     view.headerLabel = new Label();
     view.sampleTypeLabel = new Label();
     view.inactiveLabel = new Label();
@@ -348,6 +355,7 @@ public class SubmissionFormPresenterTest {
     view.lightSensitiveField = new CheckBox();
     view.storageTemperatureOptions = new OptionGroup();
     view.sampleContainerTypeOptions = new OptionGroup();
+    view.plateNameField = new TextField();
     view.samplesLabel = new Label();
     view.samplesTableLayout = new HorizontalLayout();
     view.samplesTable = new Table();
@@ -429,6 +437,7 @@ public class SubmissionFormPresenterTest {
     view.submitButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(plateService.nameAvailable(any())).thenReturn(true);
   }
 
   private void setFields() {
@@ -441,6 +450,7 @@ public class SubmissionFormPresenterTest {
     view.lightSensitiveField.setValue(lightSensitive);
     view.storageTemperatureOptions.setValue(storageTemperature);
     view.sampleContainerTypeOptions.setValue(sampleContainerType);
+    view.plateNameField.setValue(plateName);
     view.sampleCountField.setValue(String.valueOf(sampleCount));
     setValuesInSamplesTable();
     view.plateSampleNameFields.get(0).get(0).setValue(sampleName1);
@@ -694,6 +704,8 @@ public class SubmissionFormPresenterTest {
     if (samplesContainer.size() < 1) {
       samplesContainer.addItem(new SubmissionSample());
     }
+    assertTrue(view.plateNameField.isRequired());
+    assertEquals(generalResources.message(REQUIRED), view.plateNameField.getRequiredError());
     SubmissionSample firstSample =
         (SubmissionSample) samplesContainer.getItemIds().iterator().next();
     TextField sampleNameTableField = (TextField) view.samplesTable.getTableFieldFactory()
@@ -1059,6 +1071,8 @@ public class SubmissionFormPresenterTest {
         view.storageTemperatureOptions.getStyleName().contains(STORAGE_TEMPERATURE_PROPERTY));
     assertTrue(
         view.sampleContainerTypeOptions.getStyleName().contains(SAMPLES_CONTAINER_TYPE_PROPERTY));
+    assertTrue(
+        view.plateNameField.getStyleName().contains(PLATE_PROPERTY + "-" + PLATE_NAME_PROPERTY));
     assertTrue(view.samplesLabel.getStyleName().contains(SAMPLES_PROPERTY));
     assertTrue(view.samplesTable.getStyleName().contains(SAMPLES_TABLE));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_SAMPLES_PROPERTY));
@@ -1188,6 +1202,8 @@ public class SubmissionFormPresenterTest {
       assertEquals(containerType.getLabel(locale),
           view.sampleContainerTypeOptions.getItemCaption(containerType));
     }
+    assertEquals(resources.message(PLATE_PROPERTY + "." + PLATE_NAME_PROPERTY),
+        view.plateNameField.getCaption());
     assertEquals(resources.message(SAMPLES_PROPERTY), view.samplesLabel.getCaption());
     assertEquals(null, view.samplesTable.getCaption());
     assertEquals(resources.message(SAMPLE_NAME_PROPERTY),
@@ -1376,6 +1392,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.lightSensitiveField.isReadOnly());
     assertTrue(view.storageTemperatureOptions.isReadOnly());
     assertTrue(view.sampleContainerTypeOptions.isReadOnly());
+    assertTrue(view.plateNameField.isReadOnly());
     assertFalse(view.samplesTable.isEditable());
     for (List<TextField> sampleNameFields : view.plateSampleNameFields) {
       for (TextField sampleNameField : sampleNameFields) {
@@ -1450,6 +1467,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isReadOnly());
     assertFalse(view.storageTemperatureOptions.isReadOnly());
     assertFalse(view.sampleContainerTypeOptions.isReadOnly());
+    assertFalse(view.plateNameField.isReadOnly());
     assertTrue(view.samplesTable.isEditable());
     for (List<TextField> sampleNameFields : view.plateSampleNameFields) {
       for (TextField sampleNameField : sampleNameFields) {
@@ -1530,6 +1548,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertTrue(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -1611,6 +1630,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertTrue(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -1701,6 +1721,7 @@ public class SubmissionFormPresenterTest {
 
     view.sampleContainerTypeOptions.setValue(SPOT);
 
+    assertTrue(view.plateNameField.isVisible());
     assertFalse(view.samplesTableLayout.isVisible());
     assertFalse(view.samplesTable.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
@@ -1736,6 +1757,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertTrue(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -1817,6 +1839,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertTrue(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -1902,6 +1925,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertTrue(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -1983,6 +2007,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertTrue(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -2082,6 +2107,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.lightSensitiveField.isVisible());
     assertTrue(view.storageTemperatureOptions.isVisible());
     assertFalse(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertFalse(view.samplesLabel.isVisible());
     assertFalse(view.samplesTableLayout.isVisible());
     assertFalse(view.samplesTable.isVisible());
@@ -2164,6 +2190,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.lightSensitiveField.isVisible());
     assertTrue(view.storageTemperatureOptions.isVisible());
     assertFalse(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertFalse(view.samplesLabel.isVisible());
     assertFalse(view.samplesTableLayout.isVisible());
     assertFalse(view.samplesTable.isVisible());
@@ -2275,6 +2302,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.lightSensitiveField.isVisible());
     assertTrue(view.storageTemperatureOptions.isVisible());
     assertFalse(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertFalse(view.samplesLabel.isVisible());
     assertFalse(view.samplesTableLayout.isVisible());
     assertFalse(view.samplesTable.isVisible());
@@ -2357,6 +2385,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.lightSensitiveField.isVisible());
     assertTrue(view.storageTemperatureOptions.isVisible());
     assertFalse(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertFalse(view.samplesLabel.isVisible());
     assertFalse(view.samplesTableLayout.isVisible());
     assertFalse(view.samplesTable.isVisible());
@@ -2442,6 +2471,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertFalse(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -2523,6 +2553,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertFalse(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -2608,6 +2639,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertFalse(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -2689,6 +2721,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.lightSensitiveField.isVisible());
     assertFalse(view.storageTemperatureOptions.isVisible());
     assertFalse(view.sampleContainerTypeOptions.isVisible());
+    assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
     assertTrue(view.samplesTableLayout.isVisible());
     assertTrue(view.samplesTable.isVisible());
@@ -2936,11 +2969,11 @@ public class SubmissionFormPresenterTest {
 
     view.submitButton.click();
 
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName);
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName)),
         view.sampleNameField.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionSampleService, atLeastOnce()).exists(sampleName);
     verify(submissionService, never()).insert(any());
   }
 
@@ -3119,6 +3152,49 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void submit_MissingPlateName() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.plateNameField.setValue(null);
+    uploadStructure();
+    uploadGelImages();
+
+    view.submitButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.plateNameField.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_ExistsPlateName() {
+    presenter.init(view);
+    presenter.setEditable(true);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    view.sampleContainerTypeOptions.setValue(SPOT);
+    uploadStructure();
+    uploadGelImages();
+    when(plateService.nameAvailable(any())).thenReturn(false);
+
+    view.submitButton.click();
+
+    verify(plateService, atLeastOnce()).nameAvailable(plateName);
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS)),
+        view.plateNameField.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
   public void submit_MissingSampleNames_1() {
     presenter.init(view);
     presenter.setEditable(true);
@@ -3151,6 +3227,7 @@ public class SubmissionFormPresenterTest {
 
     view.submitButton.click();
 
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName1)),
@@ -3191,6 +3268,7 @@ public class SubmissionFormPresenterTest {
 
     view.submitButton.click();
 
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName2)),
@@ -3251,11 +3329,8 @@ public class SubmissionFormPresenterTest {
 
     view.submitButton.click();
 
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName1)),
-        view.plateSampleNameFields.get(0).get(0).getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(submissionService).insert(any());
   }
 
   @Test
@@ -3292,11 +3367,8 @@ public class SubmissionFormPresenterTest {
 
     view.submitButton.click();
 
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName2)),
-        view.plateSampleNameFields.get(0).get(1).getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(submissionService).insert(any());
   }
 
   @Test
@@ -4720,6 +4792,7 @@ public class SubmissionFormPresenterTest {
     PlateSpot spot = (PlateSpot) container;
     assertEquals(0, spot.getColumn());
     assertEquals(0, spot.getRow());
+    assertEquals(plateName, spot.getPlate().getName());
     assertEquals(2, sample.getStandards().size());
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
@@ -4755,6 +4828,7 @@ public class SubmissionFormPresenterTest {
     spot = (PlateSpot) container;
     assertEquals(0, spot.getColumn());
     assertEquals(1, spot.getRow());
+    assertEquals(plateName, spot.getPlate().getName());
     assertEquals(2, sample.getStandards().size());
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
@@ -5129,6 +5203,7 @@ public class SubmissionFormPresenterTest {
     PlateSpot spot = (PlateSpot) container;
     assertEquals(0, spot.getColumn());
     assertEquals(0, spot.getRow());
+    assertEquals(plateName, spot.getPlate().getName());
     assertEquals(2, sample.getStandards().size());
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
@@ -5164,6 +5239,7 @@ public class SubmissionFormPresenterTest {
     spot = (PlateSpot) container;
     assertEquals(0, spot.getColumn());
     assertEquals(1, spot.getRow());
+    assertEquals(plateName, spot.getPlate().getName());
     assertEquals(2, sample.getStandards().size());
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
@@ -5376,6 +5452,7 @@ public class SubmissionFormPresenterTest {
     PlateSpot spot = (PlateSpot) container;
     assertEquals(0, spot.getColumn());
     assertEquals(0, spot.getRow());
+    assertEquals(plateName, spot.getPlate().getName());
     assertTrue(sample.getStandards() == null || sample.getStandards().isEmpty());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
@@ -5395,6 +5472,7 @@ public class SubmissionFormPresenterTest {
     spot = (PlateSpot) container;
     assertEquals(0, spot.getColumn());
     assertEquals(1, spot.getRow());
+    assertEquals(plateName, spot.getPlate().getName());
     assertTrue(sample.getStandards() == null || sample.getStandards().isEmpty());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());

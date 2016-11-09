@@ -40,7 +40,7 @@ public class SampleContainerTypeTest {
 
   @Test
   public void getLabel_Spot() {
-    assertEquals("Spot", SPOT.getLabel(Locale.ENGLISH));
-    assertEquals("Puit", SPOT.getLabel(Locale.FRENCH));
+    assertEquals("Plate", SPOT.getLabel(Locale.ENGLISH));
+    assertEquals("Plaque", SPOT.getLabel(Locale.FRENCH));
   }
 }
