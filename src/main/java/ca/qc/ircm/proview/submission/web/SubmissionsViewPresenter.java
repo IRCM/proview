@@ -79,7 +79,6 @@ public class SubmissionsViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER_ID = "header";
   public static final String SUBMISSIONS_PROPERTY = "submissions";
-  public static final String SUBMISSIONS_PROPERTY_G = "submissionsG";
   public static final String SAMPLE_COUNT_PROPERTY = "sampleCount";
   public static final String SELECT_PROPERTY = "select";
   public static final String SUBMISSION_PROPERTY = submission.getMetadata().getName();

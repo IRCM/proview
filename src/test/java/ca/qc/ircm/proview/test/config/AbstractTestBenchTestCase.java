@@ -17,11 +17,17 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import ca.qc.ircm.proview.web.WebConstants;
+import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.NotificationElement;
 import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -53,6 +59,30 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     waitForPageLoad();
   }
 
+  /**
+   * Returns message specified by key in all locales.
+   *
+   * @param resources
+   *          return resources for locale
+   * @param key
+   *          message key
+   * @param replacements
+   *          replacements
+   */
+  protected Set<String> message(Function<Locale, MessageResource> resources, String key,
+      Object... replacements) {
+    Set<Locale> locales = WebConstants.getLocales();
+    Set<String> messages = new HashSet<>();
+    for (Locale locale : locales) {
+      messages.add(resources.apply(locale).message(key, replacements));
+    }
+    return messages;
+  }
+
+  protected Function<Locale, MessageResource> resources(Class<?> baseClass) {
+    return (locale) -> new MessageResource(baseClass, locale);
+  }
+
   public void waitForPageLoad() {
     findElement(By.className("v-loading-indicator"));
   }
@@ -71,6 +101,5 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
-
   }
 }

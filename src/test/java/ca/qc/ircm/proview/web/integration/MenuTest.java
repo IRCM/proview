@@ -36,7 +36,7 @@ import java.util.Locale;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 public class MenuTest extends MenuPageObject {
-  private MessageResource getMainViewResources(Locale locale) {
+  protected MessageResource resources(Locale locale) {
     return new MessageResource(MainView.class, locale);
   }
 
@@ -54,7 +54,7 @@ public class MenuTest extends MenuPageObject {
     open();
     Locale currentLocale = Locale.ENGLISH;
     if ($(LabelElement.class).id("header").getText()
-        .equals(getMainViewResources(Locale.FRENCH).message("header"))) {
+        .equals(resources(Locale.FRENCH).message("header"))) {
       currentLocale = Locale.FRENCH;
     }
 
@@ -65,7 +65,7 @@ public class MenuTest extends MenuPageObject {
     if (currentLocale == Locale.FRENCH) {
       newLocale = Locale.ENGLISH;
     }
-    assertEquals(getMainViewResources(newLocale).message("header"),
+    assertEquals(resources(newLocale).message("header"),
         $(LabelElement.class).id("header").getText());
   }
 

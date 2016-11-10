@@ -26,8 +26,6 @@ import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.ValidateView;
-import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
@@ -37,10 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -65,12 +60,7 @@ public class ValidateViewTest extends ValidatePageObject {
   public void title() throws Throwable {
     open();
 
-    Set<Locale> locales = WebConstants.getLocales();
-    Set<String> titles = new HashSet<>();
-    for (Locale locale : locales) {
-      titles.add(new MessageResource(ValidateView.class, locale).message("title"));
-    }
-    assertTrue(titles.contains(getDriver().getTitle()));
+    assertTrue(message(resources(ValidateView.class), "title").contains(getDriver().getTitle()));
   }
 
   @Test

@@ -20,6 +20,7 @@ import javax.inject.Inject;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionWindow extends Window implements MessageResourcesComponent {
+  public static final String WINDOW_STYLE = "submission-window";
   private static final long serialVersionUID = 4789125002422549258L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionWindow.class);
   private SubmissionForm view = new SubmissionForm();
@@ -31,6 +32,7 @@ public class SubmissionWindow extends Window implements MessageResourcesComponen
   @PostConstruct
   protected void init() {
     view.setPresenter(presenter);
+    addStyleName(WINDOW_STYLE);
     panel = new Panel();
     setContent(panel);
     panel.setContent(view);
