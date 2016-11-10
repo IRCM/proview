@@ -120,7 +120,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNES
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY_PROPERTY;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -347,7 +346,6 @@ public class SubmissionFormPresenterTest {
   public void beforeTest() {
     presenter =
         new SubmissionFormPresenter(submissionService, submissionSampleService, plateService);
-    view.headerLabel = new Label();
     view.sampleTypeLabel = new Label();
     view.inactiveLabel = new Label();
     view.servicePanel = new Panel();
@@ -1098,8 +1096,6 @@ public class SubmissionFormPresenterTest {
   public void styles() {
     presenter.init(view);
 
-    assertTrue(view.headerLabel.getStyleName().contains(HEADER_LABEL_ID));
-    assertTrue(view.headerLabel.getStyleName().contains("h1"));
     assertTrue(view.sampleTypeLabel.getStyleName().contains(SAMPLE_TYPE_LABEL));
     assertTrue(view.inactiveLabel.getStyleName().contains(INACTIVE_LABEL));
     assertTrue(view.servicePanel.getStyleName().contains(SERVICES_PANEL));
@@ -1214,7 +1210,6 @@ public class SubmissionFormPresenterTest {
   public void captions() {
     presenter.init(view);
 
-    assertEquals(resources.message(HEADER_LABEL_ID), view.headerLabel.getValue());
     assertEquals(resources.message(SAMPLE_TYPE_LABEL), view.sampleTypeLabel.getValue());
     assertEquals(resources.message(INACTIVE_LABEL), view.inactiveLabel.getValue());
     assertEquals(resources.message(SERVICE_PROPERTY), view.servicePanel.getCaption());

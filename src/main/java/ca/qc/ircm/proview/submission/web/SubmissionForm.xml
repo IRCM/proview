@@ -19,7 +19,6 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="header">Submission of samples</entry>
   <entry key="sampleTypeLabel">Before filling this form, make sure all samples are of the same type. All samples must be in solution, dry or in a gel. All analysis must be the same for all samples submitted. If this is not he case, you will need to fill this form multiple times.</entry>
   <entry key="inactive">If your browser is inactive for more than 30 minutes before confirming your analysis requests, you may lose all unconfirmed information.</entry>
   <entry key="service">Proteomic platform service</entry>

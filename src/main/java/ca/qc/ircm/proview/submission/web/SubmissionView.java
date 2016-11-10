@@ -66,13 +66,6 @@ public class SubmissionView extends SubmissionViewDesign implements MessageResou
 
   @Override
   public void enter(ViewChangeEvent event) {
-    if (event.getParameters() != null && !event.getParameters().isEmpty()) {
-      try {
-        Long id = Long.valueOf(event.getParameters());
-        presenter.setSubmissionById(id);
-      } catch (NumberFormatException e) {
-        showWarning(getResources().message("submission.invalid"));
-      }
-    }
+    presenter.enter(event.getParameters());
   }
 }

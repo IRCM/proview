@@ -19,7 +19,5 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="title">Soumission d'échantillons</entry>
-  <entry key="header">Soumission d''échantillons</entry>
-  <entry key="submission.invalid">Le numéro de soumission est invalide</entry>
+  <entry key="title">Submission {0}</entry>
 </properties>

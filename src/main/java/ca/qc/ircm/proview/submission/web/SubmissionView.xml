@@ -20,5 +20,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
   <entry key="title">Submission of samples</entry>
+  <entry key="header">Submission of samples</entry>
   <entry key="submission.invalid">Submission number is invalid</entry>
 </properties>

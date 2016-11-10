@@ -26,6 +26,7 @@ import com.vaadin.ui.Notification;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Submissions view.
@@ -37,6 +38,8 @@ public class SubmissionsView extends SubmissionsViewDesign implements MessageRes
   private static final long serialVersionUID = -7912663074202035516L;
   @Inject
   private SubmissionsViewPresenter presenter;
+  @Inject
+  private Provider<SubmissionWindow> submissionWindowProvider;
   protected Menu menu = new Menu();
 
   @PostConstruct
@@ -65,7 +68,10 @@ public class SubmissionsView extends SubmissionsViewDesign implements MessageRes
    *          submission to view
    */
   public void viewSubmission(Submission submission) {
-    // TODO Replace by submission window.
+    SubmissionWindow window = submissionWindowProvider.get();
+    window.setSubmission(submission);
+    window.center();
+    getUI().addWindow(window);
   }
 
   /**

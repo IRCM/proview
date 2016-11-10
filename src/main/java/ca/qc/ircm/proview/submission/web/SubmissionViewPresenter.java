@@ -36,7 +36,7 @@ import javax.inject.Inject;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionViewPresenter {
   public static final String TITLE = "title";
-  public static final String SUBMIT_ID = "submit";
+  public static final String HEADER_LABEL = "header";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);
   private SubmissionView view;
   @Inject
@@ -51,18 +51,38 @@ public class SubmissionViewPresenter {
   public void init(SubmissionView view) {
     logger.debug("Submission view");
     this.view = view;
-    view.submissionFormPresenter.setEditable(true);
+    setStyles();
     setCaptions();
+    view.submissionFormPresenter.setEditable(true);
+  }
+
+  private void setStyles() {
+    view.headerLabel.addStyleName(HEADER_LABEL);
+    view.headerLabel.addStyleName("h1");
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE));
+    view.headerLabel.setValue(resources.message(HEADER_LABEL));
   }
 
-  public void setSubmissionById(Long id) {
-    logger.debug("Set submission {}", id);
-    Submission submission = submissionService.get(id);
-    view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
+  /**
+   * Called when view is entered.
+   * 
+   * @param parameters
+   *          view parameters
+   */
+  public void enter(String parameters) {
+    if (parameters != null && !parameters.isEmpty()) {
+      try {
+        Long id = Long.valueOf(parameters);
+        logger.debug("Set submission {}", id);
+        Submission submission = submissionService.get(id);
+        view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
+      } catch (NumberFormatException e) {
+        view.showWarning(view.getResources().message("submission.invalid"));
+      }
+    }
   }
 }

@@ -19,7 +19,6 @@
 -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-  <entry key="header">Soumission d''échantillons</entry>
   <entry key="sampleTypeLabel">Avant de remplir ce formulaire, assurez-vous que tous vos échantillons sont du même type. Tous les échnatillons d''une soumission doivent être en solution, sec ou en gel. Toutes les analyses doivent être les mêmes pour les échantillons soumis. Si ce n''est pas le cas, vous pouvez remplir ce formulaire plusieurs fois.</entry>
   <entry key="inactive">Si votre fureteur est inactif pendant plus de 30 minutes avant que vous ayez compléter la soumission, vous pouvez perdre les informations non-confirmées.</entry>
   <entry key="service">Service de la plateforme de protéomique</entry>

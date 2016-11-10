@@ -137,7 +137,6 @@ import javax.inject.Inject;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionFormPresenter {
-  public static final String HEADER_LABEL = "header";
   public static final String SAMPLE_TYPE_LABEL = "sampleTypeLabel";
   public static final String INACTIVE_LABEL = "inactive";
   public static final String SERVICE_PROPERTY = "service";
@@ -361,8 +360,6 @@ public class SubmissionFormPresenter {
   }
 
   private void setStyles() {
-    view.headerLabel.addStyleName(HEADER_LABEL);
-    view.headerLabel.addStyleName("h1");
     view.sampleTypeLabel.addStyleName(SAMPLE_TYPE_LABEL);
     view.inactiveLabel.addStyleName(INACTIVE_LABEL);
     view.servicePanel.addStyleName(SERVICES_PANEL);
@@ -463,7 +460,6 @@ public class SubmissionFormPresenter {
   private void setCaptions() {
     Locale locale = view.getLocale();
     MessageResource resources = view.getResources();
-    view.headerLabel.setValue(resources.message(HEADER_LABEL));
     view.sampleTypeLabel.setValue(resources.message(SAMPLE_TYPE_LABEL));
     view.inactiveLabel.setValue(resources.message(INACTIVE_LABEL));
     view.servicePanel.setCaption(resources.message(SERVICE_PROPERTY));
