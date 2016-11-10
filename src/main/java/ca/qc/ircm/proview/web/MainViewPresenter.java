@@ -18,6 +18,9 @@
 package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.security.AuthenticationService;
+import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.ObjectProperty;
@@ -39,18 +42,21 @@ import javax.inject.Inject;
 public class MainViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(MainViewPresenter.class);
   private MainView view;
-  private ObjectProperty<String> username = new ObjectProperty<String>(null, String.class);
-  private ObjectProperty<String> password = new ObjectProperty<String>(null, String.class);
-  private ObjectProperty<String> forgotPasswordEmail =
-      new ObjectProperty<String>(null, String.class);
+  private ObjectProperty<String> username = new ObjectProperty<>(null, String.class);
+  private ObjectProperty<String> password = new ObjectProperty<>(null, String.class);
+  private ObjectProperty<String> forgotPasswordEmail = new ObjectProperty<>(null, String.class);
   @Inject
   private AuthenticationService authenticationService;
+  @Inject
+  private AuthorizationService authorizationService;
 
   public MainViewPresenter() {
   }
 
-  protected MainViewPresenter(AuthenticationService authenticationService) {
+  protected MainViewPresenter(AuthenticationService authenticationService,
+      AuthorizationService authorizationService) {
     this.authenticationService = authenticationService;
+    this.authorizationService = authorizationService;
   }
 
   /**
@@ -78,7 +84,7 @@ public class MainViewPresenter {
     view.signForm.addLoginListener(e -> sign());
     view.forgotPasswordButton.addClickListener(e -> forgotPassword());
     view.registerButton.addClickListener(e -> {
-      view.navigateToRegister();
+      view.navigateTo(RegisterView.VIEW_NAME);
     });
   }
 
@@ -145,7 +151,11 @@ public class MainViewPresenter {
       try {
         logger.debug("User {} tries to signin", username);
         authenticationService.sign(username, password, true);
-        view.afterSuccessfulSign();
+        String viewName = MainView.VIEW_NAME;
+        if (authorizationService.isUser()) {
+          viewName = SubmissionsView.VIEW_NAME;
+        }
+        view.navigateTo(viewName);
         logger.debug("User {} signed successfully", username);
       } catch (AuthenticationException ae) {
         logger.debug("User {} could not be authenticated, {}", username, ae.getMessage());
@@ -173,7 +183,19 @@ public class MainViewPresenter {
       logger.debug("Create forgot password for user {}", email);
       // TODO Create forgot password.
       MessageResource resources = view.getResources();
-      view.afterSuccessfulForgotPassword(resources.message("forgotPassword.done"));
+      view.showWarning(resources.message("forgotPassword.done"));
+    }
+  }
+
+  /**
+   * Go to submissions view if user is signed.
+   * 
+   * @param parameters
+   *          view parameters
+   */
+  public void enter(String parameters) {
+    if (authorizationService.isUser()) {
+      view.navigateTo(SubmissionsView.VIEW_NAME);
     }
   }
 }

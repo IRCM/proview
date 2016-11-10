@@ -28,15 +28,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthenticationService;
+import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.utils.MessageResource;
 import com.ejt.vaadin.loginform.LoginForm.LoginListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import org.apache.shiro.authc.AuthenticationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +60,8 @@ public class MainViewPresenterTest {
   private MainView view;
   @Mock
   private AuthenticationService authenticationService;
+  @Mock
+  private AuthorizationService authorizationService;
   @Mock
   private UserService userService;
   @Mock
@@ -80,7 +86,7 @@ public class MainViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new MainViewPresenter(authenticationService);
+    presenter = new MainViewPresenter(authenticationService, authorizationService);
     view.menu = new Menu();
     view.header = new Label();
     view.signForm = signForm;
@@ -174,13 +180,15 @@ public class MainViewPresenterTest {
   }
 
   @Test
-  public void sign() {
+  public void sign_User() {
     signFormUsername.setValue(username);
     signFormPassword.setValue(password);
+    when(authorizationService.isUser()).thenReturn(true);
 
     clickLoginButton();
 
     verify(authenticationService).sign(username, password, true);
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -211,6 +219,18 @@ public class MainViewPresenterTest {
     clickLoginButton();
 
     verify(authenticationService, never()).sign(any(), any(), anyBoolean());
+    verify(view).showError(any());
+  }
+
+  @Test
+  public void sign_AuthenticationException() {
+    signFormUsername.setValue(username);
+    signFormPassword.setValue(password);
+    when(authorizationService.isUser()).thenThrow(new AuthenticationException());
+
+    clickLoginButton();
+
+    verify(authenticationService).sign(username, password, true);
     verify(view).showError(any());
   }
 
@@ -246,6 +266,24 @@ public class MainViewPresenterTest {
   public void register() {
     view.registerButton.click();
 
-    verify(view).navigateToRegister();
+    verify(view).navigateTo(RegisterView.VIEW_NAME);
+  }
+
+  @Test
+  public void enter_NotSigned() {
+    when(authorizationService.isUser()).thenReturn(false);
+
+    presenter.enter("");
+
+    verify(view, never()).navigateTo(any());
+  }
+
+  @Test
+  public void enter_User() {
+    when(authorizationService.isUser()).thenReturn(true);
+
+    presenter.enter("");
+
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 }

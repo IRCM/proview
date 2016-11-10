@@ -29,6 +29,7 @@ import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import com.vaadin.testbench.elements.WindowElement;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -74,6 +75,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   }
 
   @Test
+  @Ignore("not programmed yet")
   public void viewSubmissionResults() {
     open();
 

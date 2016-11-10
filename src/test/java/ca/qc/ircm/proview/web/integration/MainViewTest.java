@@ -21,7 +21,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.NotificationElement;
@@ -104,7 +106,6 @@ public class MainViewTest extends MainPageObject {
   }
 
   @Test
-  @Ignore("not programmed yet")
   public void sign_User() throws Throwable {
     open();
     setSignFormUsername("benoit.coulombe@ircm.qc.ca");
@@ -112,7 +113,7 @@ public class MainViewTest extends MainPageObject {
 
     clickSignFormSignButton();
 
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
@@ -146,5 +147,20 @@ public class MainViewTest extends MainPageObject {
     clickRegisterButton();
 
     assertEquals(viewUrl(RegisterView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  public void enter_NotSigned() throws Throwable {
+    open();
+
+    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void enter_User() throws Throwable {
+    open();
+
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

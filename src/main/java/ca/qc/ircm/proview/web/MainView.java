@@ -17,9 +17,8 @@
 
 package ca.qc.ircm.proview.web;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Notification;
 import org.slf4j.Logger;
@@ -39,8 +38,6 @@ public class MainView extends MainViewDesign implements MessageResourcesView {
   protected CustomLoginForm signForm = new CustomLoginForm();
   @Inject
   private MainViewPresenter presenter;
-  @Inject
-  private AuthorizationService authorizationService;
 
   public MainView() {
     menuLayout.addComponent(menu);
@@ -62,19 +59,16 @@ public class MainView extends MainViewDesign implements MessageResourcesView {
     Notification.show(error, Notification.Type.ERROR_MESSAGE);
   }
 
-  /**
-   * User signed successfully.
-   */
-  public void afterSuccessfulSign() {
-    // TODO Replace by actual views.
-    getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
-  }
-
-  public void afterSuccessfulForgotPassword(String message) {
+  public void showWarning(String message) {
     Notification.show(message, Notification.Type.WARNING_MESSAGE);
   }
 
-  public void navigateToRegister() {
-    getUI().getNavigator().navigateTo(RegisterView.VIEW_NAME);
+  public void navigateTo(String view) {
+    getUI().getNavigator().navigateTo(view);
+  }
+
+  @Override
+  public void enter(ViewChangeEvent event) {
+    presenter.enter(event.getParameters());
   }
 }
