@@ -17,15 +17,21 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static org.openqa.selenium.By.className;
+import static org.openqa.selenium.By.tagName;
+
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.NotificationElement;
+import com.vaadin.testbench.elements.OptionGroupElement;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -100,6 +106,16 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
+    }
+  }
+
+  protected void setOptionValue(OptionGroupElement field, String value) {
+    // TODO Fix API to support multi-language.
+    Optional<WebElement> valueField = field.findElements(className("v-select-option")).stream()
+        .map(option -> option.findElement(tagName("label")))
+        .filter(label -> value.equals(label.getText())).findFirst();
+    if (valueField.isPresent()) {
+      valueField.get().click();
     }
   }
 }

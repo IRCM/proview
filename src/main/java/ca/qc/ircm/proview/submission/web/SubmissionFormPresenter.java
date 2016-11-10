@@ -139,6 +139,7 @@ import javax.inject.Inject;
 public class SubmissionFormPresenter {
   public static final String SAMPLE_TYPE_LABEL = "sampleTypeLabel";
   public static final String INACTIVE_LABEL = "inactive";
+  public static final String SERVICE_PANEL = "servicePanel";
   public static final String SERVICE_PROPERTY = "service";
   public static final String SAMPLES_PROPERTY = submission.samples.getMetadata().getName();
   public static final String SAMPLES_PANEL = "samplesPanel";
@@ -155,9 +156,9 @@ public class SubmissionFormPresenter {
       submission.structure.getMetadata().getName() + "Uploader";
   public static final String STRUCTURE_UPLOADER_PROGRESS =
       submission.structure.getMetadata().getName() + "UploaderProgress";
+  public static final String MAXIMUM_STRUCTURE_SIZE = "10MB";
   public static final String MONOISOTOPIC_MASS_PROPERTY =
       submission.monoisotopicMass.getMetadata().getName();
-  public static final String MAXIMUM_STRUCTURE_SIZE = "10MB";
   public static final String AVERAGE_MASS_PROPERTY = submission.averageMass.getMetadata().getName();
   public static final String TOXICITY_PROPERTY = submission.toxicity.getMetadata().getName();
   public static final String LIGHT_SENSITIVE_PROPERTY =
@@ -165,15 +166,16 @@ public class SubmissionFormPresenter {
   public static final String STORAGE_TEMPERATURE_PROPERTY =
       submission.storageTemperature.getMetadata().getName();
   public static final String SAMPLES_CONTAINER_TYPE_PROPERTY = SAMPLES_PROPERTY + "ContainerType";
-  public static final String SAMPLES_TABLE = SAMPLES_PROPERTY + "Table";
-  public static final String SAMPLES_PLATE = SAMPLES_PROPERTY + "Plate";
   public static final String PLATE_PROPERTY = plate.getMetadata().getName();
   public static final String PLATE_NAME_PROPERTY = plate.name.getMetadata().getName();
+  public static final String SAMPLES_TABLE = SAMPLES_PROPERTY + "Table";
+  public static final String SAMPLE_NUMBER_PROTEIN_PROPERTY =
+      submissionSample.numberProtein.getMetadata().getName();
   public static final String FILL_SAMPLES_PROPERTY = "fillSamples";
+  public static final String SAMPLES_PLATE = SAMPLES_PROPERTY + "Plate";
   public static final String EXPERIENCE_PANEL = "experiencePanel";
   public static final String EXPERIENCE_PROPERTY = submission.experience.getMetadata().getName();
   public static final String EXPERIENCE_GOAL_PROPERTY = submission.goal.getMetadata().getName();
-  public static final String SAMPLE_DETAILS_PANEL = "sampleDetailsPanel";
   public static final String TAXONOMY_PROPERTY = submission.taxonomy.getMetadata().getName();
   public static final String PROTEIN_NAME_PROPERTY = submission.protein.getMetadata().getName();
   public static final String PROTEIN_WEIGHT_PROPERTY =
@@ -238,8 +240,6 @@ public class SubmissionFormPresenter {
       submission.otherProteolyticDigestionMethod.getMetadata().getName();
   public static final String ENRICHEMENT_PROPERTY = "enrichment";
   public static final String EXCLUSIONS_PROPERTY = "exclusions";
-  public static final String SAMPLE_NUMBER_PROTEIN_PROPERTY =
-      submissionSample.numberProtein.getMetadata().getName();
   public static final String INJECTION_TYPE_PROPERTY =
       submission.injectionType.getMetadata().getName();
   public static final String SOURCE_PROPERTY = submission.source.getMetadata().getName();
@@ -362,7 +362,7 @@ public class SubmissionFormPresenter {
   private void setStyles() {
     view.sampleTypeLabel.addStyleName(SAMPLE_TYPE_LABEL);
     view.inactiveLabel.addStyleName(INACTIVE_LABEL);
-    view.servicePanel.addStyleName(SERVICES_PANEL);
+    view.servicePanel.addStyleName(SERVICE_PANEL);
     view.servicePanel.addStyleName(REQUIRED);
     view.serviceOptions.addStyleName(SERVICE_PROPERTY);
     view.serviceOptions.addStyleName(HIDE_REQUIRED_STYLE);
@@ -422,8 +422,8 @@ public class SubmissionFormPresenter {
     view.proteinQuantityField.addStyleName(PROTEIN_QUANTITY_PROPERTY);
     view.gelImagesLayout.addStyleName(REQUIRED);
     view.gelImagesUploader.addStyleName(GEL_IMAGES_PROPERTY);
-    view.gelImagesTable.addStyleName(GEL_IMAGES_TABLE);
     view.gelImageProgress.addStyleName(GEL_IMAGES_UPLOADER_PROGRESS);
+    view.gelImagesTable.addStyleName(GEL_IMAGES_TABLE);
     view.servicesPanel.addStyleName(SERVICES_PANEL);
     view.digestionOptions.addStyleName(DIGESTION_PROPERTY);
     view.usedProteolyticDigestionMethodField.addStyleName(USED_DIGESTION_PROPERTY);
@@ -451,7 +451,8 @@ public class SubmissionFormPresenter {
     view.otherSolventNoteLabel.addStyleName(FORM_CAPTION_STYLE);
     view.commentsPanel.addStyleName(COMMENTS_PANEL);
     view.commentsField.addStyleName(COMMENTS_PROPERTY);
-    view.filesUploader.addStyleName(FILES_PROPERTY);
+    view.filesPanel.addStyleName(FILES_PROPERTY);
+    view.filesUploader.addStyleName(FILES_UPLOADER);
     view.filesProgress.addStyleName(FILES_UPLOADER_PROGRESS);
     view.filesTable.addStyleName(FILES_TABLE);
     view.submitButton.addStyleName(SUBMIT_ID);

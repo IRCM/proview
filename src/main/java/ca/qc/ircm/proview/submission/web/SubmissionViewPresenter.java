@@ -36,11 +36,19 @@ import javax.inject.Inject;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionViewPresenter {
   public static final String TITLE = "title";
-  public static final String HEADER_LABEL = "header";
+  public static final String HEADER_STYLE = "header";
+  public static final String INVALID_SUBMISSION = "submission.invalid";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);
   private SubmissionView view;
   @Inject
   private SubmissionService submissionService;
+
+  protected SubmissionViewPresenter() {
+  }
+
+  protected SubmissionViewPresenter(SubmissionService submissionService) {
+    this.submissionService = submissionService;
+  }
 
   /**
    * Initialize presenter.
@@ -57,19 +65,19 @@ public class SubmissionViewPresenter {
   }
 
   private void setStyles() {
-    view.headerLabel.addStyleName(HEADER_LABEL);
+    view.headerLabel.addStyleName(HEADER_STYLE);
     view.headerLabel.addStyleName("h1");
   }
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE));
-    view.headerLabel.setValue(resources.message(HEADER_LABEL));
+    view.headerLabel.setValue(resources.message(HEADER_STYLE));
   }
 
   /**
    * Called when view is entered.
-   * 
+   *
    * @param parameters
    *          view parameters
    */
@@ -81,7 +89,7 @@ public class SubmissionViewPresenter {
         Submission submission = submissionService.get(id);
         view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
       } catch (NumberFormatException e) {
-        view.showWarning(view.getResources().message("submission.invalid"));
+        view.showWarning(view.getResources().message(INVALID_SUBMISSION));
       }
     }
   }

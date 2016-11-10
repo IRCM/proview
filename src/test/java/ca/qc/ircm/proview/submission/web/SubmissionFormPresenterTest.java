@@ -101,6 +101,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_T
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICES_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS_PROPERTY;
@@ -1098,7 +1099,7 @@ public class SubmissionFormPresenterTest {
 
     assertTrue(view.sampleTypeLabel.getStyleName().contains(SAMPLE_TYPE_LABEL));
     assertTrue(view.inactiveLabel.getStyleName().contains(INACTIVE_LABEL));
-    assertTrue(view.servicePanel.getStyleName().contains(SERVICES_PANEL));
+    assertTrue(view.servicePanel.getStyleName().contains(SERVICE_PANEL));
     assertTrue(view.servicePanel.getStyleName().contains(REQUIRED));
     assertTrue(view.serviceOptions.getStyleName().contains(SERVICE_PROPERTY));
     assertTrue(view.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
@@ -1201,7 +1202,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherSolventNoteLabel.getStyleName().contains(OTHER_SOLVENT_NOTE));
     assertTrue(view.commentsPanel.getStyleName().contains(COMMENTS_PANEL));
     assertTrue(view.commentsField.getStyleName().contains(COMMENTS_PROPERTY));
-    verify(view.filesUploader).addStyleName(FILES_PROPERTY);
+    assertTrue(view.filesPanel.getStyleName().contains(FILES_PROPERTY));
+    verify(view.filesUploader).addStyleName(FILES_UPLOADER);
     assertTrue(view.filesProgress.getStyleName().contains(FILES_UPLOADER_PROGRESS));
     assertTrue(view.filesTable.getStyleName().contains(FILES_TABLE));
   }
