@@ -88,13 +88,13 @@
   <entry key="proteinQuantity">Total protein quantity in gel</entry>
   <entry key="proteinQuantityUnit">Total protein quantity unit in gel</entry>
   <entry key="proteinQuantity.example">150 μg</entry>
-  <entry key="gelImages">Gel image(s)</entry>
+  <entry key="gelImages">Gel images</entry>
   <entry key="gelImages.filename">File</entry>
   <entry key="gelImages.removeGelImage">Remove</entry>
-  <entry key="gelImages.required">Gel image(s) may not be empty</entry>
+  <entry key="gelImages.required">Gel images may not be empty</entry>
   <entry key="gelImages.error">File {0} could not be uploaded</entry>
-  <entry key="gelImages.overMaximumSize">File {0} size not below {1}</entry>
-  <entry key="gelImages.overMaximumCount">Maximum of {0} allowed files</entry>
+  <entry key="gelImages.overMaximumSize">File {0} size above {1}</entry>
+  <entry key="gelImages.overMaximumCount">Maximum of {0} allowed gel images</entry>
   <entry key="gelImagesUploader">Upload gel images</entry>
   <entry key="servicesPanel">Services</entry>
   <entry key="proteolyticDigestionMethod">Proteolytic digestion</entry>
@@ -124,6 +124,13 @@ Light: None</entry>
   <entry key="otherSolvent">Specify other solvent</entry>
   <entry key="otherSolvent.note">(DMSO is not compatible with MS analysis)</entry>
   <entry key="commentsPanel">Comments</entry>
+  <entry key="files">Additional files</entry>
+  <entry key="files.filename">File</entry>
+  <entry key="files.removeFile">Remove</entry>
+  <entry key="files.error">File {0} could not be uploaded</entry>
+  <entry key="files.overMaximumSize">File {0} size above {1}</entry>
+  <entry key="files.overMaximumCount">Maximum of {0} allowed additional files</entry>
+  <entry key="filesUploader">Upload files</entry>
   <entry key="submit">Submit</entry>
   <entry key="save">Saved submission {0}</entry>
 </properties>

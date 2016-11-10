@@ -47,6 +47,11 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_TABLE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER_PROGRESS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILE_FILENAME_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_BUTTON_STYLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES_PROPERTY;
@@ -80,6 +85,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_LABELS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.REMOVE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.REMOVE_GEL_IMAGE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_CONTAINER_TYPE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PANEL;
@@ -160,6 +166,7 @@ import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -225,6 +232,8 @@ public class SubmissionFormPresenterTest {
   private Plupload structureUploader;
   @Mock
   private Plupload gelImagesUploader;
+  @Mock
+  private Plupload filesUploader;
   @Mock
   private PluploadFile pluploadFile;
   @Captor
@@ -312,6 +321,10 @@ public class SubmissionFormPresenterTest {
   private boolean otherSolvents = true;
   private String otherSolvent = "acetone";
   private String comments = "my comment\nmy comment second line";
+  private String filesFilename1 = "protocol.txt";
+  private byte[] filesContent1 = new byte[1024];
+  private String filesFilename2 = "samples.xlsx";
+  private byte[] filesContent2 = new byte[10240];
   private TextField sampleNameField1;
   private TextField sampleNameField2;
   private TextField sampleNumberProteinField1;
@@ -433,6 +446,11 @@ public class SubmissionFormPresenterTest {
     view.otherSolventNoteLabel = new Label();
     view.commentsPanel = new Panel();
     view.commentsField = new TextArea();
+    view.filesPanel = new Panel();
+    view.filesUploaderLayout = new VerticalLayout();
+    view.filesUploader = filesUploader;
+    view.filesProgress = new ProgressBar();
+    view.filesTable = new Table();
     view.buttonsLayout = new HorizontalLayout();
     view.submitButton = new Button();
     when(view.getLocale()).thenReturn(locale);
@@ -599,6 +617,18 @@ public class SubmissionFormPresenterTest {
     fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
   }
 
+  private void uploadFiles() {
+    verify(filesUploader).addFileUploadedListener(fileUploadedListenerCaptor.capture());
+    when(pluploadFile.getName()).thenReturn(filesFilename1);
+    random.nextBytes(filesContent1);
+    when(pluploadFile.getUploadedFile()).thenReturn(filesContent1);
+    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
+    when(pluploadFile.getName()).thenReturn(filesFilename2);
+    random.nextBytes(filesContent2);
+    when(pluploadFile.getUploadedFile()).thenReturn(filesContent2);
+    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
+  }
+
   private String errorMessage(String message) {
     return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
   }
@@ -671,6 +701,28 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, columns.length);
     assertEquals(GEL_IMAGE_FILENAME_PROPERTY, columns[0]);
     assertEquals(REMOVE_GEL_IMAGE, columns[1]);
+  }
+
+  @Test
+  public void filesColumns() {
+    presenter.init(view);
+
+    Object[] columns = view.filesTable.getVisibleColumns();
+
+    assertEquals(1, columns.length);
+    assertEquals(FILE_FILENAME_PROPERTY, columns[0]);
+  }
+
+  @Test
+  public void filesColumns_Editable() {
+    presenter.init(view);
+    presenter.setEditable(true);
+
+    Object[] columns = view.filesTable.getVisibleColumns();
+
+    assertEquals(2, columns.length);
+    assertEquals(FILE_FILENAME_PROPERTY, columns[0]);
+    assertEquals(REMOVE_FILE, columns[1]);
   }
 
   @Test
@@ -1153,6 +1205,9 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherSolventNoteLabel.getStyleName().contains(OTHER_SOLVENT_NOTE));
     assertTrue(view.commentsPanel.getStyleName().contains(COMMENTS_PANEL));
     assertTrue(view.commentsField.getStyleName().contains(COMMENTS_PROPERTY));
+    verify(view.filesUploader).addStyleName(FILES_PROPERTY);
+    assertTrue(view.filesProgress.getStyleName().contains(FILES_UPLOADER_PROGRESS));
+    assertTrue(view.filesTable.getStyleName().contains(FILES_TABLE));
   }
 
   @Test
@@ -1367,6 +1422,16 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(OTHER_SOLVENT_NOTE), view.otherSolventNoteLabel.getValue());
     assertEquals(resources.message(COMMENTS_PANEL), view.commentsPanel.getCaption());
     assertEquals(null, view.commentsField.getCaption());
+    assertEquals(resources.message(FILES_PROPERTY), view.filesPanel.getCaption());
+    verify(view.filesUploader).setCaption(resources.message(FILES_UPLOADER));
+    verify(view.filesUploader).setIcon(FontAwesome.FILES_O);
+    assertEquals(null, view.filesProgress.getCaption());
+    assertEquals(FontAwesome.CLOUD_DOWNLOAD, view.filesProgress.getIcon());
+    assertEquals(null, view.filesTable.getCaption());
+    assertEquals(resources.message(FILES_PROPERTY + "." + FILE_FILENAME_PROPERTY),
+        view.filesTable.getColumnHeader(FILE_FILENAME_PROPERTY));
+    assertEquals(resources.message(FILES_PROPERTY + "." + REMOVE_FILE),
+        view.filesTable.getColumnHeader(REMOVE_FILE));
   }
 
   @Test
@@ -1441,6 +1506,10 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherSolventsField.isReadOnly());
     assertTrue(view.otherSolventField.isReadOnly());
     assertTrue(view.commentsField.isReadOnly());
+    Object[] filesTableColumns = view.filesTable.getVisibleColumns();
+    assertEquals(1, filesTableColumns.length);
+    assertEquals(FILE_FILENAME_PROPERTY, filesTableColumns[0]);
+    assertFalse(view.filesTable.isEditable());
   }
 
   @Test
@@ -1517,6 +1586,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isReadOnly());
     assertFalse(view.otherSolventField.isReadOnly());
     assertFalse(view.commentsField.isReadOnly());
+    Object[] filesTableColumns = view.filesTable.getVisibleColumns();
+    assertEquals(2, filesTableColumns.length);
+    assertEquals(FILE_FILENAME_PROPERTY, filesTableColumns[0]);
+    assertEquals(REMOVE_FILE, filesTableColumns[1]);
+    assertFalse(view.filesTable.isEditable());
   }
 
   @Test
@@ -2787,6 +2861,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -2806,6 +2881,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -2826,6 +2902,7 @@ public class SubmissionFormPresenterTest {
     view.solutionSolventField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -2846,6 +2923,7 @@ public class SubmissionFormPresenterTest {
     view.sampleCountField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -2866,6 +2944,7 @@ public class SubmissionFormPresenterTest {
     view.sampleCountField.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -2886,6 +2965,7 @@ public class SubmissionFormPresenterTest {
     view.sampleCountField.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -2906,6 +2986,7 @@ public class SubmissionFormPresenterTest {
     view.sampleCountField.setValue("200000");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -2926,6 +3007,7 @@ public class SubmissionFormPresenterTest {
     view.sampleCountField.setValue("1.3");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -2946,6 +3028,7 @@ public class SubmissionFormPresenterTest {
     view.sampleNameField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -2965,6 +3048,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
     when(submissionSampleService.exists(any())).thenReturn(true);
 
     view.submitButton.click();
@@ -2987,6 +3071,7 @@ public class SubmissionFormPresenterTest {
     view.formulaField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3005,6 +3090,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3023,6 +3109,7 @@ public class SubmissionFormPresenterTest {
     view.monoisotopicMassField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3043,6 +3130,7 @@ public class SubmissionFormPresenterTest {
     view.monoisotopicMassField.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3063,6 +3151,7 @@ public class SubmissionFormPresenterTest {
     view.monoisotopicMassField.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3082,6 +3171,7 @@ public class SubmissionFormPresenterTest {
     view.averageMassField.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3102,6 +3192,7 @@ public class SubmissionFormPresenterTest {
     view.averageMassField.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3121,6 +3212,7 @@ public class SubmissionFormPresenterTest {
     view.storageTemperatureOptions.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3141,6 +3233,7 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3162,6 +3255,7 @@ public class SubmissionFormPresenterTest {
     view.plateNameField.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3182,6 +3276,7 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(SPOT);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
     when(plateService.nameAvailable(any())).thenReturn(false);
 
     view.submitButton.click();
@@ -3204,7 +3299,7 @@ public class SubmissionFormPresenterTest {
     sampleNameField1.setValue("");
     uploadStructure();
     uploadGelImages();
-
+    uploadFiles();
     view.submitButton.click();
 
     verify(view).showError(stringCaptor.capture());
@@ -3223,6 +3318,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
 
     view.submitButton.click();
@@ -3245,6 +3341,7 @@ public class SubmissionFormPresenterTest {
     sampleNameField2.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3264,6 +3361,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
 
     view.submitButton.click();
@@ -3286,6 +3384,7 @@ public class SubmissionFormPresenterTest {
     sampleNameField2.setValue(sampleName1);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3306,6 +3405,7 @@ public class SubmissionFormPresenterTest {
     view.plateSampleNameFields.get(0).get(0).setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3325,6 +3425,7 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(SPOT);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
 
     view.submitButton.click();
@@ -3344,6 +3445,7 @@ public class SubmissionFormPresenterTest {
     view.plateSampleNameFields.get(0).get(1).setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3363,6 +3465,7 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(SPOT);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
 
     view.submitButton.click();
@@ -3382,6 +3485,7 @@ public class SubmissionFormPresenterTest {
     view.plateSampleNameFields.get(0).get(1).setValue(sampleName1);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3401,6 +3505,7 @@ public class SubmissionFormPresenterTest {
     sampleNumberProteinField1.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3421,6 +3526,7 @@ public class SubmissionFormPresenterTest {
     sampleNumberProteinField1.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3441,6 +3547,7 @@ public class SubmissionFormPresenterTest {
     sampleNumberProteinField1.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3460,6 +3567,7 @@ public class SubmissionFormPresenterTest {
     sampleNumberProteinField1.setValue("1.2");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3480,6 +3588,7 @@ public class SubmissionFormPresenterTest {
     sampleNumberProteinField2.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3500,6 +3609,7 @@ public class SubmissionFormPresenterTest {
     sampleNumberProteinField2.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3520,6 +3630,7 @@ public class SubmissionFormPresenterTest {
     sampleNumberProteinField2.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3539,6 +3650,7 @@ public class SubmissionFormPresenterTest {
     sampleNumberProteinField2.setValue("1.2");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3559,6 +3671,7 @@ public class SubmissionFormPresenterTest {
     sampleProteinWeightField1.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3579,6 +3692,7 @@ public class SubmissionFormPresenterTest {
     sampleProteinWeightField1.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3599,6 +3713,7 @@ public class SubmissionFormPresenterTest {
     sampleProteinWeightField1.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3618,6 +3733,7 @@ public class SubmissionFormPresenterTest {
     sampleProteinWeightField2.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3638,6 +3754,7 @@ public class SubmissionFormPresenterTest {
     sampleProteinWeightField2.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3658,6 +3775,7 @@ public class SubmissionFormPresenterTest {
     sampleProteinWeightField2.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3677,6 +3795,7 @@ public class SubmissionFormPresenterTest {
     view.experienceField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3697,6 +3816,7 @@ public class SubmissionFormPresenterTest {
     view.taxonomyField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3717,6 +3837,7 @@ public class SubmissionFormPresenterTest {
     view.proteinWeightField.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3737,6 +3858,7 @@ public class SubmissionFormPresenterTest {
     view.proteinWeightField.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3756,6 +3878,7 @@ public class SubmissionFormPresenterTest {
     view.sampleQuantityField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3776,6 +3899,7 @@ public class SubmissionFormPresenterTest {
     view.sampleVolumeField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3796,6 +3920,7 @@ public class SubmissionFormPresenterTest {
     view.sampleVolumeField.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3816,6 +3941,7 @@ public class SubmissionFormPresenterTest {
     view.sampleVolumeField.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3835,6 +3961,7 @@ public class SubmissionFormPresenterTest {
     view.standardCountField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3852,6 +3979,7 @@ public class SubmissionFormPresenterTest {
     view.standardCountField.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3872,6 +4000,7 @@ public class SubmissionFormPresenterTest {
     view.standardCountField.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3892,6 +4021,7 @@ public class SubmissionFormPresenterTest {
     view.standardCountField.setValue("200");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3912,6 +4042,7 @@ public class SubmissionFormPresenterTest {
     view.standardCountField.setValue("1.2");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3932,6 +4063,7 @@ public class SubmissionFormPresenterTest {
     standardNameField1.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3952,6 +4084,7 @@ public class SubmissionFormPresenterTest {
     standardNameField2.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3972,6 +4105,7 @@ public class SubmissionFormPresenterTest {
     standardQuantityField1.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -3992,6 +4126,7 @@ public class SubmissionFormPresenterTest {
     standardQuantityField2.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4012,6 +4147,7 @@ public class SubmissionFormPresenterTest {
     view.contaminantCountField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4029,6 +4165,7 @@ public class SubmissionFormPresenterTest {
     view.contaminantCountField.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4049,6 +4186,7 @@ public class SubmissionFormPresenterTest {
     view.contaminantCountField.setValue("-1");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4069,6 +4207,7 @@ public class SubmissionFormPresenterTest {
     view.contaminantCountField.setValue("200");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4089,6 +4228,7 @@ public class SubmissionFormPresenterTest {
     view.contaminantCountField.setValue("1.2");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4109,6 +4249,7 @@ public class SubmissionFormPresenterTest {
     contaminantNameField1.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4129,6 +4270,7 @@ public class SubmissionFormPresenterTest {
     contaminantNameField2.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4149,6 +4291,7 @@ public class SubmissionFormPresenterTest {
     contaminantQuantityField1.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4169,6 +4312,7 @@ public class SubmissionFormPresenterTest {
     contaminantQuantityField2.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4189,6 +4333,7 @@ public class SubmissionFormPresenterTest {
     view.separationField.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4222,6 +4367,7 @@ public class SubmissionFormPresenterTest {
     view.thicknessField.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4269,6 +4415,7 @@ public class SubmissionFormPresenterTest {
     view.otherColorationField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4289,6 +4436,7 @@ public class SubmissionFormPresenterTest {
     view.weightMarkerQuantityField.setValue("a");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4307,6 +4455,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(GEL);
     setFields();
     uploadStructure();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4325,6 +4474,7 @@ public class SubmissionFormPresenterTest {
     view.digestionOptions.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4346,6 +4496,7 @@ public class SubmissionFormPresenterTest {
     view.usedProteolyticDigestionMethodField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4367,6 +4518,7 @@ public class SubmissionFormPresenterTest {
     view.otherProteolyticDigestionMethodField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4387,6 +4539,7 @@ public class SubmissionFormPresenterTest {
     view.injectionTypeOptions.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4407,6 +4560,7 @@ public class SubmissionFormPresenterTest {
     view.sourceOptions.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4427,6 +4581,7 @@ public class SubmissionFormPresenterTest {
     view.proteinContentOptions.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4447,6 +4602,7 @@ public class SubmissionFormPresenterTest {
     view.instrumentOptions.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4464,6 +4620,7 @@ public class SubmissionFormPresenterTest {
     view.proteinIdentificationOptions.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4485,6 +4642,7 @@ public class SubmissionFormPresenterTest {
     view.proteinIdentificationLinkField.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4506,6 +4664,7 @@ public class SubmissionFormPresenterTest {
     view.quantificationLabelsField.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4526,6 +4685,7 @@ public class SubmissionFormPresenterTest {
     view.highResolutionOptions.setValue(null);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4549,6 +4709,7 @@ public class SubmissionFormPresenterTest {
     view.otherSolventsField.setValue(false);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4568,6 +4729,7 @@ public class SubmissionFormPresenterTest {
     view.otherSolventField.setValue("");
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4587,6 +4749,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4707,6 +4870,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).afterSuccessfulSave(resources.message("save", experience));
   }
 
   @Test
@@ -4719,6 +4890,7 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(SPOT);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4851,6 +5023,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).afterSuccessfulSave(resources.message("save", experience));
   }
 
   @Test
@@ -4865,6 +5045,7 @@ public class SubmissionFormPresenterTest {
     view.otherProteolyticDigestionMethodField.setValue(otherDigestion);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -4985,6 +5166,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).afterSuccessfulSave(resources.message("save", experience));
   }
 
   @Test
@@ -4997,6 +5186,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -5117,6 +5307,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).afterSuccessfulSave(resources.message("save", experience));
   }
 
   @Test
@@ -5130,6 +5328,7 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(SPOT);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -5262,6 +5461,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).afterSuccessfulSave(resources.message("save", experience));
   }
 
   @Test
@@ -5273,6 +5480,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -5367,6 +5575,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(gelImageFilename2, gelImage.getFilename());
     assertArrayEquals(gelImageContent2, gelImage.getContent());
     assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).afterSuccessfulSave(resources.message("save", experience));
   }
 
   @Test
@@ -5379,6 +5595,7 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(SPOT);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -5485,6 +5702,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(gelImageFilename2, gelImage.getFilename());
     assertArrayEquals(gelImageContent2, gelImage.getContent());
     assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).afterSuccessfulSave(resources.message("save", experience));
   }
 
   @Test
@@ -5496,6 +5721,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -5588,6 +5814,13 @@ public class SubmissionFormPresenterTest {
     Structure structure = submission.getStructure();
     assertEquals(structureFilename, structure.getFilename());
     assertArrayEquals(structureContent, structure.getContent());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
     verify(view).afterSuccessfulSave(resources.message("save", sampleName));
   }
 
@@ -5601,6 +5834,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -5693,6 +5927,13 @@ public class SubmissionFormPresenterTest {
     Structure structure = submission.getStructure();
     assertEquals(structureFilename, structure.getFilename());
     assertArrayEquals(structureContent, structure.getContent());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
     verify(view).afterSuccessfulSave(resources.message("save", sampleName));
   }
 
@@ -5706,6 +5947,7 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(SPOT);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -5727,6 +5969,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -5847,6 +6090,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).afterSuccessfulSave(resources.message("save", experience));
   }
 
   @Test
@@ -5859,6 +6110,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -5979,6 +6231,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).afterSuccessfulSave(resources.message("save", experience));
   }
 
   @Test
@@ -5991,6 +6251,7 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(SPOT);
     uploadStructure();
     uploadGelImages();
+    uploadFiles();
 
     view.submitButton.click();
 
@@ -6004,5 +6265,12 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getOriginalContainer());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getOriginalContainer());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
   }
 }

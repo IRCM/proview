@@ -112,6 +112,10 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Label otherSolventNoteLabel;
   protected Panel commentsPanel;
   protected TextArea commentsField;
+  protected Panel filesPanel;
+  protected VerticalLayout filesUploaderLayout;
+  protected ProgressBar filesProgress;
+  protected Table filesTable;
   protected HorizontalLayout buttonsLayout;
   protected Button submitButton;
 

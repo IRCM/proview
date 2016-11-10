@@ -91,7 +91,7 @@
   <entry key="gelImages.removeGelImage">Retirer</entry>
   <entry key="gelImages.required">Image(s) du gel ne peut pas être vide</entry>
   <entry key="gelImages.error">Fichier {0} n''a pu être envoyé</entry>
-  <entry key="gelImages.overMaximumSize">Fichier {0} n''a pas une taille inférieure à {1}</entry>
+  <entry key="gelImages.overMaximumSize">Fichier {0} a une taille supérieure à {1}</entry>
   <entry key="gelImages.overMaximumCount">Maximum de {0} fichiers permis</entry>
   <entry key="gelImagesUploader">Télécharger images du gel</entry>
   <entry key="servicesPanel">Services</entry>
@@ -122,6 +122,13 @@ Léger: Aucun</entry>
   <entry key="otherSolvent">Spécifier autre solvent</entry>
   <entry key="otherSolvent.note">(DMSO n''est pas compatible avec l''analyse MS)</entry>
   <entry key="commentsPanel">Commentaires</entry>
+  <entry key="files">Fichiers additionels</entry>
+  <entry key="files.filename">Fichier</entry>
+  <entry key="files.removeFile">Retirer</entry>
+  <entry key="files.error">Fichier {0} n''a pu être envoyé</entry>
+  <entry key="files.overMaximumSize">Fichier {0} a une taille supérieure à {1}</entry>
+  <entry key="files.overMaximumCount">Maximum de {0} fichiers permis</entry>
+  <entry key="filesUploader">Télécharger fichiers</entry>
   <entry key="submit">Soumettre</entry>
   <entry key="save">Soumission {0} sauvegardée</entry>
 </properties>

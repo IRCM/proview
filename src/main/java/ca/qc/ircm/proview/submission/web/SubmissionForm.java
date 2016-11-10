@@ -101,6 +101,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   private SubmissionFormPresenter presenter;
   protected Plupload structureUploader;
   protected Plupload gelImagesUploader;
+  protected Plupload filesUploader;
   protected PlateLayout samplesPlateLayout;
   protected List<List<TextField>> plateSampleNameFields = new ArrayList<>();
 
@@ -114,8 +115,10 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   public SubmissionForm() {
     structureUploader = new Plupload();
     gelImagesUploader = new Plupload();
+    filesUploader = new Plupload();
     structureUploaderLayout.addComponent(structureUploader);
     gelImagesUploaderLayout.addComponent(gelImagesUploader);
+    filesUploaderLayout.addComponent(filesUploader);
     initPlateLayout();
     samplesPlateContainer.addComponent(samplesPlateLayout);
   }

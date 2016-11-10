@@ -33,6 +33,7 @@ import static ca.qc.ircm.proview.submission.GelSeparation.ONE_DIMENSION;
 import static ca.qc.ircm.proview.submission.GelThickness.ONE;
 import static ca.qc.ircm.proview.submission.QGelImage.gelImage;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.submission.QSubmissionFile.submissionFile;
 import static ca.qc.ircm.proview.submission.Quantification.SILAC;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
@@ -75,6 +76,7 @@ import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
@@ -263,6 +265,17 @@ public class SubmissionFormPresenter {
       submission.otherSolvent.getMetadata().getName() + ".note";
   public static final String COMMENTS_PANEL = "commentsPanel";
   public static final String COMMENTS_PROPERTY = submission.comments.getMetadata().getName();
+  public static final String FILES_PROPERTY = submission.files.getMetadata().getName();
+  public static final String FILES_UPLOADER = submission.files.getMetadata().getName() + "Uploader";
+  public static final String FILES_UPLOADER_PROGRESS =
+      submission.files.getMetadata().getName() + "UploaderProgress";
+  public static final String FILES_TABLE = FILES_PROPERTY + "Table";
+  public static final String MAXIMUM_FILES_SIZE = "10MB";
+  public static final int MAXIMUM_FILES_COUNT = 4;
+  public static final int FILES_TABLE_LENGTH = 3;
+  public static final String FILE_FILENAME_PROPERTY =
+      submissionFile.filename.getMetadata().getName();
+  public static final String REMOVE_FILE = "removeFile";
   public static final String SUBMIT_ID = "submit";
   public static final int NULL_ID = -1;
   public static final String EXAMPLE = "example";
@@ -280,6 +293,9 @@ public class SubmissionFormPresenter {
   private static final Object[] gelImagesColumns = new Object[] { GEL_IMAGE_FILENAME_PROPERTY };
   private static final Object[] editableGelImagesColumns =
       new Object[] { GEL_IMAGE_FILENAME_PROPERTY, REMOVE_GEL_IMAGE };
+  private static final Object[] filesColumns = new Object[] { FILE_FILENAME_PROPERTY };
+  private static final Object[] editableFilesColumns =
+      new Object[] { FILE_FILENAME_PROPERTY, REMOVE_FILE };
   private static final int MAX_SAMPLE_COUNT = 200;
   private static final int MAX_STANDARD_COUNT = 10;
   private static final int MAX_CONTAMINANT_COUNT = 10;
@@ -301,6 +317,10 @@ public class SubmissionFormPresenter {
   private BeanItemContainer<GelImage> gelImagesContainer = new BeanItemContainer<>(GelImage.class);
   private GeneratedPropertyContainer gelImagesGeneratedContainer =
       new GeneratedPropertyContainer(gelImagesContainer);
+  private BeanItemContainer<SubmissionFile> filesContainer =
+      new BeanItemContainer<>(SubmissionFile.class);
+  private GeneratedPropertyContainer filesGeneratedContainer =
+      new GeneratedPropertyContainer(filesContainer);
   private boolean skipBinding = false;
   @Inject
   private SubmissionService submissionService;
@@ -434,6 +454,9 @@ public class SubmissionFormPresenter {
     view.otherSolventNoteLabel.addStyleName(FORM_CAPTION_STYLE);
     view.commentsPanel.addStyleName(COMMENTS_PANEL);
     view.commentsField.addStyleName(COMMENTS_PROPERTY);
+    view.filesUploader.addStyleName(FILES_PROPERTY);
+    view.filesProgress.addStyleName(FILES_UPLOADER_PROGRESS);
+    view.filesTable.addStyleName(FILES_TABLE);
     view.submitButton.addStyleName(SUBMIT_ID);
   }
 
@@ -558,6 +581,13 @@ public class SubmissionFormPresenter {
     view.otherSolventField.setCaption(resources.message(OTHER_SOLVENT_PROPERTY));
     view.otherSolventNoteLabel.setValue(resources.message(OTHER_SOLVENT_NOTE));
     view.commentsPanel.setCaption(resources.message(COMMENTS_PANEL));
+    view.filesPanel.setCaption(resources.message(FILES_PROPERTY));
+    view.filesUploader.setCaption(resources.message(FILES_UPLOADER));
+    view.filesUploader.setIcon(FontAwesome.FILES_O);
+    view.filesProgress.setIcon(FontAwesome.CLOUD_DOWNLOAD);
+    for (Object column : editableFilesColumns) {
+      view.filesTable.setColumnHeader(column, resources.message(FILES_PROPERTY + "." + column));
+    }
     view.submitButton.setCaption(resources.message(SUBMIT_ID));
   }
 
@@ -596,8 +626,10 @@ public class SubmissionFormPresenter {
     view.sampleNameField.addValidator(v -> validateSampleName((String) v, true));
     view.formulaField.setRequired(true);
     view.formulaField.setRequiredError(generalResources.message(REQUIRED));
+    view.structureButton.setVisible(false);
     view.structureUploader.setMaxFileSize(MAXIMUM_STRUCTURE_SIZE);
     view.structureUploader.setChunkHandlerFactory(new ByteArrayChunkHandlerFactory());
+    view.structureProgress.setVisible(false);
     view.monoisotopicMassField.setConverter(new StringToDoubleConverter());
     view.monoisotopicMassField.setConversionError(generalResources.message(INVALID_NUMBER));
     view.monoisotopicMassField.setRequired(true);
@@ -756,6 +788,7 @@ public class SubmissionFormPresenter {
     view.weightMarkerQuantityField.setConversionError(generalResources.message(INVALID_NUMBER));
     view.gelImagesUploader.setMaxFileSize(MAXIMUM_GEL_IMAGES_SIZE);
     view.gelImagesUploader.setChunkHandlerFactory(new ByteArrayChunkHandlerFactory());
+    view.gelImageProgress.setVisible(false);
     gelImagesGeneratedContainer.addGeneratedProperty(GEL_IMAGE_FILENAME_PROPERTY,
         new PropertyValueGenerator<Button>() {
           @Override
@@ -873,6 +906,48 @@ public class SubmissionFormPresenter {
     view.highResolutionOptions.setRequiredError(generalResources.message(REQUIRED));
     view.otherSolventField.setRequired(true);
     view.otherSolventField.setRequiredError(generalResources.message(REQUIRED));
+    view.filesUploader.setMaxFileSize(MAXIMUM_FILES_SIZE);
+    view.filesUploader.setChunkHandlerFactory(new ByteArrayChunkHandlerFactory());
+    view.filesProgress.setVisible(false);
+    filesGeneratedContainer.addGeneratedProperty(FILE_FILENAME_PROPERTY,
+        new PropertyValueGenerator<Button>() {
+          @Override
+          public Button getValue(Item item, Object itemId, Object propertyId) {
+            SubmissionFile file = (SubmissionFile) itemId;
+            Button button = new Button();
+            button.setCaption(file.getFilename());
+            button.setIcon(FontAwesome.DOWNLOAD);
+            StreamResource resource = new StreamResource(
+                () -> new ByteArrayInputStream(file.getContent()), file.getFilename());
+            FileDownloader fileDownloader = new FileDownloader(resource);
+            fileDownloader.extend(button);
+            return button;
+          }
+
+          @Override
+          public Class<Button> getType() {
+            return Button.class;
+          }
+        });
+    filesGeneratedContainer.addGeneratedProperty(REMOVE_FILE, new PropertyValueGenerator<Button>() {
+      @Override
+      public Button getValue(Item item, Object itemId, Object propertyId) {
+        MessageResource resources = view.getResources();
+        SubmissionFile file = (SubmissionFile) itemId;
+        Button button = new Button();
+        button.setCaption(resources.message(FILES_PROPERTY + "." + REMOVE_FILE));
+        button.addClickListener(e -> filesContainer.removeItem(file));
+        return button;
+      }
+
+      @Override
+      public Class<Button> getType() {
+        return Button.class;
+      }
+    });
+    view.filesTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
+    view.filesTable.setContainerDataSource(filesGeneratedContainer);
+    view.filesTable.setPageLength(FILES_TABLE_LENGTH);
   }
 
   private void addFieldListeners() {
@@ -917,6 +992,14 @@ public class SubmissionFormPresenter {
     view.quantificationOptions.addValueChangeListener(e -> view.quantificationLabelsField
         .setRequired(view.quantificationOptions.getValue() == SILAC));
     view.otherSolventsField.addValueChangeListener(e -> updateVisible());
+    view.filesUploader.addFilesAddedListener(files -> view.filesUploader.start());
+    view.filesUploader.addFileUploadedListener(file -> fileReceived(file));
+    view.filesUploader.addUploadStartListener(() -> view.filesProgress.setVisible(true));
+    view.filesUploader.addUploadCompleteListener(() -> view.filesProgress.setVisible(false));
+    view.filesUploader.addUploadCompleteListener(() -> warnIfFilesAtMaximum());
+    view.filesUploader.addUploadProgressListener(
+        file -> view.filesProgress.setValue((float) file.getSize() / file.getOrigSize()));
+    view.filesUploader.addErrorListener(error -> fileError(error));
     view.submitButton.addClickListener(e -> saveSubmission());
   }
 
@@ -998,7 +1081,6 @@ public class SubmissionFormPresenter {
     view.gelImagesLayout.setVisible(service == LC_MS_MS && support == GEL);
     view.gelImagesUploader.setVisible(service == LC_MS_MS && support == GEL && editable);
     view.gelImagesTable.setVisible(service == LC_MS_MS && support == GEL);
-    view.gelImagesTable.setVisibleColumns(editable ? editableGelImagesColumns : gelImagesColumns);
     view.digestionOptions.setVisible(service == LC_MS_MS);
     view.usedProteolyticDigestionMethodField.setVisible(
         view.digestionOptions.isVisible() && view.digestionOptions.getValue() == DIGESTED);
@@ -1027,6 +1109,7 @@ public class SubmissionFormPresenter {
         .setVisible(service == SMALL_MOLECULE && view.otherSolventsField.getValue());
     view.otherSolventNoteLabel
         .setVisible(service == SMALL_MOLECULE && view.otherSolventsField.getValue());
+    view.filesUploader.setVisible(editable);
     view.buttonsLayout.setVisible(editable);
     if (!skipBinding) {
       bindVisibleFields();
@@ -1071,6 +1154,7 @@ public class SubmissionFormPresenter {
     view.decolorationField.setReadOnly(!editable);
     view.weightMarkerQuantityField.setReadOnly(!editable);
     view.proteinQuantityField.setReadOnly(!editable);
+    view.gelImagesTable.setVisibleColumns(editable ? editableGelImagesColumns : gelImagesColumns);
     view.digestionOptions.setReadOnly(!editable);
     view.usedProteolyticDigestionMethodField.setReadOnly(!editable);
     view.otherProteolyticDigestionMethodField.setReadOnly(!editable);
@@ -1089,6 +1173,7 @@ public class SubmissionFormPresenter {
     view.otherSolventsField.setReadOnly(!editable);
     view.otherSolventField.setReadOnly(!editable);
     view.commentsField.setReadOnly(!editable);
+    view.filesTable.setVisibleColumns(editable ? editableFilesColumns : filesColumns);
   }
 
   private void bindFields() {
@@ -1391,6 +1476,34 @@ public class SubmissionFormPresenter {
     }
   }
 
+  private void fileReceived(PluploadFile file) {
+    if (filesContainer.size() < MAXIMUM_GEL_IMAGES_COUNT) {
+      SubmissionFile submissionFile = new SubmissionFile();
+      submissionFile.setFilename(file.getName());
+      submissionFile.setContent((byte[]) file.getUploadedFile());
+      filesContainer.addBean(submissionFile);
+    }
+  }
+
+  private void fileError(PluploadError error) {
+    logger.debug("filesUploader error {} of type {}", error.getMessage(), error.getType());
+    MessageResource resources = view.getResources();
+    if (error.getType() == PluploadError.Type.FILE_SIZE_ERROR) {
+      view.showError(resources.message(FILES_PROPERTY + ".overMaximumSize",
+          error.getFile().getName(), MAXIMUM_FILES_SIZE));
+    } else {
+      view.showError(resources.message(FILES_PROPERTY + ".error", error.getFile().getName()));
+    }
+  }
+
+  private void warnIfFilesAtMaximum() {
+    if (filesContainer.size() >= MAXIMUM_FILES_COUNT) {
+      MessageResource resources = view.getResources();
+      view.showWarning(
+          resources.message(FILES_PROPERTY + ".overMaximumCount", MAXIMUM_FILES_COUNT));
+    }
+  }
+
   private void validateSampleName(String name, boolean testExists) {
     if (name == null || name.isEmpty()) {
       return;
@@ -1584,6 +1697,7 @@ public class SubmissionFormPresenter {
         submission.setSeparation(null);
         submission.setThickness(null);
       }
+      submission.setFiles(filesContainer.getItemIds());
       logger.debug("Save submission {}", submission);
       submissionService.insert(submission);
       MessageResource resources = view.getResources();
