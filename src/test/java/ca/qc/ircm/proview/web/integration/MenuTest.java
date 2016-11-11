@@ -52,11 +52,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   public void changeLanguage() throws Throwable {
     open();
-    Locale currentLocale = Locale.ENGLISH;
-    if ($(LabelElement.class).id("header").getText()
-        .equals(resources(Locale.FRENCH).message("header"))) {
-      currentLocale = Locale.FRENCH;
-    }
+    Locale currentLocale = currentLocale();
 
     clickChangeLanguage();
 

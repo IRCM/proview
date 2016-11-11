@@ -42,7 +42,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(message(resources(SubmissionsView.class), TITLE).contains(getDriver().getTitle()));
+    assertTrue(resources(SubmissionsView.class).message(TITLE).contains(getDriver().getTitle()));
   }
 
   @Test
@@ -69,7 +69,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(WINDOW_STYLE)));
     String experience = experienceByRow(0);
-    assertTrue(message(resources(SubmissionWindow.class), TITLE, experience)
+    assertTrue(resources(SubmissionWindow.class).message(TITLE, experience)
         .contains(submissionWindow.getCaption()));
     assertNotNull(submissionWindow.findElement(className(SERVICE_PROPERTY)));
   }

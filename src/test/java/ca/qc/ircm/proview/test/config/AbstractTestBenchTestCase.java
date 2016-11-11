@@ -17,23 +17,25 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.web.Menu.HOME_STYLE;
 import static org.openqa.selenium.By.className;
 import static org.openqa.selenium.By.tagName;
 
+import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.TestBenchTestCase;
+import com.vaadin.testbench.elements.CheckBoxElement;
+import com.vaadin.testbench.elements.MenuBarElement;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.testbench.elements.OptionGroupElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -65,28 +67,16 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     waitForPageLoad();
   }
 
-  /**
-   * Returns message specified by key in all locales.
-   *
-   * @param resources
-   *          return resources for locale
-   * @param key
-   *          message key
-   * @param replacements
-   *          replacements
-   */
-  protected Set<String> message(Function<Locale, MessageResource> resources, String key,
-      Object... replacements) {
+  protected Locale currentLocale() {
+    MenuBarElement menuBar = $(MenuBarElement.class).first();
+    WebElement home = menuBar.findElement(className("v-menubar-menuitem-" + HOME_STYLE));
     Set<Locale> locales = WebConstants.getLocales();
-    Set<String> messages = new HashSet<>();
-    for (Locale locale : locales) {
-      messages.add(resources.apply(locale).message(key, replacements));
-    }
-    return messages;
+    return locales.stream().filter(locale -> new MessageResource(Menu.class, locale)
+        .message(HOME_STYLE).equals(home.getText())).findAny().orElse(Locale.ENGLISH);
   }
 
-  protected Function<Locale, MessageResource> resources(Class<?> baseClass) {
-    return (locale) -> new MessageResource(baseClass, locale);
+  protected MessageResource resources(Class<?> baseClass) {
+    return new MessageResource(baseClass, currentLocale());
   }
 
   public void waitForPageLoad() {
@@ -109,8 +99,18 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     }
   }
 
+  protected boolean getCheckBoxValue(CheckBoxElement field) {
+    String value = field.getValue();
+    return value.equals("checked");
+  }
+
+  protected void setCheckBoxValue(CheckBoxElement field, boolean value) {
+    if (value != getCheckBoxValue(field)) {
+      field.findElement(tagName("label")).click();
+    }
+  }
+
   protected void setOptionValue(OptionGroupElement field, String value) {
-    // TODO Fix API to support multi-language.
     Optional<WebElement> valueField = field.findElements(className("v-select-option")).stream()
         .map(option -> option.findElement(tagName("label")))
         .filter(label -> value.equals(label.getText())).findFirst();

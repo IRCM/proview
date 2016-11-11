@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.utils.MessageResource;
@@ -88,9 +90,18 @@ public class SubmissionViewPresenter {
         logger.debug("Set submission {}", id);
         Submission submission = submissionService.get(id);
         view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
+        view.submissionFormPresenter.setEditable(editable(submission));
       } catch (NumberFormatException e) {
         view.showWarning(view.getResources().message(INVALID_SUBMISSION));
       }
     }
+  }
+
+  private boolean editable(Submission submission) {
+    boolean editable = true;
+    for (SubmissionSample sample : submission.getSamples()) {
+      editable &= sample.getStatus() == SampleStatus.TO_RECEIVE;
+    }
+    return editable;
   }
 }

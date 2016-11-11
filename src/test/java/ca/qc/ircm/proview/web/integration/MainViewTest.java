@@ -40,7 +40,7 @@ public class MainViewTest extends MainPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(message(resources(MainView.class), "title").contains(getDriver().getTitle()));
+    assertTrue(resources(MainView.class).message("title").contains(getDriver().getTitle()));
   }
 
   @Test

@@ -60,7 +60,7 @@ public class ValidateViewTest extends ValidatePageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(message(resources(ValidateView.class), "title").contains(getDriver().getTitle()));
+    assertTrue(resources(ValidateView.class).message("title").contains(getDriver().getTitle()));
   }
 
   @Test

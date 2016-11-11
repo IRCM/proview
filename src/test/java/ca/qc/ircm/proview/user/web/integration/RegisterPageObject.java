@@ -30,7 +30,6 @@ import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.REGISTER_BUTTON_
 import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.REGISTER_HEADER_LABEL_ID;
 import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.REQUIRED_LABEL_ID;
 import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.USER_FORM_ID;
-import static org.openqa.selenium.By.tagName;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.AddressFormPresenter;
@@ -48,17 +47,6 @@ import org.openqa.selenium.WebElement;
 public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   protected void open() {
     openView(RegisterView.VIEW_NAME);
-  }
-
-  private boolean getCheckBoxValue(CheckBoxElement field) {
-    String value = field.getValue();
-    return value.equals("checked");
-  }
-
-  private void setCheckBoxValue(CheckBoxElement field, boolean value) {
-    if (value != getCheckBoxValue(field)) {
-      field.findElement(tagName("label")).click();
-    }
   }
 
   protected LabelElement headerLabel() {

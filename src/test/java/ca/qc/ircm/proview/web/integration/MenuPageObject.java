@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.web.Menu.HELP_STYLE;
 import static ca.qc.ircm.proview.web.Menu.HOME_STYLE;
 import static ca.qc.ircm.proview.web.Menu.MANAGER_STYLE;
 import static ca.qc.ircm.proview.web.Menu.VALIDATE_USERS_STYLE;
+import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.web.MainView;
@@ -33,7 +34,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   private void clickMenuItemByStyle(String className) {
-    findElement(org.openqa.selenium.By.className("v-menubar-menuitem-" + className)).click();
+    findElement(className("v-menubar-menuitem-" + className)).click();
   }
 
   protected MenuBarElement menu() {

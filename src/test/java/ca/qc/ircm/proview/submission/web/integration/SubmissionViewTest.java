@@ -37,6 +37,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.nio.file.Paths;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithSubject(userId = 10)
@@ -45,7 +47,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(message(resources(SubmissionView.class), TITLE).contains(getDriver().getTitle()));
+    assertTrue(resources(SubmissionView.class).message(TITLE).contains(getDriver().getTitle()));
   }
 
   @Test
@@ -85,6 +87,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     current = formulaField().getLocation().y;
     assertTrue(previous < current);
     previous = current;
+    uploadStructure(Paths.get(getClass().getResource("/structure1").toURI()));
     current = structureButton().getLocation().y;
     assertTrue(previous < current);
     previous = current;
@@ -226,7 +229,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     current = servicesPanel().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = digestionField().getLocation().y;
+    current = digestionOptions().getLocation().y;
     assertTrue(previous < current);
     setDigestion(ProteolyticDigestion.DIGESTED);
     previous = current;
@@ -243,34 +246,34 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertTrue(previous < current);
     setService(INTACT_PROTEIN);
     previous = servicesPanel().getLocation().y;
-    current = injectionTypeField().getLocation().y;
+    current = injectionTypeOptions().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = sourceField().getLocation().y;
+    current = sourceOptions().getLocation().y;
     assertTrue(previous < current);
     setService(LC_MS_MS);
     previous = exclusionsLabel().getLocation().y;
-    current = proteinContentField().getLocation().y;
+    current = proteinContentOptions().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = instrumentField().getLocation().y;
+    current = instrumentOptions().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = proteinIdentificationField().getLocation().y;
+    current = proteinIdentificationOptions().getLocation().y;
     assertTrue(previous < current);
     setProteinIdentification(ProteinIdentification.OTHER);
     previous = current;
     current = proteinIdentificationLinkField().getLocation().y;
     assertTrue(previous < current);
     previous = current;
-    current = quantificationField().getLocation().y;
+    current = quantificationOptions().getLocation().y;
     assertTrue(previous < current);
     previous = current;
     current = quantificationLabelsField().getLocation().y;
     assertTrue(previous < current);
     setService(SMALL_MOLECULE);
     previous = servicesPanel().getLocation().y;
-    current = highResolutionField().getLocation().y;
+    current = highResolutionOptions().getLocation().y;
     assertTrue(previous < current);
     previous = current;
     current = acetonitrileField().getLocation().y;

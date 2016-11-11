@@ -80,7 +80,7 @@ public class RegisterViewTest extends RegisterPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(message(resources(RegisterView.class), "title").contains(getDriver().getTitle()));
+    assertTrue(resources(RegisterView.class).message("title").contains(getDriver().getTitle()));
   }
 
   @Test

@@ -23,9 +23,15 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.ErrorView;
 import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.WebConstants;
+import ca.qc.ircm.utils.MessageResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
@@ -34,7 +40,11 @@ public class ErrorViewTest extends ErrorPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(message(resources(ErrorView.class), "title").contains(getDriver().getTitle()));
+    Set<Locale> locales = WebConstants.getLocales();
+    Set<String> titles = locales.stream()
+        .map(locale -> new MessageResource(ErrorView.class, locale).message("title"))
+        .collect(Collectors.toSet());
+    assertTrue(titles.contains(getDriver().getTitle()));
   }
 
   @Test

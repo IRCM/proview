@@ -121,7 +121,7 @@ import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 import org.openqa.selenium.WebElement;
 
-import java.util.Locale;
+import java.nio.file.Path;
 
 public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase {
   protected void open() {
@@ -149,7 +149,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected void setService(Service service) {
-    setOptionValue(serviceOptions(), service.getLabel(Locale.ENGLISH));
+    setOptionValue(serviceOptions(), service.getLabel(currentLocale()));
   }
 
   protected PanelElement samplesPanel() {
@@ -161,7 +161,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected void setSampleSupport(SampleSupport support) {
-    sampleSupportOptions().setValue(support.name());
+    setOptionValue(sampleSupportOptions(), support.getLabel(currentLocale()));
   }
 
   protected TextFieldElement solutionSolventField() {
@@ -182,6 +182,12 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected WebElement structureUploader() {
     return findElement(className(STRUCTURE_UPLOADER));
+  }
+
+  protected void uploadStructure(Path file) {
+    WebElement uploader = findElement(className(STRUCTURE_UPLOADER));
+    WebElement input = uploader.findElement(className("gwt-FileUpload"));
+    input.sendKeys(file.toAbsolutePath().toString());
   }
 
   protected ProgressBarElement structureProgress() {
@@ -217,7 +223,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected void setSampleContainerType(SampleContainerType type) {
-    sampleContainerTypeOptions().setValue(type.name());
+    setOptionValue(sampleContainerTypeOptions(), type.getLabel(currentLocale()));
   }
 
   protected TextFieldElement plateNameField() {
@@ -327,7 +333,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected void setColoration(GelColoration coloration) {
-    colorationField().selectByText(coloration.name());
+    colorationField().selectByText(coloration.getLabel(currentLocale()));
   }
 
   protected TextFieldElement otherColorationField() {
@@ -366,12 +372,12 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(PanelElement.class, findElement(className(SERVICES_PANEL)));
   }
 
-  protected OptionGroupElement digestionField() {
+  protected OptionGroupElement digestionOptions() {
     return wrap(OptionGroupElement.class, findElement(className(DIGESTION_PROPERTY)));
   }
 
   protected void setDigestion(ProteolyticDigestion digestion) {
-    digestionField().setValue(digestion.name());
+    setOptionValue(digestionOptions(), digestion.getLabel(currentLocale()));
   }
 
   protected TextFieldElement usedDigestionField() {
@@ -390,28 +396,28 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(LabelElement.class, findElement(className(EXCLUSIONS_PROPERTY)));
   }
 
-  protected OptionGroupElement injectionTypeField() {
+  protected OptionGroupElement injectionTypeOptions() {
     return wrap(OptionGroupElement.class, findElement(className(INJECTION_TYPE_PROPERTY)));
   }
 
-  protected OptionGroupElement sourceField() {
+  protected OptionGroupElement sourceOptions() {
     return wrap(OptionGroupElement.class, findElement(className(SOURCE_PROPERTY)));
   }
 
-  protected OptionGroupElement proteinContentField() {
+  protected OptionGroupElement proteinContentOptions() {
     return wrap(OptionGroupElement.class, findElement(className(PROTEIN_CONTENT_PROPERTY)));
   }
 
-  protected OptionGroupElement instrumentField() {
+  protected OptionGroupElement instrumentOptions() {
     return wrap(OptionGroupElement.class, findElement(className(INSTRUMENT_PROPERTY)));
   }
 
-  protected OptionGroupElement proteinIdentificationField() {
+  protected OptionGroupElement proteinIdentificationOptions() {
     return wrap(OptionGroupElement.class, findElement(className(PROTEIN_IDENTIFICATION_PROPERTY)));
   }
 
   protected void setProteinIdentification(ProteinIdentification proteinIdentification) {
-    proteinIdentificationField().setValue(proteinIdentification.name());
+    setOptionValue(proteinIdentificationOptions(), proteinIdentification.getLabel(currentLocale()));
   }
 
   protected TextFieldElement proteinIdentificationLinkField() {
@@ -419,7 +425,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
         findElement(className(PROTEIN_IDENTIFICATION_LINK_PROPERTY)));
   }
 
-  protected OptionGroupElement quantificationField() {
+  protected OptionGroupElement quantificationOptions() {
     return wrap(OptionGroupElement.class, findElement(className(QUANTIFICATION_PROPERTY)));
   }
 
@@ -427,7 +433,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(TextAreaElement.class, findElement(className(QUANTIFICATION_LABELS_PROPERTY)));
   }
 
-  protected OptionGroupElement highResolutionField() {
+  protected OptionGroupElement highResolutionOptions() {
     return wrap(OptionGroupElement.class, findElement(className(HIGH_RESOLUTION_PROPERTY)));
   }
 
