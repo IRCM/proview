@@ -85,6 +85,8 @@ public class StandardAdditionActivityService {
    *
    * @param standardAddition
    *          inserted addition of standards
+   * @param justification
+   *          explanation of what was incorrect with the addition of standards
    * @return activity about insertion of addition of standards
    */
   @CheckReturnValue
