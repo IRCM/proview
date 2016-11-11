@@ -50,7 +50,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIEN
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_TABLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER_PROGRESS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILE_FILENAME_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_BUTTON_STYLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS_PROPERTY;
@@ -60,7 +59,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_TABLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_UPLOADER_PROGRESS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILENAME_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION_PROPERTY;
@@ -115,10 +113,10 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_UPLOADER_PROGRESS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.UPLOAD_STATE_WINDOW;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY_PROPERTY;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
@@ -127,6 +125,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static ca.qc.ircm.proview.web.WebConstants.UPLOAD_STATUS;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -134,7 +133,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -187,12 +188,14 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -200,10 +203,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import pl.exsio.plupload.Plupload;
-import pl.exsio.plupload.Plupload.FileUploadedListener;
-import pl.exsio.plupload.PluploadFile;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -229,19 +230,17 @@ public class SubmissionFormPresenterTest {
   @Mock
   private SubmissionForm view;
   @Mock
-  private Plupload structureUploader;
+  private MultiFileUpload structureUploader;
   @Mock
-  private Plupload gelImagesUploader;
+  private MultiFileUpload gelImagesUploader;
   @Mock
-  private Plupload filesUploader;
-  @Mock
-  private PluploadFile pluploadFile;
+  private MultiFileUpload filesUploader;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   @Captor
   private ArgumentCaptor<Boolean> booleanCaptor;
   @Captor
-  private ArgumentCaptor<FileUploadedListener> fileUploadedListenerCaptor;
+  private ArgumentCaptor<UploadFinishedHandler> uploadFinishedHandlerCaptor;
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
   private Locale locale = Locale.FRENCH;
@@ -261,6 +260,7 @@ public class SubmissionFormPresenterTest {
   private double proteinWeight2 = 219076;
   private String formula = "ch3oh";
   private String structureFilename = "ch3oh.png";
+  private String structureMimeType = "png";
   private byte[] structureContent = new byte[2048];
   private double monoisotopicMass = 32.04;
   private double averageMass = 32.08;
@@ -300,8 +300,10 @@ public class SubmissionFormPresenterTest {
   private double weightMarkerQuantity = 300;
   private String proteinQuantity = "30 ug";
   private String gelImageFilename1 = "gel1.png";
+  private String gelImageMimeType1 = "png";
   private byte[] gelImageContent1 = new byte[3072];
   private String gelImageFilename2 = "gel2.png";
+  private String gelImageMimeType2 = "png";
   private byte[] gelImageContent2 = new byte[4096];
   private ProteolyticDigestion digestion = DIGESTED;
   private String usedDigestion = "typsinP";
@@ -322,8 +324,10 @@ public class SubmissionFormPresenterTest {
   private String otherSolvent = "acetone";
   private String comments = "my comment\nmy comment second line";
   private String filesFilename1 = "protocol.txt";
+  private String filesMimeType1 = "txt";
   private byte[] filesContent1 = new byte[1024];
   private String filesFilename2 = "samples.xlsx";
+  private String filesMimeType2 = "xlsx";
   private byte[] filesContent2 = new byte[10240];
   private TextField sampleNameField1;
   private TextField sampleNameField2;
@@ -347,6 +351,7 @@ public class SubmissionFormPresenterTest {
   public void beforeTest() {
     presenter =
         new SubmissionFormPresenter(submissionService, submissionSampleService, plateService);
+    view.uploadStateWindow = mock(UploadStateWindow.class);
     view.sampleTypeLabel = new Label();
     view.inactiveLabel = new Label();
     view.servicePanel = new Panel();
@@ -360,7 +365,6 @@ public class SubmissionFormPresenterTest {
     view.structureLayout = new VerticalLayout();
     view.structureButton = new Button();
     view.structureUploader = structureUploader;
-    view.structureProgress = new ProgressBar();
     view.monoisotopicMassField = new TextField();
     view.averageMassField = new TextField();
     view.toxicityField = new TextField();
@@ -418,7 +422,6 @@ public class SubmissionFormPresenterTest {
     view.proteinQuantityField = new TextField();
     view.gelImagesLayout = new HorizontalLayout();
     view.gelImagesUploader = gelImagesUploader;
-    view.gelImageProgress = new ProgressBar();
     view.gelImagesTable = new Table();
     view.servicesPanel = new Panel();
     view.digestionOptions = new OptionGroup();
@@ -448,7 +451,6 @@ public class SubmissionFormPresenterTest {
     view.filesPanel = new Panel();
     view.filesUploaderLayout = new VerticalLayout();
     view.filesUploader = filesUploader;
-    view.filesProgress = new ProgressBar();
     view.filesTable = new Table();
     view.buttonsLayout = new HorizontalLayout();
     view.submitButton = new Button();
@@ -597,35 +599,35 @@ public class SubmissionFormPresenterTest {
   }
 
   private void uploadStructure() {
-    when(pluploadFile.getName()).thenReturn(structureFilename);
+    verify(view).createStructureUploader(any(), uploadFinishedHandlerCaptor.capture(),
+        anyBoolean());
+    UploadFinishedHandler handler = uploadFinishedHandlerCaptor.getValue();
     random.nextBytes(structureContent);
-    when(pluploadFile.getUploadedFile()).thenReturn(structureContent);
-    verify(structureUploader).addFileUploadedListener(fileUploadedListenerCaptor.capture());
-    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
+    handler.handleFile(new ByteArrayInputStream(structureContent), structureFilename,
+        structureMimeType, structureContent.length);
   }
 
   private void uploadGelImages() {
-    verify(gelImagesUploader).addFileUploadedListener(fileUploadedListenerCaptor.capture());
-    when(pluploadFile.getName()).thenReturn(gelImageFilename1);
+    verify(view).createGelImagesUploader(any(), uploadFinishedHandlerCaptor.capture(),
+        anyBoolean());
+    UploadFinishedHandler handler = uploadFinishedHandlerCaptor.getValue();
     random.nextBytes(gelImageContent1);
-    when(pluploadFile.getUploadedFile()).thenReturn(gelImageContent1);
-    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
-    when(pluploadFile.getName()).thenReturn(gelImageFilename2);
+    handler.handleFile(new ByteArrayInputStream(gelImageContent1), gelImageFilename1,
+        gelImageMimeType1, gelImageContent1.length);
     random.nextBytes(gelImageContent2);
-    when(pluploadFile.getUploadedFile()).thenReturn(gelImageContent2);
-    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
+    handler.handleFile(new ByteArrayInputStream(gelImageContent2), gelImageFilename2,
+        gelImageMimeType2, gelImageContent2.length);
   }
 
   private void uploadFiles() {
-    verify(filesUploader).addFileUploadedListener(fileUploadedListenerCaptor.capture());
-    when(pluploadFile.getName()).thenReturn(filesFilename1);
+    verify(view).createFilesUploader(any(), uploadFinishedHandlerCaptor.capture(), anyBoolean());
+    UploadFinishedHandler handler = uploadFinishedHandlerCaptor.getValue();
     random.nextBytes(filesContent1);
-    when(pluploadFile.getUploadedFile()).thenReturn(filesContent1);
-    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
-    when(pluploadFile.getName()).thenReturn(filesFilename2);
+    handler.handleFile(new ByteArrayInputStream(filesContent1), filesFilename1, filesMimeType1,
+        filesContent1.length);
     random.nextBytes(filesContent2);
-    when(pluploadFile.getUploadedFile()).thenReturn(filesContent2);
-    fileUploadedListenerCaptor.getValue().onFileUploaded(pluploadFile);
+    handler.handleFile(new ByteArrayInputStream(filesContent2), filesFilename2, filesMimeType2,
+        filesContent2.length);
   }
 
   private String errorMessage(String message) {
@@ -1097,6 +1099,7 @@ public class SubmissionFormPresenterTest {
   public void styles() {
     presenter.init(view);
 
+    verify(view.uploadStateWindow).addStyleName(UPLOAD_STATE_WINDOW);
     assertTrue(view.sampleTypeLabel.getStyleName().contains(SAMPLE_TYPE_LABEL));
     assertTrue(view.inactiveLabel.getStyleName().contains(INACTIVE_LABEL));
     assertTrue(view.servicePanel.getStyleName().contains(SERVICE_PANEL));
@@ -1111,7 +1114,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.structureLayout.getStyleName().contains(REQUIRED));
     assertTrue(view.structureButton.getStyleName().contains(STRUCTURE_PROPERTY));
     verify(view.structureUploader).addStyleName(STRUCTURE_UPLOADER);
-    assertTrue(view.structureProgress.getStyleName().contains(STRUCTURE_UPLOADER_PROGRESS));
     assertTrue(view.monoisotopicMassField.getStyleName().contains(MONOISOTOPIC_MASS_PROPERTY));
     assertTrue(view.averageMassField.getStyleName().contains(AVERAGE_MASS_PROPERTY));
     assertTrue(view.toxicityField.getStyleName().contains(TOXICITY_PROPERTY));
@@ -1166,7 +1168,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.proteinQuantityField.getStyleName().contains(PROTEIN_QUANTITY_PROPERTY));
     assertTrue(view.gelImagesLayout.getStyleName().contains(REQUIRED));
     verify(view.gelImagesUploader).addStyleName(GEL_IMAGES_PROPERTY);
-    assertTrue(view.gelImageProgress.getStyleName().contains(GEL_IMAGES_UPLOADER_PROGRESS));
     assertTrue(view.gelImagesTable.getStyleName().contains(GEL_IMAGES_TABLE));
     assertTrue(view.servicesPanel.getStyleName().contains(SERVICES_PANEL));
     assertTrue(view.digestionOptions.getStyleName().contains(DIGESTION_PROPERTY));
@@ -1204,7 +1205,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.commentsField.getStyleName().contains(COMMENTS_PROPERTY));
     assertTrue(view.filesPanel.getStyleName().contains(FILES_PROPERTY));
     verify(view.filesUploader).addStyleName(FILES_UPLOADER);
-    assertTrue(view.filesProgress.getStyleName().contains(FILES_UPLOADER_PROGRESS));
     assertTrue(view.filesTable.getStyleName().contains(FILES_TABLE));
   }
 
@@ -1212,6 +1212,9 @@ public class SubmissionFormPresenterTest {
   public void captions() {
     presenter.init(view);
 
+    verify(view.uploadStateWindow).setUploadStatusCaption(generalResources.message(UPLOAD_STATUS));
+    verify(view.uploadStateWindow)
+        .setCancelButtonCaption(generalResources.message(WebConstants.CANCEL));
     assertEquals(resources.message(SAMPLE_TYPE_LABEL), view.sampleTypeLabel.getValue());
     assertEquals(resources.message(INACTIVE_LABEL), view.inactiveLabel.getValue());
     assertEquals(resources.message(SERVICE_PROPERTY), view.servicePanel.getCaption());
@@ -1232,10 +1235,10 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(FORMULA_PROPERTY), view.formulaField.getCaption());
     assertEquals(resources.message(STRUCTURE_PROPERTY), view.structureLayout.getCaption());
     assertEquals("", view.structureButton.getCaption());
-    verify(view.structureUploader).setCaption(resources.message(STRUCTURE_UPLOADER));
-    verify(view.structureUploader).setIcon(FontAwesome.FILE_O);
-    assertEquals(null, view.structureProgress.getCaption());
-    assertEquals(FontAwesome.CLOUD_DOWNLOAD, view.structureProgress.getIcon());
+    verify(view.structureUploader).setUploadButtonCaptions(resources.message(STRUCTURE_UPLOADER),
+        resources.message(STRUCTURE_UPLOADER));
+    verify(view.structureUploader).setUploadButtonIcon(FontAwesome.FILE_O);
+    verify(view.structureUploader).setPanelCaption(resources.message(STRUCTURE_PROPERTY));
     assertEquals(resources.message(MONOISOTOPIC_MASS_PROPERTY),
         view.monoisotopicMassField.getCaption());
     assertEquals(resources.message(AVERAGE_MASS_PROPERTY), view.averageMassField.getCaption());
@@ -1337,10 +1340,10 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE),
         view.proteinQuantityField.getInputPrompt());
     assertEquals(resources.message(GEL_IMAGES_PROPERTY), view.gelImagesLayout.getCaption());
-    verify(view.gelImagesUploader).setCaption(resources.message(GEL_IMAGES_UPLOADER));
-    verify(view.gelImagesUploader).setIcon(FontAwesome.FILES_O);
-    assertEquals(null, view.gelImageProgress.getCaption());
-    assertEquals(FontAwesome.CLOUD_DOWNLOAD, view.gelImageProgress.getIcon());
+    verify(view.gelImagesUploader).setUploadButtonCaptions(resources.message(GEL_IMAGES_UPLOADER),
+        resources.message(GEL_IMAGES_UPLOADER));
+    verify(view.gelImagesUploader).setUploadButtonIcon(FontAwesome.FILES_O);
+    verify(view.gelImagesUploader).setPanelCaption(resources.message(GEL_IMAGES_PROPERTY));
     assertEquals(null, view.gelImagesTable.getCaption());
     assertEquals(resources.message(GEL_IMAGES_PROPERTY + "." + GEL_IMAGE_FILENAME_PROPERTY),
         view.gelImagesTable.getColumnHeader(GEL_IMAGE_FILENAME_PROPERTY));
@@ -1420,10 +1423,10 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(COMMENTS_PANEL), view.commentsPanel.getCaption());
     assertEquals(null, view.commentsField.getCaption());
     assertEquals(resources.message(FILES_PROPERTY), view.filesPanel.getCaption());
-    verify(view.filesUploader).setCaption(resources.message(FILES_UPLOADER));
-    verify(view.filesUploader).setIcon(FontAwesome.FILES_O);
-    assertEquals(null, view.filesProgress.getCaption());
-    assertEquals(FontAwesome.CLOUD_DOWNLOAD, view.filesProgress.getIcon());
+    verify(view.filesUploader).setUploadButtonCaptions(resources.message(FILES_UPLOADER),
+        resources.message(FILES_UPLOADER));
+    verify(view.filesUploader).setUploadButtonIcon(FontAwesome.FILES_O);
+    verify(view.filesUploader).setPanelCaption(resources.message(FILES_PROPERTY));
     assertEquals(null, view.filesTable.getCaption());
     assertEquals(resources.message(FILES_PROPERTY + "." + FILE_FILENAME_PROPERTY),
         view.filesTable.getColumnHeader(FILE_FILENAME_PROPERTY));

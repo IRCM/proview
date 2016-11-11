@@ -35,14 +35,12 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIEN
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_TABLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER_PROGRESS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_TABLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_UPLOADER_PROGRESS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_LABEL;
@@ -89,7 +87,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_UPLOADER_PROGRESS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SUBMIT_ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS_PROPERTY;
@@ -115,7 +112,6 @@ import com.vaadin.testbench.elements.GridLayoutElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.OptionGroupElement;
 import com.vaadin.testbench.elements.PanelElement;
-import com.vaadin.testbench.elements.ProgressBarElement;
 import com.vaadin.testbench.elements.TableElement;
 import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
@@ -188,10 +184,6 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     WebElement uploader = findElement(className(STRUCTURE_UPLOADER));
     WebElement input = uploader.findElement(className("gwt-FileUpload"));
     input.sendKeys(file.toAbsolutePath().toString());
-  }
-
-  protected ProgressBarElement structureProgress() {
-    return wrap(ProgressBarElement.class, findElement(className(STRUCTURE_UPLOADER_PROGRESS)));
   }
 
   protected TextFieldElement monoisotopicMassField() {
@@ -360,10 +352,6 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return findElement(className(GEL_IMAGES_UPLOADER));
   }
 
-  protected ProgressBarElement gelImagesProgress() {
-    return wrap(ProgressBarElement.class, findElement(className(GEL_IMAGES_UPLOADER_PROGRESS)));
-  }
-
   protected TableElement gelImagesTable() {
     return wrap(TableElement.class, findElement(className(GEL_IMAGES_TABLE)));
   }
@@ -483,10 +471,6 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected WebElement filesUploader() {
     return findElement(className(FILES_UPLOADER));
-  }
-
-  protected ProgressBarElement filesProgress() {
-    return wrap(ProgressBarElement.class, findElement(className(FILES_UPLOADER_PROGRESS)));
   }
 
   protected TableElement filesTable() {

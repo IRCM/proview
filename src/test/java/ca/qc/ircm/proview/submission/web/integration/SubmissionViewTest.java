@@ -93,8 +93,6 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     previous = current;
     current = structureUploader().getLocation().y;
     assertTrue(previous < current);
-    current = structureProgress().getLocation().y;
-    assertTrue(previous < current);
     previous = current;
     current = monoisotopicMassField().getLocation().y;
     assertTrue(previous < current);
@@ -219,8 +217,6 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     previous = current;
     current = gelImagesUploader().getLocation().y;
     assertTrue(previous < current);
-    current = gelImagesProgress().getLocation().y;
-    assertTrue(previous < current);
     previous = current;
     current = gelImagesTable().getLocation().y;
     assertTrue(previous < current);
@@ -306,8 +302,6 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertTrue(previous < current);
     previous = current;
     current = filesUploader().getLocation().y;
-    assertTrue(previous < current);
-    current = filesProgress().getLocation().y;
     assertTrue(previous < current);
     previous = current;
     current = filesTable().getLocation().y;

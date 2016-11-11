@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
- <head>     
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+ <head>
   <meta charset="UTF-8" name="vaadin-version" content="7.7.0">
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_hene_flexibleoptiongroup:org.vaadin.hene.flexibleoptiongroup">
   <meta charset="UTF-8" name="package-mapping" content="pl_exsio_plupload:pl.exsio.plupload">
@@ -41,10 +41,7 @@
        <vaadin-button plain-text _id="structureButton">
          Structure filename 
        </vaadin-button> 
-       <vaadin-horizontal-layout> 
-        <vaadin-vertical-layout size-auto _id="structureUploaderLayout"></vaadin-vertical-layout> 
-        <vaadin-progress-bar icon="fonticon://FontAwesome/f0ed" _id="structureProgress"></vaadin-progress-bar> 
-       </vaadin-horizontal-layout> 
+       <vaadin-vertical-layout size-auto _id="structureUploaderLayout"></vaadin-vertical-layout> 
       </vaadin-vertical-layout> 
       <vaadin-text-field caption="Monoisotopic molecular mass" null-representation="" immediate _id="monoisotopicMassField"></vaadin-text-field> 
       <vaadin-text-field caption="Average mass" null-representation="" _id="averageMassField"></vaadin-text-field> 
@@ -137,7 +134,6 @@
       <vaadin-text-field caption="Total protein quantity in gel" null-representation="" _id="proteinQuantityField"></vaadin-text-field> 
       <vaadin-horizontal-layout caption="Gel images" _id="gelImagesLayout"> 
        <vaadin-vertical-layout size-auto _id="gelImagesUploaderLayout"></vaadin-vertical-layout> 
-       <vaadin-progress-bar icon="fonticon://FontAwesome/f0ed" _id="gelImageProgress"></vaadin-progress-bar> 
       </vaadin-horizontal-layout> 
      </vaadin-form-layout> 
      <vaadin-vertical-layout spacing> 
@@ -218,56 +214,8 @@
    </vaadin-panel> 
    <vaadin-panel caption="Additional files" width="600px" _id="filesPanel"> 
     <vaadin-vertical-layout spacing margin> 
-     <vaadin-horizontal-layout> 
-      <vaadin-vertical-layout size-auto _id="filesUploaderLayout"></vaadin-vertical-layout> 
-      <vaadin-progress-bar _id="filesProgress"></vaadin-progress-bar> 
-     </vaadin-horizontal-layout> 
-     <vaadin-table selectable width-full _id="filesTable"> 
-      <table> 
-       <colgroup> 
-        <col property-id="Project"> 
-        <col property-id="Status"> 
-       </colgroup> 
-       <tbody> 
-        <tr item-id="1"> 
-         <td>Customer Project 1</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr item-id="2"> 
-         <td>Customer Project 2</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr item-id="3"> 
-         <td>Customer Project 3</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr item-id="4"> 
-         <td>Customer Project 4</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr item-id="5"> 
-         <td>Customer Project 5</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr item-id="6"> 
-         <td>Customer Project 6</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr item-id="7"> 
-         <td>Customer Project 7</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr item-id="8"> 
-         <td>Customer Project 8</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr item-id="9"> 
-         <td>Customer Project 9</td> 
-         <td>OK</td> 
-        </tr> 
-       </tbody> 
-      </table> 
-     </vaadin-table> 
+     <vaadin-vertical-layout size-auto _id="filesUploaderLayout"></vaadin-vertical-layout> 
+     <vaadin-table width-full _id="filesTable"></vaadin-table> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
    <vaadin-horizontal-layout _id="buttonsLayout"> 

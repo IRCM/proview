@@ -32,7 +32,6 @@
   <entry key="structure">Structure</entry>
   <entry key="structure.required">Structure may not be empty</entry>
   <entry key="structure.error">File {0} could not be uploaded</entry>
-  <entry key="structure.overMaximumSize">File {0} size not below {1}</entry>
   <entry key="structureUploader">Upload structure</entry>
   <entry key="monoisotopicMass">Monoisotopic molecular mass</entry>
   <entry key="averageMass">Average mass</entry>
@@ -92,7 +91,6 @@
   <entry key="gelImages.removeGelImage">Remove</entry>
   <entry key="gelImages.required">Gel images may not be empty</entry>
   <entry key="gelImages.error">File {0} could not be uploaded</entry>
-  <entry key="gelImages.overMaximumSize">File {0} size above {1}</entry>
   <entry key="gelImages.overMaximumCount">Maximum of {0} allowed gel images</entry>
   <entry key="gelImagesUploader">Upload gel images</entry>
   <entry key="servicesPanel">Services</entry>
@@ -127,7 +125,6 @@ Light: None</entry>
   <entry key="files.filename">File</entry>
   <entry key="files.removeFile">Remove</entry>
   <entry key="files.error">File {0} could not be uploaded</entry>
-  <entry key="files.overMaximumSize">File {0} size above {1}</entry>
   <entry key="files.overMaximumCount">Maximum of {0} allowed additional files</entry>
   <entry key="filesUploader">Upload files</entry>
   <entry key="submit">Submit</entry>

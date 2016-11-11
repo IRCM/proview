@@ -63,7 +63,10 @@ import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
-import pl.exsio.plupload.Plupload;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStartedHandler;
+import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,9 +102,10 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
       new MassDetectionInstrument[] { VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION };
   public static final Quantification[] QUANTIFICATION = new Quantification[] { LABEL_FREE, SILAC };
   private SubmissionFormPresenter presenter;
-  protected Plupload structureUploader;
-  protected Plupload gelImagesUploader;
-  protected Plupload filesUploader;
+  protected UploadStateWindow uploadStateWindow;
+  protected MultiFileUpload structureUploader;
+  protected MultiFileUpload gelImagesUploader;
+  protected MultiFileUpload filesUploader;
   protected PlateLayout samplesPlateLayout;
   protected List<List<TextField>> plateSampleNameFields = new ArrayList<>();
 
@@ -113,12 +117,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
    * Creates SubmissionForm.
    */
   public SubmissionForm() {
-    structureUploader = new Plupload();
-    gelImagesUploader = new Plupload();
-    filesUploader = new Plupload();
-    structureUploaderLayout.addComponent(structureUploader);
-    gelImagesUploaderLayout.addComponent(gelImagesUploader);
-    filesUploaderLayout.addComponent(filesUploader);
+    uploadStateWindow = new UploadStateWindow();
     initPlateLayout();
     samplesPlateContainer.addComponent(samplesPlateLayout);
   }
@@ -142,6 +141,29 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
   public void attach() {
     super.attach();
     presenter.init(this);
+  }
+
+  public MultiFileUpload createStructureUploader(UploadStartedHandler startedHandler,
+      UploadFinishedHandler finishedHandler, boolean multi) {
+    structureUploader =
+        new MultiFileUpload(startedHandler, finishedHandler, uploadStateWindow, multi);
+    structureUploaderLayout.addComponent(structureUploader);
+    return structureUploader;
+  }
+
+  public MultiFileUpload createGelImagesUploader(UploadStartedHandler startedHandler,
+      UploadFinishedHandler finishedHandler, boolean multi) {
+    gelImagesUploader =
+        new MultiFileUpload(startedHandler, finishedHandler, uploadStateWindow, multi);
+    gelImagesUploaderLayout.addComponent(gelImagesUploader);
+    return gelImagesUploader;
+  }
+
+  public MultiFileUpload createFilesUploader(UploadStartedHandler startedHandler,
+      UploadFinishedHandler finishedHandler, boolean multi) {
+    filesUploader = new MultiFileUpload(startedHandler, finishedHandler, uploadStateWindow, multi);
+    filesUploaderLayout.addComponent(filesUploader);
+    return filesUploader;
   }
 
   public void showError(String message) {

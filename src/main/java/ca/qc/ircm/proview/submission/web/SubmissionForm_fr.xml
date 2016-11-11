@@ -32,7 +32,6 @@
   <entry key="structure">Structure</entry>
   <entry key="structure.required">Structure ne peut pas être vide</entry>
   <entry key="structure.error">Fichier {0} n''a pu être envoyé</entry>
-  <entry key="structure.overMaximumSize">Fichier {0} n''a pas une taille inférieure à {1}</entry>
   <entry key="structureUploader">Télécharger structure</entry>
   <entry key="monoisotopicMass">Masse monoisotopique</entry>
   <entry key="averageMass">Masse moléculaire moyenne</entry>
@@ -90,7 +89,6 @@
   <entry key="gelImages.removeGelImage">Retirer</entry>
   <entry key="gelImages.required">Image(s) du gel ne peut pas être vide</entry>
   <entry key="gelImages.error">Fichier {0} n''a pu être envoyé</entry>
-  <entry key="gelImages.overMaximumSize">Fichier {0} a une taille supérieure à {1}</entry>
   <entry key="gelImages.overMaximumCount">Maximum de {0} fichiers permis</entry>
   <entry key="gelImagesUploader">Télécharger images du gel</entry>
   <entry key="servicesPanel">Services</entry>
@@ -125,7 +123,6 @@ Léger: Aucun</entry>
   <entry key="files.filename">Fichier</entry>
   <entry key="files.removeFile">Retirer</entry>
   <entry key="files.error">Fichier {0} n''a pu être envoyé</entry>
-  <entry key="files.overMaximumSize">Fichier {0} a une taille supérieure à {1}</entry>
   <entry key="files.overMaximumCount">Maximum de {0} fichiers permis</entry>
   <entry key="filesUploader">Télécharger fichiers</entry>
   <entry key="submit">Soumettre</entry>

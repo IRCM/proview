@@ -9,7 +9,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -41,7 +40,6 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected VerticalLayout structureLayout;
   protected Button structureButton;
   protected VerticalLayout structureUploaderLayout;
-  protected ProgressBar structureProgress;
   protected TextField monoisotopicMassField;
   protected TextField averageMassField;
   protected TextField toxicityField;
@@ -84,7 +82,6 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextField proteinQuantityField;
   protected HorizontalLayout gelImagesLayout;
   protected VerticalLayout gelImagesUploaderLayout;
-  protected ProgressBar gelImageProgress;
   protected Table gelImagesTable;
   protected Panel servicesPanel;
   protected OptionGroup digestionOptions;
@@ -113,7 +110,6 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextArea commentsField;
   protected Panel filesPanel;
   protected VerticalLayout filesUploaderLayout;
-  protected ProgressBar filesProgress;
   protected Table filesTable;
   protected HorizontalLayout buttonsLayout;
   protected Button submitButton;
