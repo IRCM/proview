@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.web;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * View to show in case of an internal error.
  */
+@UIScope
 @SpringView(name = ErrorView.VIEW_NAME)
 public class ErrorView extends VerticalLayout implements MessageResourcesView {
   private static final long serialVersionUID = 2998062811797958331L;

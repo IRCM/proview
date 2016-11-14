@@ -22,11 +22,11 @@ import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.ui.Transport;
 import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.spring.navigator.SpringNavigator;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.UI;
 
@@ -34,6 +34,7 @@ import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.ServletContext;
 
 /**
@@ -46,6 +47,8 @@ import javax.servlet.ServletContext;
 public class MainUi extends UI {
   private static final long serialVersionUID = 5623532890650543834L;
   @Inject
+  private Provider<SpringNavigator> springNavigatorProvider;
+  @Inject
   private SpringViewProvider viewProvider;
   @Inject
   private VaadinUtils vaadinUtils;
@@ -56,8 +59,9 @@ public class MainUi extends UI {
   @PostConstruct
   public void initialize() {
     viewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
-    Navigator navigator = new Navigator(this, this);
-    navigator.addProvider(viewProvider);
+    SpringNavigator navigator = springNavigatorProvider.get();
+    navigator.init(this, this);
+    //navigator.addProvider(viewProvider);
     getNavigator().setErrorView(ErrorView.class);
   }
 
