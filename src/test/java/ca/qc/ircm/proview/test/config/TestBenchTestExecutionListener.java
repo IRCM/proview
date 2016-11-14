@@ -54,10 +54,12 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
         licenseFileExists |=
             Files.exists(Paths.get(System.getProperty("user.home")).resolve(licencePath));
       }
-      String message =
-          MessageFormat.format(LICENSE_ERROR_MESSAGE, testContext.getTestClass().getName());
-      logger.info(message);
-      assumeTrue(message, licenseFileExists || System.getProperty(LICENSE_SYSTEM_PROPERTY) != null);
+      if (!licenseFileExists && System.getProperty(LICENSE_SYSTEM_PROPERTY) == null) {
+        String message =
+            MessageFormat.format(LICENSE_ERROR_MESSAGE, testContext.getTestClass().getName());
+        logger.info(message);
+        assumeTrue(message, false);
+      }
     }
   }
 
