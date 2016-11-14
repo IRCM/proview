@@ -58,7 +58,7 @@
     <javax.persistence.version>2.1.1</javax.persistence.version>
     <eclipselink.version>2.6.4</eclipselink.version>
     <querydsl.version>4.1.3</querydsl.version>
-    <shiro.version>1.2.3</shiro.version>
+    <shiro.version>1.3.2</shiro.version>
     <vaadin-spring-boot.version>1.1.0</vaadin-spring-boot.version>
     <vaadin.version>7.7.4</vaadin.version>
     <vaadin-spring.version>1.1.0</vaadin-spring.version>
