@@ -73,7 +73,7 @@
     <commons-email.version>1.4</commons-email.version>
     <el.version>2.2.5</el.version>
     <thymeleaf.version>3.0.0.BETA02</thymeleaf.version>
-    <vaadin.testbench.version>4.1.0.rc1</vaadin.testbench.version>
+    <vaadin.testbench.version>4.1.0</vaadin.testbench.version>
     <selenium.version>2.53.1</selenium.version>
     <greenmail.version>1.5.1</greenmail.version>
     <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
