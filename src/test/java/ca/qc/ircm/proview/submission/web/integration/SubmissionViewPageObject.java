@@ -268,12 +268,12 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
         findElement(className(POST_TRANSLATION_MODIFICATION_PROPERTY)));
   }
 
-  protected TextFieldElement volumeField() {
-    return wrap(TextFieldElement.class, findElement(className(SAMPLE_VOLUME_PROPERTY)));
-  }
-
   protected TextFieldElement quantityField() {
     return wrap(TextFieldElement.class, findElement(className(SAMPLE_QUANTITY_PROPERTY)));
+  }
+
+  protected TextFieldElement volumeField() {
+    return wrap(TextFieldElement.class, findElement(className(SAMPLE_VOLUME_PROPERTY)));
   }
 
   protected PanelElement standardsPanel() {
@@ -282,6 +282,22 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected TextFieldElement standardCountField() {
     return wrap(TextFieldElement.class, findElement(className(STANDARD_COUNT_PROPERTY)));
+  }
+
+  protected Integer getStandardCount() {
+    if (standardCountField().getValue().isEmpty()) {
+      return null;
+    } else {
+      return Integer.valueOf(standardCountField().getValue());
+    }
+  }
+
+  protected void setStandardCount(Integer count) {
+    if (count == null) {
+      standardCountField().setValue("");
+    } else {
+      standardCountField().setValue(Integer.toString(count));
+    }
   }
 
   protected TableElement standardsTable() {
@@ -298,6 +314,22 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected TextFieldElement contaminantCountField() {
     return wrap(TextFieldElement.class, findElement(className(CONTAMINANT_COUNT_PROPERTY)));
+  }
+
+  protected Integer getContaminantCount() {
+    if (contaminantCountField().getValue().isEmpty()) {
+      return null;
+    } else {
+      return Integer.valueOf(contaminantCountField().getValue());
+    }
+  }
+
+  protected void setContaminantCount(Integer count) {
+    if (count == null) {
+      contaminantCountField().setValue("");
+    } else {
+      contaminantCountField().setValue(Integer.toString(count));
+    }
   }
 
   protected TableElement contaminantsTable() {

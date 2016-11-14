@@ -30,6 +30,7 @@ import com.vaadin.testbench.elements.MenuBarElement;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.testbench.elements.OptionGroupElement;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -96,6 +97,22 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
+    }
+  }
+
+  protected Optional<WebElement> findOptionalElement(By by) {
+    try {
+      return Optional.of(findElement(by));
+    } catch (NoSuchElementException e) {
+      return Optional.empty();
+    }
+  }
+
+  protected Optional<WebElement> optionalElement(Supplier<WebElement> supplier) {
+    try {
+      return Optional.of(supplier.get());
+    } catch (NoSuchElementException e) {
+      return Optional.empty();
     }
   }
 

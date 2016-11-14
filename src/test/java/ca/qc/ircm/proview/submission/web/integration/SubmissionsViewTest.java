@@ -46,17 +46,11 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   }
 
   @Test
-  public void fieldPositions() throws Throwable {
+  public void fieldsExistence() throws Throwable {
     open();
 
-    int previous = 0;
-    int current;
-    current = header().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = submissionsGrid().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
+    assertNotNull(header());
+    assertNotNull(submissionsGrid());
   }
 
   @Test

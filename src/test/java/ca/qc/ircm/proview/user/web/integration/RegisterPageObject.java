@@ -32,12 +32,14 @@ import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.REQUIRED_LABEL_I
 import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.USER_FORM_ID;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.web.AddressFormPresenter;
 import ca.qc.ircm.proview.user.web.PhoneNumberFormPresenter;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.UserFormPresenter;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.CheckBoxElement;
+import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
 import com.vaadin.testbench.elements.PasswordFieldElement;
@@ -262,17 +264,17 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
         .findElement(org.openqa.selenium.By.className(className));
   }
 
-  protected TextFieldElement phoneTypeField() {
-    return wrap(TextFieldElement.class,
+  protected ComboBoxElement phoneTypeField() {
+    return wrap(ComboBoxElement.class,
         phoneNumberFormElement(PhoneNumberFormPresenter.TYPE_PROPERTY));
   }
 
-  protected String getPhoneType() {
-    return phoneNumberField().getValue();
+  protected PhoneNumberType getPhoneType() {
+    return Enum.valueOf(PhoneNumberType.class, phoneTypeField().getValue());
   }
 
-  protected void setPhoneType(String value) {
-    phoneNumberField().setValue(value);
+  protected void setPhoneType(PhoneNumberType value) {
+    phoneTypeField().selectByText(value.getLabel(currentLocale()));
   }
 
   protected TextFieldElement phoneNumberField() {

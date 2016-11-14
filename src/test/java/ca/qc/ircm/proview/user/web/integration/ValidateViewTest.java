@@ -64,19 +64,12 @@ public class ValidateViewTest extends ValidatePageObject {
   }
 
   @Test
-  public void fieldPositions() throws Throwable {
+  public void fieldsExistence() throws Throwable {
     open();
 
-    int previous = 0;
-    int current;
-    current = headerLabel().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = usersGrid().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = validateSelectedButton().getLocation().y;
-    assertTrue(previous < current);
+    assertNotNull(headerLabel());
+    assertNotNull(usersGrid());
+    assertNotNull(validateSelectedButton());
   }
 
   @Test

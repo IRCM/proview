@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user.web.integration;
 
 import static ca.qc.ircm.proview.user.QUser.user;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -66,6 +67,7 @@ public class RegisterViewTest extends RegisterPageObject {
   private String state = "Ontario";
   private String country = "USA";
   private String postalCode = "12345";
+  private PhoneNumberType phoneType = PhoneNumberType.MOBILE;
   private String phoneNumber = "514-555-5555";
   private String phoneExtension = "234";
 
@@ -84,83 +86,39 @@ public class RegisterViewTest extends RegisterPageObject {
   }
 
   @Test
-  public void fieldPositions() throws Throwable {
+  public void fieldsExistence() throws Throwable {
     open();
 
-    int previous = 0;
-    int current;
-    current = headerLabel().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = userPanel().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = emailField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = nameField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = passwordField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = confirmPasswordField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = laboratoryPanel().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = newLaboratoryField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = managerEmailField().getLocation().y;
-    assertTrue(previous < current);
+    assertNotNull(headerLabel());
+    assertNotNull(userPanel());
+    assertNotNull(emailField());
+    assertNotNull(nameField());
+    assertNotNull(passwordField());
+    assertNotNull(confirmPasswordField());
+    assertNotNull(laboratoryPanel());
+    assertNotNull(newLaboratoryField());
+    assertNotNull(managerEmailField());
+    assertTrue(optionalElement(() -> managerEmailField()).isPresent());
+    assertFalse(optionalElement(() -> organizationField()).isPresent());
+    assertFalse(optionalElement(() -> laboratoryNameField()).isPresent());
     setNewLaboratory(true);
-    current = organizationField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = laboratoryNameField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = addressPanel().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = addressLineField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = townField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = stateField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = countryField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = postalCodeField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = clearAddressButton().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = phoneNumberPanel().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = phoneNumberField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = phoneExtensionField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = registerHeaderLabel().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = registerButton().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = requiredLabel().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
+    assertFalse(optionalElement(() -> managerEmailField()).isPresent());
+    assertTrue(optionalElement(() -> organizationField()).isPresent());
+    assertTrue(optionalElement(() -> laboratoryNameField()).isPresent());
+    assertNotNull(addressPanel());
+    assertNotNull(addressLineField());
+    assertNotNull(townField());
+    assertNotNull(stateField());
+    assertNotNull(countryField());
+    assertNotNull(postalCodeField());
+    assertNotNull(clearAddressButton());
+    assertNotNull(phoneNumberPanel());
+    assertNotNull(phoneTypeField());
+    assertNotNull(phoneNumberField());
+    assertNotNull(phoneExtensionField());
+    assertNotNull(registerHeaderLabel());
+    assertNotNull(registerButton());
+    assertNotNull(requiredLabel());
   }
 
   @Test
@@ -190,6 +148,7 @@ public class RegisterViewTest extends RegisterPageObject {
     setState(state);
     setCountry(country);
     setPostalCode(postalCode);
+    setPhoneType(phoneType);
     setPhoneNumber(phoneNumber);
     setPhoneExtension(phoneExtension);
   }
@@ -235,7 +194,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals(country, userAddress.getCountry());
     assertEquals(1, user.getPhoneNumbers().size());
     PhoneNumber userPhoneNumber = user.getPhoneNumbers().get(0);
-    assertEquals(PhoneNumberType.WORK, userPhoneNumber.getType());
+    assertEquals(phoneType, userPhoneNumber.getType());
     assertEquals(phoneNumber, userPhoneNumber.getNumber());
     assertEquals(phoneExtension, userPhoneNumber.getExtension());
     assertEquals(false, user.isActive());
@@ -280,7 +239,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertEquals(country, userAddress.getCountry());
     assertEquals(1, user.getPhoneNumbers().size());
     PhoneNumber userPhoneNumber = user.getPhoneNumbers().get(0);
-    assertEquals(PhoneNumberType.WORK, userPhoneNumber.getType());
+    assertEquals(phoneType, userPhoneNumber.getType());
     assertEquals(phoneNumber, userPhoneNumber.getNumber());
     assertEquals(phoneExtension, userPhoneNumber.getExtension());
     assertEquals(false, user.isActive());

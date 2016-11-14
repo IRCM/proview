@@ -44,40 +44,19 @@ public class MainViewTest extends MainPageObject {
   }
 
   @Test
-  public void fieldPositions() throws Throwable {
+  public void fieldsExistence() throws Throwable {
     open();
 
-    int previous = 0;
-    int current;
-    current = header().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = signFormHeader().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = signFormUsernameField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = signFormPasswordField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = signFormSignButton().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = forgotPasswordHeader().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = forgotPasswordEmailField().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = forgotPasswordButton().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = registerHeader().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = registerButton().getLocation().y;
-    assertTrue(previous < current);
+    assertNotNull(header());
+    assertNotNull(signFormHeader());
+    assertNotNull(signFormUsernameField());
+    assertNotNull(signFormPasswordField());
+    assertNotNull(signFormSignButton());
+    assertNotNull(forgotPasswordHeader());
+    assertNotNull(forgotPasswordEmailField());
+    assertNotNull(forgotPasswordButton());
+    assertNotNull(registerHeader());
+    assertNotNull(registerButton());
   }
 
   @Test

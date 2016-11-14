@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.web.integration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -48,16 +49,11 @@ public class ErrorViewTest extends ErrorPageObject {
   }
 
   @Test
-  public void fieldPositions() throws Throwable {
+  public void fieldsExistence() throws Throwable {
     open();
 
-    int previous = 0;
-    int current;
-    current = errorLabel().getLocation().y;
-    assertTrue(previous < current);
-    previous = current;
-    current = mainViewButton().getLocation().y;
-    assertTrue(previous < current);
+    assertNotNull(errorLabel());
+    assertNotNull(mainViewButton());
   }
 
   @Test

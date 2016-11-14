@@ -186,10 +186,10 @@ public class SubmissionFormPresenter {
       submissionSample.molecularWeight.getMetadata().getName();
   public static final String POST_TRANSLATION_MODIFICATION_PROPERTY =
       submission.postTranslationModification.getMetadata().getName();
-  public static final String SAMPLE_VOLUME_PROPERTY =
-      submissionSample.volume.getMetadata().getName();
   public static final String SAMPLE_QUANTITY_PROPERTY =
       submissionSample.quantity.getMetadata().getName();
+  public static final String SAMPLE_VOLUME_PROPERTY =
+      submissionSample.volume.getMetadata().getName();
   public static final String STANDARDS_PANEL = "standardsPanel";
   public static final String STANDARD_COUNT_PROPERTY = "standardCount";
   public static final String STANDARD_PROPERTY = submissionSample.standards.getMetadata().getName();
@@ -1398,6 +1398,7 @@ public class SubmissionFormPresenter {
   @SuppressWarnings("unchecked")
   private UploadFinishedHandler structureFileHandler() {
     return (input, filename, mimetype, length) -> {
+      logger.debug("Received structure file {}", filename);
       ByteArrayOutputStream content = new ByteArrayOutputStream();
       try {
         byte[] buff = new byte[4096];
