@@ -74,7 +74,7 @@
     <thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
     <vaadin.testbench.version>4.1.0</vaadin.testbench.version>
     <selenium.version>2.53.1</selenium.version>
-    <greenmail.version>1.5.1</greenmail.version>
+    <greenmail.version>1.5.2</greenmail.version>
     <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
     <resources-plugin.version>2.6</resources-plugin.version>
     <staticweave-maven-plugin.version>1.0.0</staticweave-maven-plugin.version>
