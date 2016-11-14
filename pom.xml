@@ -71,7 +71,6 @@
     <guava.version>19.0</guava.version>
     <commons-lang3.version>3.5</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
-    <el.version>2.2.5</el.version>
     <thymeleaf.version>3.0.0.BETA02</thymeleaf.version>
     <vaadin.testbench.version>4.1.0</vaadin.testbench.version>
     <selenium.version>2.53.1</selenium.version>
