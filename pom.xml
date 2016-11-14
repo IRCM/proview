@@ -60,7 +60,7 @@
     <querydsl.version>4.0.9</querydsl.version>
     <shiro.version>1.2.3</shiro.version>
     <vaadin-spring-boot.version>1.0.0</vaadin-spring-boot.version>
-    <vaadin.version>7.7.0</vaadin.version>
+    <vaadin.version>7.7.4</vaadin.version>
     <vaadin-spring.version>1.0.1</vaadin-spring.version>
     <vaadin-icons.version>1.0.1</vaadin-icons.version>
     <vaadin.theme>${project.artifactId}</vaadin.theme> 
