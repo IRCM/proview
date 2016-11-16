@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.user.web.integration;
 
 import static ca.qc.ircm.proview.user.QUser.user;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -35,6 +34,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.web.MainView;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import org.apache.shiro.codec.Hex;
@@ -44,8 +44,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
@@ -54,8 +52,8 @@ public class RegisterViewTest extends RegisterPageObject {
   private SecurityConfiguration securityConfiguration;
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private JPAQueryFactory jpaQueryFactory;
   private String email = "unit.test@ircm.qc.ca";
   private String name = "Unit Test";
   private String password = "unittestpassword";
@@ -72,7 +70,7 @@ public class RegisterViewTest extends RegisterPageObject {
   private String phoneExtension = "234";
 
   private User getUser(String email) {
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
+    JPAQuery<User> query = jpaQueryFactory.select(user);
     query.from(user);
     query.where(user.email.eq(email));
     return query.fetchOne();
@@ -98,13 +96,9 @@ public class RegisterViewTest extends RegisterPageObject {
     assertNotNull(laboratoryPanel());
     assertNotNull(newLaboratoryField());
     assertNotNull(managerEmailField());
-    assertTrue(optionalElement(() -> managerEmailField()).isPresent());
-    assertFalse(optionalElement(() -> organizationField()).isPresent());
-    assertFalse(optionalElement(() -> laboratoryNameField()).isPresent());
     setNewLaboratory(true);
-    assertFalse(optionalElement(() -> managerEmailField()).isPresent());
-    assertTrue(optionalElement(() -> organizationField()).isPresent());
-    assertTrue(optionalElement(() -> laboratoryNameField()).isPresent());
+    assertNotNull(organizationField());
+    assertNotNull(laboratoryNameField());
     assertNotNull(addressPanel());
     assertNotNull(addressLineField());
     assertNotNull(townField());

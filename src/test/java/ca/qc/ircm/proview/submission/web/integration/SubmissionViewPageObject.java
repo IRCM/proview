@@ -39,8 +39,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CON
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_TABLE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_UPLOADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_LABEL;
@@ -96,11 +96,13 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_M
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.HEADER_STYLE;
 import static org.openqa.selenium.By.className;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.submission.GelColoration;
+import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -181,9 +183,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected void uploadStructure(Path file) {
-    WebElement uploader = findElement(className(STRUCTURE_UPLOADER));
-    WebElement input = uploader.findElement(className("gwt-FileUpload"));
-    input.sendKeys(file.toAbsolutePath().toString());
+    uploadFile(structureUploader(), file);
   }
 
   protected TextFieldElement monoisotopicMassField() {
@@ -206,8 +206,20 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(OptionGroupElement.class, findElement(className(STORAGE_TEMPERATURE_PROPERTY)));
   }
 
-  protected TextFieldElement sampleCountSolvent() {
+  protected TextFieldElement sampleCountField() {
     return wrap(TextFieldElement.class, findElement(className(SAMPLE_COUNT_PROPERTY)));
+  }
+
+  protected Integer getSampleCount() {
+    if (sampleCountField().getValue().isEmpty()) {
+      return null;
+    } else {
+      return Integer.valueOf(sampleCountField().getValue());
+    }
+  }
+
+  protected void setSampleCount(Integer count) {
+    sampleCountField().setValue(count != null ? count.toString() : "");
   }
 
   protected OptionGroupElement sampleContainerTypeOptions() {
@@ -231,6 +243,10 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(TableElement.class, findElement(className(SAMPLES_TABLE)));
   }
 
+  protected void setSampleNameInTable(int row, String name) {
+    samplesTable().getRow(row).getCell(0).$(TextFieldElement.class).first().setValue(name);
+  }
+
   protected ButtonElement fillSamplesButton() {
     return wrap(ButtonElement.class, findElement(className(FILL_SAMPLES_PROPERTY)));
   }
@@ -247,12 +263,36 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(TextFieldElement.class, findElement(className(EXPERIENCE_PROPERTY)));
   }
 
+  protected String getExperience() {
+    return experienceField().getValue();
+  }
+
+  protected void setExperience(String experience) {
+    experienceField().setValue(experience);
+  }
+
   protected TextFieldElement experienceGoalField() {
     return wrap(TextFieldElement.class, findElement(className(EXPERIENCE_GOAL_PROPERTY)));
   }
 
+  protected String getExperienceGoal() {
+    return experienceGoalField().getValue();
+  }
+
+  protected void setExperienceGoal(String goal) {
+    experienceGoalField().setValue(goal);
+  }
+
   protected TextFieldElement taxonomyField() {
     return wrap(TextFieldElement.class, findElement(className(TAXONOMY_PROPERTY)));
+  }
+
+  protected String getTaxonomy() {
+    return taxonomyField().getValue();
+  }
+
+  protected void setTaxonomy(String taxonomy) {
+    taxonomyField().setValue(taxonomy);
   }
 
   protected TextFieldElement proteinNameField() {
@@ -272,8 +312,28 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(TextFieldElement.class, findElement(className(SAMPLE_QUANTITY_PROPERTY)));
   }
 
+  protected String getQuantity() {
+    return quantityField().getValue();
+  }
+
+  protected void setQuantity(String quantity) {
+    quantityField().setValue(quantity);
+  }
+
   protected TextFieldElement volumeField() {
     return wrap(TextFieldElement.class, findElement(className(SAMPLE_VOLUME_PROPERTY)));
+  }
+
+  protected Double getVolume() {
+    if (volumeField().getValue().isEmpty()) {
+      return null;
+    } else {
+      return Double.valueOf(volumeField().getValue());
+    }
+  }
+
+  protected void setVolume(Double volume) {
+    volumeField().setValue(volume != null ? volume.toString() : "");
   }
 
   protected PanelElement standardsPanel() {
@@ -293,11 +353,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected void setStandardCount(Integer count) {
-    if (count == null) {
-      standardCountField().setValue("");
-    } else {
-      standardCountField().setValue(Integer.toString(count));
-    }
+    standardCountField().setValue(count != null ? count.toString() : "");
   }
 
   protected TableElement standardsTable() {
@@ -325,11 +381,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected void setContaminantCount(Integer count) {
-    if (count == null) {
-      contaminantCountField().setValue("");
-    } else {
-      contaminantCountField().setValue(Integer.toString(count));
-    }
+    contaminantCountField().setValue(count != null ? count.toString() : "");
   }
 
   protected TableElement contaminantsTable() {
@@ -381,7 +433,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected WebElement gelImagesUploader() {
-    return findElement(className(GEL_IMAGES_UPLOADER));
+    return findElement(className(GEL_IMAGES_PROPERTY));
   }
 
   protected TableElement gelImagesTable() {
@@ -428,8 +480,16 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(OptionGroupElement.class, findElement(className(PROTEIN_CONTENT_PROPERTY)));
   }
 
+  protected void setProteinContent(ProteinContent proteinContent) {
+    setOptionValue(proteinContentOptions(), proteinContent.getLabel(currentLocale()));
+  }
+
   protected OptionGroupElement instrumentOptions() {
     return wrap(OptionGroupElement.class, findElement(className(INSTRUMENT_PROPERTY)));
+  }
+
+  protected void setInstrument(MassDetectionInstrument instrument) {
+    setOptionValue(instrumentOptions(), instrument.getLabel(currentLocale()));
   }
 
   protected OptionGroupElement proteinIdentificationOptions() {
@@ -478,7 +538,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected void setOtherSolvents(boolean value) {
-    otherSolventsField().click();
+    setCheckBoxValue(otherSolventsField(), true);
   }
 
   protected TextFieldElement otherSolventField() {
@@ -497,6 +557,14 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(TextAreaElement.class, findElement(className(COMMENTS_PROPERTY)));
   }
 
+  protected String getComments() {
+    return commentsField().getValue();
+  }
+
+  protected void setComments(String comments) {
+    commentsField().setValue(comments);
+  }
+
   protected PanelElement filesPanel() {
     return wrap(PanelElement.class, findElement(className(FILES_PROPERTY)));
   }
@@ -505,11 +573,19 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return findElement(className(FILES_UPLOADER));
   }
 
+  protected void uploadFile(Path file) {
+    uploadFile(filesUploader(), file);
+  }
+
   protected TableElement filesTable() {
     return wrap(TableElement.class, findElement(className(FILES_TABLE)));
   }
 
-  protected ButtonElement submitButton() {
+  protected ButtonElement saveButton() {
     return wrap(ButtonElement.class, findElement(className(SUBMIT_ID)));
+  }
+
+  protected void clickSaveButton() {
+    saveButton().click();
   }
 }

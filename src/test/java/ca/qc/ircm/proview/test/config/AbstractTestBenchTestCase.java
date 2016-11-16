@@ -34,6 +34,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
@@ -108,25 +109,24 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     }
   }
 
-  protected Optional<WebElement> optionalElement(Supplier<WebElement> supplier) {
-    try {
-      return Optional.of(supplier.get());
-    } catch (NoSuchElementException e) {
-      return Optional.empty();
-    }
+  protected void uploadFile(WebElement uploader, Path file) {
+    WebElement input = uploader.findElement(className("gwt-FileUpload"));
+    input.sendKeys(file.toAbsolutePath().toString());
   }
 
+  // Workaround for Vaadin referring to wrong element when doing isSelected test.
   protected boolean getCheckBoxValue(CheckBoxElement field) {
-    String value = field.getValue();
-    return value.equals("checked");
+    return field.findElement(tagName("input")).isSelected();
   }
 
+  // Workaround for Vaadin referring to wrong element when doing click.
   protected void setCheckBoxValue(CheckBoxElement field, boolean value) {
     if (value != getCheckBoxValue(field)) {
       field.findElement(tagName("label")).click();
     }
   }
 
+  // Workaround for Vaadin referring to wrong element when doing click.
   protected void setOptionValue(OptionGroupElement field, String value) {
     Optional<WebElement> valueField = field.findElements(className("v-select-option")).stream()
         .map(option -> option.findElement(tagName("label")))
