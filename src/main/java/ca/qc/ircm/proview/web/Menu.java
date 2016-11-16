@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import ca.qc.ircm.utils.MessageResource;
@@ -39,6 +40,7 @@ import javax.inject.Inject;
  */
 public class Menu extends CustomComponent implements MessageResourcesComponent {
   public static final String HOME_STYLE = "home";
+  public static final String SUBMISSION_STYLE = "submission";
   public static final String CHANGE_LANGUAGE_STYLE = "changeLanguage";
   public static final String MANAGER_STYLE = "manager";
   public static final String VALIDATE_USERS_STYLE = "validateUsers";
@@ -47,6 +49,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
   private MenuBar menu = new MenuBar();
   private MenuItem home;
+  private MenuItem submission;
   private MenuItem changeLanguage;
   private MenuItem manager;
   private MenuItem validateUsers;
@@ -60,6 +63,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   public Menu() {
     setCompositionRoot(menu);
     home = menu.addItem("Home", new ChangeViewCommand(MainView.VIEW_NAME));
+    submission = menu.addItem("Submission", new ChangeViewCommand(SubmissionView.VIEW_NAME));
     changeLanguage = menu.addItem("Change language", new ChangeLanguageCommand());
     manager = menu.addItem("Manager", null);
     manager.setVisible(false);
@@ -83,6 +87,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
 
   private void setStyles() {
     home.setStyleName(HOME_STYLE);
+    submission.setStyleName(SUBMISSION_STYLE);
     changeLanguage.setStyleName(CHANGE_LANGUAGE_STYLE);
     manager.setStyleName(MANAGER_STYLE);
     validateUsers.setStyleName(VALIDATE_USERS_STYLE);
@@ -92,6 +97,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   private void setCaptions() {
     MessageResource resources = getResources();
     home.setText(resources.message(HOME_STYLE));
+    submission.setText(resources.message(SUBMISSION_STYLE));
     changeLanguage.setText(resources.message(CHANGE_LANGUAGE_STYLE));
     manager.setText(resources.message(MANAGER_STYLE));
     validateUsers.setText(resources.message(VALIDATE_USERS_STYLE));

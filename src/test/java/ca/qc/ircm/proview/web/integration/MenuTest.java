@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.web.integration;
 
 import static org.junit.Assert.assertEquals;
 
+import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.RegisterView;
@@ -63,6 +64,16 @@ public class MenuTest extends MenuPageObject {
     }
     assertEquals(resources(newLocale).message("header"),
         $(LabelElement.class).id("header").getText());
+  }
+
+  @Test
+  @WithSubject
+  public void submission() throws Throwable {
+    open();
+
+    clickSubmission();
+
+    assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
