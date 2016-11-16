@@ -79,6 +79,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -126,6 +127,8 @@ public class SubmissionServiceTest {
   private ArgumentCaptor<Submission> submissionCaptor;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
+  @Captor
+  private ArgumentCaptor<Instant> instantCaptor;
   private User user;
   private final Random random = new Random();
   private Optional<Activity> optionalActivity;
@@ -1383,8 +1386,6 @@ public class SubmissionServiceTest {
     submission.setProteinQuantity("20.0 μg");
     submission.setComments("comments");
     submission.setSamples(samples);
-    Instant instant = Instant.now();
-    submission.setSubmissionDate(instant);
     submission.setGelImages(gelImages);
     SubmissionFile file = new SubmissionFile();
     file.setFilename("my_file.docx");
@@ -1405,7 +1406,7 @@ public class SubmissionServiceTest {
     verify(tubeService).generateTubeName(eq(sample), anyCollectionOf(String.class));
     assertEquals(true, excludes.isEmpty());
     verify(activityService).insert(activity);
-    verify(pricingEvaluator).computePrice(submission, instant);
+    assertNotNull(submission.getId());
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
     assertEquals(user, submission.getUser());
@@ -1438,8 +1439,11 @@ public class SubmissionServiceTest {
     assertEquals("20.0 μg", submission.getProteinQuantity());
     assertEquals("comments", submission.getComments());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
-    assertEquals(instant, submission.getSubmissionDate());
-    assertEquals(submission.getId(), submission.getId());
+    assertNotNull(submission.getSubmissionDate());
+    assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
+    assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -1560,8 +1564,6 @@ public class SubmissionServiceTest {
     List<SubmissionFile> files = new LinkedList<>();
     files.add(file);
     submission.setFiles(files);
-    Instant instant = Instant.now();
-    submission.setSubmissionDate(instant);
 
     submissionServiceImpl.insert(submission);
 
@@ -1574,7 +1576,7 @@ public class SubmissionServiceTest {
     assertEquals(1, excludes2.size());
     assertEquals(true, excludes2.contains("unit_test_eluate_01"));
     verify(activityService).insert(activity);
-    verify(pricingEvaluator).computePrice(submission, instant);
+    assertNotNull(submission.getId());
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
     assertEquals(user, submission.getUser());
@@ -1599,8 +1601,11 @@ public class SubmissionServiceTest {
     assertEquals(MudPitFraction.EIGHT, submission.getMudPitFraction());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
     assertEquals("comments", submission.getComments());
-    assertEquals(instant, submission.getSubmissionDate());
-    assertEquals(submission.getId(), submission.getId());
+    assertNotNull(submission.getSubmissionDate());
+    assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
+    assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
@@ -1715,8 +1720,6 @@ public class SubmissionServiceTest {
     List<SubmissionFile> files = new LinkedList<>();
     files.add(file);
     submission.setFiles(files);
-    Instant instant = Instant.now();
-    submission.setSubmissionDate(instant);
 
     submissionServiceImpl.insert(submission);
 
@@ -1725,7 +1728,7 @@ public class SubmissionServiceTest {
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(tubeService, never()).generateTubeName(any(), any());
     verify(activityService).insert(activity);
-    verify(pricingEvaluator).computePrice(submission, instant);
+    assertNotNull(submission.getId());
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
     assertEquals(user, submission.getUser());
@@ -1750,8 +1753,11 @@ public class SubmissionServiceTest {
     assertEquals(MudPitFraction.EIGHT, submission.getMudPitFraction());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
     assertEquals("comments", submission.getComments());
-    assertEquals(instant, submission.getSubmissionDate());
-    assertEquals(submission.getId(), submission.getId());
+    assertNotNull(submission.getSubmissionDate());
+    assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
+    assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
@@ -1864,8 +1870,6 @@ public class SubmissionServiceTest {
     List<SubmissionFile> files = new LinkedList<>();
     files.add(file);
     submission.setFiles(files);
-    Instant instant = Instant.now();
-    submission.setSubmissionDate(instant);
 
     submissionServiceImpl.insert(submission);
 
@@ -1875,12 +1879,16 @@ public class SubmissionServiceTest {
     verify(tubeService).generateTubeName(eq(sample), anyCollectionOf(String.class));
     assertEquals(true, excludes.isEmpty());
     verify(activityService).insert(activity);
-    verify(pricingEvaluator).computePrice(submission, instant);
+    assertNotNull(submission.getId());
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
     assertEquals(user, submission.getUser());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
-    assertEquals(instant, submission.getSubmissionDate());
+    assertNotNull(submission.getSubmissionDate());
+    assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
+    assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("project", submission.getProject());
     assertEquals("experience", submission.getExperience());
@@ -1906,7 +1914,6 @@ public class SubmissionServiceTest {
     assertEquals("structure.jpg", structure.getFilename());
     assertArrayEquals(imageContent, structure.getContent());
     assertEquals("comments", submission.getComments());
-    assertEquals(submission.getId(), submission.getId());
     samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -1996,8 +2003,6 @@ public class SubmissionServiceTest {
     List<SubmissionFile> files = new LinkedList<>();
     files.add(file);
     submission.setFiles(files);
-    Instant instant = Instant.now();
-    submission.setSubmissionDate(instant);
 
     submissionServiceImpl.insert(submission);
 

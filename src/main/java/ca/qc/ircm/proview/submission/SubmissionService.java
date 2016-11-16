@@ -315,6 +315,7 @@ public class SubmissionService {
 
     submission.setLaboratory(laboratory);
     submission.setUser(user);
+    submission.setSubmissionDate(Instant.now());
     submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
     Set<String> otherSampleLims = new HashSet<>();
     Set<String> otherTubeNames = new HashSet<>();
