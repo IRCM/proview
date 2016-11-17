@@ -17,19 +17,19 @@
 
 package ca.qc.ircm.proview.submission.web.integration;
 
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionWindow.WINDOW_STYLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TITLE;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
+import ca.qc.ircm.proview.submission.web.SubmissionAnalysesWindow;
 import ca.qc.ircm.proview.submission.web.SubmissionWindow;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import com.vaadin.testbench.elements.WindowElement;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -59,22 +59,28 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
 
     clickViewSubmissionByRow(0);
 
-    assertNotNull(findElement(className(WINDOW_STYLE)));
+    assertNotNull(findElement(className(SubmissionWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
-        wrap(WindowElement.class, findElement(className(WINDOW_STYLE)));
+        wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
     String experience = experienceByRow(0);
-    assertTrue(resources(SubmissionWindow.class).message(TITLE, experience)
+    assertTrue(resources(SubmissionWindow.class).message(SubmissionWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
     assertNotNull(submissionWindow.findElement(className(SERVICE_PROPERTY)));
   }
 
   @Test
-  @Ignore("not programmed yet")
-  public void viewSubmissionResults() {
+  public void viewSubmissionResults() throws Throwable {
     open();
 
-    clickViewSubmissionResultsByRow(0);
+    clickViewSubmissionResultsByRow(13);
 
-    // TODO Program test.
+    assertNotNull(findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
+    WindowElement submissionWindow =
+        wrap(WindowElement.class, findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
+    String experience = experienceByRow(13);
+    assertTrue(resources(SubmissionAnalysesWindow.class)
+        .message(SubmissionAnalysesWindow.TITLE, experience)
+        .contains(submissionWindow.getCaption()));
+    assertNotNull(submissionWindow.findElement(className(ANALYSIS)));
   }
 }

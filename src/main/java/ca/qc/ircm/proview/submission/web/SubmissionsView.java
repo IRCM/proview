@@ -40,6 +40,8 @@ public class SubmissionsView extends SubmissionsViewDesign implements MessageRes
   private SubmissionsViewPresenter presenter;
   @Inject
   private Provider<SubmissionWindow> submissionWindowProvider;
+  @Inject
+  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
   protected Menu menu = new Menu();
 
   @PostConstruct
@@ -81,6 +83,9 @@ public class SubmissionsView extends SubmissionsViewDesign implements MessageRes
    *          submission to view
    */
   public void viewSubmissionResults(Submission submission) {
-    // TODO Replace by submission results window.
+    SubmissionAnalysesWindow window = submissionAnalysesWindowProvider.get();
+    window.setSubmission(submission);
+    window.center();
+    getUI().addWindow(window);
   }
 }

@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.msanalysis;
 
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
+import static ca.qc.ircm.proview.submission.QSubmission.submission;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -28,6 +29,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -158,6 +160,27 @@ public class MsAnalysisService extends BaseTreatmentService {
     query.from(msAnalysis, acquisition);
     query.where(msAnalysis.acquisitions.contains(acquisition));
     query.where(acquisition.sample.eq(sample));
+    return query.fetch();
+  }
+
+  /**
+   * Selects all MS analysis made on submission.
+   *
+   * @param submissionParam
+   *          submission
+   * @return all MS analysis made on submission
+   */
+  public List<MsAnalysis> all(Submission submissionParam) {
+    if (submissionParam == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkSubmissionReadPermission(submissionParam);
+
+    JPAQuery<MsAnalysis> query = queryFactory.select(msAnalysis).distinct();
+    query.from(msAnalysis, acquisition, submission);
+    query.where(msAnalysis.acquisitions.contains(acquisition));
+    query.where(acquisition.sample.in(submission.samples));
+    query.where(submission.eq(submissionParam));
     return query.fetch();
   }
 

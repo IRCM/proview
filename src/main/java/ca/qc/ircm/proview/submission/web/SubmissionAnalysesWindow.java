@@ -15,20 +15,20 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
- * Windows that shows submission.
+ * Windows that shows submission analyses.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SubmissionWindow extends Window implements MessageResourcesComponent {
-  public static final String WINDOW_STYLE = "submission-window";
+public class SubmissionAnalysesWindow extends Window implements MessageResourcesComponent {
+  public static final String WINDOW_STYLE = "submission-analyses-window";
   public static final String TITLE = "title";
   private static final long serialVersionUID = 4789125002422549258L;
-  private static final Logger logger = LoggerFactory.getLogger(SubmissionWindow.class);
-  private SubmissionForm view = new SubmissionForm();
+  private static final Logger logger = LoggerFactory.getLogger(SubmissionAnalysesWindow.class);
+  private SubmissionAnalysesForm view = new SubmissionAnalysesForm();
   private Panel panel;
   private Submission submission;
   @Inject
-  private SubmissionFormPresenter presenter;
+  private SubmissionAnalysesFormPresenter presenter;
 
   @PostConstruct
   protected void init() {
@@ -46,7 +46,7 @@ public class SubmissionWindow extends Window implements MessageResourcesComponen
   @Override
   public void attach() {
     super.attach();
-    logger.debug("Submission window for submission {}", submission);
+    logger.debug("Submission analyses window for submission {}", submission);
     setCaption(getResources().message(TITLE, submission.getExperience()));
     presenter.setItemDataSource(new BeanItem<>(submission));
   }

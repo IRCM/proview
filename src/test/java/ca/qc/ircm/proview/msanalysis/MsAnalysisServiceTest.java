@@ -38,11 +38,13 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService.MsAnalysisAggregate;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Control;
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -176,8 +178,26 @@ public class MsAnalysisServiceTest {
   }
 
   @Test
-  public void all_Null() {
-    List<MsAnalysis> msAnalyses = msAnalysisServiceImpl.all(null);
+  public void all_SampleNull() {
+    List<MsAnalysis> msAnalyses = msAnalysisServiceImpl.all((Sample) null);
+
+    assertEquals(0, msAnalyses.size());
+  }
+
+  @Test
+  public void all_Submission() {
+    Submission submission = new Submission(155L);
+
+    List<MsAnalysis> msAnalyses = msAnalysisServiceImpl.all(submission);
+
+    verify(authorizationService).checkSubmissionReadPermission(submission);
+    assertEquals(1, msAnalyses.size());
+    assertNotNull(find(msAnalyses, 21));
+  }
+
+  @Test
+  public void all_SubmissionNull() {
+    List<MsAnalysis> msAnalyses = msAnalysisServiceImpl.all((Submission) null);
 
     assertEquals(0, msAnalyses.size());
   }
