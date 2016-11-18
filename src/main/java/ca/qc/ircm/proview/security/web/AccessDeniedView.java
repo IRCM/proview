@@ -28,12 +28,10 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * View to show in case of an access denied.
@@ -44,10 +42,13 @@ public class AccessDeniedView extends VerticalLayout implements MessageResources
   private static final long serialVersionUID = 2998062811797958331L;
   private static final Logger logger = LoggerFactory.getLogger(AccessDeniedView.class);
   public static final String VIEW_NAME = "accessDenied";
-  @Inject
-  private UI ui;
+  public static final String TITLE = "title";
+  public static final String LABEL = "label";
+  public static final String BUTTON = "button";
   private Label label = new Label();
   private Button button = new Button();
+  @Value("${spring.application.name}")
+  private String applicationName;
 
   /**
    * Creates error view.
@@ -62,7 +63,7 @@ public class AccessDeniedView extends VerticalLayout implements MessageResources
     button.addClickListener(new ClickListener() {
       @Override
       public void buttonClick(ClickEvent event) {
-        ui.getNavigator().navigateTo(MainView.VIEW_NAME);
+        getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
       }
     });
     addComponent(button);
@@ -72,9 +73,10 @@ public class AccessDeniedView extends VerticalLayout implements MessageResources
   public void attach() {
     super.attach();
     logger.debug("Access denied view");
-    MessageResource messageResource = getResources();
-    label.setValue(messageResource.message("label"));
-    button.setCaption(messageResource.message("button"));
+    MessageResource resources = getResources();
+    getUI().getPage().setTitle(resources.message(TITLE, applicationName));
+    label.setValue(resources.message(LABEL));
+    button.setCaption(resources.message(BUTTON));
   }
 
   @Override
