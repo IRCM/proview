@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import static ca.qc.ircm.proview.security.web.AccessDeniedView.BUTTON;
+import static ca.qc.ircm.proview.security.web.AccessDeniedView.LABEL;
+import static ca.qc.ircm.proview.web.ErrorView.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -41,14 +44,19 @@ public class ErrorViewTest extends ErrorPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
+  private Set<String> messages(String key, Object... replacements) {
+    Set<Locale> locales = WebConstants.getLocales();
+    Set<String> messages = locales.stream()
+        .map(locale -> new MessageResource(ErrorView.class, locale).message(key, replacements))
+        .collect(Collectors.toSet());
+    return messages;
+  }
+
   @Test
   public void title() throws Throwable {
     open();
 
-    Set<Locale> locales = WebConstants.getLocales();
-    Set<String> titles = locales.stream().map(
-        locale -> new MessageResource(ErrorView.class, locale).message("title", applicationName))
-        .collect(Collectors.toSet());
+    Set<String> titles = messages(TITLE, applicationName);
     assertTrue(titles.contains(getDriver().getTitle()));
   }
 
@@ -58,6 +66,14 @@ public class ErrorViewTest extends ErrorPageObject {
 
     assertNotNull(errorLabel());
     assertNotNull(mainViewButton());
+  }
+
+  @Test
+  public void captions() throws Throwable {
+    open();
+
+    assertTrue(messages(LABEL).contains(errorLabel().getText()));
+    assertTrue(messages(BUTTON).contains(mainViewButton().getCaption()));
   }
 
   @Test

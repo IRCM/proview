@@ -39,6 +39,9 @@ public class ErrorView extends VerticalLayout implements MessageResourcesView {
   private static final long serialVersionUID = 2998062811797958331L;
   private static final Logger logger = LoggerFactory.getLogger(ErrorView.class);
   public static final String VIEW_NAME = "error";
+  public static final String TITLE = "title";
+  public static final String LABEL = "label";
+  public static final String BUTTON = "button";
   private Label label = new Label();
   private Button button = new Button();
   @Value("${spring.application.name}")
@@ -68,8 +71,8 @@ public class ErrorView extends VerticalLayout implements MessageResourcesView {
     super.attach();
     logger.debug("Error view");
     MessageResource resources = getResources();
-    getUI().getPage().setTitle(resources.message("title", applicationName));
-    label.setValue(resources.message("label"));
-    button.setCaption(resources.message("button"));
+    getUI().getPage().setTitle(resources.message(TITLE, applicationName));
+    label.setValue(resources.message(LABEL));
+    button.setCaption(resources.message(BUTTON));
   }
 }
