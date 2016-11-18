@@ -38,6 +38,13 @@ public class ShiroViewAccessControl implements ViewAccessControl {
   @Inject
   private ApplicationContext applicationContext;
 
+  protected ShiroViewAccessControl() {
+  }
+
+  protected ShiroViewAccessControl(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
+  }
+
   @Override
   public boolean isAccessGranted(UI ui, String beanName) {
     Class<?> beanClass = applicationContext.getType(beanName);

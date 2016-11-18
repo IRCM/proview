@@ -44,6 +44,15 @@ public class ShiroWebEnvironmentListener extends EnvironmentLoaderListener {
   @Inject
   private SecurityConfiguration securityConfiguration;
 
+  public ShiroWebEnvironmentListener() {
+  }
+
+  protected ShiroWebEnvironmentListener(AuthenticationService authenticationService,
+      SecurityConfiguration securityConfiguration) {
+    this.authenticationService = authenticationService;
+    this.securityConfiguration = securityConfiguration;
+  }
+
   @Override
   public void contextInitialized(ServletContextEvent sce) {
     WebApplicationContext context =
