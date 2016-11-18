@@ -31,6 +31,8 @@ public class SubmissionAnalysesForm extends SubmissionAnalysesFormDesign
 
   /**
    * Creates a panel containing a grid.
+   *
+   * @return panel that was created
    */
   public Panel createAnalysisPanel() {
     Panel panel = new Panel();
