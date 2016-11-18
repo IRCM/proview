@@ -17,11 +17,23 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD;
+import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_BUTTON;
+import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_EMAIL;
+import static ca.qc.ircm.proview.web.MainViewPresenter.HEADER;
+import static ca.qc.ircm.proview.web.MainViewPresenter.REGISTER;
+import static ca.qc.ircm.proview.web.MainViewPresenter.REGISTER_BUTTON;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_BUTTON;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PANEL;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PASSWORD;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_USERNAME;
+import static org.openqa.selenium.By.className;
+
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.ButtonElement;
-import com.vaadin.testbench.elements.FormElement;
 import com.vaadin.testbench.elements.LabelElement;
+import com.vaadin.testbench.elements.PanelElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 public abstract class MainPageObject extends AbstractTestBenchTestCase {
@@ -30,57 +42,51 @@ public abstract class MainPageObject extends AbstractTestBenchTestCase {
   }
 
   protected LabelElement header() {
-    return $(LabelElement.class).id("header");
+    return wrap(LabelElement.class, findElement(className(HEADER)));
   }
 
-  protected FormElement signForm() {
-    return $(FormElement.class).id("signForm");
+  protected PanelElement signPanel() {
+    return wrap(PanelElement.class, findElement(className(SIGN_PANEL)));
   }
 
-  protected LabelElement signFormHeader() {
-    return $(LabelElement.class).id("loginForm-header");
+  protected TextFieldElement signUsernameField() {
+    return wrap(TextFieldElement.class, findElement(className(SIGN_USERNAME)));
   }
 
-  protected TextFieldElement signFormUsernameField() {
-    return wrap(TextFieldElement.class,
-        findElement(org.openqa.selenium.By.id("loginForm-userNameField")));
+  protected String getSignUsername() {
+    return signUsernameField().getValue();
   }
 
-  protected String getSignFormUsername() {
-    return signFormUsernameField().getValue();
+  protected void setSignUsername(String value) {
+    signUsernameField().setValue(value);
   }
 
-  protected void setSignFormUsername(String value) {
-    signFormUsernameField().setValue(value);
+  protected TextFieldElement signPasswordField() {
+    return wrap(TextFieldElement.class, findElement(className(SIGN_PASSWORD)));
   }
 
-  protected TextFieldElement signFormPasswordField() {
-    return wrap(TextFieldElement.class,
-        findElement(org.openqa.selenium.By.id("loginForm-passwordField")));
+  protected String getSignPassword() {
+    return signPasswordField().getValue();
   }
 
-  protected String getSignFormPassword() {
-    return signFormPasswordField().getValue();
+  protected void setSignPassword(String value) {
+    signPasswordField().setValue(value);
   }
 
-  protected void setSignFormPassword(String value) {
-    signFormPasswordField().setValue(value);
+  protected ButtonElement signButton() {
+    return wrap(ButtonElement.class, findElement(className(SIGN_BUTTON)));
   }
 
-  protected ButtonElement signFormSignButton() {
-    return $(ButtonElement.class).id("loginForm-loginButton");
+  protected void clickSignButton() {
+    signButton().click();
   }
 
-  protected void clickSignFormSignButton() {
-    signFormSignButton().click();
-  }
-
-  protected LabelElement forgotPasswordHeader() {
-    return $(LabelElement.class).id("forgotPasswordHeader");
+  protected LabelElement forgotPasswordPanel() {
+    return wrap(LabelElement.class, findElement(className(FORGOT_PASSWORD)));
   }
 
   protected TextFieldElement forgotPasswordEmailField() {
-    return $(TextFieldElement.class).id("forgotPasswordEmailField");
+    return wrap(TextFieldElement.class, findElement(className(FORGOT_PASSWORD_EMAIL)));
   }
 
   protected String getForgotPasswordEmail() {
@@ -92,7 +98,7 @@ public abstract class MainPageObject extends AbstractTestBenchTestCase {
   }
 
   protected ButtonElement forgotPasswordButton() {
-    return $(ButtonElement.class).id("forgotPasswordButton");
+    return wrap(ButtonElement.class, findElement(className(FORGOT_PASSWORD_BUTTON)));
   }
 
   protected void clickForgotPasswordButton() {
@@ -100,11 +106,11 @@ public abstract class MainPageObject extends AbstractTestBenchTestCase {
   }
 
   protected LabelElement registerHeader() {
-    return $(LabelElement.class).id("registerHeader");
+    return wrap(LabelElement.class, findElement(className(REGISTER)));
   }
 
   protected ButtonElement registerButton() {
-    return $(ButtonElement.class).id("registerButton");
+    return wrap(ButtonElement.class, findElement(className(REGISTER_BUTTON)));
   }
 
   protected void clickRegisterButton() {

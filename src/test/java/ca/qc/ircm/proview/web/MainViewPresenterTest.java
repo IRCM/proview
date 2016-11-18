@@ -17,6 +17,17 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD;
+import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_BUTTON;
+import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_EMAIL;
+import static ca.qc.ircm.proview.web.MainViewPresenter.HEADER;
+import static ca.qc.ircm.proview.web.MainViewPresenter.REGISTER;
+import static ca.qc.ircm.proview.web.MainViewPresenter.REGISTER_BUTTON;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_BUTTON;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PANEL;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PASSWORD;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_USERNAME;
+import static ca.qc.ircm.proview.web.MainViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -38,6 +49,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.ejt.vaadin.loginform.LoginForm.LoginListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import org.apache.shiro.authc.AuthenticationException;
@@ -73,7 +85,6 @@ public class MainViewPresenterTest {
   private ArgumentCaptor<LoginListener> loginListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
-  private Label signHeader = new Label();
   private TextField signFormUsername = new TextField();
   private PasswordField signFormPassword = new PasswordField();
   private Button signButton = new Button();
@@ -92,13 +103,13 @@ public class MainViewPresenterTest {
     presenter = new MainViewPresenter(authenticationService, authorizationService, applicationName);
     view.menu = new Menu();
     view.header = new Label();
+    view.signPanel = new Panel();
     view.signForm = signForm;
-    view.forgotPasswordHeader = new Label();
+    view.forgotPasswordPanel = new Panel();
     view.forgotPasswordEmailField = new TextField();
     view.forgotPasswordButton = new Button();
-    view.registerHeader = new Label();
+    view.registerPanel = new Panel();
     view.registerButton = new Button();
-    when(signForm.getHeader()).thenReturn(signHeader);
     when(signForm.getUserNameField()).thenReturn(signFormUsername);
     when(signForm.getPasswordField()).thenReturn(signFormPassword);
     when(signForm.getLoginButton()).thenReturn(signButton);
@@ -108,19 +119,32 @@ public class MainViewPresenterTest {
   }
 
   @Test
+  public void styles() {
+    assertTrue(view.header.getStyleName().contains(HEADER));
+    assertTrue(view.signPanel.getStyleName().contains(SIGN_PANEL));
+    assertTrue(signFormUsername.getStyleName().contains(SIGN_USERNAME));
+    assertTrue(signFormPassword.getStyleName().contains(SIGN_PASSWORD));
+    assertTrue(signButton.getStyleName().contains(SIGN_BUTTON));
+    assertTrue(view.forgotPasswordPanel.getStyleName().contains(FORGOT_PASSWORD));
+    assertTrue(view.forgotPasswordEmailField.getStyleName().contains(FORGOT_PASSWORD_EMAIL));
+    assertTrue(view.forgotPasswordButton.getStyleName().contains(FORGOT_PASSWORD_BUTTON));
+    assertTrue(view.registerPanel.getStyleName().contains(REGISTER));
+    assertTrue(view.registerButton.getStyleName().contains(REGISTER_BUTTON));
+  }
+
+  @Test
   public void captions() {
-    assertEquals(resources.message("header"), view.header.getValue());
-    assertEquals(resources.message("sign"), signHeader.getValue());
-    assertEquals(resources.message("sign.username"), signFormUsername.getCaption());
-    assertEquals(resources.message("sign.password"), signFormPassword.getCaption());
-    assertEquals(resources.message("sign.button"), signButton.getCaption());
-    assertEquals(resources.message("forgotPassword"), view.forgotPasswordHeader.getValue());
-    assertEquals(resources.message("forgotPassword.email"),
+    assertEquals(resources.message(HEADER), view.header.getValue());
+    assertEquals(resources.message(SIGN_PANEL), view.signPanel.getCaption());
+    assertEquals(resources.message(SIGN_USERNAME), signFormUsername.getCaption());
+    assertEquals(resources.message(SIGN_PASSWORD), signFormPassword.getCaption());
+    assertEquals(resources.message(SIGN_BUTTON), signButton.getCaption());
+    assertEquals(resources.message(FORGOT_PASSWORD), view.forgotPasswordPanel.getCaption());
+    assertEquals(resources.message(FORGOT_PASSWORD_EMAIL),
         view.forgotPasswordEmailField.getCaption());
-    assertEquals(resources.message("forgotPassword.button"),
-        view.forgotPasswordButton.getCaption());
-    assertEquals(resources.message("register"), view.registerHeader.getValue());
-    assertEquals(resources.message("register.button"), view.registerButton.getCaption());
+    assertEquals(resources.message(FORGOT_PASSWORD_BUTTON), view.forgotPasswordButton.getCaption());
+    assertEquals(resources.message(REGISTER), view.registerPanel.getCaption());
+    assertEquals(resources.message(REGISTER_BUTTON), view.registerButton.getCaption());
   }
 
   private String requiredError(String caption) {
@@ -142,7 +166,7 @@ public class MainViewPresenterTest {
 
   @Test
   public void title() {
-    verify(view).setTitle(resources.message("title", applicationName));
+    verify(view).setTitle(resources.message(TITLE, applicationName));
   }
 
   @Test

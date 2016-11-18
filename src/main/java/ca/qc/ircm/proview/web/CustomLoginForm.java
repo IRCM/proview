@@ -21,7 +21,6 @@ import com.ejt.vaadin.loginform.LoginForm;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
@@ -30,7 +29,7 @@ import com.vaadin.ui.TextField;
  */
 public class CustomLoginForm extends LoginForm {
   private static final long serialVersionUID = -3289207896401263662L;
-  private Label header = new Label();
+  private FormLayout layout;
   private TextField userNameField;
   private PasswordField passwordField;
   private Button loginButton;
@@ -41,22 +40,18 @@ public class CustomLoginForm extends LoginForm {
     this.userNameField = userNameField;
     this.passwordField = passwordField;
     this.loginButton = loginButton;
-    FormLayout layout = new FormLayout();
+    layout = new FormLayout();
     layout.setSpacing(true);
+    layout.setWidthUndefined();
 
-    layout.addComponent(header);
-    header.setId("loginForm-header");
     layout.addComponent(userNameField);
-    userNameField.setId("loginForm-userNameField");
     layout.addComponent(passwordField);
-    passwordField.setId("loginForm-passwordField");
     layout.addComponent(loginButton);
-    loginButton.setId("loginForm-loginButton");
     return layout;
   }
 
-  public Label getHeader() {
-    return header;
+  public FormLayout getLayout() {
+    return layout;
   }
 
   public TextField getUserNameField() {

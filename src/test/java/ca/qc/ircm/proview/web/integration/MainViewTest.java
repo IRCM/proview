@@ -53,11 +53,11 @@ public class MainViewTest extends MainPageObject {
     open();
 
     assertNotNull(header());
-    assertNotNull(signFormHeader());
-    assertNotNull(signFormUsernameField());
-    assertNotNull(signFormPasswordField());
-    assertNotNull(signFormSignButton());
-    assertNotNull(forgotPasswordHeader());
+    assertNotNull(signPanel());
+    assertNotNull(signUsernameField());
+    assertNotNull(signPasswordField());
+    assertNotNull(signButton());
+    assertNotNull(forgotPasswordPanel());
     assertNotNull(forgotPasswordEmailField());
     assertNotNull(forgotPasswordButton());
     assertNotNull(registerHeader());
@@ -67,10 +67,10 @@ public class MainViewTest extends MainPageObject {
   @Test
   public void sign_Error() throws Throwable {
     open();
-    setSignFormUsername("unit.test@ircm.qc.ca");
-    setSignFormPassword("password");
+    setSignUsername("unit.test@ircm.qc.ca");
+    setSignPassword("password");
 
-    clickSignFormSignButton();
+    clickSignButton();
 
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
@@ -81,10 +81,10 @@ public class MainViewTest extends MainPageObject {
   @Ignore("not programmed yet")
   public void sign_Admin() throws Throwable {
     open();
-    setSignFormUsername("proview@ircm.qc.ca");
-    setSignFormPassword("password");
+    setSignUsername("proview@ircm.qc.ca");
+    setSignPassword("password");
 
-    clickSignFormSignButton();
+    clickSignButton();
 
     assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
   }
@@ -92,10 +92,10 @@ public class MainViewTest extends MainPageObject {
   @Test
   public void sign_User() throws Throwable {
     open();
-    setSignFormUsername("benoit.coulombe@ircm.qc.ca");
-    setSignFormPassword("password");
+    setSignUsername("benoit.coulombe@ircm.qc.ca");
+    setSignPassword("password");
 
-    clickSignFormSignButton();
+    clickSignButton();
 
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }

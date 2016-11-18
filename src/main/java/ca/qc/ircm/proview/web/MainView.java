@@ -39,15 +39,19 @@ public class MainView extends MainViewDesign implements MessageResourcesView {
   @Inject
   private MainViewPresenter presenter;
 
+  /**
+   * Creates main view.
+   */
   public MainView() {
     menuLayout.addComponent(menu);
-    signFormLayout.addComponent(signForm);
+    signLayout.addComponent(signForm);
   }
 
   @Override
   public void attach() {
     logger.debug("Main view");
     super.attach();
+    signForm.getLayout().setMargin(false);
     presenter.init(this);
   }
 

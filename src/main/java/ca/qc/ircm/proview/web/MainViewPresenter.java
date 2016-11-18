@@ -41,6 +41,17 @@ import javax.inject.Inject;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MainViewPresenter {
+  public static final String TITLE = "title";
+  public static final String HEADER = "header";
+  public static final String SIGN_PANEL = "sign";
+  public static final String SIGN_USERNAME = "sign.username";
+  public static final String SIGN_PASSWORD = "sign.password";
+  public static final String SIGN_BUTTON = "sign.button";
+  public static final String FORGOT_PASSWORD = "forgotPassword";
+  public static final String FORGOT_PASSWORD_EMAIL = "forgotPassword.email";
+  public static final String FORGOT_PASSWORD_BUTTON = "forgotPassword.button";
+  public static final String REGISTER = "register";
+  public static final String REGISTER_BUTTON = "register.button";
   private static final Logger logger = LoggerFactory.getLogger(MainViewPresenter.class);
   private MainView view;
   private ObjectProperty<String> username = new ObjectProperty<>(null, String.class);
@@ -71,11 +82,25 @@ public class MainViewPresenter {
    */
   public void init(MainView view) {
     this.view = view;
+    setStyles();
     bindFields();
     addFieldListeners();
     setCaptions();
     setRequired();
     addValidators();
+  }
+
+  private void setStyles() {
+    view.header.addStyleName(HEADER);
+    view.signPanel.addStyleName(SIGN_PANEL);
+    view.signForm.getUserNameField().addStyleName(SIGN_USERNAME);
+    view.signForm.getPasswordField().addStyleName(SIGN_PASSWORD);
+    view.signForm.getLoginButton().addStyleName(SIGN_BUTTON);
+    view.forgotPasswordPanel.addStyleName(FORGOT_PASSWORD);
+    view.forgotPasswordEmailField.addStyleName(FORGOT_PASSWORD_EMAIL);
+    view.forgotPasswordButton.addStyleName(FORGOT_PASSWORD_BUTTON);
+    view.registerPanel.addStyleName(REGISTER);
+    view.registerButton.addStyleName(REGISTER_BUTTON);
   }
 
   private void bindFields() {
@@ -93,22 +118,21 @@ public class MainViewPresenter {
   }
 
   private void setCaptions() {
-    view.signForm.getHeader().setStyleName("h2");
     MessageResource resources = view.getResources();
-    view.setTitle(resources.message("title", applicationName));
-    view.header.setValue(resources.message("header"));
-    view.signForm.getHeader().setValue(resources.message("sign"));
-    view.signForm.getUserNameField().setCaption(resources.message("sign.username"));
+    view.setTitle(resources.message(TITLE, applicationName));
+    view.header.setValue(resources.message(HEADER));
+    view.signPanel.setCaption(resources.message(SIGN_PANEL));
+    view.signForm.getUserNameField().setCaption(resources.message(SIGN_USERNAME));
     view.signForm.getUserNameField().setNullRepresentation("");
-    view.signForm.getPasswordField().setCaption(resources.message("sign.password"));
+    view.signForm.getPasswordField().setCaption(resources.message(SIGN_PASSWORD));
     view.signForm.getPasswordField().setNullRepresentation("");
-    view.signForm.getLoginButton().setCaption(resources.message("sign.button"));
-    view.forgotPasswordHeader.setValue(resources.message("forgotPassword"));
+    view.signForm.getLoginButton().setCaption(resources.message(SIGN_BUTTON));
+    view.forgotPasswordPanel.setCaption(resources.message(FORGOT_PASSWORD));
     view.forgotPasswordEmailField.setNullRepresentation("");
-    view.forgotPasswordEmailField.setCaption(resources.message("forgotPassword.email"));
-    view.forgotPasswordButton.setCaption(resources.message("forgotPassword.button"));
-    view.registerHeader.setValue(resources.message("register"));
-    view.registerButton.setCaption(resources.message("register.button"));
+    view.forgotPasswordEmailField.setCaption(resources.message(FORGOT_PASSWORD_EMAIL));
+    view.forgotPasswordButton.setCaption(resources.message(FORGOT_PASSWORD_BUTTON));
+    view.registerPanel.setCaption(resources.message(REGISTER));
+    view.registerButton.setCaption(resources.message(REGISTER_BUTTON));
   }
 
   private void setRequired() {
