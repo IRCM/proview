@@ -28,6 +28,7 @@ import com.vaadin.data.validator.EmailValidator;
 import org.apache.shiro.authc.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -49,14 +50,17 @@ public class MainViewPresenter {
   private AuthenticationService authenticationService;
   @Inject
   private AuthorizationService authorizationService;
+  @Value("${spring.application.name}")
+  private String applicationName;
 
   public MainViewPresenter() {
   }
 
   protected MainViewPresenter(AuthenticationService authenticationService,
-      AuthorizationService authorizationService) {
+      AuthorizationService authorizationService, String applicationName) {
     this.authenticationService = authenticationService;
     this.authorizationService = authorizationService;
+    this.applicationName = applicationName;
   }
 
   /**
@@ -91,7 +95,7 @@ public class MainViewPresenter {
   private void setCaptions() {
     view.signForm.getHeader().setStyleName("h2");
     MessageResource resources = view.getResources();
-    view.setTitle(resources.message("title"));
+    view.setTitle(resources.message("title", applicationName));
     view.header.setValue(resources.message("header"));
     view.signForm.getHeader().setValue(resources.message("sign"));
     view.signForm.getUserNameField().setCaption(resources.message("sign.username"));
@@ -189,7 +193,7 @@ public class MainViewPresenter {
 
   /**
    * Go to submissions view if user is signed.
-   * 
+   *
    * @param parameters
    *          view parameters
    */

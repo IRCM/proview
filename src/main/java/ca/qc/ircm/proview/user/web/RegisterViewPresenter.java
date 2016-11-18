@@ -40,6 +40,7 @@ import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.data.validator.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -102,20 +103,23 @@ public class RegisterViewPresenter {
   private AddressFormPresenter addressFormPresenter;
   @Inject
   private PhoneNumberFormPresenter phoneNumberFormPresenter;
+  @Value("${spring.application.name}")
+  private String applicationName;
 
   public RegisterViewPresenter() {
   }
 
   protected RegisterViewPresenter(DefaultAddressConfiguration defaultAddressConfiguration,
       UserService userService, VaadinUtils vaadinUtils, UserFormPresenter userFormPresenter,
-      AddressFormPresenter addressFormPresenter,
-      PhoneNumberFormPresenter phoneNumberFormPresenter) {
+      AddressFormPresenter addressFormPresenter, PhoneNumberFormPresenter phoneNumberFormPresenter,
+      String applicationName) {
     this.defaultAddressConfiguration = defaultAddressConfiguration;
     this.userService = userService;
     this.vaadinUtils = vaadinUtils;
     this.userFormPresenter = userFormPresenter;
     this.addressFormPresenter = addressFormPresenter;
     this.phoneNumberFormPresenter = phoneNumberFormPresenter;
+    this.applicationName = applicationName;
   }
 
   /**
@@ -210,7 +214,7 @@ public class RegisterViewPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    view.setTitle(resources.message("title"));
+    view.setTitle(resources.message("title", applicationName));
     view.headerLabel.setValue(resources.message(HEADER_LABEL_ID));
     view.userPanel.setCaption(resources.message(USER_FORM_ID));
     view.laboratoryPanel.setCaption(resources.message(LABORATORY_ID));

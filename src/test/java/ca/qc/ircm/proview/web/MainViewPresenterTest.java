@@ -47,6 +47,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
@@ -70,6 +71,8 @@ public class MainViewPresenterTest {
   private User user;
   @Captor
   private ArgumentCaptor<LoginListener> loginListenerCaptor;
+  @Value("${spring.application.name}")
+  private String applicationName;
   private Label signHeader = new Label();
   private TextField signFormUsername = new TextField();
   private PasswordField signFormPassword = new PasswordField();
@@ -86,7 +89,7 @@ public class MainViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new MainViewPresenter(authenticationService, authorizationService);
+    presenter = new MainViewPresenter(authenticationService, authorizationService, applicationName);
     view.menu = new Menu();
     view.header = new Label();
     view.signForm = signForm;
@@ -139,7 +142,7 @@ public class MainViewPresenterTest {
 
   @Test
   public void title() {
-    verify(view).setTitle(resources.message("title"));
+    verify(view).setTitle(resources.message("title", applicationName));
   }
 
   @Test

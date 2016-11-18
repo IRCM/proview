@@ -41,6 +41,7 @@ import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
@@ -54,6 +55,8 @@ public class RegisterViewTest extends RegisterPageObject {
   private DefaultAddressConfiguration defaultAddressConfiguration;
   @Inject
   private JPAQueryFactory jpaQueryFactory;
+  @Value("${spring.application.name}")
+  private String applicationName;
   private String email = "unit.test@ircm.qc.ca";
   private String name = "Unit Test";
   private String password = "unittestpassword";
@@ -80,7 +83,8 @@ public class RegisterViewTest extends RegisterPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(RegisterView.class).message("title").contains(getDriver().getTitle()));
+    assertTrue(resources(RegisterView.class).message("title", applicationName)
+        .contains(getDriver().getTitle()));
   }
 
   @Test

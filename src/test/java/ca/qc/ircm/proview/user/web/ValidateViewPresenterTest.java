@@ -59,6 +59,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
@@ -85,6 +86,8 @@ public class ValidateViewPresenterTest {
   private Signed signed;
   @Captor
   private ArgumentCaptor<Collection<User>> usersCaptor;
+  @Value("${spring.application.name}")
+  private String applicationName;
   private User signedUser;
   private List<User> usersToValidate;
   private Locale locale = Locale.ENGLISH;
@@ -95,7 +98,8 @@ public class ValidateViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new ValidateViewPresenter(userService, authorizationService, signed);
+    presenter =
+        new ValidateViewPresenter(userService, authorizationService, signed, applicationName);
     signedUser = entityManager.find(User.class, 1L);
     when(signed.getUser()).thenReturn(signedUser);
     usersToValidate = new ArrayList<>();
@@ -152,7 +156,7 @@ public class ValidateViewPresenterTest {
 
   @Test
   public void title() {
-    verify(view).setTitle(resources.message(TITLE));
+    verify(view).setTitle(resources.message(TITLE, applicationName));
   }
 
   @Test

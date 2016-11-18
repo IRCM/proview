@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
@@ -48,6 +49,8 @@ public class ValidateViewTest extends ValidatePageObject {
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewTest.class);
   @PersistenceContext
   private EntityManager entityManager;
+  @Value("${spring.application.name}")
+  private String applicationName;
 
   private User getUser(String email) {
     JPAQuery<User> query = new JPAQuery<>(entityManager);
@@ -60,7 +63,8 @@ public class ValidateViewTest extends ValidatePageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(ValidateView.class).message("title").contains(getDriver().getTitle()));
+    assertTrue(resources(ValidateView.class).message("title", applicationName)
+        .contains(getDriver().getTitle()));
   }
 
   @Test

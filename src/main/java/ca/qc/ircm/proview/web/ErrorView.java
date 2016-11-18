@@ -28,6 +28,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * View to show in case of an internal error.
@@ -40,6 +41,8 @@ public class ErrorView extends VerticalLayout implements MessageResourcesView {
   public static final String VIEW_NAME = "error";
   private Label label = new Label();
   private Button button = new Button();
+  @Value("${spring.application.name}")
+  private String applicationName;
 
   /**
    * Creates error view.
@@ -65,7 +68,7 @@ public class ErrorView extends VerticalLayout implements MessageResourcesView {
     super.attach();
     logger.debug("Error view");
     MessageResource resources = getResources();
-    getUI().getPage().setTitle(resources.message("title"));
+    getUI().getPage().setTitle(resources.message("title", applicationName));
     label.setValue(resources.message("label"));
     button.setCaption(resources.message("button"));
   }

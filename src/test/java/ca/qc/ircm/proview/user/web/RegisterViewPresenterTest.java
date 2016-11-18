@@ -69,6 +69,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
@@ -105,6 +106,8 @@ public class RegisterViewPresenterTest {
   private ArgumentCaptor<Item> phoneNumberItemCaptor;
   @Captor
   private ArgumentCaptor<RegisterUserWebContext> registerUserWebContextCaptor;
+  @Value("${spring.application.name}")
+  private String applicationName;
   private String defaultAddress = "110 avenue des Pins Ouest";
   private String defaultTown = "Montreal";
   private String defaultState = "Quebec";
@@ -135,7 +138,7 @@ public class RegisterViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new RegisterViewPresenter(defaultAddressConfiguration, userService, vaadinUtils,
-        userFormPresenter, addressFormPresenter, phoneNumberFormPresenter);
+        userFormPresenter, addressFormPresenter, phoneNumberFormPresenter, applicationName);
     when(defaultAddressConfiguration.getAddress()).thenReturn(defaultAddress);
     when(defaultAddressConfiguration.getTown()).thenReturn(defaultTown);
     when(defaultAddressConfiguration.getState()).thenReturn(defaultState);
@@ -253,7 +256,7 @@ public class RegisterViewPresenterTest {
 
   @Test
   public void title() {
-    verify(view).setTitle(resources.message("title"));
+    verify(view).setTitle(resources.message("title", applicationName));
   }
 
   @Test

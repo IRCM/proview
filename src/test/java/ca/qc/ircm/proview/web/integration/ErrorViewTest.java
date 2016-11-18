@@ -28,6 +28,7 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
@@ -37,13 +38,16 @@ import java.util.stream.Collectors;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 public class ErrorViewTest extends ErrorPageObject {
+  @Value("${spring.application.name}")
+  private String applicationName;
+
   @Test
   public void title() throws Throwable {
     open();
 
     Set<Locale> locales = WebConstants.getLocales();
-    Set<String> titles = locales.stream()
-        .map(locale -> new MessageResource(ErrorView.class, locale).message("title"))
+    Set<String> titles = locales.stream().map(
+        locale -> new MessageResource(ErrorView.class, locale).message("title", applicationName))
         .collect(Collectors.toSet());
     assertTrue(titles.contains(getDriver().getTitle()));
   }

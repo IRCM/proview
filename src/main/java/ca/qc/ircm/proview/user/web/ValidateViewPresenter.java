@@ -20,9 +20,9 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.QUser;
-import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.Signed;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
@@ -35,6 +35,7 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -78,15 +79,18 @@ public class ValidateViewPresenter {
   private AuthorizationService authorizationService;
   @Inject
   private Signed signed;
+  @Value("${spring.application.name}")
+  private String applicationName;
 
   public ValidateViewPresenter() {
   }
 
   protected ValidateViewPresenter(UserService userService,
-      AuthorizationService authorizationService, Signed signed) {
+      AuthorizationService authorizationService, Signed signed, String applicationName) {
     this.userService = userService;
     this.authorizationService = authorizationService;
     this.signed = signed;
+    this.applicationName = applicationName;
   }
 
   /**
@@ -119,7 +123,7 @@ public class ValidateViewPresenter {
 
   @SuppressWarnings("serial")
   private void initializeUsersGridContainer() {
-    container = new BeanItemContainer<User>(User.class, searchUsers());
+    container = new BeanItemContainer<>(User.class, searchUsers());
     container.addNestedContainerProperty(LABORATORY_NAME);
     container.addNestedContainerProperty(ORGANIZATION);
     gridContainer = new GeneratedPropertyContainer(container);
@@ -174,7 +178,7 @@ public class ValidateViewPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    view.setTitle(resources.message(TITLE));
+    view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.setValue(resources.message(HEADER_LABEL_ID));
     view.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON_ID));
   }

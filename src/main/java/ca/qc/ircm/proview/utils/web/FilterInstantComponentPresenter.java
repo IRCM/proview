@@ -42,7 +42,6 @@ public class FilterInstantComponentPresenter {
   public static final String RANGE = "range";
   public static final String RANGE_ONLY_FROM = "range.from";
   public static final String RANGE_ONLY_TO = "range.to";
-  public static final String NULL = "null";
   public static final String FROM = "from";
   public static final String TO = "to";
   public static final String SET = "set";

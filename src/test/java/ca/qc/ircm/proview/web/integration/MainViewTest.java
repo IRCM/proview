@@ -31,16 +31,21 @@ import com.vaadin.ui.Notification;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 public class MainViewTest extends MainPageObject {
+  @Value("${spring.application.name}")
+  private String applicationName;
+
   @Test
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(MainView.class).message("title").contains(getDriver().getTitle()));
+    assertTrue(resources(MainView.class).message("title", applicationName)
+        .contains(getDriver().getTitle()));
   }
 
   @Test
