@@ -26,7 +26,6 @@ import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.testbench.elements.LabelElement;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,8 +61,7 @@ public class MenuTest extends MenuPageObject {
     if (currentLocale == Locale.FRENCH) {
       newLocale = Locale.ENGLISH;
     }
-    assertEquals(resources(newLocale).message("header"),
-        $(LabelElement.class).id("header").getText());
+    assertEquals(newLocale, currentLocale());
   }
 
   @Test
