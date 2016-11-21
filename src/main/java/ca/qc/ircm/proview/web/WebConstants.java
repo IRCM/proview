@@ -31,6 +31,7 @@ public class WebConstants {
   public static final String REQUIRED_CAPTION = "required.caption";
   public static final String INVALID_NUMBER = "invalidNumber";
   public static final String INVALID_INTEGER = "invalidInteger";
+  public static final String INVALID_EMAIL = "invalidEmail";
   public static final String ALREADY_EXISTS = "alreadyExists";
   public static final String OUT_OF_RANGE = "outOfRange";
   public static final String ONLY_WORDS = "onlyWords";

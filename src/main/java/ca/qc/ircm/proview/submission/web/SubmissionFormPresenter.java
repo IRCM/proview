@@ -1533,7 +1533,7 @@ public class SubmissionFormPresenter {
   }
 
   private boolean validate() {
-    logger.trace("Validate user");
+    logger.trace("Validate submission");
     boolean valid = true;
     try {
       submissionFieldGroup.commit();
