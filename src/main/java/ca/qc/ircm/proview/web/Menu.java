@@ -64,6 +64,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     setCompositionRoot(menu);
     home = menu.addItem("Home", new ChangeViewCommand(MainView.VIEW_NAME));
     submission = menu.addItem("Submission", new ChangeViewCommand(SubmissionView.VIEW_NAME));
+    submission.setVisible(false);
     changeLanguage = menu.addItem("Change language", new ChangeLanguageCommand());
     manager = menu.addItem("Manager", null);
     manager.setVisible(false);
@@ -79,6 +80,9 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     setCaptions();
     injectBeans();
     if (authorizationService != null) {
+      if (authorizationService.hasUserRole()) {
+        submission.setVisible(true);
+      }
       if (authorizationService.hasManagerRole() || authorizationService.hasAdminRole()) {
         manager.setVisible(true);
       }

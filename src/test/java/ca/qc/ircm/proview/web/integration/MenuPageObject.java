@@ -28,38 +28,67 @@ import static org.openqa.selenium.By.className;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.MenuBarElement;
+import org.openqa.selenium.WebElement;
 
 public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   protected void open() {
     openView(MainView.VIEW_NAME);
   }
 
-  private void clickMenuItemByStyle(String className) {
-    findElement(className("v-menubar-menuitem-" + className)).click();
+  private WebElement menuItemByStyle(String className) {
+    return findElement(className("v-menubar-menuitem-" + className));
   }
 
   protected MenuBarElement menu() {
     return $(MenuBarElement.class).first();
   }
 
+  protected WebElement homeMenuItem() {
+    return menuItemByStyle(HOME_STYLE);
+  }
+
   protected void clickHome() {
-    clickMenuItemByStyle(HOME_STYLE);
+    homeMenuItem().click();
+  }
+
+  protected WebElement submissionMenuItem() {
+    return menuItemByStyle(SUBMISSION_STYLE);
   }
 
   protected void clickSubmission() {
-    clickMenuItemByStyle(SUBMISSION_STYLE);
+    submissionMenuItem().click();
+  }
+
+  protected WebElement changeLanguageMenuItem() {
+    return menuItemByStyle(CHANGE_LANGUAGE_STYLE);
   }
 
   protected void clickChangeLanguage() {
-    clickMenuItemByStyle(CHANGE_LANGUAGE_STYLE);
+    changeLanguageMenuItem().click();
+  }
+
+  protected WebElement managerMenuItem() {
+    return menuItemByStyle(MANAGER_STYLE);
+  }
+
+  protected void clickManager() {
+    managerMenuItem().click();
+  }
+
+  protected WebElement validateUsersMenuItem() {
+    return menuItemByStyle(VALIDATE_USERS_STYLE);
   }
 
   protected void clickValidateUsers() {
-    clickMenuItemByStyle(MANAGER_STYLE);
-    clickMenuItemByStyle(VALIDATE_USERS_STYLE);
+    managerMenuItem().click();
+    validateUsersMenuItem().click();
+  }
+
+  protected WebElement helpMenuItem() {
+    return menuItemByStyle(HELP_STYLE);
   }
 
   protected void clickHelp() {
-    clickMenuItemByStyle(HELP_STYLE);
+    helpMenuItem().click();
   }
 }

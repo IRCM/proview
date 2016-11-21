@@ -101,6 +101,14 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     }
   }
 
+  protected <T> Optional<T> optional(Supplier<T> supplier) {
+    try {
+      return Optional.of(supplier.get());
+    } catch (Throwable e) {
+      return Optional.empty();
+    }
+  }
+
   protected Optional<WebElement> findOptionalElement(By by) {
     try {
       return Optional.of(findElement(by));

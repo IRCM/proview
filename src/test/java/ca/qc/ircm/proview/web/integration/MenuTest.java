@@ -18,6 +18,8 @@
 package ca.qc.ircm.proview.web.integration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -39,6 +41,60 @@ import java.util.Locale;
 public class MenuTest extends MenuPageObject {
   protected MessageResource resources(Locale locale) {
     return new MessageResource(MainView.class, locale);
+  }
+
+  @Test
+  @WithSubject(anonymous = true)
+  public void fieldsExistence_Anonymous() throws Throwable {
+    openView(MainView.VIEW_NAME);
+
+    assertTrue(optional(() -> homeMenuItem()).isPresent());
+    assertFalse(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
+    assertFalse(optional(() -> managerMenuItem()).isPresent());
+    assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
+    assertTrue(optional(() -> helpMenuItem()).isPresent());
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void fieldsExistence_User() throws Throwable {
+    openView(MainView.VIEW_NAME);
+
+    assertTrue(optional(() -> homeMenuItem()).isPresent());
+    assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
+    assertFalse(optional(() -> managerMenuItem()).isPresent());
+    assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
+    assertTrue(optional(() -> helpMenuItem()).isPresent());
+  }
+
+  @Test
+  @WithSubject(userId = 3)
+  public void fieldsExistence_Manager() throws Throwable {
+    openView(MainView.VIEW_NAME);
+
+    assertTrue(optional(() -> homeMenuItem()).isPresent());
+    assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
+    assertTrue(optional(() -> managerMenuItem()).isPresent());
+    clickManager();
+    assertTrue(optional(() -> validateUsersMenuItem()).isPresent());
+    assertTrue(optional(() -> helpMenuItem()).isPresent());
+  }
+
+  @Test
+  @WithSubject(userId = 1)
+  public void fieldsExistence_Admin() throws Throwable {
+    openView(MainView.VIEW_NAME);
+
+    assertTrue(optional(() -> homeMenuItem()).isPresent());
+    assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
+    assertTrue(optional(() -> managerMenuItem()).isPresent());
+    clickManager();
+    assertTrue(optional(() -> validateUsersMenuItem()).isPresent());
+    assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
   @Test
