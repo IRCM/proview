@@ -3,7 +3,6 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITION_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.LIMS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -123,12 +122,10 @@ public class SubmissionAnalysesFormPresenterTest {
     for (Grid acquisitionsGrid : view.acquisitionsGrids) {
       List<Column> columns = acquisitionsGrid.getColumns();
 
-      assertEquals(LIMS, columns.get(0).getPropertyId());
-      assertEquals(resources.message(LIMS), columns.get(0).getHeaderCaption());
-      assertEquals(NAME, columns.get(1).getPropertyId());
-      assertEquals(resources.message(NAME), columns.get(1).getHeaderCaption());
-      assertEquals(ACQUISITION_FILE, columns.get(2).getPropertyId());
-      assertEquals(resources.message(ACQUISITION_FILE), columns.get(2).getHeaderCaption());
+      assertEquals(NAME, columns.get(0).getPropertyId());
+      assertEquals(resources.message(NAME), columns.get(0).getHeaderCaption());
+      assertEquals(ACQUISITION_FILE, columns.get(1).getPropertyId());
+      assertEquals(resources.message(ACQUISITION_FILE), columns.get(1).getHeaderCaption());
     }
   }
 }

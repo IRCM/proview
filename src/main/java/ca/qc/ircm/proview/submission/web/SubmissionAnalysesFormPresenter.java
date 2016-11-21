@@ -43,7 +43,7 @@ public class SubmissionAnalysesFormPresenter {
   public static final String NAME = SAMPLE + "." + acquisition.sample.name.getMetadata().getName();
   public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
   public static final String ACQUISITION_INDEX = acquisition.listIndex.getMetadata().getName();
-  public static final Object[] ACQUISITIONS_COLUMNS = new Object[] { LIMS, NAME, ACQUISITION_FILE };
+  public static final Object[] ACQUISITIONS_COLUMNS = new Object[] { NAME, ACQUISITION_FILE };
   @SuppressWarnings("unused")
   private static final Logger logger =
       LoggerFactory.getLogger(SubmissionAnalysesFormPresenter.class);
@@ -90,7 +90,6 @@ public class SubmissionAnalysesFormPresenter {
       MsAnalysis analysis = analyses.get(i);
       BeanItemContainer<Acquisition> container = new BeanItemContainer<>(Acquisition.class);
       container.addAll(analysis.getAcquisitions());
-      container.addNestedContainerProperty(LIMS);
       container.addNestedContainerProperty(NAME);
       container.sort(new Object[] { ACQUISITION_INDEX }, new boolean[] { true });
       Grid acquisitionsGrid = view.acquisitionsGrids.get(i);
