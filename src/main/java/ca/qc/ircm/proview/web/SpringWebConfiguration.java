@@ -32,12 +32,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.util.IntrospectorCleanupListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -47,11 +42,8 @@ import javax.inject.Inject;
 @Configuration
 public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
   public static final String SHIRO_FILTER_NAME = "ShiroFilter";
-  private static final String PLUPLOAD_URL = "/pluploader-upload-action";
   @Inject
   private UserService userService;
-  @Inject
-  private Controller vaadinUiForwardingController;
 
   @Bean(name = SHIRO_FILTER_NAME)
   public ShiroFilter shiroFilter() {
@@ -71,16 +63,6 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
   @Bean(name = SignoutFilter.BEAN_NAME)
   public SignoutFilter signoutFilter() {
     return new SignoutFilter();
-  }
-
-  @Bean
-  public SimpleUrlHandlerMapping vaadinPluploadHandlerMapping() {
-    SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
-    mapping.setOrder(Integer.MIN_VALUE + 1);
-    Map<String, Object> urlMappings = new HashMap<>();
-    urlMappings.put(PLUPLOAD_URL, vaadinUiForwardingController);
-    mapping.setUrlMap(urlMappings);
-    return mapping;
   }
 
   @Bean
