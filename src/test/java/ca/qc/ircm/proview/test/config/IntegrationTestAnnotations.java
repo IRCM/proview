@@ -17,8 +17,7 @@
 
 package ca.qc.ircm.proview.test.config;
 
-import ca.qc.ircm.proview.Main;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -31,7 +30,7 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@SpringApplicationConfiguration(Main.class)
+@SpringBootTest
 @ActiveProfiles("integration-test")
 @WebAppConfiguration
 @Transactional

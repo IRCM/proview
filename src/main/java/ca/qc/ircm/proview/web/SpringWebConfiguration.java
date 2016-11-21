@@ -24,7 +24,7 @@ import ca.qc.ircm.proview.user.SignedShiro;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.SignedFilter;
 import org.apache.shiro.web.servlet.ShiroFilter;
-import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
