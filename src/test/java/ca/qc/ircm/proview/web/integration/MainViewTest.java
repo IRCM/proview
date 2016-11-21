@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import static ca.qc.ircm.proview.web.MainViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -44,8 +45,8 @@ public class MainViewTest extends MainPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(MainView.class).message("title", applicationName)
-        .contains(getDriver().getTitle()));
+    assertTrue(
+        resources(MainView.class).message(TITLE, applicationName).contains(getDriver().getTitle()));
   }
 
   @Test
@@ -72,6 +73,7 @@ public class MainViewTest extends MainPageObject {
 
     clickSignButton();
 
+    waitForPageLoad();
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
     assertNotNull(notification.getCaption());
@@ -97,6 +99,7 @@ public class MainViewTest extends MainPageObject {
 
     clickSignButton();
 
+    waitForPageLoad();
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
@@ -107,6 +110,7 @@ public class MainViewTest extends MainPageObject {
 
     clickForgotPasswordButton();
 
+    waitForPageLoad();
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals(Notification.Type.WARNING_MESSAGE.getStyle(), notification.getType());
     assertNotNull(notification.getCaption());
@@ -119,6 +123,7 @@ public class MainViewTest extends MainPageObject {
 
     clickForgotPasswordButton();
 
+    waitForPageLoad();
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals(Notification.Type.WARNING_MESSAGE.getStyle(), notification.getType());
     assertNotNull(notification.getCaption());
