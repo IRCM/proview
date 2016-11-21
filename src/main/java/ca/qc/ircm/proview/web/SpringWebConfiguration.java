@@ -19,10 +19,10 @@ package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.logging.MdcFilter;
 import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
-import ca.qc.ircm.proview.security.web.SignoutFilter;
 import ca.qc.ircm.proview.user.SignedShiro;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.SignedFilter;
+import ca.qc.ircm.proview.user.web.SignoutFilter;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;

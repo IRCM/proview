@@ -1,4 +1,4 @@
-package ca.qc.ircm.proview.security.web;
+package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.security.AuthenticationService;
 import org.slf4j.Logger;
