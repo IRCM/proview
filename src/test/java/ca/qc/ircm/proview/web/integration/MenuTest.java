@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import static ca.qc.ircm.proview.test.config.ShiroTestExecutionListener.REMEMBER_ME_COOKIE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,9 +32,11 @@ import ca.qc.ircm.utils.MessageResource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.Cookie;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
+import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
@@ -49,6 +52,7 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertFalse(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
     assertFalse(optional(() -> managerMenuItem()).isPresent());
     assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
@@ -62,6 +66,7 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
     assertFalse(optional(() -> managerMenuItem()).isPresent());
     assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
@@ -75,6 +80,7 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
     assertTrue(optional(() -> managerMenuItem()).isPresent());
     clickManager();
@@ -89,6 +95,7 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
     assertTrue(optional(() -> managerMenuItem()).isPresent());
     clickManager();
@@ -106,6 +113,30 @@ public class MenuTest extends MenuPageObject {
   }
 
   @Test
+  @WithSubject
+  public void submission() throws Throwable {
+    open();
+
+    clickSubmission();
+
+    assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void signout() throws Throwable {
+    open();
+
+    clickSignout();
+
+    waitForPageLoad();
+    assertEquals(homeUrl(), getDriver().getCurrentUrl());
+    Set<Cookie> cookies = driver.manage().getCookies();
+    assertFalse(cookies.stream().filter(cookie -> cookie.getName().equals(REMEMBER_ME_COOKIE_NAME))
+        .findAny().isPresent());
+  }
+
+  @Test
   public void changeLanguage() throws Throwable {
     open();
     Locale currentLocale = currentLocale();
@@ -118,16 +149,6 @@ public class MenuTest extends MenuPageObject {
       newLocale = Locale.ENGLISH;
     }
     assertEquals(newLocale, currentLocale());
-  }
-
-  @Test
-  @WithSubject
-  public void submission() throws Throwable {
-    open();
-
-    clickSubmission();
-
-    assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test

@@ -52,6 +52,7 @@ import javax.inject.Inject;
  * Sets Shiro's subject.
  */
 public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener {
+  public static final String REMEMBER_ME_COOKIE_NAME = "rememberMe";
   private static final String ANONYMOUS_VIEW = MainView.VIEW_NAME;
   private static final Logger logger = LoggerFactory.getLogger(ShiroTestExecutionListener.class);
   private ThreadState threadState;

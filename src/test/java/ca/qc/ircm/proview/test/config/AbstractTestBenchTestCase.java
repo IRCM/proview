@@ -49,6 +49,10 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   @Value("http://localhost:${local.server.port}")
   protected String baseUrl;
 
+  protected String homeUrl() {
+    return baseUrl + "/";
+  }
+
   protected String viewUrl(String view) {
     return baseUrl + "/#!" + view;
   }

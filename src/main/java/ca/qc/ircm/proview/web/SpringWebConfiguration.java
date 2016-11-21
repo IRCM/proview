@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.logging.MdcFilter;
 import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
+import ca.qc.ircm.proview.security.web.SignoutFilter;
 import ca.qc.ircm.proview.user.SignedShiro;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.SignedFilter;
@@ -67,11 +68,16 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
     return new MdcFilter();
   }
 
+  @Bean(name = SignoutFilter.BEAN_NAME)
+  public SignoutFilter signoutFilter() {
+    return new SignoutFilter();
+  }
+
   @Bean
   public SimpleUrlHandlerMapping vaadinPluploadHandlerMapping() {
     SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
     mapping.setOrder(Integer.MIN_VALUE + 1);
-    Map<String, Object> urlMappings = new HashMap<String, Object>();
+    Map<String, Object> urlMappings = new HashMap<>();
     urlMappings.put(PLUPLOAD_URL, vaadinUiForwardingController);
     mapping.setUrlMap(urlMappings);
     return mapping;

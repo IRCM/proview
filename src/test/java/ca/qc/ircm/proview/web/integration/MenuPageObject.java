@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE_STYLE;
 import static ca.qc.ircm.proview.web.Menu.HELP_STYLE;
 import static ca.qc.ircm.proview.web.Menu.HOME_STYLE;
 import static ca.qc.ircm.proview.web.Menu.MANAGER_STYLE;
+import static ca.qc.ircm.proview.web.Menu.SIGNOUT_STYLE;
 import static ca.qc.ircm.proview.web.Menu.SUBMISSION_STYLE;
 import static ca.qc.ircm.proview.web.Menu.VALIDATE_USERS_STYLE;
 import static org.openqa.selenium.By.className;
@@ -57,6 +58,14 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
 
   protected void clickSubmission() {
     submissionMenuItem().click();
+  }
+
+  protected WebElement signoutMenuItem() {
+    return menuItemByStyle(SIGNOUT_STYLE);
+  }
+
+  protected void clickSignout() {
+    signoutMenuItem().click();
   }
 
   protected WebElement changeLanguageMenuItem() {

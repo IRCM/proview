@@ -17,7 +17,10 @@
 
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.web.AccessDeniedView;
+import ca.qc.ircm.proview.security.web.SignoutFilter;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
@@ -41,6 +44,7 @@ import javax.inject.Inject;
 public class Menu extends CustomComponent implements MessageResourcesComponent {
   public static final String HOME_STYLE = "home";
   public static final String SUBMISSION_STYLE = "submission";
+  public static final String SIGNOUT_STYLE = "signout";
   public static final String CHANGE_LANGUAGE_STYLE = "changeLanguage";
   public static final String MANAGER_STYLE = "manager";
   public static final String VALIDATE_USERS_STYLE = "validateUsers";
@@ -50,27 +54,31 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   private MenuBar menu = new MenuBar();
   private MenuItem home;
   private MenuItem submission;
+  private MenuItem signout;
   private MenuItem changeLanguage;
   private MenuItem manager;
   private MenuItem validateUsers;
   private MenuItem help;
   @Inject
   private AuthorizationService authorizationService;
+  @Inject
+  private AuthenticationService authenticationService;
 
   /**
    * Creates navigation menu.
    */
   public Menu() {
     setCompositionRoot(menu);
-    home = menu.addItem("Home", new ChangeViewCommand(MainView.VIEW_NAME));
-    submission = menu.addItem("Submission", new ChangeViewCommand(SubmissionView.VIEW_NAME));
+    home = menu.addItem("Home", item -> changeView(MainView.VIEW_NAME));
+    submission = menu.addItem("Submission", item -> changeView(SubmissionView.VIEW_NAME));
     submission.setVisible(false);
-    changeLanguage = menu.addItem("Change language", new ChangeLanguageCommand());
+    signout = menu.addItem("Sign out", item -> signout());
+    signout.setVisible(false);
+    changeLanguage = menu.addItem("Change language", item -> changeLanguage());
     manager = menu.addItem("Manager", null);
     manager.setVisible(false);
-    validateUsers =
-        manager.addItem("Validate users", new ChangeViewCommand(ValidateView.VIEW_NAME));
-    help = menu.addItem("Help", new ChangeViewCommand(MainView.VIEW_NAME));
+    validateUsers = manager.addItem("Validate users", item -> changeView(ValidateView.VIEW_NAME));
+    help = menu.addItem("Help", item -> changeView(MainView.VIEW_NAME));
   }
 
   @Override
@@ -80,6 +88,9 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     setCaptions();
     injectBeans();
     if (authorizationService != null) {
+      if (authorizationService.isUser()) {
+        signout.setVisible(true);
+      }
       if (authorizationService.hasUserRole()) {
         submission.setVisible(true);
       }
@@ -92,6 +103,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   private void setStyles() {
     home.setStyleName(HOME_STYLE);
     submission.setStyleName(SUBMISSION_STYLE);
+    signout.setStyleName(SIGNOUT_STYLE);
     changeLanguage.setStyleName(CHANGE_LANGUAGE_STYLE);
     manager.setStyleName(MANAGER_STYLE);
     validateUsers.setStyleName(VALIDATE_USERS_STYLE);
@@ -102,6 +114,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     MessageResource resources = getResources();
     home.setText(resources.message(HOME_STYLE));
     submission.setText(resources.message(SUBMISSION_STYLE));
+    signout.setText(resources.message(SIGNOUT_STYLE));
     changeLanguage.setText(resources.message(CHANGE_LANGUAGE_STYLE));
     manager.setText(resources.message(MANAGER_STYLE));
     validateUsers.setText(resources.message(VALIDATE_USERS_STYLE));
@@ -119,35 +132,35 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     }
   }
 
-  private class ChangeViewCommand implements MenuBar.Command {
-    private static final long serialVersionUID = -4625560173980983731L;
-    private final String viewName;
+  private void changeView(String viewName) {
+    logger.debug("Navigate to {}", viewName);
+    getUI().getNavigator().navigateTo(viewName);
+  }
 
-    ChangeViewCommand(String viewName) {
-      this.viewName = viewName;
-    }
-
-    @Override
-    public void menuSelected(MenuItem selectedItem) {
-      logger.debug("Navigate to {}", viewName);
-      getUI().getNavigator().navigateTo(viewName);
+  private void signout() {
+    if (authenticationService != null) {
+      logger.debug("Signout user {}", authorizationService.getCurrentUser());
+      UI ui = getUI();
+      if (ui instanceof MainUi) {
+        String signoutUrl = ((MainUi) ui).getServletContext().getContextPath();
+        signoutUrl += SignoutFilter.SIGNOUT_URL;
+        getUI().getPage().setLocation(signoutUrl);
+      }
+    } else {
+      logger.warn("Signout called without an AuthenticationService instance");
+      changeView(AccessDeniedView.VIEW_NAME);
     }
   }
 
-  private class ChangeLanguageCommand implements MenuBar.Command {
-    private static final long serialVersionUID = 6785281901439260013L;
-
-    @Override
-    public void menuSelected(MenuItem selectedItem) {
-      Locale newLocale = Locale.ENGLISH;
-      Locale locale = getLocale();
-      if (locale != null && locale.getLanguage().equals("en")) {
-        newLocale = Locale.FRENCH;
-      }
-      logger.debug("Change language from {} to {}", locale, newLocale);
-      getUI().getSession().setLocale(newLocale);
-      getUI().setLocale(newLocale);
-      getUI().getPage().reload();
+  private void changeLanguage() {
+    Locale newLocale = Locale.ENGLISH;
+    Locale locale = getLocale();
+    if (locale != null && locale.getLanguage().equals("en")) {
+      newLocale = Locale.FRENCH;
     }
+    logger.debug("Change language from {} to {}", locale, newLocale);
+    getUI().getSession().setLocale(newLocale);
+    getUI().setLocale(newLocale);
+    getUI().getPage().reload();
   }
 }
