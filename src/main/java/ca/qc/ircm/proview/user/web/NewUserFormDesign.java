@@ -37,10 +37,11 @@ public class NewUserFormDesign extends VerticalLayout {
   protected TextField stateField;
   protected TextField countryField;
   protected TextField postalCodeField;
+  protected Button clearAddressButton;
   protected Panel phoneNumbersPanel;
   protected VerticalLayout phoneNumbersLayout;
   protected ComboBox phoneNumberTypeField;
-  protected TextField phoneField;
+  protected TextField numberField;
   protected TextField extensionField;
   protected Button removePhoneNumberButton;
   protected Button addPhoneNumberButton;

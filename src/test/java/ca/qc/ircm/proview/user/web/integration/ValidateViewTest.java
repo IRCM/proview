@@ -21,13 +21,17 @@ import static ca.qc.ircm.proview.user.QUser.user;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.web.NewUserFormPresenter;
+import ca.qc.ircm.proview.user.web.UserWindow;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.vaadin.testbench.elements.NotificationElement;
+import com.vaadin.testbench.elements.WindowElement;
 import com.vaadin.ui.Notification;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,6 +89,21 @@ public class ValidateViewTest extends ValidatePageObject {
     assertEquals(2, emails.size());
     assertTrue(emails.contains("francois.robert@ircm.qc.ca"));
     assertTrue(emails.contains("michel.tremblay@ircm.qc.ca"));
+  }
+
+  @Test
+  public void viewUser() throws Throwable {
+    open();
+    String email = "francois.robert@ircm.qc.ca";
+
+    clickViewUser(email);
+
+    assertNotNull(findElement(className(UserWindow.WINDOW_STYLE)));
+    WindowElement userWindow =
+        wrap(WindowElement.class, findElement(className(UserWindow.WINDOW_STYLE)));
+    assertTrue(resources(UserWindow.class).message(UserWindow.TITLE, email)
+        .contains(userWindow.getCaption()));
+    assertNotNull(userWindow.findElement(className(NewUserFormPresenter.USER)));
   }
 
   @Test

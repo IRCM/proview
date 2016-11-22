@@ -39,7 +39,7 @@ public class ValidateView extends ValidateViewDesign implements MessageResources
   @Inject
   private ValidateViewPresenter presenter;
   @Inject
-  private Provider<ViewUserWindow> userWindowProvider;
+  private Provider<UserWindow> userWindowProvider;
   protected Menu menu = new Menu();
 
   @PostConstruct
@@ -69,10 +69,10 @@ public class ValidateView extends ValidateViewDesign implements MessageResources
    *          user to view
    */
   public void viewUser(User user) {
-    ViewUserWindow userWindow = userWindowProvider.get();
+    UserWindow userWindow = userWindowProvider.get();
     userWindow.center();
-    getUI().addWindow(userWindow);
     userWindow.setUser(user);
+    getUI().addWindow(userWindow);
   }
 
   public void afterSuccessfulValidate(String message) {

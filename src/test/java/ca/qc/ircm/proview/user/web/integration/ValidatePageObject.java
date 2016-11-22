@@ -34,15 +34,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   private static final Logger logger = LoggerFactory.getLogger(ValidatePageObject.class);
   private static final int SELECT_COLUMN = 0;
   private static final int EMAIL_COLUMN = gridColumnIndex(ValidateViewPresenter.EMAIL);
+  private static final int VIEW_COLUMN = gridColumnIndex(ValidateViewPresenter.VIEW);
   private static final int VALIDATE_COLUMN = gridColumnIndex(ValidateViewPresenter.VALIDATE);
 
   protected void open() {
@@ -81,15 +80,13 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
     }
   }
 
-  protected void clickValidateUser(String email) {
-    logger.debug("clickValidateUser for user {}", email);
+  private void processUsersGridRow(String email, Consumer<Integer> consumer) {
     GridElement usersGrid = usersGrid();
     processUsersGridRows(row -> {
       GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
       try {
         if (email.equals(emailCell.getText())) {
-          GridCellElement buttonCell = usersGrid.getCell(row, VALIDATE_COLUMN);
-          buttonCell.click();
+          consumer.accept(row);
         }
       } catch (RuntimeException e) {
         throw e;
@@ -97,15 +94,30 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
     });
   }
 
-  protected void selectUsers(String... emails) {
-    Set<String> emailsSet = new HashSet<>(Arrays.asList(emails));
+  protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
-    processUsersGridRows(row -> {
-      GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
-      if (emailsSet.contains(emailCell.getText())) {
+    processUsersGridRow(email, row -> {
+      GridCellElement buttonCell = usersGrid.getCell(row, VIEW_COLUMN);
+      buttonCell.click();
+    });
+  }
+
+  protected void clickValidateUser(String email) {
+    logger.debug("clickValidateUser for user {}", email);
+    GridElement usersGrid = usersGrid();
+    processUsersGridRow(email, row -> {
+      GridCellElement buttonCell = usersGrid.getCell(row, VALIDATE_COLUMN);
+      buttonCell.click();
+    });
+  }
+
+  protected void selectUsers(String... emails) {
+    GridElement usersGrid = usersGrid();
+    Arrays.asList(emails).forEach(email -> {
+      processUsersGridRow(email, row -> {
         GridCellElement checkboxCell = usersGrid.getCell(row, SELECT_COLUMN);
         checkboxCell.click();
-      }
+      });
     });
   }
 
