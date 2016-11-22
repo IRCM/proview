@@ -17,6 +17,7 @@ import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
@@ -59,6 +60,8 @@ public class NewUserFormPresenter {
   public static final String PASSWORD = "password";
   public static final String CONFIRM_PASSWORD = "confirmPassword";
   public static final String LABORATORY = laboratory.getMetadata().getName();
+  public static final String NEW_LABORATORY = "newLaboratory";
+  public static final String MANAGER = "manager";
   public static final String LABORATORY_ORGANIZATION =
       laboratory.organization.getMetadata().getName();
   public static final String LABORATORY_NAME = laboratory.name.getMetadata().getName();
@@ -89,14 +92,17 @@ public class NewUserFormPresenter {
   private UserService userService;
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
+  @Inject
+  private VaadinUtils vaadinUtils;
 
   public NewUserFormPresenter() {
   }
 
   public NewUserFormPresenter(UserService userService,
-      DefaultAddressConfiguration defaultAddressConfiguration) {
+      DefaultAddressConfiguration defaultAddressConfiguration, VaadinUtils vaadinUtils) {
     this.userService = userService;
     this.defaultAddressConfiguration = defaultAddressConfiguration;
+    this.vaadinUtils = vaadinUtils;
   }
 
   /**
@@ -155,13 +161,18 @@ public class NewUserFormPresenter {
     view.confirmPasswordField.setRequiredError(generalResources.message(REQUIRED));
     view.laboratoryPanel.addStyleName(LABORATORY);
     view.laboratoryPanel.setCaption(resources.message(LABORATORY));
+    view.newLaboratoryField.addStyleName(NEW_LABORATORY);
+    view.newLaboratoryField.setCaption(resources.message(NEW_LABORATORY));
+    view.laboratoryManagerField.addStyleName(MANAGER);
+    view.laboratoryManagerField.setCaption(resources.message(MANAGER));
+    view.laboratoryManagerField.setRequiredError(generalResources.message(REQUIRED));
     view.organizationField.addStyleName(LABORATORY_ORGANIZATION);
     view.organizationField
         .setCaption(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION));
-    view.organizationField.setReadOnly(true);
+    view.organizationField.setRequiredError(generalResources.message(REQUIRED));
     view.laboratoryNameField.addStyleName(LABORATORY_NAME);
     view.laboratoryNameField.setCaption(resources.message(LABORATORY + "." + LABORATORY_NAME));
-    view.laboratoryNameField.setReadOnly(true);
+    view.laboratoryNameField.setRequiredError(generalResources.message(REQUIRED));
     view.addressPanel.addStyleName(ADDRESS);
     view.addressPanel.setCaption(resources.message(ADDRESS));
     view.addressLineField.addStyleName(ADDRESS_LINE);
@@ -214,28 +225,45 @@ public class NewUserFormPresenter {
       view.passwordField.isValid();
       view.passwordField.markAsDirty();
     });
+    view.newLaboratoryField.addValueChangeListener(e -> updateVisible());
     view.clearAddressButton.addClickListener(e -> clearAddress());
     view.addPhoneNumberButton.addClickListener(e -> addPhoneNumber());
     view.saveButton.addClickListener(e -> save());
   }
 
   private void updateEditable() {
-    boolean editable = editableProperty.getValue();
+    final boolean editable = editableProperty.getValue();
+    final boolean newUser = isNewUser();
     view.emailField.setReadOnly(!editable);
     view.nameField.setReadOnly(!editable);
-    view.passwordField.setVisible(editable);
-    view.confirmPasswordField.setVisible(editable);
+    view.newLaboratoryField.setReadOnly(!editable || !newUser);
+    view.laboratoryManagerField.setReadOnly(!editable || !newUser);
+    view.organizationField.setReadOnly(!editable || !newUser);
+    view.laboratoryNameField.setReadOnly(!editable || !newUser);
     view.addressLineField.setReadOnly(!editable);
     view.townField.setReadOnly(!editable);
     view.stateField.setReadOnly(!editable);
     view.countryField.setReadOnly(!editable);
     view.postalCodeField.setReadOnly(!editable);
-    view.clearAddressButton.setVisible(editable);
     phoneNumberFieldGroups.forEach(fieldGroup -> {
       fieldGroup.getField(PHONE_NUMBER_TYPE).setReadOnly(!editable);
       fieldGroup.getField(PHONE_NUMBER_NUMBER).setReadOnly(!editable);
       fieldGroup.getField(PHONE_NUMBER_EXTENSION).setReadOnly(!editable);
     });
+    updateVisible();
+  }
+
+  private void updateVisible() {
+    final boolean editable = editableProperty.getValue();
+    final boolean newUser = isNewUser();
+    final boolean newLaboratory = view.newLaboratoryField.getValue();
+    view.passwordField.setVisible(editable);
+    view.confirmPasswordField.setVisible(editable);
+    view.newLaboratoryField.setVisible(newUser && editable);
+    view.laboratoryManagerField.setVisible(newUser && editable && !newLaboratory);
+    view.organizationField.setVisible(!newUser || !editable || newLaboratory);
+    view.laboratoryNameField.setVisible(!newUser || !editable || newLaboratory);
+    view.clearAddressButton.setVisible(editable);
     removePhoneNumberButtons.forEach(button -> button.setVisible(editable));
     view.addPhoneNumberButton.setVisible(editable);
     view.buttonsLayout.setVisible(editable);
@@ -323,6 +351,14 @@ public class NewUserFormPresenter {
     try {
       userFieldGroup.commit();
       passwordFieldGroup.commit();
+      if (isNewUser()) {
+        if (view.newLaboratoryField.getValue()) {
+          view.organizationField.commit();
+          view.laboratoryNameField.commit();
+        } else {
+          view.laboratoryManagerField.commit();
+        }
+      }
       for (BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup : phoneNumberFieldGroups) {
         phoneNumberFieldGroup.commit();
       }
@@ -351,11 +387,24 @@ public class NewUserFormPresenter {
       if (password.isEmpty()) {
         password = null;
       }
-      userService.update(user, password);
+      if (isNewUser()) {
+        User manager = null;
+        if (!view.newLaboratoryField.getValue()) {
+          manager = new User(null, view.laboratoryManagerField.getValue());
+        }
+        userService.register(user, password, manager,
+            locale -> vaadinUtils.getUrl(ValidateView.VIEW_NAME));
+      } else {
+        userService.update(user, password);
+      }
       final MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message("save.done", user.getEmail()));
       view.fireSaveEvent(user);
     }
+  }
+
+  private boolean isNewUser() {
+    return userFieldGroup.getItemDataSource().getBean().getId() == null;
   }
 
   public Item getItemDataSource() {
@@ -386,9 +435,13 @@ public class NewUserFormPresenter {
     }
 
     userFieldGroup.setItemDataSource(item);
-    User user = userFieldGroup.getItemDataSource().getBean();
-    view.passwordField.setRequired(user.getId() == null);
-    view.confirmPasswordField.setRequired(user.getId() == null);
+    final User user = userFieldGroup.getItemDataSource().getBean();
+    final boolean newUser = isNewUser();
+    view.passwordField.setRequired(newUser);
+    view.confirmPasswordField.setRequired(newUser);
+    view.laboratoryManagerField.setRequired(newUser);
+    view.organizationField.setRequired(newUser);
+    view.laboratoryNameField.setRequired(newUser);
     phoneNumberFieldGroups.clear();
     removePhoneNumberButtons.clear();
     view.phoneNumbersLayout.removeAllComponents();
