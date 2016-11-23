@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.web;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,22 +52,6 @@ public class MainView extends MainViewDesign implements MessageResourcesView {
     super.attach();
     signForm.getLayout().setMargin(false);
     presenter.init(this);
-  }
-
-  public void setTitle(String title) {
-    getUI().getPage().setTitle(title);
-  }
-
-  public void showError(String error) {
-    Notification.show(error, Notification.Type.ERROR_MESSAGE);
-  }
-
-  public void showWarning(String message) {
-    Notification.show(message, Notification.Type.WARNING_MESSAGE);
-  }
-
-  public void navigateTo(String view) {
-    getUI().getNavigator().navigateTo(view);
   }
 
   @Override

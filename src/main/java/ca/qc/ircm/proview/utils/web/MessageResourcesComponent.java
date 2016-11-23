@@ -20,25 +20,11 @@ package ca.qc.ircm.proview.utils.web;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Component;
 
-import java.util.Locale;
-
 /**
  * Component that allows to get resources.
  */
 public interface MessageResourcesComponent extends Component {
   default MessageResource getResources() {
-    return getResources(getClass(), getLocale());
-  }
-
-  default MessageResource getResources(Class<?> clazz) {
-    return new MessageResource(clazz, getLocale());
-  }
-
-  default MessageResource getResources(Locale locale) {
-    return new MessageResource(getClass(), locale);
-  }
-
-  default MessageResource getResources(Class<?> clazz, Locale locale) {
-    return new MessageResource(clazz, locale);
+    return new MessageResource(getClass(), getLocale());
   }
 }

@@ -54,14 +54,6 @@ public class ValidateView extends ValidateViewDesign implements MessageResources
     presenter.attach();
   }
 
-  public void setTitle(String title) {
-    getUI().getPage().setTitle(title);
-  }
-
-  public void showError(String message) {
-    Notification.show(message, Notification.Type.ERROR_MESSAGE);
-  }
-
   /**
    * Open view user window.
    *

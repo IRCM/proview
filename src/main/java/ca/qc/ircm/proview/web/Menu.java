@@ -54,6 +54,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   private MenuBar menu = new MenuBar();
   private MenuItem home;
   private MenuItem submission;
+  private MenuItem profile;
   private MenuItem signout;
   private MenuItem changeLanguage;
   private MenuItem manager;
@@ -72,6 +73,8 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     home = menu.addItem("Home", item -> changeView(MainView.VIEW_NAME));
     submission = menu.addItem("Submission", item -> changeView(SubmissionView.VIEW_NAME));
     submission.setVisible(false);
+    profile = menu.addItem("Profile", item -> changeView(SubmissionView.VIEW_NAME));
+    profile.setVisible(false);
     signout = menu.addItem("Sign out", item -> signout());
     signout.setVisible(false);
     changeLanguage = menu.addItem("Change language", item -> changeLanguage());

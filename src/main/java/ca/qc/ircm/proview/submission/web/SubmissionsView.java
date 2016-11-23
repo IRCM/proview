@@ -21,7 +21,6 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Notification;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -53,14 +52,6 @@ public class SubmissionsView extends SubmissionsViewDesign implements MessageRes
   public void attach() {
     super.attach();
     presenter.init(this);
-  }
-
-  public void setTitle(String title) {
-    getUI().getPage().setTitle(title);
-  }
-
-  public void showError(String message) {
-    Notification.show(message, Notification.Type.ERROR_MESSAGE);
   }
 
   /**

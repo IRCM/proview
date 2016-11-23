@@ -32,8 +32,6 @@ public class MessageResourcesComponentTest {
   private Locale frenchLocale = Locale.FRENCH;
   private String message = "This is a test";
   private String frenchMessage = "Ceci est un test";
-  private String classMessage = "Class - This is a test";
-  private String frenchClassMessage = "Class - Ceci est un test";
 
   @Before
   public void beforeTest() {
@@ -56,56 +54,6 @@ public class MessageResourcesComponentTest {
     MessageResource messageResource = messageResourcesComponent.getResources();
 
     assertEquals(frenchMessage, messageResource.message("message"));
-  }
-
-  @Test
-  public void getResources_Locale() {
-    MessageResource messageResource = messageResourcesComponent.getResources(locale);
-
-    assertEquals(message, messageResource.message("message"));
-  }
-
-  @Test
-  public void getResources_Locale_French() {
-    MessageResource messageResource = messageResourcesComponent.getResources(frenchLocale);
-
-    assertEquals(frenchMessage, messageResource.message("message"));
-  }
-
-  @Test
-  public void getResources_Class() {
-    messageResourcesComponent.setLocale(locale);
-
-    MessageResource messageResource =
-        messageResourcesComponent.getResources(MessageResourcesComponentTest.class);
-
-    assertEquals(classMessage, messageResource.message("message"));
-  }
-
-  @Test
-  public void getResources_Class_French() {
-    messageResourcesComponent.setLocale(frenchLocale);
-
-    MessageResource messageResource =
-        messageResourcesComponent.getResources(MessageResourcesComponentTest.class);
-
-    assertEquals(frenchClassMessage, messageResource.message("message"));
-  }
-
-  @Test
-  public void getResources_Class_Locale() {
-    MessageResource messageResource =
-        messageResourcesComponent.getResources(MessageResourcesComponentTest.class, locale);
-
-    assertEquals(classMessage, messageResource.message("message"));
-  }
-
-  @Test
-  public void getResources_Class_Locale_French() {
-    MessageResource messageResource =
-        messageResourcesComponent.getResources(MessageResourcesComponentTest.class, frenchLocale);
-
-    assertEquals(frenchClassMessage, messageResource.message("message"));
   }
 
   private static class TestMessageResourcesComponent extends TextField

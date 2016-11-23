@@ -17,8 +17,36 @@
 
 package ca.qc.ircm.proview.utils.web;
 
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Notification;
+
 /**
  * View that allows to get resources.
  */
-public interface MessageResourcesView extends MessageResourcesComponent, AbstractView {
+public interface AbstractView extends Component, View {
+  default void setTitle(String title) {
+    getUI().getPage().setTitle(title);
+  }
+
+  default void showError(String message) {
+    Notification.show(message, Notification.Type.ERROR_MESSAGE);
+  }
+
+  default void showWarning(String message) {
+    Notification.show(message, Notification.Type.WARNING_MESSAGE);
+  }
+
+  default void showTrayNotification(String message) {
+    Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
+  }
+
+  default void navigateTo(String view) {
+    getUI().getNavigator().navigateTo(view);
+  }
+
+  @Override
+  default void enter(ViewChangeEvent event) {
+  }
 }

@@ -60,7 +60,7 @@ public class ErrorView extends VerticalLayout implements MessageResourcesView {
     button.addClickListener(new ClickListener() {
       @Override
       public void buttonClick(ClickEvent event) {
-        getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
+        navigateTo(MainView.VIEW_NAME);
       }
     });
     addComponent(button);
