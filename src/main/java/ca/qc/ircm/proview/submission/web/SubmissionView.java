@@ -23,12 +23,14 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
 /**
  * Submission view.
  */
 @SpringView(name = SubmissionView.VIEW_NAME)
+@RolesAllowed({ "USER" })
 public class SubmissionView extends SubmissionViewDesign implements MessageResourcesView {
   public static final String VIEW_NAME = "submission";
   private static final long serialVersionUID = -6009778227571187664L;
