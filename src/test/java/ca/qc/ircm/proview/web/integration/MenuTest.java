@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.RegisterView;
+import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
@@ -120,6 +121,16 @@ public class MenuTest extends MenuPageObject {
     clickSubmission();
 
     assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void profile() throws Throwable {
+    open();
+
+    clickProfile();
+
+    assertEquals(viewUrl(UserView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test

@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
+import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
 import ca.qc.ircm.utils.MessageResource;
@@ -44,6 +45,7 @@ import javax.inject.Inject;
 public class Menu extends CustomComponent implements MessageResourcesComponent {
   public static final String HOME_STYLE = "home";
   public static final String SUBMISSION_STYLE = "submission";
+  public static final String PROFILE_STYLE = "profile";
   public static final String SIGNOUT_STYLE = "signout";
   public static final String CHANGE_LANGUAGE_STYLE = "changeLanguage";
   public static final String MANAGER_STYLE = "manager";
@@ -73,7 +75,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     home = menu.addItem("Home", item -> changeView(MainView.VIEW_NAME));
     submission = menu.addItem("Submission", item -> changeView(SubmissionView.VIEW_NAME));
     submission.setVisible(false);
-    profile = menu.addItem("Profile", item -> changeView(SubmissionView.VIEW_NAME));
+    profile = menu.addItem("Profile", item -> changeView(UserView.VIEW_NAME));
     profile.setVisible(false);
     signout = menu.addItem("Sign out", item -> signout());
     signout.setVisible(false);
@@ -92,6 +94,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     injectBeans();
     if (authorizationService != null) {
       if (authorizationService.isUser()) {
+        profile.setVisible(true);
         signout.setVisible(true);
       }
       if (authorizationService.hasUserRole()) {
@@ -106,6 +109,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
   private void setStyles() {
     home.setStyleName(HOME_STYLE);
     submission.setStyleName(SUBMISSION_STYLE);
+    profile.setStyleName(PROFILE_STYLE);
     signout.setStyleName(SIGNOUT_STYLE);
     changeLanguage.setStyleName(CHANGE_LANGUAGE_STYLE);
     manager.setStyleName(MANAGER_STYLE);
@@ -117,6 +121,7 @@ public class Menu extends CustomComponent implements MessageResourcesComponent {
     MessageResource resources = getResources();
     home.setText(resources.message(HOME_STYLE));
     submission.setText(resources.message(SUBMISSION_STYLE));
+    profile.setText(resources.message(PROFILE_STYLE));
     signout.setText(resources.message(SIGNOUT_STYLE));
     changeLanguage.setText(resources.message(CHANGE_LANGUAGE_STYLE));
     manager.setText(resources.message(MANAGER_STYLE));
