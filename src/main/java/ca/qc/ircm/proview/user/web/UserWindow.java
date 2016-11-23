@@ -38,11 +38,11 @@ public class UserWindow extends Window implements MessageResourcesComponent {
   public static final String WINDOW_STYLE = "user-window";
   public static final String TITLE = "title";
   private static final long serialVersionUID = 9032686080431923743L;
-  private NewUserForm view = new NewUserForm();
+  private UserForm view = new UserForm();
   private Panel panel;
   private User user;
   @Inject
-  private NewUserFormPresenter presenter;
+  private UserFormPresenter presenter;
 
   @PostConstruct
   protected void init() {

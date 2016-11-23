@@ -35,9 +35,9 @@ public class RegisterView extends RegisterViewDesign implements MessageResources
   @Inject
   private RegisterViewPresenter presenter;
   @Inject
-  protected NewUserFormPresenter userFormPresenter;
+  protected UserFormPresenter userFormPresenter;
   protected Menu menu = new Menu();
-  protected NewUserForm userForm = new NewUserForm();
+  protected UserForm userForm = new UserForm();
 
   /**
    * Initializes view.

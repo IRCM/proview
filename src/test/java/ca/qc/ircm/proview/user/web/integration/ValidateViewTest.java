@@ -26,7 +26,7 @@ import static org.openqa.selenium.By.className;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.web.NewUserFormPresenter;
+import ca.qc.ircm.proview.user.web.UserFormPresenter;
 import ca.qc.ircm.proview.user.web.UserWindow;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -103,7 +103,7 @@ public class ValidateViewTest extends ValidatePageObject {
         wrap(WindowElement.class, findElement(className(UserWindow.WINDOW_STYLE)));
     assertTrue(resources(UserWindow.class).message(UserWindow.TITLE, email)
         .contains(userWindow.getCaption()));
-    assertNotNull(userWindow.findElement(className(NewUserFormPresenter.USER)));
+    assertNotNull(userWindow.findElement(className(UserFormPresenter.USER)));
   }
 
   @Test

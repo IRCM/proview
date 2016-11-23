@@ -63,8 +63,8 @@ public class RegisterViewPresenterTest {
   public void beforeTest() {
     presenter = new RegisterViewPresenter(applicationName);
     view.headerLabel = new Label();
-    view.userForm = mock(NewUserForm.class);
-    view.userFormPresenter = mock(NewUserFormPresenter.class);
+    view.userForm = mock(UserForm.class);
+    view.userFormPresenter = mock(UserFormPresenter.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
