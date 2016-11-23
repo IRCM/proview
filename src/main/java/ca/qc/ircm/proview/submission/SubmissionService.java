@@ -454,28 +454,17 @@ public class SubmissionService {
   }
 
   /**
-   * Updates submission.
+   * Forces submission update.
    *
    * @param submission
    *          submission with new information
-   * @param owner
-   *          new submission's owner
    * @param justification
    *          justification for changes made to submission
    */
-  public void update(Submission submission, User owner, String justification) {
+  public void forceUpdate(Submission submission, String justification) {
     authorizationService.checkAdminRole();
 
-    if (owner != null) {
-      submission.setUser(owner);
-      submission.setLaboratory(owner.getLaboratory());
-    } else {
-      // Make sure owner is not updated.
-      Submission oldSubmission = entityManager.find(Submission.class, submission.getId());
-      entityManager.detach(oldSubmission);
-      submission.setUser(oldSubmission.getUser());
-      submission.setLaboratory(oldSubmission.getLaboratory());
-    }
+    submission.setLaboratory(submission.getUser().getLaboratory());
 
     // Log update to database.
     Optional<Activity> activity = submissionActivityService.update(submission, justification);

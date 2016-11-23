@@ -2028,21 +2028,57 @@ public class SubmissionServiceTest {
   }
 
   @Test
-  public void update() throws Exception {
-    // TODO program unit test.
-  }
-
-  @Test
-  public void update_NewOwner() throws Exception {
+  public void forceUpdate() throws Exception {
     Submission submission = entityManager.find(Submission.class, 1L);
     entityManager.detach(submission);
+    submission.setService(Service.LC_MS_MS);
+    submission.setTaxonomy("human");
+    submission.setProject("project");
+    submission.setExperience("experience");
+    submission.setGoal("goal");
+    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setInjectionType(InjectionType.LC_MS);
+    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
+    submission.setOtherProteolyticDigestionMethod("other digestion");
+    submission.setProteinIdentification(ProteinIdentification.NCBINR);
+    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
+    submission.setOtherEnrichmentType("other enrichment");
+    submission.setProtein("protein");
+    submission.setPostTranslationModification("my_modification");
+    submission.setMudPitFraction(MudPitFraction.EIGHT);
+    submission.setProteinContent(ProteinContent.MEDIUM);
+    submission.setComments("comments");
+    GelImage gelImage = new GelImage();
+    gelImage.setFilename("my_gel_image.jpg");
+    byte[] imageContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      imageContent[i] = (byte) random.nextInt();
+    }
+    gelImage.setContent(imageContent);
+    List<GelImage> gelImages = new LinkedList<>();
+    gelImages.add(gelImage);
+    submission.setGelImages(gelImages);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename("my_file.docx");
+    byte[] fileContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      fileContent[i] = (byte) random.nextInt();
+    }
+    file.setContent(fileContent);
+    List<SubmissionFile> files = new LinkedList<>();
+    files.add(file);
+    submission.setFiles(files);
     User user = entityManager.find(User.class, 4L);
+    submission.setUser(user);
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionServiceImpl.update(submission, user, "unit_test");
+    submissionServiceImpl.forceUpdate(submission, "unit_test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -2050,79 +2086,47 @@ public class SubmissionServiceTest {
     verify(activityService).insert(activity);
     submission = entityManager.find(Submission.class, 1L);
     entityManager.refresh(submission);
+    verify(activityService).insert(activity);
     assertEquals((Long) 1L, submission.getId());
     assertEquals(user, submission.getUser());
-    assertEquals((Long) 1L, submission.getLaboratory().getId());
+    assertEquals(user.getLaboratory().getId(), submission.getLaboratory().getId());
+    assertEquals(Service.LC_MS_MS, submission.getService());
+    assertEquals("human", submission.getTaxonomy());
+    assertEquals("project", submission.getProject());
+    assertEquals("experience", submission.getExperience());
+    assertEquals("goal", submission.getGoal());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
+    assertEquals(InjectionType.LC_MS, submission.getInjectionType());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
+    assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
+    assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
+    assertEquals(ProteinIdentification.NCBINR, submission.getProteinIdentification());
+    assertEquals("http://localhost/my_site", submission.getProteinIdentificationLink());
+    assertEquals(EnrichmentType.PHOSPHOPEPTIDES, submission.getEnrichmentType());
+    assertEquals("other enrichment", submission.getOtherEnrichmentType());
+    assertEquals("protein", submission.getProtein());
+    assertEquals("my_modification", submission.getPostTranslationModification());
+    assertEquals(MudPitFraction.EIGHT, submission.getMudPitFraction());
+    assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
+    assertEquals("comments", submission.getComments());
     assertEquals(newInstant, submission.getSubmissionDate());
+    gelImages = submission.getGelImages();
+    assertEquals(1, gelImages.size());
+    gelImage = gelImages.get(0);
+    assertEquals("my_gel_image.jpg", gelImage.getFilename());
+    assertArrayEquals(imageContent, gelImage.getContent());
+    files = submission.getFiles();
+    assertEquals(1, files.size());
+    file = files.get(0);
+    assertEquals("my_file.docx", file.getFilename());
+    assertArrayEquals(fileContent, file.getContent());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
     assertEquals((Long) 1L, submissionLogged.getId());
     assertEquals(user, submissionLogged.getUser());
-    assertEquals((Long) 1L, submissionLogged.getLaboratory().getId());
-    assertEquals(newInstant, submissionLogged.getSubmissionDate());
-  }
-
-  @Test
-  public void update_NullOwner() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(submission);
-    final User user = new User(3L, "benoit.coulombe@ircm.qc.ca");
-    Instant newInstant = Instant.now();
-    submission.setSubmissionDate(newInstant);
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
-
-    submissionServiceImpl.update(submission, null, "unit_test");
-
-    entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
-    verify(activityService).insert(activity);
-    submission = entityManager.find(Submission.class, 1L);
-    entityManager.refresh(submission);
-    assertEquals((Long) 1L, submission.getId());
-    assertEquals(user.getId(), submission.getUser().getId());
-    assertEquals((Long) 2L, submission.getLaboratory().getId());
-    assertEquals(newInstant, submission.getSubmissionDate());
-
-    // Validate log.
-    Submission submissionLogged = submissionCaptor.getValue();
-    assertEquals((Long) 1L, submissionLogged.getId());
-    assertEquals(user.getId(), submissionLogged.getUser().getId());
-    assertEquals((Long) 2L, submissionLogged.getLaboratory().getId());
-    assertEquals(newInstant, submissionLogged.getSubmissionDate());
-  }
-
-  @Test
-  public void update_SetOwnerInSubmission() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(submission);
-    final User oldUser = new User(3L, "benoit.coulombe@ircm.qc.ca");
-    Instant newInstant = Instant.now();
-    submission.setSubmissionDate(newInstant);
-    submission.setUser(new User(4L, "jackson.smith@ircm.qc.ca"));
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
-
-    submissionServiceImpl.update(submission, null, "unit_test");
-
-    entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
-    verify(activityService).insert(activity);
-    submission = entityManager.find(Submission.class, 1L);
-    entityManager.refresh(submission);
-    assertEquals((Long) 1L, submission.getId());
-    assertEquals(oldUser.getId(), submission.getUser().getId());
-    assertEquals((Long) 2L, submission.getLaboratory().getId());
-    assertEquals(newInstant, submission.getSubmissionDate());
-
-    // Validate log.
-    Submission submissionLogged = submissionCaptor.getValue();
-    assertEquals((Long) 1L, submissionLogged.getId());
-    assertEquals(oldUser.getId(), submissionLogged.getUser().getId());
-    assertEquals((Long) 2L, submissionLogged.getLaboratory().getId());
+    assertEquals(user.getLaboratory().getId(), submissionLogged.getLaboratory().getId());
     assertEquals(newInstant, submissionLogged.getSubmissionDate());
   }
 }
