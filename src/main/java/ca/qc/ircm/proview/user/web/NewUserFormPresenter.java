@@ -31,6 +31,7 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -79,11 +80,13 @@ public class NewUserFormPresenter {
   public static final String PHONE_NUMBER_EXTENSION = phoneNumber.extension.getMetadata().getName();
   public static final String REMOVE_PHONE_NUMBER = "removePhoneNumber";
   public static final String ADD_PHONE_NUMBER = "addPhoneNumber";
+  public static final String REGISTER_WARNING = "registerWarning";
   public static final String SAVE = "save";
   private static final Logger logger = LoggerFactory.getLogger(NewUserFormPresenter.class);
   private NewUserForm view;
   private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
   private BeanFieldGroup<User> userFieldGroup = new BeanFieldGroup<>(User.class);
+  private BeanFieldGroup<Laboratory> laboratoryFieldGroup = new BeanFieldGroup<>(Laboratory.class);
   private PropertysetItem passwordItem = new PropertysetItem();
   private FieldGroup passwordFieldGroup = new FieldGroup();
   private List<BeanFieldGroup<PhoneNumber>> phoneNumberFieldGroups = new ArrayList<>();
@@ -127,6 +130,7 @@ public class NewUserFormPresenter {
     view.userPanel.setCaption(resources.message(USER));
     view.emailField.addStyleName(EMAIL);
     view.emailField.setCaption(resources.message(EMAIL));
+    view.emailField.setNullRepresentation("");
     view.emailField.setRequired(true);
     view.emailField.setRequiredError(generalResources.message(REQUIRED));
     view.emailField.addValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)));
@@ -140,6 +144,7 @@ public class NewUserFormPresenter {
     });
     view.nameField.addStyleName(NAME);
     view.nameField.setCaption(resources.message(NAME));
+    view.nameField.setNullRepresentation("");
     view.nameField.setRequired(true);
     view.nameField.setRequiredError(generalResources.message(REQUIRED));
     passwordItem.addItemProperty(PASSWORD, new ObjectProperty<>(null, String.class));
@@ -147,6 +152,7 @@ public class NewUserFormPresenter {
     passwordFieldGroup.setItemDataSource(passwordItem);
     view.passwordField.addStyleName(PASSWORD);
     view.passwordField.setCaption(resources.message(PASSWORD));
+    view.passwordField.setNullRepresentation("");
     view.passwordField.setRequiredError(generalResources.message(REQUIRED));
     view.passwordField.addValidator((value) -> {
       String password = view.passwordField.getValue();
@@ -158,6 +164,7 @@ public class NewUserFormPresenter {
     });
     view.confirmPasswordField.addStyleName(CONFIRM_PASSWORD);
     view.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD));
+    view.confirmPasswordField.setNullRepresentation("");
     view.confirmPasswordField.setRequiredError(generalResources.message(REQUIRED));
     view.laboratoryPanel.addStyleName(LABORATORY);
     view.laboratoryPanel.setCaption(resources.message(LABORATORY));
@@ -165,6 +172,7 @@ public class NewUserFormPresenter {
     view.newLaboratoryField.setCaption(resources.message(NEW_LABORATORY));
     view.managerField.addStyleName(MANAGER);
     view.managerField.setCaption(resources.message(MANAGER));
+    view.managerField.setNullRepresentation("");
     view.managerField.setRequiredError(generalResources.message(REQUIRED));
     view.managerField.addValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)));
     view.managerField.addValidator((value) -> {
@@ -176,30 +184,37 @@ public class NewUserFormPresenter {
     view.organizationField.addStyleName(LABORATORY_ORGANIZATION);
     view.organizationField
         .setCaption(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION));
+    view.organizationField.setNullRepresentation("");
     view.organizationField.setRequiredError(generalResources.message(REQUIRED));
-    view.laboratoryNameField.addStyleName(LABORATORY_NAME);
+    view.laboratoryNameField.addStyleName(LABORATORY + "-" + LABORATORY_NAME);
     view.laboratoryNameField.setCaption(resources.message(LABORATORY + "." + LABORATORY_NAME));
+    view.laboratoryNameField.setNullRepresentation("");
     view.laboratoryNameField.setRequiredError(generalResources.message(REQUIRED));
     view.addressPanel.addStyleName(ADDRESS);
     view.addressPanel.setCaption(resources.message(ADDRESS));
     view.addressLineField.addStyleName(ADDRESS_LINE);
     view.addressLineField.setCaption(resources.message(ADDRESS + "." + ADDRESS_LINE));
+    view.addressLineField.setNullRepresentation("");
     view.addressLineField.setRequired(true);
     view.addressLineField.setRequiredError(generalResources.message(REQUIRED));
     view.townField.addStyleName(ADDRESS_TOWN);
     view.townField.setCaption(resources.message(ADDRESS + "." + ADDRESS_TOWN));
+    view.townField.setNullRepresentation("");
     view.townField.setRequired(true);
     view.townField.setRequiredError(generalResources.message(REQUIRED));
     view.stateField.addStyleName(ADDRESS_STATE);
     view.stateField.setCaption(resources.message(ADDRESS + "." + ADDRESS_STATE));
+    view.stateField.setNullRepresentation("");
     view.stateField.setRequired(true);
     view.stateField.setRequiredError(generalResources.message(REQUIRED));
     view.countryField.addStyleName(ADDRESS_COUNTRY);
     view.countryField.setCaption(resources.message(ADDRESS + "." + ADDRESS_COUNTRY));
+    view.countryField.setNullRepresentation("");
     view.countryField.setRequired(true);
     view.countryField.setRequiredError(generalResources.message(REQUIRED));
     view.postalCodeField.addStyleName(ADDRESS_POSTAL_CODE);
     view.postalCodeField.setCaption(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE));
+    view.postalCodeField.setNullRepresentation("");
     view.postalCodeField.setRequired(true);
     view.postalCodeField.setRequiredError(generalResources.message(REQUIRED));
     view.clearAddressButton.addStyleName(CLEAR_ADDRESS);
@@ -208,6 +223,9 @@ public class NewUserFormPresenter {
     view.phoneNumbersPanel.setCaption(resources.message(PHONE_NUMBERS));
     view.addPhoneNumberButton.addStyleName(ADD_PHONE_NUMBER);
     view.addPhoneNumberButton.setCaption(resources.message(ADD_PHONE_NUMBER));
+    view.registerWarningLabel.addStyleName(REGISTER_WARNING);
+    view.registerWarningLabel.setValue(resources.message(REGISTER_WARNING));
+    view.registerWarningLabel.setIcon(FontAwesome.WARNING);
     view.saveButton.addStyleName(SAVE);
     view.saveButton.setCaption(resources.message(SAVE));
   }
@@ -217,8 +235,8 @@ public class NewUserFormPresenter {
     userFieldGroup.bind(view.nameField, NAME);
     passwordFieldGroup.bind(view.passwordField, PASSWORD);
     passwordFieldGroup.bind(view.confirmPasswordField, CONFIRM_PASSWORD);
-    userFieldGroup.bind(view.organizationField, LABORATORY + "." + LABORATORY_ORGANIZATION);
-    userFieldGroup.bind(view.laboratoryNameField, LABORATORY + "." + LABORATORY_NAME);
+    laboratoryFieldGroup.bind(view.organizationField, LABORATORY_ORGANIZATION);
+    laboratoryFieldGroup.bind(view.laboratoryNameField, LABORATORY_NAME);
     userFieldGroup.bind(view.addressLineField, ADDRESS + "." + ADDRESS_LINE);
     userFieldGroup.bind(view.townField, ADDRESS + "." + ADDRESS_TOWN);
     userFieldGroup.bind(view.stateField, ADDRESS + "." + ADDRESS_STATE);
@@ -273,7 +291,8 @@ public class NewUserFormPresenter {
     view.clearAddressButton.setVisible(editable);
     removePhoneNumberButtons.forEach(button -> button.setVisible(editable));
     view.addPhoneNumberButton.setVisible(editable);
-    view.buttonsLayout.setVisible(editable);
+    view.saveLayout.setVisible(editable);
+    view.registerWarningLabel.setVisible(newUser && editable);
     view.saveButton.setVisible(editable);
   }
 
@@ -288,7 +307,10 @@ public class NewUserFormPresenter {
     }
   }
 
-  private void addPhoneNumber() {
+  /**
+   * Adds fields for a phone number.
+   */
+  public void addPhoneNumber() {
     PhoneNumber phoneNumber = new PhoneNumber();
     phoneNumber.setType(PhoneNumberType.WORK);
     addPhoneNumber(phoneNumber);
@@ -320,6 +342,7 @@ public class NewUserFormPresenter {
     numberField.setNullRepresentation("");
     numberField.addStyleName(PHONE_NUMBER_NUMBER);
     numberField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER));
+    numberField.setNullRepresentation("");
     numberField.setRequired(true);
     numberField.setRequiredError(generalResources.message(REQUIRED));
     numberField.addValidator(new RegexpValidator("[\\d\\-]*",
@@ -329,6 +352,7 @@ public class NewUserFormPresenter {
     extensionField.setNullRepresentation("");
     extensionField.addStyleName(PHONE_NUMBER_EXTENSION);
     extensionField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION));
+    extensionField.setNullRepresentation("");
     extensionField.addValidator(new RegexpValidator("[\\d\\-]*",
         resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + ".invalid")));
     layout.addComponent(extensionField);
@@ -360,8 +384,7 @@ public class NewUserFormPresenter {
       passwordFieldGroup.commit();
       if (isNewUser()) {
         if (view.newLaboratoryField.getValue()) {
-          view.organizationField.commit();
-          view.laboratoryNameField.commit();
+          laboratoryFieldGroup.commit();
         } else {
           view.managerField.validate();
         }
@@ -398,6 +421,8 @@ public class NewUserFormPresenter {
         User manager = null;
         if (!view.newLaboratoryField.getValue()) {
           manager = new User(null, view.managerField.getValue());
+        } else {
+          user.setLaboratory(laboratoryFieldGroup.getItemDataSource().getBean());
         }
         user.setLocale(view.getLocale());
         userService.register(user, password, manager, locale -> ui.getUrl(ValidateView.VIEW_NAME));
@@ -443,6 +468,7 @@ public class NewUserFormPresenter {
 
     userFieldGroup.setItemDataSource(item);
     final User user = userFieldGroup.getItemDataSource().getBean();
+    laboratoryFieldGroup.setItemDataSource(new BeanItem<>(user.getLaboratory()));
     final boolean newUser = isNewUser();
     view.passwordField.setRequired(newUser);
     view.confirmPasswordField.setRequired(newUser);

@@ -39,6 +39,7 @@ import static ca.qc.ircm.proview.user.web.NewUserFormPresenter.PHONE_NUMBERS;
 import static ca.qc.ircm.proview.user.web.NewUserFormPresenter.PHONE_NUMBER_EXTENSION;
 import static ca.qc.ircm.proview.user.web.NewUserFormPresenter.PHONE_NUMBER_NUMBER;
 import static ca.qc.ircm.proview.user.web.NewUserFormPresenter.PHONE_NUMBER_TYPE;
+import static ca.qc.ircm.proview.user.web.NewUserFormPresenter.REGISTER_WARNING;
 import static ca.qc.ircm.proview.user.web.NewUserFormPresenter.REMOVE_PHONE_NUMBER;
 import static ca.qc.ircm.proview.user.web.NewUserFormPresenter.SAVE;
 import static ca.qc.ircm.proview.user.web.NewUserFormPresenter.USER;
@@ -72,13 +73,14 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.server.CompositeErrorMessage;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -178,7 +180,8 @@ public class NewUserFormPresenterTest {
     view.extensionField = new TextField();
     view.removePhoneNumberButton = new Button();
     view.addPhoneNumberButton = new Button();
-    view.buttonsLayout = new HorizontalLayout();
+    view.saveLayout = new VerticalLayout();
+    view.registerWarningLabel = new Label();
     view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -264,7 +267,8 @@ public class NewUserFormPresenterTest {
     assertTrue(view.newLaboratoryField.getStyleName().contains(NEW_LABORATORY));
     assertTrue(view.managerField.getStyleName().contains(MANAGER));
     assertTrue(view.organizationField.getStyleName().contains(LABORATORY_ORGANIZATION));
-    assertTrue(view.laboratoryNameField.getStyleName().contains(LABORATORY_NAME));
+    assertTrue(
+        view.laboratoryNameField.getStyleName().contains(LABORATORY + "-" + LABORATORY_NAME));
     assertTrue(view.addressPanel.getStyleName().contains(ADDRESS));
     assertTrue(view.addressLineField.getStyleName().contains(ADDRESS_LINE));
     assertTrue(view.townField.getStyleName().contains(ADDRESS_TOWN));
@@ -279,6 +283,7 @@ public class NewUserFormPresenterTest {
     assertTrue(extensionField(0).getStyleName().contains(PHONE_NUMBER_EXTENSION));
     assertTrue(removePhoneNumberButton(0).getStyleName().contains(REMOVE_PHONE_NUMBER));
     assertTrue(view.addPhoneNumberButton.getStyleName().contains(ADD_PHONE_NUMBER));
+    assertTrue(view.registerWarningLabel.getStyleName().contains(REGISTER_WARNING));
     assertTrue(view.saveButton.getStyleName().contains(SAVE));
   }
 
@@ -315,6 +320,8 @@ public class NewUserFormPresenterTest {
         extensionField(0).getCaption());
     assertEquals(resources.message(REMOVE_PHONE_NUMBER), removePhoneNumberButton(0).getCaption());
     assertEquals(resources.message(ADD_PHONE_NUMBER), view.addPhoneNumberButton.getCaption());
+    assertEquals(resources.message(REGISTER_WARNING), view.registerWarningLabel.getValue());
+    assertEquals(FontAwesome.WARNING, view.registerWarningLabel.getIcon());
     assertEquals(resources.message(SAVE), view.saveButton.getCaption());
   }
 
@@ -506,7 +513,8 @@ public class NewUserFormPresenterTest {
     assertTrue(extensionField(0).isVisible());
     assertFalse(removePhoneNumberButton(0).isVisible());
     assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.buttonsLayout.isVisible());
+    assertFalse(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
     assertFalse(view.saveButton.isVisible());
   }
 
@@ -537,7 +545,8 @@ public class NewUserFormPresenterTest {
     assertTrue(extensionField(0).isVisible());
     assertFalse(removePhoneNumberButton(0).isVisible());
     assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.buttonsLayout.isVisible());
+    assertFalse(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
     assertFalse(view.saveButton.isVisible());
   }
 
@@ -568,7 +577,8 @@ public class NewUserFormPresenterTest {
     assertTrue(extensionField(0).isVisible());
     assertTrue(removePhoneNumberButton(0).isVisible());
     assertTrue(view.addPhoneNumberButton.isVisible());
-    assertTrue(view.buttonsLayout.isVisible());
+    assertTrue(view.saveLayout.isVisible());
+    assertTrue(view.registerWarningLabel.isVisible());
     assertTrue(view.saveButton.isVisible());
   }
 
@@ -611,7 +621,8 @@ public class NewUserFormPresenterTest {
     assertTrue(extensionField(0).isVisible());
     assertTrue(removePhoneNumberButton(0).isVisible());
     assertTrue(view.addPhoneNumberButton.isVisible());
-    assertTrue(view.buttonsLayout.isVisible());
+    assertTrue(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
     assertTrue(view.saveButton.isVisible());
   }
 
@@ -645,6 +656,12 @@ public class NewUserFormPresenterTest {
 
   @Test
   public void addPhoneNumber() {
+    presenter.addPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+  }
+
+  @Test
+  public void addPhoneNumber_Button() {
     addFirstPhoneNumber();
     assertEquals(1, view.phoneNumbersLayout.getComponentCount());
   }
@@ -859,6 +876,19 @@ public class NewUserFormPresenterTest {
   }
 
   @Test
+  public void save_Manager_Empty_NewLaboratory() {
+    presenter.setEditable(true);
+    setFields();
+    view.newLaboratoryField.setValue(true);
+    view.managerField.setValue("");
+
+    view.saveButton.click();
+
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(userService).register(any(), any(), any(), any());
+  }
+
+  @Test
   public void save_Manager_Invalid() {
     presenter.setEditable(true);
     setFields();
@@ -906,6 +936,18 @@ public class NewUserFormPresenterTest {
   }
 
   @Test
+  public void save_Organization_Empty_ExistingLaboratory() {
+    presenter.setEditable(true);
+    setFields();
+    view.organizationField.setValue("");
+
+    view.saveButton.click();
+
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(userService).register(any(), any(), any(), any());
+  }
+
+  @Test
   public void save_LaboratoryName_Empty() {
     presenter.setEditable(true);
     setFields();
@@ -919,6 +961,18 @@ public class NewUserFormPresenterTest {
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         view.laboratoryNameField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
+  }
+
+  @Test
+  public void save_LaboratoryName_Empty_ExistingLaboratory() {
+    presenter.setEditable(true);
+    setFields();
+    view.laboratoryNameField.setValue("");
+
+    view.saveButton.click();
+
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(userService).register(any(), any(), any(), any());
   }
 
   @Test

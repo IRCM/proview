@@ -9,8 +9,8 @@
    <vaadin-panel caption="User" size-auto _id="userPanel"> 
     <vaadin-vertical-layout spacing margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-text-field caption="Email" null-representation="" _id="emailField"></vaadin-text-field> 
-      <vaadin-text-field caption="Name" null-representation="" _id="nameField"></vaadin-text-field> 
+      <vaadin-text-field caption="Email" _id="emailField"></vaadin-text-field> 
+      <vaadin-text-field caption="Name" _id="nameField"></vaadin-text-field> 
       <vaadin-password-field caption="Password" _id="passwordField"></vaadin-password-field> 
       <vaadin-password-field caption="Confirm password" _id="confirmPasswordField"></vaadin-password-field> 
      </vaadin-form-layout> 
@@ -21,19 +21,19 @@
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
       <vaadin-check-box caption="New laboratory" _id="newLaboratoryField"></vaadin-check-box> 
       <vaadin-text-field caption="Laboratory manager email" _id="managerField"></vaadin-text-field> 
-      <vaadin-text-field caption="Organization" null-representation="" _id="organizationField"></vaadin-text-field> 
-      <vaadin-text-field caption="Name" null-representation="" _id="laboratoryNameField"></vaadin-text-field> 
+      <vaadin-text-field caption="Organization" _id="organizationField"></vaadin-text-field> 
+      <vaadin-text-field caption="Name" _id="laboratoryNameField"></vaadin-text-field> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
    <vaadin-panel caption="Address" size-auto _id="addressPanel"> 
     <vaadin-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-text-field caption="Address" null-representation="" _id="addressLineField"></vaadin-text-field> 
-      <vaadin-text-field caption="Town" null-representation="" _id="townField"></vaadin-text-field> 
-      <vaadin-text-field caption="State" null-representation="" _id="stateField"></vaadin-text-field> 
-      <vaadin-text-field caption="Country" null-representation="" _id="countryField"></vaadin-text-field> 
-      <vaadin-text-field caption="Postal code" null-representation="" _id="postalCodeField"></vaadin-text-field> 
+      <vaadin-text-field caption="Address" _id="addressLineField"></vaadin-text-field> 
+      <vaadin-text-field caption="Town" _id="townField"></vaadin-text-field> 
+      <vaadin-text-field caption="State" _id="stateField"></vaadin-text-field> 
+      <vaadin-text-field caption="Country" _id="countryField"></vaadin-text-field> 
+      <vaadin-text-field caption="Postal code" _id="postalCodeField"></vaadin-text-field> 
       <vaadin-button plain-text _id="clearAddressButton">
         Clear 
       </vaadin-button> 
@@ -61,11 +61,14 @@
      </vaadin-button> 
     </vaadin-vertical-layout> 
    </vaadin-panel> 
-   <vaadin-horizontal-layout _id="buttonsLayout"> 
+   <vaadin-vertical-layout _id="saveLayout"> 
+    <vaadin-label size-auto plain-text _id="registerWarningLabel">
+      Once registered, a manager will need to accept you before you can sign in 
+    </vaadin-label> 
     <vaadin-button plain-text _id="saveButton">
       Save 
     </vaadin-button> 
-   </vaadin-horizontal-layout> 
+   </vaadin-vertical-layout> 
   </vaadin-vertical-layout>  
  </body>
 </html>

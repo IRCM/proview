@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.user.web.integration;
 
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -83,7 +84,7 @@ public class RegisterViewTest extends RegisterPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(RegisterView.class).message("title", applicationName)
+    assertTrue(resources(RegisterView.class).message(TITLE, applicationName)
         .contains(getDriver().getTitle()));
   }
 
@@ -91,32 +92,33 @@ public class RegisterViewTest extends RegisterPageObject {
   public void fieldsExistence() throws Throwable {
     open();
 
-    assertNotNull(headerLabel());
-    assertNotNull(userPanel());
-    assertNotNull(emailField());
-    assertNotNull(nameField());
-    assertNotNull(passwordField());
-    assertNotNull(confirmPasswordField());
-    assertNotNull(laboratoryPanel());
-    assertNotNull(newLaboratoryField());
-    assertNotNull(managerEmailField());
+    assertTrue(optional(() -> headerLabel()).isPresent());
+    assertTrue(optional(() -> userPanel()).isPresent());
+    assertTrue(optional(() -> emailField()).isPresent());
+    assertTrue(optional(() -> nameField()).isPresent());
+    assertTrue(optional(() -> passwordField()).isPresent());
+    assertTrue(optional(() -> confirmPasswordField()).isPresent());
+    assertTrue(optional(() -> laboratoryPanel()).isPresent());
+    assertTrue(optional(() -> newLaboratoryField()).isPresent());
+    assertTrue(optional(() -> managerEmailField()).isPresent());
     setNewLaboratory(true);
-    assertNotNull(organizationField());
-    assertNotNull(laboratoryNameField());
-    assertNotNull(addressPanel());
-    assertNotNull(addressLineField());
-    assertNotNull(townField());
-    assertNotNull(stateField());
-    assertNotNull(countryField());
-    assertNotNull(postalCodeField());
-    assertNotNull(clearAddressButton());
-    assertNotNull(phoneNumberPanel());
-    assertNotNull(phoneTypeField());
-    assertNotNull(phoneNumberField());
-    assertNotNull(phoneExtensionField());
-    assertNotNull(registerHeaderLabel());
-    assertNotNull(registerButton());
-    assertNotNull(requiredLabel());
+    assertTrue(optional(() -> organizationField()).isPresent());
+    assertTrue(optional(() -> laboratoryNameField()).isPresent());
+    assertTrue(optional(() -> addressPanel()).isPresent());
+    assertTrue(optional(() -> addressLineField()).isPresent());
+    assertTrue(optional(() -> townField()).isPresent());
+    assertTrue(optional(() -> stateField()).isPresent());
+    assertTrue(optional(() -> countryField()).isPresent());
+    assertTrue(optional(() -> postalCodeField()).isPresent());
+    assertTrue(optional(() -> clearAddressButton()).isPresent());
+    assertTrue(optional(() -> phoneNumberPanel()).isPresent());
+    assertTrue(optional(() -> phoneTypeField()).isPresent());
+    assertTrue(optional(() -> phoneNumberField()).isPresent());
+    assertTrue(optional(() -> phoneExtensionField()).isPresent());
+    assertTrue(optional(() -> removePhoneNumberButton()).isPresent());
+    assertTrue(optional(() -> addPhoneNumberButton()).isPresent());
+    assertTrue(optional(() -> registerWarningLabel()).isPresent());
+    assertTrue(optional(() -> saveButton()).isPresent());
   }
 
   @Test
@@ -155,7 +157,7 @@ public class RegisterViewTest extends RegisterPageObject {
   public void register_Error() throws Throwable {
     open();
 
-    clickRegister();
+    clickSave();
 
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
@@ -167,7 +169,7 @@ public class RegisterViewTest extends RegisterPageObject {
     open();
     setFields();
 
-    clickRegister();
+    clickSave();
 
     assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = getUser(email);
@@ -210,7 +212,7 @@ public class RegisterViewTest extends RegisterPageObject {
     setNewLaboratory(true);
     setFields();
 
-    clickRegister();
+    clickSave();
 
     assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = getUser(email);

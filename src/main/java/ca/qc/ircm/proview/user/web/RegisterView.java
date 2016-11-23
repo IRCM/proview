@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.utils.web.MessageResourcesView;
-import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Notification;
@@ -35,10 +34,10 @@ public class RegisterView extends RegisterViewDesign implements MessageResources
   private static final long serialVersionUID = 7586918222688019429L;
   @Inject
   private RegisterViewPresenter presenter;
+  @Inject
+  protected NewUserFormPresenter userFormPresenter;
   protected Menu menu = new Menu();
-  protected UserForm userForm = new UserForm();
-  protected AddressForm addressForm = new AddressForm();
-  protected PhoneNumberForm phoneNumberForm = new PhoneNumberForm();
+  protected NewUserForm userForm = new NewUserForm();
 
   /**
    * Initializes view.
@@ -47,15 +46,13 @@ public class RegisterView extends RegisterViewDesign implements MessageResources
   public void init() {
     menuLayout.addComponent(menu);
     userFormLayout.addComponent(userForm);
-    addressFormLayout.addComponent(addressForm);
-    phoneNumberFormLayout.addComponent(phoneNumberForm);
-    presenter.init(this);
+    userForm.setPresenter(userFormPresenter);
   }
 
   @Override
   public void attach() {
     super.attach();
-    presenter.attach();
+    presenter.init(this);
   }
 
   public void setTitle(String title) {
@@ -66,14 +63,7 @@ public class RegisterView extends RegisterViewDesign implements MessageResources
     Notification.show(message, Notification.Type.ERROR_MESSAGE);
   }
 
-  /**
-   * Redirect to {@link MainView}.
-   *
-   * @param message
-   *          message to show in notification
-   */
-  public void afterSuccessfulRegister(String message) {
-    Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
-    getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
+  public void navigateTo(String viewName) {
+    getUI().getNavigator().navigateTo(viewName);
   }
 }

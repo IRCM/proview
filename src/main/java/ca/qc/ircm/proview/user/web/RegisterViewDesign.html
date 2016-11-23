@@ -1,7 +1,8 @@
 <!doctype html>
 <html>
- <head>
+ <head>   
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta charset="UTF-8" name="vaadin-version" content="7.7.0">
   <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_user_web:ca.qc.ircm.proview.user.web">
   <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
  </head> 
@@ -12,41 +13,7 @@
     <vaadin-label style-name="h1" size-auto plain-text _id="headerLabel">
       Register 
     </vaadin-label> 
-    <vaadin-panel size-auto _id="userPanel"> 
-     <vaadin-vertical-layout spacing size-auto margin _id="userFormLayout"></vaadin-vertical-layout> 
-    </vaadin-panel> 
-    <vaadin-panel caption="Lab" size-auto _id="laboratoryPanel"> 
-     <vaadin-vertical-layout spacing size-auto margin> 
-      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-       <vaadin-check-box caption="I am the lab manager" _id="newLaboratoryField"></vaadin-check-box> 
-       <vaadin-text-field caption="Organization" required visible="false" null-representation="" immediate _id="organizationField"></vaadin-text-field> 
-       <vaadin-text-field caption="Lab name" required visible="false" null-representation="" immediate _id="laboratoryNameField"></vaadin-text-field> 
-       <vaadin-text-field columns="30" caption="Lab manager email" required null-representation="" immediate _id="managerEmailField"></vaadin-text-field> 
-      </vaadin-form-layout> 
-     </vaadin-vertical-layout> 
-    </vaadin-panel> 
-    <vaadin-panel caption="Address" size-auto _id="addressPanel"> 
-     <vaadin-vertical-layout spacing size-auto margin> 
-      <vaadin-vertical-layout size-auto _id="addressFormLayout"></vaadin-vertical-layout> 
-      <vaadin-button plain-text _id="clearAddressButton">
-        Clear 
-      </vaadin-button> 
-     </vaadin-vertical-layout> 
-    </vaadin-panel> 
-    <vaadin-panel caption="Phone number" size-auto _id="phoneNumberPanel"> 
-     <vaadin-vertical-layout spacing size-auto margin _id="phoneNumberFormLayout"></vaadin-vertical-layout> 
-    </vaadin-panel> 
-    <vaadin-form-layout size-auto> 
-     <vaadin-label icon="fonticon://FontAwesome/f071" style-name="warning" size-auto plain-text _id="registerHeaderLabel">
-       Once registered, a manager will need to accept you before you can sign in 
-     </vaadin-label> 
-     <vaadin-button icon="fonticon://FontAwesome/f00c" plain-text _id="registerButton">
-       Submit 
-     </vaadin-button> 
-    </vaadin-form-layout> 
-    <vaadin-label size-auto _id="requiredLabel"> 
-     <span class="v-required-field-indicator">*</span> Required fields 
-    </vaadin-label> 
+    <vaadin-vertical-layout size-auto _id="userFormLayout"></vaadin-vertical-layout> 
    </vaadin-vertical-layout> 
   </vaadin-vertical-layout>  
  </body>

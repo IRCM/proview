@@ -5,7 +5,7 @@ import com.vaadin.annotations.DesignRoot;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -48,7 +48,8 @@ public class NewUserFormDesign extends VerticalLayout {
   protected TextField extensionField;
   protected Button removePhoneNumberButton;
   protected Button addPhoneNumberButton;
-  protected HorizontalLayout buttonsLayout;
+  protected VerticalLayout saveLayout;
+  protected Label registerWarningLabel;
   protected Button saveButton;
 
   public NewUserFormDesign() {
