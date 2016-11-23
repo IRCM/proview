@@ -26,6 +26,7 @@ import com.vaadin.ui.Label;
 
 import java.util.stream.IntStream;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -45,7 +46,11 @@ public class PlateView extends PlateViewDesign implements MessageResourcesView {
   @Inject
   private PlateComponentPresenter plateComponentPresenter;
 
-  public PlateView() {
+  /**
+   * Initializes view.
+   */
+  @PostConstruct
+  public void init() {
     menuLayout.addComponent(menu);
     plateLayoutContainer.addComponent(plateLayout);
     IntStream.range(0, 12).forEach(i -> IntStream.range(0, 8)

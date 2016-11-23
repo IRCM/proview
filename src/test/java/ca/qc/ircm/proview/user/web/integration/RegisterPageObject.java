@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web.integration;
 
+import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_COUNTRY;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_LINE;
@@ -42,7 +43,6 @@ import static ca.qc.ircm.proview.user.web.UserFormPresenter.REGISTER_WARNING;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.REMOVE_PHONE_NUMBER;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.SAVE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.USER;
-import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.HEADER;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;

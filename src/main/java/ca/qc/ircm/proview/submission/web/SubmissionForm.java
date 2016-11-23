@@ -143,6 +143,17 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     presenter.init(this);
   }
 
+  /**
+   * Creates uploader for molecule structure.
+   * 
+   * @param startedHandler
+   *          handler for upload started
+   * @param finishedHandler
+   *          handler for upload finished
+   * @param multi
+   *          true to allow multiple file upload, false otherwise
+   * @return uploader for molecule structure
+   */
   public MultiFileUpload createStructureUploader(UploadStartedHandler startedHandler,
       UploadFinishedHandler finishedHandler, boolean multi) {
     structureUploader =
@@ -151,6 +162,17 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     return structureUploader;
   }
 
+  /**
+   * Creates uploader for gel images.
+   * 
+   * @param startedHandler
+   *          handler for upload started
+   * @param finishedHandler
+   *          handler for upload finished
+   * @param multi
+   *          true to allow multiple file upload, false otherwise
+   * @return uploader for gel images
+   */
   public MultiFileUpload createGelImagesUploader(UploadStartedHandler startedHandler,
       UploadFinishedHandler finishedHandler, boolean multi) {
     gelImagesUploader =
@@ -159,6 +181,17 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     return gelImagesUploader;
   }
 
+  /**
+   * Creates uploader for additional files.
+   * 
+   * @param startedHandler
+   *          handler for upload started
+   * @param finishedHandler
+   *          handler for upload finished
+   * @param multi
+   *          true to allow multiple file upload, false otherwise
+   * @return uploader for additional files
+   */
   public MultiFileUpload createFilesUploader(UploadStartedHandler startedHandler,
       UploadFinishedHandler finishedHandler, boolean multi) {
     filesUploader = new MultiFileUpload(startedHandler, finishedHandler, uploadStateWindow, multi);
