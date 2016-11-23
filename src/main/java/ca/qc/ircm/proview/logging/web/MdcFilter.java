@@ -23,6 +23,7 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -35,6 +36,15 @@ import javax.servlet.http.HttpServletRequest;
 public class MdcFilter extends GenericFilterBean {
   public static final String BEAN_NAME = "MdcFilter";
   public static final String USER_CONTEXT_KEY = "user";
+  @Inject
+  private Signed signed;
+
+  public MdcFilter() {
+  }
+
+  protected MdcFilter(Signed signed) {
+    this.signed = signed;
+  }
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
@@ -50,11 +60,10 @@ public class MdcFilter extends GenericFilterBean {
   }
 
   private void setNdc(HttpServletRequest request) {
-    Signed signed = (Signed) request.getAttribute("signed");
     if (signed == null || signed.getUser() == null) {
       MDC.put(USER_CONTEXT_KEY, request.getSession().getId());
     } else {
-      MDC.put(USER_CONTEXT_KEY, signed.getUser().getEmail());
+      MDC.put(USER_CONTEXT_KEY, signed.getUser().getId() + ":" + signed.getUser().getEmail());
     }
   }
 

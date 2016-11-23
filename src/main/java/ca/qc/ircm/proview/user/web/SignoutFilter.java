@@ -42,6 +42,13 @@ public class SignoutFilter extends GenericFilterBean {
   @Inject
   private AuthenticationService authenticationService;
 
+  public SignoutFilter() {
+  }
+
+  protected SignoutFilter(AuthenticationService authenticationService) {
+    this.authenticationService = authenticationService;
+  }
+
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {

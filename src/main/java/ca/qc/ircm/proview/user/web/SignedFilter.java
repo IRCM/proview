@@ -38,6 +38,13 @@ public class SignedFilter extends GenericFilterBean {
   @Inject
   private Signed signed;
 
+  public SignedFilter() {
+  }
+
+  protected SignedFilter(Signed signed) {
+    this.signed = signed;
+  }
+
   /**
    * Save user at beginning of request.
    */
