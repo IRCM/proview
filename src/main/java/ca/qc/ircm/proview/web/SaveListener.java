@@ -32,7 +32,7 @@ public interface SaveListener extends Serializable {
 
   /**
    * Called when an object has been saved. A reference to the saved object is given by
-   * {@link SaveEvent#getObject()}.
+   * {@link SaveEvent#getSavedObject()}.
    *
    * @param event
    *          an event containing information about the save
