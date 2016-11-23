@@ -21,7 +21,6 @@ import ca.qc.ircm.proview.logging.web.MdcFilter;
 import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
 import ca.qc.ircm.proview.user.SignedShiro;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.user.web.SignedFilter;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -48,11 +47,6 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
   @Bean(name = SHIRO_FILTER_NAME)
   public ShiroFilter shiroFilter() {
     return new ShiroFilter();
-  }
-
-  @Bean(name = SignedFilter.BEAN_NAME)
-  public SignedFilter signedFilter() {
-    return new SignedFilter();
   }
 
   @Bean(name = MdcFilter.BEAN_NAME)
