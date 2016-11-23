@@ -65,7 +65,9 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.RegisterUserWebContext;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.utils.web.VaadinUtils;
+import ca.qc.ircm.proview.web.MainUi;
+import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.util.BeanItem;
@@ -105,7 +107,9 @@ public class NewUserFormPresenterTest {
   @Mock
   private DefaultAddressConfiguration defaultAddressConfiguration;
   @Mock
-  private VaadinUtils vaadinUtils;
+  private MainUi ui;
+  @Mock
+  private SaveListener listener;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   @Captor
@@ -149,7 +153,7 @@ public class NewUserFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new NewUserFormPresenter(userService, defaultAddressConfiguration, vaadinUtils);
+    presenter = new NewUserFormPresenter(userService, defaultAddressConfiguration, ui);
     view.userPanel = new Panel();
     view.emailField = new TextField();
     view.nameField = new TextField();
@@ -157,7 +161,7 @@ public class NewUserFormPresenterTest {
     view.confirmPasswordField = new PasswordField();
     view.laboratoryPanel = new Panel();
     view.newLaboratoryField = new CheckBox();
-    view.laboratoryManagerField = new TextField();
+    view.managerField = new TextField();
     view.organizationField = new TextField();
     view.laboratoryNameField = new TextField();
     view.addressPanel = new Panel();
@@ -185,10 +189,16 @@ public class NewUserFormPresenterTest {
     when(defaultAddressConfiguration.getPostalCode()).thenReturn(defaultPostalCode);
     presenter.init(view);
     user = entityManager.find(User.class, 10L);
+    when(userService.isManager(any())).thenReturn(true);
   }
 
   private void addFirstPhoneNumber() {
     view.addPhoneNumberButton.click();
+  }
+
+  @SuppressWarnings("unchecked")
+  private boolean isNewUser() {
+    return ((BeanItem<User>) presenter.getItemDataSource()).getBean().getId() == null;
   }
 
   private void setFields() {
@@ -196,9 +206,11 @@ public class NewUserFormPresenterTest {
     view.nameField.setValue(name);
     view.passwordField.setValue(password);
     view.confirmPasswordField.setValue(password);
-    view.laboratoryManagerField.setValue(manager);
-    view.organizationField.setValue(organization);
-    view.laboratoryNameField.setValue(laboratoryName);
+    if (isNewUser()) {
+      view.managerField.setValue(manager);
+      view.organizationField.setValue(organization);
+      view.laboratoryNameField.setValue(laboratoryName);
+    }
     view.addressLineField.setValue(addressLine);
     view.townField.setValue(town);
     view.stateField.setValue(state);
@@ -250,7 +262,7 @@ public class NewUserFormPresenterTest {
     assertTrue(view.confirmPasswordField.getStyleName().contains(CONFIRM_PASSWORD));
     assertTrue(view.laboratoryPanel.getStyleName().contains(LABORATORY));
     assertTrue(view.newLaboratoryField.getStyleName().contains(NEW_LABORATORY));
-    assertTrue(view.laboratoryManagerField.getStyleName().contains(MANAGER));
+    assertTrue(view.managerField.getStyleName().contains(MANAGER));
     assertTrue(view.organizationField.getStyleName().contains(LABORATORY_ORGANIZATION));
     assertTrue(view.laboratoryNameField.getStyleName().contains(LABORATORY_NAME));
     assertTrue(view.addressPanel.getStyleName().contains(ADDRESS));
@@ -278,7 +290,7 @@ public class NewUserFormPresenterTest {
     assertEquals(resources.message(PASSWORD), view.passwordField.getCaption());
     assertEquals(resources.message(CONFIRM_PASSWORD), view.confirmPasswordField.getCaption());
     assertEquals(resources.message(NEW_LABORATORY), view.newLaboratoryField.getCaption());
-    assertEquals(resources.message(MANAGER), view.laboratoryManagerField.getCaption());
+    assertEquals(resources.message(MANAGER), view.managerField.getCaption());
     assertEquals(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION),
         view.organizationField.getCaption());
     assertEquals(resources.message(LABORATORY + "." + LABORATORY_NAME),
@@ -316,9 +328,8 @@ public class NewUserFormPresenterTest {
     assertEquals(generalResources.message(REQUIRED), view.passwordField.getRequiredError());
     assertTrue(view.confirmPasswordField.isRequired());
     assertEquals(generalResources.message(REQUIRED), view.confirmPasswordField.getRequiredError());
-    assertTrue(view.laboratoryManagerField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.laboratoryManagerField.getRequiredError());
+    assertTrue(view.managerField.isRequired());
+    assertEquals(generalResources.message(REQUIRED), view.managerField.getRequiredError());
     assertTrue(view.organizationField.isRequired());
     assertEquals(generalResources.message(REQUIRED), view.organizationField.getRequiredError());
     assertTrue(view.laboratoryNameField.isRequired());
@@ -353,7 +364,7 @@ public class NewUserFormPresenterTest {
     assertEquals(generalResources.message(REQUIRED), view.passwordField.getRequiredError());
     assertFalse(view.confirmPasswordField.isRequired());
     assertEquals(generalResources.message(REQUIRED), view.confirmPasswordField.getRequiredError());
-    assertFalse(view.laboratoryManagerField.isRequired());
+    assertFalse(view.managerField.isRequired());
     assertFalse(view.organizationField.isRequired());
     assertFalse(view.laboratoryNameField.isRequired());
     assertTrue(view.addressLineField.isRequired());
@@ -381,7 +392,7 @@ public class NewUserFormPresenterTest {
     assertFalse(view.passwordField.isVisible());
     assertFalse(view.confirmPasswordField.isVisible());
     assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.laboratoryManagerField.isReadOnly());
+    assertTrue(view.managerField.isReadOnly());
     assertTrue(view.organizationField.isReadOnly());
     assertTrue(view.laboratoryNameField.isReadOnly());
     assertTrue(view.addressLineField.isReadOnly());
@@ -405,7 +416,7 @@ public class NewUserFormPresenterTest {
     assertFalse(view.passwordField.isVisible());
     assertFalse(view.confirmPasswordField.isVisible());
     assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.laboratoryManagerField.isReadOnly());
+    assertTrue(view.managerField.isReadOnly());
     assertTrue(view.organizationField.isReadOnly());
     assertTrue(view.laboratoryNameField.isReadOnly());
     assertTrue(view.addressLineField.isReadOnly());
@@ -430,7 +441,7 @@ public class NewUserFormPresenterTest {
     assertTrue(view.confirmPasswordField.isVisible());
     assertFalse(view.confirmPasswordField.isReadOnly());
     assertFalse(view.newLaboratoryField.isReadOnly());
-    assertFalse(view.laboratoryManagerField.isReadOnly());
+    assertFalse(view.managerField.isReadOnly());
     assertFalse(view.organizationField.isReadOnly());
     assertFalse(view.laboratoryNameField.isReadOnly());
     assertFalse(view.addressLineField.isReadOnly());
@@ -456,7 +467,7 @@ public class NewUserFormPresenterTest {
     assertTrue(view.confirmPasswordField.isVisible());
     assertFalse(view.confirmPasswordField.isReadOnly());
     assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.laboratoryManagerField.isReadOnly());
+    assertTrue(view.managerField.isReadOnly());
     assertTrue(view.organizationField.isReadOnly());
     assertTrue(view.laboratoryNameField.isReadOnly());
     assertFalse(view.addressLineField.isReadOnly());
@@ -478,7 +489,7 @@ public class NewUserFormPresenterTest {
     assertFalse(view.passwordField.isVisible());
     assertFalse(view.confirmPasswordField.isVisible());
     assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.laboratoryManagerField.isVisible());
+    assertFalse(view.managerField.isVisible());
     assertTrue(view.organizationField.isVisible());
     assertTrue(view.laboratoryNameField.isVisible());
     assertTrue(view.addressPanel.isVisible());
@@ -509,7 +520,7 @@ public class NewUserFormPresenterTest {
     assertFalse(view.passwordField.isVisible());
     assertFalse(view.confirmPasswordField.isVisible());
     assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.laboratoryManagerField.isVisible());
+    assertFalse(view.managerField.isVisible());
     assertTrue(view.organizationField.isVisible());
     assertTrue(view.laboratoryNameField.isVisible());
     assertTrue(view.addressPanel.isVisible());
@@ -540,7 +551,7 @@ public class NewUserFormPresenterTest {
     assertTrue(view.passwordField.isVisible());
     assertTrue(view.confirmPasswordField.isVisible());
     assertTrue(view.newLaboratoryField.isVisible());
-    assertTrue(view.laboratoryManagerField.isVisible());
+    assertTrue(view.managerField.isVisible());
     assertFalse(view.organizationField.isVisible());
     assertFalse(view.laboratoryNameField.isVisible());
     assertTrue(view.addressPanel.isVisible());
@@ -567,7 +578,7 @@ public class NewUserFormPresenterTest {
 
     view.newLaboratoryField.setValue(true);
     assertTrue(view.newLaboratoryField.isVisible());
-    assertFalse(view.laboratoryManagerField.isVisible());
+    assertFalse(view.managerField.isVisible());
     assertTrue(view.organizationField.isVisible());
     assertTrue(view.laboratoryNameField.isVisible());
   }
@@ -583,7 +594,7 @@ public class NewUserFormPresenterTest {
     assertTrue(view.passwordField.isVisible());
     assertTrue(view.confirmPasswordField.isVisible());
     assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.laboratoryManagerField.isVisible());
+    assertFalse(view.managerField.isVisible());
     assertTrue(view.organizationField.isVisible());
     assertTrue(view.laboratoryNameField.isVisible());
     assertTrue(view.addressPanel.isVisible());
@@ -836,14 +847,14 @@ public class NewUserFormPresenterTest {
   public void save_Manager_Empty() {
     presenter.setEditable(true);
     setFields();
-    view.laboratoryManagerField.setValue("");
+    view.managerField.setValue("");
 
     view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.laboratoryManagerField.getErrorMessage().getFormattedHtmlMessage());
+        view.managerField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
@@ -851,14 +862,14 @@ public class NewUserFormPresenterTest {
   public void save_Manager_Invalid() {
     presenter.setEditable(true);
     setFields();
-    view.laboratoryManagerField.setValue("abc");
+    view.managerField.setValue("abc");
 
     view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_EMAIL)),
-        view.laboratoryManagerField.getErrorMessage().getFormattedHtmlMessage());
+        view.managerField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
@@ -867,14 +878,14 @@ public class NewUserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
     when(userService.isManager(any())).thenReturn(false);
-    view.laboratoryManagerField.setValue("not.manager@ircm.qc.ca");
+    view.managerField.setValue("not.manager@ircm.qc.ca");
 
     view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_EMAIL)),
-        view.laboratoryManagerField.getErrorMessage().getFormattedHtmlMessage());
+    assertEquals(errorMessage(resources.message(MANAGER + ".notExists")),
+        view.managerField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
@@ -1140,15 +1151,15 @@ public class NewUserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
     String validationUrl = "validationUrl";
-    when(userService.isManager(any())).thenReturn(true);
-    when(vaadinUtils.getUrl(any())).thenReturn(validationUrl);
+    when(ui.getUrl(any())).thenReturn(validationUrl);
 
     view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService).exists(email);
-    verify(userService).register(userCaptor.capture(), eq(password), userCaptor.capture(), any());
-    User user = userCaptor.getValue();
+    verify(userService).register(userCaptor.capture(), eq(password), userCaptor.capture(),
+        registerUserWebContextCaptor.capture());
+    User user = userCaptor.getAllValues().get(0);
     assertEquals(email, user.getEmail());
     assertEquals(name, user.getName());
     assertEquals(locale, user.getLocale());
@@ -1171,11 +1182,12 @@ public class NewUserFormPresenterTest {
     assertEquals(number2, phoneNumber.getNumber());
     assertEquals(extension2, phoneNumber.getExtension());
     User manager = userCaptor.getValue();
-    assertEquals(manager, manager.getEmail());
+    assertEquals(this.manager, manager.getEmail());
     RegisterUserWebContext registerUserWebContext = registerUserWebContextCaptor.getValue();
     assertEquals(validationUrl, registerUserWebContext.getValidateUserUrl(locale));
     verify(view).showTrayNotification(stringCaptor.capture());
     assertEquals(resources.message("save.done", email), stringCaptor.getValue());
+    verify(view).fireSaveEvent(user);
   }
 
   @Test
@@ -1184,13 +1196,14 @@ public class NewUserFormPresenterTest {
     setFields();
     view.newLaboratoryField.setValue(true);
     String validationUrl = "validationUrl";
-    when(vaadinUtils.getUrl(any())).thenReturn(validationUrl);
+    when(ui.getUrl(any())).thenReturn(validationUrl);
 
     view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService).exists(email);
-    verify(userService).register(userCaptor.capture(), eq(password), eq(null), any());
+    verify(userService).register(userCaptor.capture(), eq(password), eq(null),
+        registerUserWebContextCaptor.capture());
     User user = userCaptor.getValue();
     assertEquals(email, user.getEmail());
     assertEquals(name, user.getName());
@@ -1216,12 +1229,11 @@ public class NewUserFormPresenterTest {
     assertEquals(type2, phoneNumber.getType());
     assertEquals(number2, phoneNumber.getNumber());
     assertEquals(extension2, phoneNumber.getExtension());
-    User manager = userCaptor.getValue();
-    assertEquals(manager, manager.getEmail());
     RegisterUserWebContext registerUserWebContext = registerUserWebContextCaptor.getValue();
     assertEquals(validationUrl, registerUserWebContext.getValidateUserUrl(locale));
     verify(view).showTrayNotification(stringCaptor.capture());
     assertEquals(resources.message("save.done", email), stringCaptor.getValue());
+    verify(view).fireSaveEvent(user);
   }
 
   @Test
@@ -1263,6 +1275,7 @@ public class NewUserFormPresenterTest {
     assertEquals(extension2, phoneNumber.getExtension());
     verify(view).showTrayNotification(stringCaptor.capture());
     assertEquals(resources.message("save.done", email), stringCaptor.getValue());
+    verify(view).fireSaveEvent(user);
   }
 
   @Test
@@ -1306,5 +1319,21 @@ public class NewUserFormPresenterTest {
     assertEquals(type2, phoneNumber.getType());
     assertEquals(number2, phoneNumber.getNumber());
     assertEquals(extension2, phoneNumber.getExtension());
+  }
+
+  @Test
+  public void addSaveListener() {
+    presenter.addSaveListener(listener);
+
+    verify(view).addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
+  }
+
+  @Test
+  public void removeSaveListener() {
+    presenter.addSaveListener(listener);
+
+    presenter.removeSaveListener(listener);
+
+    verify(view).removeListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 }

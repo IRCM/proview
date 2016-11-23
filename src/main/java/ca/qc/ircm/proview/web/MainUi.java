@@ -18,11 +18,11 @@
 package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
-import ca.qc.ircm.proview.utils.web.VaadinUtils;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.ui.Transport;
 import com.vaadin.spring.annotation.SpringUI;
@@ -50,8 +50,6 @@ public class MainUi extends UI {
   private Provider<SpringNavigator> springNavigatorProvider;
   @Inject
   private SpringViewProvider viewProvider;
-  @Inject
-  private VaadinUtils vaadinUtils;
 
   /**
    * Initialize navigator.
@@ -73,6 +71,10 @@ public class MainUi extends UI {
   }
 
   public ServletContext getServletContext() {
-    return vaadinUtils.getServletContext();
+    return VaadinServlet.getCurrent().getServletContext();
+  }
+
+  public String getUrl(String viewName) {
+    return getServletContext().getContextPath() + "/#!" + viewName;
   }
 }

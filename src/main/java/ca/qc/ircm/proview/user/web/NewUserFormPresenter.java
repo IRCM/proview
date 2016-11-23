@@ -17,7 +17,7 @@ import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.utils.web.VaadinUtils;
+import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
@@ -93,16 +93,16 @@ public class NewUserFormPresenter {
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
   @Inject
-  private VaadinUtils vaadinUtils;
+  private MainUi ui;
 
-  public NewUserFormPresenter() {
+  protected NewUserFormPresenter() {
   }
 
-  public NewUserFormPresenter(UserService userService,
-      DefaultAddressConfiguration defaultAddressConfiguration, VaadinUtils vaadinUtils) {
+  protected NewUserFormPresenter(UserService userService,
+      DefaultAddressConfiguration defaultAddressConfiguration, MainUi ui) {
     this.userService = userService;
     this.defaultAddressConfiguration = defaultAddressConfiguration;
-    this.vaadinUtils = vaadinUtils;
+    this.ui = ui;
   }
 
   /**
@@ -163,9 +163,16 @@ public class NewUserFormPresenter {
     view.laboratoryPanel.setCaption(resources.message(LABORATORY));
     view.newLaboratoryField.addStyleName(NEW_LABORATORY);
     view.newLaboratoryField.setCaption(resources.message(NEW_LABORATORY));
-    view.laboratoryManagerField.addStyleName(MANAGER);
-    view.laboratoryManagerField.setCaption(resources.message(MANAGER));
-    view.laboratoryManagerField.setRequiredError(generalResources.message(REQUIRED));
+    view.managerField.addStyleName(MANAGER);
+    view.managerField.setCaption(resources.message(MANAGER));
+    view.managerField.setRequiredError(generalResources.message(REQUIRED));
+    view.managerField.addValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)));
+    view.managerField.addValidator((value) -> {
+      String manager = view.managerField.getValue();
+      if (!userService.isManager(manager)) {
+        throw new InvalidValueException(resources.message(MANAGER + ".notExists"));
+      }
+    });
     view.organizationField.addStyleName(LABORATORY_ORGANIZATION);
     view.organizationField
         .setCaption(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION));
@@ -237,7 +244,7 @@ public class NewUserFormPresenter {
     view.emailField.setReadOnly(!editable);
     view.nameField.setReadOnly(!editable);
     view.newLaboratoryField.setReadOnly(!editable || !newUser);
-    view.laboratoryManagerField.setReadOnly(!editable || !newUser);
+    view.managerField.setReadOnly(!editable || !newUser);
     view.organizationField.setReadOnly(!editable || !newUser);
     view.laboratoryNameField.setReadOnly(!editable || !newUser);
     view.addressLineField.setReadOnly(!editable);
@@ -260,7 +267,7 @@ public class NewUserFormPresenter {
     view.passwordField.setVisible(editable);
     view.confirmPasswordField.setVisible(editable);
     view.newLaboratoryField.setVisible(newUser && editable);
-    view.laboratoryManagerField.setVisible(newUser && editable && !newLaboratory);
+    view.managerField.setVisible(newUser && editable && !newLaboratory);
     view.organizationField.setVisible(!newUser || !editable || newLaboratory);
     view.laboratoryNameField.setVisible(!newUser || !editable || newLaboratory);
     view.clearAddressButton.setVisible(editable);
@@ -356,7 +363,7 @@ public class NewUserFormPresenter {
           view.organizationField.commit();
           view.laboratoryNameField.commit();
         } else {
-          view.laboratoryManagerField.commit();
+          view.managerField.validate();
         }
       }
       for (BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup : phoneNumberFieldGroups) {
@@ -390,10 +397,10 @@ public class NewUserFormPresenter {
       if (isNewUser()) {
         User manager = null;
         if (!view.newLaboratoryField.getValue()) {
-          manager = new User(null, view.laboratoryManagerField.getValue());
+          manager = new User(null, view.managerField.getValue());
         }
-        userService.register(user, password, manager,
-            locale -> vaadinUtils.getUrl(ValidateView.VIEW_NAME));
+        user.setLocale(view.getLocale());
+        userService.register(user, password, manager, locale -> ui.getUrl(ValidateView.VIEW_NAME));
       } else {
         userService.update(user, password);
       }
@@ -439,7 +446,7 @@ public class NewUserFormPresenter {
     final boolean newUser = isNewUser();
     view.passwordField.setRequired(newUser);
     view.confirmPasswordField.setRequired(newUser);
-    view.laboratoryManagerField.setRequired(newUser);
+    view.managerField.setRequired(newUser);
     view.organizationField.setRequired(newUser);
     view.laboratoryNameField.setRequired(newUser);
     phoneNumberFieldGroups.clear();

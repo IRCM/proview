@@ -31,7 +31,7 @@ public class NewUserFormDesign extends VerticalLayout {
   protected PasswordField confirmPasswordField;
   protected Panel laboratoryPanel;
   protected CheckBox newLaboratoryField;
-  protected TextField laboratoryManagerField;
+  protected TextField managerField;
   protected TextField organizationField;
   protected TextField laboratoryNameField;
   protected Panel addressPanel;
