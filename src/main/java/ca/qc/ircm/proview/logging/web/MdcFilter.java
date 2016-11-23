@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.logging;
+package ca.qc.ircm.proview.logging.web;
 
 import ca.qc.ircm.proview.user.Signed;
 import org.slf4j.MDC;

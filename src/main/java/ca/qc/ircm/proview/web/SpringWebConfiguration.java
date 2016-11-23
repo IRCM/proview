@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
-import ca.qc.ircm.proview.logging.MdcFilter;
+import ca.qc.ircm.proview.logging.web.MdcFilter;
 import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
 import ca.qc.ircm.proview.user.SignedShiro;
 import ca.qc.ircm.proview.user.UserService;
