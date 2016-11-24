@@ -85,6 +85,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
@@ -118,6 +119,8 @@ public class SubmissionsViewPresenterTest {
   private SubmissionsView view;
   @Mock
   private Report report;
+  @Value("${spring.application.name}")
+  private String applicationName;
   private FilterInstantComponentPresenter filterInstantComponentPresenter =
       new FilterInstantComponentPresenter();
   private Label headerLabel = new Label();
@@ -132,8 +135,8 @@ public class SubmissionsViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter =
-        new SubmissionsViewPresenter(submissionService, filterInstantComponentPresenterProvider);
+    presenter = new SubmissionsViewPresenter(submissionService,
+        filterInstantComponentPresenterProvider, applicationName);
     view.headerLabel = headerLabel;
     view.submissionsGrid = submissionsGrid;
     when(view.getLocale()).thenReturn(locale);
@@ -347,12 +350,8 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
-  public void title() {
-    verify(view).setTitle(resources.message(TITLE));
-  }
-
-  @Test
   public void captions() {
+    verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER_LABEL_ID), view.headerLabel.getValue());
     for (Column column : view.submissionsGrid.getColumns()) {
       assertEquals(resources.message((String) column.getPropertyId()), column.getHeaderCaption());

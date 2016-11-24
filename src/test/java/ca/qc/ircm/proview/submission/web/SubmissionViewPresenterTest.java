@@ -45,6 +45,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
@@ -65,6 +66,8 @@ public class SubmissionViewPresenterTest {
   private ArgumentCaptor<Item> itemCaptor;
   @Captor
   private ArgumentCaptor<Boolean> booleanCaptor;
+  @Value("${spring.application.name}")
+  private String applicationName;
   private Label headerLabel = new Label();
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionView.class, locale);
@@ -74,7 +77,7 @@ public class SubmissionViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionViewPresenter(submissionService);
+    presenter = new SubmissionViewPresenter(submissionService, applicationName);
     view.headerLabel = headerLabel;
     view.submissionForm = mock(SubmissionForm.class);
     view.submissionFormPresenter = mock(SubmissionFormPresenter.class);
@@ -91,7 +94,7 @@ public class SubmissionViewPresenterTest {
 
   @Test
   public void captions() {
-    verify(view).setTitle(resources.message(TITLE));
+    verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER_STYLE), view.headerLabel.getValue());
   }
 

@@ -89,8 +89,8 @@ public class UserViewTest extends UserPageObject {
 
     open();
 
-    assertTrue(new MessageResource(AccessDeniedView.class, locale).message(TITLE, applicationName)
-        .contains(getDriver().getTitle()));
+    assertTrue(new MessageResource(AccessDeniedView.class, locale)
+        .message(AccessDeniedView.TITLE, applicationName).contains(getDriver().getTitle()));
   }
 
   @Test

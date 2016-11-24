@@ -58,6 +58,7 @@ import de.datenhahn.vaadin.componentrenderer.ComponentCellKeyExtension;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -112,14 +113,18 @@ public class SubmissionsViewPresenter {
   private SubmissionService submissionService;
   @Inject
   private Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider;
+  @Value("${spring.application.name}")
+  private String applicationName;
 
   protected SubmissionsViewPresenter() {
   }
 
   protected SubmissionsViewPresenter(SubmissionService submissionService,
-      Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider) {
+      Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider,
+      String applicationName) {
     this.submissionService = submissionService;
     this.filterInstantComponentPresenterProvider = filterInstantComponentPresenterProvider;
+    this.applicationName = applicationName;
   }
 
   /**
@@ -337,7 +342,7 @@ public class SubmissionsViewPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    view.setTitle(resources.message(TITLE));
+    view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.setValue(resources.message(HEADER_ID));
     for (Column column : view.submissionsGrid.getColumns()) {
       column.setHeaderCaption(resources.message((String) column.getPropertyId()));

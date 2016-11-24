@@ -18,17 +18,21 @@
 package ca.qc.ircm.proview.user.web.integration;
 
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
+import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.UserFormPresenter;
 import ca.qc.ircm.proview.user.web.UserWindow;
 import ca.qc.ircm.proview.user.web.ValidateView;
+import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.testbench.elements.WindowElement;
@@ -41,6 +45,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -64,10 +69,43 @@ public class ValidateViewTest extends ValidatePageObject {
   }
 
   @Test
+  @WithSubject(anonymous = true)
+  public void security_Anonymous() throws Throwable {
+    openView(MainView.VIEW_NAME);
+    Locale locale = currentLocale();
+
+    open();
+
+    assertTrue(new MessageResource(AccessDeniedView.class, locale)
+        .message(AccessDeniedView.TITLE, applicationName).contains(getDriver().getTitle()));
+  }
+
+  @Test
+  @WithSubject(userId = 10L)
+  public void security_RegularUser() throws Throwable {
+    openView(MainView.VIEW_NAME);
+    Locale locale = currentLocale();
+
+    open();
+
+    assertTrue(new MessageResource(AccessDeniedView.class, locale)
+        .message(AccessDeniedView.TITLE, applicationName).contains(getDriver().getTitle()));
+  }
+
+  @Test
+  @WithSubject(userId = 3L)
+  public void security_Manager() throws Throwable {
+    open();
+
+    assertTrue(resources(ValidateView.class).message(TITLE, applicationName)
+        .contains(getDriver().getTitle()));
+  }
+
+  @Test
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(ValidateView.class).message("title", applicationName)
+    assertTrue(resources(ValidateView.class).message(TITLE, applicationName)
         .contains(getDriver().getTitle()));
   }
 
