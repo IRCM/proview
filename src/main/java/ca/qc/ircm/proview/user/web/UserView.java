@@ -23,12 +23,14 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
 /**
  * User view.
  */
 @SpringView(name = UserView.VIEW_NAME)
+@RolesAllowed("USER")
 public class UserView extends UserViewDesign implements MessageResourcesView {
   public static final String VIEW_NAME = "user/user";
   private static final long serialVersionUID = -3508418095993360485L;
