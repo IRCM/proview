@@ -24,6 +24,9 @@ import ca.qc.ircm.proview.user.Signed;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.web.HomeWebContext;
+import ca.qc.ircm.proview.web.MainUi;
+import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
@@ -78,6 +81,8 @@ public class ValidateViewPresenter {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
+  private MainUi ui;
+  @Inject
   private Signed signed;
   @Value("${spring.application.name}")
   private String applicationName;
@@ -86,9 +91,10 @@ public class ValidateViewPresenter {
   }
 
   protected ValidateViewPresenter(UserService userService,
-      AuthorizationService authorizationService, Signed signed, String applicationName) {
+      AuthorizationService authorizationService, MainUi ui, Signed signed, String applicationName) {
     this.userService = userService;
     this.authorizationService = authorizationService;
+    this.ui = ui;
     this.signed = signed;
     this.applicationName = applicationName;
   }
@@ -205,7 +211,7 @@ public class ValidateViewPresenter {
 
   private void validateUser(User user) {
     logger.debug("Validate user {}", user);
-    userService.validate(Collections.nCopies(1, user));
+    userService.validate(Collections.nCopies(1, user), homeWebContext());
     refresh();
     final MessageResource resources = view.getResources();
     view.afterSuccessfulValidate(resources.message("done", 1, user.getEmail()));
@@ -222,7 +228,7 @@ public class ValidateViewPresenter {
       view.showError(resources.message("validateSelected.none"));
     } else {
       logger.debug("Validate users {}", selected);
-      userService.validate(selected);
+      userService.validate(selected, homeWebContext());
       final MessageResource resources = view.getResources();
       StringBuilder emails = new StringBuilder();
       for (int i = 0; i < selected.size(); i++) {
@@ -237,6 +243,10 @@ public class ValidateViewPresenter {
       refresh();
       view.afterSuccessfulValidate(resources.message("done", selected.size(), emails));
     }
+  }
+
+  public HomeWebContext homeWebContext() {
+    return locale -> ui.getUrl(MainView.VIEW_NAME);
   }
 
   public static String[] getColumns() {

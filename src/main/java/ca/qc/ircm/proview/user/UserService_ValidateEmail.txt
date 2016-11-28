@@ -1,0 +1,8 @@
+<html th:inline="text" th:remove="tag">
+[# th:text="#{header(${user.name})}" /]
+
+[[#{message}]]
+[[${url}]]
+
+[[#{footer}]]
+</html>

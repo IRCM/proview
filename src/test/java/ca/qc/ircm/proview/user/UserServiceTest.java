@@ -39,6 +39,7 @@ import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,13 +69,6 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UserServiceTest {
-  private static class RegisterUserWebContextImpl implements RegisterUserWebContext {
-    @Override
-    public String getValidateUserUrl(Locale locale) {
-      return "/validate/user";
-    }
-  }
-
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
   private UserService userServiceImpl;
@@ -95,6 +89,8 @@ public class UserServiceTest {
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   private HashedPassword hashedPassword;
+  private String validateUserUrl = "/validate/user";
+  private String homeUrl = "/";
 
   /**
    * Before test.
@@ -132,6 +128,14 @@ public class UserServiceTest {
       }
     }
     return null;
+  }
+
+  private RegisterUserWebContext registerUserWebContext() {
+    return locale -> validateUserUrl;
+  }
+
+  private HomeWebContext homeWebContext() {
+    return locale -> homeUrl;
   }
 
   @Test
@@ -415,9 +419,8 @@ public class UserServiceTest {
     List<PhoneNumber> phoneNumbers = new ArrayList<>();
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
-    RegisterUserWebContext webContext = new RegisterUserWebContextImpl();
 
-    userServiceImpl.register(user, "password", null, webContext);
+    userServiceImpl.register(user, "password", null, registerUserWebContext());
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -477,9 +480,8 @@ public class UserServiceTest {
     List<PhoneNumber> phoneNumbers = new ArrayList<>();
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
-    RegisterUserWebContext webContext = new RegisterUserWebContextImpl();
 
-    userServiceImpl.register(user, "password", manager, webContext);
+    userServiceImpl.register(user, "password", manager, registerUserWebContext());
 
     entityManager.flush();
     verifyZeroInteractions(authorizationService);
@@ -518,7 +520,7 @@ public class UserServiceTest {
     verify(emailService).send(email);
     verify(email).addTo("benoit.coulombe@ircm.qc.ca");
     MessageResource messageResource =
-        new MessageResource(UserService.class.getName() + "_Email", Locale.CANADA_FRENCH);
+        new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA_FRENCH);
     verify(email).setSubject(messageResource.message("email.subject"));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
@@ -527,8 +529,7 @@ public class UserServiceTest {
     htmlContent.contains("Poitras");
     textContent.contains("Christian");
     textContent.contains("Poitras");
-    String url =
-        applicationConfiguration.getUrl(webContext.getValidateUserUrl(Locale.CANADA_FRENCH));
+    String url = applicationConfiguration.getUrl(validateUserUrl);
     assertTrue(textContent.contains(url));
     assertTrue(htmlContent.contains(url));
     assertFalse(textContent.contains("???"));
@@ -558,10 +559,9 @@ public class UserServiceTest {
     List<PhoneNumber> phoneNumbers = new ArrayList<>();
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
-    RegisterUserWebContext webContext = new RegisterUserWebContextImpl();
 
     try {
-      userServiceImpl.register(user, "password", manager, webContext);
+      userServiceImpl.register(user, "password", manager, registerUserWebContext());
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -592,9 +592,8 @@ public class UserServiceTest {
     List<PhoneNumber> phoneNumbers = new ArrayList<>();
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
-    RegisterUserWebContext webContext = new RegisterUserWebContextImpl();
 
-    userServiceImpl.register(user, "password", null, webContext);
+    userServiceImpl.register(user, "password", null, registerUserWebContext());
 
     entityManager.flush();
     verifyZeroInteractions(authorizationService);
@@ -635,10 +634,10 @@ public class UserServiceTest {
     verify(emailService, times(3)).send(email);
     Set<String> subjects = new HashSet<>();
     MessageResource frenchMessageResource =
-        new MessageResource(UserService.class.getName() + "_Email", Locale.CANADA_FRENCH);
+        new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA_FRENCH);
     subjects.add(frenchMessageResource.message("newLaboratory.email.subject"));
     MessageResource englishMessageResource =
-        new MessageResource(UserService.class.getName() + "_Email", Locale.ENGLISH);
+        new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.ENGLISH);
     subjects.add(englishMessageResource.message("newLaboratory.email.subject"));
     verify(email).addTo("christian.poitras@ircm.qc.ca");
     verify(email).addTo("liam.li@ircm.qc.ca");
@@ -651,7 +650,7 @@ public class UserServiceTest {
     verify(email, times(3)).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
     String htmlContent = stringCaptor.getAllValues().get(1);
-    String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(Locale.CANADA));
+    String url = applicationConfiguration.getUrl(validateUserUrl);
     assertTrue(textContent.contains(url));
     assertTrue(htmlContent.contains(url));
     assertFalse(textContent.contains("???"));
@@ -771,7 +770,7 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userServiceImpl.validate(users);
+    userServiceImpl.validate(users, homeWebContext());
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
@@ -780,6 +779,24 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    verify(emailService).htmlEmail();
+    verify(emailService).send(email);
+    verify(email).addTo(user.getEmail());
+    MessageResource messageResource =
+        new MessageResource(UserService.class.getName() + "_ValidateEmail", Locale.CANADA_FRENCH);
+    verify(email).setSubject(messageResource.message("email.subject"));
+    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
+    String textContent = stringCaptor.getAllValues().get(0);
+    String htmlContent = stringCaptor.getAllValues().get(1);
+    htmlContent.contains(user.getEmail());
+    textContent.contains(user.getEmail());
+    String url = applicationConfiguration.getUrl(homeUrl);
+    assertTrue(textContent.contains(url));
+    assertTrue(htmlContent.contains(url));
+    assertFalse(textContent.contains("???"));
+    assertFalse(htmlContent.contains("???"));
+    assertFalse(textContent.contains("$resourceTool"));
+    assertFalse(htmlContent.contains("$resourceTool"));
   }
 
   @Test

@@ -41,6 +41,8 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Signed;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.web.HomeWebContext;
+import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.shared.MouseEventDetails;
@@ -83,9 +85,13 @@ public class ValidateViewPresenterTest {
   @Mock
   private AuthorizationService authorizationService;
   @Mock
+  private MainUi ui;
+  @Mock
   private Signed signed;
   @Captor
   private ArgumentCaptor<Collection<User>> usersCaptor;
+  @Captor
+  private ArgumentCaptor<HomeWebContext> homeWebContextCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private User signedUser;
@@ -99,7 +105,7 @@ public class ValidateViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter =
-        new ValidateViewPresenter(userService, authorizationService, signed, applicationName);
+        new ValidateViewPresenter(userService, authorizationService, ui, signed, applicationName);
     signedUser = entityManager.find(User.class, 1L);
     when(signed.getUser()).thenReturn(signedUser);
     usersToValidate = new ArrayList<>();
@@ -186,19 +192,21 @@ public class ValidateViewPresenterTest {
   @SuppressWarnings({ "serial", "unchecked" })
   public void validateOne() {
     final User user = usersToValidate.get(0);
-    Column column = view.usersGrid.getColumn(VALIDATE);
-    ButtonRenderer renderer = (ButtonRenderer) column.getRenderer();
-    RendererClickListener viewListener =
-        ((Collection<RendererClickListener>) renderer.getListeners(RendererClickEvent.class))
-            .iterator().next();
     List<User> usersToValidateAfter = new ArrayList<>(usersToValidate);
     usersToValidateAfter.remove(0);
     when(userService.all(any())).thenReturn(usersToValidateAfter);
+    String homeUrl = "homeUrl";
+    when(ui.getUrl(any())).thenReturn(homeUrl);
+    Column column = view.usersGrid.getColumn(VALIDATE);
+    ButtonRenderer renderer = (ButtonRenderer) column.getRenderer();
+    final RendererClickListener viewListener =
+        ((Collection<RendererClickListener>) renderer.getListeners(RendererClickEvent.class))
+            .iterator().next();
 
     viewListener
         .click(new RendererClickEvent(view.usersGrid, user, column, new MouseEventDetails()) {});
 
-    verify(userService).validate(usersCaptor.capture());
+    verify(userService).validate(usersCaptor.capture(), homeWebContextCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(1, users.size());
     assertNotNull(find(users, user.getId()));
@@ -206,6 +214,8 @@ public class ValidateViewPresenterTest {
     verify(userService, times(2)).all(any());
     assertEquals(usersToValidateAfter.size(),
         view.usersGrid.getContainerDataSource().getItemIds().size());
+    HomeWebContext homeWebContext = homeWebContextCaptor.getValue();
+    assertEquals(homeUrl, homeWebContext.getHomeUrl(locale));
   }
 
   @Test
@@ -217,10 +227,12 @@ public class ValidateViewPresenterTest {
     view.usersGrid.select(user2);
     view.usersGrid.select(user3);
     when(userService.all(any())).thenReturn(new ArrayList<>());
+    String homeUrl = "homeUrl";
+    when(ui.getUrl(any())).thenReturn(homeUrl);
 
     view.validateSelectedButton.click();
 
-    verify(userService).validate(usersCaptor.capture());
+    verify(userService).validate(usersCaptor.capture(), homeWebContextCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(3, users.size());
     assertNotNull(find(users, user1.getId()));
@@ -232,6 +244,8 @@ public class ValidateViewPresenterTest {
     verify(userService, times(2)).all(any());
     assertEquals(0, view.usersGrid.getSelectedRows().size());
     assertEquals(0, view.usersGrid.getContainerDataSource().getItemIds().size());
+    HomeWebContext homeWebContext = homeWebContextCaptor.getValue();
+    assertEquals(homeUrl, homeWebContext.getHomeUrl(locale));
   }
 
   @Test
@@ -240,7 +254,7 @@ public class ValidateViewPresenterTest {
 
     view.validateSelectedButton.click();
 
-    verify(userService, never()).validate(any());
+    verify(userService, never()).validate(any(), any());
     verify(view).showError(any());
   }
 }

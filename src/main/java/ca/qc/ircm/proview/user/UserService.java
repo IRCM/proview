@@ -27,6 +27,7 @@ import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.HashedPassword;
+import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -286,7 +287,7 @@ public class UserService {
     MimeMessageHelper email = emailService.htmlEmail();
     email.addTo(manager.getEmail());
     MessageResource messageResource =
-        new MessageResource(UserService.class.getName() + "_Email", locale);
+        new MessageResource(UserService.class.getName() + "_RegisterEmail", locale);
     String subject = messageResource.message("email.subject");
     email.setSubject(subject);
     Context context = new Context();
@@ -294,10 +295,10 @@ public class UserService {
     context.setVariable("newLaboratory", false);
     context.setVariable("url", url);
     String htmlTemplateLocation =
-        "/" + UserService.class.getName().replace(".", "/") + "_Email.html";
+        "/" + UserService.class.getName().replace(".", "/") + "_RegisterEmail.html";
     String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
     String textTemplateLocation =
-        "/" + UserService.class.getName().replace(".", "/") + "_Email.txt";
+        "/" + UserService.class.getName().replace(".", "/") + "_RegisterEmail.txt";
     String textEmail = templateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
 
@@ -348,7 +349,7 @@ public class UserService {
       // Prepare email content.
       MimeMessageHelper email = emailService.htmlEmail();
       MessageResource messageResource =
-          new MessageResource(UserService.class.getName() + "_Email", locale);
+          new MessageResource(UserService.class.getName() + "_RegisterEmail", locale);
       String subject = messageResource.message("newLaboratory.email.subject");
       email.setSubject(subject);
       email.addTo(adminUser.getEmail());
@@ -356,9 +357,11 @@ public class UserService {
       context.setVariable("user", manager);
       context.setVariable("newLaboratory", true);
       context.setVariable("url", url);
-      String htmlTemplateLocation = UserService.class.getName().replace(".", "/") + "_Email.html";
+      String htmlTemplateLocation =
+          UserService.class.getName().replace(".", "/") + "_RegisterEmail.html";
       String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
-      String textTemplateLocation = UserService.class.getName().replace(".", "/") + "_Email.txt";
+      String textTemplateLocation =
+          UserService.class.getName().replace(".", "/") + "_RegisterEmail.txt";
       String textEmail = templateEngine.process(textTemplateLocation, context);
       email.setText(textEmail, htmlEmail);
 
@@ -413,7 +416,7 @@ public class UserService {
    * @param users
    *          users to validate
    */
-  public void validate(Collection<User> users) {
+  public void validate(Collection<User> users, HomeWebContext webContext) {
     for (User user : users) {
       user = entityManager.merge(user);
       entityManager.refresh(user);
@@ -425,7 +428,46 @@ public class UserService {
 
     cacheFlusher.flushShiroCache();
 
+    for (User user : users) {
+      try {
+        sendEmailForUserValidation(user, webContext);
+      } catch (MessagingException e) {
+        logger.warn(e.getMessage(), e);
+      }
+    }
+
     logger.info("Users {} have been validated", users);
+  }
+
+  private void sendEmailForUserValidation(final User user, final HomeWebContext webContext)
+      throws MessagingException {
+    // Get user's prefered locale.
+    Locale locale = Locale.CANADA;
+    if (user.getLocale() != null) {
+      locale = user.getLocale();
+    }
+
+    final String url = applicationConfiguration.getUrl(webContext.getHomeUrl(locale));
+
+    // Prepare email content.
+    MimeMessageHelper email = emailService.htmlEmail();
+    email.addTo(user.getEmail());
+    MessageResource messageResource =
+        new MessageResource(UserService.class.getName() + "_ValidateEmail", locale);
+    String subject = messageResource.message("email.subject");
+    email.setSubject(subject);
+    Context context = new Context();
+    context.setVariable("user", user);
+    context.setVariable("url", url);
+    String htmlTemplateLocation =
+        "/" + UserService.class.getName().replace(".", "/") + "_ValidateEmail.html";
+    String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
+    String textTemplateLocation =
+        "/" + UserService.class.getName().replace(".", "/") + "_ValidateEmail.txt";
+    String textEmail = templateEngine.process(textTemplateLocation, context);
+    email.setText(textEmail, htmlEmail);
+
+    emailService.send(email);
   }
 
   /**
