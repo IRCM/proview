@@ -29,6 +29,7 @@ import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VIEW;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
@@ -39,6 +40,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.proview.web.MainUi;
@@ -87,6 +89,8 @@ public class ValidateViewPresenterTest {
   private MainUi ui;
   @Captor
   private ArgumentCaptor<Collection<User>> usersCaptor;
+  @Captor
+  private ArgumentCaptor<UserFilter> userFilterCaptor;
   @Captor
   private ArgumentCaptor<HomeWebContext> homeWebContextCaptor;
   @Value("${spring.application.name}")
@@ -166,6 +170,30 @@ public class ValidateViewPresenterTest {
     assertEquals(resources.message(HEADER_LABEL_ID), view.headerLabel.getValue());
     assertEquals(resources.message(VALIDATE_SELECTED_BUTTON_ID),
         view.validateSelectedButton.getCaption());
+  }
+
+  @Test
+  public void usersToValidate_Admin() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.attach();
+
+    verify(userService, times(2)).all(userFilterCaptor.capture());
+
+    UserFilter userFilter = userFilterCaptor.getValue();
+    assertTrue(userFilter.isInvalid());
+    assertNull(userFilter.getLaboratory());
+  }
+
+  @Test
+  public void usersToValidate_LaboratoryManager() {
+    when(authorizationService.hasAdminRole()).thenReturn(false);
+    presenter.attach();
+
+    verify(userService, times(2)).all(userFilterCaptor.capture());
+
+    UserFilter userFilter = userFilterCaptor.getValue();
+    assertTrue(userFilter.isInvalid());
+    assertEquals(signedUser.getLaboratory(), userFilter.getLaboratory());
   }
 
   @Test
