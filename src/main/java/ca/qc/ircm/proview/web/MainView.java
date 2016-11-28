@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
-import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.utils.web.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
  * Main view.
  */
 @SpringView(name = MainView.VIEW_NAME)
-public class MainView extends MainViewDesign implements MessageResourcesView {
+public class MainView extends MainViewDesign implements BaseView {
   private static final long serialVersionUID = -2537732272999926530L;
   public static final String VIEW_NAME = "";
   private static final Logger logger = LoggerFactory.getLogger(MainView.class);

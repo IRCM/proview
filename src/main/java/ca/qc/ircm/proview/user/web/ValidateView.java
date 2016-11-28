@@ -18,10 +18,9 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Notification;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -33,7 +32,7 @@ import javax.inject.Provider;
  */
 @SpringView(name = ValidateView.VIEW_NAME)
 @RolesAllowed({ "ADMIN", "MANAGER" })
-public class ValidateView extends ValidateViewDesign implements MessageResourcesView {
+public class ValidateView extends ValidateViewDesign implements BaseView {
   public static final String VIEW_NAME = "user/validate";
   private static final long serialVersionUID = -1956061543048432065L;
   @Inject
@@ -68,6 +67,6 @@ public class ValidateView extends ValidateViewDesign implements MessageResources
   }
 
   public void afterSuccessfulValidate(String message) {
-    Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
+    showTrayNotification(message);
   }
 }

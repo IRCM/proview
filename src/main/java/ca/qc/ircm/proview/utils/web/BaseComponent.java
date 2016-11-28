@@ -15,31 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.user.web;
+package ca.qc.ircm.proview.utils.web;
 
-import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.utils.web.BaseComponent;
-import ca.qc.ircm.proview.web.SaveEvent;
+import com.vaadin.ui.Component;
 
 /**
- * User form.
+ * Component extending all component utility interfaces.
  */
-public class UserForm extends UserFormDesign implements BaseComponent {
-  private static final long serialVersionUID = -7630525674289902028L;
-  private UserFormPresenter presenter;
-
-  public void setPresenter(UserFormPresenter presenter) {
-    this.presenter = presenter;
-  }
-
-  @Override
-  public void attach() {
-    super.attach();
-    phoneNumbersLayout.removeAllComponents();
-    presenter.init(this);
-  }
-
-  public void fireSaveEvent(User user) {
-    fireEvent(new SaveEvent(this, user));
-  }
+public interface BaseComponent
+    extends Component, NotificationComponent, NavigationComponent, MessageResourcesComponent {
 }

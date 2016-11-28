@@ -15,31 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.user.web;
+package ca.qc.ircm.proview.utils.web;
 
-import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.utils.web.BaseComponent;
-import ca.qc.ircm.proview.web.SaveEvent;
+import static org.junit.Assert.assertTrue;
 
-/**
- * User form.
- */
-public class UserForm extends UserFormDesign implements BaseComponent {
-  private static final long serialVersionUID = -7630525674289902028L;
-  private UserFormPresenter presenter;
+import com.vaadin.ui.CustomComponent;
+import org.junit.Before;
+import org.junit.Test;
 
-  public void setPresenter(UserFormPresenter presenter) {
-    this.presenter = presenter;
+public class BaseViewTest {
+  private BaseView baseView;
+
+  /**
+   * Before test.
+   */
+  @Before
+  public void beforeTest() {
+    baseView = new TestBaseView();
   }
 
-  @Override
-  public void attach() {
-    super.attach();
-    phoneNumbersLayout.removeAllComponents();
-    presenter.init(this);
+  @Test
+  public void implementations() {
+    assertTrue(baseView instanceof BaseComponent);
+    assertTrue(baseView instanceof EnterView);
+    assertTrue(baseView instanceof TitleView);
   }
 
-  public void fireSaveEvent(User user) {
-    fireEvent(new SaveEvent(this, user));
+  @SuppressWarnings("serial")
+  private static class TestBaseView extends CustomComponent implements BaseView {
   }
 }

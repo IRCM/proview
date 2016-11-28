@@ -26,8 +26,7 @@ import java.time.Instant;
 /**
  * Filters instant based on a day resolution.
  */
-public class FilterInstantComponent extends FilterInstantComponentDesign
-    implements MessageResourcesComponent {
+public class FilterInstantComponent extends FilterInstantComponentDesign implements BaseComponent {
   private static final long serialVersionUID = -4819761558400463539L;
   private FilterInstantComponentPresenter presenter;
 

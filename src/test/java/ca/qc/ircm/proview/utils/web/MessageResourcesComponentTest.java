@@ -56,8 +56,8 @@ public class MessageResourcesComponentTest {
     assertEquals(frenchMessage, messageResource.message("message"));
   }
 
+  @SuppressWarnings("serial")
   private static class TestMessageResourcesComponent extends TextField
       implements MessageResourcesComponent {
-    private static final long serialVersionUID = 1640742296797655653L;
   }
 }

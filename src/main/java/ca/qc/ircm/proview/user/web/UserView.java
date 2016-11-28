@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
  * User view.
  */
 @SpringView(name = UserView.VIEW_NAME)
-public class UserView extends UserViewDesign implements MessageResourcesView {
+public class UserView extends UserViewDesign implements BaseView {
   public static final String VIEW_NAME = "user/user";
   private static final long serialVersionUID = -3508418095993360485L;
   @Inject

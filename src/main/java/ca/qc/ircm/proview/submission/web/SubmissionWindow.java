@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
+import ca.qc.ircm.proview.utils.web.BaseComponent;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
@@ -36,7 +36,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SubmissionWindow extends Window implements MessageResourcesComponent {
+public class SubmissionWindow extends Window implements BaseComponent {
   public static final String WINDOW_STYLE = "submission-window";
   public static final String TITLE = "title";
   private static final long serialVersionUID = 4789125002422549258L;

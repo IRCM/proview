@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
@@ -31,7 +31,7 @@ import javax.inject.Inject;
  */
 @SpringView(name = SubmissionView.VIEW_NAME)
 @RolesAllowed({ "USER" })
-public class SubmissionView extends SubmissionViewDesign implements MessageResourcesView {
+public class SubmissionView extends SubmissionViewDesign implements BaseView {
   public static final String VIEW_NAME = "submission";
   private static final long serialVersionUID = -6009778227571187664L;
   @Inject

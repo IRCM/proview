@@ -24,7 +24,7 @@ import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
-import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
+import ca.qc.ircm.proview.utils.web.BaseComponent;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.MenuBar;
@@ -42,7 +42,7 @@ import javax.inject.Inject;
 /**
  * Menu.
  */
-public class Menu extends CustomComponent implements MessageResourcesComponent {
+public class Menu extends CustomComponent implements BaseComponent {
   public static final String HOME_STYLE = "home";
   public static final String SUBMISSION_STYLE = "submission";
   public static final String PROFILE_STYLE = "profile";

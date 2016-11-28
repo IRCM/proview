@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
+import ca.qc.ircm.proview.utils.web.BaseComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -28,8 +28,7 @@ import java.util.List;
 /**
  * Submission results form.
  */
-public class SubmissionAnalysesForm extends SubmissionAnalysesFormDesign
-    implements MessageResourcesComponent {
+public class SubmissionAnalysesForm extends SubmissionAnalysesFormDesign implements BaseComponent {
   private static final long serialVersionUID = 3301905236780067587L;
   private SubmissionAnalysesFormPresenter presenter;
   protected List<Panel> analysisPanels = new ArrayList<>();

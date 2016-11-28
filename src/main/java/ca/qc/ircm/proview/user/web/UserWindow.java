@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
+import ca.qc.ircm.proview.utils.web.BaseComponent;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
@@ -34,7 +34,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class UserWindow extends Window implements MessageResourcesComponent {
+public class UserWindow extends Window implements BaseComponent {
   public static final String WINDOW_STYLE = "user-window";
   public static final String TITLE = "title";
   private static final long serialVersionUID = 9032686080431923743L;

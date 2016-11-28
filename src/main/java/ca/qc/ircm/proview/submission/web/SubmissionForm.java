@@ -60,8 +60,7 @@ import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
-import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
-import com.vaadin.ui.Notification;
+import ca.qc.ircm.proview.utils.web.BaseComponent;
 import com.vaadin.ui.TextField;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
@@ -75,7 +74,7 @@ import java.util.stream.IntStream;
 /**
  * Submission form.
  */
-public class SubmissionForm extends SubmissionFormDesign implements MessageResourcesComponent {
+public class SubmissionForm extends SubmissionFormDesign implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
   public static final ProteolyticDigestion[] DIGESTIONS =
       new ProteolyticDigestion[] { TRYPSIN, DIGESTED, ProteolyticDigestion.OTHER };
@@ -145,7 +144,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
 
   /**
    * Creates uploader for molecule structure.
-   * 
+   *
    * @param startedHandler
    *          handler for upload started
    * @param finishedHandler
@@ -164,7 +163,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
 
   /**
    * Creates uploader for gel images.
-   * 
+   *
    * @param startedHandler
    *          handler for upload started
    * @param finishedHandler
@@ -183,7 +182,7 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
 
   /**
    * Creates uploader for additional files.
-   * 
+   *
    * @param startedHandler
    *          handler for upload started
    * @param finishedHandler
@@ -199,16 +198,8 @@ public class SubmissionForm extends SubmissionFormDesign implements MessageResou
     return filesUploader;
   }
 
-  public void showError(String message) {
-    Notification.show(message, Notification.Type.ERROR_MESSAGE);
-  }
-
-  public void showWarning(String message) {
-    Notification.show(message, Notification.Type.WARNING_MESSAGE);
-  }
-
   public void afterSuccessfulSave(String message) {
-    Notification.show(message, Notification.Type.TRAY_NOTIFICATION);
-    getUI().getNavigator().navigateTo(SubmissionsView.VIEW_NAME);
+    showTrayNotification(message);
+    navigateTo(SubmissionsView.VIEW_NAME);
   }
 }

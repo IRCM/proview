@@ -17,12 +17,12 @@
 
 package ca.qc.ircm.proview.laboratory.web;
 
-import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
+import ca.qc.ircm.proview.utils.web.BaseComponent;
 
 /**
  * Laboratory form.
  */
-public class LaboratoryForm extends LaboratoryFormDesign implements MessageResourcesComponent {
+public class LaboratoryForm extends LaboratoryFormDesign implements BaseComponent {
   private static final long serialVersionUID = 6501017653094381754L;
   private LaboratoryFormPresenter presenter;
 

@@ -17,11 +17,9 @@
 
 package ca.qc.ircm.proview.security.web;
 
-import ca.qc.ircm.proview.utils.web.MessageResourcesComponent;
+import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
@@ -38,7 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
  */
 @UIScope
 @SpringView(name = AccessDeniedView.VIEW_NAME)
-public class AccessDeniedView extends VerticalLayout implements MessageResourcesComponent, View {
+public class AccessDeniedView extends VerticalLayout implements BaseView {
   private static final long serialVersionUID = 2998062811797958331L;
   private static final Logger logger = LoggerFactory.getLogger(AccessDeniedView.class);
   public static final String VIEW_NAME = "accessDenied";
@@ -63,7 +61,7 @@ public class AccessDeniedView extends VerticalLayout implements MessageResources
     button.addClickListener(new ClickListener() {
       @Override
       public void buttonClick(ClickEvent event) {
-        getUI().getNavigator().navigateTo(MainView.VIEW_NAME);
+        navigateTo(MainView.VIEW_NAME);
       }
     });
     addComponent(button);
@@ -74,12 +72,8 @@ public class AccessDeniedView extends VerticalLayout implements MessageResources
     super.attach();
     logger.debug("Access denied view");
     MessageResource resources = getResources();
-    getUI().getPage().setTitle(resources.message(TITLE, applicationName));
+    setTitle(resources.message(TITLE, applicationName));
     label.setValue(resources.message(LABEL));
     button.setCaption(resources.message(BUTTON));
-  }
-
-  @Override
-  public void enter(ViewChangeEvent event) {
   }
 }

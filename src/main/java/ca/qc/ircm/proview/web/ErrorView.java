@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
-import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Value;
  */
 @UIScope
 @SpringView(name = ErrorView.VIEW_NAME)
-public class ErrorView extends VerticalLayout implements MessageResourcesView {
+public class ErrorView extends VerticalLayout implements BaseView {
   private static final long serialVersionUID = 2998062811797958331L;
   private static final Logger logger = LoggerFactory.getLogger(ErrorView.class);
   public static final String VIEW_NAME = "error";

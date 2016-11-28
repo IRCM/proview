@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
 
@@ -28,7 +28,7 @@ import javax.inject.Inject;
  * Registers user view.
  */
 @SpringView(name = RegisterView.VIEW_NAME)
-public class RegisterView extends RegisterViewDesign implements MessageResourcesView {
+public class RegisterView extends RegisterViewDesign implements BaseView {
   public static final String VIEW_NAME = "user/register";
   private static final long serialVersionUID = 7586918222688019429L;
   @Inject

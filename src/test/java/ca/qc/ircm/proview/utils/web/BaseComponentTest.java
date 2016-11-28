@@ -17,8 +17,31 @@
 
 package ca.qc.ircm.proview.utils.web;
 
-/**
- * View that allows to get resources.
- */
-public interface MessageResourcesView extends MessageResourcesComponent, AbstractView {
+import static org.junit.Assert.assertTrue;
+
+import com.vaadin.ui.CustomComponent;
+import org.junit.Before;
+import org.junit.Test;
+
+public class BaseComponentTest {
+  private BaseComponent baseComponent;
+
+  /**
+   * Before test.
+   */
+  @Before
+  public void beforeTest() {
+    baseComponent = new TestBaseComponent();
+  }
+
+  @Test
+  public void implementations() {
+    assertTrue(baseComponent instanceof MessageResourcesComponent);
+    assertTrue(baseComponent instanceof NavigationComponent);
+    assertTrue(baseComponent instanceof NotificationComponent);
+  }
+
+  @SuppressWarnings("serial")
+  private static class TestBaseComponent extends CustomComponent implements BaseComponent {
+  }
 }

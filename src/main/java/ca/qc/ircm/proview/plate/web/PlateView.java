@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
-import ca.qc.ircm.proview.utils.web.MessageResourcesView;
+import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Label;
@@ -35,7 +35,7 @@ import javax.inject.Inject;
  */
 @SpringView(name = PlateView.VIEW_NAME)
 @RolesAllowed("USER")
-public class PlateView extends PlateViewDesign implements MessageResourcesView {
+public class PlateView extends PlateViewDesign implements BaseView {
   public static final String VIEW_NAME = "plate";
   private static final long serialVersionUID = -7006664525905554582L;
   private Menu menu = new Menu();
