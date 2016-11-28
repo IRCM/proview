@@ -8,8 +8,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.user.Signed;
 import ca.qc.ircm.proview.user.User;
 import org.apache.log4j.MDC;
 import org.junit.Before;
@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
 public class MdcFilterTest {
   private MdcFilter mdcFilter;
   @Mock
-  private Signed signed;
+  private AuthorizationService authorizationService;
   @Mock
   private HttpServletRequest request;
   @Mock
@@ -40,7 +40,7 @@ public class MdcFilterTest {
 
   @Before
   public void beforeTest() {
-    mdcFilter = new MdcFilter(signed);
+    mdcFilter = new MdcFilter(authorizationService);
   }
 
   @Test
@@ -63,7 +63,7 @@ public class MdcFilterTest {
   public void doFilter_User() throws Throwable {
     Long userId = 3L;
     String email = "test@ircm.qc.ca";
-    when(signed.getUser()).thenReturn(new User(userId, email));
+    when(authorizationService.getCurrentUser()).thenReturn(new User(userId, email));
     doAnswer(i -> {
       assertEquals(userId + ":" + email, MDC.get(USER_CONTEXT_KEY));
       return null;

@@ -38,7 +38,6 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.user.Signed;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
@@ -86,8 +85,6 @@ public class ValidateViewPresenterTest {
   private AuthorizationService authorizationService;
   @Mock
   private MainUi ui;
-  @Mock
-  private Signed signed;
   @Captor
   private ArgumentCaptor<Collection<User>> usersCaptor;
   @Captor
@@ -104,10 +101,9 @@ public class ValidateViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter =
-        new ValidateViewPresenter(userService, authorizationService, ui, signed, applicationName);
+    presenter = new ValidateViewPresenter(userService, authorizationService, ui, applicationName);
     signedUser = entityManager.find(User.class, 1L);
-    when(signed.getUser()).thenReturn(signedUser);
+    when(authorizationService.getCurrentUser()).thenReturn(signedUser);
     usersToValidate = new ArrayList<>();
     usersToValidate.add(entityManager.find(User.class, 4L));
     usersToValidate.add(entityManager.find(User.class, 5L));

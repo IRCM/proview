@@ -316,6 +316,9 @@ public class AuthorizationService {
 
   private boolean sampleOwnerForAnyMsAnalysisByControl(Sample sampleParam) {
     User user = getCurrentUser();
+    if (user == null) {
+      return false;
+    }
 
     QAcquisition controlAcquisition = new QAcquisition("control");
     JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
@@ -332,6 +335,9 @@ public class AuthorizationService {
 
   private boolean laboratoryManagerForAnyMsAnalysisByControl(Sample sampleParam) {
     User user = getCurrentUser();
+    if (user == null) {
+      return false;
+    }
 
     QAcquisition controlAcquisition = new QAcquisition("control");
     JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
@@ -407,6 +413,9 @@ public class AuthorizationService {
 
   private boolean sampleOwnerByMsAnalysis(MsAnalysis msAnalysisParam) {
     User user = getCurrentUser();
+    if (user == null) {
+      return false;
+    }
 
     JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
     query.from(msAnalysis, acquisition, submissionSample);
@@ -421,6 +430,9 @@ public class AuthorizationService {
 
   private boolean laboratoryManagerByMsAnalysis(MsAnalysis msAnalysisParam) {
     User user = getCurrentUser();
+    if (user == null) {
+      return false;
+    }
 
     JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
     query.from(msAnalysis, acquisition, submissionSample);
@@ -456,6 +468,9 @@ public class AuthorizationService {
 
   private boolean sampleOwnerByDataAnalysis(DataAnalysis dataAnalysisParam) {
     User user = getCurrentUser();
+    if (user == null) {
+      return false;
+    }
 
     JPAQuery<Long> query = queryFactory.select(dataAnalysis.id);
     query.from(dataAnalysis);
@@ -468,6 +483,9 @@ public class AuthorizationService {
 
   private boolean laboratoryManagerByDataAnalysis(DataAnalysis dataAnalysisParam) {
     User user = getCurrentUser();
+    if (user == null) {
+      return false;
+    }
 
     JPAQuery<Long> query = queryFactory.select(dataAnalysis.id);
     query.from(dataAnalysis);

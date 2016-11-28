@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.logging.web;
 
-import ca.qc.ircm.proview.user.Signed;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import org.slf4j.MDC;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -37,13 +37,13 @@ public class MdcFilter extends GenericFilterBean {
   public static final String BEAN_NAME = "MdcFilter";
   public static final String USER_CONTEXT_KEY = "user";
   @Inject
-  private Signed signed;
+  private AuthorizationService authorizationService;
 
   public MdcFilter() {
   }
 
-  protected MdcFilter(Signed signed) {
-    this.signed = signed;
+  protected MdcFilter(AuthorizationService authorizationService) {
+    this.authorizationService = authorizationService;
   }
 
   @Override
@@ -60,10 +60,11 @@ public class MdcFilter extends GenericFilterBean {
   }
 
   private void setNdc(HttpServletRequest request) {
-    if (signed == null || signed.getUser() == null) {
+    if (authorizationService.getCurrentUser() == null) {
       MDC.put(USER_CONTEXT_KEY, request.getSession().getId());
     } else {
-      MDC.put(USER_CONTEXT_KEY, signed.getUser().getId() + ":" + signed.getUser().getEmail());
+      MDC.put(USER_CONTEXT_KEY, authorizationService.getCurrentUser().getId() + ":"
+          + authorizationService.getCurrentUser().getEmail());
     }
   }
 

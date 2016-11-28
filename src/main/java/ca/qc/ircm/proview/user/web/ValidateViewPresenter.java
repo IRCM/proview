@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.QUser;
-import ca.qc.ircm.proview.user.Signed;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
@@ -82,8 +81,6 @@ public class ValidateViewPresenter {
   private AuthorizationService authorizationService;
   @Inject
   private MainUi ui;
-  @Inject
-  private Signed signed;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -91,11 +88,10 @@ public class ValidateViewPresenter {
   }
 
   protected ValidateViewPresenter(UserService userService,
-      AuthorizationService authorizationService, MainUi ui, Signed signed, String applicationName) {
+      AuthorizationService authorizationService, MainUi ui, String applicationName) {
     this.userService = userService;
     this.authorizationService = authorizationService;
     this.ui = ui;
-    this.signed = signed;
     this.applicationName = applicationName;
   }
 
@@ -193,7 +189,7 @@ public class ValidateViewPresenter {
     UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyInvalid();
     if (!authorizationService.hasAdminRole()) {
-      parameters = parameters.inLaboratory(signed.getUser().getLaboratory());
+      parameters = parameters.inLaboratory(authorizationService.getCurrentUser().getLaboratory());
     }
     return userService.all(parameters);
   }

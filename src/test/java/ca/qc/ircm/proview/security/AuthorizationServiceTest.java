@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.security;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -123,6 +124,14 @@ public class AuthorizationServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+  }
+
+  @Test
+  @WithSubject(anonymous = true)
+  public void getCurrentUser_Anonymous() {
+    User user = authorizationServiceImpl.getCurrentUser();
+
+    assertNull(user);
   }
 
   @Test

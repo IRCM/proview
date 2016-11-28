@@ -19,21 +19,14 @@ package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.logging.web.MdcFilter;
 import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
-import ca.qc.ircm.proview.user.SignedShiro;
-import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.util.IntrospectorCleanupListener;
-
-import javax.inject.Inject;
 
 /**
  * Enable Spring Web MVC for REST services.
@@ -41,8 +34,6 @@ import javax.inject.Inject;
 @Configuration
 public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
   public static final String SHIRO_FILTER_NAME = "ShiroFilter";
-  @Inject
-  private UserService userService;
 
   @Bean(name = SHIRO_FILTER_NAME)
   public ShiroFilter shiroFilter() {
@@ -74,11 +65,5 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
   public ServletListenerRegistrationBean<ShiroWebEnvironmentListener>
       shiroWebEnvironmentListener() {
     return new ServletListenerRegistrationBean<>(new ShiroWebEnvironmentListener());
-  }
-
-  @Bean
-  @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.INTERFACES)
-  public SignedShiro getSigned() {
-    return new SignedShiro(userService);
   }
 }
