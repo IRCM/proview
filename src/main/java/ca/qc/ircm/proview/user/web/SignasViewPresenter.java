@@ -117,6 +117,7 @@ public class SignasViewPresenter {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.addStyleName(HEADER);
+    view.headerLabel.addStyleName("h1");
     view.headerLabel.setValue(resources.message(HEADER));
     view.usersGrid.addStyleName(USERS_GRID);
     prepareUsersGrid();

@@ -310,6 +310,7 @@ public class AccessViewPresenterTest {
   @Test
   public void styles() {
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(view.headerLabel.getStyleName().contains("h1"));
     assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));
     assertTrue(view.activateButton.getStyleName().contains(ACTIVATE));
     assertTrue(view.deactivateButton.getStyleName().contains(DEACTIVATE));

@@ -251,6 +251,7 @@ public class SignasViewPresenterTest {
   @Test
   public void styles() {
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(view.headerLabel.getStyleName().contains("h1"));
     assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));
   }
 
