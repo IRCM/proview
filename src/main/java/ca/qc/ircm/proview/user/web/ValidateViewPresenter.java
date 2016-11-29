@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Validate users presenter.
@@ -81,6 +82,8 @@ public class ValidateViewPresenter {
   private AuthorizationService authorizationService;
   @Inject
   private MainUi ui;
+  @Inject
+  private Provider<UserWindow> userWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -88,10 +91,12 @@ public class ValidateViewPresenter {
   }
 
   protected ValidateViewPresenter(UserService userService,
-      AuthorizationService authorizationService, MainUi ui, String applicationName) {
+      AuthorizationService authorizationService, MainUi ui, Provider<UserWindow> userWindowProvider,
+      String applicationName) {
     this.userService = userService;
     this.authorizationService = authorizationService;
     this.ui = ui;
+    this.userWindowProvider = userWindowProvider;
     this.applicationName = applicationName;
   }
 
@@ -102,29 +107,26 @@ public class ValidateViewPresenter {
    *          view
    */
   public void init(ValidateView view) {
-    this.view = view;
-  }
-
-  /**
-   * Called by view when view is attached.
-   */
-  public void attach() {
     logger.debug("Validate users view");
-    setIds();
-    initializeUsersGridContainer();
-    initializeUsersGrid();
+    this.view = view;
+    prepareFields();
     addFieldListeners();
-    setCaptions();
   }
 
-  private void setIds() {
+  private void prepareFields() {
+    MessageResource resources = view.getResources();
+    view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.setId(HEADER_LABEL_ID);
+    view.headerLabel.setValue(resources.message(HEADER_LABEL_ID));
     view.usersGrid.setId(USERS_GRID_ID);
+    prepareUsersGrid();
     view.validateSelectedButton.setId(VALIDATE_SELECTED_BUTTON_ID);
+    view.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON_ID));
   }
 
   @SuppressWarnings("serial")
-  private void initializeUsersGridContainer() {
+  private void prepareUsersGrid() {
+    MessageResource resources = view.getResources();
     container = new BeanItemContainer<>(User.class, searchUsers());
     container.addNestedContainerProperty(LABORATORY_NAME);
     container.addNestedContainerProperty(ORGANIZATION);
@@ -153,9 +155,6 @@ public class ValidateViewPresenter {
         return String.class;
       }
     });
-  }
-
-  private void initializeUsersGrid() {
     view.usersGrid.setContainerDataSource(gridContainer);
     view.usersGrid.setColumns((Object[]) COLUMNS);
     view.usersGrid.setSelectionMode(SelectionMode.MULTI);
@@ -170,19 +169,15 @@ public class ValidateViewPresenter {
       User user = (User) event.getItemId();
       validateUser(user);
     }));
+    for (String propertyId : COLUMNS) {
+      view.usersGrid.getColumn(propertyId).setHeaderCaption(resources.message(propertyId));
+    }
   }
 
   private void addFieldListeners() {
     view.validateSelectedButton.addClickListener(event -> {
       validateMany();
     });
-  }
-
-  private void setCaptions() {
-    MessageResource resources = view.getResources();
-    view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.setValue(resources.message(HEADER_LABEL_ID));
-    view.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON_ID));
   }
 
   private List<User> searchUsers() {
@@ -202,7 +197,10 @@ public class ValidateViewPresenter {
   }
 
   private void viewUser(User user) {
-    view.viewUser(user);
+    UserWindow userWindow = userWindowProvider.get();
+    userWindow.center();
+    userWindow.setUser(user);
+    ui.addWindow(userWindow);
   }
 
   private void validateUser(User user) {
@@ -210,7 +208,7 @@ public class ValidateViewPresenter {
     userService.validate(Collections.nCopies(1, user), homeWebContext());
     refresh();
     final MessageResource resources = view.getResources();
-    view.afterSuccessfulValidate(resources.message("done", 1, user.getEmail()));
+    view.showTrayNotification(resources.message("done", 1, user.getEmail()));
   }
 
   private void validateMany() {
@@ -237,7 +235,7 @@ public class ValidateViewPresenter {
         }
       }
       refresh();
-      view.afterSuccessfulValidate(resources.message("done", selected.size(), emails));
+      view.showTrayNotification(resources.message("done", selected.size(), emails));
     }
   }
 

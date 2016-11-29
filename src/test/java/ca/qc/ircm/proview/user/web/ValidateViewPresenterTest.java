@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.NAME;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.ORGANIZATION;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID_ID;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON_ID;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VIEW;
@@ -70,6 +71,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Provider;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -87,6 +89,10 @@ public class ValidateViewPresenterTest {
   private AuthorizationService authorizationService;
   @Mock
   private MainUi ui;
+  @Mock
+  private Provider<UserWindow> userWindowProvider;
+  @Mock
+  private UserWindow userWindow;
   @Captor
   private ArgumentCaptor<Collection<User>> usersCaptor;
   @Captor
@@ -105,7 +111,8 @@ public class ValidateViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new ValidateViewPresenter(userService, authorizationService, ui, applicationName);
+    presenter = new ValidateViewPresenter(userService, authorizationService, ui, userWindowProvider,
+        applicationName);
     signedUser = entityManager.find(User.class, 1L);
     when(authorizationService.getCurrentUser()).thenReturn(signedUser);
     usersToValidate = new ArrayList<>();
@@ -118,8 +125,8 @@ public class ValidateViewPresenterTest {
     view.validateSelectedButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(userWindowProvider.get()).thenReturn(userWindow);
     presenter.init(view);
-    presenter.attach();
   }
 
   private User find(Collection<User> users, long id) {
@@ -161,13 +168,25 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
-  public void title() {
-    verify(view).setTitle(resources.message(TITLE, applicationName));
+  public void ids() {
+    assertEquals(HEADER_LABEL_ID, view.headerLabel.getId());
+    assertEquals(USERS_GRID_ID, view.usersGrid.getId());
+    assertEquals(VALIDATE_SELECTED_BUTTON_ID, view.validateSelectedButton.getId());
   }
 
   @Test
   public void captions() {
+    verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER_LABEL_ID), view.headerLabel.getValue());
+    assertEquals(resources.message(EMAIL), view.usersGrid.getColumn(EMAIL).getHeaderCaption());
+    assertEquals(resources.message(NAME), view.usersGrid.getColumn(NAME).getHeaderCaption());
+    assertEquals(resources.message(LABORATORY_NAME),
+        view.usersGrid.getColumn(LABORATORY_NAME).getHeaderCaption());
+    assertEquals(resources.message(ORGANIZATION),
+        view.usersGrid.getColumn(ORGANIZATION).getHeaderCaption());
+    assertEquals(resources.message(VIEW), view.usersGrid.getColumn(VIEW).getHeaderCaption());
+    assertEquals(resources.message(VALIDATE),
+        view.usersGrid.getColumn(VALIDATE).getHeaderCaption());
     assertEquals(resources.message(VALIDATE_SELECTED_BUTTON_ID),
         view.validateSelectedButton.getCaption());
   }
@@ -175,7 +194,7 @@ public class ValidateViewPresenterTest {
   @Test
   public void usersToValidate_Admin() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.attach();
+    presenter.init(view);
 
     verify(userService, times(2)).all(userFilterCaptor.capture());
 
@@ -187,7 +206,7 @@ public class ValidateViewPresenterTest {
   @Test
   public void usersToValidate_LaboratoryManager() {
     when(authorizationService.hasAdminRole()).thenReturn(false);
-    presenter.attach();
+    presenter.init(view);
 
     verify(userService, times(2)).all(userFilterCaptor.capture());
 
@@ -209,7 +228,8 @@ public class ValidateViewPresenterTest {
     viewListener
         .click(new RendererClickEvent(view.usersGrid, user, column, new MouseEventDetails()) {});
 
-    verify(view).viewUser(user);
+    verify(userWindowProvider).get();
+    verify(ui).addWindow(userWindow);
   }
 
   @Test
@@ -234,7 +254,7 @@ public class ValidateViewPresenterTest {
     Collection<User> users = usersCaptor.getValue();
     assertEquals(1, users.size());
     assertNotNull(find(users, user.getId()));
-    verify(view).afterSuccessfulValidate(resources.message("done", 1, user.getEmail()));
+    verify(view).showTrayNotification(resources.message("done", 1, user.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(usersToValidateAfter.size(),
         view.usersGrid.getContainerDataSource().getItemIds().size());
@@ -262,7 +282,7 @@ public class ValidateViewPresenterTest {
     assertNotNull(find(users, user1.getId()));
     assertNotNull(find(users, user2.getId()));
     assertNotNull(find(users, user3.getId()));
-    verify(view).afterSuccessfulValidate(
+    verify(view).showTrayNotification(
         resources.message("done", 3, user1.getEmail() + resources.message("userSeparator", 0)
             + user2.getEmail() + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());

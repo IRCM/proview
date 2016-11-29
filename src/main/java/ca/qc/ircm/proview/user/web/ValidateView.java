@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
@@ -25,7 +24,6 @@ import com.vaadin.spring.annotation.SpringView;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 /**
  * Validate users view.
@@ -37,36 +35,16 @@ public class ValidateView extends ValidateViewDesign implements BaseView {
   private static final long serialVersionUID = -1956061543048432065L;
   @Inject
   private ValidateViewPresenter presenter;
-  @Inject
-  private Provider<UserWindow> userWindowProvider;
   protected Menu menu = new Menu();
 
   @PostConstruct
   public void init() {
     menuLayout.addComponent(menu);
-    presenter.init(this);
   }
 
   @Override
   public void attach() {
     super.attach();
-    presenter.attach();
-  }
-
-  /**
-   * Open view user window.
-   *
-   * @param user
-   *          user to view
-   */
-  public void viewUser(User user) {
-    UserWindow userWindow = userWindowProvider.get();
-    userWindow.center();
-    userWindow.setUser(user);
-    getUI().addWindow(userWindow);
-  }
-
-  public void afterSuccessfulValidate(String message) {
-    showTrayNotification(message);
+    presenter.init(this);
   }
 }
