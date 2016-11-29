@@ -21,6 +21,7 @@ import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
+import ca.qc.ircm.proview.user.web.AccessView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
@@ -50,6 +51,7 @@ public class Menu extends CustomComponent implements BaseComponent {
   public static final String CHANGE_LANGUAGE_STYLE = "changeLanguage";
   public static final String MANAGER_STYLE = "manager";
   public static final String VALIDATE_USERS_STYLE = "validateUsers";
+  public static final String ACCESS_STYLE = "access";
   public static final String HELP_STYLE = "help";
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
@@ -61,6 +63,7 @@ public class Menu extends CustomComponent implements BaseComponent {
   private MenuItem changeLanguage;
   private MenuItem manager;
   private MenuItem validateUsers;
+  private MenuItem access;
   private MenuItem help;
   @Inject
   private AuthorizationService authorizationService;
@@ -83,6 +86,7 @@ public class Menu extends CustomComponent implements BaseComponent {
     manager = menu.addItem("Manager", null);
     manager.setVisible(false);
     validateUsers = manager.addItem("Validate users", item -> changeView(ValidateView.VIEW_NAME));
+    access = manager.addItem("Users access", item -> changeView(AccessView.VIEW_NAME));
     help = menu.addItem("Help", item -> changeView(MainView.VIEW_NAME));
   }
 
@@ -114,6 +118,7 @@ public class Menu extends CustomComponent implements BaseComponent {
     changeLanguage.setStyleName(CHANGE_LANGUAGE_STYLE);
     manager.setStyleName(MANAGER_STYLE);
     validateUsers.setStyleName(VALIDATE_USERS_STYLE);
+    access.setStyleName(ACCESS_STYLE);
     help.setStyleName(HELP_STYLE);
   }
 
@@ -126,6 +131,7 @@ public class Menu extends CustomComponent implements BaseComponent {
     changeLanguage.setText(resources.message(CHANGE_LANGUAGE_STYLE));
     manager.setText(resources.message(MANAGER_STYLE));
     validateUsers.setText(resources.message(VALIDATE_USERS_STYLE));
+    access.setText(resources.message(ACCESS_STYLE));
     help.setText(resources.message(HELP_STYLE));
   }
 

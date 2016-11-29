@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import static ca.qc.ircm.proview.web.Menu.ACCESS_STYLE;
 import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE_STYLE;
 import static ca.qc.ircm.proview.web.Menu.HELP_STYLE;
 import static ca.qc.ircm.proview.web.Menu.HOME_STYLE;
@@ -100,6 +101,15 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   protected void clickValidateUsers() {
     managerMenuItem().click();
     validateUsersMenuItem().click();
+  }
+
+  protected WebElement accessMenuItem() {
+    return menuItemByStyle(ACCESS_STYLE);
+  }
+
+  protected void clickAccess() {
+    managerMenuItem().click();
+    accessMenuItem().click();
   }
 
   protected WebElement helpMenuItem() {

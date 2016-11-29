@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+ <head>  
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta charset="UTF-8" name="vaadin-version" content="7.7.0">
+  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout> 
+   <vaadin-vertical-layout size-auto _id="menuLayout"></vaadin-vertical-layout> 
+   <vaadin-vertical-layout spacing margin> 
+    <vaadin-label size-auto plain-text _id="headerLabel">
+      User access 
+    </vaadin-label> 
+    <vaadin-grid width-full _id="usersGrid"></vaadin-grid> 
+    <vaadin-horizontal-layout spacing> 
+     <vaadin-button plain-text _id="activateButton">
+       Activate 
+     </vaadin-button> 
+     <vaadin-button plain-text _id="deactivateButton">
+       Deactivate 
+     </vaadin-button> 
+     <vaadin-button plain-text _id="clearButton">
+       Clear 
+     </vaadin-button> 
+    </vaadin-horizontal-layout> 
+   </vaadin-vertical-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

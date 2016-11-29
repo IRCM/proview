@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.CheckBoxElement;
+import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.MenuBarElement;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.testbench.elements.OptionGroupElement;
@@ -38,6 +39,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -124,6 +126,19 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   protected void uploadFile(WebElement uploader, Path file) {
     WebElement input = uploader.findElement(className("gwt-FileUpload"));
     input.sendKeys(file.toAbsolutePath().toString());
+  }
+
+  protected void processGridRows(GridElement grid, Consumer<Integer> consumer) {
+    int row = 0;
+    try {
+      while (true) {
+        grid.getRow(row);
+        consumer.accept(row);
+        row++;
+      }
+    } catch (NoSuchElementException e) {
+      // No more rows.
+    }
   }
 
   // Workaround for Vaadin referring to wrong element when doing isSelected test.

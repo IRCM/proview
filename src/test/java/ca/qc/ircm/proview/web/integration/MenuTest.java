@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.user.web.AccessView;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
@@ -170,6 +171,16 @@ public class MenuTest extends MenuPageObject {
     clickValidateUsers();
 
     assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void access() throws Throwable {
+    open();
+
+    clickAccess();
+
+    assertEquals(viewUrl(AccessView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
