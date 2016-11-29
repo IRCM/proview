@@ -67,7 +67,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 /**
- * Validate users presenter.
+ * User access presenter.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)

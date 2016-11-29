@@ -17,6 +17,10 @@
 
 package ca.qc.ircm.proview.web.integration;
 
+import static ca.qc.ircm.proview.user.web.SignasViewPresenter.COLUMNS;
+import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
+import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
+import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
 import static ca.qc.ircm.proview.web.Menu.ACCESS_STYLE;
 import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE_STYLE;
 import static ca.qc.ircm.proview.web.Menu.HELP_STYLE;
@@ -24,16 +28,33 @@ import static ca.qc.ircm.proview.web.Menu.HOME_STYLE;
 import static ca.qc.ircm.proview.web.Menu.MANAGER_STYLE;
 import static ca.qc.ircm.proview.web.Menu.PROFILE_STYLE;
 import static ca.qc.ircm.proview.web.Menu.SIGNOUT_STYLE;
+import static ca.qc.ircm.proview.web.Menu.SIGN_AS_STYLE;
+import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS_STYLE;
 import static ca.qc.ircm.proview.web.Menu.SUBMISSION_STYLE;
 import static ca.qc.ircm.proview.web.Menu.VALIDATE_USERS_STYLE;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.web.MainView;
+import com.vaadin.testbench.elements.GridElement;
+import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.MenuBarElement;
 import org.openqa.selenium.WebElement;
 
 public abstract class MenuPageObject extends AbstractTestBenchTestCase {
+  private static final int EMAIL_COLUMN = gridColumnIndex(EMAIL);
+  private static final int SIGN_AS_COLUMN = gridColumnIndex(SIGN_AS);
+
+  private static int gridColumnIndex(String property) {
+    for (int i = 0; i < COLUMNS.length; i++) {
+      if (property.equals(COLUMNS[i])) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   protected void open() {
     openView(MainView.VIEW_NAME);
   }
@@ -112,11 +133,47 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
     accessMenuItem().click();
   }
 
+  protected WebElement signasMenuItem() {
+    return menuItemByStyle(SIGN_AS_STYLE);
+  }
+
+  protected void clickSignas() {
+    managerMenuItem().click();
+    signasMenuItem().click();
+  }
+
+  protected WebElement stopSignasMenuItem() {
+    return menuItemByStyle(STOP_SIGN_AS_STYLE);
+  }
+
+  protected void clickStopSignas() {
+    managerMenuItem().click();
+    stopSignasMenuItem().click();
+  }
+
   protected WebElement helpMenuItem() {
     return menuItemByStyle(HELP_STYLE);
   }
 
   protected void clickHelp() {
     helpMenuItem().click();
+  }
+
+  protected void signas(String email) {
+    openView(SignasView.VIEW_NAME);
+    GridElement usersGrid = wrap(GridElement.class, findElement(className(USERS_GRID)));
+    processGridRows(usersGrid, row -> {
+      GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
+      try {
+        if (email.equals(emailCell.getText())) {
+          usersGrid.scrollLeft(usersGrid.getRect().getX() + usersGrid.getRect().getWidth());
+          waitForPageLoad();
+          GridCellElement buttonCell = usersGrid.getCell(row, SIGN_AS_COLUMN);
+          buttonCell.click();
+        }
+      } catch (RuntimeException e) {
+        throw e;
+      }
+    });
   }
 }

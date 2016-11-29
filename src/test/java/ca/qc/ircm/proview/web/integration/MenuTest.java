@@ -23,10 +23,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.submission.web.SubmissionView;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.AccessView;
 import ca.qc.ircm.proview.user.web.RegisterView;
+import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.web.MainView;
@@ -54,10 +56,14 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertFalse(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> profileMenuItem()).isPresent());
     assertFalse(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
     assertFalse(optional(() -> managerMenuItem()).isPresent());
     assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
+    assertFalse(optional(() -> accessMenuItem()).isPresent());
+    assertFalse(optional(() -> signasMenuItem()).isPresent());
+    assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -68,10 +74,14 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
     assertFalse(optional(() -> managerMenuItem()).isPresent());
     assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
+    assertFalse(optional(() -> accessMenuItem()).isPresent());
+    assertFalse(optional(() -> signasMenuItem()).isPresent());
+    assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -82,11 +92,15 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
     assertTrue(optional(() -> managerMenuItem()).isPresent());
     clickManager();
     assertTrue(optional(() -> validateUsersMenuItem()).isPresent());
+    assertTrue(optional(() -> accessMenuItem()).isPresent());
+    assertFalse(optional(() -> signasMenuItem()).isPresent());
+    assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -97,11 +111,34 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
     assertTrue(optional(() -> managerMenuItem()).isPresent());
     clickManager();
     assertTrue(optional(() -> validateUsersMenuItem()).isPresent());
+    assertTrue(optional(() -> accessMenuItem()).isPresent());
+    assertTrue(optional(() -> signasMenuItem()).isPresent());
+    assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> helpMenuItem()).isPresent());
+  }
+
+  @Test
+  @WithSubject(userId = 1)
+  public void fieldsExistence_Admin_SignedAs() throws Throwable {
+    signas("christopher.anderson@ircm.qc.ca");
+
+    assertTrue(optional(() -> homeMenuItem()).isPresent());
+    assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> profileMenuItem()).isPresent());
+    assertTrue(optional(() -> signoutMenuItem()).isPresent());
+    assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
+    assertTrue(optional(() -> managerMenuItem()).isPresent());
+    clickManager();
+    assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
+    assertFalse(optional(() -> accessMenuItem()).isPresent());
+    assertFalse(optional(() -> signasMenuItem()).isPresent());
+    assertTrue(optional(() -> stopSignasMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -181,6 +218,32 @@ public class MenuTest extends MenuPageObject {
     clickAccess();
 
     assertEquals(viewUrl(AccessView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void signas() throws Throwable {
+    open();
+
+    clickSignas();
+
+    assertEquals(viewUrl(SignasView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void stopSignas() throws Throwable {
+    signas("christopher.anderson@ircm.qc.ca");
+
+    clickStopSignas();
+
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertTrue(optional(() -> managerMenuItem()).isPresent());
+    clickManager();
+    assertTrue(optional(() -> validateUsersMenuItem()).isPresent());
+    assertTrue(optional(() -> accessMenuItem()).isPresent());
+    assertTrue(optional(() -> signasMenuItem()).isPresent());
+    assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
   }
 
   @Test

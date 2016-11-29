@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.user.web.AccessView;
+import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
@@ -52,6 +53,8 @@ public class Menu extends CustomComponent implements BaseComponent {
   public static final String MANAGER_STYLE = "manager";
   public static final String VALIDATE_USERS_STYLE = "validateUsers";
   public static final String ACCESS_STYLE = "access";
+  public static final String SIGN_AS_STYLE = "signas";
+  public static final String STOP_SIGN_AS_STYLE = "stopSignas";
   public static final String HELP_STYLE = "help";
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
@@ -64,6 +67,8 @@ public class Menu extends CustomComponent implements BaseComponent {
   private MenuItem manager;
   private MenuItem validateUsers;
   private MenuItem access;
+  private MenuItem signas;
+  private MenuItem stopSignas;
   private MenuItem help;
   @Inject
   private AuthorizationService authorizationService;
@@ -86,7 +91,13 @@ public class Menu extends CustomComponent implements BaseComponent {
     manager = menu.addItem("Manager", null);
     manager.setVisible(false);
     validateUsers = manager.addItem("Validate users", item -> changeView(ValidateView.VIEW_NAME));
+    validateUsers.setVisible(false);
     access = manager.addItem("Users access", item -> changeView(AccessView.VIEW_NAME));
+    access.setVisible(false);
+    signas = manager.addItem("Sign as", item -> changeView(SignasView.VIEW_NAME));
+    signas.setVisible(false);
+    stopSignas = manager.addItem("Stop sign as", item -> stopSignas());
+    stopSignas.setVisible(false);
     help = menu.addItem("Help", item -> changeView(MainView.VIEW_NAME));
   }
 
@@ -104,8 +115,20 @@ public class Menu extends CustomComponent implements BaseComponent {
       if (authorizationService.hasUserRole()) {
         submission.setVisible(true);
       }
-      if (authorizationService.hasManagerRole() || authorizationService.hasAdminRole()) {
+      if (authorizationService.isRunAs()) {
         manager.setVisible(true);
+        stopSignas.setVisible(true);
+      }
+      if (authorizationService.hasManagerRole()) {
+        manager.setVisible(true);
+        validateUsers.setVisible(true);
+        access.setVisible(true);
+      }
+      if (authorizationService.hasAdminRole()) {
+        manager.setVisible(true);
+        validateUsers.setVisible(true);
+        access.setVisible(true);
+        signas.setVisible(true);
       }
     }
   }
@@ -119,6 +142,8 @@ public class Menu extends CustomComponent implements BaseComponent {
     manager.setStyleName(MANAGER_STYLE);
     validateUsers.setStyleName(VALIDATE_USERS_STYLE);
     access.setStyleName(ACCESS_STYLE);
+    signas.setStyleName(SIGN_AS_STYLE);
+    stopSignas.setStyleName(STOP_SIGN_AS_STYLE);
     help.setStyleName(HELP_STYLE);
   }
 
@@ -132,6 +157,8 @@ public class Menu extends CustomComponent implements BaseComponent {
     manager.setText(resources.message(MANAGER_STYLE));
     validateUsers.setText(resources.message(VALIDATE_USERS_STYLE));
     access.setText(resources.message(ACCESS_STYLE));
+    signas.setText(resources.message(SIGN_AS_STYLE));
+    stopSignas.setText(resources.message(STOP_SIGN_AS_STYLE));
     help.setText(resources.message(HELP_STYLE));
   }
 
@@ -149,6 +176,14 @@ public class Menu extends CustomComponent implements BaseComponent {
   private void changeView(String viewName) {
     logger.debug("Navigate to {}", viewName);
     getUI().getNavigator().navigateTo(viewName);
+  }
+
+  private void stopSignas() {
+    if (authenticationService != null && authenticationService != null) {
+      logger.debug("Stop sign as user {}", authorizationService.getCurrentUser());
+      authenticationService.stopRunAs();
+      changeView(MainView.VIEW_NAME);
+    }
   }
 
   private void signout() {

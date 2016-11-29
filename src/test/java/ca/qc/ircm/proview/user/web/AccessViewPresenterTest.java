@@ -220,7 +220,7 @@ public class AccessViewPresenterTest {
   }
 
   @Test
-  public void usersToValidate_LaboratoryManager() {
+  public void users_LaboratoryManager() {
     when(authorizationService.hasAdminRole()).thenReturn(false);
     presenter.init(view);
 
