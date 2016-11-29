@@ -41,6 +41,7 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Service;
@@ -50,6 +51,8 @@ import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.testbench.elements.NotificationElement;
@@ -57,11 +60,13 @@ import com.vaadin.ui.Notification;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -71,6 +76,8 @@ import javax.inject.Inject;
 public class SubmissionViewTest extends SubmissionViewPageObject {
   @Inject
   private JPAQueryFactory jpaQueryFactory;
+  @Value("${spring.application.name}")
+  private String applicationName;
   private Service service = LC_MS_MS;
   private SampleSupport support = SOLUTION;
   private int sampleCount = 2;
@@ -127,10 +134,23 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
   }
 
   @Test
+  @WithSubject(anonymous = true)
+  public void security_Anonymous() throws Throwable {
+    openView(MainView.VIEW_NAME);
+    Locale locale = currentLocale();
+
+    open();
+
+    assertTrue(new MessageResource(AccessDeniedView.class, locale)
+        .message(AccessDeniedView.TITLE, applicationName).contains(getDriver().getTitle()));
+  }
+
+  @Test
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(SubmissionView.class).message(TITLE).contains(getDriver().getTitle()));
+    assertTrue(resources(SubmissionView.class).message(TITLE, applicationName)
+        .contains(getDriver().getTitle()));
   }
 
   @Test

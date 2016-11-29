@@ -25,6 +25,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.util.BeanItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -44,12 +45,15 @@ public class SubmissionViewPresenter {
   private SubmissionView view;
   @Inject
   private SubmissionService submissionService;
+  @Value("${spring.application.name}")
+  private String applicationName;
 
   protected SubmissionViewPresenter() {
   }
 
-  protected SubmissionViewPresenter(SubmissionService submissionService) {
+  protected SubmissionViewPresenter(SubmissionService submissionService, String applicationName) {
     this.submissionService = submissionService;
+    this.applicationName = applicationName;
   }
 
   /**
@@ -73,7 +77,7 @@ public class SubmissionViewPresenter {
 
   private void setCaptions() {
     MessageResource resources = view.getResources();
-    view.setTitle(resources.message(TITLE));
+    view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.setValue(resources.message(HEADER_STYLE));
   }
 
