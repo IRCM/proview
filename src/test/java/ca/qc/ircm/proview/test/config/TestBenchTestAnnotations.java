@@ -35,7 +35,6 @@ import java.lang.annotation.Target;
 @Transactional
 @Sql({ "/drop-schema.sql", "/schema-h2.sql", "/database-before-insert.sql", "/user-data.sql",
     "/sample-data.sql", "/activity-data.sql", "/analysis-data.sql", "/database-after-insert.sql" })
-@Slow
 @WithSubject(anonymous = true)
 public @interface TestBenchTestAnnotations {
 

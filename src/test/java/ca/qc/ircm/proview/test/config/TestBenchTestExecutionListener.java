@@ -43,11 +43,17 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
   private static final String[] LICENSE_PATHS =
       new String[] { "vaadin.testbench.developer.license", ".vaadin.testbench.developer.license" };
   private static final String LICENSE_SYSTEM_PROPERTY = "vaadin.testbench.developer.license";
+  private static final String SKIP_TESTS_ERROR_MESSAGE = "TestBench tests are skipped";
+  private static final String SKIP_TESTS_SYSTEM_PROPERTY = "testbench-tests.skip";
   private static final Logger logger =
       LoggerFactory.getLogger(TestBenchTestExecutionListener.class);
 
   @Override
   public void beforeTestClass(TestContext testContext) throws Exception {
+    if (isSkipTestBenchTests()) {
+      assumeTrue(SKIP_TESTS_ERROR_MESSAGE, false);
+    }
+
     if (isTestBenchTest(testContext)) {
       boolean licenseFileExists = false;
       for (String licencePath : LICENSE_PATHS) {
@@ -79,6 +85,10 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
       target.getDriver().manage().deleteAllCookies();
       target.getDriver().quit();
     }
+  }
+
+  private boolean isSkipTestBenchTests() {
+    return Boolean.valueOf(System.getProperty(SKIP_TESTS_SYSTEM_PROPERTY));
   }
 
   private boolean isTestBenchTest(TestContext testContext) {
