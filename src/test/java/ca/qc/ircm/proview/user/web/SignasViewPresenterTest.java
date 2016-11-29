@@ -225,6 +225,30 @@ public class SignasViewPresenterTest {
   }
 
   @Test
+  public void organizationFilter() {
+    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(ORGANIZATION);
+    TextField textField = (TextField) cell.getComponent();
+    String filterValue = "test";
+    TextChangeListener listener =
+        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
+    TextChangeEvent event = mock(TextChangeEvent.class);
+    when(event.getText()).thenReturn(filterValue);
+
+    listener.textChange(event);
+
+    GeneratedPropertyContainer container =
+        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
+    Collection<Filter> filters = container.getContainerFilters();
+    assertEquals(1, filters.size());
+    Filter filter = filters.iterator().next();
+    assertTrue(filter instanceof SimpleStringFilter);
+    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
+    assertEquals(filterValue, stringFilter.getFilterString());
+    assertEquals(ORGANIZATION, stringFilter.getPropertyId());
+  }
+
+  @Test
   public void styles() {
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
     assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));

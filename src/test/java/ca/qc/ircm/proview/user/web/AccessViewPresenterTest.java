@@ -51,7 +51,13 @@ import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Container;
+import com.vaadin.data.Container.Filter;
 import com.vaadin.data.sort.SortOrder;
+import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.filter.Compare;
+import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.ClientConnector.AttachEvent;
 import com.vaadin.server.ClientConnector.AttachListener;
 import com.vaadin.server.FontAwesome;
@@ -59,10 +65,14 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.Grid.HeaderCell;
+import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionModel;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.junit.Before;
 import org.junit.Test;
@@ -179,6 +189,122 @@ public class AccessViewPresenterTest {
     SortOrder sortOrder = sortOrders.get(0);
     assertEquals(EMAIL, sortOrder.getPropertyId());
     assertEquals(SortDirection.ASCENDING, sortOrder.getDirection());
+  }
+
+  @Test
+  public void emailFilter() {
+    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(EMAIL);
+    TextField textField = (TextField) cell.getComponent();
+    String filterValue = "test";
+    TextChangeListener listener =
+        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
+    TextChangeEvent event = mock(TextChangeEvent.class);
+    when(event.getText()).thenReturn(filterValue);
+
+    listener.textChange(event);
+
+    GeneratedPropertyContainer container =
+        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
+    Collection<Filter> filters = container.getContainerFilters();
+    assertEquals(1, filters.size());
+    Filter filter = filters.iterator().next();
+    assertTrue(filter instanceof SimpleStringFilter);
+    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
+    assertEquals(filterValue, stringFilter.getFilterString());
+    assertEquals(EMAIL, stringFilter.getPropertyId());
+  }
+
+  @Test
+  public void nameFilter() {
+    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(NAME);
+    TextField textField = (TextField) cell.getComponent();
+    String filterValue = "test";
+    TextChangeListener listener =
+        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
+    TextChangeEvent event = mock(TextChangeEvent.class);
+    when(event.getText()).thenReturn(filterValue);
+
+    listener.textChange(event);
+
+    GeneratedPropertyContainer container =
+        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
+    Collection<Filter> filters = container.getContainerFilters();
+    assertEquals(1, filters.size());
+    Filter filter = filters.iterator().next();
+    assertTrue(filter instanceof SimpleStringFilter);
+    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
+    assertEquals(filterValue, stringFilter.getFilterString());
+    assertEquals(NAME, stringFilter.getPropertyId());
+  }
+
+  @Test
+  public void laboratoryNameFilter() {
+    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(LABORATORY_NAME);
+    TextField textField = (TextField) cell.getComponent();
+    String filterValue = "test";
+    TextChangeListener listener =
+        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
+    TextChangeEvent event = mock(TextChangeEvent.class);
+    when(event.getText()).thenReturn(filterValue);
+
+    listener.textChange(event);
+
+    GeneratedPropertyContainer container =
+        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
+    Collection<Filter> filters = container.getContainerFilters();
+    assertEquals(1, filters.size());
+    Filter filter = filters.iterator().next();
+    assertTrue(filter instanceof SimpleStringFilter);
+    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
+    assertEquals(filterValue, stringFilter.getFilterString());
+    assertEquals(LABORATORY_NAME, stringFilter.getPropertyId());
+  }
+
+  @Test
+  public void organizationFilter() {
+    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(ORGANIZATION);
+    TextField textField = (TextField) cell.getComponent();
+    String filterValue = "test";
+    TextChangeListener listener =
+        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
+    TextChangeEvent event = mock(TextChangeEvent.class);
+    when(event.getText()).thenReturn(filterValue);
+
+    listener.textChange(event);
+
+    GeneratedPropertyContainer container =
+        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
+    Collection<Filter> filters = container.getContainerFilters();
+    assertEquals(1, filters.size());
+    Filter filter = filters.iterator().next();
+    assertTrue(filter instanceof SimpleStringFilter);
+    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
+    assertEquals(filterValue, stringFilter.getFilterString());
+    assertEquals(ORGANIZATION, stringFilter.getPropertyId());
+  }
+
+  @Test
+  public void activeFilter() {
+    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(ACTIVE);
+    ComboBox booleanField = (ComboBox) cell.getComponent();
+    boolean filterValue = true;
+
+    booleanField.setValue(filterValue);
+
+    GeneratedPropertyContainer container =
+        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
+    Collection<Filter> filters = container.getContainerFilters();
+    assertEquals(1, filters.size());
+    Filter filter = filters.iterator().next();
+    assertTrue(filter instanceof Compare.Equal);
+    Compare.Equal booleanFilter = (Compare.Equal) filter;
+    assertEquals(filterValue, booleanFilter.getValue());
+    assertEquals(ACTIVE, booleanFilter.getPropertyId());
   }
 
   @Test

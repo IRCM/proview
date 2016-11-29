@@ -23,13 +23,10 @@ import ca.qc.ircm.proview.user.QUser;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.utils.web.CutomNullPropertyFilterValueChangeListener;
+import ca.qc.ircm.proview.utils.web.FilterEqualsChangeListener;
 import ca.qc.ircm.proview.utils.web.FilterTextChangeListener;
-import ca.qc.ircm.proview.utils.web.FunctionFilter;
-import ca.qc.ircm.proview.utils.web.GeneratedPropertyContainerFilter;
 import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
@@ -201,7 +198,7 @@ public class AccessViewPresenter {
 
       @Override
       public Filter modifyFilter(Filter filter) throws UnsupportedFilterException {
-        return new GeneratedPropertyContainerFilter(filter, gridContainer);
+        return filter;
       }
     });
     gridContainer.addGeneratedProperty(VIEW, new PropertyValueGenerator<Button>() {
@@ -249,7 +246,8 @@ public class AccessViewPresenter {
       } else if (propertyId.equals(ACTIVE)) {
         Boolean[] values = new Boolean[] { true, false };
         ComboBox filter = createFilterComboBox(propertyId, resources, values);
-        filter.addValueChangeListener(new ActiveFilterChangeListener(gridContainer));
+        filter.addValueChangeListener(
+            new FilterEqualsChangeListener(gridContainer, propertyId, NULL_ID));
         for (Boolean value : values) {
           filter.setItemCaption(value, resources.message(ACTIVE + "." + value));
         }
@@ -382,22 +380,5 @@ public class AccessViewPresenter {
   private void clear() {
     logger.trace("Clear selected users");
     view.usersGrid.deselectAll();
-  }
-
-  private static class ActiveFilterChangeListener
-      extends CutomNullPropertyFilterValueChangeListener {
-    private static final long serialVersionUID = 2301952986512937369L;
-
-    private ActiveFilterChangeListener(Container.Filterable container) {
-      super(container, ACTIVE, NULL_ID);
-    }
-
-    @Override
-    public void addNonNullFilter(Object propertyValue) {
-      container.addContainerFilter(new FunctionFilter(ACTIVE, propertyValue, (itemId, item) -> {
-        User user = (User) itemId;
-        return user.isActive();
-      }));
-    }
   }
 }
