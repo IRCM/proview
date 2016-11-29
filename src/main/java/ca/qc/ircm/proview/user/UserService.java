@@ -415,6 +415,8 @@ public class UserService {
    *
    * @param users
    *          users to validate
+   * @param webContext
+   *          web context used to send email to user
    */
   public void validate(Collection<User> users, HomeWebContext webContext) {
     for (User user : users) {

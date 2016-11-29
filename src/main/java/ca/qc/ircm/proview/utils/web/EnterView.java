@@ -21,7 +21,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 
 /**
- * View that implements {@link View#enter(ViewChangeEvent)} method.
+ * View that implements {@link View} methods.
  */
 public interface EnterView extends View {
   @Override
