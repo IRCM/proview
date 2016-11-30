@@ -161,3 +161,7 @@ INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
 VALUES (7,10,'2014-09-03 11:39:47',803369922,0);
 INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
 VALUES (8,3,'2013-12-03 11:39:47',-1742054942,1);
+INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
+VALUES (9,10,CURRENT_TIMESTAMP,174407008,0);
+INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
+VALUES (10,10,CURRENT_TIMESTAMP,460559412,1);

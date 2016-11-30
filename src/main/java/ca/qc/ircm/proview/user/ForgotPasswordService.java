@@ -89,6 +89,7 @@ public class ForgotPasswordService {
     query.where(forgotPassword.id.eq(id));
     query.where(forgotPassword.confirmNumber.eq(confirmNumber));
     query.where(forgotPassword.used.eq(false));
+    query.where(forgotPassword.requestMoment.after(Instant.now().minus(VALID_PERIOD)));
     return query.fetchOne();
   }
 

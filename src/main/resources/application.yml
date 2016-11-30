@@ -102,9 +102,6 @@ security:
 
 email:
   enabled: false
-  server: myemailserver.com
-  sender: proview@ircm.qc.ca
-  errorReceiver: christian.poitras@ircm.qc.ca
 
 ---
 spring:

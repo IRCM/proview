@@ -35,8 +35,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.util.StringUtils;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
@@ -91,29 +89,30 @@ public class ForgotPasswordServiceTest {
     confirmNumber = 70987756;
   }
 
-  private ForgotPassword insertForgotPassword() {
-    ForgotPassword forgotPassword = new ForgotPassword();
-    forgotPassword.setConfirmNumber(confirmNumber);
-    forgotPassword.setRequestMoment(Instant.now());
-    forgotPassword.setUser(user);
-    entityManager.persist(forgotPassword);
-    entityManager.flush();
-    return forgotPassword;
-  }
-
   private ForgotPasswordWebContext forgotPasswordWebContext() {
     return (forgotPassword, locale) -> forgotPasswordUrl;
   }
 
   @Test
   public void get() throws Exception {
+    ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(9L, 174407008);
+
+    forgotPassword =
+        forgotPasswordServiceDefault.get(forgotPassword.getId(), forgotPassword.getConfirmNumber());
+
+    assertEquals((Long) 9L, forgotPassword.getId());
+    assertEquals(174407008, forgotPassword.getConfirmNumber());
+    assertTrue(
+        Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
+    assertTrue(
+        Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(forgotPassword.getRequestMoment()));
+  }
+
+  @Test
+  public void get_Expired() throws Exception {
     ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(7L, 803369922);
 
-    assertEquals((Long) 7L, forgotPassword.getId());
-    assertEquals(803369922, forgotPassword.getConfirmNumber());
-    assertEquals(
-        LocalDateTime.of(2014, 9, 3, 11, 39, 47).atZone(ZoneId.systemDefault()).toInstant(),
-        forgotPassword.getRequestMoment());
+    assertNull(forgotPassword);
   }
 
   @Test
@@ -132,7 +131,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void get_Used() throws Exception {
-    ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(8L, -1742054942);
+    ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(10L, 460559412);
 
     assertNull(forgotPassword);
   }
@@ -207,7 +206,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void updatePassword() throws Exception {
-    ForgotPassword forgotPassword = this.insertForgotPassword();
+    ForgotPassword forgotPassword = entityManager.find(ForgotPassword.class, 9L);
 
     forgotPasswordServiceDefault.updatePassword(forgotPassword, "abc");
 
@@ -223,7 +222,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void updatePassword_Expired() throws Exception {
-    ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(7L, 803369922);
+    ForgotPassword forgotPassword = entityManager.find(ForgotPassword.class, 7L);
 
     try {
       forgotPasswordServiceDefault.updatePassword(forgotPassword, "abc");
