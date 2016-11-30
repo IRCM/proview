@@ -28,12 +28,14 @@ import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PANEL;
 import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PASSWORD;
 import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_USERNAME;
 import static ca.qc.ircm.proview.web.MainViewPresenter.TITLE;
+import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
+import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,11 +44,16 @@ import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.ForgotPassword;
+import ca.qc.ircm.proview.user.ForgotPasswordService;
+import ca.qc.ircm.proview.user.ForgotPasswordWebContext;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.utils.MessageResource;
 import com.ejt.vaadin.loginform.LoginForm.LoginListener;
+import com.vaadin.server.CompositeErrorMessage;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -78,11 +85,21 @@ public class MainViewPresenterTest {
   @Mock
   private UserService userService;
   @Mock
+  private ForgotPasswordService forgotPasswordService;
+  @Mock
+  private MainUi ui;
+  @Mock
   private CustomLoginForm signForm;
   @Mock
   private User user;
+  @Mock
+  private ForgotPassword forgotPassword;
   @Captor
   private ArgumentCaptor<LoginListener> loginListenerCaptor;
+  @Captor
+  private ArgumentCaptor<String> stringCaptor;
+  @Captor
+  private ArgumentCaptor<ForgotPasswordWebContext> forgotPasswordWebContextCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private TextField signFormUsername = new TextField();
@@ -100,7 +117,8 @@ public class MainViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new MainViewPresenter(authenticationService, authorizationService, applicationName);
+    presenter = new MainViewPresenter(authenticationService, authorizationService, userService,
+        forgotPasswordService, ui, applicationName);
     view.menu = new Menu();
     view.header = new Label();
     view.signPanel = new Panel();
@@ -116,6 +134,10 @@ public class MainViewPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
+  }
+
+  private String errorMessage(String message) {
+    return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
   }
 
   @Test
@@ -170,32 +192,14 @@ public class MainViewPresenterTest {
   }
 
   @Test
-  public void signFormUsername_Required() {
-    assertFalse(signFormUsername.isValid());
-  }
-
-  @Test
-  public void signFormUsername_EmailValidator() {
-    signFormUsername.setValue("aaa");
-
-    assertFalse(signFormUsername.isValid());
-  }
-
-  @Test
-  public void signFormPassword_Required() {
-    assertFalse(signFormPassword.isValid());
-  }
-
-  @Test
-  public void forgotPasswordEmailField_Required() {
-    assertFalse(view.forgotPasswordEmailField.isValid());
-  }
-
-  @Test
-  public void forgotPasswordEmailField_EmailValidator() {
-    view.forgotPasswordEmailField.setValue("aaa");
-
-    assertFalse(view.forgotPasswordEmailField.isValid());
+  public void required() {
+    assertTrue(signFormUsername.isRequired());
+    assertEquals(generalResources.message(REQUIRED), signFormUsername.getRequiredError());
+    assertTrue(signFormPassword.isRequired());
+    assertEquals(generalResources.message(REQUIRED), signFormPassword.getRequiredError());
+    assertTrue(view.forgotPasswordEmailField.isRequired());
+    assertEquals(generalResources.message(REQUIRED),
+        view.forgotPasswordEmailField.getRequiredError());
   }
 
   private void clickLoginButton() {
@@ -224,8 +228,11 @@ public class MainViewPresenterTest {
 
     clickLoginButton();
 
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        signFormUsername.getErrorMessage().getFormattedHtmlMessage());
     verify(authenticationService, never()).sign(any(), any(), anyBoolean());
-    verify(view).showError(any());
   }
 
   @Test
@@ -235,8 +242,11 @@ public class MainViewPresenterTest {
 
     clickLoginButton();
 
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_EMAIL)),
+        signFormUsername.getErrorMessage().getFormattedHtmlMessage());
     verify(authenticationService, never()).sign(any(), any(), anyBoolean());
-    verify(view).showError(any());
   }
 
   @Test
@@ -245,8 +255,11 @@ public class MainViewPresenterTest {
 
     clickLoginButton();
 
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        signFormPassword.getErrorMessage().getFormattedHtmlMessage());
     verify(authenticationService, never()).sign(any(), any(), anyBoolean());
-    verify(view).showError(any());
   }
 
   @Test
@@ -257,26 +270,56 @@ public class MainViewPresenterTest {
 
     clickLoginButton();
 
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(resources.message("sign.fail"), stringCaptor.getValue());
     verify(authenticationService).sign(username, password, true);
-    verify(view).showError(any());
   }
 
   @Test
   public void forgotPassword() {
-    when(userService.get(anyString())).thenReturn(user);
+    when(userService.exists(any())).thenReturn(true);
+    view.forgotPasswordEmailField.setValue(username);
+    String forgotPasswordUrl = "/proview/forgotpassword";
+    when(ui.getUrl(any())).thenReturn(forgotPasswordUrl);
+    when(forgotPasswordService.insert(any(), any())).thenReturn(forgotPassword);
+    long id = 357604839027601809L;
+    int confirmNumber = 135495343;
+    when(forgotPassword.getId()).thenReturn(id);
+    when(forgotPassword.getConfirmNumber()).thenReturn(confirmNumber);
+
+    view.forgotPasswordButton.click();
+
+    verify(view, never()).showError(any());
+    verify(userService).exists(username);
+    verify(forgotPasswordService).insert(eq(username), forgotPasswordWebContextCaptor.capture());
+    String url = forgotPasswordWebContextCaptor.getValue()
+        .getChangeForgottenPasswordUrl(forgotPassword, locale);
+    assertEquals(forgotPasswordUrl + "/" + id + "/" + confirmNumber, url);
+    verify(view).showWarning(resources.message(FORGOT_PASSWORD + ".done"));
+  }
+
+  @Test
+  public void forgotPassword_EmailNoUser() {
+    when(userService.exists(any())).thenReturn(false);
     view.forgotPasswordEmailField.setValue(username);
 
     view.forgotPasswordButton.click();
 
-    // TODO Add test for forgot password creation.
+    verify(view, never()).showError(any());
+    verify(userService).exists(username);
+    verify(forgotPasswordService, never()).insert(any(), any());
+    verify(view).showWarning(resources.message(FORGOT_PASSWORD + ".done"));
   }
 
   @Test
   public void forgotPassword_EmailEmpty() {
     view.forgotPasswordButton.click();
 
-    // TODO Add test for forgot password creation (never).
-    verify(view).showError(any());
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.forgotPasswordEmailField.getErrorMessage().getFormattedHtmlMessage());
+    verify(forgotPasswordService, never()).insert(any(), any());
   }
 
   @Test
@@ -285,8 +328,11 @@ public class MainViewPresenterTest {
 
     view.forgotPasswordButton.click();
 
-    // TODO Add test for forgot password creation (never).
-    verify(view).showError(any());
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID_EMAIL)),
+        view.forgotPasswordEmailField.getErrorMessage().getFormattedHtmlMessage());
+    verify(forgotPasswordService, never()).insert(any(), any());
   }
 
   @Test
