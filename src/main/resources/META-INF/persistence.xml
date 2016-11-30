@@ -68,6 +68,7 @@
     <class>ca.qc.ircm.proview.transfer.SampleTransfer</class>
     <class>ca.qc.ircm.proview.transfer.Transfer</class>
     <class>ca.qc.ircm.proview.tube.Tube</class>
+    <class>ca.qc.ircm.proview.user.ForgotPassword</class>
     <class>ca.qc.ircm.proview.user.Address</class>
     <class>ca.qc.ircm.proview.user.PhoneNumber</class>
     <class>ca.qc.ircm.proview.user.User</class>
