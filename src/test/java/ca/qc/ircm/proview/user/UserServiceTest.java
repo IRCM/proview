@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -519,23 +520,77 @@ public class UserServiceTest {
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo("benoit.coulombe@ircm.qc.ca");
-    MessageResource messageResource =
+    MessageResource resources =
         new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA_FRENCH);
-    verify(email).setSubject(messageResource.message("email.subject"));
+    verify(email).setSubject(resources.message("email.subject"));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
     String htmlContent = stringCaptor.getAllValues().get(1);
-    htmlContent.contains("Christian");
-    htmlContent.contains("Poitras");
-    textContent.contains("Christian");
-    textContent.contains("Poitras");
+    assertTrue(textContent.contains(resources.message("header", user.getName())));
+    assertTrue(
+        htmlContent.contains(StringUtils.escapeXml(resources.message("header", user.getName()))));
+    assertTrue(textContent.contains(resources.message("header2")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("header2"))));
+    assertTrue(textContent.contains(resources.message("message")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
+    assertTrue(textContent.contains(resources.message("footer")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
     String url = applicationConfiguration.getUrl(validateUserUrl);
     assertTrue(textContent.contains(url));
     assertTrue(htmlContent.contains(url));
     assertFalse(textContent.contains("???"));
     assertFalse(htmlContent.contains("???"));
-    assertFalse(textContent.contains("$resourceTool"));
-    assertFalse(htmlContent.contains("$resourceTool"));
+  }
+
+  @Test
+  public void register_ExistingLaboratory_EnglishEmail() throws Throwable {
+    User updateLocale = entityManager.find(User.class, 3L);
+    updateLocale.setLocale(Locale.CANADA);
+    entityManager.flush();
+    final User manager = new User();
+    manager.setEmail("benoit.coulombe@ircm.qc.ca");
+    User user = new User();
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.setName("Christian Poitras");
+    user.setLocale(Locale.CANADA_FRENCH);
+    Address address = new Address();
+    address.setLine("110 av des Pins Ouest");
+    address.setTown("Montréal");
+    address.setState("Québec");
+    address.setPostalCode("H2W 1R7");
+    address.setCountry("Canada");
+    user.setAddress(address);
+    PhoneNumber phoneNumber = new PhoneNumber();
+    phoneNumber.setType(PhoneNumberType.WORK);
+    phoneNumber.setNumber("514-555-5500");
+    phoneNumber.setExtension("3228");
+    List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    phoneNumbers.add(phoneNumber);
+    user.setPhoneNumbers(phoneNumbers);
+
+    userServiceImpl.register(user, "password", manager, registerUserWebContext());
+
+    entityManager.flush();
+    MessageResource resources =
+        new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA);
+    verify(email).setSubject(resources.message("email.subject"));
+    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
+    String textContent = stringCaptor.getAllValues().get(0);
+    String htmlContent = stringCaptor.getAllValues().get(1);
+    assertTrue(textContent.contains(resources.message("header", user.getName())));
+    assertTrue(
+        htmlContent.contains(StringUtils.escapeXml(resources.message("header", user.getName()))));
+    assertTrue(textContent.contains(resources.message("header2")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("header2"))));
+    assertTrue(textContent.contains(resources.message("message")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
+    assertTrue(textContent.contains(resources.message("footer")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
+    String url = applicationConfiguration.getUrl(validateUserUrl);
+    assertTrue(textContent.contains(url));
+    assertTrue(htmlContent.contains(url));
+    assertFalse(textContent.contains("???"));
+    assertFalse(htmlContent.contains("???"));
   }
 
   @Test
@@ -633,28 +688,53 @@ public class UserServiceTest {
     verify(emailService, times(3)).htmlEmail();
     verify(emailService, times(3)).send(email);
     Set<String> subjects = new HashSet<>();
-    MessageResource frenchMessageResource =
+    MessageResource frenchResources =
         new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA_FRENCH);
-    subjects.add(frenchMessageResource.message("newLaboratory.email.subject"));
-    MessageResource englishMessageResource =
+    subjects.add(frenchResources.message("newLaboratory.email.subject"));
+    MessageResource englishResources =
         new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.ENGLISH);
-    subjects.add(englishMessageResource.message("newLaboratory.email.subject"));
+    subjects.add(englishResources.message("newLaboratory.email.subject"));
     verify(email).addTo("christian.poitras@ircm.qc.ca");
     verify(email).addTo("liam.li@ircm.qc.ca");
     verify(email).addTo("jackson.smith@ircm.qc.ca");
     verify(email, times(3)).setSubject(stringCaptor.capture());
-    for (String subject : stringCaptor.getAllValues()) {
-      assertTrue(subjects.contains(subject));
-    }
+    assertEquals(1,
+        stringCaptor.getAllValues().stream()
+            .filter(
+                subject -> subject.equals(frenchResources.message("newLaboratory.email.subject")))
+            .count());
+    assertEquals(2,
+        stringCaptor.getAllValues().stream()
+            .filter(
+                subject -> subject.equals(englishResources.message("newLaboratory.email.subject")))
+            .count());
     stringCaptor.getAllValues().clear();
     verify(email, times(3)).setText(stringCaptor.capture(), stringCaptor.capture());
-    String textContent = stringCaptor.getAllValues().get(0);
-    String htmlContent = stringCaptor.getAllValues().get(1);
-    String url = applicationConfiguration.getUrl(validateUserUrl);
-    assertTrue(textContent.contains(url));
-    assertTrue(htmlContent.contains(url));
-    assertFalse(textContent.contains("???"));
-    assertFalse(htmlContent.contains("???"));
+    for (int i = 0; i < 6; i += 2) {
+      String textContent = stringCaptor.getAllValues().get(i);
+      String htmlContent = stringCaptor.getAllValues().get(i + 1);
+      Locale locale = Locale.ENGLISH;
+      if (textContent.contains(frenchResources.message("header2"))) {
+        locale = Locale.CANADA_FRENCH;
+      }
+      MessageResource resources =
+          new MessageResource(UserService.class.getName() + "_RegisterEmail", locale);
+      assertTrue(textContent.contains(
+          resources.message("newLaboratory.header", user.getName(), laboratory.getName())));
+      assertTrue(htmlContent.contains(StringUtils.escapeXml(
+          resources.message("newLaboratory.header", user.getName(), laboratory.getName()))));
+      assertTrue(textContent.contains(resources.message("header2")));
+      assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("header2"))));
+      assertTrue(textContent.contains(resources.message("message")));
+      assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
+      assertTrue(textContent.contains(resources.message("footer")));
+      assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
+      String url = applicationConfiguration.getUrl(validateUserUrl);
+      assertTrue(textContent.contains(url));
+      assertTrue(htmlContent.contains(url));
+      assertFalse(textContent.contains("???"));
+      assertFalse(htmlContent.contains("???"));
+    }
   }
 
   @Test
@@ -782,21 +862,59 @@ public class UserServiceTest {
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo(user.getEmail());
-    MessageResource messageResource =
+    MessageResource resources =
         new MessageResource(UserService.class.getName() + "_ValidateEmail", Locale.CANADA_FRENCH);
-    verify(email).setSubject(messageResource.message("email.subject"));
+    verify(email).setSubject(resources.message("email.subject"));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
     String htmlContent = stringCaptor.getAllValues().get(1);
-    htmlContent.contains(user.getEmail());
-    textContent.contains(user.getEmail());
+    assertTrue(textContent.contains(resources.message("header", user.getEmail())));
+    assertTrue(
+        htmlContent.contains(StringUtils.escapeXml(resources.message("header", user.getEmail()))));
+    assertTrue(textContent.contains(resources.message("message")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
+    assertTrue(textContent.contains(resources.message("footer")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
     String url = applicationConfiguration.getUrl(homeUrl);
     assertTrue(textContent.contains(url));
     assertTrue(htmlContent.contains(url));
     assertFalse(textContent.contains("???"));
     assertFalse(htmlContent.contains("???"));
-    assertFalse(textContent.contains("$resourceTool"));
-    assertFalse(htmlContent.contains("$resourceTool"));
+  }
+
+  @Test
+  public void validate_EnglishEmail() throws Throwable {
+    User updateLocale = entityManager.find(User.class, 7L);
+    updateLocale.setLocale(Locale.CANADA);
+    entityManager.flush();
+    User user = entityManager.find(User.class, 7L);
+    entityManager.detach(user);
+    assertEquals(false, user.isActive());
+    assertEquals(false, user.isValid());
+    Collection<User> users = new LinkedList<>();
+    users.add(user);
+
+    userServiceImpl.validate(users, homeWebContext());
+
+    entityManager.flush();
+    MessageResource resources =
+        new MessageResource(UserService.class.getName() + "_ValidateEmail", Locale.CANADA);
+    verify(email).setSubject(resources.message("email.subject"));
+    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
+    String textContent = stringCaptor.getAllValues().get(0);
+    String htmlContent = stringCaptor.getAllValues().get(1);
+    assertTrue(textContent.contains(resources.message("header", user.getEmail())));
+    assertTrue(
+        htmlContent.contains(StringUtils.escapeXml(resources.message("header", user.getEmail()))));
+    assertTrue(textContent.contains(resources.message("message")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
+    assertTrue(textContent.contains(resources.message("footer")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
+    String url = applicationConfiguration.getUrl(homeUrl);
+    assertTrue(textContent.contains(url));
+    assertTrue(htmlContent.contains(url));
+    assertFalse(textContent.contains("???"));
+    assertFalse(htmlContent.contains("???"));
   }
 
   @Test

@@ -286,11 +286,11 @@ public class UserService {
     // Prepare email content.
     MimeMessageHelper email = emailService.htmlEmail();
     email.addTo(manager.getEmail());
-    MessageResource messageResource =
+    MessageResource resources =
         new MessageResource(UserService.class.getName() + "_RegisterEmail", locale);
-    String subject = messageResource.message("email.subject");
+    String subject = resources.message("email.subject");
     email.setSubject(subject);
-    Context context = new Context();
+    Context context = new Context(locale);
     context.setVariable("user", user);
     context.setVariable("newLaboratory", false);
     context.setVariable("url", url);
@@ -341,19 +341,19 @@ public class UserService {
     for (final User adminUser : adminUsers) {
       // Get adminUser's prefered locale.
       Locale locale = Locale.CANADA;
-      if (manager.getLocale() != null) {
-        locale = manager.getLocale();
+      if (adminUser.getLocale() != null) {
+        locale = adminUser.getLocale();
       }
       // Prepare URL used to validate laboratory.
       final String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(locale));
       // Prepare email content.
       MimeMessageHelper email = emailService.htmlEmail();
-      MessageResource messageResource =
+      MessageResource resources =
           new MessageResource(UserService.class.getName() + "_RegisterEmail", locale);
-      String subject = messageResource.message("newLaboratory.email.subject");
+      String subject = resources.message("newLaboratory.email.subject");
       email.setSubject(subject);
       email.addTo(adminUser.getEmail());
-      Context context = new Context();
+      Context context = new Context(locale);
       context.setVariable("user", manager);
       context.setVariable("newLaboratory", true);
       context.setVariable("url", url);
@@ -458,7 +458,7 @@ public class UserService {
         new MessageResource(UserService.class.getName() + "_ValidateEmail", locale);
     String subject = messageResource.message("email.subject");
     email.setSubject(subject);
-    Context context = new Context();
+    Context context = new Context(user.getLocale());
     context.setVariable("user", user);
     context.setVariable("url", url);
     String htmlTemplateLocation =

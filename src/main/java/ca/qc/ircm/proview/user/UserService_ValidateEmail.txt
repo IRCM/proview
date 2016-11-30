@@ -1,8 +1,8 @@
 <html th:inline="text" th:remove="tag">
-[# th:text="#{header(${user.name})}" /]
+[# th:utext="#{header(${user.email})}" /]
 
-[[#{message}]]
+[# th:utext="#{message}" /]
 [[${url}]]
 
-[[#{footer}]]
+[# th:utext="#{footer}" /]
 </html>

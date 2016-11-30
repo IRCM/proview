@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.util.StringUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -192,11 +193,11 @@ public class ForgotPasswordServiceTest {
     String textContent = stringCaptor.getAllValues().get(0);
     String htmlContent = stringCaptor.getAllValues().get(1);
     assertTrue(textContent.contains(resources.message("header")));
-    assertTrue(htmlContent.contains(resources.message("header")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("header"))));
     assertTrue(textContent.contains(resources.message("message")));
-    assertTrue(htmlContent.contains(resources.message("message")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
     assertTrue(textContent.contains(resources.message("footer")));
-    assertTrue(htmlContent.contains(resources.message("footer")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
     String url = applicationConfiguration.getUrl(forgotPasswordUrl);
     assertTrue(textContent.contains(url));
     assertTrue(htmlContent.contains(url));
