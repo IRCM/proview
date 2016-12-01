@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,9 +38,12 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -51,6 +55,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -65,6 +70,8 @@ public class SubmissionAnalysesFormPresenterTest {
   private SubmissionAnalysesForm view;
   @Mock
   private MsAnalysisService msAnalysisService;
+  @Captor
+  private ArgumentCaptor<Panel> panelCaptor;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SubmissionAnalysesForm.class, locale);
   private Submission submission;
@@ -76,22 +83,26 @@ public class SubmissionAnalysesFormPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new SubmissionAnalysesFormPresenter(msAnalysisService);
-    view.analysisPanels = new ArrayList<>();
-    view.acquisitionsGrids = new ArrayList<>();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     submission = entityManager.find(Submission.class, 1L);
     analyses.add(entityManager.find(MsAnalysis.class, 20L));
     analyses.add(entityManager.find(MsAnalysis.class, 21L));
-    analyses.forEach(analysis -> {
-      view.analysisPanels.add(new Panel());
-      view.acquisitionsGrids.add(new Grid());
-    });
     when(msAnalysisService.all(any(Submission.class))).thenReturn(analyses);
   }
 
   private LocalDate date(Instant instant) {
     return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();
+  }
+
+  private List<Panel> viewPanels() {
+    verify(view, atLeastOnce()).addComponent(panelCaptor.capture());
+    return panelCaptor.getAllValues();
+  }
+
+  private List<Grid> viewGrids() {
+    return viewPanels().stream().map(panel -> (VerticalLayout) panel.getContent())
+        .map(layout -> (Grid) layout.getComponent(0)).collect(Collectors.toList());
   }
 
   @Test
@@ -101,7 +112,7 @@ public class SubmissionAnalysesFormPresenterTest {
 
     verify(msAnalysisService).all(submission);
     verify(view).removeAllComponents();
-    verify(view, times(2)).createAnalysisPanel();
+    verify(view, times(2)).addComponent(any(Panel.class));
   }
 
   @Test
@@ -109,10 +120,10 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.init(view);
     presenter.setItemDataSource(new BeanItem<>(submission));
 
-    for (Panel analysisPanel : view.analysisPanels) {
+    for (Panel analysisPanel : viewPanels()) {
       assertTrue(analysisPanel.getStyleName().contains(ANALYSIS));
     }
-    for (Grid acquisitionsGrid : view.acquisitionsGrids) {
+    for (Grid acquisitionsGrid : viewGrids()) {
       assertTrue(acquisitionsGrid.getStyleName().contains(ACQUISITIONS));
     }
   }
@@ -123,8 +134,9 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.setItemDataSource(new BeanItem<>(submission));
 
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+    List<Panel> panels = viewPanels();
     for (int i = 0; i < analyses.size(); i++) {
-      Panel analysisPanel = view.analysisPanels.get(i);
+      Panel analysisPanel = panels.get(i);
       MsAnalysis analysis = analyses.get(i);
       assertEquals(resources.message(ANALYSIS, formatter.format(date(analysis.getInsertTime()))),
           analysisPanel.getCaption());
@@ -136,7 +148,7 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.init(view);
     presenter.setItemDataSource(new BeanItem<>(submission));
 
-    for (Grid acquisitionsGrid : view.acquisitionsGrids) {
+    for (Grid acquisitionsGrid : viewGrids()) {
       List<Column> columns = acquisitionsGrid.getColumns();
 
       assertEquals(NAME, columns.get(0).getPropertyId());

@@ -30,6 +30,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -41,9 +42,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 
@@ -66,7 +65,6 @@ public class SubmissionAnalysesFormPresenter {
       LoggerFactory.getLogger(SubmissionAnalysesFormPresenter.class);
   private SubmissionAnalysesForm view;
   private BeanItem<Submission> item = new BeanItem<>(null, Submission.class);
-  private List<MsAnalysis> analyses = new ArrayList<>();
   @Inject
   private MsAnalysisService msAnalysisService;
 
@@ -81,42 +79,32 @@ public class SubmissionAnalysesFormPresenter {
     this.view = view;
   }
 
-  private void styles() {
-    view.analysisPanels.forEach(panel -> panel.addStyleName(ANALYSIS));
-    view.acquisitionsGrids.forEach(panel -> panel.addStyleName(ACQUISITIONS));
-  }
-
   private LocalDate date(Instant instant) {
     return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();
   }
 
-  private void captions() {
+  private void createAnalysisPanel(MsAnalysis analysis) {
     MessageResource resources = view.getResources();
-    IntStream.range(0, analyses.size()).forEach(i -> {
-      MsAnalysis analysis = analyses.get(i);
-      Panel analysisPanel = view.analysisPanels.get(i);
-      DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
-      analysisPanel.setCaption(
-          resources.message(ANALYSIS, formatter.format(date(analysis.getInsertTime()))));
-    });
-  }
-
-  private void prepareComponents() {
-    MessageResource resources = view.getResources();
-    IntStream.range(0, analyses.size()).forEach(i -> {
-      MsAnalysis analysis = analyses.get(i);
-      BeanItemContainer<Acquisition> container = new BeanItemContainer<>(Acquisition.class);
-      container.addAll(analysis.getAcquisitions());
-      container.addNestedContainerProperty(NAME);
-      container.sort(new Object[] { ACQUISITION_INDEX }, new boolean[] { true });
-      Grid acquisitionsGrid = view.acquisitionsGrids.get(i);
-      acquisitionsGrid.setContainerDataSource(container);
-      acquisitionsGrid.setColumns(ACQUISITIONS_COLUMNS);
-      for (Object propertyId : ACQUISITIONS_COLUMNS) {
-        acquisitionsGrid.getColumn(propertyId)
-            .setHeaderCaption(resources.message((String) propertyId));
-      }
-    });
+    Panel panel = new Panel();
+    view.addComponent(panel);
+    VerticalLayout layout = new VerticalLayout();
+    panel.setContent(layout);
+    panel.addStyleName(ANALYSIS);
+    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+    panel.setCaption(resources.message(ANALYSIS, formatter.format(date(analysis.getInsertTime()))));
+    BeanItemContainer<Acquisition> container = new BeanItemContainer<>(Acquisition.class);
+    container.addAll(analysis.getAcquisitions());
+    container.addNestedContainerProperty(NAME);
+    container.sort(new Object[] { ACQUISITION_INDEX }, new boolean[] { true });
+    Grid grid = new Grid();
+    grid.setWidth("100%");
+    grid.addStyleName(ACQUISITIONS);
+    grid.setContainerDataSource(container);
+    grid.setColumns(ACQUISITIONS_COLUMNS);
+    for (Object propertyId : ACQUISITIONS_COLUMNS) {
+      grid.getColumn(propertyId).setHeaderCaption(resources.message((String) propertyId));
+    }
+    layout.addComponent(grid);
   }
 
   public Item getItemDataSource() {
@@ -136,13 +124,10 @@ public class SubmissionAnalysesFormPresenter {
     }
 
     this.item = item != null ? (BeanItem<Submission>) item : new BeanItem<>(null, Submission.class);
-    analyses = msAnalysisService.all(this.item.getBean());
+    List<MsAnalysis> analyses = msAnalysisService.all(this.item.getBean());
     view.removeAllComponents();
     analyses.forEach(analysis -> {
-      view.createAnalysisPanel();
+      createAnalysisPanel(analysis);
     });
-    styles();
-    captions();
-    prepareComponents();
   }
 }
