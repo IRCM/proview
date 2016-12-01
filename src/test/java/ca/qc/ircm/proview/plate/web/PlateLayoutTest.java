@@ -31,6 +31,7 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -206,6 +207,30 @@ public class PlateLayoutTest {
   }
 
   @Test
+  public void getWellComponent() throws Throwable {
+    Label label1 = new Label("test1");
+    plateLayout.addWellComponent(label1, 0, 0);
+
+    Component component = plateLayout.getWellComponent(0, 0, 0);
+
+    assertEquals(label1, component);
+  }
+
+  @Test
+  public void getWellComponent_Multiple() throws Throwable {
+    Label label1 = new Label("test1");
+    Label label2 = new Label("test2");
+    plateLayout.addWellComponent(label1, 0, 0);
+    plateLayout.addWellComponent(label2, 0, 0);
+
+    Component component1 = plateLayout.getWellComponent(0, 0, 0);
+    Component component2 = plateLayout.getWellComponent(0, 0, 1);
+
+    assertEquals(label1, component1);
+    assertEquals(label2, component2);
+  }
+
+  @Test
   public void removeAllWellComponents() throws Throwable {
     plateLayout.addWellComponent(new Label("test1"), 0, 0);
     plateLayout.addWellComponent(new Label("test2"), 0, 0);
@@ -338,6 +363,11 @@ public class PlateLayoutTest {
   }
 
   @Test
+  public void getColumns() {
+    assertEquals(columns, plateLayout.getColumns());
+  }
+
+  @Test
   public void setColumns_Increase() throws Throwable {
     int columns = this.columns + 2;
 
@@ -411,6 +441,11 @@ public class PlateLayoutTest {
         assertEquals(well, gridLayout.getComponent(column + 1, row + 1));
       }
     }
+  }
+
+  @Test
+  public void getRows() {
+    assertEquals(rows, plateLayout.getRows());
   }
 
   @Test

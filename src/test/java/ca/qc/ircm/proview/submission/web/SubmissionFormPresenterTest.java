@@ -210,6 +210,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
@@ -377,21 +378,9 @@ public class SubmissionFormPresenterTest {
     view.samplesTable = new Table();
     view.fillSamplesButton = new Button();
     view.samplesPlateContainer = new VerticalLayout();
-    {
-      view.plateSampleNameFields = new ArrayList<>();
-      int columns = Plate.Type.SUBMISSION.getColumnCount();
-      int rows = Plate.Type.SUBMISSION.getRowCount();
-      view.samplesPlateLayout = new PlateLayout(columns, rows);
-      IntStream.range(0, columns).forEach(column -> {
-        List<TextField> columnPlateSampleNameFields = new ArrayList<>();
-        IntStream.range(0, rows).forEach(row -> {
-          TextField nameField = new TextField();
-          columnPlateSampleNameFields.add(nameField);
-          view.samplesPlateLayout.addWellComponent(nameField, column, row);
-        });
-        view.plateSampleNameFields.add(columnPlateSampleNameFields);
-      });
-    }
+    int columns = Plate.Type.SUBMISSION.getColumnCount();
+    int rows = Plate.Type.SUBMISSION.getRowCount();
+    view.samplesPlateLayout = new PlateLayout(columns, rows);
     view.experiencePanel = new Panel();
     view.experienceField = new TextField();
     view.experienceGoalField = new TextField();
@@ -472,8 +461,8 @@ public class SubmissionFormPresenterTest {
     view.plateNameField.setValue(plateName);
     view.sampleCountField.setValue(String.valueOf(sampleCount));
     setValuesInSamplesTable();
-    view.plateSampleNameFields.get(0).get(0).setValue(sampleName1);
-    view.plateSampleNameFields.get(0).get(1).setValue(sampleName2);
+    ((TextField) view.samplesPlateLayout.getWellComponent(0, 0, 0)).setValue(sampleName1);
+    ((TextField) view.samplesPlateLayout.getWellComponent(0, 1, 0)).setValue(sampleName2);
     view.experienceField.setValue(experience);
     view.experienceGoalField.setValue(experienceGoal);
     view.taxonomyField.setValue(taxonomy);
@@ -630,6 +619,19 @@ public class SubmissionFormPresenterTest {
         filesContent2.length);
   }
 
+  private List<List<TextField>> plateSampleNameFieldsArray() {
+    return IntStream.range(0, view.samplesPlateLayout.getColumns())
+        .mapToObj(column -> IntStream.range(0, view.samplesPlateLayout.getRows())
+            .mapToObj(row -> (TextField) view.samplesPlateLayout.getWellComponent(column, row, 0))
+            .collect(Collectors.toList()))
+        .collect(Collectors.toList());
+  }
+
+  private List<TextField> plateSampleNameFields() {
+    return plateSampleNameFieldsArray().stream().flatMap(list -> list.stream())
+        .collect(Collectors.toList());
+  }
+
   private String errorMessage(String message) {
     return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
   }
@@ -776,10 +778,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(sampleProteinWeightTableField.isRequired());
     assertEquals(generalResources.message(REQUIRED),
         sampleProteinWeightTableField.getRequiredError());
-    for (List<TextField> sampleNameFields : view.plateSampleNameFields) {
-      for (TextField sampleNameField : sampleNameFields) {
-        assertFalse(sampleNameField.isRequired());
-      }
+    for (TextField sampleNameField : plateSampleNameFields()) {
+      assertFalse(sampleNameField.isRequired());
     }
     assertTrue(view.experienceField.isRequired());
     assertEquals(generalResources.message(REQUIRED), view.experienceField.getRequiredError());
@@ -1006,8 +1006,9 @@ public class SubmissionFormPresenterTest {
   public void digestion_Options() {
     presenter.init(view);
 
-    assertEquals(SubmissionForm.DIGESTIONS.length, view.digestionOptions.getItemIds().size());
-    for (ProteolyticDigestion digestion : SubmissionForm.DIGESTIONS) {
+    assertEquals(SubmissionFormPresenter.DIGESTIONS.length,
+        view.digestionOptions.getItemIds().size());
+    for (ProteolyticDigestion digestion : SubmissionFormPresenter.DIGESTIONS) {
       assertTrue(digestion.name(), view.digestionOptions.getItemIds().contains(digestion));
     }
   }
@@ -1048,9 +1049,9 @@ public class SubmissionFormPresenterTest {
   public void proteinIdentification_Options() {
     presenter.init(view);
 
-    assertEquals(SubmissionForm.PROTEIN_IDENTIFICATIONS.length,
+    assertEquals(SubmissionFormPresenter.PROTEIN_IDENTIFICATIONS.length,
         view.proteinIdentificationOptions.getItemIds().size());
-    for (ProteinIdentification proteinIdentification : SubmissionForm.PROTEIN_IDENTIFICATIONS) {
+    for (ProteinIdentification proteinIdentification : SubmissionFormPresenter.PROTEIN_IDENTIFICATIONS) {
       assertTrue(proteinIdentification.name(),
           view.proteinIdentificationOptions.getItemIds().contains(proteinIdentification));
     }
@@ -1129,8 +1130,9 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_SAMPLES_PROPERTY));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_BUTTON_STYLE));
     assertTrue(view.samplesPlateLayout.getStyleName().contains(SAMPLES_PLATE));
-    for (int column = 0; column < view.plateSampleNameFields.size(); column++) {
-      List<TextField> sampleNameFields = view.plateSampleNameFields.get(column);
+    List<List<TextField>> sampleNameFieldsArray = plateSampleNameFieldsArray();
+    for (int column = 0; column < sampleNameFieldsArray.size(); column++) {
+      List<TextField> sampleNameFields = sampleNameFieldsArray.get(column);
       for (int row = 0; row < sampleNameFields.size(); row++) {
         assertTrue(sampleNameFields.get(row).getStyleName()
             .contains(SAMPLES_PLATE + "-" + column + "-" + row));
@@ -1219,13 +1221,13 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(INACTIVE_LABEL), view.inactiveLabel.getValue());
     assertEquals(resources.message(SERVICE_PROPERTY), view.servicePanel.getCaption());
     assertEquals(null, view.serviceOptions.getCaption());
-    for (Service service : SubmissionForm.SERVICES) {
+    for (Service service : SubmissionFormPresenter.SERVICES) {
       assertEquals(service.getLabel(locale), view.serviceOptions.getItemCaption(service));
     }
     assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
     assertEquals(resources.message(SAMPLE_SUPPORT_PROPERTY),
         view.sampleSupportOptions.getCaption());
-    for (SampleSupport support : SubmissionForm.SUPPORT) {
+    for (SampleSupport support : SubmissionFormPresenter.SUPPORT) {
       assertEquals(support.getLabel(locale), view.sampleSupportOptions.getItemCaption(support));
     }
     assertEquals(resources.message(SOLUTION_SOLVENT_PROPERTY),
@@ -1247,7 +1249,7 @@ public class SubmissionFormPresenterTest {
         view.lightSensitiveField.getCaption());
     assertEquals(resources.message(STORAGE_TEMPERATURE_PROPERTY),
         view.storageTemperatureOptions.getCaption());
-    for (StorageTemperature storageTemperature : SubmissionForm.STORAGE_TEMPERATURES) {
+    for (StorageTemperature storageTemperature : SubmissionFormPresenter.STORAGE_TEMPERATURES) {
       assertEquals(storageTemperature.getLabel(locale),
           view.storageTemperatureOptions.getItemCaption(storageTemperature));
     }
@@ -1269,10 +1271,8 @@ public class SubmissionFormPresenterTest {
         view.samplesTable.getColumnHeader(PROTEIN_WEIGHT_PROPERTY));
     assertEquals(resources.message(FILL_SAMPLES_PROPERTY), view.fillSamplesButton.getCaption());
     assertEquals(null, view.samplesPlateLayout.getCaption());
-    for (List<TextField> sampleNameFields : view.plateSampleNameFields) {
-      for (TextField sampleNameField : sampleNameFields) {
-        assertEquals(null, sampleNameField.getCaption());
-      }
+    for (TextField sampleNameField : plateSampleNameFields()) {
+      assertEquals(null, sampleNameField.getCaption());
     }
     assertEquals(resources.message(EXPERIENCE_PANEL), view.experiencePanel.getCaption());
     assertEquals(resources.message(EXPERIENCE_PROPERTY), view.experienceField.getCaption());
@@ -1312,16 +1312,16 @@ public class SubmissionFormPresenterTest {
         view.fillContaminantsButton.getCaption());
     assertEquals(resources.message(GEL_PANEL), view.gelPanel.getCaption());
     assertEquals(resources.message(SEPARATION_PROPERTY), view.separationField.getCaption());
-    for (GelSeparation separation : SubmissionForm.SEPARATION) {
+    for (GelSeparation separation : SubmissionFormPresenter.SEPARATION) {
       assertEquals(separation.getLabel(locale), view.separationField.getItemCaption(separation));
     }
     assertEquals(resources.message(THICKNESS_PROPERTY), view.thicknessField.getCaption());
-    for (GelThickness thickness : SubmissionForm.THICKNESS) {
+    for (GelThickness thickness : SubmissionFormPresenter.THICKNESS) {
       assertEquals(thickness.getLabel(locale), view.thicknessField.getItemCaption(thickness));
     }
     assertEquals(resources.message(COLORATION_PROPERTY), view.colorationField.getCaption());
     assertEquals(GelColoration.getNullLabel(locale), view.colorationField.getItemCaption(NULL_ID));
-    for (GelColoration coloration : SubmissionForm.COLORATION) {
+    for (GelColoration coloration : SubmissionFormPresenter.COLORATION) {
       assertEquals(coloration.getLabel(locale), view.colorationField.getItemCaption(coloration));
     }
     assertEquals(resources.message(OTHER_COLORATION_PROPERTY),
@@ -1351,7 +1351,7 @@ public class SubmissionFormPresenterTest {
         view.gelImagesTable.getColumnHeader(REMOVE_GEL_IMAGE));
     assertEquals(resources.message(SERVICES_PANEL), view.servicesPanel.getCaption());
     assertEquals(resources.message(DIGESTION_PROPERTY), view.digestionOptions.getCaption());
-    for (ProteolyticDigestion digestion : SubmissionForm.DIGESTIONS) {
+    for (ProteolyticDigestion digestion : SubmissionFormPresenter.DIGESTIONS) {
       assertEquals(digestion.getLabel(locale), view.digestionOptions.getItemCaption(digestion));
     }
     assertEquals(resources.message(USED_DIGESTION_PROPERTY),
@@ -1368,12 +1368,12 @@ public class SubmissionFormPresenterTest {
         view.exclusionsLabel.getValue());
     assertEquals(resources.message(INJECTION_TYPE_PROPERTY),
         view.injectionTypeOptions.getCaption());
-    for (InjectionType injectionType : SubmissionForm.INJECTION_TYPES) {
+    for (InjectionType injectionType : SubmissionFormPresenter.INJECTION_TYPES) {
       assertEquals(injectionType.getLabel(locale),
           view.injectionTypeOptions.getItemCaption(injectionType));
     }
     assertEquals(resources.message(SOURCE_PROPERTY), view.sourceOptions.getCaption());
-    for (MassDetectionInstrumentSource source : SubmissionForm.SOURCES) {
+    for (MassDetectionInstrumentSource source : SubmissionFormPresenter.SOURCES) {
       assertEquals(source.getLabel(locale), view.sourceOptions.getItemCaption(source));
     }
     assertEquals(resources.message(PROTEIN_CONTENT_PROPERTY),
@@ -1383,12 +1383,12 @@ public class SubmissionFormPresenterTest {
           view.proteinContentOptions.getItemCaption(proteinContent));
     }
     assertEquals(resources.message(INSTRUMENT_PROPERTY), view.instrumentOptions.getCaption());
-    for (MassDetectionInstrument instrument : SubmissionForm.INSTRUMENTS) {
+    for (MassDetectionInstrument instrument : SubmissionFormPresenter.INSTRUMENTS) {
       assertEquals(instrument.getLabel(locale), view.instrumentOptions.getItemCaption(instrument));
     }
     assertEquals(resources.message(PROTEIN_IDENTIFICATION_PROPERTY),
         view.proteinIdentificationOptions.getCaption());
-    for (ProteinIdentification proteinIdentification : SubmissionForm.PROTEIN_IDENTIFICATIONS) {
+    for (ProteinIdentification proteinIdentification : SubmissionFormPresenter.PROTEIN_IDENTIFICATIONS) {
       assertEquals(proteinIdentification.getLabel(locale),
           view.proteinIdentificationOptions.getItemCaption(proteinIdentification));
     }
@@ -1398,7 +1398,7 @@ public class SubmissionFormPresenterTest {
         view.quantificationOptions.getCaption());
     assertEquals(Quantification.getNullLabel(locale),
         view.quantificationOptions.getItemCaption(NULL_ID));
-    for (Quantification quantification : SubmissionForm.QUANTIFICATION) {
+    for (Quantification quantification : SubmissionFormPresenter.QUANTIFICATION) {
       assertEquals(quantification.getLabel(locale),
           view.quantificationOptions.getItemCaption(quantification));
     }
@@ -1459,10 +1459,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleContainerTypeOptions.isReadOnly());
     assertTrue(view.plateNameField.isReadOnly());
     assertFalse(view.samplesTable.isEditable());
-    for (List<TextField> sampleNameFields : view.plateSampleNameFields) {
-      for (TextField sampleNameField : sampleNameFields) {
-        assertTrue(sampleNameField.isReadOnly());
-      }
+    for (TextField sampleNameField : plateSampleNameFields()) {
+      assertTrue(sampleNameField.isReadOnly());
     }
     assertTrue(view.experienceField.isReadOnly());
     assertTrue(view.experienceGoalField.isReadOnly());
@@ -1538,10 +1536,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isReadOnly());
     assertFalse(view.plateNameField.isReadOnly());
     assertTrue(view.samplesTable.isEditable());
-    for (List<TextField> sampleNameFields : view.plateSampleNameFields) {
-      for (TextField sampleNameField : sampleNameFields) {
-        assertFalse(sampleNameField.isReadOnly());
-      }
+    for (TextField sampleNameField : plateSampleNameFields()) {
+      assertFalse(sampleNameField.isReadOnly());
     }
     assertFalse(view.experienceField.isReadOnly());
     assertFalse(view.experienceGoalField.isReadOnly());
@@ -3402,7 +3398,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    view.plateSampleNameFields.get(0).get(0).setValue("");
+    plateSampleNameFieldsArray().get(0).get(0).setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3442,7 +3438,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    view.plateSampleNameFields.get(0).get(1).setValue("");
+    plateSampleNameFieldsArray().get(0).get(1).setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3482,7 +3478,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    view.plateSampleNameFields.get(0).get(1).setValue(sampleName1);
+    plateSampleNameFieldsArray().get(0).get(1).setValue(sampleName1);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -4877,7 +4873,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -5030,7 +5027,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -5173,7 +5171,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -5314,7 +5313,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -5468,7 +5468,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -5582,7 +5583,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -5709,7 +5711,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -5821,7 +5824,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", sampleName));
+    verify(view).showTrayNotification(resources.message("save", sampleName));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -5934,7 +5938,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", sampleName));
+    verify(view).showTrayNotification(resources.message("save", sampleName));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -6097,7 +6102,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
@@ -6238,7 +6244,8 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).afterSuccessfulSave(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test

@@ -188,6 +188,10 @@ public class PlateLayout extends CustomComponent
     wellLayouts.get(column).get(row).addComponent(component);
   }
 
+  public Component getWellComponent(int column, int row, int index) {
+    return wellLayouts.get(column).get(row).getComponent(index);
+  }
+
   public void removeAllWellComponents(int column, int row) {
     wellLayouts.get(column).get(row).removeAllComponents();
   }
@@ -260,8 +264,16 @@ public class PlateLayout extends CustomComponent
     rowHeaderLayouts.get(row).removeLayoutClickListener(listener);
   }
 
+  public int getColumns() {
+    return gridLayout.getColumns() - 1;
+  }
+
   public void setColumns(int columns) {
     changeGridSize(columns, gridLayout.getRows() - 1);
+  }
+
+  public int getRows() {
+    return gridLayout.getRows() - 1;
   }
 
   public void setRows(int rows) {
