@@ -129,11 +129,11 @@ public class AccessViewPresenter {
   public void init(AccessView view) {
     this.view = view;
     logger.debug("Users access view");
-    prepareFields();
+    prepareComponents();
     addFieldListeners();
   }
 
-  private void prepareFields() {
+  private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.addStyleName(HEADER);

@@ -99,12 +99,12 @@ public class MainViewPresenter {
    */
   public void init(MainView view) {
     this.view = view;
-    prepareFields();
+    prepareComponents();
     bindFields();
     addFieldListeners();
   }
 
-  private void prepareFields() {
+  private void prepareComponents() {
     MessageResource resources = view.getResources();
     final MessageResource generalResources =
         new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());

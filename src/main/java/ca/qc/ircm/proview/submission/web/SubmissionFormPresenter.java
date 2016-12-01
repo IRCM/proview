@@ -351,7 +351,7 @@ public class SubmissionFormPresenter {
     view.createFilesUploader(voidUploadStartedHandler(), fileHandler(), true);
     setStyles();
     setCaptions();
-    prepareFields();
+    prepareComponents();
     setItemDataSource(null);
     bindFields();
     addFieldListeners();
@@ -597,7 +597,7 @@ public class SubmissionFormPresenter {
   }
 
   @SuppressWarnings("serial")
-  private void prepareFields() {
+  private void prepareComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
     final MessageResource generalResources =

@@ -137,13 +137,13 @@ public class UserFormPresenter {
    */
   public void init(UserForm view) {
     this.view = view;
-    prepareFields();
+    prepareComponents();
     bindFields();
     addListeners();
     setItemDataSource(null);
   }
 
-  private void prepareFields() {
+  private void prepareComponents() {
     MessageResource resources = view.getResources();
     final MessageResource generalResources =
         new MessageResource(GENERAL_MESSAGES, view.getLocale());

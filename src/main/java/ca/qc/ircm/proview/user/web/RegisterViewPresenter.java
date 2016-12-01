@@ -55,11 +55,11 @@ public class RegisterViewPresenter {
   public void init(RegisterView view) {
     logger.debug("Register user view");
     this.view = view;
-    prepareFields();
+    prepareComponents();
     addFieldListeners();
   }
 
-  private void prepareFields() {
+  private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.addStyleName(HEADER);

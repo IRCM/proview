@@ -68,10 +68,10 @@ public class UserViewPresenter {
    */
   public void init(UserView view) {
     this.view = view;
-    prepareFields();
+    prepareComponents();
   }
 
-  private void prepareFields() {
+  private void prepareComponents() {
     view.setTitle(view.getResources().message(TITLE, applicationName));
     view.header.addStyleName(HEADER);
     view.header.setValue(view.getResources().message(HEADER));

@@ -109,11 +109,11 @@ public class ValidateViewPresenter {
   public void init(ValidateView view) {
     logger.debug("Validate users view");
     this.view = view;
-    prepareFields();
+    prepareComponents();
     addFieldListeners();
   }
 
-  private void prepareFields() {
+  private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.setId(HEADER_LABEL_ID);
