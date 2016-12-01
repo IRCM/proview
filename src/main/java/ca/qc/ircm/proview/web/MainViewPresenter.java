@@ -72,8 +72,6 @@ public class MainViewPresenter {
   private UserService userService;
   @Inject
   private ForgotPasswordService forgotPasswordService;
-  @Inject
-  private MainUi ui;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -82,12 +80,11 @@ public class MainViewPresenter {
 
   protected MainViewPresenter(AuthenticationService authenticationService,
       AuthorizationService authorizationService, UserService userService,
-      ForgotPasswordService forgotPasswordService, MainUi ui, String applicationName) {
+      ForgotPasswordService forgotPasswordService, String applicationName) {
     this.authenticationService = authenticationService;
     this.authorizationService = authorizationService;
     this.userService = userService;
     this.forgotPasswordService = forgotPasswordService;
-    this.ui = ui;
     this.applicationName = applicationName;
   }
 
@@ -219,8 +216,8 @@ public class MainViewPresenter {
       logger.debug("Create forgot password for user {}", email);
       if (userService.exists(email)) {
         forgotPasswordService.insert(email,
-            (forgotPassword, locale) -> ui.getUrl(MainView.VIEW_NAME) + "/" + forgotPassword.getId()
-                + "/" + forgotPassword.getConfirmNumber());
+            (forgotPassword, locale) -> view.getUrl(MainView.VIEW_NAME) + "/"
+                + forgotPassword.getId() + "/" + forgotPassword.getConfirmNumber());
       }
       MessageResource resources = view.getResources();
       view.showWarning(resources.message(FORGOT_PASSWORD + ".done"));

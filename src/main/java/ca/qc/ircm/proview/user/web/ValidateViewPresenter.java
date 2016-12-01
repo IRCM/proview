@@ -24,7 +24,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
-import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
@@ -81,8 +80,6 @@ public class ValidateViewPresenter {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
-  private MainUi ui;
-  @Inject
   private Provider<UserWindow> userWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
@@ -91,11 +88,10 @@ public class ValidateViewPresenter {
   }
 
   protected ValidateViewPresenter(UserService userService,
-      AuthorizationService authorizationService, MainUi ui, Provider<UserWindow> userWindowProvider,
+      AuthorizationService authorizationService, Provider<UserWindow> userWindowProvider,
       String applicationName) {
     this.userService = userService;
     this.authorizationService = authorizationService;
-    this.ui = ui;
     this.userWindowProvider = userWindowProvider;
     this.applicationName = applicationName;
   }
@@ -200,7 +196,7 @@ public class ValidateViewPresenter {
     UserWindow userWindow = userWindowProvider.get();
     userWindow.center();
     userWindow.setUser(user);
-    ui.addWindow(userWindow);
+    view.addWindow(userWindow);
   }
 
   private void validateUser(User user) {
@@ -240,7 +236,7 @@ public class ValidateViewPresenter {
   }
 
   public HomeWebContext homeWebContext() {
-    return locale -> ui.getUrl(MainView.VIEW_NAME);
+    return locale -> view.getUrl(MainView.VIEW_NAME);
   }
 
   public static String[] getColumns() {

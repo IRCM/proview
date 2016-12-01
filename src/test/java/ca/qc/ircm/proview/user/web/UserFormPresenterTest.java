@@ -67,7 +67,6 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.RegisterUserWebContext;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -111,8 +110,6 @@ public class UserFormPresenterTest {
   private AuthorizationService authorizationService;
   @Mock
   private DefaultAddressConfiguration defaultAddressConfiguration;
-  @Mock
-  private MainUi ui;
   @Mock
   private SaveListener listener;
   @Captor
@@ -160,7 +157,7 @@ public class UserFormPresenterTest {
   @Before
   public void beforeTest() {
     presenter =
-        new UserFormPresenter(userService, authorizationService, defaultAddressConfiguration, ui);
+        new UserFormPresenter(userService, authorizationService, defaultAddressConfiguration);
     view.userPanel = new Panel();
     view.emailField = new TextField();
     view.nameField = new TextField();
@@ -1487,7 +1484,7 @@ public class UserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
     String validationUrl = "validationUrl";
-    when(ui.getUrl(any())).thenReturn(validationUrl);
+    when(view.getUrl(any())).thenReturn(validationUrl);
 
     view.saveButton.click();
 
@@ -1532,7 +1529,7 @@ public class UserFormPresenterTest {
     setFields();
     view.newLaboratoryField.setValue(true);
     String validationUrl = "validationUrl";
-    when(ui.getUrl(any())).thenReturn(validationUrl);
+    when(view.getUrl(any())).thenReturn(validationUrl);
 
     view.saveButton.click();
 
@@ -1579,7 +1576,7 @@ public class UserFormPresenterTest {
     presenter.setEditable(true);
     setFields();
     String validationUrl = "validationUrl";
-    when(ui.getUrl(any())).thenReturn(validationUrl);
+    when(view.getUrl(any())).thenReturn(validationUrl);
 
     view.saveButton.click();
 

@@ -87,8 +87,6 @@ public class MainViewPresenterTest {
   @Mock
   private ForgotPasswordService forgotPasswordService;
   @Mock
-  private MainUi ui;
-  @Mock
   private CustomLoginForm signForm;
   @Mock
   private User user;
@@ -118,7 +116,7 @@ public class MainViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new MainViewPresenter(authenticationService, authorizationService, userService,
-        forgotPasswordService, ui, applicationName);
+        forgotPasswordService, applicationName);
     view.menu = new Menu();
     view.header = new Label();
     view.signPanel = new Panel();
@@ -280,7 +278,7 @@ public class MainViewPresenterTest {
     when(userService.exists(any())).thenReturn(true);
     view.forgotPasswordEmailField.setValue(username);
     String forgotPasswordUrl = "/proview/forgotpassword";
-    when(ui.getUrl(any())).thenReturn(forgotPasswordUrl);
+    when(view.getUrl(any())).thenReturn(forgotPasswordUrl);
     when(forgotPasswordService.insert(any(), any())).thenReturn(forgotPassword);
     long id = 357604839027601809L;
     int confirmNumber = 135495343;

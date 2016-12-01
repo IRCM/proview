@@ -24,7 +24,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.utils.web.FilterTextChangeListener;
-import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
@@ -82,8 +81,6 @@ public class SignasViewPresenter {
   @Inject
   private AuthenticationService authenticationService;
   @Inject
-  private MainUi ui;
-  @Inject
   private Provider<UserWindow> userWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
@@ -92,11 +89,10 @@ public class SignasViewPresenter {
   }
 
   protected SignasViewPresenter(UserService userService,
-      AuthenticationService authenticationService, MainUi ui,
-      Provider<UserWindow> userWindowProvider, String applicationName) {
+      AuthenticationService authenticationService, Provider<UserWindow> userWindowProvider,
+      String applicationName) {
     this.userService = userService;
     this.authenticationService = authenticationService;
-    this.ui = ui;
     this.userWindowProvider = userWindowProvider;
     this.applicationName = applicationName;
   }
@@ -209,7 +205,7 @@ public class SignasViewPresenter {
     UserWindow userWindow = userWindowProvider.get();
     userWindow.center();
     userWindow.setUser(user);
-    ui.addWindow(userWindow);
+    view.addWindow(userWindow);
   }
 
   private void signasUser(User user) {

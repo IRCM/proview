@@ -40,7 +40,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
-import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Container;
@@ -90,8 +89,6 @@ public class SignasViewPresenterTest {
   @Mock
   private AuthenticationService authenticationService;
   @Mock
-  private MainUi ui;
-  @Mock
   private Provider<UserWindow> userWindowProvider;
   @Mock
   private UserWindow userWindow;
@@ -112,7 +109,7 @@ public class SignasViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SignasViewPresenter(userService, authenticationService, ui, userWindowProvider,
+    presenter = new SignasViewPresenter(userService, authenticationService, userWindowProvider,
         applicationName);
     users = new ArrayList<>();
     users.add(entityManager.find(User.class, 4L));
@@ -287,7 +284,7 @@ public class SignasViewPresenterTest {
     button.click();
 
     verify(userWindowProvider).get();
-    verify(ui).addWindow(userWindow);
+    verify(view).addWindow(userWindow);
   }
 
   @Test

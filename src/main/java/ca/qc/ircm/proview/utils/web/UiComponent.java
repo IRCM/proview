@@ -17,12 +17,14 @@
 
 package ca.qc.ircm.proview.utils.web;
 
-import ca.qc.ircm.proview.web.MainUiComponent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 
 /**
- * Component extending all component utility interfaces.
+ * Component delegates some methods to UI.
  */
-public interface BaseComponent extends Component, NotificationComponent, NavigationComponent,
-    MessageResourcesComponent, UiComponent, MainUiComponent {
+public interface UiComponent extends Component {
+  default void addWindow(Window window) {
+    getUI().addWindow(window);
+  }
 }

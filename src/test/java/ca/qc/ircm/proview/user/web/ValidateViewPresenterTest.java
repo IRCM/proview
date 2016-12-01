@@ -44,7 +44,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
-import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.shared.MouseEventDetails;
@@ -88,8 +87,6 @@ public class ValidateViewPresenterTest {
   @Mock
   private AuthorizationService authorizationService;
   @Mock
-  private MainUi ui;
-  @Mock
   private Provider<UserWindow> userWindowProvider;
   @Mock
   private UserWindow userWindow;
@@ -111,7 +108,7 @@ public class ValidateViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new ValidateViewPresenter(userService, authorizationService, ui, userWindowProvider,
+    presenter = new ValidateViewPresenter(userService, authorizationService, userWindowProvider,
         applicationName);
     signedUser = entityManager.find(User.class, 1L);
     when(authorizationService.getCurrentUser()).thenReturn(signedUser);
@@ -229,7 +226,7 @@ public class ValidateViewPresenterTest {
         .click(new RendererClickEvent(view.usersGrid, user, column, new MouseEventDetails()) {});
 
     verify(userWindowProvider).get();
-    verify(ui).addWindow(userWindow);
+    verify(view).addWindow(userWindow);
   }
 
   @Test
@@ -240,7 +237,7 @@ public class ValidateViewPresenterTest {
     usersToValidateAfter.remove(0);
     when(userService.all(any())).thenReturn(usersToValidateAfter);
     String homeUrl = "homeUrl";
-    when(ui.getUrl(any())).thenReturn(homeUrl);
+    when(view.getUrl(any())).thenReturn(homeUrl);
     Column column = view.usersGrid.getColumn(VALIDATE);
     ButtonRenderer renderer = (ButtonRenderer) column.getRenderer();
     final RendererClickListener viewListener =
@@ -272,7 +269,7 @@ public class ValidateViewPresenterTest {
     view.usersGrid.select(user3);
     when(userService.all(any())).thenReturn(new ArrayList<>());
     String homeUrl = "homeUrl";
-    when(ui.getUrl(any())).thenReturn(homeUrl);
+    when(view.getUrl(any())).thenReturn(homeUrl);
 
     view.validateSelectedButton.click();
 

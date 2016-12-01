@@ -1,4 +1,5 @@
 /*
+
  * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,34 +18,47 @@
 
 package ca.qc.ircm.proview.utils.web;
 
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.web.MainUiComponent;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-public class BaseComponentTest {
-  private BaseComponent baseComponent;
+@RunWith(SpringJUnit4ClassRunner.class)
+@ServiceTestAnnotations
+public class UiComponentTest {
+  private UiComponent uiComponent;
+  @Mock
+  private UI ui;
+  @Mock
+  private Window window;
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() {
-    baseComponent = new TestBaseComponent();
+    uiComponent = new TestUiComponent();
   }
 
   @Test
-  public void implementations() {
-    assertTrue(baseComponent instanceof MessageResourcesComponent);
-    assertTrue(baseComponent instanceof NavigationComponent);
-    assertTrue(baseComponent instanceof NotificationComponent);
-    assertTrue(baseComponent instanceof UiComponent);
-    assertTrue(baseComponent instanceof MainUiComponent);
+  public void getMainUi() {
+    uiComponent.addWindow(window);
+
+    verify(ui).addWindow(window);
   }
 
   @SuppressWarnings("serial")
-  private static class TestBaseComponent extends CustomComponent implements BaseComponent {
+  private class TestUiComponent extends CustomComponent implements UiComponent {
+    @Override
+    public UI getUI() {
+      return ui;
+    }
   }
 }

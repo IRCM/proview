@@ -48,7 +48,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
-import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
@@ -105,8 +104,6 @@ public class AccessViewPresenterTest {
   @Mock
   private AuthorizationService authorizationService;
   @Mock
-  private MainUi ui;
-  @Mock
   private Provider<UserWindow> userWindowProvider;
   @Mock
   private UserWindow userWindow;
@@ -128,7 +125,7 @@ public class AccessViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new AccessViewPresenter(userService, authorizationService, ui, userWindowProvider,
+    presenter = new AccessViewPresenter(userService, authorizationService, userWindowProvider,
         applicationName);
     signedUser = entityManager.find(User.class, 1L);
     when(authorizationService.getCurrentUser()).thenReturn(signedUser);
@@ -423,7 +420,7 @@ public class AccessViewPresenterTest {
     button.click();
 
     verify(userWindowProvider).get();
-    verify(ui).addWindow(userWindow);
+    verify(view).addWindow(userWindow);
   }
 
   @Test

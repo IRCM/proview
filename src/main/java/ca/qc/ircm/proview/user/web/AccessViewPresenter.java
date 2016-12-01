@@ -25,7 +25,6 @@ import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.utils.web.FilterEqualsChangeListener;
 import ca.qc.ircm.proview.utils.web.FilterTextChangeListener;
-import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
@@ -102,8 +101,6 @@ public class AccessViewPresenter {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
-  private MainUi ui;
-  @Inject
   private Provider<UserWindow> userWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
@@ -112,10 +109,9 @@ public class AccessViewPresenter {
   }
 
   protected AccessViewPresenter(UserService userService, AuthorizationService authorizationService,
-      MainUi ui, Provider<UserWindow> userWindowProvider, String applicationName) {
+      Provider<UserWindow> userWindowProvider, String applicationName) {
     this.userService = userService;
     this.authorizationService = authorizationService;
-    this.ui = ui;
     this.userWindowProvider = userWindowProvider;
     this.applicationName = applicationName;
   }
@@ -316,7 +312,7 @@ public class AccessViewPresenter {
     UserWindow userWindow = userWindowProvider.get();
     userWindow.center();
     userWindow.setUser(user);
-    ui.addWindow(userWindow);
+    view.addWindow(userWindow);
   }
 
   private List<User> selectedUsers() {

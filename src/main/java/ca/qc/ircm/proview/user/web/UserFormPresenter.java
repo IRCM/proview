@@ -35,7 +35,6 @@ import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.MainUi;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
@@ -115,18 +114,15 @@ public class UserFormPresenter {
   private AuthorizationService authorizationService;
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
-  @Inject
-  private MainUi ui;
 
   protected UserFormPresenter() {
   }
 
   protected UserFormPresenter(UserService userService, AuthorizationService authorizationService,
-      DefaultAddressConfiguration defaultAddressConfiguration, MainUi ui) {
+      DefaultAddressConfiguration defaultAddressConfiguration) {
     this.userService = userService;
     this.authorizationService = authorizationService;
     this.defaultAddressConfiguration = defaultAddressConfiguration;
-    this.ui = ui;
   }
 
   /**
@@ -452,7 +448,8 @@ public class UserFormPresenter {
         if (isAdmin()) {
           user.setAdmin(true);
         }
-        userService.register(user, password, manager, locale -> ui.getUrl(ValidateView.VIEW_NAME));
+        userService.register(user, password, manager,
+            locale -> view.getUrl(ValidateView.VIEW_NAME));
       } else {
         userService.update(user, password);
       }
