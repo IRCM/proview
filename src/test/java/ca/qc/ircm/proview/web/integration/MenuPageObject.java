@@ -19,24 +19,24 @@ package ca.qc.ircm.proview.web.integration;
 
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.COLUMNS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.web.Menu.ACCESS_STYLE;
-import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE_STYLE;
-import static ca.qc.ircm.proview.web.Menu.HELP_STYLE;
-import static ca.qc.ircm.proview.web.Menu.HOME_STYLE;
-import static ca.qc.ircm.proview.web.Menu.MANAGER_STYLE;
-import static ca.qc.ircm.proview.web.Menu.PROFILE_STYLE;
-import static ca.qc.ircm.proview.web.Menu.REGISTER_STYLE;
-import static ca.qc.ircm.proview.web.Menu.SIGNOUT_STYLE;
-import static ca.qc.ircm.proview.web.Menu.SIGN_AS_STYLE;
-import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS_STYLE;
-import static ca.qc.ircm.proview.web.Menu.SUBMISSION_STYLE;
-import static ca.qc.ircm.proview.web.Menu.VALIDATE_USERS_STYLE;
+import static ca.qc.ircm.proview.web.Menu.ACCESS;
+import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE;
+import static ca.qc.ircm.proview.web.Menu.HELP;
+import static ca.qc.ircm.proview.web.Menu.HOME;
+import static ca.qc.ircm.proview.web.Menu.MANAGER;
+import static ca.qc.ircm.proview.web.Menu.PROFILE;
+import static ca.qc.ircm.proview.web.Menu.REGISTER;
+import static ca.qc.ircm.proview.web.Menu.SIGNOUT;
+import static ca.qc.ircm.proview.web.Menu.SIGN_AS;
+import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS;
+import static ca.qc.ircm.proview.web.Menu.SUBMISSION;
+import static ca.qc.ircm.proview.web.Menu.VALIDATE_USERS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.SignasView;
+import ca.qc.ircm.proview.user.web.SignasViewPresenter;
 import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
@@ -45,7 +45,7 @@ import org.openqa.selenium.WebElement;
 
 public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   private static final int EMAIL_COLUMN = gridColumnIndex(EMAIL);
-  private static final int SIGN_AS_COLUMN = gridColumnIndex(SIGN_AS);
+  private static final int SIGN_AS_COLUMN = gridColumnIndex(SignasViewPresenter.SIGN_AS);
 
   private static int gridColumnIndex(String property) {
     for (int i = 0; i < COLUMNS.length; i++) {
@@ -69,7 +69,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement homeMenuItem() {
-    return menuItemByStyle(HOME_STYLE);
+    return menuItemByStyle(HOME);
   }
 
   protected void clickHome() {
@@ -77,7 +77,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement submissionMenuItem() {
-    return menuItemByStyle(SUBMISSION_STYLE);
+    return menuItemByStyle(SUBMISSION);
   }
 
   protected void clickSubmission() {
@@ -85,7 +85,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement profileMenuItem() {
-    return menuItemByStyle(PROFILE_STYLE);
+    return menuItemByStyle(PROFILE);
   }
 
   protected void clickProfile() {
@@ -93,7 +93,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement signoutMenuItem() {
-    return menuItemByStyle(SIGNOUT_STYLE);
+    return menuItemByStyle(SIGNOUT);
   }
 
   protected void clickSignout() {
@@ -101,7 +101,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement changeLanguageMenuItem() {
-    return menuItemByStyle(CHANGE_LANGUAGE_STYLE);
+    return menuItemByStyle(CHANGE_LANGUAGE);
   }
 
   protected void clickChangeLanguage() {
@@ -109,7 +109,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement managerMenuItem() {
-    return menuItemByStyle(MANAGER_STYLE);
+    return menuItemByStyle(MANAGER);
   }
 
   protected void clickManager() {
@@ -117,7 +117,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement validateUsersMenuItem() {
-    return menuItemByStyle(VALIDATE_USERS_STYLE);
+    return menuItemByStyle(VALIDATE_USERS);
   }
 
   protected void clickValidateUsers() {
@@ -126,7 +126,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement accessMenuItem() {
-    return menuItemByStyle(ACCESS_STYLE);
+    return menuItemByStyle(ACCESS);
   }
 
   protected void clickAccess() {
@@ -135,7 +135,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement signasMenuItem() {
-    return menuItemByStyle(SIGN_AS_STYLE);
+    return menuItemByStyle(SIGN_AS);
   }
 
   protected void clickSignas() {
@@ -144,7 +144,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement registerMenuItem() {
-    return menuItemByStyle(REGISTER_STYLE);
+    return menuItemByStyle(REGISTER);
   }
 
   protected void clickRegister() {
@@ -153,7 +153,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement stopSignasMenuItem() {
-    return menuItemByStyle(STOP_SIGN_AS_STYLE);
+    return menuItemByStyle(STOP_SIGN_AS);
   }
 
   protected void clickStopSignas() {
@@ -162,7 +162,7 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement helpMenuItem() {
-    return menuItemByStyle(HELP_STYLE);
+    return menuItemByStyle(HELP);
   }
 
   protected void clickHelp() {

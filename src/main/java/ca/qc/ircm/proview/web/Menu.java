@@ -46,18 +46,18 @@ import javax.inject.Inject;
  * Menu.
  */
 public class Menu extends CustomComponent implements BaseComponent {
-  public static final String HOME_STYLE = "home";
-  public static final String SUBMISSION_STYLE = "submission";
-  public static final String PROFILE_STYLE = "profile";
-  public static final String SIGNOUT_STYLE = "signout";
-  public static final String CHANGE_LANGUAGE_STYLE = "changeLanguage";
-  public static final String MANAGER_STYLE = "manager";
-  public static final String VALIDATE_USERS_STYLE = "validateUsers";
-  public static final String ACCESS_STYLE = "access";
-  public static final String SIGN_AS_STYLE = "signas";
-  public static final String REGISTER_STYLE = "register";
-  public static final String STOP_SIGN_AS_STYLE = "stopSignas";
-  public static final String HELP_STYLE = "help";
+  public static final String HOME = "home";
+  public static final String SUBMISSION = "submission";
+  public static final String PROFILE = "profile";
+  public static final String SIGNOUT = "signout";
+  public static final String CHANGE_LANGUAGE = "changeLanguage";
+  public static final String MANAGER = "manager";
+  public static final String VALIDATE_USERS = "validateUsers";
+  public static final String ACCESS = "access";
+  public static final String SIGN_AS = "signas";
+  public static final String REGISTER = "register";
+  public static final String STOP_SIGN_AS = "stopSignas";
+  public static final String HELP = "help";
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
   private MenuBar menu = new MenuBar();
@@ -109,9 +109,51 @@ public class Menu extends CustomComponent implements BaseComponent {
   @Override
   public void attach() {
     super.attach();
-    setStyles();
-    setCaptions();
     injectBeans();
+    prepareComponents();
+    updateVisible();
+  }
+
+  private void injectBeans() {
+    UI ui = getUI();
+    if (ui instanceof MainUi) {
+      WebApplicationContext context =
+          WebApplicationContextUtils.getWebApplicationContext(((MainUi) ui).getServletContext());
+      if (context != null) {
+        context.getAutowireCapableBeanFactory().autowireBean(this);
+      }
+    }
+  }
+
+  private void prepareComponents() {
+    MessageResource resources = getResources();
+    home.setStyleName(HOME);
+    home.setText(resources.message(HOME));
+    submission.setStyleName(SUBMISSION);
+    submission.setText(resources.message(SUBMISSION));
+    profile.setStyleName(PROFILE);
+    profile.setText(resources.message(PROFILE));
+    signout.setStyleName(SIGNOUT);
+    signout.setText(resources.message(SIGNOUT));
+    changeLanguage.setStyleName(CHANGE_LANGUAGE);
+    changeLanguage.setText(resources.message(CHANGE_LANGUAGE));
+    manager.setStyleName(MANAGER);
+    manager.setText(resources.message(MANAGER));
+    validateUsers.setStyleName(VALIDATE_USERS);
+    validateUsers.setText(resources.message(VALIDATE_USERS));
+    access.setStyleName(ACCESS);
+    access.setText(resources.message(ACCESS));
+    signas.setStyleName(SIGN_AS);
+    signas.setText(resources.message(SIGN_AS));
+    register.setStyleName(REGISTER);
+    register.setText(resources.message(REGISTER));
+    stopSignas.setStyleName(STOP_SIGN_AS);
+    stopSignas.setText(resources.message(STOP_SIGN_AS));
+    help.setStyleName(HELP);
+    help.setText(resources.message(HELP));
+  }
+
+  private void updateVisible() {
     if (authorizationService != null) {
       if (authorizationService.isUser()) {
         profile.setVisible(true);
@@ -135,48 +177,6 @@ public class Menu extends CustomComponent implements BaseComponent {
         access.setVisible(true);
         signas.setVisible(true);
         register.setVisible(true);
-      }
-    }
-  }
-
-  private void setStyles() {
-    home.setStyleName(HOME_STYLE);
-    submission.setStyleName(SUBMISSION_STYLE);
-    profile.setStyleName(PROFILE_STYLE);
-    signout.setStyleName(SIGNOUT_STYLE);
-    changeLanguage.setStyleName(CHANGE_LANGUAGE_STYLE);
-    manager.setStyleName(MANAGER_STYLE);
-    validateUsers.setStyleName(VALIDATE_USERS_STYLE);
-    access.setStyleName(ACCESS_STYLE);
-    signas.setStyleName(SIGN_AS_STYLE);
-    register.setStyleName(REGISTER_STYLE);
-    stopSignas.setStyleName(STOP_SIGN_AS_STYLE);
-    help.setStyleName(HELP_STYLE);
-  }
-
-  private void setCaptions() {
-    MessageResource resources = getResources();
-    home.setText(resources.message(HOME_STYLE));
-    submission.setText(resources.message(SUBMISSION_STYLE));
-    profile.setText(resources.message(PROFILE_STYLE));
-    signout.setText(resources.message(SIGNOUT_STYLE));
-    changeLanguage.setText(resources.message(CHANGE_LANGUAGE_STYLE));
-    manager.setText(resources.message(MANAGER_STYLE));
-    validateUsers.setText(resources.message(VALIDATE_USERS_STYLE));
-    access.setText(resources.message(ACCESS_STYLE));
-    signas.setText(resources.message(SIGN_AS_STYLE));
-    register.setText(resources.message(REGISTER_STYLE));
-    stopSignas.setText(resources.message(STOP_SIGN_AS_STYLE));
-    help.setText(resources.message(HELP_STYLE));
-  }
-
-  private void injectBeans() {
-    UI ui = getUI();
-    if (ui instanceof MainUi) {
-      WebApplicationContext context =
-          WebApplicationContextUtils.getWebApplicationContext(((MainUi) ui).getServletContext());
-      if (context != null) {
-        context.getAutowireCapableBeanFactory().autowireBean(this);
       }
     }
   }

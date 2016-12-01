@@ -23,8 +23,8 @@ import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.VIEW;
-import static ca.qc.ircm.proview.web.Menu.MANAGER_STYLE;
-import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS_STYLE;
+import static ca.qc.ircm.proview.web.Menu.MANAGER;
+import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -117,7 +117,7 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement managerMenuItem() {
-    return menuItemByStyle(MANAGER_STYLE);
+    return menuItemByStyle(MANAGER);
   }
 
   protected void clickManager() {
@@ -125,6 +125,6 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   }
 
   protected WebElement stopSignasMenuItem() {
-    return menuItemByStyle(STOP_SIGN_AS_STYLE);
+    return menuItemByStyle(STOP_SIGN_AS);
   }
 }

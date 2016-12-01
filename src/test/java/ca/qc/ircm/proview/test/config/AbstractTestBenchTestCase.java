@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.test.config;
 
-import static ca.qc.ircm.proview.web.Menu.HOME_STYLE;
+import static ca.qc.ircm.proview.web.Menu.HOME;
 import static org.openqa.selenium.By.className;
 import static org.openqa.selenium.By.tagName;
 
@@ -77,10 +77,10 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
 
   protected Locale currentLocale() {
     MenuBarElement menuBar = $(MenuBarElement.class).first();
-    WebElement home = menuBar.findElement(className("v-menubar-menuitem-" + HOME_STYLE));
+    WebElement home = menuBar.findElement(className("v-menubar-menuitem-" + HOME));
     Set<Locale> locales = WebConstants.getLocales();
     return locales.stream().filter(locale -> new MessageResource(Menu.class, locale)
-        .message(HOME_STYLE).equals(home.getText())).findAny().orElse(Locale.ENGLISH);
+        .message(HOME).equals(home.getText())).findAny().orElse(Locale.ENGLISH);
   }
 
   protected MessageResource resources(Class<?> baseClass) {
