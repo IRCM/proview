@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
 import com.vaadin.spring.annotation.SpringView;
@@ -25,7 +24,6 @@ import com.vaadin.spring.annotation.SpringView;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 /**
  * Submissions view.
@@ -37,10 +35,6 @@ public class SubmissionsView extends SubmissionsViewDesign implements BaseView {
   private static final long serialVersionUID = -7912663074202035516L;
   @Inject
   private SubmissionsViewPresenter presenter;
-  @Inject
-  private Provider<SubmissionWindow> submissionWindowProvider;
-  @Inject
-  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
   protected Menu menu = new Menu();
 
   @PostConstruct
@@ -52,31 +46,5 @@ public class SubmissionsView extends SubmissionsViewDesign implements BaseView {
   public void attach() {
     super.attach();
     presenter.init(this);
-  }
-
-  /**
-   * Open view submission window.
-   *
-   * @param submission
-   *          submission to view
-   */
-  public void viewSubmission(Submission submission) {
-    SubmissionWindow window = submissionWindowProvider.get();
-    window.setSubmission(submission);
-    window.center();
-    getUI().addWindow(window);
-  }
-
-  /**
-   * Open view submission's results window.
-   *
-   * @param submission
-   *          submission to view
-   */
-  public void viewSubmissionResults(Submission submission) {
-    SubmissionAnalysesWindow window = submissionAnalysesWindowProvider.get();
-    window.setSubmission(submission);
-    window.center();
-    getUI().addWindow(window);
   }
 }

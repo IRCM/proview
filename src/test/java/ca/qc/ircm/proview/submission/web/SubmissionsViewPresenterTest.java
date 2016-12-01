@@ -116,9 +116,17 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider;
   @Mock
+  private Provider<SubmissionWindow> submissionWindowProvider;
+  @Mock
+  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
+  @Mock
   private SubmissionsView view;
   @Mock
   private Report report;
+  @Mock
+  private SubmissionWindow submissionWindow;
+  @Mock
+  private SubmissionAnalysesWindow submissionAnalysesWindow;
   @Value("${spring.application.name}")
   private String applicationName;
   private FilterInstantComponentPresenter filterInstantComponentPresenter =
@@ -135,8 +143,9 @@ public class SubmissionsViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionsViewPresenter(submissionService,
-        filterInstantComponentPresenterProvider, applicationName);
+    presenter =
+        new SubmissionsViewPresenter(submissionService, filterInstantComponentPresenterProvider,
+            submissionWindowProvider, submissionAnalysesWindowProvider, applicationName);
     view.headerLabel = headerLabel;
     view.submissionsGrid = submissionsGrid;
     when(view.getLocale()).thenReturn(locale);
@@ -153,6 +162,8 @@ public class SubmissionsViewPresenterTest {
     when(report.getSubmissions()).thenReturn(submissions);
     when(report.getLinkedToResults()).thenReturn(linkedToResults);
     when(filterInstantComponentPresenterProvider.get()).thenReturn(filterInstantComponentPresenter);
+    when(submissionWindowProvider.get()).thenReturn(submissionWindow);
+    when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
     presenter.init(view);
   }
 
@@ -506,7 +517,10 @@ public class SubmissionsViewPresenterTest {
 
     button.click();
 
-    verify(view).viewSubmission(sample.getSubmission());
+    verify(submissionWindowProvider).get();
+    verify(submissionWindow).setSubmission(sample.getSubmission());
+    verify(submissionWindow).center();
+    verify(view).addWindow(submissionWindow);
   }
 
   @Test
@@ -518,6 +532,9 @@ public class SubmissionsViewPresenterTest {
 
     button.click();
 
-    verify(view).viewSubmissionResults(sample.getSubmission());
+    verify(submissionAnalysesWindowProvider).get();
+    verify(submissionAnalysesWindow).setSubmission(sample.getSubmission());
+    verify(submissionAnalysesWindow).center();
+    verify(view).addWindow(submissionAnalysesWindow);
   }
 }

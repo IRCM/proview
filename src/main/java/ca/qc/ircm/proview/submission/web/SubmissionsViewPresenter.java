@@ -113,6 +113,10 @@ public class SubmissionsViewPresenter {
   private SubmissionService submissionService;
   @Inject
   private Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider;
+  @Inject
+  private Provider<SubmissionWindow> submissionWindowProvider;
+  @Inject
+  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -121,9 +125,12 @@ public class SubmissionsViewPresenter {
 
   protected SubmissionsViewPresenter(SubmissionService submissionService,
       Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider,
-      String applicationName) {
+      Provider<SubmissionWindow> submissionWindowProvider,
+      Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.filterInstantComponentPresenterProvider = filterInstantComponentPresenterProvider;
+    this.submissionWindowProvider = submissionWindowProvider;
+    this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
     this.applicationName = applicationName;
   }
 
@@ -136,20 +143,21 @@ public class SubmissionsViewPresenter {
   public void init(SubmissionsView view) {
     logger.debug("View submissions");
     this.view = view;
-    setIds();
-    prepareSumissionsContainer();
-    prepareSubmissionsGrid();
-    setCaptions();
+    prepareComponents();
     setDefaults();
   }
 
-  private void setIds() {
+  private void prepareComponents() {
+    MessageResource resources = view.getResources();
+    view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.setId(HEADER_ID);
-    view.submissionsGrid.setId(SUBMISSIONS_PROPERTY);
+    view.headerLabel.setValue(resources.message(HEADER_ID));
+    prepareSumissionsGrid();
   }
 
   @SuppressWarnings("serial")
-  private void prepareSumissionsContainer() {
+  private void prepareSumissionsGrid() {
+    MessageResource resources = view.getResources();
     submissionsContainer.addNestedContainerProperty(EXPERIENCE_PROPERTY);
     submissionsContainer.addNestedContainerProperty(EXPERIENCE_GOAL_PROPERTY);
     submissionsContainer.addNestedContainerProperty(DATE_PROPERTY);
@@ -244,13 +252,13 @@ public class SubmissionsViewPresenter {
             return new GeneratedPropertyContainerFilter(filter, submissionsGeneratedContainer);
           }
         });
-  }
-
-  private void prepareSubmissionsGrid() {
-    MessageResource resources = view.getResources();
+    view.submissionsGrid.setId(SUBMISSIONS_PROPERTY);
     ComponentCellKeyExtension.extend(view.submissionsGrid);
     view.submissionsGrid.setContainerDataSource(submissionsGeneratedContainer);
     view.submissionsGrid.setColumns(columns);
+    for (Column column : view.submissionsGrid.getColumns()) {
+      column.setHeaderCaption(resources.message((String) column.getPropertyId()));
+    }
     view.submissionsGrid.setFrozenColumnCount(2);
     view.submissionsGrid.getColumn(SELECT_PROPERTY).setWidth(56);
     view.submissionsGrid.getColumn(SELECT_PROPERTY).setRenderer(new ComponentRenderer());
@@ -340,15 +348,6 @@ public class SubmissionsViewPresenter {
     return filter;
   }
 
-  private void setCaptions() {
-    MessageResource resources = view.getResources();
-    view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.setValue(resources.message(HEADER_ID));
-    for (Column column : view.submissionsGrid.getColumns()) {
-      column.setHeaderCaption(resources.message((String) column.getPropertyId()));
-    }
-  }
-
   private void setDefaults() {
     searchSubmissions();
   }
@@ -363,11 +362,17 @@ public class SubmissionsViewPresenter {
   }
 
   private void viewSubmission(Submission submission) {
-    view.viewSubmission(submission);
+    SubmissionWindow window = submissionWindowProvider.get();
+    window.setSubmission(submission);
+    window.center();
+    view.addWindow(window);
   }
 
   private void viewSubmissionResults(Submission submission) {
-    view.viewSubmissionResults(submission);
+    SubmissionAnalysesWindow window = submissionAnalysesWindowProvider.get();
+    window.setSubmission(submission);
+    window.center();
+    view.addWindow(window);
   }
 
   private class ResultsFilterChangeListener extends CutomNullPropertyFilterValueChangeListener {
