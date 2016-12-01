@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.user.web.AccessView;
+import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
@@ -54,6 +55,7 @@ public class Menu extends CustomComponent implements BaseComponent {
   public static final String VALIDATE_USERS_STYLE = "validateUsers";
   public static final String ACCESS_STYLE = "access";
   public static final String SIGN_AS_STYLE = "signas";
+  public static final String REGISTER_STYLE = "register";
   public static final String STOP_SIGN_AS_STYLE = "stopSignas";
   public static final String HELP_STYLE = "help";
   private static final long serialVersionUID = 4442788596052318607L;
@@ -69,6 +71,7 @@ public class Menu extends CustomComponent implements BaseComponent {
   private MenuItem access;
   private MenuItem signas;
   private MenuItem stopSignas;
+  private MenuItem register;
   private MenuItem help;
   @Inject
   private AuthorizationService authorizationService;
@@ -96,6 +99,8 @@ public class Menu extends CustomComponent implements BaseComponent {
     access.setVisible(false);
     signas = manager.addItem("Sign as", item -> changeView(SignasView.VIEW_NAME));
     signas.setVisible(false);
+    register = manager.addItem("Register user", item -> changeView(RegisterView.VIEW_NAME));
+    register.setVisible(false);
     stopSignas = manager.addItem("Stop sign as", item -> stopSignas());
     stopSignas.setVisible(false);
     help = menu.addItem("Help", item -> changeView(MainView.VIEW_NAME));
@@ -129,6 +134,7 @@ public class Menu extends CustomComponent implements BaseComponent {
         validateUsers.setVisible(true);
         access.setVisible(true);
         signas.setVisible(true);
+        register.setVisible(true);
       }
     }
   }
@@ -143,6 +149,7 @@ public class Menu extends CustomComponent implements BaseComponent {
     validateUsers.setStyleName(VALIDATE_USERS_STYLE);
     access.setStyleName(ACCESS_STYLE);
     signas.setStyleName(SIGN_AS_STYLE);
+    register.setStyleName(REGISTER_STYLE);
     stopSignas.setStyleName(STOP_SIGN_AS_STYLE);
     help.setStyleName(HELP_STYLE);
   }
@@ -158,6 +165,7 @@ public class Menu extends CustomComponent implements BaseComponent {
     validateUsers.setText(resources.message(VALIDATE_USERS_STYLE));
     access.setText(resources.message(ACCESS_STYLE));
     signas.setText(resources.message(SIGN_AS_STYLE));
+    register.setText(resources.message(REGISTER_STYLE));
     stopSignas.setText(resources.message(STOP_SIGN_AS_STYLE));
     help.setText(resources.message(HELP_STYLE));
   }

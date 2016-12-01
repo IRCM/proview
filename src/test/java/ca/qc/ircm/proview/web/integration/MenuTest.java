@@ -63,6 +63,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
     assertFalse(optional(() -> accessMenuItem()).isPresent());
     assertFalse(optional(() -> signasMenuItem()).isPresent());
+    assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
@@ -81,6 +82,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
     assertFalse(optional(() -> accessMenuItem()).isPresent());
     assertFalse(optional(() -> signasMenuItem()).isPresent());
+    assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
@@ -100,6 +102,7 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> validateUsersMenuItem()).isPresent());
     assertTrue(optional(() -> accessMenuItem()).isPresent());
     assertFalse(optional(() -> signasMenuItem()).isPresent());
+    assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
@@ -119,6 +122,7 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> validateUsersMenuItem()).isPresent());
     assertTrue(optional(() -> accessMenuItem()).isPresent());
     assertTrue(optional(() -> signasMenuItem()).isPresent());
+    assertTrue(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
@@ -138,6 +142,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
     assertFalse(optional(() -> accessMenuItem()).isPresent());
     assertFalse(optional(() -> signasMenuItem()).isPresent());
+    assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertTrue(optional(() -> stopSignasMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
@@ -228,6 +233,16 @@ public class MenuTest extends MenuPageObject {
     clickSignas();
 
     assertEquals(viewUrl(SignasView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void register() throws Throwable {
+    open();
+
+    clickRegister();
+
+    assertEquals(viewUrl(RegisterView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test

@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.PhoneNumber;
@@ -111,6 +112,8 @@ public class UserFormPresenter {
   @Inject
   private UserService userService;
   @Inject
+  private AuthorizationService authorizationService;
+  @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
   @Inject
   private MainUi ui;
@@ -118,9 +121,10 @@ public class UserFormPresenter {
   protected UserFormPresenter() {
   }
 
-  protected UserFormPresenter(UserService userService,
+  protected UserFormPresenter(UserService userService, AuthorizationService authorizationService,
       DefaultAddressConfiguration defaultAddressConfiguration, MainUi ui) {
     this.userService = userService;
+    this.authorizationService = authorizationService;
     this.defaultAddressConfiguration = defaultAddressConfiguration;
     this.ui = ui;
   }
@@ -276,12 +280,13 @@ public class UserFormPresenter {
   private void updateEditable() {
     final boolean editable = editableProperty.getValue();
     final boolean newUser = isNewUser();
+    final boolean admin = isAdmin();
     view.emailField.setReadOnly(!editable);
     view.nameField.setReadOnly(!editable);
     view.newLaboratoryField.setReadOnly(!editable || !newUser);
     view.managerField.setReadOnly(!editable || !newUser);
-    view.organizationField.setReadOnly(!editable || !newUser);
-    view.laboratoryNameField.setReadOnly(!editable || !newUser);
+    view.organizationField.setReadOnly(!editable || !newUser || (newUser && admin));
+    view.laboratoryNameField.setReadOnly(!editable || !newUser || (newUser && admin));
     view.addressLineField.setReadOnly(!editable);
     view.townField.setReadOnly(!editable);
     view.stateField.setReadOnly(!editable);
@@ -299,17 +304,19 @@ public class UserFormPresenter {
     final boolean editable = editableProperty.getValue();
     final boolean newUser = isNewUser();
     final boolean newLaboratory = view.newLaboratoryField.getValue();
+    final boolean admin = isAdmin();
     view.passwordField.setVisible(editable);
     view.confirmPasswordField.setVisible(editable);
-    view.newLaboratoryField.setVisible(newUser && editable);
-    view.managerField.setVisible(newUser && editable && !newLaboratory);
-    view.organizationField.setVisible(!newUser || !editable || newLaboratory);
-    view.laboratoryNameField.setVisible(!newUser || !editable || newLaboratory);
+    view.newLaboratoryField.setVisible(newUser && editable && !admin);
+    view.managerField.setVisible(newUser && editable && !newLaboratory && !admin);
+    view.organizationField.setVisible(!newUser || !editable || newLaboratory || (newUser && admin));
+    view.laboratoryNameField
+        .setVisible(!newUser || !editable || newLaboratory || (newUser && admin));
     view.clearAddressButton.setVisible(editable);
     removePhoneNumberButtons.forEach(button -> button.setVisible(editable));
     view.addPhoneNumberButton.setVisible(editable);
     view.saveLayout.setVisible(editable);
-    view.registerWarningLabel.setVisible(newUser && editable);
+    view.registerWarningLabel.setVisible(newUser && editable && !admin);
     view.saveButton.setVisible(editable);
   }
 
@@ -399,7 +406,7 @@ public class UserFormPresenter {
     try {
       userFieldGroup.commit();
       passwordFieldGroup.commit();
-      if (isNewUser()) {
+      if (isNewUser() && !isAdmin()) {
         if (view.newLaboratoryField.getValue()) {
           laboratoryFieldGroup.commit();
         } else {
@@ -442,6 +449,9 @@ public class UserFormPresenter {
           user.setLaboratory(laboratoryFieldGroup.getItemDataSource().getBean());
         }
         user.setLocale(view.getLocale());
+        if (isAdmin()) {
+          user.setAdmin(true);
+        }
         userService.register(user, password, manager, locale -> ui.getUrl(ValidateView.VIEW_NAME));
       } else {
         userService.update(user, password);
@@ -454,6 +464,10 @@ public class UserFormPresenter {
 
   private boolean isNewUser() {
     return userFieldGroup.getItemDataSource().getBean().getId() == null;
+  }
+
+  private boolean isAdmin() {
+    return authorizationService.hasAdminRole();
   }
 
   public Item getItemDataSource() {
@@ -477,6 +491,11 @@ public class UserFormPresenter {
       User user = new User();
       user.setAddress(address);
       user.setLaboratory(new Laboratory());
+      if (isAdmin()) {
+        User currentUser = authorizationService.getCurrentUser();
+        user.getLaboratory().setName(currentUser.getLaboratory().getName());
+        user.getLaboratory().setOrganization(currentUser.getLaboratory().getOrganization());
+      }
       user.setPhoneNumbers(new ArrayList<>());
       item = new BeanItem<>(user);
     } else if (!(item instanceof BeanItem)) {

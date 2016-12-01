@@ -27,6 +27,7 @@ import static ca.qc.ircm.proview.web.Menu.HELP_STYLE;
 import static ca.qc.ircm.proview.web.Menu.HOME_STYLE;
 import static ca.qc.ircm.proview.web.Menu.MANAGER_STYLE;
 import static ca.qc.ircm.proview.web.Menu.PROFILE_STYLE;
+import static ca.qc.ircm.proview.web.Menu.REGISTER_STYLE;
 import static ca.qc.ircm.proview.web.Menu.SIGNOUT_STYLE;
 import static ca.qc.ircm.proview.web.Menu.SIGN_AS_STYLE;
 import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS_STYLE;
@@ -140,6 +141,15 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   protected void clickSignas() {
     managerMenuItem().click();
     signasMenuItem().click();
+  }
+
+  protected WebElement registerMenuItem() {
+    return menuItemByStyle(REGISTER_STYLE);
+  }
+
+  protected void clickRegister() {
+    managerMenuItem().click();
+    registerMenuItem().click();
   }
 
   protected WebElement stopSignasMenuItem() {

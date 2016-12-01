@@ -58,6 +58,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
@@ -107,6 +108,8 @@ public class UserFormPresenterTest {
   @Mock
   private UserService userService;
   @Mock
+  private AuthorizationService authorizationService;
+  @Mock
   private DefaultAddressConfiguration defaultAddressConfiguration;
   @Mock
   private MainUi ui;
@@ -127,6 +130,7 @@ public class UserFormPresenterTest {
   private MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private User user;
+  private User currentUser;
   private String email = "unit.test@ircm.qc.ca";
   private String name = "Unit Test";
   private String password = "unittestpassword";
@@ -155,7 +159,8 @@ public class UserFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new UserFormPresenter(userService, defaultAddressConfiguration, ui);
+    presenter =
+        new UserFormPresenter(userService, authorizationService, defaultAddressConfiguration, ui);
     view.userPanel = new Panel();
     view.emailField = new TextField();
     view.nameField = new TextField();
@@ -193,6 +198,8 @@ public class UserFormPresenterTest {
     presenter.init(view);
     user = entityManager.find(User.class, 10L);
     when(userService.isManager(any())).thenReturn(true);
+    currentUser = entityManager.find(User.class, 1L);
+    when(authorizationService.getCurrentUser()).thenReturn(currentUser);
   }
 
   private void addFirstPhoneNumber() {
@@ -204,12 +211,16 @@ public class UserFormPresenterTest {
     return ((BeanItem<User>) presenter.getItemDataSource()).getBean().getId() == null;
   }
 
+  private boolean isAdmin() {
+    return authorizationService.hasAdminRole();
+  }
+
   private void setFields() {
     view.emailField.setValue(email);
     view.nameField.setValue(name);
     view.passwordField.setValue(password);
     view.confirmPasswordField.setValue(password);
-    if (isNewUser()) {
+    if (isNewUser() && !isAdmin()) {
       view.managerField.setValue(manager);
       view.organizationField.setValue(organization);
       view.laboratoryNameField.setValue(laboratoryName);
@@ -414,7 +425,56 @@ public class UserFormPresenterTest {
   }
 
   @Test
+  public void editable_False_NewAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setItemDataSource(null);
+
+    assertTrue(view.emailField.isReadOnly());
+    assertTrue(view.nameField.isReadOnly());
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
+    assertTrue(view.newLaboratoryField.isReadOnly());
+    assertTrue(view.managerField.isReadOnly());
+    assertTrue(view.organizationField.isReadOnly());
+    assertTrue(view.laboratoryNameField.isReadOnly());
+    assertTrue(view.addressLineField.isReadOnly());
+    assertTrue(view.townField.isReadOnly());
+    assertTrue(view.stateField.isReadOnly());
+    assertTrue(view.countryField.isReadOnly());
+    assertTrue(view.postalCodeField.isReadOnly());
+    addFirstPhoneNumber();
+    assertTrue(typeField(0).isReadOnly());
+    assertTrue(numberField(0).isReadOnly());
+    assertTrue(extensionField(0).isReadOnly());
+  }
+
+  @Test
   public void editable_False_ExistsUser() {
+    presenter.setItemDataSource(new BeanItem<>(user));
+    presenter.setEditable(false);
+
+    assertTrue(view.emailField.isReadOnly());
+    assertTrue(view.nameField.isReadOnly());
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
+    assertTrue(view.newLaboratoryField.isReadOnly());
+    assertTrue(view.managerField.isReadOnly());
+    assertTrue(view.organizationField.isReadOnly());
+    assertTrue(view.laboratoryNameField.isReadOnly());
+    assertTrue(view.addressLineField.isReadOnly());
+    assertTrue(view.townField.isReadOnly());
+    assertTrue(view.stateField.isReadOnly());
+    assertTrue(view.countryField.isReadOnly());
+    assertTrue(view.postalCodeField.isReadOnly());
+    addFirstPhoneNumber();
+    assertTrue(typeField(0).isReadOnly());
+    assertTrue(numberField(0).isReadOnly());
+    assertTrue(extensionField(0).isReadOnly());
+  }
+
+  @Test
+  public void editable_False_ExistsAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setItemDataSource(new BeanItem<>(user));
     presenter.setEditable(false);
 
@@ -463,7 +523,61 @@ public class UserFormPresenterTest {
   }
 
   @Test
+  public void editable_True_NewAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setItemDataSource(null);
+    presenter.setEditable(true);
+
+    assertFalse(view.emailField.isReadOnly());
+    assertFalse(view.nameField.isReadOnly());
+    assertTrue(view.passwordField.isVisible());
+    assertFalse(view.passwordField.isReadOnly());
+    assertTrue(view.confirmPasswordField.isVisible());
+    assertFalse(view.confirmPasswordField.isReadOnly());
+    assertFalse(view.newLaboratoryField.isVisible());
+    assertFalse(view.managerField.isVisible());
+    assertTrue(view.organizationField.isReadOnly());
+    assertTrue(view.laboratoryNameField.isReadOnly());
+    assertFalse(view.addressLineField.isReadOnly());
+    assertFalse(view.townField.isReadOnly());
+    assertFalse(view.stateField.isReadOnly());
+    assertFalse(view.countryField.isReadOnly());
+    assertFalse(view.postalCodeField.isReadOnly());
+    addFirstPhoneNumber();
+    assertFalse(typeField(0).isReadOnly());
+    assertFalse(numberField(0).isReadOnly());
+    assertFalse(extensionField(0).isReadOnly());
+  }
+
+  @Test
   public void editable_True_ExistsUser() {
+    presenter.setItemDataSource(new BeanItem<>(user));
+    presenter.setEditable(true);
+
+    assertFalse(view.emailField.isReadOnly());
+    assertFalse(view.nameField.isReadOnly());
+    assertTrue(view.passwordField.isVisible());
+    assertFalse(view.passwordField.isReadOnly());
+    assertTrue(view.confirmPasswordField.isVisible());
+    assertFalse(view.confirmPasswordField.isReadOnly());
+    assertTrue(view.newLaboratoryField.isReadOnly());
+    assertTrue(view.managerField.isReadOnly());
+    assertTrue(view.organizationField.isReadOnly());
+    assertTrue(view.laboratoryNameField.isReadOnly());
+    assertFalse(view.addressLineField.isReadOnly());
+    assertFalse(view.townField.isReadOnly());
+    assertFalse(view.stateField.isReadOnly());
+    assertFalse(view.countryField.isReadOnly());
+    assertFalse(view.postalCodeField.isReadOnly());
+    addFirstPhoneNumber();
+    assertFalse(typeField(0).isReadOnly());
+    assertFalse(numberField(0).isReadOnly());
+    assertFalse(extensionField(0).isReadOnly());
+  }
+
+  @Test
+  public void editable_True_ExistsAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setItemDataSource(new BeanItem<>(user));
     presenter.setEditable(true);
 
@@ -519,7 +633,73 @@ public class UserFormPresenterTest {
   }
 
   @Test
+  public void visible_NewAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setItemDataSource(null);
+
+    assertTrue(view.userPanel.isVisible());
+    assertTrue(view.emailField.isVisible());
+    assertTrue(view.nameField.isVisible());
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
+    assertFalse(view.newLaboratoryField.isVisible());
+    assertFalse(view.managerField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
+    assertTrue(view.addressPanel.isVisible());
+    assertTrue(view.addressLineField.isVisible());
+    assertTrue(view.townField.isVisible());
+    assertTrue(view.stateField.isVisible());
+    assertTrue(view.countryField.isVisible());
+    assertTrue(view.postalCodeField.isVisible());
+    assertFalse(view.clearAddressButton.isVisible());
+    assertTrue(view.phoneNumbersPanel.isVisible());
+    addFirstPhoneNumber();
+    assertTrue(typeField(0).isVisible());
+    assertTrue(numberField(0).isVisible());
+    assertTrue(extensionField(0).isVisible());
+    assertFalse(removePhoneNumberButton(0).isVisible());
+    assertFalse(view.addPhoneNumberButton.isVisible());
+    assertFalse(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
+    assertFalse(view.saveButton.isVisible());
+  }
+
+  @Test
   public void visible_ExistsUser() {
+    presenter.setItemDataSource(new BeanItem<>(user));
+
+    assertTrue(view.userPanel.isVisible());
+    assertTrue(view.emailField.isVisible());
+    assertTrue(view.nameField.isVisible());
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
+    assertFalse(view.newLaboratoryField.isVisible());
+    assertFalse(view.managerField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
+    assertTrue(view.addressPanel.isVisible());
+    assertTrue(view.addressLineField.isVisible());
+    assertTrue(view.townField.isVisible());
+    assertTrue(view.stateField.isVisible());
+    assertTrue(view.countryField.isVisible());
+    assertTrue(view.postalCodeField.isVisible());
+    assertFalse(view.clearAddressButton.isVisible());
+    assertTrue(view.phoneNumbersPanel.isVisible());
+    addFirstPhoneNumber();
+    assertTrue(typeField(0).isVisible());
+    assertTrue(numberField(0).isVisible());
+    assertTrue(extensionField(0).isVisible());
+    assertFalse(removePhoneNumberButton(0).isVisible());
+    assertFalse(view.addPhoneNumberButton.isVisible());
+    assertFalse(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
+    assertFalse(view.saveButton.isVisible());
+  }
+
+  @Test
+  public void visible_ExistsAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setItemDataSource(new BeanItem<>(user));
 
     assertTrue(view.userPanel.isVisible());
@@ -583,6 +763,40 @@ public class UserFormPresenterTest {
   }
 
   @Test
+  public void visible_Editable_NewAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setItemDataSource(null);
+    presenter.setEditable(true);
+
+    assertTrue(view.userPanel.isVisible());
+    assertTrue(view.emailField.isVisible());
+    assertTrue(view.nameField.isVisible());
+    assertTrue(view.passwordField.isVisible());
+    assertTrue(view.confirmPasswordField.isVisible());
+    assertFalse(view.newLaboratoryField.isVisible());
+    assertFalse(view.managerField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
+    assertTrue(view.addressPanel.isVisible());
+    assertTrue(view.addressLineField.isVisible());
+    assertTrue(view.townField.isVisible());
+    assertTrue(view.stateField.isVisible());
+    assertTrue(view.countryField.isVisible());
+    assertTrue(view.postalCodeField.isVisible());
+    assertTrue(view.clearAddressButton.isVisible());
+    assertTrue(view.phoneNumbersPanel.isVisible());
+    addFirstPhoneNumber();
+    assertTrue(typeField(0).isVisible());
+    assertTrue(numberField(0).isVisible());
+    assertTrue(extensionField(0).isVisible());
+    assertTrue(removePhoneNumberButton(0).isVisible());
+    assertTrue(view.addPhoneNumberButton.isVisible());
+    assertTrue(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
+    assertTrue(view.saveButton.isVisible());
+  }
+
+  @Test
   public void visible_Editable_NewUser_NewLaboratory() {
     presenter.setEditable(true);
 
@@ -624,6 +838,74 @@ public class UserFormPresenterTest {
     assertTrue(view.saveLayout.isVisible());
     assertFalse(view.registerWarningLabel.isVisible());
     assertTrue(view.saveButton.isVisible());
+  }
+
+  @Test
+  public void visible_Editable_ExistsAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setItemDataSource(new BeanItem<>(user));
+    presenter.setEditable(true);
+
+    assertTrue(view.userPanel.isVisible());
+    assertTrue(view.emailField.isVisible());
+    assertTrue(view.nameField.isVisible());
+    assertTrue(view.passwordField.isVisible());
+    assertTrue(view.confirmPasswordField.isVisible());
+    assertFalse(view.newLaboratoryField.isVisible());
+    assertFalse(view.managerField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
+    assertTrue(view.addressPanel.isVisible());
+    assertTrue(view.addressLineField.isVisible());
+    assertTrue(view.townField.isVisible());
+    assertTrue(view.stateField.isVisible());
+    assertTrue(view.countryField.isVisible());
+    assertTrue(view.postalCodeField.isVisible());
+    assertTrue(view.clearAddressButton.isVisible());
+    assertTrue(view.phoneNumbersPanel.isVisible());
+    addFirstPhoneNumber();
+    assertTrue(typeField(0).isVisible());
+    assertTrue(numberField(0).isVisible());
+    assertTrue(extensionField(0).isVisible());
+    assertTrue(removePhoneNumberButton(0).isVisible());
+    assertTrue(view.addPhoneNumberButton.isVisible());
+    assertTrue(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
+    assertTrue(view.saveButton.isVisible());
+  }
+
+  @Test
+  public void defaultLaboratory_NewUser() {
+    assertTrue(
+        view.organizationField.getValue() == null || view.organizationField.getValue().isEmpty());
+    assertTrue(view.laboratoryNameField.getValue() == null
+        || view.laboratoryNameField.getValue().isEmpty());
+  }
+
+  @Test
+  public void defaultLaboratory_NewAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setItemDataSource(null);
+
+    assertEquals(currentUser.getLaboratory().getOrganization(), view.organizationField.getValue());
+    assertEquals(currentUser.getLaboratory().getName(), view.laboratoryNameField.getValue());
+  }
+
+  @Test
+  public void defaultLaboratory_ExistingUser() {
+    presenter.setItemDataSource(new BeanItem<>(user));
+
+    assertEquals(user.getLaboratory().getOrganization(), view.organizationField.getValue());
+    assertEquals(user.getLaboratory().getName(), view.laboratoryNameField.getValue());
+  }
+
+  @Test
+  public void defaultLaboratory_ExistingAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setItemDataSource(new BeanItem<>(user));
+
+    assertEquals(user.getLaboratory().getOrganization(), view.organizationField.getValue());
+    assertEquals(user.getLaboratory().getName(), view.laboratoryNameField.getValue());
   }
 
   @Test
@@ -1291,7 +1573,91 @@ public class UserFormPresenterTest {
   }
 
   @Test
+  public void save_InsertAdmin() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setItemDataSource(null);
+    presenter.setEditable(true);
+    setFields();
+    String validationUrl = "validationUrl";
+    when(ui.getUrl(any())).thenReturn(validationUrl);
+
+    view.saveButton.click();
+
+    verify(view, never()).showError(any());
+    verify(userService).exists(email);
+    verify(userService).register(userCaptor.capture(), eq(password), any(), any());
+    User user = userCaptor.getAllValues().get(0);
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertEquals(locale, user.getLocale());
+    assertEquals(false, user.isActive());
+    assertEquals(false, user.isValid());
+    assertEquals(true, user.isAdmin());
+    Address address = user.getAddress();
+    assertEquals(addressLine, address.getLine());
+    assertEquals(town, address.getTown());
+    assertEquals(state, address.getState());
+    assertEquals(country, address.getCountry());
+    assertEquals(postalCode, address.getPostalCode());
+    assertEquals(2, user.getPhoneNumbers().size());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(type1, phoneNumber.getType());
+    assertEquals(number1, phoneNumber.getNumber());
+    assertEquals(extension1, phoneNumber.getExtension());
+    phoneNumber = user.getPhoneNumbers().get(1);
+    assertEquals(type2, phoneNumber.getType());
+    assertEquals(number2, phoneNumber.getNumber());
+    assertEquals(extension2, phoneNumber.getExtension());
+    verify(view).showTrayNotification(stringCaptor.capture());
+    assertEquals(resources.message("save.done", email), stringCaptor.getValue());
+    verify(view).fireSaveEvent(user);
+  }
+
+  @Test
   public void save_Update() {
+    presenter.setItemDataSource(new BeanItem<>(user));
+    presenter.setEditable(true);
+    setFields();
+    final int expectedPhoneNumberSize = this.user.getPhoneNumbers().size() + 2;
+
+    view.saveButton.click();
+
+    verify(view, never()).showError(any());
+    verify(userService).exists(email);
+    verify(userService).update(userCaptor.capture(), eq(password));
+    User user = userCaptor.getValue();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    Address address = user.getAddress();
+    assertEquals(addressLine, address.getLine());
+    assertEquals(town, address.getTown());
+    assertEquals(state, address.getState());
+    assertEquals(country, address.getCountry());
+    assertEquals(postalCode, address.getPostalCode());
+    assertEquals(expectedPhoneNumberSize, user.getPhoneNumbers().size());
+    for (int i = 0; i < expectedPhoneNumberSize - 2; i++) {
+      PhoneNumber expected = this.user.getPhoneNumbers().get(i);
+      PhoneNumber phoneNumber = user.getPhoneNumbers().get(i);
+      assertEquals(expected.getType(), phoneNumber.getType());
+      assertEquals(expected.getNumber(), phoneNumber.getNumber());
+      assertEquals(expected.getExtension(), phoneNumber.getExtension());
+    }
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(expectedPhoneNumberSize - 2);
+    assertEquals(type1, phoneNumber.getType());
+    assertEquals(number1, phoneNumber.getNumber());
+    assertEquals(extension1, phoneNumber.getExtension());
+    phoneNumber = user.getPhoneNumbers().get(expectedPhoneNumberSize - 1);
+    assertEquals(type2, phoneNumber.getType());
+    assertEquals(number2, phoneNumber.getNumber());
+    assertEquals(extension2, phoneNumber.getExtension());
+    verify(view).showTrayNotification(stringCaptor.capture());
+    assertEquals(resources.message("save.done", email), stringCaptor.getValue());
+    verify(view).fireSaveEvent(user);
+  }
+
+  @Test
+  public void save_UpdateAdmin() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setItemDataSource(new BeanItem<>(user));
     presenter.setEditable(true);
     setFields();
