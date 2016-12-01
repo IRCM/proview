@@ -65,19 +65,15 @@ public class SubmissionViewPresenter {
   public void init(SubmissionView view) {
     logger.debug("Submission view");
     this.view = view;
-    setStyles();
-    setCaptions();
+    prepareComponents();
     view.submissionFormPresenter.setEditable(true);
   }
 
-  private void setStyles() {
-    view.headerLabel.addStyleName(HEADER_STYLE);
-    view.headerLabel.addStyleName("h1");
-  }
-
-  private void setCaptions() {
+  private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
+    view.headerLabel.addStyleName(HEADER_STYLE);
+    view.headerLabel.addStyleName("h1");
     view.headerLabel.setValue(resources.message(HEADER_STYLE));
   }
 
