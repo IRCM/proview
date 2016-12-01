@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.UI;
 import org.junit.Before;
@@ -38,12 +39,15 @@ public class MainUiComponentTest {
   private MainUiComponent mainUiComponent;
   @Mock
   private MainUi ui;
+  @Mock
+  private ConnectorTracker connectorTracker;
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() {
+    when(ui.getConnectorTracker()).thenReturn(connectorTracker);
     mainUiComponent = new TestMainUiComponent();
   }
 

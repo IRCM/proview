@@ -19,8 +19,10 @@
 package ca.qc.ircm.proview.utils.web;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
@@ -37,6 +39,8 @@ public class UiComponentTest {
   @Mock
   private UI ui;
   @Mock
+  private ConnectorTracker connectorTracker;
+  @Mock
   private Window window;
 
   /**
@@ -44,6 +48,7 @@ public class UiComponentTest {
    */
   @Before
   public void beforeTest() {
+    when(ui.getConnectorTracker()).thenReturn(connectorTracker);
     uiComponent = new TestUiComponent();
   }
 
