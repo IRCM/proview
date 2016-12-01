@@ -226,6 +226,8 @@ public class ValidateViewPresenterTest {
         .click(new RendererClickEvent(view.usersGrid, user, column, new MouseEventDetails()) {});
 
     verify(userWindowProvider).get();
+    verify(userWindow).setUser(user);
+    verify(userWindow).center();
     verify(view).addWindow(userWindow);
   }
 
