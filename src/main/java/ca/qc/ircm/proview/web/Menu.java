@@ -57,6 +57,7 @@ public class Menu extends CustomComponent implements BaseComponent {
   public static final String SIGN_AS = "signas";
   public static final String REGISTER = "register";
   public static final String STOP_SIGN_AS = "stopSignas";
+  public static final String CONTACT = "contact";
   public static final String HELP = "help";
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
@@ -70,8 +71,9 @@ public class Menu extends CustomComponent implements BaseComponent {
   private MenuItem validateUsers;
   private MenuItem access;
   private MenuItem signas;
-  private MenuItem stopSignas;
   private MenuItem register;
+  private MenuItem stopSignas;
+  private MenuItem contact;
   private MenuItem help;
   @Inject
   private AuthorizationService authorizationService;
@@ -103,6 +105,7 @@ public class Menu extends CustomComponent implements BaseComponent {
     register.setVisible(false);
     stopSignas = manager.addItem("Stop sign as", item -> stopSignas());
     stopSignas.setVisible(false);
+    contact = menu.addItem("Help", item -> changeView(ContactView.VIEW_NAME));
     help = menu.addItem("Help", item -> changeView(MainView.VIEW_NAME));
   }
 
@@ -149,6 +152,8 @@ public class Menu extends CustomComponent implements BaseComponent {
     register.setText(resources.message(REGISTER));
     stopSignas.setStyleName(STOP_SIGN_AS);
     stopSignas.setText(resources.message(STOP_SIGN_AS));
+    contact.setStyleName(CONTACT);
+    contact.setText(resources.message(CONTACT));
     help.setStyleName(HELP);
     help.setText(resources.message(HELP));
   }

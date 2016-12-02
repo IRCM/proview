@@ -31,6 +31,7 @@ import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
+import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import org.junit.Ignore;
@@ -65,6 +66,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -84,6 +86,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -104,6 +107,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -124,6 +128,7 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> signasMenuItem()).isPresent());
     assertTrue(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -144,6 +149,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertTrue(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -259,6 +265,15 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> accessMenuItem()).isPresent());
     assertTrue(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+  }
+
+  @Test
+  public void contact() throws Throwable {
+    open();
+
+    clickContact();
+
+    assertEquals(viewUrl(ContactView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
