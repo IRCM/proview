@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.submission.QSubmission.submission;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilterBuilder;
 import ca.qc.ircm.proview.submission.SubmissionService;
@@ -67,6 +68,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -78,25 +80,26 @@ import javax.inject.Provider;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionsViewPresenter {
   public static final String TITLE = "title";
-  public static final String HEADER_ID = "header";
-  public static final String SUBMISSIONS_PROPERTY = "submissions";
-  public static final String SAMPLE_COUNT_PROPERTY = "sampleCount";
-  public static final String SELECT_PROPERTY = "select";
-  public static final String SUBMISSION_PROPERTY = submission.getMetadata().getName();
-  public static final String EXPERIENCE_PROPERTY =
-      SUBMISSION_PROPERTY + "." + submission.experience.getMetadata().getName();
-  public static final String EXPERIENCE_GOAL_PROPERTY =
-      SUBMISSION_PROPERTY + "." + submission.goal.getMetadata().getName();
-  public static final String SAMPLE_NAME_PROPERTY = submissionSample.name.getMetadata().getName();
-  public static final String SAMPLE_STATUS_PROPERTY =
+  public static final String HEADER = "header";
+  public static final String SUBMISSIONS = "submissions";
+  public static final String SAMPLE_COUNT = "sampleCount";
+  public static final String SELECT = "select";
+  public static final String SUBMISSION = submission.getMetadata().getName();
+  public static final String EXPERIENCE =
+      SUBMISSION + "." + submission.experience.getMetadata().getName();
+  public static final String EXPERIENCE_GOAL =
+      SUBMISSION + "." + submission.goal.getMetadata().getName();
+  public static final String SAMPLE_NAME = submissionSample.name.getMetadata().getName();
+  public static final String SAMPLE_STATUS =
       submissionSample.status.getMetadata().getName();
-  public static final String DATE_PROPERTY =
-      SUBMISSION_PROPERTY + "." + submission.submissionDate.getMetadata().getName();
-  public static final String LINKED_TO_RESULTS_PROPERTY = "results";
+  public static final String DATE =
+      SUBMISSION + "." + submission.submissionDate.getMetadata().getName();
+  public static final String LINKED_TO_RESULTS = "results";
   public static final String ALL = "all";
-  public static final Object[] columns = new Object[] { SELECT_PROPERTY, EXPERIENCE_PROPERTY,
-      SAMPLE_COUNT_PROPERTY, SAMPLE_NAME_PROPERTY, EXPERIENCE_GOAL_PROPERTY, SAMPLE_STATUS_PROPERTY,
-      DATE_PROPERTY, LINKED_TO_RESULTS_PROPERTY };
+  public static final String UPDATE_STATUS = "updateStatus";
+  public static final Object[] columns = new Object[] { SELECT, EXPERIENCE,
+      SAMPLE_COUNT, SAMPLE_NAME, EXPERIENCE_GOAL, SAMPLE_STATUS,
+      DATE, LINKED_TO_RESULTS };
   public static final String HIDE_SELECTION = "hide-selection";
   public static final String COMPONENTS = "components";
   public static final String CONDITION_FALSE = "condition-false";
@@ -144,24 +147,27 @@ public class SubmissionsViewPresenter {
     logger.debug("View submissions");
     this.view = view;
     prepareComponents();
+    addListeners();
     setDefaults();
   }
 
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.setId(HEADER_ID);
-    view.headerLabel.setValue(resources.message(HEADER_ID));
+    view.headerLabel.addStyleName(HEADER);
+    view.headerLabel.setValue(resources.message(HEADER));
     prepareSumissionsGrid();
+    view.updateStatusButton.addStyleName(UPDATE_STATUS);
+    view.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
   }
 
   @SuppressWarnings("serial")
   private void prepareSumissionsGrid() {
     MessageResource resources = view.getResources();
-    submissionsContainer.addNestedContainerProperty(EXPERIENCE_PROPERTY);
-    submissionsContainer.addNestedContainerProperty(EXPERIENCE_GOAL_PROPERTY);
-    submissionsContainer.addNestedContainerProperty(DATE_PROPERTY);
-    submissionsGeneratedContainer.addGeneratedProperty(SELECT_PROPERTY,
+    submissionsContainer.addNestedContainerProperty(EXPERIENCE);
+    submissionsContainer.addNestedContainerProperty(EXPERIENCE_GOAL);
+    submissionsContainer.addNestedContainerProperty(DATE);
+    submissionsGeneratedContainer.addGeneratedProperty(SELECT,
         new PropertyValueGenerator<CheckBox>() {
           @Override
           public CheckBox getValue(Item item, Object itemId, Object propertyId) {
@@ -185,7 +191,7 @@ public class SubmissionsViewPresenter {
             return CheckBox.class;
           }
         });
-    submissionsGeneratedContainer.addGeneratedProperty(EXPERIENCE_PROPERTY,
+    submissionsGeneratedContainer.addGeneratedProperty(EXPERIENCE,
         new PropertyValueGenerator<Button>() {
           @Override
           public Button getValue(Item item, Object itemId, Object propertyId) {
@@ -211,7 +217,7 @@ public class SubmissionsViewPresenter {
             return filter;
           }
         });
-    submissionsGeneratedContainer.addGeneratedProperty(SAMPLE_COUNT_PROPERTY,
+    submissionsGeneratedContainer.addGeneratedProperty(SAMPLE_COUNT,
         new PropertyValueGenerator<Integer>() {
           @Override
           public Integer getValue(Item item, Object itemId, Object propertyId) {
@@ -224,7 +230,7 @@ public class SubmissionsViewPresenter {
             return Integer.class;
           }
         });
-    submissionsGeneratedContainer.addGeneratedProperty(LINKED_TO_RESULTS_PROPERTY,
+    submissionsGeneratedContainer.addGeneratedProperty(LINKED_TO_RESULTS,
         new PropertyValueGenerator<Button>() {
           @Override
           public Button getValue(Item item, Object itemId, Object propertyId) {
@@ -232,7 +238,7 @@ public class SubmissionsViewPresenter {
             MessageResource resources = view.getResources();
             boolean value = report.getLinkedToResults().get(sample.getSubmission());
             Button button = new Button();
-            button.setCaption(resources.message(LINKED_TO_RESULTS_PROPERTY + "." + value));
+            button.setCaption(resources.message(LINKED_TO_RESULTS + "." + value));
             if (value) {
               button.addClickListener(e -> viewSubmissionResults(sample.getSubmission()));
             } else {
@@ -252,7 +258,7 @@ public class SubmissionsViewPresenter {
             return new GeneratedPropertyContainerFilter(filter, submissionsGeneratedContainer);
           }
         });
-    view.submissionsGrid.setId(SUBMISSIONS_PROPERTY);
+    view.submissionsGrid.addStyleName(SUBMISSIONS);
     ComponentCellKeyExtension.extend(view.submissionsGrid);
     view.submissionsGrid.setContainerDataSource(submissionsGeneratedContainer);
     view.submissionsGrid.setColumns(columns);
@@ -260,12 +266,12 @@ public class SubmissionsViewPresenter {
       column.setHeaderCaption(resources.message((String) column.getPropertyId()));
     }
     view.submissionsGrid.setFrozenColumnCount(2);
-    view.submissionsGrid.getColumn(SELECT_PROPERTY).setWidth(56);
-    view.submissionsGrid.getColumn(SELECT_PROPERTY).setRenderer(new ComponentRenderer());
-    view.submissionsGrid.getColumn(EXPERIENCE_PROPERTY).setRenderer(new ComponentRenderer());
-    view.submissionsGrid.getColumn(DATE_PROPERTY)
+    view.submissionsGrid.getColumn(SELECT).setWidth(56);
+    view.submissionsGrid.getColumn(SELECT).setRenderer(new ComponentRenderer());
+    view.submissionsGrid.getColumn(EXPERIENCE).setRenderer(new ComponentRenderer());
+    view.submissionsGrid.getColumn(DATE)
         .setConverter(new StringToInstantConverter(DateTimeFormatter.ISO_LOCAL_DATE));
-    view.submissionsGrid.getColumn(LINKED_TO_RESULTS_PROPERTY).setRenderer(new ComponentRenderer());
+    view.submissionsGrid.getColumn(LINKED_TO_RESULTS).setRenderer(new ComponentRenderer());
     view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
     view.submissionsGrid.addStyleName(HIDE_SELECTION);
     view.submissionsGrid.addStyleName(COMPONENTS);
@@ -280,15 +286,15 @@ public class SubmissionsViewPresenter {
     for (Column column : view.submissionsGrid.getColumns()) {
       Object propertyId = column.getPropertyId();
       HeaderCell cell = filterRow.getCell(propertyId);
-      if (propertyId.equals(EXPERIENCE_PROPERTY)) {
+      if (propertyId.equals(EXPERIENCE)) {
         cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(SAMPLE_COUNT_PROPERTY)) {
+      } else if (propertyId.equals(SAMPLE_COUNT)) {
         // Don't filter sample count.
-      } else if (propertyId.equals(SAMPLE_NAME_PROPERTY)) {
+      } else if (propertyId.equals(SAMPLE_NAME)) {
         cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(EXPERIENCE_GOAL_PROPERTY)) {
+      } else if (propertyId.equals(EXPERIENCE_GOAL)) {
         cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(SAMPLE_STATUS_PROPERTY)) {
+      } else if (propertyId.equals(SAMPLE_STATUS)) {
         ComboBox filter = createFilterComboBox(propertyId, resources, SampleStatus.values());
         filter.addValueChangeListener(
             new FilterEqualsChangeListener(submissionsGeneratedContainer, propertyId, nullId));
@@ -296,15 +302,15 @@ public class SubmissionsViewPresenter {
           filter.setItemCaption(value, value.getLabel(view.getLocale()));
         }
         cell.setComponent(filter);
-      } else if (propertyId.equals(DATE_PROPERTY)) {
+      } else if (propertyId.equals(DATE)) {
         cell.setComponent(createFilterInstantComponent(propertyId));
-      } else if (propertyId.equals(LINKED_TO_RESULTS_PROPERTY)) {
+      } else if (propertyId.equals(LINKED_TO_RESULTS)) {
         Boolean[] values = new Boolean[] { true, false };
         ComboBox filter = createFilterComboBox(propertyId, resources, values);
         filter
             .addValueChangeListener(new ResultsFilterChangeListener(submissionsGeneratedContainer));
         for (Boolean value : values) {
-          filter.setItemCaption(value, resources.message(LINKED_TO_RESULTS_PROPERTY + "." + value));
+          filter.setItemCaption(value, resources.message(LINKED_TO_RESULTS + "." + value));
         }
         cell.setComponent(filter);
       }
@@ -348,6 +354,10 @@ public class SubmissionsViewPresenter {
     return filter;
   }
 
+  private void addListeners() {
+    view.updateStatusButton.addClickListener(e -> updateStatus());
+  }
+
   private void setDefaults() {
     searchSubmissions();
   }
@@ -358,7 +368,7 @@ public class SubmissionsViewPresenter {
     submissionsContainer.removeAllItems();
     report.getSubmissions().stream().map(s -> s.getSamples().get(0))
         .forEach(s -> submissionsContainer.addItem(s));
-    view.submissionsGrid.sort(DATE_PROPERTY, SortDirection.DESCENDING);
+    view.submissionsGrid.sort(DATE, SortDirection.DESCENDING);
   }
 
   private void viewSubmission(Submission submission) {
@@ -375,17 +385,23 @@ public class SubmissionsViewPresenter {
     view.addWindow(window);
   }
 
+  private void updateStatus() {
+    view.saveSubmissions(view.submissionsGrid.getSelectedRows().stream()
+        .map(sample -> ((SubmissionSample) sample).getSubmission()).collect(Collectors.toList()));
+    view.navigateTo(SampleStatusView.VIEW_NAME);
+  }
+
   private class ResultsFilterChangeListener extends CutomNullPropertyFilterValueChangeListener {
     private static final long serialVersionUID = 2301952986512937369L;
 
     private ResultsFilterChangeListener(Container.Filterable container) {
-      super(container, LINKED_TO_RESULTS_PROPERTY, nullId);
+      super(container, LINKED_TO_RESULTS, nullId);
     }
 
     @Override
     public void addNonNullFilter(Object propertyValue) {
       container.addContainerFilter(
-          new FunctionFilter(LINKED_TO_RESULTS_PROPERTY, propertyValue, (itemId, item) -> {
+          new FunctionFilter(LINKED_TO_RESULTS, propertyValue, (itemId, item) -> {
             SubmissionSample sample = (SubmissionSample) itemId;
             return report.getLinkedToResults().get(sample.getSubmission());
           }));

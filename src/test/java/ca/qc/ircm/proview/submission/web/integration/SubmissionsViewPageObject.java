@@ -17,8 +17,9 @@
 
 package ca.qc.ircm.proview.submission.web.integration;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER_ID;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
@@ -33,11 +34,11 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   }
 
   protected LabelElement header() {
-    return $(LabelElement.class).id(HEADER_ID);
+    return wrap(LabelElement.class, findElement(className(HEADER)));
   }
 
   protected GridElement submissionsGrid() {
-    return $(GridElement.class).id(SUBMISSIONS_PROPERTY);
+    return wrap(GridElement.class, findElement(className(SUBMISSIONS)));
   }
 
   protected String experienceByRow(int row) {
@@ -45,6 +46,13 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     ButtonElement button = wrap(ButtonElement.class,
         submissionsGrid.getCell(row, 2).findElement(className("v-button")));
     return button.getCaption();
+  }
+
+  protected void selectSubmission(int row) {
+    GridElement grid = submissionsGrid();
+    gridRows(grid).filter(r -> r == row).forEach(r -> {
+      grid.getCell(r, 1).click();
+    });
   }
 
   protected void clickViewSubmissionByRow(int row) {
@@ -55,5 +63,13 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   protected void clickViewSubmissionResultsByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
     submissionsGrid.getCell(row, 8).click();
+  }
+
+  protected ButtonElement updateStatusButton() {
+    return wrap(ButtonElement.class, findElement(className(UPDATE_STATUS)));
+  }
+
+  protected void clickUpdateStatusButton() {
+    updateStatusButton().click();
   }
 }

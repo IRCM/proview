@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 /**
  * Additional functions for TestBenchTestCase.
@@ -79,8 +80,10 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     MenuBarElement menuBar = $(MenuBarElement.class).first();
     WebElement home = menuBar.findElement(className("v-menubar-menuitem-" + HOME));
     Set<Locale> locales = WebConstants.getLocales();
-    return locales.stream().filter(locale -> new MessageResource(Menu.class, locale)
-        .message(HOME).equals(home.getText())).findAny().orElse(Locale.ENGLISH);
+    return locales.stream()
+        .filter(
+            locale -> new MessageResource(Menu.class, locale).message(HOME).equals(home.getText()))
+        .findAny().orElse(Locale.ENGLISH);
   }
 
   protected MessageResource resources(Class<?> baseClass) {
@@ -126,6 +129,19 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   protected void uploadFile(WebElement uploader, Path file) {
     WebElement input = uploader.findElement(className("gwt-FileUpload"));
     input.sendKeys(file.toAbsolutePath().toString());
+  }
+
+  protected IntStream gridRows(GridElement grid) {
+    int row = 0;
+    try {
+      while (true) {
+        grid.getRow(row);
+        row++;
+      }
+    } catch (NoSuchElementException e) {
+      // No more rows.
+    }
+    return row > 0 ? IntStream.range(0, 0) : IntStream.empty();
   }
 
   protected void processGridRows(GridElement grid, Consumer<Integer> consumer) {
