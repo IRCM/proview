@@ -20,10 +20,12 @@ package ca.qc.ircm.proview.submission.web.integration;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
+import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.web.SubmissionAnalysesWindow;
 import ca.qc.ircm.proview.submission.web.SubmissionWindow;
@@ -33,6 +35,7 @@ import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.WindowElement;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +49,17 @@ import java.util.Locale;
 public class SubmissionsViewTest extends SubmissionsViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
+  private boolean admin;
+
+  @Override
+  protected boolean isAdmin() {
+    return admin;
+  }
+
+  @Before
+  public void beforeTest() {
+    admin = false;
+  }
 
   @Test
   @WithSubject(anonymous = true)
@@ -76,7 +90,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   }
 
   @Test
-  public void viewSubmission() {
+  public void viewSubmission() throws Throwable {
     open();
 
     clickViewSubmissionByRow(0);
@@ -104,5 +118,17 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
         .message(SubmissionAnalysesWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
     assertNotNull(submissionWindow.findElement(className(ANALYSIS)));
+  }
+
+  @Test
+  @WithSubject
+  public void updateStatus() throws Throwable {
+    admin = true;
+    open();
+    selectSubmissions(1, 3);
+
+    clickUpdateStatusButton();
+
+    assertEquals(viewUrl(SampleStatusView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

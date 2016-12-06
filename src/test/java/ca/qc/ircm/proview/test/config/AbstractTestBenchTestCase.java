@@ -141,7 +141,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     } catch (NoSuchElementException e) {
       // No more rows.
     }
-    return row > 0 ? IntStream.range(0, 0) : IntStream.empty();
+    return IntStream.range(0, row);
   }
 
   protected void processGridRows(GridElement grid, Consumer<Integer> consumer) {

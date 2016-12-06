@@ -24,12 +24,10 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE_GOAL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HIDE_SELECTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
@@ -68,11 +66,8 @@ import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.ClientConnector.AttachEvent;
-import com.vaadin.server.ClientConnector.AttachListener;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
@@ -171,37 +166,31 @@ public class SubmissionsViewPresenterTest {
     when(filterInstantComponentPresenterProvider.get()).thenReturn(filterInstantComponentPresenter);
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
-    presenter.init(view);
   }
 
   @Test
   public void submissionsGridColumns() {
+    presenter.init(view);
+
     List<Column> columns = view.submissionsGrid.getColumns();
 
-    assertEquals(SELECT, columns.get(0).getPropertyId());
+    assertEquals(EXPERIENCE, columns.get(0).getPropertyId());
     assertTrue(columns.get(0).getRenderer() instanceof ComponentRenderer);
-    assertEquals(EXPERIENCE, columns.get(1).getPropertyId());
-    assertTrue(columns.get(1).getRenderer() instanceof ComponentRenderer);
-    assertEquals(SAMPLE_COUNT, columns.get(2).getPropertyId());
-    assertEquals(SAMPLE_NAME, columns.get(3).getPropertyId());
-    assertEquals(EXPERIENCE_GOAL, columns.get(4).getPropertyId());
-    assertEquals(SAMPLE_STATUS, columns.get(5).getPropertyId());
-    assertEquals(DATE, columns.get(6).getPropertyId());
-    assertTrue(columns.get(6).getConverter() instanceof StringToInstantConverter);
-    assertEquals(LINKED_TO_RESULTS, columns.get(7).getPropertyId());
-    assertTrue(columns.get(7).getRenderer() instanceof ComponentRenderer);
-    assertEquals(2, view.submissionsGrid.getFrozenColumnCount());
-  }
-
-  @Test
-  public void submissionsGridSelection() {
-    SelectionModel selectionModel = view.submissionsGrid.getSelectionModel();
-
-    assertTrue(selectionModel instanceof SelectionModel.Multi);
+    assertEquals(SAMPLE_COUNT, columns.get(1).getPropertyId());
+    assertEquals(SAMPLE_NAME, columns.get(2).getPropertyId());
+    assertEquals(EXPERIENCE_GOAL, columns.get(3).getPropertyId());
+    assertEquals(SAMPLE_STATUS, columns.get(4).getPropertyId());
+    assertEquals(DATE, columns.get(5).getPropertyId());
+    assertTrue(columns.get(5).getConverter() instanceof StringToInstantConverter);
+    assertEquals(LINKED_TO_RESULTS, columns.get(6).getPropertyId());
+    assertTrue(columns.get(6).getRenderer() instanceof ComponentRenderer);
+    assertEquals(1, view.submissionsGrid.getFrozenColumnCount());
   }
 
   @Test
   public void submissionsGridOrder() {
+    presenter.init(view);
+
     List<SortOrder> sortOrders = view.submissionsGrid.getSortOrder();
 
     assertFalse(sortOrders.isEmpty());
@@ -212,6 +201,7 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void experienceFilter() {
+    presenter.init(view);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EXPERIENCE);
     TextField textField = (TextField) cell.getComponent();
@@ -236,6 +226,7 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void sampleNameFilter() {
+    presenter.init(view);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(SAMPLE_NAME);
     TextField textField = (TextField) cell.getComponent();
@@ -260,6 +251,7 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void experienceGoalFilter() {
+    presenter.init(view);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EXPERIENCE_GOAL);
     TextField textField = (TextField) cell.getComponent();
@@ -284,6 +276,7 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void sampleStatusFilter() {
+    presenter.init(view);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(SAMPLE_STATUS);
     ComboBox comboBox = (ComboBox) cell.getComponent();
@@ -304,6 +297,7 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void dateFilter() {
+    presenter.init(view);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(DATE);
     FilterInstantComponent filterInstantComponent = (FilterInstantComponent) cell.getComponent();
@@ -324,6 +318,7 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void resultsFilter() {
+    presenter.init(view);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(LINKED_TO_RESULTS);
     ComboBox comboBox = (ComboBox) cell.getComponent();
@@ -357,15 +352,18 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void styles() {
+    presenter.init(view);
+
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
     assertTrue(view.submissionsGrid.getStyleName().contains(SUBMISSIONS));
-    assertTrue(view.submissionsGrid.getStyleName().contains(HIDE_SELECTION));
     assertTrue(view.submissionsGrid.getStyleName().contains(COMPONENTS));
     assertTrue(view.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
   }
 
   @Test
   public void captions() {
+    presenter.init(view);
+
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER_LABEL_ID), view.headerLabel.getValue());
     for (Column column : view.submissionsGrid.getColumns()) {
@@ -376,6 +374,9 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void visible() {
+    presenter.init(view);
+
+    assertTrue(view.submissionsGrid.getSelectionModel() instanceof SelectionModel.Single);
     assertFalse(view.updateStatusButton.isVisible());
   }
 
@@ -384,11 +385,13 @@ public class SubmissionsViewPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
 
+    assertTrue(view.submissionsGrid.getSelectionModel() instanceof SelectionModel.Multi);
     assertTrue(view.updateStatusButton.isVisible());
   }
 
   @Test
   public void defaultSubmissions() {
+    presenter.init(view);
     Container.Indexed container = view.submissionsGrid.getContainerDataSource();
 
     Collection<?> itemIds = container.getItemIds();
@@ -399,17 +402,16 @@ public class SubmissionsViewPresenterTest {
       SubmissionSample sample = (SubmissionSample) itemId;
       assertTrue(submissions.add(sample.getSubmission()));
     }
-    this.submissions.containsAll(submissions);
-    submissions.containsAll(this.submissions);
+    assertTrue(this.submissions.containsAll(submissions));
+    assertTrue(submissions.containsAll(this.submissions));
   }
 
   @Test
   public void containerProperties_Analysed() {
+    presenter.init(view);
     final SubmissionSample sample = submissions.get(0).getSamples().get(0);
     Container.Indexed container = view.submissionsGrid.getContainerDataSource();
 
-    CheckBox checkBox = (CheckBox) container.getItem(sample).getItemProperty(SELECT).getValue();
-    assertEquals(true, checkBox.isVisible());
     Button button = (Button) container.getItem(sample).getItemProperty(EXPERIENCE).getValue();
     assertEquals(sample.getSubmission().getExperience(), button.getCaption());
     assertEquals(sample.getSubmission().getSamples().size(),
@@ -430,11 +432,10 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void containerProperties_NotAnalysed() {
+    presenter.init(view);
     final SubmissionSample sample = submissions.get(3).getSamples().get(0);
     Container.Indexed container = view.submissionsGrid.getContainerDataSource();
 
-    CheckBox checkBox = (CheckBox) container.getItem(sample).getItemProperty(SELECT).getValue();
-    assertEquals(false, checkBox.isVisible());
     Button button = (Button) container.getItem(sample).getItemProperty(EXPERIENCE).getValue();
     assertEquals(sample.getSubmission().getExperience(), button.getCaption());
     assertEquals(sample.getSubmission().getSamples().size(),
@@ -454,71 +455,8 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
-  public void selectSubmission_CheckBox() {
-    final SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
-    CheckBox checkBox = (CheckBox) container.getItem(sample).getItemProperty(SELECT).getValue();
-    checkBox.getListeners(AttachEvent.class)
-        .forEach(l -> ((AttachListener) l).attach(mock(AttachEvent.class)));
-
-    checkBox.setValue(true);
-
-    assertEquals(1, view.submissionsGrid.getSelectedRows().size());
-    assertTrue(view.submissionsGrid.getSelectedRows().contains(sample));
-    assertTrue(checkBox.getValue());
-  }
-
-  @Test
-  public void selectSubmission_Grid() {
-    final SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
-    final CheckBox checkBox =
-        (CheckBox) container.getItem(sample).getItemProperty(SELECT).getValue();
-    checkBox.getListeners(AttachEvent.class)
-        .forEach(l -> ((AttachListener) l).attach(mock(AttachEvent.class)));
-
-    view.submissionsGrid.select(sample);
-
-    assertEquals(1, view.submissionsGrid.getSelectedRows().size());
-    assertTrue(view.submissionsGrid.getSelectedRows().contains(sample));
-    assertTrue(checkBox.getValue());
-  }
-
-  @Test
-  public void deselectSubmission_CheckBox() {
-    final SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
-    CheckBox checkBox = (CheckBox) container.getItem(sample).getItemProperty(SELECT).getValue();
-    checkBox.getListeners(AttachEvent.class)
-        .forEach(l -> ((AttachListener) l).attach(mock(AttachEvent.class)));
-    view.submissionsGrid.select(sample);
-    assertTrue(checkBox.getValue());
-
-    checkBox.setValue(false);
-
-    assertEquals(0, view.submissionsGrid.getSelectedRows().size());
-    assertFalse(view.submissionsGrid.getSelectedRows().contains(sample));
-    assertFalse(checkBox.getValue());
-  }
-
-  @Test
-  public void deselectSubmission_Grid() {
-    final SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
-    CheckBox checkBox = (CheckBox) container.getItem(sample).getItemProperty(SELECT).getValue();
-    checkBox.getListeners(AttachEvent.class)
-        .forEach(l -> ((AttachListener) l).attach(mock(AttachEvent.class)));
-    checkBox.setValue(true);
-
-    view.submissionsGrid.deselect(sample);
-
-    assertEquals(0, view.submissionsGrid.getSelectedRows().size());
-    assertFalse(view.submissionsGrid.getSelectedRows().contains(sample));
-    assertFalse(checkBox.getValue());
-  }
-
-  @Test
   public void viewSubmission() {
+    presenter.init(view);
     final SubmissionSample sample = submissions.get(0).getSamples().get(0);
     Container.Indexed container = view.submissionsGrid.getContainerDataSource();
     Button button = (Button) container.getItem(sample).getItemProperty(EXPERIENCE).getValue();
@@ -533,6 +471,7 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void viewSubmissionResults() {
+    presenter.init(view);
     final SubmissionSample sample = submissions.get(0).getSamples().get(0);
     Container.Indexed container = view.submissionsGrid.getContainerDataSource();
     Button button =
@@ -548,6 +487,8 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void updateStatus() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
     final SubmissionSample sample1 = submissions.get(0).getSamples().get(0);
     final SubmissionSample sample2 = submissions.get(1).getSamples().get(0);
     view.submissionsGrid.select(sample1);

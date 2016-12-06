@@ -8,6 +8,7 @@ import com.vaadin.spring.annotation.SpringView;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
 
 /**
  * Updates sample statuses.
@@ -19,6 +20,7 @@ public class SampleStatusView extends SampleStatusViewDesign
   private static final long serialVersionUID = -2790503384190960260L;
   public static final String VIEW_NAME = "samples/status";
   protected Menu menu = new Menu();
+  @Inject
   private SampleStatusViewPresenter presenter;
 
   @PostConstruct

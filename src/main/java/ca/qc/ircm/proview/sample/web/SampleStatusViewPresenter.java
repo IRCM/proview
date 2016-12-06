@@ -15,6 +15,7 @@ import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.SelectionMode;
+import de.datenhahn.vaadin.componentrenderer.ComponentCellKeyExtension;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,13 @@ public class SampleStatusViewPresenter {
   @Value("${spring.application.name}")
   private String applicationName;
 
+  protected SampleStatusViewPresenter() {
+  }
+
+  protected SampleStatusViewPresenter(String applicationName) {
+    this.applicationName = applicationName;
+  }
+
   /**
    * Initializes presenter.
    *
@@ -92,6 +100,7 @@ public class SampleStatusViewPresenter {
     });
     view.samplesGrid.addStyleName(SAMPLES);
     view.samplesGrid.addStyleName(COMPONENTS);
+    ComponentCellKeyExtension.extend(view.samplesGrid);
     view.samplesGrid.setContainerDataSource(samplesGridContainer);
     view.samplesGrid.setSelectionMode(SelectionMode.MULTI);
     view.samplesGrid.setColumns(samplesColumns);

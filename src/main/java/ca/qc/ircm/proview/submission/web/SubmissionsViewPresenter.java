@@ -47,7 +47,6 @@ import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.filter.UnsupportedFilterException;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.HeaderCell;
@@ -65,9 +64,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -83,7 +79,6 @@ public class SubmissionsViewPresenter {
   public static final String HEADER = "header";
   public static final String SUBMISSIONS = "submissions";
   public static final String SAMPLE_COUNT = "sampleCount";
-  public static final String SELECT = "select";
   public static final String SUBMISSION = submission.getMetadata().getName();
   public static final String EXPERIENCE =
       SUBMISSION + "." + submission.experience.getMetadata().getName();
@@ -96,9 +91,8 @@ public class SubmissionsViewPresenter {
   public static final String LINKED_TO_RESULTS = "results";
   public static final String ALL = "all";
   public static final String UPDATE_STATUS = "updateStatus";
-  public static final Object[] columns = new Object[] { SELECT, EXPERIENCE, SAMPLE_COUNT,
-      SAMPLE_NAME, EXPERIENCE_GOAL, SAMPLE_STATUS, DATE, LINKED_TO_RESULTS };
-  public static final String HIDE_SELECTION = "hide-selection";
+  public static final Object[] columns = new Object[] { EXPERIENCE, SAMPLE_COUNT, SAMPLE_NAME,
+      EXPERIENCE_GOAL, SAMPLE_STATUS, DATE, LINKED_TO_RESULTS };
   public static final String COMPONENTS = "components";
   public static final String CONDITION_FALSE = "condition-false";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
@@ -107,7 +101,6 @@ public class SubmissionsViewPresenter {
       new BeanItemContainer<>(SubmissionSample.class);
   private GeneratedPropertyContainer submissionsGeneratedContainer =
       new GeneratedPropertyContainer(submissionsContainer);
-  private Map<Object, CheckBox> selectionCheckboxes = new HashMap<>();
   private Object nullId = -1;
   private Report report;
   @Inject
@@ -170,30 +163,6 @@ public class SubmissionsViewPresenter {
     submissionsContainer.addNestedContainerProperty(EXPERIENCE);
     submissionsContainer.addNestedContainerProperty(EXPERIENCE_GOAL);
     submissionsContainer.addNestedContainerProperty(DATE);
-    submissionsGeneratedContainer.addGeneratedProperty(SELECT,
-        new PropertyValueGenerator<CheckBox>() {
-          @Override
-          public CheckBox getValue(Item item, Object itemId, Object propertyId) {
-            SubmissionSample sample = (SubmissionSample) itemId;
-            CheckBox checkbox = new CheckBox();
-            checkbox.addValueChangeListener(e -> {
-              if (checkbox.getValue()) {
-                view.submissionsGrid.select(itemId);
-              } else {
-                view.submissionsGrid.deselect(itemId);
-              }
-            });
-            checkbox.addAttachListener(e -> selectionCheckboxes.put(itemId, checkbox));
-            checkbox.setValue(view.submissionsGrid.getSelectedRows().contains(itemId));
-            checkbox.setVisible(report.getLinkedToResults().get(sample.getSubmission()));
-            return checkbox;
-          }
-
-          @Override
-          public Class<CheckBox> getType() {
-            return CheckBox.class;
-          }
-        });
     submissionsGeneratedContainer.addGeneratedProperty(EXPERIENCE,
         new PropertyValueGenerator<Button>() {
           @Override
@@ -268,23 +237,15 @@ public class SubmissionsViewPresenter {
     for (Column column : view.submissionsGrid.getColumns()) {
       column.setHeaderCaption(resources.message((String) column.getPropertyId()));
     }
-    view.submissionsGrid.setFrozenColumnCount(2);
-    view.submissionsGrid.getColumn(SELECT).setWidth(56);
-    view.submissionsGrid.getColumn(SELECT).setRenderer(new ComponentRenderer());
+    view.submissionsGrid.setFrozenColumnCount(1);
     view.submissionsGrid.getColumn(EXPERIENCE).setRenderer(new ComponentRenderer());
     view.submissionsGrid.getColumn(DATE)
         .setConverter(new StringToInstantConverter(DateTimeFormatter.ISO_LOCAL_DATE));
     view.submissionsGrid.getColumn(LINKED_TO_RESULTS).setRenderer(new ComponentRenderer());
-    view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
-    view.submissionsGrid.addStyleName(HIDE_SELECTION);
+    if (authorizationService.hasAdminRole()) {
+      view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
+    }
     view.submissionsGrid.addStyleName(COMPONENTS);
-    view.submissionsGrid.addSelectionListener(e -> {
-      Set<Object> itemIds = e.getSelected();
-      for (Map.Entry<Object, CheckBox> checkboxEntry : selectionCheckboxes.entrySet()) {
-        CheckBox checkbox = checkboxEntry.getValue();
-        checkbox.setValue(itemIds.contains(checkboxEntry.getKey()));
-      }
-    });
     HeaderRow filterRow = view.submissionsGrid.appendHeaderRow();
     for (Column column : view.submissionsGrid.getColumns()) {
       Object propertyId = column.getPropertyId();
