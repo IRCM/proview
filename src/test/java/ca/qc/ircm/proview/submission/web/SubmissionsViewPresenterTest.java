@@ -37,7 +37,6 @@ import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,6 +46,7 @@ import com.google.common.collect.Range;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
@@ -118,6 +118,8 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private SubmissionService submissionService;
   @Mock
+  private AuthorizationService authorizationService;
+  @Mock
   private Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider;
   @Mock
   private Provider<SubmissionWindow> submissionWindowProvider;
@@ -147,15 +149,15 @@ public class SubmissionsViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter =
-        new SubmissionsViewPresenter(submissionService, filterInstantComponentPresenterProvider,
-            submissionWindowProvider, submissionAnalysesWindowProvider, applicationName);
+    presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
+        filterInstantComponentPresenterProvider, submissionWindowProvider,
+        submissionAnalysesWindowProvider, applicationName);
     view.headerLabel = new Label();
     view.submissionsGrid = new Grid();
     view.updateStatusButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    when(submissionService.report(any())).thenReturn(report);
+    when(submissionService.report()).thenReturn(report);
     submissions = queryFactory.select(submission).from(submission).fetch();
     linkedToResults = new HashMap<>();
     for (Submission submission : submissions.subList(0, 2)) {
@@ -370,6 +372,19 @@ public class SubmissionsViewPresenterTest {
       assertEquals(resources.message((String) column.getPropertyId()), column.getHeaderCaption());
     }
     assertEquals(resources.message(UPDATE_STATUS), view.updateStatusButton.getCaption());
+  }
+
+  @Test
+  public void visible() {
+    assertFalse(view.updateStatusButton.isVisible());
+  }
+
+  @Test
+  public void visible_Admin() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+
+    assertTrue(view.updateStatusButton.isVisible());
   }
 
   @Test

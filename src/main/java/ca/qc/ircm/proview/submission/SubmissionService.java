@@ -34,9 +34,7 @@ import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
@@ -163,21 +161,11 @@ public class SubmissionService {
   /**
    * Selects submission from database.
    *
-   * @param filter
-   *          filters submissions
-   * @return submission
+   * @return submissions
    */
-  public Report report(SubmissionFilter filter) {
+  public Report report() {
     authorizationService.checkUserRole();
-    return report(filter, false);
-  }
-
-  private Report report(SubmissionFilter filter, boolean admin) {
-    if (filter == null) {
-      filter = new SubmissionFilterBuilder().build();
-    }
-
-    final List<Submission> submissions = fetchReportSubmissions(filter, admin);
+    final List<Submission> submissions = fetchReportSubmissions();
 
     List<Tuple> tuples;
     if (!submissions.isEmpty()) {
@@ -189,7 +177,7 @@ public class SubmissionService {
       query.where(submission.in(submissions));
       query.where(acquisition.sample.eq(submissionSample._super));
       query.where(acquisitionMascotFile.acquisition.eq(acquisition));
-      if (!admin) {
+      if (!authorizationService.hasAdminRole()) {
         query.where(acquisitionMascotFile.visible.eq(true));
       }
       query.groupBy(submission.id);
@@ -210,95 +198,23 @@ public class SubmissionService {
     return new ReportDefault(submissions, linkedToResults);
   }
 
-  private List<Submission> fetchReportSubmissions(SubmissionFilter filter, boolean admin) {
-    final User _user;
-    final Laboratory _laboratory;
-    boolean manager;
-    if (admin) {
-      _user = null;
-      _laboratory = null;
-      manager = false;
-    } else {
-      _user = authorizationService.getCurrentUser();
-      _laboratory = _user.getLaboratory();
-      manager = authorizationService.hasLaboratoryManagerPermission(_laboratory);
-    }
+  private List<Submission> fetchReportSubmissions() {
+    final User currentUser = authorizationService.getCurrentUser();
+    final Laboratory currentLaboratory = currentUser.getLaboratory();
 
     JPAQuery<Submission> query = queryFactory.select(submission);
     query.from(submission);
-    query.join(submission.samples, submissionSample).fetch();
+    query.join(submission.samples, submissionSample);
     query.join(submission.laboratory, laboratory);
     query.join(submission.user, user);
-    if (filter.getExperienceContains() != null) {
-      query.where(submission.experience.contains(filter.getExperienceContains()));
-    }
-    if (filter.getLaboratoryContains() != null) {
-      query.where(laboratory.organization.eq(filter.getLaboratoryContains()));
-    }
-    if (filter.getLaboratory() != null) {
-      query.where(laboratory.eq(filter.getLaboratory()));
-    }
-    if (filter.getLimsContains() != null) {
-      query.where(submissionSample.lims.contains(filter.getLimsContains()));
-    }
-    if (filter.getMinimalSubmissionDate() != null) {
-      query.where(submission.submissionDate.goe(filter.getMinimalSubmissionDate()));
-    }
-    if (filter.getMaximalSubmissionDate() != null) {
-      query.where(submission.submissionDate.loe(filter.getMaximalSubmissionDate()));
-    }
-    if (filter.getNameContains() != null) {
-      query.where(submissionSample.name.contains(filter.getNameContains()));
-    }
-    if (filter.getProjectContains() != null) {
-      query.where(submission.project.contains(filter.getProjectContains()));
-    }
-    if (filter.getStatuses() != null) {
-      query.where(submissionSample.status.in(filter.getStatuses()));
-    }
-    if (filter.getSupport() != null) {
-      if (filter.getSupport() == SubmissionSampleService.Support.SOLUTION) {
-        query.where(submissionSample.support.in(SampleSupport.SOLUTION, SampleSupport.DRY));
-        query.where(submission.service.notIn(Service.INTACT_PROTEIN, Service.SMALL_MOLECULE));
-      } else if (filter.getSupport() == SubmissionSampleService.Support.GEL) {
-        query.where(submissionSample.support.eq(SampleSupport.GEL));
-        query.where(submission.service.ne(Service.INTACT_PROTEIN));
-      } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_HIGH) {
-        query.where(submission.service.eq(Service.SMALL_MOLECULE));
-        query.where(submission.highResolution.eq(true));
-      } else if (filter.getSupport() == SubmissionSampleService.Support.MOLECULE_LOW) {
-        query.where(submission.service.eq(Service.SMALL_MOLECULE));
-        query.where(submission.highResolution.eq(false));
-      } else if (filter.getSupport() == SubmissionSampleService.Support.INTACT_PROTEIN) {
-        query.where(submission.service.eq(Service.INTACT_PROTEIN));
-      }
-    }
-    if (filter.getUserContains() != null) {
-      query.where(user.name.contains(filter.getUserContains()));
-    }
-    if (filter.getUser() != null) {
-      query.where(user.eq(filter.getUser()));
-    }
-    if (!admin) {
-      if (manager) {
-        query.where(laboratory.eq(_laboratory));
+    if (!authorizationService.hasAdminRole()) {
+      if (authorizationService.hasLaboratoryManagerPermission(currentLaboratory)) {
+        query.where(laboratory.eq(currentLaboratory));
       } else {
-        query.where(user.eq(_user));
+        query.where(user.eq(currentUser));
       }
     }
-    return query.fetch();
-  }
-
-  /**
-   * Selects submission from database for admin users.
-   *
-   * @param filter
-   *          filters submissions
-   * @return submission
-   */
-  public Report adminReport(SubmissionFilter filter) {
-    authorizationService.checkAdminRole();
-    return report(filter, true);
+    return query.distinct().fetch();
   }
 
   /**

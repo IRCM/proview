@@ -23,8 +23,8 @@ import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.SubmissionFilterBuilder;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.utils.web.CutomNullPropertyFilterValueChangeListener;
@@ -90,16 +90,14 @@ public class SubmissionsViewPresenter {
   public static final String EXPERIENCE_GOAL =
       SUBMISSION + "." + submission.goal.getMetadata().getName();
   public static final String SAMPLE_NAME = submissionSample.name.getMetadata().getName();
-  public static final String SAMPLE_STATUS =
-      submissionSample.status.getMetadata().getName();
+  public static final String SAMPLE_STATUS = submissionSample.status.getMetadata().getName();
   public static final String DATE =
       SUBMISSION + "." + submission.submissionDate.getMetadata().getName();
   public static final String LINKED_TO_RESULTS = "results";
   public static final String ALL = "all";
   public static final String UPDATE_STATUS = "updateStatus";
-  public static final Object[] columns = new Object[] { SELECT, EXPERIENCE,
-      SAMPLE_COUNT, SAMPLE_NAME, EXPERIENCE_GOAL, SAMPLE_STATUS,
-      DATE, LINKED_TO_RESULTS };
+  public static final Object[] columns = new Object[] { SELECT, EXPERIENCE, SAMPLE_COUNT,
+      SAMPLE_NAME, EXPERIENCE_GOAL, SAMPLE_STATUS, DATE, LINKED_TO_RESULTS };
   public static final String HIDE_SELECTION = "hide-selection";
   public static final String COMPONENTS = "components";
   public static final String CONDITION_FALSE = "condition-false";
@@ -111,9 +109,11 @@ public class SubmissionsViewPresenter {
       new GeneratedPropertyContainer(submissionsContainer);
   private Map<Object, CheckBox> selectionCheckboxes = new HashMap<>();
   private Object nullId = -1;
-  Report report;
+  private Report report;
   @Inject
   private SubmissionService submissionService;
+  @Inject
+  private AuthorizationService authorizationService;
   @Inject
   private Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider;
   @Inject
@@ -127,10 +127,12 @@ public class SubmissionsViewPresenter {
   }
 
   protected SubmissionsViewPresenter(SubmissionService submissionService,
+      AuthorizationService authorizationService,
       Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider,
       Provider<SubmissionWindow> submissionWindowProvider,
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider, String applicationName) {
     this.submissionService = submissionService;
+    this.authorizationService = authorizationService;
     this.filterInstantComponentPresenterProvider = filterInstantComponentPresenterProvider;
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
@@ -148,7 +150,7 @@ public class SubmissionsViewPresenter {
     this.view = view;
     prepareComponents();
     addListeners();
-    setDefaults();
+    searchSubmissions();
   }
 
   private void prepareComponents() {
@@ -159,6 +161,7 @@ public class SubmissionsViewPresenter {
     prepareSumissionsGrid();
     view.updateStatusButton.addStyleName(UPDATE_STATUS);
     view.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
+    view.updateStatusButton.setVisible(authorizationService.hasAdminRole());
   }
 
   @SuppressWarnings("serial")
@@ -358,13 +361,8 @@ public class SubmissionsViewPresenter {
     view.updateStatusButton.addClickListener(e -> updateStatus());
   }
 
-  private void setDefaults() {
-    searchSubmissions();
-  }
-
   private void searchSubmissions() {
-    SubmissionFilterBuilder filter = new SubmissionFilterBuilder();
-    report = submissionService.report(filter.build());
+    report = submissionService.report();
     submissionsContainer.removeAllItems();
     report.getSubmissions().stream().map(s -> s.getSamples().get(0))
         .forEach(s -> submissionsContainer.addItem(s));
