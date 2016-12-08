@@ -41,6 +41,7 @@ public class BaseComponentTest {
     assertTrue(baseComponent instanceof NavigationComponent);
     assertTrue(baseComponent instanceof NotificationComponent);
     assertTrue(baseComponent instanceof UiComponent);
+    assertTrue(baseComponent instanceof ConfirmDialogComponent);
     assertTrue(baseComponent instanceof MainUiComponent);
   }
 

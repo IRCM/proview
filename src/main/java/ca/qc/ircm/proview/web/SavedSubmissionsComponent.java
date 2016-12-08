@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.web.WebConstants.SAVED_SUBMISSIONS;
 import ca.qc.ircm.proview.submission.Submission;
 import com.vaadin.ui.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -32,8 +33,15 @@ public interface SavedSubmissionsComponent extends Component {
     getUI().getSession().setAttribute(SAVED_SUBMISSIONS, submissions);
   }
 
+  /**
+   * Returns saved submissions.
+   *
+   * @return saved submissions, never null
+   */
   @SuppressWarnings("unchecked")
   default Collection<Submission> savedSubmissions() {
-    return (Collection<Submission>) getUI().getSession().getAttribute(SAVED_SUBMISSIONS);
+    Collection<Submission> submissions =
+        (Collection<Submission>) getUI().getSession().getAttribute(SAVED_SUBMISSIONS);
+    return submissions == null ? new ArrayList<>() : new ArrayList<>(submissions);
   }
 }

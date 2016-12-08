@@ -67,7 +67,22 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
    *          view to load
    */
   public void openView(String view) {
+    openView(view, null);
+  }
+
+  /**
+   * This method loads a page and fixes the issue with get method returning too quickly.
+   *
+   * @param view
+   *          view to load
+   * @param parameters
+   *          view parameters
+   */
+  public void openView(String view, String parameters) {
     String url = viewUrl(view);
+    if (parameters != null && !parameters.isEmpty()) {
+      url += "/" + parameters;
+    }
     if (url.equals(getDriver().getCurrentUrl())) {
       getDriver().navigate().refresh();
     } else {
