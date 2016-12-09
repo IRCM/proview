@@ -64,6 +64,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -160,6 +161,7 @@ public class SubmissionsViewPresenter {
   @SuppressWarnings("serial")
   private void prepareSumissionsGrid() {
     MessageResource resources = view.getResources();
+    Locale locale = view.getLocale();
     submissionsContainer.addNestedContainerProperty(EXPERIENCE);
     submissionsContainer.addNestedContainerProperty(EXPERIENCE_GOAL);
     submissionsContainer.addNestedContainerProperty(DATE);
@@ -200,6 +202,29 @@ public class SubmissionsViewPresenter {
           @Override
           public Class<Integer> getType() {
             return Integer.class;
+          }
+        });
+    submissionsGeneratedContainer.addGeneratedProperty(SAMPLE_STATUS,
+        new PropertyValueGenerator<String>() {
+          @Override
+          public String getValue(Item item, Object itemId, Object propertyId) {
+            SubmissionSample sample = (SubmissionSample) itemId;
+            return sample.getStatus().getLabel(view.getLocale());
+          }
+
+          @Override
+          public Class<String> getType() {
+            return String.class;
+          }
+
+          @Override
+          public SortOrder[] getSortProperties(SortOrder order) {
+            return new SortOrder[] { order };
+          }
+
+          @Override
+          public Filter modifyFilter(Filter filter) throws UnsupportedFilterException {
+            return filter;
           }
         });
     submissionsGeneratedContainer.addGeneratedProperty(LINKED_TO_RESULTS,
@@ -263,7 +288,7 @@ public class SubmissionsViewPresenter {
         filter.addValueChangeListener(
             new FilterEqualsChangeListener(submissionsGeneratedContainer, propertyId, nullId));
         for (SampleStatus value : SampleStatus.values()) {
-          filter.setItemCaption(value, value.getLabel(view.getLocale()));
+          filter.setItemCaption(value, value.getLabel(locale));
         }
         cell.setComponent(filter);
       } else if (propertyId.equals(DATE)) {

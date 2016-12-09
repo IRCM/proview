@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.STATUS;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COMPONENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
@@ -369,6 +370,10 @@ public class SubmissionsViewPresenterTest {
     for (Column column : view.submissionsGrid.getColumns()) {
       assertEquals(resources.message((String) column.getPropertyId()), column.getHeaderCaption());
     }
+    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
+    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    Object statusValue = container.getItem(sample).getItemProperty(STATUS).getValue();
+    assertEquals(sample.getStatus().getLabel(locale), statusValue);
     assertEquals(resources.message(UPDATE_STATUS), view.updateStatusButton.getCaption());
   }
 
@@ -420,7 +425,7 @@ public class SubmissionsViewPresenterTest {
         container.getItem(sample).getItemProperty(SAMPLE_NAME).getValue());
     assertEquals(sample.getSubmission().getGoal(),
         container.getItem(sample).getItemProperty(EXPERIENCE_GOAL).getValue());
-    assertEquals(sample.getStatus(),
+    assertEquals(sample.getStatus().getLabel(locale),
         container.getItem(sample).getItemProperty(SAMPLE_STATUS).getValue());
     assertEquals(sample.getSubmission().getSubmissionDate(),
         container.getItem(sample).getItemProperty(DATE).getValue());
@@ -444,7 +449,7 @@ public class SubmissionsViewPresenterTest {
         container.getItem(sample).getItemProperty(SAMPLE_NAME).getValue());
     assertEquals(sample.getSubmission().getGoal(),
         container.getItem(sample).getItemProperty(EXPERIENCE_GOAL).getValue());
-    assertEquals(sample.getStatus(),
+    assertEquals(sample.getStatus().getLabel(locale),
         container.getItem(sample).getItemProperty(SAMPLE_STATUS).getValue());
     assertEquals(sample.getSubmission().getSubmissionDate(),
         container.getItem(sample).getItemProperty(DATE).getValue());
