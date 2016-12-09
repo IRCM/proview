@@ -15,13 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.table;
 
 import static ca.qc.ircm.proview.user.QUser.user;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.web.table.EmptyNullTableFieldFactory;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table;

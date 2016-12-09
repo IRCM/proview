@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.table;
 
 import com.vaadin.data.Container;
 import com.vaadin.ui.Component;
