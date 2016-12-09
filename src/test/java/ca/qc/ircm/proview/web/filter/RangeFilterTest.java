@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.filter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.filter.RangeFilter;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import org.junit.Test;

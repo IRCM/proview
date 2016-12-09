@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.filter;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.SimpleStringFilter;

@@ -15,40 +15,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
-
-import com.google.common.collect.Range;
+package ca.qc.ircm.proview.web.filter;
 
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.AbstractInMemoryContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
 
-public class RangeFilter<T extends Comparable<?>> implements Filter {
-  private static final long serialVersionUID = 3935971819294022440L;
-  private final Object propertyId;
-  private final Range<T> value;
+/**
+ * Filter that overcomes the fact that {@link GeneratedPropertyContainer} does not override
+ * {@link AbstractInMemoryContainer AbstractInMemoryContainer.getUnfilteredItem()}.
+ */
+public class GeneratedPropertyContainerFilter implements Filter {
+  private static final long serialVersionUID = -125847147966129832L;
+  private final Filter filter;
+  private final GeneratedPropertyContainer container;
 
-  public RangeFilter(Object propertyId, Range<T> value) {
-    this.propertyId = propertyId;
-    this.value = value;
+  public GeneratedPropertyContainerFilter(Filter filter, GeneratedPropertyContainer container) {
+    this.filter = filter;
+    this.container = container;
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-    T itemValue = (T) item.getItemProperty(propertyId).getValue();
-    return value.contains(itemValue);
+    // Get fresh copy of item from container.
+    Item freshItem = container.getItem(itemId);
+    return filter.passesFilter(itemId, freshItem);
   }
 
   @Override
   public boolean appliesToProperty(Object propertyId) {
-    return this.propertyId.equals(propertyId);
-  }
-
-  public Object getPropertyId() {
-    return propertyId;
-  }
-
-  public Range<T> getValue() {
-    return value;
+    return filter.appliesToProperty(propertyId);
   }
 }

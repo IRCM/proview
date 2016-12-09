@@ -15,20 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.filter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.Range;
-
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.filter.FilterEqualsChangeListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.filter.Compare;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,36 +39,37 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class FilterRangeChangeListenerTest {
-  private FilterRangeChangeListener listener;
+public class FilterEqualsChangeListenerTest {
+  private FilterEqualsChangeListener listener;
   @Mock
   private Container.Filterable container;
   @Mock
   private ValueChangeEvent event;
   @Mock
-  private Property<Range<Integer>> eventProperty;
+  private Property<Integer> eventProperty;
   @Captor
   private ArgumentCaptor<Filter> filterCaptor;
-  private String propertyId = "testPropertyId";
+  private Object propertyId = "testPropertyId";
+  private Integer acceptAllId = -1;
 
   @Before
   public void beforeTest() {
-    listener = new FilterRangeChangeListener(container, propertyId);
+    listener = new FilterEqualsChangeListener(container, propertyId, acceptAllId);
     when(event.getProperty()).thenReturn(eventProperty);
   }
 
   @Test
   public void addNonNullFilter() {
-    Range<Integer> range = Range.open(10, 20);
-    when(eventProperty.getValue()).thenReturn(range);
+    Integer value = acceptAllId + 1;
+    when(eventProperty.getValue()).thenReturn(value);
 
     listener.valueChange(event);
 
     verify(container).addContainerFilter(filterCaptor.capture());
     Filter filter = filterCaptor.getValue();
-    assertTrue(filter instanceof RangeFilter);
-    RangeFilter<?> rangeFilter = (RangeFilter<?>) filter;
-    assertEquals(propertyId, rangeFilter.getPropertyId());
-    assertEquals(range, rangeFilter.getValue());
+    assertTrue(filter instanceof Compare.Equal);
+    Compare.Equal equalsFilter = (Compare.Equal) filter;
+    assertEquals(propertyId, equalsFilter.getPropertyId());
+    assertEquals(value, equalsFilter.getValue());
   }
 }
