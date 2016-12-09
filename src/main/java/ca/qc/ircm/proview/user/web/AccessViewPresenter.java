@@ -28,6 +28,7 @@ import ca.qc.ircm.proview.web.filter.FilterTextChangeListener;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
@@ -191,6 +192,12 @@ public class AccessViewPresenter {
       @Override
       public Class<Label> getType() {
         return Label.class;
+      }
+
+      @Override
+      public SortOrder[] getSortProperties(SortOrder order) {
+        return new SortOrder[] {
+            new SortOrder(order.getPropertyId(), order.getDirection().getOpposite()) };
       }
 
       @Override
