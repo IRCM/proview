@@ -49,7 +49,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.utils.web.StringToInstantConverter;
+import ca.qc.ircm.proview.web.converter.StringToInstantConverter;
 import ca.qc.ircm.proview.web.filter.FilterInstantComponent;
 import ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter;
 import ca.qc.ircm.proview.web.filter.FunctionFilter;

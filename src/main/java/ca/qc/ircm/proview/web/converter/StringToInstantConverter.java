@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.converter;
 
 import com.vaadin.data.util.converter.Converter;
 

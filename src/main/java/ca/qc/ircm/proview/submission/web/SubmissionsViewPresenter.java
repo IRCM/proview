@@ -27,7 +27,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
-import ca.qc.ircm.proview.utils.web.StringToInstantConverter;
+import ca.qc.ircm.proview.web.converter.StringToInstantConverter;
 import ca.qc.ircm.proview.web.filter.CutomNullPropertyFilterValueChangeListener;
 import ca.qc.ircm.proview.web.filter.FilterEqualsChangeListener;
 import ca.qc.ircm.proview.web.filter.FilterInstantComponent;
