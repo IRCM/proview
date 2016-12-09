@@ -32,6 +32,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
@@ -135,6 +136,11 @@ public class SampleStatusViewPresenter {
       }
 
       @Override
+      public SortOrder[] getSortProperties(SortOrder order) {
+        return new SortOrder[] { order };
+      }
+
+      @Override
       public Class<String> getType() {
         return String.class;
       }
@@ -143,11 +149,9 @@ public class SampleStatusViewPresenter {
       @Override
       public ComboBox getValue(Item item, Object itemId, Object propertyId) {
         BeanFieldGroup<SubmissionSample> fieldGroup = samplesFieldGroup.get(itemId);
-        if (fieldGroup == null) {
-          fieldGroup = new BeanFieldGroup<>(SubmissionSample.class);
-          fieldGroup.setItemDataSource(item);
-          samplesFieldGroup.put(itemId, fieldGroup);
-        }
+        fieldGroup = new BeanFieldGroup<>(SubmissionSample.class);
+        fieldGroup.setItemDataSource(item);
+        samplesFieldGroup.put(itemId, fieldGroup);
         ComboBox statuses = statusesComboBox();
         fieldGroup.bind(statuses, STATUS);
         return statuses;
