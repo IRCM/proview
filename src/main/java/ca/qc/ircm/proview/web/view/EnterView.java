@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.view;
 
 import com.vaadin.navigator.View;
-import com.vaadin.ui.Component;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 
 /**
- * View that allows title to be set.
+ * View that implements {@link View} methods.
  */
-public interface TitleView extends Component, View {
-  default void setTitle(String title) {
-    getUI().getPage().setTitle(title);
+public interface EnterView extends View {
+  @Override
+  default void enter(ViewChangeEvent event) {
   }
 }

@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.component.SavedSubmissionsComponent;
+import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 

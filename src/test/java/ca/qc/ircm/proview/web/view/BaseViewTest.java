@@ -15,11 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.view;
 
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import ca.qc.ircm.proview.web.view.BaseView;
+import ca.qc.ircm.proview.web.view.EnterView;
+import ca.qc.ircm.proview.web.view.TitleView;
 import com.vaadin.ui.CustomComponent;
 import org.junit.Before;
 import org.junit.Test;

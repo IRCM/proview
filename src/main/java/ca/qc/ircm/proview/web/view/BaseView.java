@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.view;
 
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.navigator.View;

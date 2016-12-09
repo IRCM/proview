@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.security.web;
 
-import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.view.BaseView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;

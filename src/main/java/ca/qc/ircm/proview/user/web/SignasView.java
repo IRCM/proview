@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
+import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
 
 import javax.annotation.PostConstruct;
