@@ -15,16 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.component;
 
+import ca.qc.ircm.proview.web.MainUi;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Window;
 
-/**
- * Component delegates some methods to UI.
- */
-public interface UiComponent extends Component {
-  default void addWindow(Window window) {
-    getUI().addWindow(window);
+public interface MainUiComponent extends Component {
+  default MainUi getMainUi() {
+    return (MainUi) getUI();
+  }
+
+  default String getUrl(String viewName) {
+    return getMainUi().getUrl(viewName);
   }
 }

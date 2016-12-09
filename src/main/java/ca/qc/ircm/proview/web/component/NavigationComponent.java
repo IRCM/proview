@@ -15,14 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.component;
 
-import ca.qc.ircm.proview.web.MainUiComponent;
 import com.vaadin.ui.Component;
 
 /**
- * Component extending all component utility interfaces.
+ * Component that allows nativation to other views.
  */
-public interface BaseComponent extends Component, NotificationComponent, NavigationComponent,
-    MessageResourcesComponent, UiComponent, ConfirmDialogComponent, MainUiComponent {
+public interface NavigationComponent extends Component {
+  default void navigateTo(String view) {
+    getUI().getNavigator().navigateTo(view);
+  }
 }

@@ -15,16 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.component;
 
-import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Notification;
 
 /**
- * Component that allows to get resources.
+ * Component that shows notifications.
  */
-public interface MessageResourcesComponent extends Component {
-  default MessageResource getResources() {
-    return new MessageResource(getClass(), getLocale());
+public interface NotificationComponent extends Component {
+  default void showError(String message) {
+    new Notification(message, Notification.Type.ERROR_MESSAGE).show(getUI().getPage());
+  }
+
+  default void showWarning(String message) {
+    new Notification(message, Notification.Type.WARNING_MESSAGE).show(getUI().getPage());
+  }
+
+  default void showMessage(String message) {
+    new Notification(message, Notification.Type.HUMANIZED_MESSAGE).show(getUI().getPage());
+  }
+
+  default void showTrayNotification(String message) {
+    new Notification(message, Notification.Type.TRAY_NOTIFICATION).show(getUI().getPage());
   }
 }

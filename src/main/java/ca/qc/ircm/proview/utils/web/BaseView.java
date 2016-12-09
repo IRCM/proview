@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.utils.web;
 
+import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.navigator.View;
 
 /**

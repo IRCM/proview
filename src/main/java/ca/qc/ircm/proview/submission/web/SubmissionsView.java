@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
-import ca.qc.ircm.proview.web.SavedSubmissionsComponent;
+import ca.qc.ircm.proview.web.component.SavedSubmissionsComponent;
 import com.vaadin.spring.annotation.SpringView;
 
 import javax.annotation.PostConstruct;

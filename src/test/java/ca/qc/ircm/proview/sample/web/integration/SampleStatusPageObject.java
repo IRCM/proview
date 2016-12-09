@@ -21,7 +21,7 @@ import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.HEADER;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.NEW_STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAMPLES;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAVE;
-import static ca.qc.ircm.proview.utils.web.ConfirmDialogComponent.CONFIRM_DIALOG;
+import static ca.qc.ircm.proview.web.component.ConfirmDialogComponent.CONFIRM_DIALOG;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.sample.SampleStatus;

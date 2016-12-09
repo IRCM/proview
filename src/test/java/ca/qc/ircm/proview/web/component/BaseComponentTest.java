@@ -15,11 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.component;
 
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.web.MainUiComponent;
+import ca.qc.ircm.proview.web.component.BaseComponent;
+import ca.qc.ircm.proview.web.component.ConfirmDialogComponent;
+import ca.qc.ircm.proview.web.component.MainUiComponent;
+import ca.qc.ircm.proview.web.component.MessageResourcesComponent;
+import ca.qc.ircm.proview.web.component.NavigationComponent;
+import ca.qc.ircm.proview.web.component.NotificationComponent;
+import ca.qc.ircm.proview.web.component.UiComponent;
 import com.vaadin.ui.CustomComponent;
 import org.junit.Before;
 import org.junit.Test;

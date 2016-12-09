@@ -33,44 +33,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web;
+package ca.qc.ircm.proview.web.component;
 
-import static ca.qc.ircm.proview.web.WebConstants.SAVED_SUBMISSIONS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.vaadin.server.VaadinSession;
+import ca.qc.ircm.proview.web.component.ConfirmDialogComponent;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import org.vaadin.dialogs.ConfirmDialog;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SavedSubmissionsComponentTest {
-  private SavedSubmissionsComponent component;
+public class ConfirmDialogComponentTest {
+  private ConfirmDialogComponent component;
   @Mock
   private UI ui;
   @Mock
   private ConnectorTracker connectorTracker;
   @Mock
-  private VaadinSession session;
-  private Collection<Submission> submissions = new ArrayList<>();
-  private Submission submission1;
-  private Submission submission2;
+  private Window window;
+  @Mock
+  private ConfirmDialog.Listener listener;
+  @Mock
+  private ConfirmDialog.Factory factory;
+  @Mock
+  private ConfirmDialog confirmDialog;
+  private ConfirmDialog.Factory defaultFactory;
+  private String windowCaption;
+  private String message;
+  private String okCaption;
+  private String cancelCaption;
+  private String notOkCaption;
 
   /**
    * Before test.
@@ -78,59 +82,36 @@ public class SavedSubmissionsComponentTest {
   @Before
   public void beforeTest() {
     when(ui.getConnectorTracker()).thenReturn(connectorTracker);
-    when(ui.getSession()).thenReturn(session);
-    when(session.hasLock()).thenReturn(true);
     component = new TestComponent();
-    submissions.add(submission1);
-    submissions.add(submission2);
+    defaultFactory = ConfirmDialog.getFactory();
+    when(factory.create(any(), any(), any(), any(), any())).thenReturn(confirmDialog);
+    ConfirmDialog.setFactory(factory);
+  }
+
+  @After
+  public void afterTest() {
+    ConfirmDialog.setFactory(defaultFactory);
   }
 
   @Test
-  public void saveSubmissions() {
-    component.saveSubmissions(submissions);
+  public void showConfirmDialog() {
+    component.showConfirmDialog(windowCaption, message, okCaption, cancelCaption, listener);
 
-    verify(ui, atLeastOnce()).getSession();
-    verify(session).setAttribute(SAVED_SUBMISSIONS, submissions);
+    verify(factory).create(windowCaption, message, okCaption, cancelCaption, null);
+    verify(confirmDialog).show(ui, listener, true);
   }
 
   @Test
-  public void savedSubmissions() {
-    when(session.getAttribute(any(String.class))).thenReturn(submissions);
+  public void showConfirmDialog_NotOk() {
+    component.showConfirmDialog(windowCaption, message, okCaption, cancelCaption, notOkCaption,
+        listener);
 
-    Collection<Submission> submissions = component.savedSubmissions();
-
-    assertEquals(this.submissions.size(), submissions.size());
-    assertTrue(this.submissions.containsAll(submissions));
-    assertTrue(submissions.containsAll(this.submissions));
-    verify(ui, atLeastOnce()).getSession();
-    verify(session).getAttribute(SAVED_SUBMISSIONS);
-  }
-
-  @Test
-  public void savedSubmissions_Null() {
-    when(session.getAttribute(any(String.class))).thenReturn(null);
-
-    Collection<Submission> submissions = component.savedSubmissions();
-
-    assertTrue(submissions.isEmpty());
-    verify(ui, atLeastOnce()).getSession();
-    verify(session).getAttribute(SAVED_SUBMISSIONS);
-  }
-
-  @Test
-  public void savedSubmissions_ModifyList() {
-    when(session.getAttribute(any(String.class))).thenReturn(submissions);
-    final int size = submissions.size();
-    Collection<Submission> submissions = component.savedSubmissions();
-    submissions.remove(0);
-
-    submissions = component.savedSubmissions();
-
-    assertEquals(size, submissions.size());
+    verify(factory).create(windowCaption, message, okCaption, cancelCaption, null);
+    verify(confirmDialog).show(ui, listener, true);
   }
 
   @SuppressWarnings("serial")
-  private class TestComponent extends CustomComponent implements SavedSubmissionsComponent {
+  private class TestComponent extends CustomComponent implements ConfirmDialogComponent {
     @Override
     public UI getUI() {
       return ui;

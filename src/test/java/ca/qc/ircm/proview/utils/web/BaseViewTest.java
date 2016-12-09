@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.utils.web;
 
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.CustomComponent;
 import org.junit.Before;
 import org.junit.Test;

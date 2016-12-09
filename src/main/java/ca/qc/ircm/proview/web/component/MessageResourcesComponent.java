@@ -15,15 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.component;
 
+import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Component;
 
 /**
- * Component that allows nativation to other views.
+ * Component that allows to get resources.
  */
-public interface NavigationComponent extends Component {
-  default void navigateTo(String view) {
-    getUI().getNavigator().navigateTo(view);
+public interface MessageResourcesComponent extends Component {
+  default MessageResource getResources() {
+    return new MessageResource(getClass(), getLocale());
   }
 }

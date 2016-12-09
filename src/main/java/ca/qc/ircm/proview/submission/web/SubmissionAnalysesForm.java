@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import ca.qc.ircm.proview.utils.web.BaseComponent;
+import ca.qc.ircm.proview.web.component.BaseComponent;
 
 /**
  * Submission results form.

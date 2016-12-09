@@ -27,7 +27,7 @@ import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
-import ca.qc.ircm.proview.utils.web.BaseComponent;
+import ca.qc.ircm.proview.web.component.BaseComponent;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.MenuBar;

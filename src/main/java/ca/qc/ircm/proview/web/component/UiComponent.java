@@ -15,28 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.utils.web;
+package ca.qc.ircm.proview.web.component;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.Window;
 
 /**
- * Component that shows notifications.
+ * Component delegates some methods to UI.
  */
-public interface NotificationComponent extends Component {
-  default void showError(String message) {
-    new Notification(message, Notification.Type.ERROR_MESSAGE).show(getUI().getPage());
-  }
-
-  default void showWarning(String message) {
-    new Notification(message, Notification.Type.WARNING_MESSAGE).show(getUI().getPage());
-  }
-
-  default void showMessage(String message) {
-    new Notification(message, Notification.Type.HUMANIZED_MESSAGE).show(getUI().getPage());
-  }
-
-  default void showTrayNotification(String message) {
-    new Notification(message, Notification.Type.TRAY_NOTIFICATION).show(getUI().getPage());
+public interface UiComponent extends Component {
+  default void addWindow(Window window) {
+    getUI().addWindow(window);
   }
 }

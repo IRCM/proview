@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web;
+package ca.qc.ircm.proview.web.component;
 
 import static ca.qc.ircm.proview.web.WebConstants.SAVED_SUBMISSIONS;
 

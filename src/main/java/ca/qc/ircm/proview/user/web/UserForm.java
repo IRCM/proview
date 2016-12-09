@@ -18,8 +18,8 @@
 package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.utils.web.BaseComponent;
 import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.component.BaseComponent;
 
 /**
  * User form.

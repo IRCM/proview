@@ -15,16 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web;
+package ca.qc.ircm.proview.web.component;
 
 import com.vaadin.ui.Component;
 
-public interface MainUiComponent extends Component {
-  default MainUi getMainUi() {
-    return (MainUi) getUI();
-  }
-
-  default String getUrl(String viewName) {
-    return getMainUi().getUrl(viewName);
-  }
+/**
+ * Component extending all component utility interfaces.
+ */
+public interface BaseComponent extends Component, NotificationComponent, NavigationComponent,
+    MessageResourcesComponent, UiComponent, ConfirmDialogComponent, MainUiComponent {
 }

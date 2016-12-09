@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.utils.web;
 
 import com.google.common.collect.Range;
 
+import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.data.util.ObjectProperty;
 
 import java.time.Instant;
