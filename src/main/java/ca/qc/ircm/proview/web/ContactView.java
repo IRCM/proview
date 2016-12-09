@@ -15,26 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.user.web;
+package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.utils.web.BaseView;
-import ca.qc.ircm.proview.web.Menu;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
- * Forgot password view.
+ * Contact view.
  */
-@SpringView(name = ForgotPasswordView.VIEW_NAME)
-public class ForgotPasswordView extends ForgotPasswordViewDesign implements BaseView {
-  public static final String VIEW_NAME = "user/forgotpassword";
-  private static final long serialVersionUID = 164307263615957137L;
-  @Inject
-  private ForgotPasswordViewPresenter presenter;
+@SpringView(name = ContactView.VIEW_NAME)
+public class ContactView extends ContactViewDesign implements BaseView {
+  private static final long serialVersionUID = -1067651526935267544L;
+  public static final String VIEW_NAME = "contact";
   protected Menu menu = new Menu();
+  @Inject
+  private ContactViewPresenter presenter;
 
   @PostConstruct
   public void init() {
@@ -45,10 +43,5 @@ public class ForgotPasswordView extends ForgotPasswordViewDesign implements Base
   public void attach() {
     super.attach();
     presenter.init(this);
-  }
-
-  @Override
-  public void enter(ViewChangeEvent event) {
-    presenter.enter(event.getParameters());
   }
 }

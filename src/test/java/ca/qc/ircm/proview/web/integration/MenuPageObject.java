@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
 import static ca.qc.ircm.proview.web.Menu.ACCESS;
 import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE;
+import static ca.qc.ircm.proview.web.Menu.CONTACT;
 import static ca.qc.ircm.proview.web.Menu.HELP;
 import static ca.qc.ircm.proview.web.Menu.HOME;
 import static ca.qc.ircm.proview.web.Menu.MANAGER;
@@ -159,6 +160,14 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   protected void clickStopSignas() {
     managerMenuItem().click();
     stopSignasMenuItem().click();
+  }
+
+  protected WebElement contactMenuItem() {
+    return menuItemByStyle(CONTACT);
+  }
+
+  protected void clickContact() {
+    contactMenuItem().click();
   }
 
   protected WebElement helpMenuItem() {

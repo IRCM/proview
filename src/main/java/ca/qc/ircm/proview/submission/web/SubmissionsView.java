@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
+import ca.qc.ircm.proview.web.SavedSubmissionsComponent;
 import com.vaadin.spring.annotation.SpringView;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +31,8 @@ import javax.inject.Inject;
  */
 @SpringView(name = SubmissionsView.VIEW_NAME)
 @RolesAllowed({ "USER" })
-public class SubmissionsView extends SubmissionsViewDesign implements BaseView {
+public class SubmissionsView extends SubmissionsViewDesign
+    implements BaseView, SavedSubmissionsComponent {
   public static final String VIEW_NAME = "submissions";
   private static final long serialVersionUID = -7912663074202035516L;
   @Inject

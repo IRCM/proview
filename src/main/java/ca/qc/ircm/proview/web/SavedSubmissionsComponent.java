@@ -17,14 +17,31 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SUBMISSIONS;
+
+import ca.qc.ircm.proview.submission.Submission;
 import com.vaadin.ui.Component;
 
-public interface MainUiComponent extends Component {
-  default MainUi getMainUi() {
-    return (MainUi) getUI();
+import java.util.ArrayList;
+import java.util.Collection;
+
+/**
+ * Gets/sets saved submissions in session.
+ */
+public interface SavedSubmissionsComponent extends Component {
+  default void saveSubmissions(Collection<Submission> submissions) {
+    getUI().getSession().setAttribute(SAVED_SUBMISSIONS, submissions);
   }
 
-  default String getUrl(String viewName) {
-    return getMainUi().getUrl(viewName);
+  /**
+   * Returns saved submissions.
+   *
+   * @return saved submissions, never null
+   */
+  @SuppressWarnings("unchecked")
+  default Collection<Submission> savedSubmissions() {
+    Collection<Submission> submissions =
+        (Collection<Submission>) getUI().getSession().getAttribute(SAVED_SUBMISSIONS);
+    return submissions == null ? new ArrayList<>() : new ArrayList<>(submissions);
   }
 }

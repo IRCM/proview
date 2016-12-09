@@ -18,6 +18,19 @@
 package ca.qc.ircm.proview.web.integration;
 
 import static ca.qc.ircm.proview.test.config.ShiroTestExecutionListener.REMEMBER_ME_COOKIE_NAME;
+import static ca.qc.ircm.proview.web.Menu.ACCESS;
+import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE;
+import static ca.qc.ircm.proview.web.Menu.CONTACT;
+import static ca.qc.ircm.proview.web.Menu.HELP;
+import static ca.qc.ircm.proview.web.Menu.HOME;
+import static ca.qc.ircm.proview.web.Menu.MANAGER;
+import static ca.qc.ircm.proview.web.Menu.PROFILE;
+import static ca.qc.ircm.proview.web.Menu.REGISTER;
+import static ca.qc.ircm.proview.web.Menu.SIGNOUT;
+import static ca.qc.ircm.proview.web.Menu.SIGN_AS;
+import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS;
+import static ca.qc.ircm.proview.web.Menu.SUBMISSION;
+import static ca.qc.ircm.proview.web.Menu.VALIDATE_USERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +44,9 @@ import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
+import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.utils.MessageResource;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -65,6 +80,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -84,6 +100,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -104,6 +121,7 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -124,6 +142,7 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> signasMenuItem()).isPresent());
     assertTrue(optional(() -> registerMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
   }
 
@@ -144,7 +163,54 @@ public class MenuTest extends MenuPageObject {
     assertFalse(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> registerMenuItem()).isPresent());
     assertTrue(optional(() -> stopSignasMenuItem()).isPresent());
+    assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> helpMenuItem()).isPresent());
+  }
+
+  @Test
+  @WithSubject
+  public void captions() throws Throwable {
+    open();
+
+    MessageResource resources = resources(Menu.class);
+    assertEquals(resources.message(HOME), homeMenuItem().getText());
+    assertEquals(resources.message(SUBMISSION), submissionMenuItem().getText());
+    assertEquals(resources.message(PROFILE), profileMenuItem().getText());
+    assertEquals(resources.message(SIGNOUT), signoutMenuItem().getText());
+    assertEquals(resources.message(CHANGE_LANGUAGE), changeLanguageMenuItem().getText());
+    assertEquals(resources.message(MANAGER), managerMenuItem().getText());
+    clickManager();
+    assertEquals(resources.message(VALIDATE_USERS), validateUsersMenuItem().getText());
+    assertEquals(resources.message(ACCESS), accessMenuItem().getText());
+    assertEquals(resources.message(SIGN_AS), signasMenuItem().getText());
+    assertEquals(resources.message(REGISTER), registerMenuItem().getText());
+    assertEquals(resources.message(CONTACT), contactMenuItem().getText());
+    assertEquals(resources.message(HELP), helpMenuItem().getText());
+    signas("christopher.anderson@ircm.qc.ca");
+    clickManager();
+    assertEquals(resources.message(STOP_SIGN_AS), stopSignasMenuItem().getText());
+    clickHome();
+    clickStopSignas();
+
+    clickChangeLanguage();
+
+    resources = resources(Menu.class);
+    assertEquals(resources.message(HOME), homeMenuItem().getText());
+    assertEquals(resources.message(SUBMISSION), submissionMenuItem().getText());
+    assertEquals(resources.message(PROFILE), profileMenuItem().getText());
+    assertEquals(resources.message(SIGNOUT), signoutMenuItem().getText());
+    assertEquals(resources.message(CHANGE_LANGUAGE), changeLanguageMenuItem().getText());
+    assertEquals(resources.message(MANAGER), managerMenuItem().getText());
+    clickManager();
+    assertEquals(resources.message(VALIDATE_USERS), validateUsersMenuItem().getText());
+    assertEquals(resources.message(ACCESS), accessMenuItem().getText());
+    assertEquals(resources.message(SIGN_AS), signasMenuItem().getText());
+    assertEquals(resources.message(REGISTER), registerMenuItem().getText());
+    assertEquals(resources.message(CONTACT), contactMenuItem().getText());
+    assertEquals(resources.message(HELP), helpMenuItem().getText());
+    signas("christopher.anderson@ircm.qc.ca");
+    clickManager();
+    assertEquals(resources.message(STOP_SIGN_AS), stopSignasMenuItem().getText());
   }
 
   @Test
@@ -259,6 +325,15 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> accessMenuItem()).isPresent());
     assertTrue(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
+  }
+
+  @Test
+  public void contact() throws Throwable {
+    open();
+
+    clickContact();
+
+    assertEquals(viewUrl(ContactView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test

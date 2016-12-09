@@ -33,9 +33,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web;
+package ca.qc.ircm.proview.utils.web;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,20 +43,37 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.vaadin.dialogs.ConfirmDialog;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class MainUiComponentTest {
-  private MainUiComponent mainUiComponent;
+public class ConfirmDialogComponentTest {
+  private ConfirmDialogComponent component;
   @Mock
-  private MainUi ui;
+  private UI ui;
   @Mock
   private ConnectorTracker connectorTracker;
+  @Mock
+  private Window window;
+  @Mock
+  private ConfirmDialog.Listener listener;
+  @Mock
+  private ConfirmDialog.Factory factory;
+  @Mock
+  private ConfirmDialog confirmDialog;
+  private ConfirmDialog.Factory defaultFactory;
+  private String windowCaption;
+  private String message;
+  private String okCaption;
+  private String cancelCaption;
+  private String notOkCaption;
 
   /**
    * Before test.
@@ -65,30 +81,36 @@ public class MainUiComponentTest {
   @Before
   public void beforeTest() {
     when(ui.getConnectorTracker()).thenReturn(connectorTracker);
-    mainUiComponent = new TestMainUiComponent();
+    component = new TestComponent();
+    defaultFactory = ConfirmDialog.getFactory();
+    when(factory.create(any(), any(), any(), any(), any())).thenReturn(confirmDialog);
+    ConfirmDialog.setFactory(factory);
+  }
+
+  @After
+  public void afterTest() {
+    ConfirmDialog.setFactory(defaultFactory);
   }
 
   @Test
-  public void getMainUi() {
-    MainUi mainUi = mainUiComponent.getMainUi();
+  public void showConfirmDialog() {
+    component.showConfirmDialog(windowCaption, message, okCaption, cancelCaption, listener);
 
-    assertEquals(ui, mainUi);
+    verify(factory).create(windowCaption, message, okCaption, cancelCaption, null);
+    verify(confirmDialog).show(ui, listener, true);
   }
 
   @Test
-  public void getUrl() {
-    String expectedUrl = "testView";
-    when(ui.getUrl(any())).thenReturn(expectedUrl);
-    String viewName = ErrorView.VIEW_NAME;
+  public void showConfirmDialog_NotOk() {
+    component.showConfirmDialog(windowCaption, message, okCaption, cancelCaption, notOkCaption,
+        listener);
 
-    String url = mainUiComponent.getUrl(viewName);
-
-    verify(ui).getUrl(viewName);
-    assertEquals(expectedUrl, url);
+    verify(factory).create(windowCaption, message, okCaption, cancelCaption, null);
+    verify(confirmDialog).show(ui, listener, true);
   }
 
   @SuppressWarnings("serial")
-  private class TestMainUiComponent extends CustomComponent implements MainUiComponent {
+  private class TestComponent extends CustomComponent implements ConfirmDialogComponent {
     @Override
     public UI getUI() {
       return ui;

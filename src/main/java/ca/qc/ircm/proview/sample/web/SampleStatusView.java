@@ -15,29 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.user.web;
+package ca.qc.ircm.proview.sample.web;
 
 import ca.qc.ircm.proview.utils.web.BaseView;
 import ca.qc.ircm.proview.web.Menu;
+import ca.qc.ircm.proview.web.SavedSubmissionsComponent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
 /**
- * Forgot password view.
+ * Updates sample statuses.
  */
-@SpringView(name = ForgotPasswordView.VIEW_NAME)
-public class ForgotPasswordView extends ForgotPasswordViewDesign implements BaseView {
-  public static final String VIEW_NAME = "user/forgotpassword";
-  private static final long serialVersionUID = 164307263615957137L;
-  @Inject
-  private ForgotPasswordViewPresenter presenter;
+@SpringView(name = SampleStatusView.VIEW_NAME)
+@RolesAllowed({ "ADMIN" })
+public class SampleStatusView extends SampleStatusViewDesign
+    implements BaseView, SavedSubmissionsComponent {
+  private static final long serialVersionUID = -2790503384190960260L;
+  public static final String VIEW_NAME = "samples/status";
   protected Menu menu = new Menu();
+  @Inject
+  private SampleStatusViewPresenter presenter;
 
   @PostConstruct
-  public void init() {
+  public void ini() {
     menuLayout.addComponent(menu);
   }
 

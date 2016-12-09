@@ -1,0 +1,470 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package ca.qc.ircm.proview.sample.web;
+
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.CANCEL;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.COMPONENTS;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.DOWN;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.EXPERIENCE;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.HEADER;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.INVALID_SUBMISSIONS;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.NAME;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.NEW_STATUS;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.OK;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.REGRESS;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.REGRESS_MESSAGE;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAMPLES;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAVE;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.STATUS;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.TITLE;
+import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.WebConstants;
+import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.Container;
+import com.vaadin.server.CompositeErrorMessage;
+import com.vaadin.server.UserError;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.Grid.SelectionModel;
+import com.vaadin.ui.Label;
+import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.vaadin.dialogs.ConfirmDialog;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ServiceTestAnnotations
+public class SampleStatusViewPresenterTest {
+  private SampleStatusViewPresenter presenter;
+  @Mock
+  private SampleStatusView view;
+  @Mock
+  private SubmissionService submissionService;
+  @Mock
+  private SubmissionSampleService submissionSampleService;
+  @Captor
+  private ArgumentCaptor<String> stringCaptor;
+  @Captor
+  private ArgumentCaptor<Long> longCaptor;
+  @Captor
+  private ArgumentCaptor<Collection<SubmissionSample>> samplesCaptor;
+  @Captor
+  private ArgumentCaptor<ConfirmDialog.Listener> confirmDialogListenerCaptor;
+  @PersistenceContext
+  private EntityManager entityManager;
+  @Value("${spring.application.name}")
+  private String applicationName;
+  private Locale locale = Locale.FRENCH;
+  private MessageResource resources = new MessageResource(SampleStatusView.class, locale);
+  private MessageResource generalResources =
+      new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
+  private List<Submission> submissions = new ArrayList<>();
+
+  /**
+   * Before test.
+   */
+  @Before
+  public void beforeTest() {
+    presenter =
+        new SampleStatusViewPresenter(submissionService, submissionSampleService, applicationName);
+    view.headerLabel = new Label();
+    view.samplesGrid = new Grid();
+    view.saveButton = new Button();
+    when(view.getLocale()).thenReturn(locale);
+    when(view.getResources()).thenReturn(resources);
+    when(view.savedSubmissions()).thenReturn(submissions);
+    submissions.add(entityManager.find(Submission.class, 32L));
+    submissions.add(entityManager.find(Submission.class, 33L));
+    submissions.forEach(s -> entityManager.detach(s));
+    submissions.stream().flatMap(su -> su.getSamples().stream())
+        .forEach(s -> entityManager.detach(s));
+  }
+
+  private <T extends Data> Optional<T> find(Collection<T> data, long id) {
+    return data.stream().filter(d -> d.getId() == id).findAny();
+  }
+
+  private String errorMessage(String message) {
+    return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
+  }
+
+  @Test
+  public void styles() {
+    presenter.init(view);
+    presenter.enter("");
+
+    assertTrue(view.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(view.samplesGrid.getStyleName().contains(SAMPLES));
+    assertTrue(view.samplesGrid.getStyleName().contains(COMPONENTS));
+    assertTrue(view.saveButton.getStyleName().contains(SAVE));
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    ComboBox newStatus =
+        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
+    assertTrue(newStatus.getStyleName().contains(NEW_STATUS));
+    Button down = (Button) container.getItem(sample).getItemProperty(DOWN).getValue();
+    assertTrue(down.getStyleName().contains(DOWN));
+  }
+
+  @Test
+  public void captions() {
+    presenter.init(view);
+    presenter.enter("");
+
+    verify(view).setTitle(resources.message(TITLE, applicationName));
+    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
+    for (Column column : view.samplesGrid.getColumns()) {
+      assertEquals(resources.message((String) column.getPropertyId()), column.getHeaderCaption());
+    }
+    assertEquals(resources.message(SAVE), view.saveButton.getCaption());
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    Object statusValue = container.getItem(sample).getItemProperty(STATUS).getValue();
+    assertEquals(sample.getStatus().getLabel(locale), statusValue);
+    ComboBox newStatus =
+        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
+    for (SampleStatus status : SampleStatus.values()) {
+      assertTrue(newStatus.getItemIds().contains(status));
+      assertEquals(status.getLabel(locale), newStatus.getItemCaption(status));
+    }
+    Button down = (Button) container.getItem(sample).getItemProperty(DOWN).getValue();
+    assertEquals(resources.message(DOWN), down.getCaption());
+  }
+
+  @Test
+  public void samplesGrid_Column() {
+    presenter.init(view);
+
+    assertTrue(view.samplesGrid.getSelectionModel() instanceof SelectionModel.Multi);
+    assertEquals(NAME, view.samplesGrid.getColumns().get(0).getPropertyId());
+    assertEquals(EXPERIENCE, view.samplesGrid.getColumns().get(1).getPropertyId());
+    assertEquals(STATUS, view.samplesGrid.getColumns().get(2).getPropertyId());
+    assertEquals(NEW_STATUS, view.samplesGrid.getColumns().get(3).getPropertyId());
+    assertTrue(view.samplesGrid.getColumns().get(3).getRenderer() instanceof ComponentRenderer);
+    assertEquals(DOWN, view.samplesGrid.getColumns().get(4).getPropertyId());
+    assertTrue(view.samplesGrid.getColumns().get(4).getRenderer() instanceof ComponentRenderer);
+  }
+
+  @Test
+  public void down() {
+    presenter.init(view);
+    presenter.enter("");
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    SubmissionSample sample1 = submissions.get(0).getSamples().get(0);
+    SubmissionSample sample2 = submissions.get(1).getSamples().get(0);
+    final ComboBox newStatus1 =
+        (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
+    final ComboBox newStatus2 =
+        (ComboBox) container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
+    Button down1 = (Button) container.getItem(sample1).getItemProperty(DOWN).getValue();
+    newStatus1.setValue(SampleStatus.ANALYSED);
+
+    down1.click();
+
+    assertEquals(SampleStatus.ANALYSED, newStatus1.getValue());
+    assertEquals(SampleStatus.ANALYSED, newStatus2.getValue());
+  }
+
+  @Test
+  public void updateStatus_Null() {
+    presenter.init(view);
+    presenter.enter("");
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    view.samplesGrid.deselectAll();
+    view.samplesGrid.select(sample);
+    ComboBox newStatus =
+        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
+    newStatus.setValue(null);
+    when(submissionSampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
+
+    view.saveButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        newStatus.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionSampleService, never()).updateStatus(any());
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void updateStatus() {
+    presenter.init(view);
+    presenter.enter("");
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    SubmissionSample sample1 = submissions.get(0).getSamples().get(0);
+    SubmissionSample sample2 = submissions.get(1).getSamples().get(0);
+    view.samplesGrid.deselectAll();
+    view.samplesGrid.select(sample1);
+    view.samplesGrid.select(sample2);
+    ComboBox newStatus1 =
+        (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
+    ComboBox newStatus2 =
+        (ComboBox) container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
+    newStatus1.setValue(SampleStatus.ANALYSED);
+    newStatus2.setValue(SampleStatus.TO_DIGEST);
+    when(submissionSampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
+
+    view.saveButton.click();
+
+    verify(submissionSampleService).updateStatus(samplesCaptor.capture());
+    Collection<SubmissionSample> samples = samplesCaptor.getValue();
+    assertEquals(2, samples.size());
+    assertTrue(find(samples, sample1.getId()).isPresent());
+    assertTrue(find(samples, sample2.getId()).isPresent());
+    sample1 = find(samples, sample1.getId()).orElse(null);
+    sample2 = find(samples, sample2.getId()).orElse(null);
+    assertEquals(SampleStatus.ANALYSED, sample1.getStatus());
+    assertEquals(SampleStatus.TO_DIGEST, sample2.getStatus());
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", 2));
+    samples = (Collection<SubmissionSample>) container.getItemIds();
+    sample1 = find(samples, sample1.getId()).orElse(null);
+    sample2 = find(samples, sample2.getId()).orElse(null);
+    assertEquals(sample1.getStatus().getLabel(locale),
+        container.getItem(sample1).getItemProperty(STATUS).getValue());
+    assertEquals(sample2.getStatus().getLabel(locale),
+        container.getItem(sample2).getItemProperty(STATUS).getValue());
+  }
+
+  @Test
+  public void updateStatus_Regress_Confirm() {
+    presenter.init(view);
+    presenter.enter("");
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    view.samplesGrid.deselectAll();
+    view.samplesGrid.select(sample);
+    ComboBox newStatus =
+        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
+    newStatus.setValue(SampleStatus.TO_APPROVE);
+    when(submissionSampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
+    final ConfirmDialog confirmDialog = new TestConfirmDialog(true);
+
+    view.saveButton.click();
+
+    verify(view, never()).showError(any());
+    verify(view).showConfirmDialog(eq(resources.message(REGRESS)),
+        eq(resources.message(REGRESS_MESSAGE)), eq(resources.message(OK)),
+        eq(resources.message(CANCEL)), confirmDialogListenerCaptor.capture());
+    ConfirmDialog.Listener listener = confirmDialogListenerCaptor.getValue();
+    listener.onClose(confirmDialog);
+    verify(view, never()).showError(any());
+    verify(submissionSampleService).updateStatus(samplesCaptor.capture());
+    Collection<SubmissionSample> samples = samplesCaptor.getValue();
+    assertEquals(1, samples.size());
+    assertTrue(find(samples, sample.getId()).isPresent());
+    sample = find(samples, sample.getId()).orElse(null);
+    assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", 1));
+  }
+
+  @Test
+  public void updateStatus_Regress_Cancel() {
+    presenter.init(view);
+    presenter.enter("");
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    view.samplesGrid.deselectAll();
+    view.samplesGrid.select(sample);
+    ComboBox newStatus =
+        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
+    newStatus.setValue(SampleStatus.TO_APPROVE);
+    when(submissionSampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
+    final ConfirmDialog confirmDialog = new TestConfirmDialog(false);
+
+    view.saveButton.click();
+
+    verify(view, never()).showError(any());
+    verify(view).showConfirmDialog(eq(resources.message(REGRESS)),
+        eq(resources.message(REGRESS_MESSAGE)), eq(resources.message(OK)),
+        eq(resources.message(CANCEL)), confirmDialogListenerCaptor.capture());
+    ConfirmDialog.Listener listener = confirmDialogListenerCaptor.getValue();
+    listener.onClose(confirmDialog);
+    verify(view, never()).showError(any());
+    verify(submissionSampleService, never()).updateStatus(any());
+  }
+
+  @Test
+  public void enter_Empty() {
+    presenter.init(view);
+    presenter.enter("");
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    Collection<SubmissionSample> expectedSamples =
+        submissions.stream().flatMap(s -> s.getSamples().stream()).collect(Collectors.toSet());
+
+    Collection<?> itemIds = container.getItemIds();
+
+    Set<SubmissionSample> samples = new HashSet<>();
+    for (Object itemId : itemIds) {
+      assertTrue(itemId instanceof SubmissionSample);
+      SubmissionSample sample = (SubmissionSample) itemId;
+      samples.add(sample);
+    }
+    assertTrue(expectedSamples.containsAll(samples));
+    assertTrue(samples.containsAll(expectedSamples));
+    Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
+    assertTrue(selectedRows.containsAll(samples));
+    assertTrue(samples.containsAll(selectedRows));
+  }
+
+  @Test
+  public void enter_InvalidId() {
+    when(submissionService.get(any()))
+        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+    presenter.init(view);
+
+    presenter.enter("a");
+
+    verify(view).showWarning(stringCaptor.capture());
+    assertEquals(resources.message(INVALID_SUBMISSIONS), stringCaptor.getValue());
+  }
+
+  @Test
+  public void enter_NotExists() {
+    when(submissionService.get(any()))
+        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+    presenter.init(view);
+
+    presenter.enter("2");
+
+    verify(view).showWarning(stringCaptor.capture());
+    assertEquals(resources.message(INVALID_SUBMISSIONS), stringCaptor.getValue());
+  }
+
+  @Test
+  public void enter_EmptyId() {
+    when(submissionService.get(any()))
+        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+    presenter.init(view);
+
+    presenter.enter("32,");
+
+    verify(view).showWarning(stringCaptor.capture());
+    assertEquals(resources.message(INVALID_SUBMISSIONS), stringCaptor.getValue());
+  }
+
+  @Test
+  public void enter_Submission() {
+    Submission submission = entityManager.find(Submission.class, 34L);
+    List<Submission> submissions = new ArrayList<>();
+    submissions.add(submission);
+    when(submissionService.get(any()))
+        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+    presenter.init(view);
+
+    presenter.enter("34");
+
+    verify(submissionService, atLeastOnce()).get(submission.getId());
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    final Collection<SubmissionSample> expectedSamples =
+        submissions.stream().flatMap(s -> s.getSamples().stream()).collect(Collectors.toSet());
+    Collection<?> itemIds = container.getItemIds();
+    Set<SubmissionSample> samples = new HashSet<>();
+    for (Object itemId : itemIds) {
+      assertTrue(itemId instanceof SubmissionSample);
+      SubmissionSample sample = (SubmissionSample) itemId;
+      samples.add(sample);
+    }
+    assertTrue(expectedSamples.containsAll(samples));
+    assertTrue(samples.containsAll(expectedSamples));
+    Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
+    assertTrue(selectedRows.containsAll(samples));
+    assertTrue(samples.containsAll(selectedRows));
+  }
+
+  @Test
+  public void enter_MultipleSubmissions() {
+    Submission submission1 = entityManager.find(Submission.class, 34L);
+    Submission submission2 = entityManager.find(Submission.class, 35L);
+    List<Submission> submissions = new ArrayList<>();
+    submissions.add(submission1);
+    submissions.add(submission2);
+    when(submissionService.get(any()))
+        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+    presenter.init(view);
+
+    presenter.enter("34,35");
+
+    verify(submissionService, atLeastOnce()).get(submission1.getId());
+    verify(submissionService, atLeastOnce()).get(submission2.getId());
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    final Collection<SubmissionSample> expectedSamples =
+        submissions.stream().flatMap(s -> s.getSamples().stream()).collect(Collectors.toSet());
+    Collection<?> itemIds = container.getItemIds();
+    Set<SubmissionSample> samples = new HashSet<>();
+    for (Object itemId : itemIds) {
+      assertTrue(itemId instanceof SubmissionSample);
+      SubmissionSample sample = (SubmissionSample) itemId;
+      samples.add(sample);
+    }
+    assertTrue(expectedSamples.containsAll(samples));
+    assertTrue(samples.containsAll(expectedSamples));
+    Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
+    assertTrue(selectedRows.containsAll(samples));
+    assertTrue(samples.containsAll(selectedRows));
+  }
+
+  @SuppressWarnings("serial")
+  private static class TestConfirmDialog extends ConfirmDialog {
+    TestConfirmDialog(boolean confirmed) {
+      setConfirmed(confirmed);
+    }
+  }
+}
