@@ -20,8 +20,11 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
+import ca.qc.ircm.proview.sample.web.SampleStatusGenerator;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -64,6 +67,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -91,6 +95,7 @@ public class SubmissionsViewPresenter {
       SUBMISSION + "." + submission.submissionDate.getMetadata().getName();
   public static final String LINKED_TO_RESULTS = "results";
   public static final String ALL = "all";
+  public static final String SELECT_SAMPLES = "selectSamples";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final Object[] columns = new Object[] { EXPERIENCE, SAMPLE_COUNT, SAMPLE_NAME,
       EXPERIENCE_GOAL, SAMPLE_STATUS, DATE, LINKED_TO_RESULTS };
@@ -114,6 +119,8 @@ public class SubmissionsViewPresenter {
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Inject
   private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
+  @Inject
+  private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -124,12 +131,14 @@ public class SubmissionsViewPresenter {
       AuthorizationService authorizationService,
       Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider,
       Provider<SubmissionWindow> submissionWindowProvider,
-      Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider, String applicationName) {
+      Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
+      Provider<SampleSelectionWindow> sampleSelectionWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
     this.filterInstantComponentPresenterProvider = filterInstantComponentPresenterProvider;
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
+    this.sampleSelectionWindowProvider = sampleSelectionWindowProvider;
     this.applicationName = applicationName;
   }
 
@@ -153,6 +162,9 @@ public class SubmissionsViewPresenter {
     view.headerLabel.addStyleName(HEADER);
     view.headerLabel.setValue(resources.message(HEADER));
     prepareSumissionsGrid();
+    view.selectSamplesButton.addStyleName(SELECT_SAMPLES);
+    view.selectSamplesButton.setCaption(resources.message(SELECT_SAMPLES));
+    view.selectSamplesButton.setVisible(authorizationService.hasAdminRole());
     view.updateStatusButton.addStyleName(UPDATE_STATUS);
     view.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     view.updateStatusButton.setVisible(authorizationService.hasAdminRole());
@@ -205,28 +217,7 @@ public class SubmissionsViewPresenter {
           }
         });
     submissionsGeneratedContainer.addGeneratedProperty(SAMPLE_STATUS,
-        new PropertyValueGenerator<String>() {
-          @Override
-          public String getValue(Item item, Object itemId, Object propertyId) {
-            SubmissionSample sample = (SubmissionSample) itemId;
-            return sample.getStatus().getLabel(view.getLocale());
-          }
-
-          @Override
-          public Class<String> getType() {
-            return String.class;
-          }
-
-          @Override
-          public SortOrder[] getSortProperties(SortOrder order) {
-            return new SortOrder[] { order };
-          }
-
-          @Override
-          public Filter modifyFilter(Filter filter) throws UnsupportedFilterException {
-            return filter;
-          }
-        });
+        new SampleStatusGenerator(() -> view.getLocale()));
     submissionsGeneratedContainer.addGeneratedProperty(LINKED_TO_RESULTS,
         new PropertyValueGenerator<Button>() {
           @Override
@@ -345,6 +336,7 @@ public class SubmissionsViewPresenter {
 
   private void addListeners() {
     view.updateStatusButton.addClickListener(e -> updateStatus());
+    view.selectSamplesButton.addClickListener(e -> selectSamples());
   }
 
   private void searchSubmissions() {
@@ -369,9 +361,36 @@ public class SubmissionsViewPresenter {
     view.addWindow(window);
   }
 
+  private void selectSamples() {
+    SampleSelectionWindow window = sampleSelectionWindowProvider.get();
+    List<Sample> samples;
+    if (!view.submissionsGrid.getSelectedRows().isEmpty()) {
+      samples = view.submissionsGrid.getSelectedRows().stream()
+          .map(o -> ((SubmissionSample) o).getSubmission()).flatMap(s -> s.getSamples().stream())
+          .collect(Collectors.toList());
+    } else {
+      samples = view.savedSamples();
+    }
+    window.setSelectedSamples(samples);
+    window.center();
+    window.selectedSamplesProperty().addValueChangeListener(e -> {
+      window.close();
+      @SuppressWarnings("unchecked")
+      List<Sample> selectedSamples = (List<Sample>) e.getProperty().getValue();
+      view.submissionsGrid.deselectAll();
+      view.saveSamples(selectedSamples);
+      logger.debug("Selected samples {}", selectedSamples);
+    });
+    view.addWindow(window);
+  }
+
   private void updateStatus() {
-    view.saveSubmissions(view.submissionsGrid.getSelectedRows().stream()
-        .map(sample -> ((SubmissionSample) sample).getSubmission()).collect(Collectors.toList()));
+    if (!view.submissionsGrid.getSelectedRows().isEmpty()) {
+      List<Submission> submissions = view.submissionsGrid.getSelectedRows().stream()
+          .map(sample -> ((SubmissionSample) sample).getSubmission()).collect(Collectors.toList());
+      view.saveSamples(
+          submissions.stream().flatMap(s -> s.getSamples().stream()).collect(Collectors.toList()));
+    }
     view.navigateTo(SampleStatusView.VIEW_NAME);
   }
 

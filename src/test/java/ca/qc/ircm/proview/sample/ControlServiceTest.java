@@ -26,6 +26,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -42,6 +43,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -51,7 +53,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ControlServiceTest {
-  private ControlService controlServiceImpl;
+  private ControlService controlService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -79,14 +81,18 @@ public class ControlServiceTest {
    */
   @Before
   public void beforeTest() {
-    controlServiceImpl = new ControlService(entityManager, queryFactory, sampleActivityService,
+    controlService = new ControlService(entityManager, queryFactory, sampleActivityService,
         activityService, tubeService, authorizationService);
     optionalActivity = Optional.of(activity);
   }
 
+  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
+    return datas.stream().filter(d -> d.getId() == id).findAny();
+  }
+
   @Test
   public void get_Id() {
-    Control control = controlServiceImpl.get(444L);
+    Control control = controlService.get(444L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 444L, control.getId());
@@ -102,9 +108,19 @@ public class ControlServiceTest {
 
   @Test
   public void get_NullId() {
-    Control control = controlServiceImpl.get(null);
+    Control control = controlService.get(null);
 
     assertNull(control);
+  }
+
+  @Test
+  public void all() {
+    List<Control> controls = controlService.all();
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(2, controls.size());
+    assertTrue(find(controls, 444).isPresent());
+    assertTrue(find(controls, 448).isPresent());
   }
 
   @Test
@@ -119,7 +135,7 @@ public class ControlServiceTest {
         .thenReturn("nc_test_000001");
     when(sampleActivityService.insertControl(any(Control.class))).thenReturn(activity);
 
-    controlServiceImpl.insert(control);
+    controlService.insert(control);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -127,7 +143,7 @@ public class ControlServiceTest {
     verify(tubeService).generateTubeName(eq(control), stringsCaptor.capture());
     assertEquals(true, stringsCaptor.getValue().isEmpty());
     verify(activityService).insert(activity);
-    Control testControl = controlServiceImpl.get(control.getId());
+    Control testControl = controlService.get(control.getId());
     assertEquals(true, testControl.getLims().toUpperCase().startsWith("CONTROL"));
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(SampleSupport.GEL, testControl.getSupport());
@@ -155,7 +171,7 @@ public class ControlServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    controlServiceImpl.update(control, "test changes");
+    controlService.update(control, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -193,7 +209,7 @@ public class ControlServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    controlServiceImpl.update(control, "test changes");
+    controlService.update(control, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -233,7 +249,7 @@ public class ControlServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    controlServiceImpl.update(control, "test changes");
+    controlService.update(control, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -266,7 +282,7 @@ public class ControlServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    controlServiceImpl.update(control, "test changes");
+    controlService.update(control, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();

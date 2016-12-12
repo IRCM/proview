@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.sample.web;
 
 import ca.qc.ircm.proview.web.Menu;
-import ca.qc.ircm.proview.web.component.SavedSubmissionsComponent;
+import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
@@ -33,7 +33,7 @@ import javax.inject.Inject;
 @SpringView(name = SampleStatusView.VIEW_NAME)
 @RolesAllowed({ "ADMIN" })
 public class SampleStatusView extends SampleStatusViewDesign
-    implements BaseView, SavedSubmissionsComponent {
+    implements BaseView, SavedSamplesComponent {
   private static final long serialVersionUID = -2790503384190960260L;
   public static final String VIEW_NAME = "samples/status";
   protected Menu menu = new Menu();

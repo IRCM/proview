@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,6 +91,19 @@ public class ControlService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Control.class, id);
+  }
+
+  /**
+   * Returns all controls.
+   *
+   * @return all controls
+   */
+  public List<Control> all() {
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Control> query = queryFactory.select(control);
+    query.from(control);
+    return query.fetch();
   }
 
   /**

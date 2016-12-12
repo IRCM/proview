@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
@@ -118,6 +119,15 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
         .message(SubmissionAnalysesWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
     assertNotNull(submissionWindow.findElement(className(ANALYSIS)));
+  }
+
+  @Test
+  @WithSubject
+  public void selectSamples() throws Throwable {
+    admin = true;
+    open();
+
+    fail("Program test");
   }
 
   @Test

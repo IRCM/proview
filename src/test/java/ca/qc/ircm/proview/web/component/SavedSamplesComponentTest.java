@@ -35,7 +35,7 @@
 
 package ca.qc.ircm.proview.web.component;
 
-import static ca.qc.ircm.proview.web.WebConstants.SAVED_SUBMISSIONS;
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -43,9 +43,8 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.component.SavedSubmissionsComponent;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
@@ -61,17 +60,17 @@ import java.util.Collection;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SavedSubmissionsComponentTest {
-  private SavedSubmissionsComponent component;
+public class SavedSamplesComponentTest {
+  private SavedSamplesComponent component;
   @Mock
   private UI ui;
   @Mock
   private ConnectorTracker connectorTracker;
   @Mock
   private VaadinSession session;
-  private Collection<Submission> submissions = new ArrayList<>();
-  private Submission submission1;
-  private Submission submission2;
+  private Collection<Sample> samples = new ArrayList<>();
+  private Sample sample1;
+  private Sample sample2;
 
   /**
    * Before test.
@@ -82,56 +81,56 @@ public class SavedSubmissionsComponentTest {
     when(ui.getSession()).thenReturn(session);
     when(session.hasLock()).thenReturn(true);
     component = new TestComponent();
-    submissions.add(submission1);
-    submissions.add(submission2);
+    samples.add(sample1);
+    samples.add(sample2);
   }
 
   @Test
-  public void saveSubmissions() {
-    component.saveSubmissions(submissions);
+  public void saveSamples() {
+    component.saveSamples(samples);
 
     verify(ui, atLeastOnce()).getSession();
-    verify(session).setAttribute(SAVED_SUBMISSIONS, submissions);
+    verify(session).setAttribute(SAVED_SAMPLES, samples);
   }
 
   @Test
-  public void savedSubmissions() {
-    when(session.getAttribute(any(String.class))).thenReturn(submissions);
+  public void savedSamples() {
+    when(session.getAttribute(any(String.class))).thenReturn(samples);
 
-    Collection<Submission> submissions = component.savedSubmissions();
+    Collection<Sample> samples = component.savedSamples();
 
-    assertEquals(this.submissions.size(), submissions.size());
-    assertTrue(this.submissions.containsAll(submissions));
-    assertTrue(submissions.containsAll(this.submissions));
+    assertEquals(this.samples.size(), samples.size());
+    assertTrue(this.samples.containsAll(samples));
+    assertTrue(samples.containsAll(this.samples));
     verify(ui, atLeastOnce()).getSession();
-    verify(session).getAttribute(SAVED_SUBMISSIONS);
+    verify(session).getAttribute(SAVED_SAMPLES);
   }
 
   @Test
-  public void savedSubmissions_Null() {
+  public void savedSamples_Null() {
     when(session.getAttribute(any(String.class))).thenReturn(null);
 
-    Collection<Submission> submissions = component.savedSubmissions();
+    Collection<Sample> samples = component.savedSamples();
 
-    assertTrue(submissions.isEmpty());
+    assertTrue(samples.isEmpty());
     verify(ui, atLeastOnce()).getSession();
-    verify(session).getAttribute(SAVED_SUBMISSIONS);
+    verify(session).getAttribute(SAVED_SAMPLES);
   }
 
   @Test
-  public void savedSubmissions_ModifyList() {
-    when(session.getAttribute(any(String.class))).thenReturn(submissions);
-    final int size = submissions.size();
-    Collection<Submission> submissions = component.savedSubmissions();
-    submissions.remove(0);
+  public void savedSamples_ModifyList() {
+    when(session.getAttribute(any(String.class))).thenReturn(samples);
+    final int size = samples.size();
+    Collection<Sample> samples = component.savedSamples();
+    samples.remove(0);
 
-    submissions = component.savedSubmissions();
+    samples = component.savedSamples();
 
-    assertEquals(size, submissions.size());
+    assertEquals(size, samples.size());
   }
 
   @SuppressWarnings("serial")
-  private class TestComponent extends CustomComponent implements SavedSubmissionsComponent {
+  private class TestComponent extends CustomComponent implements SavedSamplesComponent {
     @Override
     public UI getUI() {
       return ui;
