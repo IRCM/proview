@@ -96,6 +96,7 @@ public class SubmissionsViewPresenter {
   public static final String LINKED_TO_RESULTS = "results";
   public static final String ALL = "all";
   public static final String SELECT_SAMPLES = "selectSamples";
+  public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final Object[] columns = new Object[] { EXPERIENCE, SAMPLE_COUNT, SAMPLE_NAME,
       EXPERIENCE_GOAL, SAMPLE_STATUS, DATE, LINKED_TO_RESULTS };
@@ -165,6 +166,9 @@ public class SubmissionsViewPresenter {
     view.selectSamplesButton.addStyleName(SELECT_SAMPLES);
     view.selectSamplesButton.setCaption(resources.message(SELECT_SAMPLES));
     view.selectSamplesButton.setVisible(authorizationService.hasAdminRole());
+    view.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
+    view.selectedSamplesLabel
+        .setCaption(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
     view.updateStatusButton.addStyleName(UPDATE_STATUS);
     view.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     view.updateStatusButton.setVisible(authorizationService.hasAdminRole());
@@ -375,10 +379,13 @@ public class SubmissionsViewPresenter {
     window.center();
     window.selectedSamplesProperty().addValueChangeListener(e -> {
       window.close();
+      MessageResource resources = view.getResources();
       @SuppressWarnings("unchecked")
       List<Sample> selectedSamples = (List<Sample>) e.getProperty().getValue();
       view.submissionsGrid.deselectAll();
       view.saveSamples(selectedSamples);
+      view.selectedSamplesLabel
+          .setCaption(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
       logger.debug("Selected samples {}", selectedSamples);
     });
     view.addWindow(window);

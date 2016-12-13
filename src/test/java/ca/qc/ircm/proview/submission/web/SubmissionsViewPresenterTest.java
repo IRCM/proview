@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.STATUS;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COMPONENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
@@ -30,6 +29,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
@@ -48,6 +48,7 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
+import ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
@@ -168,6 +169,7 @@ public class SubmissionsViewPresenterTest {
     view.headerLabel = new Label();
     view.submissionsGrid = new Grid();
     view.selectSamplesButton = new Button();
+    view.selectedSamplesLabel = new Label();
     view.updateStatusButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -378,6 +380,7 @@ public class SubmissionsViewPresenterTest {
     assertTrue(view.submissionsGrid.getStyleName().contains(SUBMISSIONS));
     assertTrue(view.submissionsGrid.getStyleName().contains(COMPONENTS));
     assertTrue(view.selectSamplesButton.getStyleName().contains(SELECT_SAMPLES));
+    assertTrue(view.selectedSamplesLabel.getStyleName().contains(SELECT_SAMPLES_LABEL));
     assertTrue(view.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
   }
 
@@ -392,9 +395,12 @@ public class SubmissionsViewPresenterTest {
     }
     Container.Indexed container = view.submissionsGrid.getContainerDataSource();
     SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Object statusValue = container.getItem(sample).getItemProperty(STATUS).getValue();
+    Object statusValue =
+        container.getItem(sample).getItemProperty(SampleStatusViewPresenter.STATUS).getValue();
     assertEquals(sample.getStatus().getLabel(locale), statusValue);
     assertEquals(resources.message(SELECT_SAMPLES), view.selectSamplesButton.getCaption());
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0),
+        view.selectedSamplesLabel.getCaption());
     assertEquals(resources.message(UPDATE_STATUS), view.updateStatusButton.getCaption());
   }
 
@@ -546,6 +552,8 @@ public class SubmissionsViewPresenterTest {
     assertEquals(1, savedSamples.size());
     assertTrue(savedSamples.contains(sample2));
     assertTrue(view.submissionsGrid.getSelectedRows().isEmpty());
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 1),
+        view.selectedSamplesLabel.getCaption());
   }
 
   @Test

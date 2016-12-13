@@ -21,11 +21,13 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.By.className;
 
+import ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter;
+import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.web.SubmissionAnalysesWindow;
@@ -83,11 +85,24 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence_User() throws Throwable {
     open();
 
-    assertNotNull(header());
-    assertNotNull(submissionsGrid());
+    assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> submissionsGrid()).isPresent());
+    assertFalse(optional(() -> selectSamplesButton()).isPresent());
+    assertFalse(optional(() -> updateStatusButton()).isPresent());
+  }
+
+  @Test
+  @WithSubject
+  public void fieldsExistence_Admin() throws Throwable {
+    open();
+
+    assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> submissionsGrid()).isPresent());
+    assertTrue(optional(() -> selectSamplesButton()).isPresent());
+    assertTrue(optional(() -> updateStatusButton()).isPresent());
   }
 
   @Test
@@ -102,7 +117,8 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     String experience = experienceByRow(0);
     assertTrue(resources(SubmissionWindow.class).message(SubmissionWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
-    assertNotNull(submissionWindow.findElement(className(SERVICE_PROPERTY)));
+    assertTrue(
+        optional(() -> submissionWindow.findElement(className(SERVICE_PROPERTY))).isPresent());
   }
 
   @Test
@@ -118,7 +134,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(resources(SubmissionAnalysesWindow.class)
         .message(SubmissionAnalysesWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
-    assertNotNull(submissionWindow.findElement(className(ANALYSIS)));
+    assertTrue(optional(() -> submissionWindow.findElement(className(ANALYSIS))).isPresent());
   }
 
   @Test
@@ -127,7 +143,16 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     admin = true;
     open();
 
-    fail("Program test");
+    clickSelectSamplesButton();
+
+    assertNotNull(findElement(className(SampleSelectionWindow.WINDOW_STYLE)));
+    WindowElement sampleSelectionWindow =
+        wrap(WindowElement.class, findElement(className(SampleSelectionWindow.WINDOW_STYLE)));
+    assertTrue(resources(SampleSelectionWindow.class).message(SampleSelectionWindow.TITLE)
+        .contains(sampleSelectionWindow.getCaption()));
+    assertTrue(optional(
+        () -> sampleSelectionWindow.findElement(className(SampleSelectionFormPresenter.SAMPLES)))
+            .isPresent());
   }
 
   @Test

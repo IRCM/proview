@@ -46,7 +46,7 @@ public class SampleSelectionFormPresenter {
   public static final String SELECT = "select";
   public static final String CLEAR = "clear";
   public static final Object[] SAMPLES_COLUMNS = new Object[] { NAME, EXPERIENCE, STATUS };
-  public static final Object[] CONTROLS_COLUMNS = new Object[] { NAME };
+  public static final Object[] CONTROLS_COLUMNS = new Object[] { NAME, CONTROL_TYPE };
   private SampleSelectionForm view;
   private ObjectProperty<List<Sample>> selectedSamples = new ObjectProperty<>(new ArrayList<>());
   private BeanItemContainer<SubmissionSample> samplesContainer =
@@ -91,6 +91,7 @@ public class SampleSelectionFormPresenter {
     view.samplesGrid.setSelectionMode(SelectionMode.MULTI);
     view.samplesGrid.setContainerDataSource(samplesGridContainer);
     view.samplesGrid.setColumns(SAMPLES_COLUMNS);
+    view.samplesGrid.setFrozenColumnCount(1);
     for (Object propertyId : SAMPLES_COLUMNS) {
       view.samplesGrid.getColumn(propertyId)
           .setHeaderCaption(resources.message((String) propertyId));
@@ -99,11 +100,14 @@ public class SampleSelectionFormPresenter {
     view.controlsPanel.addStyleName(CONTROLS_PANEL);
     view.controlsPanel.setCaption(resources.message(CONTROLS_PANEL));
     controlsContainer.addAll(controlService.all());
+    controlsGridContainer.addGeneratedProperty(CONTROL_TYPE,
+        new ControlTypeGenerator(() -> view.getLocale()));
     view.controlsGrid.setSizeFull();
     view.controlsGrid.addStyleName(CONTROLS);
     view.controlsGrid.setSelectionMode(SelectionMode.MULTI);
     view.controlsGrid.setContainerDataSource(controlsGridContainer);
     view.controlsGrid.setColumns(CONTROLS_COLUMNS);
+    view.controlsGrid.setFrozenColumnCount(1);
     for (Object propertyId : CONTROLS_COLUMNS) {
       view.controlsGrid.getColumn(propertyId)
           .setHeaderCaption(resources.message((String) propertyId));
