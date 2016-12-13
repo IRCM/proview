@@ -399,8 +399,7 @@ public class SubmissionsViewPresenterTest {
         container.getItem(sample).getItemProperty(SampleStatusViewPresenter.STATUS).getValue();
     assertEquals(sample.getStatus().getLabel(locale), statusValue);
     assertEquals(resources.message(SELECT_SAMPLES), view.selectSamplesButton.getCaption());
-    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0),
-        view.selectedSamplesLabel.getCaption());
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0), view.selectedSamplesLabel.getValue());
     assertEquals(resources.message(UPDATE_STATUS), view.updateStatusButton.getCaption());
   }
 
@@ -552,8 +551,7 @@ public class SubmissionsViewPresenterTest {
     assertEquals(1, savedSamples.size());
     assertTrue(savedSamples.contains(sample2));
     assertTrue(view.submissionsGrid.getSelectedRows().isEmpty());
-    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 1),
-        view.selectedSamplesLabel.getCaption());
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 1), view.selectedSamplesLabel.getValue());
   }
 
   @Test

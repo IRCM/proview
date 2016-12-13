@@ -168,7 +168,7 @@ public class SubmissionsViewPresenter {
     view.selectSamplesButton.setVisible(authorizationService.hasAdminRole());
     view.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
     view.selectedSamplesLabel
-        .setCaption(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
+        .setValue(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
     view.updateStatusButton.addStyleName(UPDATE_STATUS);
     view.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     view.updateStatusButton.setVisible(authorizationService.hasAdminRole());
@@ -385,7 +385,7 @@ public class SubmissionsViewPresenter {
       view.submissionsGrid.deselectAll();
       view.saveSamples(selectedSamples);
       view.selectedSamplesLabel
-          .setCaption(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
+          .setValue(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
       logger.debug("Selected samples {}", selectedSamples);
     });
     view.addWindow(window);
