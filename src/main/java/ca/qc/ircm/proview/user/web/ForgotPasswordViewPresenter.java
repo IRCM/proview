@@ -142,8 +142,7 @@ public class ForgotPasswordViewPresenter {
     } catch (CommitException e) {
       final MessageResource generalResources =
           new MessageResource(GENERAL_MESSAGES, view.getLocale());
-      logger.trace("Validation {} failed with message {}",
-          e instanceof CommitException ? "commit" : "value", e.getMessage(), e);
+      logger.trace("Validation commit failed with message {}", e.getMessage(), e);
       view.showError(generalResources.message(FIELD_NOTIFICATION));
       return false;
     }

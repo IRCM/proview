@@ -34,7 +34,7 @@ public class AccessView extends AccessViewDesign implements BaseView {
   public static final String VIEW_NAME = "user/access";
   private static final long serialVersionUID = -1897739429426168438L;
   @Inject
-  private AccessViewPresenter presenter;
+  private transient AccessViewPresenter presenter;
   protected Menu menu = new Menu();
 
   @PostConstruct

@@ -36,7 +36,7 @@ public class MainView extends MainViewDesign implements BaseView {
   protected Menu menu = new Menu();
   protected CustomLoginForm signForm = new CustomLoginForm();
   @Inject
-  private MainViewPresenter presenter;
+  private transient MainViewPresenter presenter;
 
   /**
    * Creates main view.

@@ -31,8 +31,8 @@ public class FunctionFilter implements Filter {
       (itemValue, value) -> value == null ? itemValue == null : value.equals(itemValue);
   private final Object propertyId;
   private final Object value;
-  private final BiFunction<Object, Item, Object> itemValueFunction;
-  private final BiFunction<Object, Object, Boolean> comparisonFunction;
+  private final transient BiFunction<Object, Item, Object> itemValueFunction;
+  private final transient BiFunction<Object, Object, Boolean> comparisonFunction;
 
   /**
    * Creates function filter.

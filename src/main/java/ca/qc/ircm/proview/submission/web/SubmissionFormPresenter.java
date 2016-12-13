@@ -296,42 +296,38 @@ public class SubmissionFormPresenter {
   public static final String FORM_CAPTION_STYLE = "formcaption";
   public static final String CLICKABLE_STYLE = "clickable";
   public static final String HIDE_REQUIRED_STYLE = "hide-required";
-  public static final ProteolyticDigestion[] DIGESTIONS =
+  static final ProteolyticDigestion[] DIGESTIONS =
       new ProteolyticDigestion[] { TRYPSIN, DIGESTED, ProteolyticDigestion.OTHER };
-  public static final ProteinIdentification[] PROTEIN_IDENTIFICATIONS =
+  static final ProteinIdentification[] PROTEIN_IDENTIFICATIONS =
       new ProteinIdentification[] { REFSEQ, UNIPROT, ProteinIdentification.OTHER };
-  public static final Service[] SERVICES =
-      new Service[] { LC_MS_MS, SMALL_MOLECULE, INTACT_PROTEIN };
-  public static final SampleSupport[] SUPPORT = new SampleSupport[] { SOLUTION, DRY, GEL };
-  public static final StorageTemperature[] STORAGE_TEMPERATURES =
-      new StorageTemperature[] { MEDIUM, LOW };
-  public static final GelSeparation[] SEPARATION =
-      new GelSeparation[] { ONE_DIMENSION, TWO_DIMENSION };
-  public static final GelThickness[] THICKNESS = new GelThickness[] { ONE, ONE_HALF, TWO };
-  public static final GelColoration[] COLORATION =
+  static final Service[] SERVICES = new Service[] { LC_MS_MS, SMALL_MOLECULE, INTACT_PROTEIN };
+  static final SampleSupport[] SUPPORT = new SampleSupport[] { SOLUTION, DRY, GEL };
+  static final StorageTemperature[] STORAGE_TEMPERATURES = new StorageTemperature[] { MEDIUM, LOW };
+  static final GelSeparation[] SEPARATION = new GelSeparation[] { ONE_DIMENSION, TWO_DIMENSION };
+  static final GelThickness[] THICKNESS = new GelThickness[] { ONE, ONE_HALF, TWO };
+  static final GelColoration[] COLORATION =
       new GelColoration[] { GelColoration.COOMASSIE, GelColoration.SYPRO, GelColoration.SILVER,
           GelColoration.SILVER_INVITROGEN, GelColoration.OTHER };
-  public static final InjectionType[] INJECTION_TYPES =
-      new InjectionType[] { LC_MS, DIRECT_INFUSION };
-  public static final MassDetectionInstrumentSource[] SOURCES =
+  static final InjectionType[] INJECTION_TYPES = new InjectionType[] { LC_MS, DIRECT_INFUSION };
+  static final MassDetectionInstrumentSource[] SOURCES =
       new MassDetectionInstrumentSource[] { ESI, NSI };
-  public static final ProteinContent[] PROTEIN_CONTENTS = new ProteinContent[] {
-      ProteinContent.SMALL, ProteinContent.MEDIUM, ProteinContent.LARGE, ProteinContent.XLARGE };
-  public static final MassDetectionInstrument[] INSTRUMENTS =
+  static final ProteinContent[] PROTEIN_CONTENTS = new ProteinContent[] { ProteinContent.SMALL,
+      ProteinContent.MEDIUM, ProteinContent.LARGE, ProteinContent.XLARGE };
+  static final MassDetectionInstrument[] INSTRUMENTS =
       new MassDetectionInstrument[] { VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION };
-  public static final Quantification[] QUANTIFICATION = new Quantification[] { LABEL_FREE, SILAC };
-  private static final Object[] samplesColumns = new Object[] { SAMPLE_NAME_PROPERTY };
-  private static final Object[] intactProteinSamplesColumns = new Object[] { SAMPLE_NAME_PROPERTY,
-      SAMPLE_NUMBER_PROTEIN_PROPERTY, PROTEIN_WEIGHT_PROPERTY };
-  private static final Object[] standardsColumns = new Object[] { STANDARD_NAME_PROPERTY,
+  static final Quantification[] QUANTIFICATION = new Quantification[] { LABEL_FREE, SILAC };
+  private static final Object[] SAMPLES_COLUMNS = new Object[] { SAMPLE_NAME_PROPERTY };
+  private static final Object[] INTACT_PROTEIN_SAMPLES_COLUMNS = new Object[] {
+      SAMPLE_NAME_PROPERTY, SAMPLE_NUMBER_PROTEIN_PROPERTY, PROTEIN_WEIGHT_PROPERTY };
+  private static final Object[] STANDARDS_COLUMNS = new Object[] { STANDARD_NAME_PROPERTY,
       STANDARD_QUANTITY_PROPERTY, STANDARD_COMMENTS_PROPERTY };
-  private static final Object[] contaminantsColumns = new Object[] { CONTAMINANT_NAME_PROPERTY,
+  private static final Object[] CONTAMINANTS_COLUMNS = new Object[] { CONTAMINANT_NAME_PROPERTY,
       CONTAMINANT_QUANTITY_PROPERTY, CONTAMINANT_COMMENTS_PROPERTY };
-  private static final Object[] gelImagesColumns = new Object[] { GEL_IMAGE_FILENAME_PROPERTY };
-  private static final Object[] editableGelImagesColumns =
+  private static final Object[] GEL_IMAGES_COLUMNS = new Object[] { GEL_IMAGE_FILENAME_PROPERTY };
+  private static final Object[] EDITABLE_GEL_IMAGES_COLUMNS =
       new Object[] { GEL_IMAGE_FILENAME_PROPERTY, REMOVE_GEL_IMAGE };
-  private static final Object[] filesColumns = new Object[] { FILE_FILENAME_PROPERTY };
-  private static final Object[] editableFilesColumns =
+  private static final Object[] FILES_COLUMNS = new Object[] { FILE_FILENAME_PROPERTY };
+  private static final Object[] EDITABLE_FILES_COLUMNS =
       new Object[] { FILE_FILENAME_PROPERTY, REMOVE_FILE };
   private static final int MAX_SAMPLE_COUNT = 200;
   private static final int MAX_STANDARD_COUNT = 10;
@@ -484,7 +480,7 @@ public class SubmissionFormPresenter {
     view.filesTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
     view.filesTable.setContainerDataSource(filesGeneratedContainer);
     view.filesTable.setPageLength(FILES_TABLE_LENGTH);
-    for (Object column : editableFilesColumns) {
+    for (Object column : EDITABLE_FILES_COLUMNS) {
       view.filesTable.setColumnHeader(column, resources.message(FILES_PROPERTY + "." + column));
     }
     view.submitButton.addStyleName(SUBMIT_ID);
@@ -609,7 +605,7 @@ public class SubmissionFormPresenter {
     view.samplesTable.setTableFieldFactory(sampleTableFieldFactory);
     view.samplesTable.setContainerDataSource(samplesContainer);
     view.samplesTable.setPageLength(SAMPLES_NAMES_TABLE_LENGTH);
-    view.samplesTable.setVisibleColumns(samplesColumns);
+    view.samplesTable.setVisibleColumns(SAMPLES_COLUMNS);
     view.samplesTable.setColumnHeader(SAMPLE_NAME_PROPERTY,
         resources.message(SAMPLE_NAME_PROPERTY));
     view.samplesTable.setColumnHeader(SAMPLE_NUMBER_PROTEIN_PROPERTY,
@@ -713,8 +709,8 @@ public class SubmissionFormPresenter {
     view.standardsTable.setTableFieldFactory(standardsTableFieldFactory);
     view.standardsTable.setContainerDataSource(standardsContainer);
     view.standardsTable.setPageLength(STANDARDS_TABLE_LENGTH);
-    view.standardsTable.setVisibleColumns(standardsColumns);
-    for (Object column : standardsColumns) {
+    view.standardsTable.setVisibleColumns(STANDARDS_COLUMNS);
+    for (Object column : STANDARDS_COLUMNS) {
       view.standardsTable.setColumnHeader(column,
           resources.message(STANDARD_PROPERTY + "." + column));
     }
@@ -760,8 +756,8 @@ public class SubmissionFormPresenter {
     view.contaminantsTable.setTableFieldFactory(contaminantsTableFieldFactory);
     view.contaminantsTable.setContainerDataSource(contaminantsContainer);
     view.contaminantsTable.setPageLength(CONTAMINANTS_TABLE_LENGTH);
-    view.contaminantsTable.setVisibleColumns(contaminantsColumns);
-    for (Object column : contaminantsColumns) {
+    view.contaminantsTable.setVisibleColumns(CONTAMINANTS_COLUMNS);
+    for (Object column : CONTAMINANTS_COLUMNS) {
       view.contaminantsTable.setColumnHeader(column,
           resources.message(CONTAMINANT_PROPERTY + "." + column));
     }
@@ -886,7 +882,7 @@ public class SubmissionFormPresenter {
     view.gelImagesTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
     view.gelImagesTable.setContainerDataSource(gelImagesGeneratedContainer);
     view.gelImagesTable.setPageLength(GEL_IMAGES_TABLE_LENGTH);
-    for (Object column : editableGelImagesColumns) {
+    for (Object column : EDITABLE_GEL_IMAGES_COLUMNS) {
       view.gelImagesTable.setColumnHeader(column,
           resources.message(GEL_IMAGES_PROPERTY + "." + column));
     }
@@ -1100,7 +1096,7 @@ public class SubmissionFormPresenter {
     view.samplesTable.setVisible(service == INTACT_PROTEIN
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT));
     view.samplesTable.setVisibleColumns(
-        service == INTACT_PROTEIN ? intactProteinSamplesColumns : samplesColumns);
+        service == INTACT_PROTEIN ? INTACT_PROTEIN_SAMPLES_COLUMNS : SAMPLES_COLUMNS);
     sampleTableFieldFactory.getFields(PROTEIN_WEIGHT_PROPERTY)
         .forEach(f -> f.setRequired(service == INTACT_PROTEIN));
     view.fillSamplesButton.setVisible((service == INTACT_PROTEIN
@@ -1220,7 +1216,8 @@ public class SubmissionFormPresenter {
     view.decolorationField.setReadOnly(!editable);
     view.weightMarkerQuantityField.setReadOnly(!editable);
     view.proteinQuantityField.setReadOnly(!editable);
-    view.gelImagesTable.setVisibleColumns(editable ? editableGelImagesColumns : gelImagesColumns);
+    view.gelImagesTable
+        .setVisibleColumns(editable ? EDITABLE_GEL_IMAGES_COLUMNS : GEL_IMAGES_COLUMNS);
     view.digestionOptions.setReadOnly(!editable);
     view.usedProteolyticDigestionMethodField.setReadOnly(!editable);
     view.otherProteolyticDigestionMethodField.setReadOnly(!editable);
@@ -1239,7 +1236,7 @@ public class SubmissionFormPresenter {
     view.otherSolventsField.setReadOnly(!editable);
     view.otherSolventField.setReadOnly(!editable);
     view.commentsField.setReadOnly(!editable);
-    view.filesTable.setVisibleColumns(editable ? editableFilesColumns : filesColumns);
+    view.filesTable.setVisibleColumns(editable ? EDITABLE_FILES_COLUMNS : FILES_COLUMNS);
   }
 
   private void bindFields() {

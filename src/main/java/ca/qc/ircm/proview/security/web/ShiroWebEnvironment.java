@@ -59,13 +59,13 @@ public class ShiroWebEnvironment extends IniWebEnvironment {
    *          realm
    */
   public void setRealm(final Realm realm) {
-    Collection<Realm> realms = new ArrayList<Realm>(1);
+    Collection<Realm> realms = new ArrayList<>(1);
     realms.add(realm);
     this.setRealms(realms);
   }
 
   public void setCipherKey(byte[] cipherKey) {
-    this.cipherKey = cipherKey;
+    this.cipherKey = cipherKey.clone();
   }
 
   public void setRealms(Collection<Realm> realms) {

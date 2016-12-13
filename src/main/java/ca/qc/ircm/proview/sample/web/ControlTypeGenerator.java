@@ -32,7 +32,7 @@ import java.util.function.Supplier;
  */
 public class ControlTypeGenerator extends PropertyValueGenerator<String> {
   private static final long serialVersionUID = -3329280893598906015L;
-  private Supplier<Locale> localeSupplier;
+  private transient Supplier<Locale> localeSupplier;
 
   public ControlTypeGenerator(Supplier<Locale> localeSupplier) {
     this.localeSupplier = localeSupplier;

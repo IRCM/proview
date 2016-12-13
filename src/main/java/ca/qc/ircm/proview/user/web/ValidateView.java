@@ -34,7 +34,7 @@ public class ValidateView extends ValidateViewDesign implements BaseView {
   public static final String VIEW_NAME = "user/validate";
   private static final long serialVersionUID = -1956061543048432065L;
   @Inject
-  private ValidateViewPresenter presenter;
+  private transient ValidateViewPresenter presenter;
   protected Menu menu = new Menu();
 
   @PostConstruct

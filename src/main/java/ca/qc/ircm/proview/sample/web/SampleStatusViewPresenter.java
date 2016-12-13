@@ -80,7 +80,7 @@ public class SampleStatusViewPresenter {
   public static final String CANCEL = "cancel";
   public static final String COMPONENTS = "components";
   public static final String INVALID_SUBMISSIONS = "submissions.invalid";
-  public static final Object[] samplesColumns =
+  private static final Object[] SAMPLES_COLUMNS =
       new Object[] { NAME, EXPERIENCE, STATUS, NEW_STATUS, DOWN };
   public static final String SPLIT_SAMPLES_PARAMETERS = ",";
   private static final Logger logger = LoggerFactory.getLogger(SampleStatusViewPresenter.class);
@@ -166,8 +166,8 @@ public class SampleStatusViewPresenter {
     ComponentCellKeyExtension.extend(view.samplesGrid);
     view.samplesGrid.setContainerDataSource(samplesGridContainer);
     view.samplesGrid.setSelectionMode(SelectionMode.MULTI);
-    view.samplesGrid.setColumns(samplesColumns);
-    for (Object propertyId : samplesColumns) {
+    view.samplesGrid.setColumns(SAMPLES_COLUMNS);
+    for (Object propertyId : SAMPLES_COLUMNS) {
       view.samplesGrid.getColumn(propertyId)
           .setHeaderCaption(resources.message((String) propertyId));
     }
@@ -222,8 +222,7 @@ public class SampleStatusViewPresenter {
     } catch (CommitException e) {
       final MessageResource generalResources =
           new MessageResource(GENERAL_MESSAGES, view.getLocale());
-      logger.trace("Validation {} failed with message {}",
-          e instanceof CommitException ? "commit" : "value", e.getMessage(), e);
+      logger.trace("Validation commit failed with message {}", e.getMessage(), e);
       view.showError(generalResources.message(FIELD_NOTIFICATION));
       valid = false;
     }
@@ -335,5 +334,9 @@ public class SampleStatusViewPresenter {
     samplesContainer.removeAllItems();
     samplesContainer.addAll(samples);
     samples.forEach(s -> view.samplesGrid.select(s));
+  }
+
+  public static Object[] getSamplesColumns() {
+    return SAMPLES_COLUMNS.clone();
   }
 }

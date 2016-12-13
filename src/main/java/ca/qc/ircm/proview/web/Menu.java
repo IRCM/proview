@@ -76,9 +76,9 @@ public class Menu extends CustomComponent implements BaseComponent {
   private MenuItem contact;
   private MenuItem help;
   @Inject
-  private AuthorizationService authorizationService;
+  private transient AuthorizationService authorizationService;
   @Inject
-  private AuthenticationService authenticationService;
+  private transient AuthenticationService authenticationService;
 
   /**
    * Creates navigation menu.
@@ -192,7 +192,7 @@ public class Menu extends CustomComponent implements BaseComponent {
   }
 
   private void stopSignas() {
-    if (authenticationService != null && authenticationService != null) {
+    if (authenticationService != null && authorizationService != null) {
       logger.debug("Stop sign as user {}", authorizationService.getCurrentUser());
       authenticationService.stopRunAs();
       changeView(MainView.VIEW_NAME);

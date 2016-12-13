@@ -44,7 +44,7 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   protected abstract boolean isAdmin();
 
   private int gridColumnIndex(String property) {
-    Object[] columns = SubmissionsViewPresenter.columns;
+    Object[] columns = SubmissionsViewPresenter.getColumns();
     for (int i = 0; i < columns.length; i++) {
       if (property.equals(columns[i])) {
         return i + (isAdmin() ? 1 : 0); // +1 because of select column.

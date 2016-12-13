@@ -59,7 +59,7 @@ public class SubmissionAnalysesFormPresenter {
   public static final String NAME = SAMPLE + "." + acquisition.sample.name.getMetadata().getName();
   public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
   public static final String ACQUISITION_INDEX = acquisition.listIndex.getMetadata().getName();
-  public static final Object[] ACQUISITIONS_COLUMNS = new Object[] { NAME, ACQUISITION_FILE };
+  private static final Object[] ACQUISITIONS_COLUMNS = new Object[] { NAME, ACQUISITION_FILE };
   @SuppressWarnings("unused")
   private static final Logger logger =
       LoggerFactory.getLogger(SubmissionAnalysesFormPresenter.class);
@@ -84,7 +84,7 @@ public class SubmissionAnalysesFormPresenter {
   }
 
   private void createAnalysisPanel(MsAnalysis analysis) {
-    MessageResource resources = view.getResources();
+    final MessageResource resources = view.getResources();
     Panel panel = new Panel();
     view.addComponent(panel);
     VerticalLayout layout = new VerticalLayout();
@@ -119,7 +119,7 @@ public class SubmissionAnalysesFormPresenter {
    */
   @SuppressWarnings("unchecked")
   public void setItemDataSource(Item item) {
-    if (!(item instanceof BeanItem)) {
+    if (item != null && !(item instanceof BeanItem)) {
       throw new IllegalArgumentException("item must be null or a BeanItem containing a submission");
     }
 
@@ -129,5 +129,9 @@ public class SubmissionAnalysesFormPresenter {
     analyses.forEach(analysis -> {
       createAnalysisPanel(analysis);
     });
+  }
+
+  public static Object[] getAcquisitionsColumns() {
+    return ACQUISITIONS_COLUMNS.clone();
   }
 }

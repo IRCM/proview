@@ -32,7 +32,7 @@ public class ContactView extends ContactViewDesign implements BaseView {
   public static final String VIEW_NAME = "contact";
   protected Menu menu = new Menu();
   @Inject
-  private ContactViewPresenter presenter;
+  private transient ContactViewPresenter presenter;
 
   @PostConstruct
   public void init() {

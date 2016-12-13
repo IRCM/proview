@@ -46,7 +46,7 @@ public abstract class SampleStatusPageObject extends AbstractTestBenchTestCase {
   }
 
   private int gridColumnIndex(String property) {
-    Object[] columns = SampleStatusViewPresenter.samplesColumns;
+    Object[] columns = SampleStatusViewPresenter.getSamplesColumns();
     for (int i = 0; i < columns.length; i++) {
       if (property.equals(columns[i])) {
         return i + 1; // +1 because of select column.

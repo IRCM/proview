@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web.integration;
 
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.COLUMNS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
@@ -29,6 +28,7 @@ import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.SignasView;
+import ca.qc.ircm.proview.user.web.SignasViewPresenter;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.LabelElement;
@@ -52,8 +52,9 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   }
 
   private static int gridColumnIndex(String property) {
-    for (int i = 0; i < COLUMNS.length; i++) {
-      if (property.equals(COLUMNS[i])) {
+    String[] columns = SignasViewPresenter.getColumns();
+    for (int i = 0; i < columns.length; i++) {
+      if (property.equals(columns[i])) {
         return i;
       }
     }

@@ -24,7 +24,7 @@ import ca.qc.ircm.proview.web.component.BaseComponent;
  */
 public class SubmissionAnalysesForm extends SubmissionAnalysesFormDesign implements BaseComponent {
   private static final long serialVersionUID = 3301905236780067587L;
-  private SubmissionAnalysesFormPresenter presenter;
+  private transient SubmissionAnalysesFormPresenter presenter;
 
   public void setPresenter(SubmissionAnalysesFormPresenter presenter) {
     this.presenter = presenter;

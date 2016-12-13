@@ -24,7 +24,7 @@ import ca.qc.ircm.proview.web.component.BaseComponent;
  */
 public class LaboratoryForm extends LaboratoryFormDesign implements BaseComponent {
   private static final long serialVersionUID = 6501017653094381754L;
-  private LaboratoryFormPresenter presenter;
+  private transient LaboratoryFormPresenter presenter;
 
   public void setPresenter(LaboratoryFormPresenter presenter) {
     this.presenter = presenter;

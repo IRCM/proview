@@ -24,7 +24,7 @@ import ca.qc.ircm.proview.web.component.BaseComponent;
  */
 public class SampleSelectionForm extends SampleSelectionFormDesign implements BaseComponent {
   private static final long serialVersionUID = -2890553778973734044L;
-  private SampleSelectionFormPresenter presenter;
+  private transient SampleSelectionFormPresenter presenter;
 
   public void setPresenter(SampleSelectionFormPresenter presenter) {
     this.presenter = presenter;

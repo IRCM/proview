@@ -38,7 +38,7 @@ public class SampleStatusView extends SampleStatusViewDesign
   public static final String VIEW_NAME = "samples/status";
   protected Menu menu = new Menu();
   @Inject
-  private SampleStatusViewPresenter presenter;
+  private transient SampleStatusViewPresenter presenter;
 
   @PostConstruct
   public void ini() {

@@ -35,9 +35,9 @@ public class SubmissionView extends SubmissionViewDesign implements BaseView {
   public static final String VIEW_NAME = "submission";
   private static final long serialVersionUID = -6009778227571187664L;
   @Inject
-  private SubmissionViewPresenter presenter;
+  private transient SubmissionViewPresenter presenter;
   @Inject
-  protected SubmissionFormPresenter submissionFormPresenter;
+  protected transient SubmissionFormPresenter submissionFormPresenter;
   protected Menu menu = new Menu();
   protected SubmissionForm submissionForm = new SubmissionForm();
 

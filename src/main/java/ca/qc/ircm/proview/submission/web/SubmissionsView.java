@@ -36,7 +36,7 @@ public class SubmissionsView extends SubmissionsViewDesign
   public static final String VIEW_NAME = "submissions";
   private static final long serialVersionUID = -7912663074202035516L;
   @Inject
-  private SubmissionsViewPresenter presenter;
+  private transient SubmissionsViewPresenter presenter;
   protected Menu menu = new Menu();
 
   @PostConstruct

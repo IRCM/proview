@@ -29,7 +29,7 @@ import java.time.Instant;
  */
 public class FilterInstantComponent extends FilterInstantComponentDesign implements BaseComponent {
   private static final long serialVersionUID = -4819761558400463539L;
-  private FilterInstantComponentPresenter presenter;
+  private transient FilterInstantComponentPresenter presenter;
 
   public FilterInstantComponent() {
     removeComponent(popupLayout);

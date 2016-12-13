@@ -19,17 +19,17 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CLEAR;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROLS;
-import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROLS_COLUMNS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROLS_PANEL;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.ORIGINAL_CONTAINER_NAME;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES;
-import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_COLUMNS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SELECT;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
+import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.getControlsColumns;
+import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.getSamplesColumns;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -128,7 +128,7 @@ public class SampleSelectionFormPresenterTest {
     presenter.init(view);
 
     assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
-    for (Object propertyId : SAMPLES_COLUMNS) {
+    for (Object propertyId : getSamplesColumns()) {
       assertEquals(resources.message((String) propertyId),
           view.samplesGrid.getColumn(propertyId).getHeaderCaption());
     }
@@ -137,7 +137,7 @@ public class SampleSelectionFormPresenterTest {
     Object statusValue = container.getItem(sample).getItemProperty(STATUS).getValue();
     assertEquals(sample.getStatus().getLabel(locale), statusValue);
     assertEquals(resources.message(CONTROLS_PANEL), view.controlsPanel.getCaption());
-    for (Object propertyId : CONTROLS_COLUMNS) {
+    for (Object propertyId : getControlsColumns()) {
       assertEquals(resources.message((String) propertyId),
           view.controlsGrid.getColumn(propertyId).getHeaderCaption());
     }

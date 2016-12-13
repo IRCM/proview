@@ -33,7 +33,7 @@ public class ForgotPasswordView extends ForgotPasswordViewDesign implements Base
   public static final String VIEW_NAME = "user/forgotpassword";
   private static final long serialVersionUID = 164307263615957137L;
   @Inject
-  private ForgotPasswordViewPresenter presenter;
+  private transient ForgotPasswordViewPresenter presenter;
   protected Menu menu = new Menu();
 
   @PostConstruct

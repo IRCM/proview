@@ -27,7 +27,7 @@ import java.util.Collection;
  * Simple implementation of {@link SampleFilter}.
  */
 public class SampleFilterBuilder {
-  public class SampleFilterDefault implements SampleFilter {
+  private static class SampleFilterDefault implements SampleFilter {
     private String experienceContains;
     private String laboratoryContains;
     private Laboratory laboratory;

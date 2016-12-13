@@ -76,6 +76,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NA
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME_PROPERTY;
@@ -1049,9 +1050,9 @@ public class SubmissionFormPresenterTest {
   public void proteinIdentification_Options() {
     presenter.init(view);
 
-    assertEquals(SubmissionFormPresenter.PROTEIN_IDENTIFICATIONS.length,
+    assertEquals(PROTEIN_IDENTIFICATIONS.length,
         view.proteinIdentificationOptions.getItemIds().size());
-    for (ProteinIdentification proteinIdentification : SubmissionFormPresenter.PROTEIN_IDENTIFICATIONS) {
+    for (ProteinIdentification proteinIdentification : PROTEIN_IDENTIFICATIONS) {
       assertTrue(proteinIdentification.name(),
           view.proteinIdentificationOptions.getItemIds().contains(proteinIdentification));
     }
@@ -1388,7 +1389,7 @@ public class SubmissionFormPresenterTest {
     }
     assertEquals(resources.message(PROTEIN_IDENTIFICATION_PROPERTY),
         view.proteinIdentificationOptions.getCaption());
-    for (ProteinIdentification proteinIdentification : SubmissionFormPresenter.PROTEIN_IDENTIFICATIONS) {
+    for (ProteinIdentification proteinIdentification : PROTEIN_IDENTIFICATIONS) {
       assertEquals(proteinIdentification.getLabel(locale),
           view.proteinIdentificationOptions.getItemCaption(proteinIdentification));
     }

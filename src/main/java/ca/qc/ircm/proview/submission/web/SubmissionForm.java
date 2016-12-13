@@ -30,7 +30,7 @@ import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
  */
 public class SubmissionForm extends SubmissionFormDesign implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
-  private SubmissionFormPresenter presenter;
+  private transient SubmissionFormPresenter presenter;
   protected UploadStateWindow uploadStateWindow;
   protected MultiFileUpload structureUploader;
   protected MultiFileUpload gelImagesUploader;

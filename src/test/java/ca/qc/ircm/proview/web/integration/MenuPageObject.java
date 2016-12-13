@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.web.integration;
 
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.COLUMNS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
 import static ca.qc.ircm.proview.web.Menu.ACCESS;
@@ -49,8 +48,9 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   private static final int SIGN_AS_COLUMN = gridColumnIndex(SignasViewPresenter.SIGN_AS);
 
   private static int gridColumnIndex(String property) {
-    for (int i = 0; i < COLUMNS.length; i++) {
-      if (property.equals(COLUMNS[i])) {
+    String[] columns = SignasViewPresenter.getColumns();
+    for (int i = 0; i < columns.length; i++) {
+      if (property.equals(columns[i])) {
         return i;
       }
     }

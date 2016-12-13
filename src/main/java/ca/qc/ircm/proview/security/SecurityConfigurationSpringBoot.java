@@ -72,7 +72,7 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
       String algorithm = passwordVersion.getAlgorithm();
       int iterations = passwordVersion.getIterations();
       if (algorithm == null) {
-        logger.error("Algorithm undefined for password", algorithm, i);
+        logger.error("Algorithm undefined for password {}", i);
         valid = false;
       }
       if (valid) {

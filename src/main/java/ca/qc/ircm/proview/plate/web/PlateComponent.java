@@ -24,7 +24,7 @@ import com.vaadin.ui.CustomComponent;
  */
 public class PlateComponent extends CustomComponent {
   private static final long serialVersionUID = -5886354033312877270L;
-  private PlateComponentPresenter presenter;
+  private transient PlateComponentPresenter presenter;
   protected PlateLayout plateLayout;
 
   public PlateComponent() {

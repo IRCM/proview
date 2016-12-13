@@ -26,7 +26,7 @@ import ca.qc.ircm.proview.web.component.BaseComponent;
  */
 public class UserForm extends UserFormDesign implements BaseComponent {
   private static final long serialVersionUID = -7630525674289902028L;
-  private UserFormPresenter presenter;
+  private transient UserFormPresenter presenter;
 
   public void setPresenter(UserFormPresenter presenter) {
     this.presenter = presenter;

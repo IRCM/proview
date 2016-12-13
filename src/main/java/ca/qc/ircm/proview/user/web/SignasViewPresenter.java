@@ -70,7 +70,7 @@ public class SignasViewPresenter {
   public static final String SIGN_AS = "signas";
   public static final String ALL = "all";
   public static final String COMPONENTS = "components";
-  public static final String[] COLUMNS =
+  private static final String[] COLUMNS =
       { EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, VIEW, SIGN_AS };
   private static final Logger logger = LoggerFactory.getLogger(SignasViewPresenter.class);
   private SignasView view;
@@ -213,5 +213,9 @@ public class SignasViewPresenter {
     authenticationService.runAs(user);
     view.showTrayNotification(resources.message(SIGN_AS + ".done", user.getEmail()));
     view.navigateTo(MainView.VIEW_NAME);
+  }
+
+  public static String[] getColumns() {
+    return COLUMNS.clone();
   }
 }

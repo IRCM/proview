@@ -32,9 +32,9 @@ public class RegisterView extends RegisterViewDesign implements BaseView {
   public static final String VIEW_NAME = "user/register";
   private static final long serialVersionUID = 7586918222688019429L;
   @Inject
-  private RegisterViewPresenter presenter;
+  private transient RegisterViewPresenter presenter;
   @Inject
-  protected UserFormPresenter userFormPresenter;
+  protected transient UserFormPresenter userFormPresenter;
   protected Menu menu = new Menu();
   protected UserForm userForm = new UserForm();
 

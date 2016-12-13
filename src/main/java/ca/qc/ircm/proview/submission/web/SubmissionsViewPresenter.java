@@ -98,10 +98,10 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_SAMPLES = "selectSamples";
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
   public static final String UPDATE_STATUS = "updateStatus";
-  public static final Object[] columns = new Object[] { EXPERIENCE, SAMPLE_COUNT, SAMPLE_NAME,
-      EXPERIENCE_GOAL, SAMPLE_STATUS, DATE, LINKED_TO_RESULTS };
   public static final String COMPONENTS = "components";
   public static final String CONDITION_FALSE = "condition-false";
+  private static final Object[] COLUMNS = new Object[] { EXPERIENCE, SAMPLE_COUNT, SAMPLE_NAME,
+      EXPERIENCE_GOAL, SAMPLE_STATUS, DATE, LINKED_TO_RESULTS };
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
   private SubmissionsView view;
   private BeanItemContainer<SubmissionSample> submissionsContainer =
@@ -253,7 +253,7 @@ public class SubmissionsViewPresenter {
     view.submissionsGrid.addStyleName(SUBMISSIONS);
     ComponentCellKeyExtension.extend(view.submissionsGrid);
     view.submissionsGrid.setContainerDataSource(submissionsGeneratedContainer);
-    view.submissionsGrid.setColumns(columns);
+    view.submissionsGrid.setColumns(COLUMNS);
     for (Column column : view.submissionsGrid.getColumns()) {
       column.setHeaderCaption(resources.message((String) column.getPropertyId()));
     }
@@ -399,6 +399,10 @@ public class SubmissionsViewPresenter {
           submissions.stream().flatMap(s -> s.getSamples().stream()).collect(Collectors.toList()));
     }
     view.navigateTo(SampleStatusView.VIEW_NAME);
+  }
+
+  public static Object[] getColumns() {
+    return COLUMNS.clone();
   }
 
   private class ResultsFilterChangeListener extends CutomNullPropertyFilterValueChangeListener {

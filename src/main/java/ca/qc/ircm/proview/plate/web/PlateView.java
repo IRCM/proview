@@ -42,9 +42,9 @@ public class PlateView extends PlateViewDesign implements BaseView {
   private PlateLayout plateLayout = new PlateLayout(12, 8);
   private PlateComponent plateComponent = new PlateComponent();
   @Inject
-  private PlateService plateService;
+  private transient PlateService plateService;
   @Inject
-  private PlateComponentPresenter plateComponentPresenter;
+  private transient PlateComponentPresenter plateComponentPresenter;
 
   /**
    * Initializes view.

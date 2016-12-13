@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.user.web.integration;
 
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVATE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.CLEAR;
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.COLUMNS;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.DEACTIVATE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.HEADER;
@@ -30,6 +29,7 @@ import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.AccessView;
+import ca.qc.ircm.proview.user.web.AccessViewPresenter;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
@@ -54,8 +54,9 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
   }
 
   private static int gridColumnIndex(String property) {
-    for (int i = 0; i < COLUMNS.length; i++) {
-      if (property.equals(COLUMNS[i])) {
+    String[] columns = AccessViewPresenter.getColumns();
+    for (int i = 0; i < columns.length; i++) {
+      if (property.equals(columns[i])) {
         return i + 1; // +1 because of select column.
       }
     }

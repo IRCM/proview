@@ -90,7 +90,7 @@ public class AccessViewPresenter {
   public static final String HIDE_SELECTION = "hide-selection";
   public static final String COMPONENTS = "components";
   public static final Object NULL_ID = -1;
-  public static final String[] COLUMNS =
+  private static final String[] COLUMNS =
       { SELECT, EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, ACTIVE, VIEW };
   private static final Logger logger = LoggerFactory.getLogger(AccessViewPresenter.class);
   private AccessView view;
@@ -384,5 +384,9 @@ public class AccessViewPresenter {
   private void clear() {
     logger.trace("Clear selected users");
     view.usersGrid.deselectAll();
+  }
+
+  public static String[] getColumns() {
+    return COLUMNS.clone();
   }
 }

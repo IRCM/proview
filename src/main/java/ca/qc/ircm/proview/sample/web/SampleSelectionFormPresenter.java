@@ -66,8 +66,8 @@ public class SampleSelectionFormPresenter {
       SUBMISSION + "." + submission.experience.getMetadata().getName();
   public static final String SELECT = "select";
   public static final String CLEAR = "clear";
-  public static final Object[] SAMPLES_COLUMNS = new Object[] { NAME, EXPERIENCE, STATUS };
-  public static final Object[] CONTROLS_COLUMNS =
+  private static final Object[] SAMPLES_COLUMNS = new Object[] { NAME, EXPERIENCE, STATUS };
+  private static final Object[] CONTROLS_COLUMNS =
       new Object[] { NAME, CONTROL_TYPE, ORIGINAL_CONTAINER_NAME };
   private SampleSelectionForm view;
   private ObjectProperty<List<Sample>> selectedSamples = new ObjectProperty<>(new ArrayList<>());
@@ -190,5 +190,13 @@ public class SampleSelectionFormPresenter {
 
   public void setSelectedSamples(List<Sample> samples) {
     selectedSamples.setValue(samples);
+  }
+
+  public static Object[] getSamplesColumns() {
+    return SAMPLES_COLUMNS.clone();
+  }
+
+  public static Object[] getControlsColumns() {
+    return CONTROLS_COLUMNS.clone();
   }
 }

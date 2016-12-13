@@ -35,9 +35,9 @@ public class UserView extends UserViewDesign implements BaseView {
   public static final String VIEW_NAME = "user/user";
   private static final long serialVersionUID = -3508418095993360485L;
   @Inject
-  private UserViewPresenter presenter;
+  private transient UserViewPresenter presenter;
   @Inject
-  protected UserFormPresenter userFormPresenter;
+  protected transient UserFormPresenter userFormPresenter;
   protected Menu menu = new Menu();
   protected UserForm userForm = new UserForm();
 

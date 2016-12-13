@@ -34,7 +34,7 @@ public class SignasView extends SignasViewDesign implements BaseView {
   public static final String VIEW_NAME = "user/signas";
   private static final long serialVersionUID = 2149245363614885816L;
   @Inject
-  private SignasViewPresenter presenter;
+  private transient SignasViewPresenter presenter;
   protected Menu menu = new Menu();
 
   @PostConstruct
