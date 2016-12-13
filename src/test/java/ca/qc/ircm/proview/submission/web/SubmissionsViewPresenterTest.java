@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.STATUS;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COMPONENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
@@ -29,6 +28,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
@@ -42,9 +43,12 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
+import ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
@@ -60,9 +64,12 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -89,6 +96,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -122,6 +130,8 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
   @Mock
+  private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
+  @Mock
   private SubmissionsView view;
   @Mock
   private Report report;
@@ -129,8 +139,16 @@ public class SubmissionsViewPresenterTest {
   private SubmissionWindow submissionWindow;
   @Mock
   private SubmissionAnalysesWindow submissionAnalysesWindow;
+  @Mock
+  private SampleSelectionWindow sampleSelectionWindow;
+  @Mock
+  private ObjectProperty<List<Sample>> selectedSamplesProperty;
   @Captor
-  private ArgumentCaptor<Collection<Submission>> submissionsCaptor;
+  private ArgumentCaptor<Collection<Sample>> samplesCaptor;
+  @Captor
+  private ArgumentCaptor<List<Sample>> samplesListCaptor;
+  @Captor
+  private ArgumentCaptor<ValueChangeListener> listenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private FilterInstantComponentPresenter filterInstantComponentPresenter =
@@ -147,9 +165,11 @@ public class SubmissionsViewPresenterTest {
   public void beforeTest() {
     presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
         filterInstantComponentPresenterProvider, submissionWindowProvider,
-        submissionAnalysesWindowProvider, applicationName);
+        submissionAnalysesWindowProvider, sampleSelectionWindowProvider, applicationName);
     view.headerLabel = new Label();
     view.submissionsGrid = new Grid();
+    view.selectSamplesButton = new Button();
+    view.selectedSamplesLabel = new Label();
     view.updateStatusButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -167,6 +187,7 @@ public class SubmissionsViewPresenterTest {
     when(filterInstantComponentPresenterProvider.get()).thenReturn(filterInstantComponentPresenter);
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
+    when(sampleSelectionWindowProvider.get()).thenReturn(sampleSelectionWindow);
   }
 
   @Test
@@ -358,6 +379,8 @@ public class SubmissionsViewPresenterTest {
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
     assertTrue(view.submissionsGrid.getStyleName().contains(SUBMISSIONS));
     assertTrue(view.submissionsGrid.getStyleName().contains(COMPONENTS));
+    assertTrue(view.selectSamplesButton.getStyleName().contains(SELECT_SAMPLES));
+    assertTrue(view.selectedSamplesLabel.getStyleName().contains(SELECT_SAMPLES_LABEL));
     assertTrue(view.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
   }
 
@@ -372,8 +395,12 @@ public class SubmissionsViewPresenterTest {
     }
     Container.Indexed container = view.submissionsGrid.getContainerDataSource();
     SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Object statusValue = container.getItem(sample).getItemProperty(STATUS).getValue();
+    Object statusValue =
+        container.getItem(sample).getItemProperty(SampleStatusViewPresenter.STATUS).getValue();
     assertEquals(sample.getStatus().getLabel(locale), statusValue);
+    assertEquals(resources.message(SELECT_SAMPLES), view.selectSamplesButton.getCaption());
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0),
+        view.selectedSamplesLabel.getCaption());
     assertEquals(resources.message(UPDATE_STATUS), view.updateStatusButton.getCaption());
   }
 
@@ -382,6 +409,7 @@ public class SubmissionsViewPresenterTest {
     presenter.init(view);
 
     assertTrue(view.submissionsGrid.getSelectionModel() instanceof SelectionModel.Single);
+    assertFalse(view.selectSamplesButton.isVisible());
     assertFalse(view.updateStatusButton.isVisible());
   }
 
@@ -391,6 +419,7 @@ public class SubmissionsViewPresenterTest {
     presenter.init(view);
 
     assertTrue(view.submissionsGrid.getSelectionModel() instanceof SelectionModel.Multi);
+    assertTrue(view.selectSamplesButton.isVisible());
     assertTrue(view.updateStatusButton.isVisible());
   }
 
@@ -491,6 +520,43 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void selectSamples() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    final SubmissionSample sample1 = submissions.get(0).getSamples().get(0);
+    final SubmissionSample sample2 = submissions.get(1).getSamples().get(0);
+    view.submissionsGrid.select(sample1);
+    view.submissionsGrid.select(sample2);
+    when(sampleSelectionWindow.selectedSamplesProperty()).thenReturn(selectedSamplesProperty);
+
+    view.selectSamplesButton.click();
+
+    verify(sampleSelectionWindowProvider).get();
+    verify(sampleSelectionWindow).setSelectedSamples(samplesListCaptor.capture());
+    List<Sample> samples = samplesListCaptor.getValue();
+    assertEquals(2, samples.size());
+    assertTrue(samples.contains(sample1));
+    assertTrue(samples.contains(sample2));
+    verify(sampleSelectionWindow).selectedSamplesProperty();
+    verify(selectedSamplesProperty).addValueChangeListener(listenerCaptor.capture());
+    verify(view).addWindow(sampleSelectionWindow);
+    ValueChangeListener listener = listenerCaptor.getValue();
+    Property.ValueChangeEvent event = mock(Property.ValueChangeEvent.class);
+    Property<Object> eventProperty = mock(Property.class);
+    when(event.getProperty()).thenReturn(eventProperty);
+    when(eventProperty.getValue()).thenReturn(Arrays.asList(sample2));
+    listener.valueChange(event);
+    verify(view).saveSamples(samplesCaptor.capture());
+    Collection<Sample> savedSamples = samplesCaptor.getValue();
+    assertEquals(1, savedSamples.size());
+    assertTrue(savedSamples.contains(sample2));
+    assertTrue(view.submissionsGrid.getSelectedRows().isEmpty());
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 1),
+        view.selectedSamplesLabel.getCaption());
+  }
+
+  @Test
   public void updateStatus() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
@@ -501,11 +567,11 @@ public class SubmissionsViewPresenterTest {
 
     view.updateStatusButton.click();
 
-    verify(view).saveSubmissions(submissionsCaptor.capture());
-    Collection<Submission> submissions = submissionsCaptor.getValue();
-    assertEquals(2, submissions.size());
-    assertTrue(submissions.contains(sample1.getSubmission()));
-    assertTrue(submissions.contains(sample2.getSubmission()));
+    verify(view).saveSamples(samplesCaptor.capture());
+    Collection<Sample> samples = samplesCaptor.getValue();
+    assertEquals(2, samples.size());
+    assertTrue(samples.contains(sample1));
+    assertTrue(samples.contains(sample2));
     verify(view).navigateTo(SampleStatusView.VIEW_NAME);
   }
 }

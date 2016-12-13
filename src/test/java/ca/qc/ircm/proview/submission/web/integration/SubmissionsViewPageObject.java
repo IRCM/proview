@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web.integration;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static org.openqa.selenium.By.className;
@@ -84,6 +85,14 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   protected void clickViewSubmissionResultsByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
     submissionsGrid.getCell(row, gridColumnIndex(LINKED_TO_RESULTS)).click();
+  }
+
+  protected ButtonElement selectSamplesButton() {
+    return wrap(ButtonElement.class, findElement(className(SELECT_SAMPLES)));
+  }
+
+  protected void clickSelectSamplesButton() {
+    selectSamplesButton().click();
   }
 
   protected ButtonElement updateStatusButton() {

@@ -23,16 +23,15 @@ import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.GENERAL_MESSAGES;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
-import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
@@ -83,7 +82,7 @@ public class SampleStatusViewPresenter {
   public static final String INVALID_SUBMISSIONS = "submissions.invalid";
   public static final Object[] samplesColumns =
       new Object[] { NAME, EXPERIENCE, STATUS, NEW_STATUS, DOWN };
-  public static final String SPLIT_SUMISSIONS_PARAMETERS = ",";
+  public static final String SPLIT_SAMPLES_PARAMETERS = ",";
   private static final Logger logger = LoggerFactory.getLogger(SampleStatusViewPresenter.class);
   private SampleStatusView view;
   private BeanItemContainer<SubmissionSample> samplesContainer =
@@ -92,7 +91,7 @@ public class SampleStatusViewPresenter {
       new GeneratedPropertyContainer(samplesContainer);
   private Map<Object, BeanFieldGroup<SubmissionSample>> samplesFieldGroup = new HashMap<>();
   @Inject
-  private SubmissionService submissionService;
+  private SampleService sampleService;
   @Inject
   private SubmissionSampleService submissionSampleService;
   @Value("${spring.application.name}")
@@ -101,9 +100,9 @@ public class SampleStatusViewPresenter {
   protected SampleStatusViewPresenter() {
   }
 
-  protected SampleStatusViewPresenter(SubmissionService submissionService,
+  protected SampleStatusViewPresenter(SampleService sampleService,
       SubmissionSampleService submissionSampleService, String applicationName) {
-    this.submissionService = submissionService;
+    this.sampleService = sampleService;
     this.submissionSampleService = submissionSampleService;
     this.applicationName = applicationName;
   }
@@ -128,23 +127,8 @@ public class SampleStatusViewPresenter {
     view.headerLabel.addStyleName(HEADER);
     view.headerLabel.setValue(resources.message(HEADER));
     samplesContainer.addNestedContainerProperty(EXPERIENCE);
-    samplesGridContainer.addGeneratedProperty(STATUS, new PropertyValueGenerator<String>() {
-      @Override
-      public String getValue(Item item, Object itemId, Object propertyId) {
-        SubmissionSample sample = (SubmissionSample) itemId;
-        return sample.getStatus().getLabel(view.getLocale());
-      }
-
-      @Override
-      public SortOrder[] getSortProperties(SortOrder order) {
-        return new SortOrder[] { order };
-      }
-
-      @Override
-      public Class<String> getType() {
-        return String.class;
-      }
-    });
+    samplesGridContainer.addGeneratedProperty(STATUS,
+        new SampleStatusGenerator(() -> view.getLocale()));
     samplesGridContainer.addGeneratedProperty(NEW_STATUS, new PropertyValueGenerator<ComboBox>() {
       @Override
       public ComboBox getValue(Item item, Object itemId, Object propertyId) {
@@ -303,14 +287,14 @@ public class SampleStatusViewPresenter {
 
   private boolean validateParameters(String parameters) {
     boolean valid = true;
-    String[] rawIds = parameters.split(SPLIT_SUMISSIONS_PARAMETERS, -1);
+    String[] rawIds = parameters.split(SPLIT_SAMPLES_PARAMETERS, -1);
     if (rawIds.length < 1) {
       valid = false;
     }
     try {
       for (String rawId : rawIds) {
         Long id = Long.valueOf(rawId);
-        if (submissionService.get(id) == null) {
+        if (sampleService.get(id) == null) {
           valid = false;
         }
       }
@@ -327,26 +311,27 @@ public class SampleStatusViewPresenter {
    *          view parameters
    */
   public void enter(String parameters) {
-    Collection<Submission> submissions;
+    Collection<Sample> samplesParameters;
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering samples from session");
-      submissions = view.savedSubmissions();
+      samplesParameters = view.savedSamples();
     } else {
       logger.trace("Parsing submissions from parameters");
-      submissions = new ArrayList<>();
+      samplesParameters = new ArrayList<>();
       if (validateParameters(parameters)) {
-        String[] rawIds = parameters.split(SPLIT_SUMISSIONS_PARAMETERS, -1);
+        String[] rawIds = parameters.split(SPLIT_SAMPLES_PARAMETERS, -1);
         for (String rawId : rawIds) {
           Long id = Long.valueOf(rawId);
-          submissions.add(submissionService.get(id));
+          samplesParameters.add(sampleService.get(id));
         }
       } else {
         view.showWarning(view.getResources().message(INVALID_SUBMISSIONS));
       }
     }
 
-    List<SubmissionSample> samples = submissions.stream()
-        .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
+    List<SubmissionSample> samples =
+        samplesParameters.stream().filter(s -> s instanceof SubmissionSample)
+            .map(s -> (SubmissionSample) s).collect(Collectors.toList());
     samplesContainer.removeAllItems();
     samplesContainer.addAll(samples);
     samples.forEach(s -> view.samplesGrid.select(s));

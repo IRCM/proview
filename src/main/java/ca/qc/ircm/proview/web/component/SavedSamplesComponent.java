@@ -17,31 +17,32 @@
 
 package ca.qc.ircm.proview.web.component;
 
-import static ca.qc.ircm.proview.web.WebConstants.SAVED_SUBMISSIONS;
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLES;
 
-import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.sample.Sample;
 import com.vaadin.ui.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
- * Gets/sets saved submissions in session.
+ * Gets/sets saved samples in session.
  */
-public interface SavedSubmissionsComponent extends Component {
-  default void saveSubmissions(Collection<Submission> submissions) {
-    getUI().getSession().setAttribute(SAVED_SUBMISSIONS, submissions);
+public interface SavedSamplesComponent extends Component {
+  default void saveSamples(Collection<Sample> samples) {
+    getUI().getSession().setAttribute(SAVED_SAMPLES, samples);
   }
 
   /**
-   * Returns saved submissions.
+   * Returns saved samples.
    *
-   * @return saved submissions, never null
+   * @return saved samples, never null
    */
   @SuppressWarnings("unchecked")
-  default Collection<Submission> savedSubmissions() {
-    Collection<Submission> submissions =
-        (Collection<Submission>) getUI().getSession().getAttribute(SAVED_SUBMISSIONS);
-    return submissions == null ? new ArrayList<>() : new ArrayList<>(submissions);
+  default List<Sample> savedSamples() {
+    Collection<Sample> samples =
+        (Collection<Sample>) getUI().getSession().getAttribute(SAVED_SAMPLES);
+    return samples == null ? new ArrayList<>() : new ArrayList<>(samples);
   }
 }

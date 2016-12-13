@@ -40,6 +40,7 @@ public class WebConstants {
   public static final String OVER_MAXIMUM_SIZE = "overMaximumSize";
   public static final String UPLOAD_INTERRUPTED = "uploadInterrupted";
   public static final String SAVED_SUBMISSIONS = "savedSubmissions";
+  public static final String SAVED_SAMPLES = "savedSamples";
 
   /**
    * Returns all valid locales for program.

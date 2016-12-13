@@ -44,11 +44,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
-import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -91,7 +91,7 @@ public class SampleStatusViewPresenterTest {
   @Mock
   private SampleStatusView view;
   @Mock
-  private SubmissionService submissionService;
+  private SampleService sampleService;
   @Mock
   private SubmissionSampleService submissionSampleService;
   @Captor
@@ -110,7 +110,7 @@ public class SampleStatusViewPresenterTest {
   private MessageResource resources = new MessageResource(SampleStatusView.class, locale);
   private MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
-  private List<Submission> submissions = new ArrayList<>();
+  private List<Sample> samples = new ArrayList<>();
 
   /**
    * Before test.
@@ -118,18 +118,16 @@ public class SampleStatusViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter =
-        new SampleStatusViewPresenter(submissionService, submissionSampleService, applicationName);
+        new SampleStatusViewPresenter(sampleService, submissionSampleService, applicationName);
     view.headerLabel = new Label();
     view.samplesGrid = new Grid();
     view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    when(view.savedSubmissions()).thenReturn(submissions);
-    submissions.add(entityManager.find(Submission.class, 32L));
-    submissions.add(entityManager.find(Submission.class, 33L));
-    submissions.forEach(s -> entityManager.detach(s));
-    submissions.stream().flatMap(su -> su.getSamples().stream())
-        .forEach(s -> entityManager.detach(s));
+    when(view.savedSamples()).thenReturn(samples);
+    samples.add(entityManager.find(Sample.class, 442L));
+    samples.add(entityManager.find(Sample.class, 443L));
+    samples.forEach(s -> entityManager.detach(s));
   }
 
   private <T extends Data> Optional<T> find(Collection<T> data, long id) {
@@ -150,7 +148,7 @@ public class SampleStatusViewPresenterTest {
     assertTrue(view.samplesGrid.getStyleName().contains(COMPONENTS));
     assertTrue(view.saveButton.getStyleName().contains(SAVE));
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    SubmissionSample sample = (SubmissionSample) samples.get(0);
     ComboBox newStatus =
         (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
     assertTrue(newStatus.getStyleName().contains(NEW_STATUS));
@@ -170,7 +168,7 @@ public class SampleStatusViewPresenterTest {
     }
     assertEquals(resources.message(SAVE), view.saveButton.getCaption());
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    SubmissionSample sample = (SubmissionSample) samples.get(0);
     Object statusValue = container.getItem(sample).getItemProperty(STATUS).getValue();
     assertEquals(sample.getStatus().getLabel(locale), statusValue);
     ComboBox newStatus =
@@ -202,8 +200,8 @@ public class SampleStatusViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    SubmissionSample sample1 = submissions.get(0).getSamples().get(0);
-    SubmissionSample sample2 = submissions.get(1).getSamples().get(0);
+    SubmissionSample sample1 = (SubmissionSample) samples.get(0);
+    SubmissionSample sample2 = (SubmissionSample) samples.get(1);
     final ComboBox newStatus1 =
         (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
     final ComboBox newStatus2 =
@@ -222,7 +220,7 @@ public class SampleStatusViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    SubmissionSample sample = (SubmissionSample) samples.get(0);
     view.samplesGrid.deselectAll();
     view.samplesGrid.select(sample);
     ComboBox newStatus =
@@ -246,8 +244,8 @@ public class SampleStatusViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    SubmissionSample sample1 = submissions.get(0).getSamples().get(0);
-    SubmissionSample sample2 = submissions.get(1).getSamples().get(0);
+    SubmissionSample sample1 = (SubmissionSample) samples.get(0);
+    SubmissionSample sample2 = (SubmissionSample) samples.get(1);
     view.samplesGrid.deselectAll();
     view.samplesGrid.select(sample1);
     view.samplesGrid.select(sample2);
@@ -286,7 +284,7 @@ public class SampleStatusViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    SubmissionSample sample = (SubmissionSample) samples.get(0);
     view.samplesGrid.deselectAll();
     view.samplesGrid.select(sample);
     ComboBox newStatus =
@@ -319,7 +317,7 @@ public class SampleStatusViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    SubmissionSample sample = submissions.get(0).getSamples().get(0);
+    SubmissionSample sample = (SubmissionSample) samples.get(0);
     view.samplesGrid.deselectAll();
     view.samplesGrid.select(sample);
     ComboBox newStatus =
@@ -347,7 +345,7 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
     Collection<SubmissionSample> expectedSamples =
-        submissions.stream().flatMap(s -> s.getSamples().stream()).collect(Collectors.toSet());
+        samples.stream().map(s -> (SubmissionSample) s).collect(Collectors.toSet());
 
     Collection<?> itemIds = container.getItemIds();
 
@@ -366,8 +364,8 @@ public class SampleStatusViewPresenterTest {
 
   @Test
   public void enter_InvalidId() {
-    when(submissionService.get(any()))
-        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+    when(sampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
     presenter.init(view);
 
     presenter.enter("a");
@@ -378,8 +376,8 @@ public class SampleStatusViewPresenterTest {
 
   @Test
   public void enter_NotExists() {
-    when(submissionService.get(any()))
-        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+    when(sampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
     presenter.init(view);
 
     presenter.enter("2");
@@ -390,8 +388,8 @@ public class SampleStatusViewPresenterTest {
 
   @Test
   public void enter_EmptyId() {
-    when(submissionService.get(any()))
-        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+    when(sampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
     presenter.init(view);
 
     presenter.enter("32,");
@@ -401,61 +399,82 @@ public class SampleStatusViewPresenterTest {
   }
 
   @Test
-  public void enter_Submission() {
-    Submission submission = entityManager.find(Submission.class, 34L);
-    List<Submission> submissions = new ArrayList<>();
-    submissions.add(submission);
-    when(submissionService.get(any()))
-        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+  public void enter_Sample() {
+    Sample sample = entityManager.find(Sample.class, 445L);
+    List<Sample> samples = new ArrayList<>();
+    samples.add(sample);
+    when(sampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
     presenter.init(view);
 
-    presenter.enter("34");
+    presenter.enter("445");
 
-    verify(submissionService, atLeastOnce()).get(submission.getId());
+    verify(sampleService, atLeastOnce()).get(sample.getId());
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    final Collection<SubmissionSample> expectedSamples =
-        submissions.stream().flatMap(s -> s.getSamples().stream()).collect(Collectors.toSet());
     Collection<?> itemIds = container.getItemIds();
-    Set<SubmissionSample> samples = new HashSet<>();
+    Set<SubmissionSample> gridSamples = new HashSet<>();
     for (Object itemId : itemIds) {
       assertTrue(itemId instanceof SubmissionSample);
-      SubmissionSample sample = (SubmissionSample) itemId;
-      samples.add(sample);
+      gridSamples.add((SubmissionSample) itemId);
     }
-    assertTrue(expectedSamples.containsAll(samples));
-    assertTrue(samples.containsAll(expectedSamples));
+    assertTrue(samples.containsAll(gridSamples));
+    assertTrue(gridSamples.containsAll(samples));
     Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
     assertTrue(selectedRows.containsAll(samples));
     assertTrue(samples.containsAll(selectedRows));
   }
 
   @Test
-  public void enter_MultipleSubmissions() {
-    Submission submission1 = entityManager.find(Submission.class, 34L);
-    Submission submission2 = entityManager.find(Submission.class, 35L);
-    List<Submission> submissions = new ArrayList<>();
-    submissions.add(submission1);
-    submissions.add(submission2);
-    when(submissionService.get(any()))
-        .thenAnswer(i -> entityManager.find(Submission.class, i.getArguments()[0]));
+  public void enter_MultipleSamples() {
+    Sample sample1 = entityManager.find(Sample.class, 445L);
+    Sample sample2 = entityManager.find(Sample.class, 446L);
+    List<Sample> samples = new ArrayList<>();
+    samples.add(sample1);
+    samples.add(sample2);
+    when(sampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
     presenter.init(view);
 
-    presenter.enter("34,35");
+    presenter.enter("445,446");
 
-    verify(submissionService, atLeastOnce()).get(submission1.getId());
-    verify(submissionService, atLeastOnce()).get(submission2.getId());
+    verify(sampleService, atLeastOnce()).get(sample1.getId());
+    verify(sampleService, atLeastOnce()).get(sample2.getId());
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    final Collection<SubmissionSample> expectedSamples =
-        submissions.stream().flatMap(s -> s.getSamples().stream()).collect(Collectors.toSet());
     Collection<?> itemIds = container.getItemIds();
-    Set<SubmissionSample> samples = new HashSet<>();
+    Set<SubmissionSample> gridSamples = new HashSet<>();
     for (Object itemId : itemIds) {
       assertTrue(itemId instanceof SubmissionSample);
-      SubmissionSample sample = (SubmissionSample) itemId;
-      samples.add(sample);
+      gridSamples.add((SubmissionSample) itemId);
     }
-    assertTrue(expectedSamples.containsAll(samples));
-    assertTrue(samples.containsAll(expectedSamples));
+    assertTrue(samples.containsAll(gridSamples));
+    assertTrue(gridSamples.containsAll(samples));
+    Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
+    assertTrue(selectedRows.containsAll(samples));
+    assertTrue(samples.containsAll(selectedRows));
+  }
+
+  @Test
+  public void enter_SampleWithControl() {
+    Sample sample1 = entityManager.find(Sample.class, 445L);
+    List<Sample> samples = new ArrayList<>();
+    samples.add(sample1);
+    when(sampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
+    presenter.init(view);
+
+    presenter.enter("445,444");
+
+    verify(sampleService, atLeastOnce()).get(sample1.getId());
+    verify(sampleService, atLeastOnce()).get(444L);
+    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    Collection<?> itemIds = container.getItemIds();
+    Set<SubmissionSample> gridSamples = new HashSet<>();
+    for (Object itemId : itemIds) {
+      assertTrue(itemId instanceof SubmissionSample);
+      gridSamples.add((SubmissionSample) itemId);
+    }
+    assertTrue(samples.containsAll(gridSamples));
+    assertTrue(gridSamples.containsAll(samples));
     Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
     assertTrue(selectedRows.containsAll(samples));
     assertTrue(samples.containsAll(selectedRows));

@@ -17,6 +17,10 @@
 
 package ca.qc.ircm.proview.sample;
 
+import ca.qc.ircm.utils.MessageResource;
+
+import java.util.Locale;
+
 /**
  * Sample type.
  */
@@ -24,8 +28,23 @@ public enum ControlType {
   /**
    * Negative control.
    */
-  NEGATIVE_CONTROL, /**
-                     * Positive control.
-                     */
-  POSITIVE_CONTROL
+  NEGATIVE_CONTROL,
+  /**
+   * Positive control.
+   */
+  POSITIVE_CONTROL;
+
+  private static MessageResource getResources(Locale locale) {
+    return new MessageResource(ControlType.class, locale);
+  }
+
+  public static String getNullLabel(Locale locale) {
+    MessageResource resources = getResources(locale);
+    return resources.message("NULL");
+  }
+
+  public String getLabel(Locale locale) {
+    MessageResource resources = getResources(locale);
+    return resources.message(name());
+  }
 }
