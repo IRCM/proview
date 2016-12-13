@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROL
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.NAME;
+import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.ORIGINAL_CONTAINER_NAME;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_COLUMNS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_PANEL;
@@ -153,6 +154,7 @@ public class SampleSelectionFormPresenterTest {
     assertTrue(view.controlsGrid.getSelectionModel() instanceof SelectionModel.Multi);
     assertEquals(NAME, columns.get(0).getPropertyId());
     assertEquals(CONTROL_TYPE, columns.get(1).getPropertyId());
+    assertEquals(ORIGINAL_CONTAINER_NAME, columns.get(2).getPropertyId());
     assertEquals(1, view.controlsGrid.getFrozenColumnCount());
   }
 

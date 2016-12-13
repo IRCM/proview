@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.sample.QControl.control;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.tube.QTube.tube;
 
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
@@ -40,13 +41,17 @@ public class SampleSelectionFormPresenter {
   public static final String NAME = sample.name.getMetadata().getName();
   public static final String STATUS = submissionSample.status.getMetadata().getName();
   public static final String CONTROL_TYPE = control.controlType.getMetadata().getName();
+  public static final String ORIGINAL_CONTAINER = sample.originalContainer.getMetadata().getName();
+  public static final String ORIGINAL_CONTAINER_NAME =
+      ORIGINAL_CONTAINER + "." + tube.name.getMetadata().getName();
   public static final String SUBMISSION = submission.getMetadata().getName();
   public static final String EXPERIENCE =
       SUBMISSION + "." + submission.experience.getMetadata().getName();
   public static final String SELECT = "select";
   public static final String CLEAR = "clear";
   public static final Object[] SAMPLES_COLUMNS = new Object[] { NAME, EXPERIENCE, STATUS };
-  public static final Object[] CONTROLS_COLUMNS = new Object[] { NAME, CONTROL_TYPE };
+  public static final Object[] CONTROLS_COLUMNS =
+      new Object[] { NAME, CONTROL_TYPE, ORIGINAL_CONTAINER_NAME };
   private SampleSelectionForm view;
   private ObjectProperty<List<Sample>> selectedSamples = new ObjectProperty<>(new ArrayList<>());
   private BeanItemContainer<SubmissionSample> samplesContainer =
@@ -99,6 +104,7 @@ public class SampleSelectionFormPresenter {
     view.samplesGrid.sort(Sort.by(EXPERIENCE).then(NAME));
     view.controlsPanel.addStyleName(CONTROLS_PANEL);
     view.controlsPanel.setCaption(resources.message(CONTROLS_PANEL));
+    controlsContainer.addNestedContainerProperty(ORIGINAL_CONTAINER_NAME);
     controlsContainer.addAll(controlService.all());
     controlsGridContainer.addGeneratedProperty(CONTROL_TYPE,
         new ControlTypeGenerator(() -> view.getLocale()));
