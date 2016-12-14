@@ -27,9 +27,10 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
@@ -43,12 +44,12 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
-import ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
@@ -57,7 +58,6 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.converter.StringToInstantConverter;
 import ca.qc.ircm.proview.web.filter.FilterInstantComponent;
 import ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter;
-import ca.qc.ircm.proview.web.filter.FunctionFilter;
 import ca.qc.ircm.proview.web.filter.RangeFilter;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -67,7 +67,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.sort.SortOrder;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.filter.Compare;
@@ -96,15 +95,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -190,6 +189,23 @@ public class SubmissionsViewPresenterTest {
     when(sampleSelectionWindowProvider.get()).thenReturn(sampleSelectionWindow);
   }
 
+  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
+    return datas.stream().filter(d -> d.getId() == id).findAny();
+  }
+
+  private Object containerItemId(Submission submission) {
+    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
+    return container.getItemIds().stream().filter(o -> container.getItem(o)
+        .getItemProperty(SUBMISSION + ".id").getValue().equals(submission.getId())).findFirst()
+        .orElse(null);
+  }
+
+  private Item containerItem(Submission submission) {
+    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
+    Object itemId = containerItemId(submission);
+    return itemId != null ? container.getItem(itemId) : null;
+  }
+
   @Test
   public void submissionsGridColumns() {
     presenter.init(view);
@@ -201,7 +217,7 @@ public class SubmissionsViewPresenterTest {
     assertEquals(SAMPLE_COUNT, columns.get(1).getPropertyId());
     assertEquals(SAMPLE_NAME, columns.get(2).getPropertyId());
     assertEquals(EXPERIENCE_GOAL, columns.get(3).getPropertyId());
-    assertEquals(SAMPLE_STATUS, columns.get(4).getPropertyId());
+    assertEquals(SAMPLE_STATUSES, columns.get(4).getPropertyId());
     assertEquals(DATE, columns.get(5).getPropertyId());
     assertTrue(columns.get(5).getConverter() instanceof StringToInstantConverter);
     assertEquals(LINKED_TO_RESULTS, columns.get(6).getPropertyId());
@@ -242,7 +258,7 @@ public class SubmissionsViewPresenterTest {
     Filter filter = filters.iterator().next();
     assertTrue(filter instanceof SimpleStringFilter);
     SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
-    assertEquals(filterValue, stringFilter.getFilterString());
+    assertEquals(filterValue.toLowerCase(locale), stringFilter.getFilterString());
     assertEquals(EXPERIENCE, stringFilter.getPropertyId());
   }
 
@@ -300,9 +316,9 @@ public class SubmissionsViewPresenterTest {
   public void sampleStatusFilter() {
     presenter.init(view);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
-    HeaderCell cell = filterRow.getCell(SAMPLE_STATUS);
+    HeaderCell cell = filterRow.getCell(SAMPLE_STATUSES);
     ComboBox comboBox = (ComboBox) cell.getComponent();
-    SampleStatus filterValue = SampleStatus.ANALYSED;
+    String filterValue = SampleStatus.ANALYSED.getLabel(locale);
 
     comboBox.setValue(filterValue);
 
@@ -311,10 +327,10 @@ public class SubmissionsViewPresenterTest {
     Collection<Filter> filters = container.getContainerFilters();
     assertEquals(1, filters.size());
     Filter filter = filters.iterator().next();
-    assertTrue(filter instanceof Compare.Equal);
-    Compare.Equal equalFilter = (Compare.Equal) filter;
-    assertEquals(filterValue, equalFilter.getValue());
-    assertEquals(SAMPLE_STATUS, equalFilter.getPropertyId());
+    assertTrue(filter instanceof SimpleStringFilter);
+    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
+    assertEquals(filterValue.toLowerCase(locale), stringFilter.getFilterString());
+    assertEquals(SAMPLE_STATUSES, stringFilter.getPropertyId());
   }
 
   @Test
@@ -353,23 +369,10 @@ public class SubmissionsViewPresenterTest {
     Collection<Filter> filters = container.getContainerFilters();
     assertEquals(1, filters.size());
     Filter filter = filters.iterator().next();
-    assertTrue(filter instanceof FunctionFilter);
-    FunctionFilter functionFilter = (FunctionFilter) filter;
-    assertEquals(filterValue, functionFilter.getValue());
-    assertEquals(LINKED_TO_RESULTS, functionFilter.getPropertyId());
-    BiFunction<Object, Item, Object> itemValueFunction = functionFilter.getItemValueFunction();
-    SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    assertEquals(true, itemValueFunction.apply(sample, new BeanItem<>(sample)));
-    sample = submissions.get(3).getSamples().get(0);
-    assertEquals(false, itemValueFunction.apply(sample, new BeanItem<>(sample)));
-    BiFunction<Object, Object, Boolean> compareFunction = functionFilter.getComparisonFunction();
-    assertTrue(compareFunction.apply(true, true));
-    assertFalse(compareFunction.apply(true, false));
-    assertFalse(compareFunction.apply(false, true));
-    assertTrue(compareFunction.apply(false, false));
-    assertTrue(compareFunction.apply(null, null));
-    assertFalse(compareFunction.apply(null, true));
-    assertFalse(compareFunction.apply(true, null));
+    assertTrue(filter instanceof Compare.Equal);
+    Compare.Equal equalsFilter = (Compare.Equal) filter;
+    assertEquals(filterValue, equalsFilter.getValue());
+    assertEquals(LINKED_TO_RESULTS, equalsFilter.getPropertyId());
   }
 
   @Test
@@ -393,11 +396,12 @@ public class SubmissionsViewPresenterTest {
     for (Column column : view.submissionsGrid.getColumns()) {
       assertEquals(resources.message((String) column.getPropertyId()), column.getHeaderCaption());
     }
-    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
-    SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Object statusValue =
-        container.getItem(sample).getItemProperty(SampleStatusViewPresenter.STATUS).getValue();
-    assertEquals(sample.getStatus().getLabel(locale), statusValue);
+    Submission submission = submissions.get(0);
+    String statuses = submission.getSamples().stream().map(s -> s.getStatus()).distinct().sorted()
+        .map(s -> s.getLabel(locale))
+        .collect(Collectors.joining(resources.message(SAMPLE_STATUSES)));
+    Object statusValue = containerItem(submission).getItemProperty(SAMPLE_STATUSES).getValue();
+    assertEquals(statuses, statusValue);
     assertEquals(resources.message(SELECT_SAMPLES), view.selectSamplesButton.getCaption());
     assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0), view.selectedSamplesLabel.getValue());
     assertEquals(resources.message(UPDATE_STATUS), view.updateStatusButton.getCaption());
@@ -429,35 +433,37 @@ public class SubmissionsViewPresenterTest {
 
     Collection<?> itemIds = container.getItemIds();
 
-    Set<Submission> submissions = new HashSet<>();
+    Set<Long> expectedSubmissionIds =
+        submissions.stream().map(s -> s.getId()).collect(Collectors.toSet());
+    Set<Long> submissionIds = new HashSet<>();
     for (Object itemId : itemIds) {
-      assertTrue(itemId instanceof SubmissionSample);
-      SubmissionSample sample = (SubmissionSample) itemId;
-      assertTrue(submissions.add(sample.getSubmission()));
+      Item item = container.getItem(itemId);
+      Long id = (Long) item.getItemProperty(SUBMISSION + ".id").getValue();
+      submissionIds.add(id);
     }
-    assertTrue(this.submissions.containsAll(submissions));
-    assertTrue(submissions.containsAll(this.submissions));
+    assertTrue(expectedSubmissionIds.containsAll(submissionIds));
+    assertTrue(submissionIds.containsAll(expectedSubmissionIds));
   }
 
   @Test
   public void containerProperties_Analysed() {
     presenter.init(view);
-    final SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
+    final Submission submission = submissions.get(0);
+    final SubmissionSample sample = submission.getSamples().get(0);
 
-    Button button = (Button) container.getItem(sample).getItemProperty(EXPERIENCE).getValue();
-    assertEquals(sample.getSubmission().getExperience(), button.getCaption());
-    assertEquals(sample.getSubmission().getSamples().size(),
-        container.getItem(sample).getItemProperty(SAMPLE_COUNT).getValue());
-    assertEquals(sample.getName(),
-        container.getItem(sample).getItemProperty(SAMPLE_NAME).getValue());
-    assertEquals(sample.getSubmission().getGoal(),
-        container.getItem(sample).getItemProperty(EXPERIENCE_GOAL).getValue());
+    Button button = (Button) containerItem(submission).getItemProperty(EXPERIENCE).getValue();
+    assertEquals(submission.getExperience(), button.getCaption());
+    assertEquals(submission.getSamples().size(),
+        containerItem(submission).getItemProperty(SAMPLE_COUNT).getValue());
+    assertEquals(submission.getSamples().get(0).getName(),
+        containerItem(submission).getItemProperty(SAMPLE_NAME).getValue());
+    assertEquals(submission.getGoal(),
+        containerItem(submission).getItemProperty(EXPERIENCE_GOAL).getValue());
     assertEquals(sample.getStatus().getLabel(locale),
-        container.getItem(sample).getItemProperty(SAMPLE_STATUS).getValue());
-    assertEquals(sample.getSubmission().getSubmissionDate(),
-        container.getItem(sample).getItemProperty(DATE).getValue());
-    button = (Button) container.getItem(sample).getItemProperty(LINKED_TO_RESULTS).getValue();
+        containerItem(submission).getItemProperty(SAMPLE_STATUSES).getValue());
+    assertEquals(submission.getSubmissionDate(),
+        containerItem(submission).getItemProperty(DATE).getValue());
+    button = (Button) containerItem(submission).getItemProperty(LINKED_TO_RESULTS).getValue();
     assertEquals(resources.message(LINKED_TO_RESULTS + "." + true), button.getCaption());
     assertFalse(button.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
     assertFalse(button.getStyleName().contains(CONDITION_FALSE));
@@ -466,22 +472,22 @@ public class SubmissionsViewPresenterTest {
   @Test
   public void containerProperties_NotAnalysed() {
     presenter.init(view);
-    final SubmissionSample sample = submissions.get(3).getSamples().get(0);
-    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
+    final Submission submission = submissions.get(3);
+    final SubmissionSample sample = submission.getSamples().get(0);
 
-    Button button = (Button) container.getItem(sample).getItemProperty(EXPERIENCE).getValue();
-    assertEquals(sample.getSubmission().getExperience(), button.getCaption());
-    assertEquals(sample.getSubmission().getSamples().size(),
-        container.getItem(sample).getItemProperty(SAMPLE_COUNT).getValue());
+    Button button = (Button) containerItem(submission).getItemProperty(EXPERIENCE).getValue();
+    assertEquals(submission.getExperience(), button.getCaption());
+    assertEquals(submission.getSamples().size(),
+        containerItem(submission).getItemProperty(SAMPLE_COUNT).getValue());
     assertEquals(sample.getName(),
-        container.getItem(sample).getItemProperty(SAMPLE_NAME).getValue());
-    assertEquals(sample.getSubmission().getGoal(),
-        container.getItem(sample).getItemProperty(EXPERIENCE_GOAL).getValue());
+        containerItem(submission).getItemProperty(SAMPLE_NAME).getValue());
+    assertEquals(submission.getGoal(),
+        containerItem(submission).getItemProperty(EXPERIENCE_GOAL).getValue());
     assertEquals(sample.getStatus().getLabel(locale),
-        container.getItem(sample).getItemProperty(SAMPLE_STATUS).getValue());
-    assertEquals(sample.getSubmission().getSubmissionDate(),
-        container.getItem(sample).getItemProperty(DATE).getValue());
-    button = (Button) container.getItem(sample).getItemProperty(LINKED_TO_RESULTS).getValue();
+        containerItem(submission).getItemProperty(SAMPLE_STATUSES).getValue());
+    assertEquals(submission.getSubmissionDate(),
+        containerItem(submission).getItemProperty(DATE).getValue());
+    button = (Button) containerItem(submission).getItemProperty(LINKED_TO_RESULTS).getValue();
     assertEquals(resources.message(LINKED_TO_RESULTS + "." + false), button.getCaption());
     assertTrue(button.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
     assertTrue(button.getStyleName().contains(CONDITION_FALSE));
@@ -490,14 +496,13 @@ public class SubmissionsViewPresenterTest {
   @Test
   public void viewSubmission() {
     presenter.init(view);
-    final SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
-    Button button = (Button) container.getItem(sample).getItemProperty(EXPERIENCE).getValue();
+    final Submission submission = submissions.get(0);
+    Button button = (Button) containerItem(submission).getItemProperty(EXPERIENCE).getValue();
 
     button.click();
 
     verify(submissionWindowProvider).get();
-    verify(submissionWindow).setSubmission(sample.getSubmission());
+    verify(submissionWindow).setSubmission(submission);
     verify(submissionWindow).center();
     verify(view).addWindow(submissionWindow);
   }
@@ -505,15 +510,14 @@ public class SubmissionsViewPresenterTest {
   @Test
   public void viewSubmissionResults() {
     presenter.init(view);
-    final SubmissionSample sample = submissions.get(0).getSamples().get(0);
-    Container.Indexed container = view.submissionsGrid.getContainerDataSource();
+    final Submission submission = submissions.get(0);
     Button button =
-        (Button) container.getItem(sample).getItemProperty(LINKED_TO_RESULTS).getValue();
+        (Button) containerItem(submission).getItemProperty(LINKED_TO_RESULTS).getValue();
 
     button.click();
 
     verify(submissionAnalysesWindowProvider).get();
-    verify(submissionAnalysesWindow).setSubmission(sample.getSubmission());
+    verify(submissionAnalysesWindow).setSubmission(submission);
     verify(submissionAnalysesWindow).center();
     verify(view).addWindow(submissionAnalysesWindow);
   }
@@ -523,10 +527,10 @@ public class SubmissionsViewPresenterTest {
   public void selectSamples() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
-    final SubmissionSample sample1 = submissions.get(0).getSamples().get(0);
-    final SubmissionSample sample2 = submissions.get(1).getSamples().get(0);
-    view.submissionsGrid.select(sample1);
-    view.submissionsGrid.select(sample2);
+    final Submission submission1 = find(submissions, 32L).orElse(null);
+    final Submission submission2 = find(submissions, 156L).orElse(null);
+    view.submissionsGrid.select(containerItemId(submission1));
+    view.submissionsGrid.select(containerItemId(submission2));
     when(sampleSelectionWindow.selectedSamplesProperty()).thenReturn(selectedSamplesProperty);
 
     view.selectSamplesButton.click();
@@ -534,9 +538,9 @@ public class SubmissionsViewPresenterTest {
     verify(sampleSelectionWindowProvider).get();
     verify(sampleSelectionWindow).setSelectedSamples(samplesListCaptor.capture());
     List<Sample> samples = samplesListCaptor.getValue();
-    assertEquals(2, samples.size());
-    assertTrue(samples.contains(sample1));
-    assertTrue(samples.contains(sample2));
+    assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
+    assertTrue(samples.containsAll(submission1.getSamples()));
+    assertTrue(samples.containsAll(submission2.getSamples()));
     verify(sampleSelectionWindow).selectedSamplesProperty();
     verify(selectedSamplesProperty).addValueChangeListener(listenerCaptor.capture());
     verify(view).addWindow(sampleSelectionWindow);
@@ -544,32 +548,33 @@ public class SubmissionsViewPresenterTest {
     Property.ValueChangeEvent event = mock(Property.ValueChangeEvent.class);
     Property<Object> eventProperty = mock(Property.class);
     when(event.getProperty()).thenReturn(eventProperty);
-    when(eventProperty.getValue()).thenReturn(Arrays.asList(sample2));
+    when(eventProperty.getValue()).thenReturn(submission2.getSamples());
     listener.valueChange(event);
     verify(view).saveSamples(samplesCaptor.capture());
     Collection<Sample> savedSamples = samplesCaptor.getValue();
-    assertEquals(1, savedSamples.size());
-    assertTrue(savedSamples.contains(sample2));
+    assertEquals(submission2.getSamples().size(), savedSamples.size());
+    assertTrue(savedSamples.containsAll(submission2.getSamples()));
     assertTrue(view.submissionsGrid.getSelectedRows().isEmpty());
-    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 1), view.selectedSamplesLabel.getValue());
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, submission2.getSamples().size()),
+        view.selectedSamplesLabel.getValue());
   }
 
   @Test
   public void updateStatus() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
-    final SubmissionSample sample1 = submissions.get(0).getSamples().get(0);
-    final SubmissionSample sample2 = submissions.get(1).getSamples().get(0);
-    view.submissionsGrid.select(sample1);
-    view.submissionsGrid.select(sample2);
+    final Submission submission1 = find(submissions, 32L).orElse(null);
+    final Submission submission2 = find(submissions, 156L).orElse(null);
+    view.submissionsGrid.select(containerItemId(submission1));
+    view.submissionsGrid.select(containerItemId(submission2));
 
     view.updateStatusButton.click();
 
     verify(view).saveSamples(samplesCaptor.capture());
     Collection<Sample> samples = samplesCaptor.getValue();
-    assertEquals(2, samples.size());
-    assertTrue(samples.contains(sample1));
-    assertTrue(samples.contains(sample2));
+    assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
+    assertTrue(samples.containsAll(submission1.getSamples()));
+    assertTrue(samples.containsAll(submission2.getSamples()));
     verify(view).navigateTo(SampleStatusView.VIEW_NAME);
   }
 }

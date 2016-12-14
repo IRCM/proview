@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 
@@ -24,23 +25,18 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
-import ca.qc.ircm.proview.sample.web.SampleStatusGenerator;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.web.converter.StringToInstantConverter;
-import ca.qc.ircm.proview.web.filter.CutomNullPropertyFilterValueChangeListener;
 import ca.qc.ircm.proview.web.filter.FilterEqualsChangeListener;
 import ca.qc.ircm.proview.web.filter.FilterInstantComponent;
 import ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter;
 import ca.qc.ircm.proview.web.filter.FilterRangeChangeListener;
 import ca.qc.ircm.proview.web.filter.FilterTextChangeListener;
-import ca.qc.ircm.proview.web.filter.FunctionFilter;
-import ca.qc.ircm.proview.web.filter.GeneratedPropertyContainerFilter;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.sort.SortOrder;
@@ -67,6 +63,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -85,12 +84,14 @@ public class SubmissionsViewPresenter {
   public static final String SUBMISSIONS = "submissions";
   public static final String SAMPLE_COUNT = "sampleCount";
   public static final String SUBMISSION = submission.getMetadata().getName();
+  public static final String SAMPLE = sample.getMetadata().getName();
   public static final String EXPERIENCE =
       SUBMISSION + "." + submission.experience.getMetadata().getName();
   public static final String EXPERIENCE_GOAL =
       SUBMISSION + "." + submission.goal.getMetadata().getName();
-  public static final String SAMPLE_NAME = submissionSample.name.getMetadata().getName();
-  public static final String SAMPLE_STATUS = submissionSample.status.getMetadata().getName();
+  public static final String SAMPLE_NAME =
+      SAMPLE + "." + submissionSample.name.getMetadata().getName();
+  public static final String SAMPLE_STATUSES = "statuses";
   public static final String DATE =
       SUBMISSION + "." + submission.submissionDate.getMetadata().getName();
   public static final String LINKED_TO_RESULTS = "results";
@@ -101,15 +102,14 @@ public class SubmissionsViewPresenter {
   public static final String COMPONENTS = "components";
   public static final String CONDITION_FALSE = "condition-false";
   private static final Object[] COLUMNS = new Object[] { EXPERIENCE, SAMPLE_COUNT, SAMPLE_NAME,
-      EXPERIENCE_GOAL, SAMPLE_STATUS, DATE, LINKED_TO_RESULTS };
+      EXPERIENCE_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS };
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
   private SubmissionsView view;
-  private BeanItemContainer<SubmissionSample> submissionsContainer =
-      new BeanItemContainer<>(SubmissionSample.class);
+  private BeanItemContainer<SubmissionFirstSample> submissionsContainer =
+      new BeanItemContainer<>(SubmissionFirstSample.class);
   private GeneratedPropertyContainer submissionsGeneratedContainer =
       new GeneratedPropertyContainer(submissionsContainer);
   private Object nullId = -1;
-  private Report report;
   @Inject
   private SubmissionService submissionService;
   @Inject
@@ -178,17 +178,16 @@ public class SubmissionsViewPresenter {
   private void prepareSumissionsGrid() {
     MessageResource resources = view.getResources();
     Locale locale = view.getLocale();
-    submissionsContainer.addNestedContainerProperty(EXPERIENCE);
-    submissionsContainer.addNestedContainerProperty(EXPERIENCE_GOAL);
-    submissionsContainer.addNestedContainerProperty(DATE);
+    submissionsContainer.addNestedContainerBean(SAMPLE);
+    submissionsContainer.addNestedContainerBean(SUBMISSION);
     submissionsGeneratedContainer.addGeneratedProperty(EXPERIENCE,
         new PropertyValueGenerator<Button>() {
           @Override
           public Button getValue(Item item, Object itemId, Object propertyId) {
-            SubmissionSample sample = (SubmissionSample) itemId;
+            Submission submission = ((SubmissionFirstSample) itemId).submission;
             Button button = new Button();
-            button.setCaption(sample.getSubmission().getExperience());
-            button.addClickListener(e -> viewSubmission(sample.getSubmission()));
+            button.setCaption(submission.getExperience());
+            button.addClickListener(e -> viewSubmission(submission));
             return button;
           }
 
@@ -207,32 +206,16 @@ public class SubmissionsViewPresenter {
             return filter;
           }
         });
-    submissionsGeneratedContainer.addGeneratedProperty(SAMPLE_COUNT,
-        new PropertyValueGenerator<Integer>() {
-          @Override
-          public Integer getValue(Item item, Object itemId, Object propertyId) {
-            SubmissionSample sample = (SubmissionSample) itemId;
-            return sample.getSubmission().getSamples().size();
-          }
-
-          @Override
-          public Class<Integer> getType() {
-            return Integer.class;
-          }
-        });
-    submissionsGeneratedContainer.addGeneratedProperty(SAMPLE_STATUS,
-        new SampleStatusGenerator(() -> view.getLocale()));
     submissionsGeneratedContainer.addGeneratedProperty(LINKED_TO_RESULTS,
         new PropertyValueGenerator<Button>() {
           @Override
           public Button getValue(Item item, Object itemId, Object propertyId) {
-            SubmissionSample sample = (SubmissionSample) itemId;
-            MessageResource resources = view.getResources();
-            boolean value = report.getLinkedToResults().get(sample.getSubmission());
+            Submission submission = ((SubmissionFirstSample) itemId).submission;
+            boolean results = ((SubmissionFirstSample) itemId).results;
             Button button = new Button();
-            button.setCaption(resources.message(LINKED_TO_RESULTS + "." + value));
-            if (value) {
-              button.addClickListener(e -> viewSubmissionResults(sample.getSubmission()));
+            button.setCaption(resources.message(LINKED_TO_RESULTS + "." + results));
+            if (results) {
+              button.addClickListener(e -> viewSubmissionResults(submission));
             } else {
               button.setStyleName(ValoTheme.BUTTON_BORDERLESS);
               button.addStyleName(CONDITION_FALSE);
@@ -246,8 +229,13 @@ public class SubmissionsViewPresenter {
           }
 
           @Override
+          public SortOrder[] getSortProperties(SortOrder order) {
+            return new SortOrder[] { order };
+          }
+
+          @Override
           public Filter modifyFilter(Filter filter) throws UnsupportedFilterException {
-            return new GeneratedPropertyContainerFilter(filter, submissionsGeneratedContainer);
+            return filter;
           }
         });
     view.submissionsGrid.addStyleName(SUBMISSIONS);
@@ -278,21 +266,22 @@ public class SubmissionsViewPresenter {
         cell.setComponent(createFilterTextField(propertyId, resources));
       } else if (propertyId.equals(EXPERIENCE_GOAL)) {
         cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(SAMPLE_STATUS)) {
-        ComboBox filter = createFilterComboBox(propertyId, resources, SampleStatus.values());
-        filter.addValueChangeListener(
-            new FilterEqualsChangeListener(submissionsGeneratedContainer, propertyId, nullId));
-        for (SampleStatus value : SampleStatus.values()) {
-          filter.setItemCaption(value, value.getLabel(locale));
+      } else if (propertyId.equals(SAMPLE_STATUSES)) {
+        List<String> sampleStatusLabels = new ArrayList<>();
+        for (SampleStatus status : SampleStatus.values()) {
+          sampleStatusLabels.add(status.getLabel(locale));
         }
+        ComboBox filter = createFilterComboBox(propertyId, resources, "", sampleStatusLabels);
+        filter.addValueChangeListener(
+            new FilterTextChangeListener(submissionsGeneratedContainer, propertyId, true, false));
         cell.setComponent(filter);
       } else if (propertyId.equals(DATE)) {
         cell.setComponent(createFilterInstantComponent(propertyId));
       } else if (propertyId.equals(LINKED_TO_RESULTS)) {
-        Boolean[] values = new Boolean[] { true, false };
-        ComboBox filter = createFilterComboBox(propertyId, resources, values);
-        filter
-            .addValueChangeListener(new ResultsFilterChangeListener(submissionsGeneratedContainer));
+        List<Boolean> values = Arrays.asList(new Boolean[] { true, false });
+        ComboBox filter = createFilterComboBox(propertyId, resources, nullId, values);
+        filter.addValueChangeListener(
+            new FilterEqualsChangeListener(submissionsGeneratedContainer, propertyId, nullId));
         for (Boolean value : values) {
           filter.setItemCaption(value, resources.message(LINKED_TO_RESULTS + "." + value));
         }
@@ -311,8 +300,8 @@ public class SubmissionsViewPresenter {
     return filter;
   }
 
-  private ComboBox createFilterComboBox(Object propertyId, MessageResource resources,
-      Object[] values) {
+  private ComboBox createFilterComboBox(Object propertyId, MessageResource resources, Object nullId,
+      Collection<?> values) {
     ComboBox filter = new ComboBox();
     filter.setNullSelectionAllowed(false);
     filter.setTextInputAllowed(false);
@@ -344,10 +333,10 @@ public class SubmissionsViewPresenter {
   }
 
   private void searchSubmissions() {
-    report = submissionService.report();
+    Report report = submissionService.report();
     submissionsContainer.removeAllItems();
-    report.getSubmissions().stream().map(s -> s.getSamples().get(0))
-        .forEach(s -> submissionsContainer.addItem(s));
+    report.getSubmissions().stream()
+        .forEach(s -> submissionsContainer.addItem(new SubmissionFirstSample(s, report)));
     view.submissionsGrid.sort(DATE, SortDirection.DESCENDING);
   }
 
@@ -370,7 +359,7 @@ public class SubmissionsViewPresenter {
     List<Sample> samples;
     if (!view.submissionsGrid.getSelectedRows().isEmpty()) {
       samples = view.submissionsGrid.getSelectedRows().stream()
-          .map(o -> ((SubmissionSample) o).getSubmission()).flatMap(s -> s.getSamples().stream())
+          .flatMap(o -> ((SubmissionFirstSample) o).submission.getSamples().stream())
           .collect(Collectors.toList());
     } else {
       samples = view.savedSamples();
@@ -393,10 +382,10 @@ public class SubmissionsViewPresenter {
 
   private void updateStatus() {
     if (!view.submissionsGrid.getSelectedRows().isEmpty()) {
-      List<Submission> submissions = view.submissionsGrid.getSelectedRows().stream()
-          .map(sample -> ((SubmissionSample) sample).getSubmission()).collect(Collectors.toList());
-      view.saveSamples(
-          submissions.stream().flatMap(s -> s.getSamples().stream()).collect(Collectors.toList()));
+      List<Sample> samples = view.submissionsGrid.getSelectedRows().stream()
+          .flatMap(o -> ((SubmissionFirstSample) o).submission.getSamples().stream())
+          .collect(Collectors.toList());
+      view.saveSamples(samples);
     }
     view.navigateTo(SampleStatusView.VIEW_NAME);
   }
@@ -405,20 +394,68 @@ public class SubmissionsViewPresenter {
     return COLUMNS.clone();
   }
 
-  private class ResultsFilterChangeListener extends CutomNullPropertyFilterValueChangeListener {
-    private static final long serialVersionUID = 2301952986512937369L;
+  public class SubmissionFirstSample {
+    private Submission submission;
+    private SubmissionSample sample;
+    private String statuses;
+    private int sampleCount;
+    private boolean results;
 
-    private ResultsFilterChangeListener(Container.Filterable container) {
-      super(container, LINKED_TO_RESULTS, nullId);
+    private SubmissionFirstSample(Submission submission, Report report) {
+      this.submission = submission;
+      this.sample = submission.getSamples().get(0);
+      this.statuses = statuses(submission);
+      this.sampleCount = submission.getSamples().size();
+      this.results = report.getLinkedToResults().get(submission);
     }
 
-    @Override
-    public void addNonNullFilter(Object propertyValue) {
-      container.addContainerFilter(
-          new FunctionFilter(LINKED_TO_RESULTS, propertyValue, (itemId, item) -> {
-            SubmissionSample sample = (SubmissionSample) itemId;
-            return report.getLinkedToResults().get(sample.getSubmission());
-          }));
+    private String statuses(Submission submission) {
+      MessageResource resources = view.getResources();
+      List<SampleStatus> statuses = submission.getSamples().stream().map(s -> s.getStatus())
+          .distinct().sorted().collect(Collectors.toList());
+      String separator = resources.message(SAMPLE_STATUSES + ".separator");
+      return statuses.stream().map(s -> s.getLabel(view.getLocale()))
+          .collect(Collectors.joining(separator));
+    }
+
+    public Submission getSubmission() {
+      return submission;
+    }
+
+    public void setSubmission(Submission submission) {
+      this.submission = submission;
+    }
+
+    public SubmissionSample getSample() {
+      return sample;
+    }
+
+    public void setSample(SubmissionSample sample) {
+      this.sample = sample;
+    }
+
+    public int getSampleCount() {
+      return sampleCount;
+    }
+
+    public void setSampleCount(int sampleCount) {
+      this.sampleCount = sampleCount;
+    }
+
+    public boolean isResults() {
+      return results;
+    }
+
+    public void setResults(boolean results) {
+      this.results = results;
+    }
+
+    public String getStatuses() {
+      return statuses;
+    }
+
+    public void setStatuses(String statuses) {
+      this.statuses = statuses;
     }
   }
 }
