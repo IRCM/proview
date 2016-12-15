@@ -54,7 +54,6 @@ public class PlateComponentPresenterTest {
     initPlate();
     presenter = new PlateComponentPresenter();
     view.setPresenter(presenter);
-    presenter.setPlate(plate);
   }
 
   private void initPlate() {
@@ -69,6 +68,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void selectWell() {
     presenter.init(view);
+    presenter.setPlate(plate);
     PlateSpot spot = plate.spot(0, 0);
 
     presenter.selectWell(spot);
@@ -82,6 +82,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void deselectWell() {
     presenter.init(view);
+    presenter.setPlate(plate);
     PlateSpot spot = plate.spot(0, 0);
     presenter.selectWell(spot);
 
@@ -95,6 +96,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void deselectAllWells() {
     presenter.init(view);
+    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
     PlateSpot spot1 = plate.spot(0, 0);
     presenter.selectWell(spot1);
@@ -113,6 +115,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void selectColumn_Multi() {
     presenter.init(view);
+    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
     int column = 0;
 
@@ -130,6 +133,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void selectColumn_NotMulti() {
     presenter.init(view);
+    presenter.setPlate(plate);
     int column = 0;
 
     presenter.selectColumn(column);
@@ -143,6 +147,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void deselectColumn_Multi() {
     presenter.init(view);
+    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
     int column = 0;
     presenter.selectWell(plate.spot(0, column));
@@ -158,6 +163,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void deselectColumn_NotMulti() {
     presenter.init(view);
+    presenter.setPlate(plate);
     int column = 0;
     presenter.selectWell(plate.spot(0, column));
 
@@ -174,6 +180,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void selectRow_Multi() {
     presenter.init(view);
+    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
     int row = 0;
 
@@ -191,6 +198,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void selectRow_NotMulti() {
     presenter.init(view);
+    presenter.setPlate(plate);
     int row = 0;
 
     presenter.selectRow(row);
@@ -204,6 +212,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void deselectRow_Multi() {
     presenter.init(view);
+    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
     int row = 0;
     presenter.selectWell(plate.spot(row, 0));
@@ -219,6 +228,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void deselectRow_NotNulti() {
     presenter.init(view);
+    presenter.setPlate(plate);
     int row = 0;
     presenter.selectWell(plate.spot(row, 0));
 
@@ -235,6 +245,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void isMultiSelect() {
     presenter.init(view);
+    presenter.setPlate(plate);
 
     assertFalse(presenter.isMultiSelect());
 
@@ -248,6 +259,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void setMultiSelect() {
     presenter.init(view);
+    presenter.setPlate(plate);
 
     presenter.setMultiSelect(true);
 
@@ -267,6 +279,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void getSelectedSpots_Multi() {
     presenter.init(view);
+    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
     PlateSpot spot1 = plate.spot(0, 0);
     presenter.selectWell(spot1);
@@ -283,6 +296,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void getSelectedSpots_NotMulti() {
     presenter.init(view);
+    presenter.setPlate(plate);
     PlateSpot spot1 = plate.spot(0, 0);
     presenter.selectWell(spot1);
     PlateSpot spot2 = plate.spot(1, 1);
@@ -298,6 +312,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void setSelectedSpots_Multi() {
     presenter.init(view);
+    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
     PlateSpot spot1 = plate.spot(0, 0);
     PlateSpot spot2 = plate.spot(1, 1);
@@ -320,6 +335,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void setSelectedSpots_NotMulti() {
     presenter.init(view);
+    presenter.setPlate(plate);
     PlateSpot spot1 = plate.spot(0, 0);
     PlateSpot spot2 = plate.spot(1, 1);
     List<PlateSpot> spots = new ArrayList<>();
@@ -341,6 +357,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void getPlate() {
     presenter.init(view);
+    presenter.setPlate(plate);
 
     assertSame(plate, presenter.getPlate());
   }
@@ -348,11 +365,35 @@ public class PlateComponentPresenterTest {
   @Test
   public void setPlate() {
     initPlate();
-    presenter.setPlate(plate);
-    presenter.init(view);
 
     presenter.setPlate(plate);
 
     assertSame(plate, presenter.getPlate());
+  }
+
+  @Test
+  public void isReadOnly() {
+    presenter.init(view);
+    presenter.setPlate(plate);
+
+    assertFalse(presenter.isReadOnly());
+  }
+
+  @Test
+  public void setReadOnly_True() {
+    presenter.init(view);
+    presenter.setPlate(plate);
+
+    presenter.setReadOnly(true);
+
+    assertTrue(presenter.isReadOnly());
+    PlateSpot spot1 = plate.spot(0, 0);
+    PlateSpot spot2 = plate.spot(1, 1);
+    List<PlateSpot> spots = new ArrayList<>();
+    spots.add(spot1);
+    spots.add(spot2);
+    presenter.setSelectedSpots(spots);
+    Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
+    assertEquals(0, selectedSpots.size());
   }
 }

@@ -89,19 +89,28 @@ public class PlateService {
   }
 
   /**
-   * Finds plate in database.
+   * Selects all plates passing filter.
    *
-   * @param id
-   *          plate's database identifier
-   * @return plate
+   * @param filter
+   *          filters plates
+   * @return all plates passing filter
    */
-  public Plate getWithSpots(Long id) {
-    if (id == null) {
-      return null;
-    }
+  public List<Plate> all(PlateFilter filter) {
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Plate.class, id);
+    if (filter == null) {
+      filter = new PlateFilterBuilder().build();
+    }
+    JPAQuery<Plate> query = queryFactory.select(plate);
+    query.from(plate);
+    if (filter.type() != null) {
+      query.where(plate.type.eq(filter.type()));
+    }
+    if (filter.containsAnySamples() != null) {
+      query.from(plate.spots, plateSpot);
+      query.where(plateSpot.sample.in(filter.containsAnySamples()));
+    }
+    return query.distinct().fetch();
   }
 
   /**

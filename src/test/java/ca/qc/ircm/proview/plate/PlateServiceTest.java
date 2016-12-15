@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -120,33 +121,52 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void getWithSpots() throws Exception {
-    Plate plate = plateServiceImpl.getWithSpots(26L);
+  public void all() throws Exception {
+    PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
+
+    List<Plate> plates = plateServiceImpl.all(filterBuilder.build());
 
     verify(authorizationService).checkAdminRole();
-    assertEquals((Long) 26L, plate.getId());
+    assertEquals(17, plates.size());
   }
 
   @Test
-  public void getWithSpots_Null() throws Exception {
-    Plate plate = plateServiceImpl.getWithSpots(null);
+  public void all_Type() throws Exception {
+    PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
+    filterBuilder.type(Plate.Type.A);
 
-    assertNull(plate);
-  }
-
-  @Test
-  public void choices() throws Exception {
-    List<Plate> plates = plateServiceImpl.choices(Plate.Type.A);
+    List<Plate> plates = plateServiceImpl.all(filterBuilder.build());
 
     verify(authorizationService).checkAdminRole();
+    assertEquals(15, plates.size());
     assertNotNull(find(plates, 26L));
+    assertNotNull(find(plates, 122L));
+    assertNull(find(plates, 107L));
+    assertNull(find(plates, 111L));
   }
 
   @Test
-  public void choices_Null() throws Exception {
-    List<Plate> plates = plateServiceImpl.choices(null);
+  public void all_ContainsAnySamples() throws Exception {
+    PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
+    Sample sample1 = entityManager.find(Sample.class, 629L);
+    Sample sample2 = entityManager.find(Sample.class, 444L);
+    filterBuilder.containsAnySamples(sample1, sample2);
 
-    assertEquals(0, plates.size());
+    List<Plate> plates = plateServiceImpl.all(filterBuilder.build());
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(3, plates.size());
+    assertNotNull(find(plates, 107L));
+    assertNotNull(find(plates, 120L));
+    assertNotNull(find(plates, 121L));
+  }
+
+  @Test
+  public void all_Null() throws Exception {
+    List<Plate> plates = plateServiceImpl.all(null);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(17, plates.size());
   }
 
   @Test
@@ -263,7 +283,7 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).ban(spotsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    List<PlateSpot> bannedSpots = plateServiceImpl.getWithSpots(plate.getId()).spots(from, to);
+    List<PlateSpot> bannedSpots = plateServiceImpl.get(plate.getId()).spots(from, to);
     for (PlateSpot bannedSpot : bannedSpots) {
       PlateSpot spot = entityManager.find(PlateSpot.class, bannedSpot.getId());
       assertEquals(true, spot.isBanned());

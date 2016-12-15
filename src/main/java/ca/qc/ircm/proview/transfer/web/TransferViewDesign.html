@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="7.7.0">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout> 
+   <vaadin-vertical-layout _id="menuLayout"></vaadin-vertical-layout> 
+   <vaadin-vertical-layout spacing margin> 
+    <vaadin-label size-auto plain-text _id="headerLabel">
+      Sample transfer 
+    </vaadin-label> 
+    <vaadin-label size-auto plain-text _id="sourceHeaderLabel">
+      Source 
+    </vaadin-label> 
+    <vaadin-tab-sheet size-auto _id="sourceTabs"> 
+     <tab caption="Tab" selected> 
+      <vaadin-grid width-full _id="sourceTubesGrid"></vaadin-grid> 
+     </tab> 
+     <tab caption="Tab"> 
+      <vaadin-vertical-layout _id="sourcePlateLayout"> 
+       <vaadin-form-layout size-auto> 
+        <vaadin-combo-box _id="sourcePlatesField"> 
+         <option>Option 1</option> 
+         <option>Option 2</option> 
+         <option>Option 3</option> 
+        </vaadin-combo-box> 
+       </vaadin-form-layout> 
+       <vaadin-panel size-auto _id="sourcePlatePanel"> 
+        <vaadin-vertical-layout _id="sourcePlateFormLayout"></vaadin-vertical-layout> 
+       </vaadin-panel> 
+      </vaadin-vertical-layout> 
+     </tab> 
+    </vaadin-tab-sheet> 
+    <vaadin-label size-auto plain-text _id="destinationHeaderLabel">
+      Destination 
+    </vaadin-label> 
+    <vaadin-tab-sheet size-auto _id="destinationTabs"> 
+     <tab caption="Tab" selected> 
+      <vaadin-grid _id="destinationTubesGrid"></vaadin-grid> 
+     </tab> 
+     <tab caption="Tab"> 
+      <vaadin-vertical-layout size-auto _id="destinationPlateLayout"> 
+       <vaadin-form-layout size-auto> 
+        <vaadin-combo-box _id="destinationPlatesTypeField"> 
+         <option>Option 1</option> 
+         <option>Option 2</option> 
+         <option>Option 3</option> 
+        </vaadin-combo-box> 
+        <vaadin-combo-box _id="destinationPlatesField"> 
+         <option>Option 1</option> 
+         <option>Option 2</option> 
+         <option>Option 3</option> 
+        </vaadin-combo-box> 
+       </vaadin-form-layout> 
+       <vaadin-panel _id="destinationPlatePanel"> 
+        <vaadin-vertical-layout size-auto _id="destinationPlateFormLayout"></vaadin-vertical-layout> 
+       </vaadin-panel> 
+      </vaadin-vertical-layout> 
+     </tab> 
+    </vaadin-tab-sheet> 
+   </vaadin-vertical-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

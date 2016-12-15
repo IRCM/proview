@@ -44,8 +44,8 @@ import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class PlateSpotServiceImplTest {
-  private PlateSpotServiceImpl plateSpotServiceImpl;
+public class PlateSpotServiceTest {
+  private PlateSpotService plateSpotServiceImpl;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -55,8 +55,7 @@ public class PlateSpotServiceImplTest {
 
   @Before
   public void beforeTest() {
-    plateSpotServiceImpl =
-        new PlateSpotServiceImpl(entityManager, queryFactory, authorizationService);
+    plateSpotServiceImpl = new PlateSpotService(entityManager, queryFactory, authorizationService);
   }
 
   private PlateSpot find(Collection<PlateSpot> spots, long id) {
@@ -148,7 +147,7 @@ public class PlateSpotServiceImplTest {
   }
 
   @Test
-  public void all() throws Exception {
+  public void all_Plate() throws Exception {
     Plate plate = new Plate(26L);
 
     List<PlateSpot> spots = plateSpotServiceImpl.all(plate);
@@ -161,8 +160,28 @@ public class PlateSpotServiceImplTest {
   }
 
   @Test
-  public void all_Null() throws Exception {
-    List<PlateSpot> spots = plateSpotServiceImpl.all(null);
+  public void all_NullPlate() throws Exception {
+    List<PlateSpot> spots = plateSpotServiceImpl.all((Plate) null);
+
+    assertEquals(0, spots.size());
+  }
+
+  @Test
+  public void all_Sample() throws Exception {
+    Sample sample = new SubmissionSample(629L);
+
+    List<PlateSpot> spots = plateSpotServiceImpl.all(sample);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(3, spots.size());
+    assertNotNull(find(spots, 1474));
+    assertNotNull(find(spots, 1568));
+    assertNotNull(find(spots, 1580));
+  }
+
+  @Test
+  public void all_NullSample() throws Exception {
+    List<PlateSpot> spots = plateSpotServiceImpl.all((Sample) null);
 
     assertEquals(0, spots.size());
   }

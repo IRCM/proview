@@ -20,6 +20,8 @@ package ca.qc.ircm.proview.plate.web;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Label;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -30,6 +32,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -43,6 +46,7 @@ public class PlateComponentPresenter {
   private ObjectProperty<Boolean> multiSelectProperty = new ObjectProperty<>(false);
   private PlateComponent view;
   private ObjectProperty<Plate> plateProperty = new ObjectProperty<>(null, Plate.class);
+  private ObjectProperty<Boolean> readOnlyProperty = new ObjectProperty<>(false);
   private Set<PlateSpot> selectedSpots = new HashSet<>();
 
   /**
@@ -53,21 +57,44 @@ public class PlateComponentPresenter {
    */
   public void init(PlateComponent view) {
     this.view = view;
-    if (plateProperty.getValue() == null) {
-      throw new NullPointerException();
-    }
+    plateProperty.addValueChangeListener(e -> updatePlate());
+  }
+
+  private void updatePlate() {
+    clearPlate();
     view.plateLayout.setColumns(plateProperty.getValue().getColumnCount());
     view.plateLayout.setRows(plateProperty.getValue().getRowCount());
     setWellsContent();
     addListeners();
   }
 
+  private void forEachSpot(BiConsumer<Integer, Integer> consumer) {
+    IntStream.range(0, view.plateLayout.getColumns())
+        .forEach(column -> IntStream.range(0, view.plateLayout.getRows()).forEach(row -> {
+          consumer.accept(column, row);
+        }));
+  }
+
   private IntStream columnsStream() {
-    return IntStream.range(0, plateProperty.getValue().getColumnCount());
+    return IntStream.range(0, view.plateLayout.getColumns());
   }
 
   private IntStream rowsStream() {
-    return IntStream.range(0, plateProperty.getValue().getRowCount());
+    return IntStream.range(0, view.plateLayout.getRows());
+  }
+
+  private void clearPlate() {
+    forEachSpot((column, row) -> view.plateLayout.removeAllWellComponents(column, row));
+    forEachSpot((column, row) -> view.plateLayout
+        .getWellListener(LayoutClickEvent.class, column, row).forEach(listener -> view.plateLayout
+            .removeWellClickListener((LayoutClickListener) listener, column, row)));
+    columnsStream()
+        .forEach(column -> view.plateLayout.getColumnHeaderListener(LayoutClickEvent.class, column)
+            .forEach(listener -> view.plateLayout
+                .removeColumnHeaderClickListener((LayoutClickListener) listener, column)));
+    rowsStream().forEach(row -> view.plateLayout.getRowHeaderListener(LayoutClickEvent.class, row)
+        .forEach(listener -> view.plateLayout
+            .removeRowHeaderClickListener((LayoutClickListener) listener, row)));
   }
 
   private void setWellsContent() {
@@ -128,6 +155,10 @@ public class PlateComponentPresenter {
    *          spot associated with well
    */
   public void selectWell(PlateSpot spot) {
+    if (readOnlyProperty.getValue()) {
+      return;
+    }
+
     if (!multiSelectProperty.getValue()) {
       deselectAllWells();
     }
@@ -142,6 +173,10 @@ public class PlateComponentPresenter {
    *          spot associated with well
    */
   public void deselectWell(PlateSpot spot) {
+    if (readOnlyProperty.getValue()) {
+      return;
+    }
+
     selectedSpots.remove(spot);
     view.plateLayout.removeWellStyleName(SELECTED_STYLE, spot.getColumn(), spot.getRow());
   }
@@ -230,6 +265,10 @@ public class PlateComponentPresenter {
   }
 
   public void setSelectedSpots(Collection<PlateSpot> selectedSpots) {
+    if (readOnlyProperty.getValue()) {
+      return;
+    }
+
     new ArrayList<>(this.selectedSpots).forEach(spot -> deselectWell(spot));
     selectedSpots.forEach(spot -> selectWell(spot));
   }
@@ -249,5 +288,13 @@ public class PlateComponentPresenter {
       throw new NullPointerException();
     }
     this.plateProperty.setValue(plate);
+  }
+
+  public boolean isReadOnly() {
+    return readOnlyProperty.getValue();
+  }
+
+  public void setReadOnly(boolean readOnly) {
+    this.readOnlyProperty.setValue(readOnly);
   }
 }
