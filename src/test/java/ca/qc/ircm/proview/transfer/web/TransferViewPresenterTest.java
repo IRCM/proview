@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATES;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATES_TYPE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_PANEL;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_TYPES;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_SAMPLE_NAME;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TABS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBES;
@@ -24,6 +25,7 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TUBE;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -36,6 +38,7 @@ import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.plate.PlateSpotService;
+import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.plate.web.PlateComponent;
 import ca.qc.ircm.proview.plate.web.PlateComponentPresenter;
 import ca.qc.ircm.proview.sample.Sample;
@@ -71,6 +74,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
@@ -103,6 +107,9 @@ public class TransferViewPresenterTest {
   private List<Plate> sourcePlates = new ArrayList<>();
   private Map<Sample, Map<Plate, List<PlateSpot>>> sourceWells = new HashMap<>();
 
+  /**
+   * Before test.
+   */
   @Before
   public void beforeTest() {
     presenter =
@@ -226,9 +233,12 @@ public class TransferViewPresenterTest {
     }
     assertEquals(resources.message(DESTINATION_PLATE),
         view.destinationTabs.getTab(view.destinationPlateLayout).getCaption());
-    assertEquals(resources.message(DESTINATION_PLATES), view.destinationPlatesField.getCaption());
     assertEquals(resources.message(DESTINATION_PLATES_TYPE),
         view.destinationPlatesTypeField.getCaption());
+    for (PlateType type : DESTINATION_PLATE_TYPES) {
+      assertEquals(type.getLabel(locale), view.destinationPlatesTypeField.getItemCaption(type));
+    }
+    assertEquals(resources.message(DESTINATION_PLATES), view.destinationPlatesField.getCaption());
   }
 
   @Test
@@ -323,5 +333,59 @@ public class TransferViewPresenterTest {
     TextField tubeNameField = (TextField) rawTubeNameField;
     assertTrue(tubeNameField.isRequired());
     assertEquals(generalResources.message(REQUIRED), tubeNameField.getRequiredError());
+  }
+
+  @Test
+  public void destinationPlateTypeField() {
+    presenter.init(view);
+    presenter.enter("");
+
+    assertFalse(view.destinationPlatesTypeField.isNullSelectionAllowed());
+    assertFalse(view.destinationPlatesTypeField.isNewItemsAllowed());
+    Collection<?> itemIds = view.destinationPlatesTypeField.getItemIds();
+    assertEquals(DESTINATION_PLATE_TYPES.length, itemIds.size());
+    for (PlateType type : DESTINATION_PLATE_TYPES) {
+      assertTrue(itemIds.contains(type));
+    }
+    assertEquals(PlateType.A, view.destinationPlatesTypeField.getValue());
+    assertTrue(view.destinationPlatesTypeField.isRequired());
+    assertEquals(generalResources.message(REQUIRED),
+        view.destinationPlatesTypeField.getRequiredError());
+  }
+
+  @Test
+  public void destinationPlateTypeField_Change() {
+    presenter.init(view);
+    presenter.enter("");
+    sourcePlates.clear();
+    sourcePlates.add(entityManager.find(Plate.class, 109L));
+    sourcePlates.add(entityManager.find(Plate.class, 110L));
+
+    view.destinationPlatesTypeField.setValue(PlateType.G);
+
+    Collection<?> itemIds = view.destinationPlatesField.getItemIds();
+    List<String> plateNames =
+        sourcePlates.stream().map(p -> p.getName()).collect(Collectors.toList());
+    assertEquals(sourcePlates.size(), itemIds.size());
+    assertTrue(itemIds.containsAll(plateNames));
+    assertTrue(plateNames.containsAll(itemIds));
+  }
+
+  @Test
+  public void destinationPlatesField() {
+    presenter.init(view);
+    presenter.enter("");
+
+    assertFalse(view.destinationPlatesField.isNullSelectionAllowed());
+    assertTrue(view.destinationPlatesField.isNewItemsAllowed());
+    assertTrue(view.destinationPlatesField.isRequired());
+    assertEquals(generalResources.message(REQUIRED),
+        view.destinationPlatesField.getRequiredError());
+    Collection<?> itemIds = view.destinationPlatesField.getItemIds();
+    List<String> plateNames =
+        sourcePlates.stream().map(p -> p.getName()).collect(Collectors.toList());
+    assertEquals(sourcePlates.size(), itemIds.size());
+    assertTrue(itemIds.containsAll(plateNames));
+    assertTrue(plateNames.containsAll(itemIds));
   }
 }

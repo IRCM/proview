@@ -38,8 +38,8 @@ import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
-import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
@@ -890,7 +890,7 @@ public class SubmissionServiceTest {
     PlateSpot spot = (PlateSpot) submissionSample.getOriginalContainer();
     assertNotNull(spot);
     assertEquals(submission.getExperience(), spot.getPlate().getName());
-    assertEquals(Plate.Type.SUBMISSION, spot.getPlate().getType());
+    assertEquals(PlateType.SUBMISSION, spot.getPlate().getType());
     assertEquals(96, spot.getPlate().getSpots().size());
     assertEquals(submissionSample, spot.getSample());
     assertEquals(0, spot.getRow());

@@ -8,7 +8,7 @@ import java.util.List;
  * Filters plate search.
  */
 public interface PlateFilter {
-  public Plate.Type type();
+  public PlateType type();
 
   public List<Sample> containsAnySamples();
 }

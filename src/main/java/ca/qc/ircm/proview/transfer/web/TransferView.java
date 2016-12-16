@@ -33,8 +33,10 @@ public class TransferView extends TransferViewDesign implements BaseView, SavedS
   @PostConstruct
   public void init() {
     menuLayout.addComponent(menu);
+    sourcePlateForm.setWidth("100%");
     sourcePlateForm.setPresenter(sourcePlateFormPresenter);
     sourcePlateFormLayout.addComponent(sourcePlateForm);
+    destinationPlateForm.setWidth("100%");
     destinationPlateForm.setPresenter(destinationPlateFormPresenter);
     destinationPlateFormLayout.addComponent(destinationPlateForm);
   }

@@ -73,7 +73,7 @@ public class PlateService {
   }
 
   /**
-   * Finds plate in database.
+   * Returns plate with specified id.
    *
    * @param id
    *          plate's database identifier
@@ -86,6 +86,25 @@ public class PlateService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Plate.class, id);
+  }
+
+  /**
+   * Returns plate with specified name.
+   *
+   * @param name
+   *          plate's name
+   * @return plate
+   */
+  public Plate get(String name) {
+    if (name == null) {
+      return null;
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Plate> query = queryFactory.select(plate);
+    query.from(plate);
+    query.where(plate.name.eq(name));
+    return query.fetchOne();
   }
 
   /**
@@ -120,7 +139,7 @@ public class PlateService {
    *          plate's type
    * @return all plates of specified type
    */
-  public List<Plate> choices(Plate.Type type) {
+  public List<Plate> choices(PlateType type) {
     if (type == null) {
       return new ArrayList<>();
     }

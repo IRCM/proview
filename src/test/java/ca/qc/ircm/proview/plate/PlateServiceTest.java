@@ -92,13 +92,13 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertEquals(Plate.Type.A, plate.getType());
+    assertEquals(PlateType.A, plate.getType());
     assertEquals((Long) 26L, plate.getId());
     final List<PlateSpot> spots = plate.getSpots();
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertEquals(Plate.Type.A, plate.getType());
+    assertEquals(PlateType.A, plate.getType());
     assertEquals(96, spots.size());
     final int rowCount = plate.getType().getRowCount();
     List<PlateSpot> someSpots = plate.spots(new SpotLocation(0, 1), new SpotLocation(rowCount, 1));
@@ -114,8 +114,43 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void get_Null() throws Exception {
-    Plate plate = plateServiceImpl.get(null);
+  public void get_NullId() throws Exception {
+    Plate plate = plateServiceImpl.get((Long) null);
+
+    assertNull(plate);
+  }
+
+  @Test
+  public void get_Name() throws Exception {
+    Plate plate = plateServiceImpl.get("A_20111108");
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals((Long) 26L, plate.getId());
+    assertEquals("A_20111108", plate.getName());
+    assertEquals(PlateType.A, plate.getType());
+    assertEquals((Long) 26L, plate.getId());
+    final List<PlateSpot> spots = plate.getSpots();
+    verify(authorizationService).checkAdminRole();
+    assertEquals((Long) 26L, plate.getId());
+    assertEquals("A_20111108", plate.getName());
+    assertEquals(PlateType.A, plate.getType());
+    assertEquals(96, spots.size());
+    final int rowCount = plate.getType().getRowCount();
+    List<PlateSpot> someSpots = plate.spots(new SpotLocation(0, 1), new SpotLocation(rowCount, 1));
+    assertEquals(plate.getType().getRowCount(), someSpots.size());
+    for (PlateSpot testSpot : someSpots) {
+      assertEquals(1, testSpot.getColumn());
+    }
+    PlateSpot spot = plate.spot(2, 3);
+    assertEquals(2, spot.getRow());
+    assertEquals(3, spot.getColumn());
+    assertEquals(91, plate.getEmptySpotCount());
+    assertEquals(2, plate.getSampleCount());
+  }
+
+  @Test
+  public void get_NullName() throws Exception {
+    Plate plate = plateServiceImpl.get((String) null);
 
     assertNull(plate);
   }
@@ -133,7 +168,7 @@ public class PlateServiceTest {
   @Test
   public void all_Type() throws Exception {
     PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
-    filterBuilder.type(Plate.Type.A);
+    filterBuilder.type(PlateType.A);
 
     List<Plate> plates = plateServiceImpl.all(filterBuilder.build());
 
@@ -232,7 +267,7 @@ public class PlateServiceTest {
   public void insert() throws Exception {
     Plate plate = new Plate();
     plate.setName("test_plate_4896415");
-    plate.setType(Plate.Type.A);
+    plate.setType(PlateType.A);
     when(plateActivityService.insert(any(Plate.class))).thenReturn(activity);
 
     plateServiceImpl.insert(plate);
@@ -244,7 +279,7 @@ public class PlateServiceTest {
     assertNotNull(plate.getId());
     plate = plateServiceImpl.get(plate.getId());
     assertEquals("test_plate_4896415", plate.getName());
-    assertEquals(Plate.Type.A, plate.getType());
+    assertEquals(PlateType.A, plate.getType());
   }
 
   @Test

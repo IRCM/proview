@@ -31,6 +31,7 @@ import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -310,7 +311,7 @@ public class SubmissionService {
 
   private Plate createSubmissionPlate(Submission submission) {
     Plate plate = new Plate();
-    plate.setType(Plate.Type.SUBMISSION);
+    plate.setType(PlateType.SUBMISSION);
     plate.setName(submission.getExperience());
     plate.setInsertTime(Instant.now());
     List<PlateSpot> spots = new ArrayList<>();

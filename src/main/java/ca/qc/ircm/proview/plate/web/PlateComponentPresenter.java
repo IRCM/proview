@@ -98,15 +98,23 @@ public class PlateComponentPresenter {
   }
 
   private void setWellsContent() {
-    plateProperty.getValue().getSpots().forEach(spot -> {
-      Label sampleName = new Label(spot.getSample() != null ? spot.getSample().getName() : null);
-      view.plateLayout.addWellComponent(sampleName, spot.getColumn(), spot.getRow());
+    Plate plate = plateProperty.getValue();
+    forEachSpot((column, row) -> {
+      PlateSpot well = plate.spot(row, column);
+      Label sampleName = new Label();
+      if (well != null && well.getSample() != null) {
+        sampleName.setValue(well.getSample().getName());
+      }
+      view.plateLayout.addWellComponent(sampleName, column, row);
     });
   }
 
   private void addListeners() {
-    plateProperty.getValue().getSpots().forEach(spot -> view.plateLayout
-        .addWellClickListener(e -> toggleWell(spot), spot.getColumn(), spot.getRow()));
+    Plate plate = plateProperty.getValue();
+    forEachSpot((column, row) -> {
+      PlateSpot well = plate.spot(row, column);
+      view.plateLayout.addWellClickListener(e -> toggleWell(well), column, row);
+    });
     columnsStream().forEach(
         column -> view.plateLayout.addColumnHeaderClickListener(e -> toggleColumn(column), column));
     rowsStream()
@@ -125,8 +133,8 @@ public class PlateComponentPresenter {
   }
 
   private List<PlateSpot> plateRow(int row) {
-    return plateProperty.getValue().getSpots().stream().filter(spot -> spot.getRow() == row)
-        .collect(Collectors.toList());
+    Plate plate = plateProperty.getValue();
+    return columnsStream().mapToObj(column -> plate.spot(row, column)).collect(Collectors.toList());
   }
 
   private void toggleRow(int row) {
@@ -264,6 +272,12 @@ public class PlateComponentPresenter {
     return new ArrayList<>(selectedSpots);
   }
 
+  /**
+   * Set selected spots.
+   * 
+   * @param selectedSpots
+   *          selected spots
+   */
   public void setSelectedSpots(Collection<PlateSpot> selectedSpots) {
     if (readOnlyProperty.getValue()) {
       return;

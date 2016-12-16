@@ -66,7 +66,7 @@ public class PlateActivityServiceTest {
     Plate plate = new Plate();
     plate.setId(123456L);
     plate.setName("unit_test_plate_123456");
-    plate.setType(Plate.Type.A);
+    plate.setType(PlateType.A);
 
     Activity activity = plateActivityServiceImpl.insert(plate);
 

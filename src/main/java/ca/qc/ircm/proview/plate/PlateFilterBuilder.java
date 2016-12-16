@@ -7,11 +7,11 @@ import java.util.List;
 
 public class PlateFilterBuilder {
   private static class Filter implements PlateFilter {
-    private Plate.Type type;
+    private PlateType type;
     private List<Sample> containsAnySamples;
 
     @Override
-    public Plate.Type type() {
+    public PlateType type() {
       return type;
     }
 
@@ -23,7 +23,7 @@ public class PlateFilterBuilder {
 
   private Filter filter = new Filter();
 
-  public PlateFilterBuilder type(Plate.Type type) {
+  public PlateFilterBuilder type(PlateType type) {
     filter.type = type;
     return this;
   }

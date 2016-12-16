@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class PlateTest {
-  private Plate createPlate(Plate.Type type) {
+  private Plate createPlate(PlateType type) {
     Plate plate = new Plate();
     plate.setType(type);
     List<PlateSpot> spots = new ArrayList<>();
@@ -49,21 +49,21 @@ public class PlateTest {
 
   @Test
   public void getRowCount() {
-    assertEquals(Plate.Type.A.getRowCount(), createPlate(Plate.Type.A).getRowCount());
-    assertEquals(Plate.Type.G.getRowCount(), createPlate(Plate.Type.G).getRowCount());
-    assertEquals(Plate.Type.PM.getRowCount(), createPlate(Plate.Type.PM).getRowCount());
+    assertEquals(PlateType.A.getRowCount(), createPlate(PlateType.A).getRowCount());
+    assertEquals(PlateType.G.getRowCount(), createPlate(PlateType.G).getRowCount());
+    assertEquals(PlateType.PM.getRowCount(), createPlate(PlateType.PM).getRowCount());
   }
 
   @Test
   public void getColumnCount() {
-    assertEquals(Plate.Type.A.getRowCount(), createPlate(Plate.Type.A).getRowCount());
-    assertEquals(Plate.Type.G.getRowCount(), createPlate(Plate.Type.G).getRowCount());
-    assertEquals(Plate.Type.PM.getRowCount(), createPlate(Plate.Type.PM).getRowCount());
+    assertEquals(PlateType.A.getRowCount(), createPlate(PlateType.A).getRowCount());
+    assertEquals(PlateType.G.getRowCount(), createPlate(PlateType.G).getRowCount());
+    assertEquals(PlateType.PM.getRowCount(), createPlate(PlateType.PM).getRowCount());
   }
 
   @Test
   public void spot_A() {
-    Plate plate = createPlate(Plate.Type.A);
+    Plate plate = createPlate(PlateType.A);
 
     PlateSpot spot = plate.spot(0, 0);
     assertEquals(0, spot.getRow());
@@ -74,20 +74,20 @@ public class PlateTest {
     spot = plate.spot(1, 0);
     assertEquals(1, spot.getRow());
     assertEquals(0, spot.getColumn());
-    spot = plate.spot(Plate.Type.A.getRowCount() - 1, Plate.Type.A.getColumnCount() - 1);
-    assertEquals(Plate.Type.A.getRowCount() - 1, spot.getRow());
-    assertEquals(Plate.Type.A.getColumnCount() - 1, spot.getColumn());
-    spot = plate.spot(Plate.Type.A.getRowCount() - 1, Plate.Type.A.getColumnCount() - 2);
-    assertEquals(Plate.Type.A.getRowCount() - 1, spot.getRow());
-    assertEquals(Plate.Type.A.getColumnCount() - 2, spot.getColumn());
-    spot = plate.spot(Plate.Type.A.getRowCount() - 2, Plate.Type.A.getColumnCount() - 1);
-    assertEquals(Plate.Type.A.getRowCount() - 2, spot.getRow());
-    assertEquals(Plate.Type.A.getColumnCount() - 1, spot.getColumn());
+    spot = plate.spot(PlateType.A.getRowCount() - 1, PlateType.A.getColumnCount() - 1);
+    assertEquals(PlateType.A.getRowCount() - 1, spot.getRow());
+    assertEquals(PlateType.A.getColumnCount() - 1, spot.getColumn());
+    spot = plate.spot(PlateType.A.getRowCount() - 1, PlateType.A.getColumnCount() - 2);
+    assertEquals(PlateType.A.getRowCount() - 1, spot.getRow());
+    assertEquals(PlateType.A.getColumnCount() - 2, spot.getColumn());
+    spot = plate.spot(PlateType.A.getRowCount() - 2, PlateType.A.getColumnCount() - 1);
+    assertEquals(PlateType.A.getRowCount() - 2, spot.getRow());
+    assertEquals(PlateType.A.getColumnCount() - 1, spot.getColumn());
   }
 
   @Test
   public void spot_G() {
-    Plate plate = createPlate(Plate.Type.G);
+    Plate plate = createPlate(PlateType.G);
 
     PlateSpot spot = plate.spot(0, 0);
     assertEquals(0, spot.getRow());
@@ -98,20 +98,20 @@ public class PlateTest {
     spot = plate.spot(1, 0);
     assertEquals(1, spot.getRow());
     assertEquals(0, spot.getColumn());
-    spot = plate.spot(Plate.Type.G.getRowCount() - 1, Plate.Type.G.getColumnCount() - 1);
-    assertEquals(Plate.Type.G.getRowCount() - 1, spot.getRow());
-    assertEquals(Plate.Type.G.getColumnCount() - 1, spot.getColumn());
-    spot = plate.spot(Plate.Type.G.getRowCount() - 1, Plate.Type.G.getColumnCount() - 2);
-    assertEquals(Plate.Type.G.getRowCount() - 1, spot.getRow());
-    assertEquals(Plate.Type.G.getColumnCount() - 2, spot.getColumn());
-    spot = plate.spot(Plate.Type.G.getRowCount() - 2, Plate.Type.G.getColumnCount() - 1);
-    assertEquals(Plate.Type.G.getRowCount() - 2, spot.getRow());
-    assertEquals(Plate.Type.G.getColumnCount() - 1, spot.getColumn());
+    spot = plate.spot(PlateType.G.getRowCount() - 1, PlateType.G.getColumnCount() - 1);
+    assertEquals(PlateType.G.getRowCount() - 1, spot.getRow());
+    assertEquals(PlateType.G.getColumnCount() - 1, spot.getColumn());
+    spot = plate.spot(PlateType.G.getRowCount() - 1, PlateType.G.getColumnCount() - 2);
+    assertEquals(PlateType.G.getRowCount() - 1, spot.getRow());
+    assertEquals(PlateType.G.getColumnCount() - 2, spot.getColumn());
+    spot = plate.spot(PlateType.G.getRowCount() - 2, PlateType.G.getColumnCount() - 1);
+    assertEquals(PlateType.G.getRowCount() - 2, spot.getRow());
+    assertEquals(PlateType.G.getColumnCount() - 1, spot.getColumn());
   }
 
   @Test
   public void spot_Pm() {
-    Plate plate = createPlate(Plate.Type.PM);
+    Plate plate = createPlate(PlateType.PM);
 
     PlateSpot spot = plate.spot(0, 0);
     assertEquals(0, spot.getRow());
@@ -122,20 +122,20 @@ public class PlateTest {
     spot = plate.spot(1, 0);
     assertEquals(1, spot.getRow());
     assertEquals(0, spot.getColumn());
-    spot = plate.spot(Plate.Type.PM.getRowCount() - 1, Plate.Type.PM.getColumnCount() - 1);
-    assertEquals(Plate.Type.PM.getRowCount() - 1, spot.getRow());
-    assertEquals(Plate.Type.PM.getColumnCount() - 1, spot.getColumn());
-    spot = plate.spot(Plate.Type.PM.getRowCount() - 1, Plate.Type.PM.getColumnCount() - 2);
-    assertEquals(Plate.Type.PM.getRowCount() - 1, spot.getRow());
-    assertEquals(Plate.Type.PM.getColumnCount() - 2, spot.getColumn());
-    spot = plate.spot(Plate.Type.PM.getRowCount() - 2, Plate.Type.PM.getColumnCount() - 1);
-    assertEquals(Plate.Type.PM.getRowCount() - 2, spot.getRow());
-    assertEquals(Plate.Type.PM.getColumnCount() - 1, spot.getColumn());
+    spot = plate.spot(PlateType.PM.getRowCount() - 1, PlateType.PM.getColumnCount() - 1);
+    assertEquals(PlateType.PM.getRowCount() - 1, spot.getRow());
+    assertEquals(PlateType.PM.getColumnCount() - 1, spot.getColumn());
+    spot = plate.spot(PlateType.PM.getRowCount() - 1, PlateType.PM.getColumnCount() - 2);
+    assertEquals(PlateType.PM.getRowCount() - 1, spot.getRow());
+    assertEquals(PlateType.PM.getColumnCount() - 2, spot.getColumn());
+    spot = plate.spot(PlateType.PM.getRowCount() - 2, PlateType.PM.getColumnCount() - 1);
+    assertEquals(PlateType.PM.getRowCount() - 2, spot.getRow());
+    assertEquals(PlateType.PM.getColumnCount() - 1, spot.getColumn());
   }
 
   @Test
   public void spots_A() {
-    Plate plate = createPlate(Plate.Type.A);
+    Plate plate = createPlate(PlateType.A);
 
     List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
     assertEquals(1, spots.size());
@@ -145,23 +145,23 @@ public class PlateTest {
     assertTrue(find(spots, 0, 0).isPresent());
     assertTrue(find(spots, 1, 0).isPresent());
     spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 1));
-    assertEquals(Plate.Type.A.getRowCount() + 1, spots.size());
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    assertEquals(PlateType.A.getRowCount() + 1, spots.size());
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 0).isPresent());
     }
     assertTrue(find(spots, 0, 1).isPresent());
     spots = plate.spots(new SpotLocation(0, 0),
-        new SpotLocation(Plate.Type.A.getRowCount(), Plate.Type.A.getColumnCount()));
+        new SpotLocation(PlateType.A.getRowCount(), PlateType.A.getColumnCount()));
     assertEquals(plate.getSpots().size(), spots.size());
     spots = plate.spots(new SpotLocation(6, 2), new SpotLocation(2, 5));
     assertEquals(21, spots.size());
-    for (int i = 6; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 6; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 2).isPresent());
     }
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 3).isPresent());
     }
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 4).isPresent());
     }
     for (int i = 0; i < 2; i++) {
@@ -173,7 +173,7 @@ public class PlateTest {
 
   @Test
   public void spots_G() {
-    Plate plate = createPlate(Plate.Type.G);
+    Plate plate = createPlate(PlateType.G);
 
     List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
     assertEquals(1, spots.size());
@@ -183,23 +183,23 @@ public class PlateTest {
     assertTrue(find(spots, 0, 0).isPresent());
     assertTrue(find(spots, 1, 0).isPresent());
     spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 1));
-    assertEquals(Plate.Type.A.getRowCount() + 1, spots.size());
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    assertEquals(PlateType.A.getRowCount() + 1, spots.size());
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 0).isPresent());
     }
     assertTrue(find(spots, 0, 1).isPresent());
     spots = plate.spots(new SpotLocation(0, 0),
-        new SpotLocation(Plate.Type.A.getRowCount(), Plate.Type.A.getColumnCount()));
+        new SpotLocation(PlateType.A.getRowCount(), PlateType.A.getColumnCount()));
     assertEquals(plate.getSpots().size(), spots.size());
     spots = plate.spots(new SpotLocation(6, 2), new SpotLocation(2, 5));
     assertEquals(21, spots.size());
-    for (int i = 6; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 6; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 2).isPresent());
     }
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 3).isPresent());
     }
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 4).isPresent());
     }
     for (int i = 0; i < 2; i++) {
@@ -211,7 +211,7 @@ public class PlateTest {
 
   @Test
   public void spots_Pm() {
-    Plate plate = createPlate(Plate.Type.PM);
+    Plate plate = createPlate(PlateType.PM);
 
     List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
     assertEquals(1, spots.size());
@@ -221,23 +221,23 @@ public class PlateTest {
     assertTrue(find(spots, 0, 0).isPresent());
     assertTrue(find(spots, 1, 0).isPresent());
     spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 1));
-    assertEquals(Plate.Type.A.getRowCount() + 1, spots.size());
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    assertEquals(PlateType.A.getRowCount() + 1, spots.size());
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 0).isPresent());
     }
     assertTrue(find(spots, 0, 1).isPresent());
     spots = plate.spots(new SpotLocation(0, 0),
-        new SpotLocation(Plate.Type.A.getRowCount(), Plate.Type.A.getColumnCount()));
+        new SpotLocation(PlateType.A.getRowCount(), PlateType.A.getColumnCount()));
     assertEquals(plate.getSpots().size(), spots.size());
     spots = plate.spots(new SpotLocation(6, 2), new SpotLocation(2, 5));
     assertEquals(21, spots.size());
-    for (int i = 6; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 6; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 2).isPresent());
     }
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 3).isPresent());
     }
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       assertTrue(find(spots, i, 4).isPresent());
     }
     for (int i = 0; i < 2; i++) {
@@ -249,34 +249,34 @@ public class PlateTest {
 
   @Test
   public void getEmptySpotCount() {
-    Plate plate = createPlate(Plate.Type.A);
+    Plate plate = createPlate(PlateType.A);
 
-    assertEquals(Plate.Type.A.getRowCount() * Plate.Type.A.getColumnCount(),
+    assertEquals(PlateType.A.getRowCount() * PlateType.A.getColumnCount(),
         plate.getEmptySpotCount());
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       find(plate.getSpots(), i, 3).orElse(null).setSample(new SubmissionSample());
     }
-    assertEquals(Plate.Type.A.getRowCount() * (Plate.Type.A.getColumnCount() - 1),
+    assertEquals(PlateType.A.getRowCount() * (PlateType.A.getColumnCount() - 1),
         plate.getEmptySpotCount());
     for (int i = 0; i < 5; i++) {
       find(plate.getSpots(), i, 0).orElse(null).setSample(new SubmissionSample());
     }
-    assertEquals(Plate.Type.A.getRowCount() * (Plate.Type.A.getColumnCount() - 1) - 5,
+    assertEquals(PlateType.A.getRowCount() * (PlateType.A.getColumnCount() - 1) - 5,
         plate.getEmptySpotCount());
   }
 
   @Test
   public void getSampleCount() {
-    Plate plate = createPlate(Plate.Type.A);
+    Plate plate = createPlate(PlateType.A);
 
     assertEquals(0, plate.getSampleCount());
-    for (int i = 0; i < Plate.Type.A.getRowCount(); i++) {
+    for (int i = 0; i < PlateType.A.getRowCount(); i++) {
       find(plate.getSpots(), i, 3).orElse(null).setSample(new SubmissionSample());
     }
-    assertEquals(Plate.Type.A.getRowCount(), plate.getSampleCount());
+    assertEquals(PlateType.A.getRowCount(), plate.getSampleCount());
     for (int i = 0; i < 5; i++) {
       find(plate.getSpots(), i, 0).orElse(null).setSample(new SubmissionSample());
     }
-    assertEquals(Plate.Type.A.getRowCount() + 5, plate.getSampleCount());
+    assertEquals(PlateType.A.getRowCount() + 5, plate.getSampleCount());
   }
 }

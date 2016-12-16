@@ -11,7 +11,9 @@ import ca.qc.ircm.proview.plate.PlateFilterBuilder;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.plate.PlateSpotService;
+import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -68,6 +71,8 @@ public class TransferViewPresenter {
   static final Object[] SOURCE_TUBE_COLUMNS = new Object[] { NAME, TUBE };
   static final Object[] DESTINATION_TUBE_COLUMNS =
       new Object[] { DESTINATION_SAMPLE_NAME, DESTINATION_TUBE_NAME };
+  static final PlateType[] DESTINATION_PLATE_TYPES =
+      new PlateType[] { PlateType.A, PlateType.G, PlateType.PM };
   private TransferView view;
   private ObjectProperty<List<Sample>> samplesProperty = new ObjectProperty<>(new ArrayList<>());
   private BeanFieldGroup<Plate> destinationPlateFieldGroup = new BeanFieldGroup<>(Plate.class);
@@ -109,10 +114,13 @@ public class TransferViewPresenter {
     prepareComponents();
     bindFields();
     addListeners();
+    updateDestinationPlateType();
   }
 
   private void prepareComponents() {
-    MessageResource resources = view.getResources();
+    final MessageResource resources = view.getResources();
+    final MessageResource generalResources = view.getGeneralResources();
+    final Locale locale = view.getLocale();
     view.setTitle(resources.message("title", applicationName));
     view.headerLabel.addStyleName(HEADER);
     view.headerLabel.addStyleName(ValoTheme.LABEL_H1);
@@ -142,18 +150,33 @@ public class TransferViewPresenter {
     view.destinationTabs.getTab(view.destinationPlateLayout)
         .setCaption(resources.message(DESTINATION_PLATE));
     prepareDestinationTubesGrid();
+    view.destinationPlatesTypeField.setNullSelectionAllowed(false);
+    view.destinationPlatesTypeField.setNewItemsAllowed(false);
     view.destinationPlatesTypeField.addStyleName(DESTINATION_PLATES_TYPE);
     view.destinationPlatesTypeField.setCaption(resources.message(DESTINATION_PLATES_TYPE));
+    for (PlateType type : DESTINATION_PLATE_TYPES) {
+      view.destinationPlatesTypeField.addItem(type);
+      view.destinationPlatesTypeField.setItemCaption(type, type.getLabel(locale));
+    }
+    view.destinationPlatesTypeField.setRequired(true);
+    view.destinationPlatesTypeField.setRequiredError(generalResources.message(REQUIRED));
     view.destinationPlatesField.addStyleName(DESTINATION_PLATES);
     view.destinationPlatesField.setCaption(resources.message(DESTINATION_PLATES));
+    view.destinationPlatesField.setNullSelectionAllowed(false);
+    view.destinationPlatesField.setNewItemsAllowed(true);
+    view.destinationPlatesField.setRequired(true);
+    view.destinationPlatesField.setRequiredError(generalResources.message(REQUIRED));
     view.destinationPlatePanel.addStyleName(DESTINATION_PLATE_PANEL);
     view.destinationPlateForm.addStyleName(DESTINATION_PLATE);
     view.destinationPlateFormPresenter.setMultiSelect(true);
+    Plate destinationPlate = new Plate();
+    destinationPlate.setType(PlateType.A);
+    destinationPlateFieldGroup.setItemDataSource(destinationPlate);
   }
 
   @SuppressWarnings("serial")
   private void prepareSourceTubesGrid() {
-    MessageResource resources = view.getResources();
+    final MessageResource resources = view.getResources();
     sourceTubesGeneratedContainer.addGeneratedProperty(TUBE,
         new PropertyValueGenerator<ComboBox>() {
           @Override
@@ -189,6 +212,9 @@ public class TransferViewPresenter {
     });
     comboBox.setRequired(true);
     comboBox.setRequiredError(generalResources.message(REQUIRED));
+    if (!comboBox.getItemIds().isEmpty()) {
+      comboBox.setValue(comboBox.getItemIds().iterator().next());
+    }
     return comboBox;
   }
 
@@ -221,6 +247,8 @@ public class TransferViewPresenter {
   private void addListeners() {
     view.sourcePlatesField
         .addValueChangeListener(e -> updateSourcePlate((Plate) view.sourcePlatesField.getValue()));
+    view.destinationPlatesTypeField.addValueChangeListener(e -> updateDestinationPlateType());
+    view.destinationPlatesField.addValueChangeListener(e -> updateDestinationPlate());
     samplesProperty.addValueChangeListener(e -> updateSamples());
   }
 
@@ -237,12 +265,35 @@ public class TransferViewPresenter {
     }
   }
 
+  private void updateDestinationPlateType() {
+    PlateType type = (PlateType) view.destinationPlatesTypeField.getValue();
+    List<Plate> plates = plateService.all(new PlateFilterBuilder().type(type).build());
+    view.destinationPlatesField.removeAllItems();
+    plates.forEach(plate -> {
+      view.destinationPlatesField.addItem(plate.getName());
+      view.destinationPlatesField.setItemCaption(plate.getName(), plate.getName());
+    });
+  }
+
+  private void updateDestinationPlate() {
+    String name = (String) view.destinationPlatesField.getValue();
+    Plate plate = plateService.get(name);
+    if (plate == null) {
+      plate = new Plate();
+      plate.setName(name);
+      plate.setType((PlateType) view.destinationPlatesTypeField.getValue());
+    }
+
+    view.destinationPlateFormPresenter.setPlate(plate);
+  }
+
   private void updateSamples() {
     List<Sample> samples = samplesProperty.getValue();
     sourceTubesContainer.removeAllItems();
     sourceTubesContainer.addAll(samples);
-    List<Plate> plates =
-        plateService.all(new PlateFilterBuilder().containsAnySamples(samples).build());
+    List<Plate> plates = plateService.all(new PlateFilterBuilder().containsAnySamples(
+        samples.stream().filter(s -> s instanceof SubmissionSample).collect(Collectors.toList()))
+        .build());
     view.sourcePlatesField.removeAllItems();
     plates.forEach(plate -> {
       view.sourcePlatesField.addItem(plate);

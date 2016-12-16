@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,8 +44,8 @@ public class PlateComponentPresenterTest {
   private PlateComponentPresenter presenter;
   private PlateComponent view = new PlateComponent();
   private Plate plate = new Plate();
-  private int columns = Plate.Type.A.getColumnCount();
-  private int rows = Plate.Type.A.getRowCount();
+  private int columns = PlateType.A.getColumnCount();
+  private int rows = PlateType.A.getRowCount();
 
   /**
    * Before test.
@@ -57,7 +58,7 @@ public class PlateComponentPresenterTest {
   }
 
   private void initPlate() {
-    plate.setType(Plate.Type.A);
+    plate.setType(PlateType.A);
     List<PlateSpot> spots = IntStream
         .range(0, columns).mapToObj(column -> IntStream.range(0, rows)
             .mapToObj(row -> new PlateSpot(row, column)).collect(Collectors.toList()))
@@ -364,7 +365,19 @@ public class PlateComponentPresenterTest {
 
   @Test
   public void setPlate() {
+    presenter.init(view);
     initPlate();
+
+    presenter.setPlate(plate);
+
+    assertSame(plate, presenter.getPlate());
+  }
+
+  @Test
+  public void setPlate_NoWells() {
+    presenter.init(view);
+    plate = new Plate();
+    plate.setType(PlateType.A);
 
     presenter.setPlate(plate);
 

@@ -48,34 +48,6 @@ import javax.persistence.Table;
 @Table(name = "plate")
 public class Plate implements Data, Serializable, Named {
 
-  /**
-   * Plate types.
-   */
-  public static enum Type {
-    PM(8, 12), G(8, 12), A(8, 12), SUBMISSION(8, 12);
-    Type(int rowCount, int columnCount) {
-      this.rowCount = rowCount;
-      this.columnCount = columnCount;
-    }
-
-    /**
-     * Number of rows in plate.
-     */
-    private int rowCount;
-    /**
-     * Number of columns in plate.
-     */
-    private int columnCount;
-
-    public int getRowCount() {
-      return rowCount;
-    }
-
-    public int getColumnCount() {
-      return columnCount;
-    }
-  }
-
   private static final long serialVersionUID = 342820436770987756L;
 
   /**
@@ -95,7 +67,7 @@ public class Plate implements Data, Serializable, Named {
    */
   @Column(name = "type", nullable = false)
   @Enumerated(STRING)
-  private Type type;
+  private PlateType type;
   /**
    * Time when analysis was inserted.
    */
@@ -144,9 +116,7 @@ public class Plate implements Data, Serializable, Named {
    *          row
    * @param column
    *          column
-   * @return spot at specified location
-   * @throws IllegalStateException
-   *           invalid row or column for this plate
+   * @return spot at specified location, or null if plate has not spot at this location
    */
   @Nonnull
   public PlateSpot spot(int row, int column) {
@@ -159,12 +129,14 @@ public class Plate implements Data, Serializable, Named {
           "Column " + column + " is greater/equal then the number of columns in this plate ("
               + getColumnCount() + ")");
     }
-    for (PlateSpot spot : this.spots) {
-      if (spot.getRow() == row && spot.getColumn() == column) {
-        return spot;
+    if (this.spots != null) {
+      for (PlateSpot spot : this.spots) {
+        if (spot.getRow() == row && spot.getColumn() == column) {
+          return spot;
+        }
       }
     }
-    throw new IllegalStateException("No spot could be found at location " + row + "-" + column);
+    return null;
   }
 
   /**
@@ -195,10 +167,12 @@ public class Plate implements Data, Serializable, Named {
    * @return spots in column
    */
   public List<PlateSpot> column(int index) {
-    List<PlateSpot> spots = new ArrayList<PlateSpot>();
-    for (PlateSpot spot : this.spots) {
-      if (spot.getColumn() == index) {
-        spots.add(spot);
+    List<PlateSpot> spots = new ArrayList<>();
+    if (this.spots != null) {
+      for (PlateSpot spot : this.spots) {
+        if (spot.getColumn() == index) {
+          spots.add(spot);
+        }
       }
     }
     Collections.sort(spots, new PlateSpotComparator(PlateSpotComparator.Compare.LOCATION));
@@ -258,11 +232,11 @@ public class Plate implements Data, Serializable, Named {
     this.id = id;
   }
 
-  public Type getType() {
+  public PlateType getType() {
     return type;
   }
 
-  public void setType(Type type) {
+  public void setType(PlateType type) {
     this.type = type;
   }
 
