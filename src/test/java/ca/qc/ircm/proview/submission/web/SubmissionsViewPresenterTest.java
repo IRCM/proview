@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COMPONENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
@@ -35,6 +34,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISS
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+
 import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.user.QUser;
@@ -69,7 +71,6 @@ public class SignasViewPresenter {
   public static final String VIEW = "view";
   public static final String SIGN_AS = "signas";
   public static final String ALL = "all";
-  public static final String COMPONENTS = "components";
   private static final String[] COLUMNS =
       { EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, VIEW, SIGN_AS };
   private static final Logger logger = LoggerFactory.getLogger(SignasViewPresenter.class);

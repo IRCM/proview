@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.GENERAL_MESSAGES;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -78,7 +79,6 @@ public class SampleStatusViewPresenter {
   public static final String REGRESS_MESSAGE = "regress.message";
   public static final String OK = "ok";
   public static final String CANCEL = "cancel";
-  public static final String COMPONENTS = "components";
   public static final String INVALID_SUBMISSIONS = "submissions.invalid";
   private static final Object[] SAMPLES_COLUMNS =
       new Object[] { NAME, EXPERIENCE, STATUS, NEW_STATUS, DOWN };
