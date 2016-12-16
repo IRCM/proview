@@ -3,6 +3,8 @@ package ca.qc.ircm.proview.transfer.web;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.tube.QTube.tube;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateFilterBuilder;
@@ -19,6 +21,7 @@ import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,20 +56,28 @@ public class TransferViewPresenter {
   public static final String DESTINATION_PLATES_TYPE = "destinationPlatesType";
   public static final String DESTINATION_PLATE_PANEL = "destinationPlatePanel";
   public static final String DESTINATION_PLATE = "destinationPlate";
-  public static final String COMPONENTS = "components";
   public static final String NAME = sample.name.getMetadata().getName();
   public static final String TUBE = tube.getMetadata().getName();
   public static final String PLATE = plate.getMetadata().getName();
   public static final String PLATE_TYPE = plate.type.getMetadata().getName();
   public static final String PLATE_NAME = plate.name.getMetadata().getName();
+  public static final String DESTINATION_SAMPLE = sample.getMetadata().getName();
+  public static final String DESTINATION_SAMPLE_NAME =
+      DESTINATION_SAMPLE + "." + sample.name.getMetadata().getName();
+  public static final String DESTINATION_TUBE_NAME = "tubeName";
   static final Object[] SOURCE_TUBE_COLUMNS = new Object[] { NAME, TUBE };
-  static final Object[] DESTINATION_TUBE_COLUMNS = new Object[] { NAME, TUBE };
+  static final Object[] DESTINATION_TUBE_COLUMNS =
+      new Object[] { DESTINATION_SAMPLE_NAME, DESTINATION_TUBE_NAME };
   private TransferView view;
   private ObjectProperty<List<Sample>> samplesProperty = new ObjectProperty<>(new ArrayList<>());
   private BeanFieldGroup<Plate> destinationPlateFieldGroup = new BeanFieldGroup<>(Plate.class);
   private BeanItemContainer<Sample> sourceTubesContainer = new BeanItemContainer<>(Sample.class);
   private GeneratedPropertyContainer sourceTubesGeneratedContainer =
       new GeneratedPropertyContainer(sourceTubesContainer);
+  private BeanItemContainer<DestinationTube> destinationTubesContainer =
+      new BeanItemContainer<>(DestinationTube.class);
+  private GeneratedPropertyContainer destinationTubesGeneratedContainer =
+      new GeneratedPropertyContainer(destinationTubesContainer);
   @Inject
   private TubeService tubeService;
   @Inject
@@ -87,6 +98,12 @@ public class TransferViewPresenter {
     this.applicationName = applicationName;
   }
 
+  /**
+   * Initializes presenter.
+   *
+   * @param view
+   *          view
+   */
   public void init(TransferView view) {
     this.view = view;
     prepareComponents();
@@ -124,7 +141,7 @@ public class TransferViewPresenter {
         .setCaption(resources.message(DESTINATION_TUBES));
     view.destinationTabs.getTab(view.destinationPlateLayout)
         .setCaption(resources.message(DESTINATION_PLATE));
-    view.destinationTubesGrid.addStyleName(DESTINATION_TUBES);
+    prepareDestinationTubesGrid();
     view.destinationPlatesTypeField.addStyleName(DESTINATION_PLATES_TYPE);
     view.destinationPlatesTypeField.setCaption(resources.message(DESTINATION_PLATES_TYPE));
     view.destinationPlatesField.addStyleName(DESTINATION_PLATES);
@@ -161,6 +178,7 @@ public class TransferViewPresenter {
   }
 
   private ComboBox prepareSourceTubeComboBox(Sample sample) {
+    final MessageResource generalResources = view.getGeneralResources();
     ComboBox comboBox = new ComboBox();
     comboBox.addStyleName(TUBE);
     comboBox.setNullSelectionAllowed(false);
@@ -169,7 +187,30 @@ public class TransferViewPresenter {
       comboBox.addItem(tube);
       comboBox.setItemCaption(tube, tube.getName());
     });
+    comboBox.setRequired(true);
+    comboBox.setRequiredError(generalResources.message(REQUIRED));
     return comboBox;
+  }
+
+  private void prepareDestinationTubesGrid() {
+    final MessageResource resources = view.getResources();
+    destinationTubesContainer.addNestedContainerBean(DESTINATION_SAMPLE);
+    view.destinationTubesGrid.addStyleName(DESTINATION_TUBES);
+    view.destinationTubesGrid.addStyleName(COMPONENTS);
+    view.destinationTubesGrid.setContainerDataSource(destinationTubesGeneratedContainer);
+    view.destinationTubesGrid.setColumns(DESTINATION_TUBE_COLUMNS);
+    view.destinationTubesGrid.getColumns().forEach(
+        column -> column.setHeaderCaption(resources.message((String) column.getPropertyId())));
+    view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).setRenderer(new ComponentRenderer());
+  }
+
+  private TextField prepareDestinationTubeNameField() {
+    MessageResource generalResources = view.getGeneralResources();
+    TextField textField = new TextField();
+    textField.addStyleName(DESTINATION_TUBE_NAME);
+    textField.setRequired(true);
+    textField.setRequiredError(generalResources.message(REQUIRED));
+    return textField;
   }
 
   private void bindFields() {
@@ -198,6 +239,7 @@ public class TransferViewPresenter {
 
   private void updateSamples() {
     List<Sample> samples = samplesProperty.getValue();
+    sourceTubesContainer.removeAllItems();
     sourceTubesContainer.addAll(samples);
     List<Plate> plates =
         plateService.all(new PlateFilterBuilder().containsAnySamples(samples).build());
@@ -212,9 +254,39 @@ public class TransferViewPresenter {
     if (last != null) {
       view.sourcePlatesField.setValue(last);
     }
+    destinationTubesContainer.removeAllItems();
+    destinationTubesContainer
+        .addAll(samples.stream().map(s -> new DestinationTube(s, prepareDestinationTubeNameField()))
+            .collect(Collectors.toList()));
   }
 
   public void enter(String parameters) {
     samplesProperty.setValue(view.savedSamples());
+  }
+
+  public static class DestinationTube {
+    private Sample sample;
+    private TextField tubeName;
+
+    private DestinationTube(Sample sample, TextField tubeNameField) {
+      this.sample = sample;
+      this.tubeName = tubeNameField;
+    }
+
+    public Sample getSample() {
+      return sample;
+    }
+
+    public void setSample(Sample sample) {
+      this.sample = sample;
+    }
+
+    public TextField getTubeName() {
+      return tubeName;
+    }
+
+    public void setTubeName(TextField tubeName) {
+      this.tubeName = tubeName;
+    }
   }
 }

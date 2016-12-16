@@ -1,14 +1,15 @@
 package ca.qc.ircm.proview.transfer.web;
 
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.COMPONENTS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATES;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATES_TYPE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_PANEL;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_SAMPLE_NAME;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TABS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBES;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBE_COLUMNS;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBE_NAME;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.HEADER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.NAME;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE;
@@ -20,6 +21,8 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_TUBES
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_TUBE_COLUMNS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TITLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TUBE;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -39,6 +42,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
+import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Container;
 import com.vaadin.ui.ComboBox;
@@ -46,6 +50,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
@@ -91,6 +96,8 @@ public class TransferViewPresenterTest {
   private String applicationName;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(TransferView.class, locale);
+  private MessageResource generalResources =
+      new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private List<Sample> samples = new ArrayList<>();
   private Map<Sample, List<Tube>> sourceTubes = new HashMap<>();
   private List<Plate> sourcePlates = new ArrayList<>();
@@ -126,6 +133,7 @@ public class TransferViewPresenterTest {
     view.destinationPlateFormPresenter = mock(PlateComponentPresenter.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     when(view.savedSamples()).thenReturn(samples);
     samples.add(entityManager.find(Sample.class, 559L));
     samples.add(entityManager.find(Sample.class, 560L));
@@ -218,9 +226,9 @@ public class TransferViewPresenterTest {
     }
     assertEquals(resources.message(DESTINATION_PLATE),
         view.destinationTabs.getTab(view.destinationPlateLayout).getCaption());
-    assertEquals(resources.message(DESTINATION_PLATES), view.destinationPlatesField.getValue());
+    assertEquals(resources.message(DESTINATION_PLATES), view.destinationPlatesField.getCaption());
     assertEquals(resources.message(DESTINATION_PLATES_TYPE),
-        view.destinationPlatesTypeField.getValue());
+        view.destinationPlatesTypeField.getCaption());
   }
 
   @Test
@@ -233,8 +241,7 @@ public class TransferViewPresenterTest {
     assertTrue(view.sourceTubesGrid.getColumns().get(1).getRenderer() instanceof ComponentRenderer);
     Container.Indexed container = view.sourceTubesGrid.getContainerDataSource();
     Sample sample = samples.get(0);
-    ComboBox comboBox =
-        (ComboBox) container.getItem(samples.get(0)).getItemProperty(TUBE).getValue();
+    ComboBox comboBox = (ComboBox) container.getItem(sample).getItemProperty(TUBE).getValue();
     assertEquals(sourceTubes.get(sample).size(), comboBox.getItemIds().size());
     assertTrue(sourceTubes.get(sample).containsAll(comboBox.getItemIds()));
     assertTrue(comboBox.getItemIds().containsAll(sourceTubes.get(sample)));
@@ -295,5 +302,26 @@ public class TransferViewPresenterTest {
         assertTrue(find(wells, well.getId()).isPresent());
       }
     }
+  }
+
+  @Test
+  public void destinationTubesColumns() {
+    presenter.init(view);
+    presenter.enter("");
+
+    assertEquals(DESTINATION_SAMPLE_NAME,
+        view.destinationTubesGrid.getColumns().get(0).getPropertyId());
+    assertEquals(DESTINATION_TUBE_NAME,
+        view.destinationTubesGrid.getColumns().get(1).getPropertyId());
+    assertTrue(
+        view.destinationTubesGrid.getColumns().get(1).getRenderer() instanceof ComponentRenderer);
+    Container.Indexed container = view.destinationTubesGrid.getContainerDataSource();
+    Object itemId = container.getIdByIndex(0);
+    Object rawTubeNameField =
+        container.getItem(itemId).getItemProperty(DESTINATION_TUBE_NAME).getValue();
+    assertTrue(rawTubeNameField instanceof TextField);
+    TextField tubeNameField = (TextField) rawTubeNameField;
+    assertTrue(tubeNameField.isRequired());
+    assertEquals(generalResources.message(REQUIRED), tubeNameField.getRequiredError());
   }
 }
