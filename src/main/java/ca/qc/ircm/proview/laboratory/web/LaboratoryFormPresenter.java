@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.laboratory.web;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.QLaboratory;
-import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -91,8 +90,7 @@ public class LaboratoryFormPresenter {
   }
 
   private void setRequired() {
-    final MessageResource generalResources =
-        new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.nameField.setRequired(true);
     view.nameField
         .setRequiredError(generalResources.message("required", view.nameField.getCaption()));

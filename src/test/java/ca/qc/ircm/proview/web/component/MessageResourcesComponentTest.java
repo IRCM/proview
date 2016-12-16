@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.web.component;
 
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.web.component.MessageResourcesComponent;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.TextField;
 import org.junit.Before;
@@ -43,18 +43,36 @@ public class MessageResourcesComponentTest {
   public void getResources() {
     messageResourcesComponent.setLocale(locale);
 
-    MessageResource messageResource = messageResourcesComponent.getResources();
+    MessageResource resources = messageResourcesComponent.getResources();
 
-    assertEquals(message, messageResource.message("message"));
+    assertEquals(message, resources.message("message"));
   }
 
   @Test
   public void getResources_French() {
     messageResourcesComponent.setLocale(frenchLocale);
 
-    MessageResource messageResource = messageResourcesComponent.getResources();
+    MessageResource resources = messageResourcesComponent.getResources();
 
-    assertEquals(frenchMessage, messageResource.message("message"));
+    assertEquals(frenchMessage, resources.message("message"));
+  }
+
+  @Test
+  public void getGeneralResources() {
+    messageResourcesComponent.setLocale(locale);
+
+    MessageResource resources = messageResourcesComponent.getGeneralResources();
+
+    assertEquals("may not be empty", resources.message(REQUIRED));
+  }
+
+  @Test
+  public void getGeneralResources_French() {
+    messageResourcesComponent.setLocale(frenchLocale);
+
+    MessageResource resources = messageResourcesComponent.getGeneralResources();
+
+    assertEquals("ne peut pas être vide", resources.message(REQUIRED));
   }
 
   @SuppressWarnings("serial")

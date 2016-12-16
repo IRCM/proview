@@ -131,6 +131,7 @@ public class MainViewPresenterTest {
     when(signForm.getLoginButton()).thenReturn(signButton);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     presenter.init(view);
   }
 

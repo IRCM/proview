@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
-import static ca.qc.ircm.proview.web.WebConstants.GENERAL_MESSAGES;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.user.ForgotPassword;
@@ -86,8 +85,7 @@ public class ForgotPasswordViewPresenter {
 
   private void prepareComponents() {
     MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.addStyleName(HEADER);
     view.headerLabel.addStyleName("h1");
@@ -140,8 +138,7 @@ public class ForgotPasswordViewPresenter {
     try {
       passwordFieldGroup.commit();
     } catch (CommitException e) {
-      final MessageResource generalResources =
-          new MessageResource(GENERAL_MESSAGES, view.getLocale());
+      final MessageResource generalResources = view.getGeneralResources();
       logger.trace("Validation commit failed with message {}", e.getMessage(), e);
       view.showError(generalResources.message(FIELD_NOTIFICATION));
       return false;

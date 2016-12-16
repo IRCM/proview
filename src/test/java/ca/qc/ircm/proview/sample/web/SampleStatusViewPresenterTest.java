@@ -124,6 +124,7 @@ public class SampleStatusViewPresenterTest {
     view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     when(view.savedSamples()).thenReturn(samples);
     samples.add(entityManager.find(Sample.class, 442L));
     samples.add(entityManager.find(Sample.class, 443L));

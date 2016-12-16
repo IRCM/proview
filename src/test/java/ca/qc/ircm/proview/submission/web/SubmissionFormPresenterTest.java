@@ -446,6 +446,7 @@ public class SubmissionFormPresenterTest {
     view.submitButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     when(plateService.nameAvailable(any())).thenReturn(true);
   }
 

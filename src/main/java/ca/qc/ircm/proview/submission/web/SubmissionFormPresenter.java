@@ -57,7 +57,6 @@ import static ca.qc.ircm.proview.treatment.Solvent.CHCL3;
 import static ca.qc.ircm.proview.treatment.Solvent.METHANOL;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
-import static ca.qc.ircm.proview.web.WebConstants.GENERAL_MESSAGES;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
@@ -399,8 +398,7 @@ public class SubmissionFormPresenter {
   private void prepareComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.uploadStateWindow.addStyleName(UPLOAD_STATE_WINDOW);
     view.uploadStateWindow.setUploadStatusCaption(generalResources.message(UPLOAD_STATUS));
     view.uploadStateWindow.setCancelButtonCaption(generalResources.message(WebConstants.CANCEL));
@@ -491,8 +489,7 @@ public class SubmissionFormPresenter {
   private void prepareSamplesComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.samplesPanel.addStyleName(SAMPLES_PANEL);
     view.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
     view.sampleSupportOptions.addStyleName(SAMPLE_SUPPORT_PROPERTY);
@@ -637,8 +634,7 @@ public class SubmissionFormPresenter {
 
   private void prepareExperienceComponents() {
     final MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.experiencePanel.addStyleName(EXPERIENCE_PANEL);
     view.experiencePanel.setCaption(resources.message(EXPERIENCE_PANEL));
     view.experienceField.addStyleName(EXPERIENCE_PROPERTY);
@@ -677,8 +673,7 @@ public class SubmissionFormPresenter {
   @SuppressWarnings("serial")
   private void prepareStandardsComponents() {
     final MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.standardsPanel.addStyleName(STANDARDS_PANEL);
     view.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
     view.standardCountField.addStyleName(STANDARD_COUNT_PROPERTY);
@@ -722,8 +717,7 @@ public class SubmissionFormPresenter {
   @SuppressWarnings("serial")
   private void prepareContaminantsComponents() {
     final MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.contaminantsPanel.addStyleName(CONTAMINANTS_PANEL);
     view.contaminantsPanel.setCaption(resources.message(CONTAMINANTS_PANEL));
     view.contaminantCountField.addStyleName(CONTAMINANT_COUNT_PROPERTY);
@@ -770,8 +764,7 @@ public class SubmissionFormPresenter {
   private void prepareGelComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.gelPanel.addStyleName(GEL_PANEL);
     view.gelPanel.setCaption(resources.message(GEL_PANEL));
     view.separationField.addStyleName(SEPARATION_PROPERTY);
@@ -891,8 +884,7 @@ public class SubmissionFormPresenter {
   private void prepareServicesComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.servicesPanel.addStyleName(SERVICES_PANEL);
     view.servicesPanel.setCaption(resources.message(SERVICES_PANEL));
     view.digestionOptions.addStyleName(DIGESTION_PROPERTY);
@@ -1595,7 +1587,7 @@ public class SubmissionFormPresenter {
     if (name == null || name.isEmpty()) {
       return;
     }
-    MessageResource generalResources = new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    MessageResource generalResources = view.getGeneralResources();
     if (!Pattern.matches("\\w*", name)) {
       throw new InvalidValueException(generalResources.message(ONLY_WORDS));
     }
@@ -1608,7 +1600,7 @@ public class SubmissionFormPresenter {
     if (name == null || name.isEmpty()) {
       return;
     }
-    MessageResource generalResources = new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    MessageResource generalResources = view.getGeneralResources();
     if (!plateService.nameAvailable(name)) {
       throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
     }
@@ -1643,14 +1635,12 @@ public class SubmissionFormPresenter {
         }
       }
     } catch (InvalidValueException e) {
-      final MessageResource generalResources =
-          new MessageResource(GENERAL_MESSAGES, view.getLocale());
+      final MessageResource generalResources = view.getGeneralResources();
       logger.trace("Validation value failed with message {}", e.getMessage(), e);
       view.showError(generalResources.message(FIELD_NOTIFICATION));
       valid = false;
     } catch (CommitException e) {
-      final MessageResource generalResources =
-          new MessageResource(GENERAL_MESSAGES, view.getLocale());
+      final MessageResource generalResources = view.getGeneralResources();
       logger.trace("Validation commit failed with message {}", e.getMessage(), e);
       view.showError(generalResources.message(FIELD_NOTIFICATION));
       valid = false;
