@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.web.PlateLayout;
+import ca.qc.ircm.proview.plate.web.PlateLayoutOld;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
@@ -35,7 +35,7 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
   protected MultiFileUpload structureUploader;
   protected MultiFileUpload gelImagesUploader;
   protected MultiFileUpload filesUploader;
-  protected PlateLayout samplesPlateLayout;
+  protected PlateLayoutOld samplesPlateLayout;
 
   public void setPresenter(SubmissionFormPresenter presenter) {
     this.presenter = presenter;
@@ -48,7 +48,7 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
     uploadStateWindow = new UploadStateWindow();
     int columns = Plate.Type.SUBMISSION.getColumnCount();
     int rows = Plate.Type.SUBMISSION.getRowCount();
-    samplesPlateLayout = new PlateLayout(columns, rows);
+    samplesPlateLayout = new PlateLayoutOld(columns, rows);
     samplesPlateContainer.addComponent(samplesPlateLayout);
   }
 

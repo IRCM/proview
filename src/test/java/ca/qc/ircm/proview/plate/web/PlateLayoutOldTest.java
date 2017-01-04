@@ -17,11 +17,11 @@
 
 package ca.qc.ircm.proview.plate.web;
 
-import static ca.qc.ircm.proview.plate.web.PlateLayout.HEADER_COLUMN_STYLE;
-import static ca.qc.ircm.proview.plate.web.PlateLayout.HEADER_ROW_STYLE;
-import static ca.qc.ircm.proview.plate.web.PlateLayout.HEADER_STYLE;
-import static ca.qc.ircm.proview.plate.web.PlateLayout.STYLE;
-import static ca.qc.ircm.proview.plate.web.PlateLayout.WELL_STYLE;
+import static ca.qc.ircm.proview.plate.web.PlateLayoutOld.HEADER_COLUMN_STYLE;
+import static ca.qc.ircm.proview.plate.web.PlateLayoutOld.HEADER_ROW_STYLE;
+import static ca.qc.ircm.proview.plate.web.PlateLayoutOld.HEADER_STYLE;
+import static ca.qc.ircm.proview.plate.web.PlateLayoutOld.STYLE;
+import static ca.qc.ircm.proview.plate.web.PlateLayoutOld.WELL_STYLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -48,14 +48,14 @@ import java.util.stream.IntStream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class PlateLayoutTest {
+public class PlateLayoutOldTest {
   private static final String GRID_LAYOUTS_FIELD = "gridLayout";
   private static final String COLUMN_HEADERS_FIELD = "columnHeaders";
   private static final String COLUMN_HEADER_LAYOUTS_FIELD = "columnHeaderLayouts";
   private static final String ROW_HEADERS_FIELD = "rowHeaders";
   private static final String ROW_HEADER_LAYOUTS_FIELD = "rowHeaderLayouts";
   private static final String WELL_LAYOUTS_FIELD = "wellLayouts";
-  private PlateLayout plateLayout;
+  private PlateLayoutOld plateLayout;
   @Mock
   private LayoutClickListener layoutClickListener;
   private int columns = 12;
@@ -63,7 +63,7 @@ public class PlateLayoutTest {
 
   @Before
   public void beforeTest() {
-    plateLayout = new PlateLayout(12, 8);
+    plateLayout = new PlateLayoutOld(12, 8);
   }
 
   private IntStream columns() {
@@ -76,7 +76,7 @@ public class PlateLayoutTest {
 
   private Object getField(String fieldName) throws NoSuchFieldException, SecurityException,
       IllegalArgumentException, IllegalAccessException {
-    Field field = PlateLayout.class.getDeclaredField(fieldName);
+    Field field = PlateLayoutOld.class.getDeclaredField(fieldName);
     field.setAccessible(true);
     return field.get(plateLayout);
   }

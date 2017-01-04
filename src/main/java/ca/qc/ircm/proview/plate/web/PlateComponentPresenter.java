@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Plate component that allows selection and drag and drop.
@@ -62,28 +61,17 @@ public class PlateComponentPresenter {
     addListeners();
   }
 
-  private IntStream columnsStream() {
-    return IntStream.range(0, plateProperty.getValue().getColumnCount());
-  }
-
-  private IntStream rowsStream() {
-    return IntStream.range(0, plateProperty.getValue().getRowCount());
-  }
-
   private void setWellsContent() {
     plateProperty.getValue().getSpots().forEach(spot -> {
       Label sampleName = new Label(spot.getSample() != null ? spot.getSample().getName() : null);
-      view.plateLayout.addWellComponent(sampleName, spot.getColumn(), spot.getRow());
+      view.plateLayout.addComponent(sampleName, spot.getColumn(), spot.getRow());
     });
   }
 
   private void addListeners() {
-    plateProperty.getValue().getSpots().forEach(spot -> view.plateLayout
-        .addWellClickListener(e -> toggleWell(spot), spot.getColumn(), spot.getRow()));
-    columnsStream().forEach(
-        column -> view.plateLayout.addColumnHeaderClickListener(e -> toggleColumn(column), column));
-    rowsStream()
-        .forEach(row -> view.plateLayout.addRowHeaderClickListener(e -> toggleRow(row), row));
+    view.plateLayout.addColumnHeaderClickListener(e -> toggleColumn(e.getColumn()));
+    view.plateLayout.addRowHeaderClickListener(e -> toggleRow(e.getRow()));
+    view.plateLayout.addWellClickListener(e -> toggleWell(e.getColumn(), e.getRow()));
   }
 
   private void toggleColumn(int column) {
@@ -113,6 +101,10 @@ public class PlateComponentPresenter {
     }
   }
 
+  private void toggleWell(int column, int row) {
+    toggleWell(plateProperty.getValue().spot(row, column));
+  }
+
   private void toggleWell(PlateSpot spot) {
     if (!selectedSpots.contains(spot)) {
       selectWell(spot);
@@ -132,7 +124,7 @@ public class PlateComponentPresenter {
       deselectAllWells();
     }
     selectedSpots.add(spot);
-    view.plateLayout.addWellStyleName(SELECTED_STYLE, spot.getColumn(), spot.getRow());
+    view.plateLayout.addWellStyleName(spot.getColumn(), spot.getRow(), SELECTED_STYLE);
   }
 
   /**
@@ -143,7 +135,7 @@ public class PlateComponentPresenter {
    */
   public void deselectWell(PlateSpot spot) {
     selectedSpots.remove(spot);
-    view.plateLayout.removeWellStyleName(SELECTED_STYLE, spot.getColumn(), spot.getRow());
+    view.plateLayout.removeWellStyleName(spot.getColumn(), spot.getRow(), SELECTED_STYLE);
   }
 
   /**
