@@ -19,6 +19,20 @@ public class RowHeaderClickEvent extends Event {
    *          source component
    * @param row
    *          row
+   */
+  public RowHeaderClickEvent(Component source, int row) {
+    super(source);
+    this.row = row;
+    this.details = null;
+  }
+
+  /**
+   * Creates row header click event.
+   *
+   * @param source
+   *          source component
+   * @param row
+   *          row
    * @param details
    *          mouse details
    */

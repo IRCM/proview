@@ -22,21 +22,23 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
   private int currentColumn;
   private List<Component> children = new ArrayList<>();
   private PlateLayoutServerRpc rpc = new PlateLayoutServerRpc() {
+    private static final long serialVersionUID = -3946732969142392399L;
+
     @Override
     public void columnHeaderClicked(int column, MouseEventDetails mouseDetails) {
-      logger.debug("Column {} clicked", column);
+      logger.trace("Column {} clicked", column);
       fireEvent(new ColumnHeaderClickEvent(PlateLayout.this, column, mouseDetails));
     }
 
     @Override
     public void rowHeaderClicked(int row, MouseEventDetails mouseDetails) {
-      logger.debug("Row {} clicked", row);
+      logger.trace("Row {} clicked", row);
       fireEvent(new RowHeaderClickEvent(PlateLayout.this, row, mouseDetails));
     }
 
     @Override
     public void wellClicked(int column, int row, MouseEventDetails mouseDetails) {
-      logger.debug("Well {}-{} clicked", column, row);
+      logger.trace("Well {}-{} clicked", column, row);
       fireEvent(new WellClickEvent(PlateLayout.this, column, row, mouseDetails));
     }
   };
@@ -122,11 +124,13 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
     int column = currentColumn;
     int row = currentRow;
     while (containsPosition(column, row)) {
-      if (column < getColumns()) {
+      if (column < getColumns() - 1) {
         column++;
-      } else {
+      } else if (row < getRows() - 1) {
         column = 0;
         row++;
+      } else {
+        throw new IllegalStateException("Component cannot be added, container is full");
       }
     }
     addComponent(component, column, row);
@@ -179,6 +183,21 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
 
     Component component = (Component) findPositionConnector(column, row).orElse(null);
     removeComponent(component);
+  }
+
+  public void clickColumnHeader(int column) {
+    validatePosition(column, 0);
+    fireEvent(new ColumnHeaderClickEvent(PlateLayout.this, column));
+  }
+
+  public void clickRowHeader(int row) {
+    validatePosition(0, row);
+    fireEvent(new RowHeaderClickEvent(PlateLayout.this, row));
+  }
+
+  public void clickWell(int column, int row) {
+    validatePosition(column, row);
+    fireEvent(new WellClickEvent(PlateLayout.this, column, row));
   }
 
   public void addColumnHeaderClickListener(ColumnHeaderClickListener listener) {
@@ -238,6 +257,7 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
   public void addWellStyleName(int column, int row, String styleName) {
     validatePosition(column, row);
     wellStyles(column, row).add(styleName);
+    getState(true);
     markAsDirty();
   }
 
@@ -254,6 +274,7 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
   public void removeWellStyleName(int column, int row, String styleName) {
     validatePosition(column, row);
     wellStyles(column, row).remove(styleName);
+    getState(true);
     markAsDirty();
   }
 
@@ -271,7 +292,17 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
     return getState().columns;
   }
 
+  /**
+   * Sets number of columns.
+   *
+   * @param columns
+   *          number of columns
+   */
   public void setColumns(int columns) {
+    if (columns < 0) {
+      throw new IllegalArgumentException("columns " + columns + " not above 0");
+    }
+
     getState().columns = columns;
     markAsDirty();
   }
@@ -280,7 +311,17 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
     return getState().rows;
   }
 
+  /**
+   * Sets number of rows.
+   *
+   * @param rows
+   *          number of rows
+   */
   public void setRows(int rows) {
+    if (rows < 0) {
+      throw new IllegalArgumentException("rows " + rows + " not above 0");
+    }
+
     getState().rows = rows;
     markAsDirty();
   }

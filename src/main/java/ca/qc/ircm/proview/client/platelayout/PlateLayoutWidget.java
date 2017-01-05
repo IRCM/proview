@@ -3,18 +3,17 @@ package ca.qc.ircm.proview.client.platelayout;
 import com.google.gwt.user.client.ui.Grid;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Plate layout widget.
  */
 public class PlateLayoutWidget extends Grid {
-  public static final String CLASSNAME = "plate-layout";
-  public static final String HEADER_CLASSNAME = "plate-layout-header";
-  public static final String COLUMN_HEADER_CLASSNAME = "plate-layout-header-column";
-  public static final String ROW_HEADER_CLASSNAME = "plate-layout-header-row";
-  public static final String WELL_CLASSNAME = "plate-layout-well";
+  public static final String CLASSNAME = "v-plate-layout";
+  public static final String HEADER_CLASSNAME = "v-plate-layout-header";
+  public static final String COLUMN_HEADER_CLASSNAME = "v-plate-layout-header-column";
+  public static final String ROW_HEADER_CLASSNAME = "v-plate-layout-header-row";
+  public static final String WELL_CLASSNAME = "v-plate-layout-well";
 
   /**
    * Initializes plate layout widget.
@@ -55,8 +54,7 @@ public class PlateLayoutWidget extends Grid {
   }
 
   private void createColumnHeader(int column) {
-    getCellFormatter().addStyleName(0, column, HEADER_CLASSNAME);
-    getCellFormatter().addStyleName(0, column, COLUMN_HEADER_CLASSNAME);
+    applyDefaultCellStyles(0, column);
     setText(0, column, String.valueOf((char) ('A' + column - 1)));
   }
 
@@ -83,19 +81,15 @@ public class PlateLayoutWidget extends Grid {
   }
 
   private void createRowHeader(int row) {
-    getCellFormatter().addStyleName(row, 0, HEADER_CLASSNAME);
-    getCellFormatter().addStyleName(row, 0, ROW_HEADER_CLASSNAME);
+    applyDefaultCellStyles(row, 0);
     setText(row, 0, String.valueOf(row));
   }
 
   private void createWell(int column, int row) {
-    getCellFormatter().addStyleName(row, column, WELL_CLASSNAME);
+    applyDefaultCellStyles(row, column);
   }
 
-  public void setCellStyles(int row, int column, List<String> styles) {
-    String styleName = getCellFormatter().getStyleName(row, column);
-    getLogger().log(Level.INFO, "cell styles " + styleName);
-    getCellFormatter().removeStyleName(row, column, styleName);
+  private void applyDefaultCellStyles(int row, int column) {
     if (row == 0 || column == 0) {
       getCellFormatter().addStyleName(row, column, HEADER_CLASSNAME);
       if (row == 0 && column > 0) {
@@ -107,6 +101,24 @@ public class PlateLayoutWidget extends Grid {
     } else {
       getCellFormatter().addStyleName(row, column, WELL_CLASSNAME);
     }
+  }
+
+  /**
+   * Sets styles for cell.
+   *
+   * @param row
+   *          row
+   * @param column
+   *          column
+   * @param styles
+   *          styles to set
+   */
+  public void setCellStyles(int row, int column, List<String> styles) {
+    String styleName = getCellFormatter().getStyleName(row, column);
+    if (!styleName.isEmpty()) {
+      getCellFormatter().removeStyleName(row, column, styleName);
+    }
+    applyDefaultCellStyles(row, column);
     if (styles != null) {
       for (String style : styles) {
         getCellFormatter().addStyleName(row, column, style);

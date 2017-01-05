@@ -19,6 +19,20 @@ public class ColumnHeaderClickEvent extends Event {
    *          source component
    * @param column
    *          column
+   */
+  public ColumnHeaderClickEvent(Component source, int column) {
+    super(source);
+    this.column = column;
+    this.details = null;
+  }
+
+  /**
+   * Creates column header click event.
+   *
+   * @param source
+   *          source component
+   * @param column
+   *          column
    * @param details
    *          mouse details
    */

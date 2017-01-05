@@ -22,6 +22,23 @@ public class WellClickEvent extends Event {
    *          column
    * @param row
    *          row
+   */
+  public WellClickEvent(Component source, int column, int row) {
+    super(source);
+    this.column = column;
+    this.row = row;
+    this.details = null;
+  }
+
+  /**
+   * Creates well click event.
+   *
+   * @param source
+   *          source component
+   * @param column
+   *          column
+   * @param row
+   *          row
    * @param details
    *          mouse details
    */
