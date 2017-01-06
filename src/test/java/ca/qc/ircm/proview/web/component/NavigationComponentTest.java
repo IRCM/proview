@@ -20,8 +20,7 @@ package ca.qc.ircm.proview.web.component;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.component.NavigationComponent;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.spring.navigator.SpringNavigator;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
@@ -33,7 +32,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class NavigationComponentTest {
   private NavigationComponent navigationComponent;
   @Mock

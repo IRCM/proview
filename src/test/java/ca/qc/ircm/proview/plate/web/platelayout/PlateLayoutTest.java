@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import ca.qc.ircm.proview.client.platelayout.PlateLayoutServerRpc;
 import ca.qc.ircm.proview.client.platelayout.PlateLayoutState;
 import ca.qc.ircm.proview.client.platelayout.PlateLayoutState.WellData;
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.server.ServerRpcMethodInvocation;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.ui.Component;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class PlateLayoutTest {
   private PlateLayout plateLayout;
   @Mock

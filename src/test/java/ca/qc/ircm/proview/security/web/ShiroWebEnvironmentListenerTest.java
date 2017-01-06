@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.ShiroRealm;
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import org.apache.shiro.authz.permission.WildcardPermissionResolver;
 import org.apache.shiro.realm.Realm;
 import org.junit.Before;
@@ -39,7 +39,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.servlet.ServletContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class ShiroWebEnvironmentListenerTest {
   private ShiroWebEnvironmentListener listener;
   @Mock

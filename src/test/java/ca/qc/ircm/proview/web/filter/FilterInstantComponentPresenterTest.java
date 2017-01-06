@@ -39,9 +39,7 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.Range;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.filter.FilterInstantComponent;
-import ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.ObjectProperty;
@@ -59,7 +57,7 @@ import java.util.Date;
 import java.util.Locale;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class FilterInstantComponentPresenterTest {
   private FilterInstantComponentPresenter presenter;
   private FilterInstantComponent view = new FilterInstantComponent();

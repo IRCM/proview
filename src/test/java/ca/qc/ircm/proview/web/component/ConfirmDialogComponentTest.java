@@ -39,8 +39,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.component.ConfirmDialogComponent;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.UI;
@@ -54,7 +53,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.vaadin.dialogs.ConfirmDialog;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class ConfirmDialogComponentTest {
   private ConfirmDialogComponent component;
   @Mock

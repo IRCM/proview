@@ -34,7 +34,7 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Locale;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class SubmissionViewPresenterTest {
   private SubmissionViewPresenter presenter;
   @Mock

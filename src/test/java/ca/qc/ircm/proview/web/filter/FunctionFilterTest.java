@@ -27,8 +27,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.filter.FunctionFilter;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import org.junit.Before;
@@ -40,7 +39,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.function.BiFunction;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class FunctionFilterTest {
   private FunctionFilter filter;
   private String propertyId = "property";
