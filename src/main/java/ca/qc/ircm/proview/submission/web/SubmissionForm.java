@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.plate.PlateType;
-import ca.qc.ircm.proview.plate.web.PlateLayout;
+import ca.qc.ircm.proview.plate.web.platelayout.PlateLayout;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;

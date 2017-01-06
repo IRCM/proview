@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
+import ca.qc.ircm.proview.plate.web.platelayout.PlateLayout;
 import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
@@ -54,7 +55,7 @@ public class PlateView extends PlateViewDesign implements BaseView {
     menuLayout.addComponent(menu);
     plateLayoutContainer.addComponent(plateLayout);
     IntStream.range(0, 12).forEach(i -> IntStream.range(0, 8)
-        .forEach(j -> plateLayout.addWellComponent(new Label("Sample name"), i, j)));
+        .forEach(j -> plateLayout.addComponent(new Label("Sample name"), i, j)));
   }
 
   @Override

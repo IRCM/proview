@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.plate.web;
 
+import ca.qc.ircm.proview.plate.web.platelayout.PlateLayout;
 import com.vaadin.ui.CustomComponent;
 
 /**

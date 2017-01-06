@@ -20,8 +20,6 @@ package ca.qc.ircm.proview.plate.web;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Label;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -58,6 +56,7 @@ public class PlateComponentPresenter {
   public void init(PlateComponent view) {
     this.view = view;
     plateProperty.addValueChangeListener(e -> updatePlate());
+    addListeners();
   }
 
   private void updatePlate() {
@@ -65,7 +64,6 @@ public class PlateComponentPresenter {
     view.plateLayout.setColumns(plateProperty.getValue().getColumnCount());
     view.plateLayout.setRows(plateProperty.getValue().getRowCount());
     setWellsContent();
-    addListeners();
   }
 
   private void forEachSpot(BiConsumer<Integer, Integer> consumer) {
@@ -79,22 +77,8 @@ public class PlateComponentPresenter {
     return IntStream.range(0, view.plateLayout.getColumns());
   }
 
-  private IntStream rowsStream() {
-    return IntStream.range(0, view.plateLayout.getRows());
-  }
-
   private void clearPlate() {
-    forEachSpot((column, row) -> view.plateLayout.removeAllWellComponents(column, row));
-    forEachSpot((column, row) -> view.plateLayout
-        .getWellListener(LayoutClickEvent.class, column, row).forEach(listener -> view.plateLayout
-            .removeWellClickListener((LayoutClickListener) listener, column, row)));
-    columnsStream()
-        .forEach(column -> view.plateLayout.getColumnHeaderListener(LayoutClickEvent.class, column)
-            .forEach(listener -> view.plateLayout
-                .removeColumnHeaderClickListener((LayoutClickListener) listener, column)));
-    rowsStream().forEach(row -> view.plateLayout.getRowHeaderListener(LayoutClickEvent.class, row)
-        .forEach(listener -> view.plateLayout
-            .removeRowHeaderClickListener((LayoutClickListener) listener, row)));
+    view.plateLayout.removeAllComponents();
   }
 
   private void setWellsContent() {
@@ -105,20 +89,14 @@ public class PlateComponentPresenter {
       if (well != null && well.getSample() != null) {
         sampleName.setValue(well.getSample().getName());
       }
-      view.plateLayout.addWellComponent(sampleName, column, row);
+      view.plateLayout.addComponent(sampleName, column, row);
     });
   }
 
   private void addListeners() {
-    Plate plate = plateProperty.getValue();
-    forEachSpot((column, row) -> {
-      PlateSpot well = plate.spot(row, column);
-      view.plateLayout.addWellClickListener(e -> toggleWell(well), column, row);
-    });
-    columnsStream().forEach(
-        column -> view.plateLayout.addColumnHeaderClickListener(e -> toggleColumn(column), column));
-    rowsStream()
-        .forEach(row -> view.plateLayout.addRowHeaderClickListener(e -> toggleRow(row), row));
+    view.plateLayout.addWellClickListener(e -> toggleWell(e.getColumn(), e.getRow()));
+    view.plateLayout.addColumnHeaderClickListener(e -> toggleColumn(e.getColumn()));
+    view.plateLayout.addRowHeaderClickListener(e -> toggleRow(e.getRow()));
   }
 
   private void toggleColumn(int column) {
@@ -148,6 +126,10 @@ public class PlateComponentPresenter {
     }
   }
 
+  private void toggleWell(int column, int row) {
+    toggleWell(plateProperty.getValue().spot(row, column));
+  }
+
   private void toggleWell(PlateSpot spot) {
     if (!selectedSpots.contains(spot)) {
       selectWell(spot);
@@ -171,7 +153,7 @@ public class PlateComponentPresenter {
       deselectAllWells();
     }
     selectedSpots.add(spot);
-    view.plateLayout.addWellStyleName(SELECTED_STYLE, spot.getColumn(), spot.getRow());
+    view.plateLayout.addWellStyleName(spot.getColumn(), spot.getRow(), SELECTED_STYLE);
   }
 
   /**
@@ -186,7 +168,7 @@ public class PlateComponentPresenter {
     }
 
     selectedSpots.remove(spot);
-    view.plateLayout.removeWellStyleName(SELECTED_STYLE, spot.getColumn(), spot.getRow());
+    view.plateLayout.removeWellStyleName(spot.getColumn(), spot.getRow(), SELECTED_STYLE);
   }
 
   /**
@@ -274,7 +256,7 @@ public class PlateComponentPresenter {
 
   /**
    * Set selected spots.
-   * 
+   *
    * @param selectedSpots
    *          selected spots
    */

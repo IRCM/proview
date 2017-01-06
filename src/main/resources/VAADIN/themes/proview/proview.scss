@@ -132,30 +132,32 @@
     width: 100%;
     height: 100%;
   }
-  .v-layout.plate-header, .v-layout.plate-well {
+  .v-layout.plate-header, .v-layout.plate-well, .v-plate-layout-header, .v-plate-layout-well {
     padding: 3px;
     border: valo-border($border: $v-panel-border, $color: darkest-color($v-panel-background-color, $v-app-background-color), $strength: 0.7);
     @if $v-table-border-radius > 0 {
       border-radius: $v-table-border-radius;
     }
   }
-  .v-layout.plate-header {
+  .v-layout.plate-header, .v-plate-layout-header {
     @include valo-gradient($v-background-color);
+    text-align: center;
+    min-width: 20px;
   }
-  .v-layout.plate-header-column {
+  .v-layout.plate-header-column, .v-plate-layout-header-column {
     border-left: none;
   }
-  .v-layout.plate-header-row {
+  .v-layout.plate-header-row, .v-plate-layout-header-row {
     border-top: none;
   }
-  .v-label-plate-header {
+  .v-label-plate-header, .v-plate-layout-header {
     font-size: $v-table-header-font-size;
   }
-  .v-layout.plate-well {
+  .v-layout.plate-well, .v-plate-layout-well {
     border-left: none;
     border-top: none;
   }
-  .v-layout.plate-well.selected {
+  .v-layout.plate-well.selected, .v-plate-layout-well.selected {
     background-color: $v-selection-color;
   }
 
