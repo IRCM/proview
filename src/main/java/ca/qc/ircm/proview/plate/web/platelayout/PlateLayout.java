@@ -256,7 +256,10 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
    */
   public void addWellStyleName(int column, int row, String styleName) {
     validatePosition(column, row);
-    wellStyles(column, row).add(styleName);
+    List<String> styles = wellStyles(column, row);
+    if (!styles.contains(styleName)) {
+      wellStyles(column, row).add(styleName);
+    }
     markAsDirty();
   }
 

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,15 +30,6 @@ public class PlateTest {
   private Plate createPlate(PlateType type) {
     Plate plate = new Plate();
     plate.setType(type);
-    List<PlateSpot> spots = new ArrayList<>();
-    plate.setSpots(spots);
-    for (int i = 0; i < type.getColumnCount(); i++) {
-      for (int j = 0; j < type.getRowCount(); j++) {
-        PlateSpot spot = new PlateSpot(j, i);
-        spot.setPlate(plate);
-        spots.add(spot);
-      }
-    }
     return plate;
   }
 
@@ -62,8 +52,28 @@ public class PlateTest {
   }
 
   @Test
+  public void initSpots() {
+    Plate plate = createPlate(PlateType.A);
+
+    plate.initSpots();
+
+    assertEquals(plate.getRowCount() * plate.getColumnCount(), plate.getSpots().size());
+    boolean[][] spotLocations = new boolean[plate.getRowCount()][plate.getColumnCount()];
+    for (PlateSpot spot : plate.getSpots()) {
+      assertEquals(plate, spot.getPlate());
+      spotLocations[spot.getRow()][spot.getColumn()] = true;
+    }
+    for (int row = 0; row < spotLocations.length; row++) {
+      for (int column = 0; column < spotLocations[row].length; column++) {
+        assertTrue(spotLocations[row][column]);
+      }
+    }
+  }
+
+  @Test
   public void spot_A() {
     Plate plate = createPlate(PlateType.A);
+    plate.initSpots();
 
     PlateSpot spot = plate.spot(0, 0);
     assertEquals(0, spot.getRow());
@@ -88,6 +98,7 @@ public class PlateTest {
   @Test
   public void spot_G() {
     Plate plate = createPlate(PlateType.G);
+    plate.initSpots();
 
     PlateSpot spot = plate.spot(0, 0);
     assertEquals(0, spot.getRow());
@@ -112,6 +123,7 @@ public class PlateTest {
   @Test
   public void spot_Pm() {
     Plate plate = createPlate(PlateType.PM);
+    plate.initSpots();
 
     PlateSpot spot = plate.spot(0, 0);
     assertEquals(0, spot.getRow());
@@ -136,6 +148,7 @@ public class PlateTest {
   @Test
   public void spots_A() {
     Plate plate = createPlate(PlateType.A);
+    plate.initSpots();
 
     List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
     assertEquals(1, spots.size());
@@ -174,6 +187,7 @@ public class PlateTest {
   @Test
   public void spots_G() {
     Plate plate = createPlate(PlateType.G);
+    plate.initSpots();
 
     List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
     assertEquals(1, spots.size());
@@ -212,6 +226,7 @@ public class PlateTest {
   @Test
   public void spots_Pm() {
     Plate plate = createPlate(PlateType.PM);
+    plate.initSpots();
 
     List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
     assertEquals(1, spots.size());
@@ -250,6 +265,7 @@ public class PlateTest {
   @Test
   public void getEmptySpotCount() {
     Plate plate = createPlate(PlateType.A);
+    plate.initSpots();
 
     assertEquals(PlateType.A.getRowCount() * PlateType.A.getColumnCount(),
         plate.getEmptySpotCount());
@@ -268,6 +284,7 @@ public class PlateTest {
   @Test
   public void getSampleCount() {
     Plate plate = createPlate(PlateType.A);
+    plate.initSpots();
 
     assertEquals(0, plate.getSampleCount());
     for (int i = 0; i < PlateType.A.getRowCount(); i++) {

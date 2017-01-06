@@ -53,7 +53,6 @@ import org.thymeleaf.context.Context;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -314,16 +313,8 @@ public class SubmissionService {
     plate.setType(PlateType.SUBMISSION);
     plate.setName(submission.getExperience());
     plate.setInsertTime(Instant.now());
-    List<PlateSpot> spots = new ArrayList<>();
-    for (int row = 0; row < plate.getRowCount(); row++) {
-      for (int column = 0; column < plate.getColumnCount(); column++) {
-        PlateSpot plateSpot = new PlateSpot(row, column);
-        plateSpot.setTimestamp(Instant.now());
-        plateSpot.setPlate(plate);
-        spots.add(plateSpot);
-      }
-    }
-    plate.setSpots(spots);
+    plate.initSpots();
+    plate.getSpots().forEach(spot -> spot.setTimestamp(Instant.now()));
     return plate;
   }
 

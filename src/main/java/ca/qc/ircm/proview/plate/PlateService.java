@@ -214,16 +214,8 @@ public class PlateService {
   }
 
   private void initPlateSpotList(Plate plate) {
-    List<PlateSpot> spots = new ArrayList<>();
-    for (int row = 0; row < plate.getRowCount(); row++) {
-      for (int column = 0; column < plate.getColumnCount(); column++) {
-        PlateSpot plateSpot = new PlateSpot(row, column);
-        plateSpot.setTimestamp(Instant.now());
-        plateSpot.setPlate(plate);
-        spots.add(plateSpot);
-      }
-    }
-    plate.setSpots(spots);
+    plate.initSpots();
+    plate.getSpots().forEach(spot -> spot.setTimestamp(Instant.now()));
   }
 
   /**

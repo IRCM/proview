@@ -596,6 +596,22 @@ public class PlateLayoutTest {
     assertEquals(style2, wellData.styles.get(1));
   }
 
+  @Test
+  public void addWellStyleName_MultipleSameStyle() {
+    Label label = new Label("test");
+    plateLayout.addComponent(label, 1, 2);
+    String style = "test";
+
+    plateLayout.addWellStyleName(1, 2, style);
+    plateLayout.addWellStyleName(1, 2, style);
+
+    String styleName = plateLayout.getWellStyleName(1, 2);
+    assertEquals(style, styleName);
+    WellData wellData = plateLayout.getState().wellData.get(label);
+    assertEquals(1, wellData.styles.size());
+    assertEquals(style, wellData.styles.get(0));
+  }
+
   @Test(expected = IndexOutOfBoundsException.class)
   public void addWellStyleName_ColumnTooLarge() {
     plateLayout.addWellStyleName(20, 2, "test");

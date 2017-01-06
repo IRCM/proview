@@ -30,6 +30,9 @@ public class TransferView extends TransferViewDesign implements BaseView, SavedS
   protected PlateComponent sourcePlateForm = new PlateComponent();
   protected PlateComponent destinationPlateForm = new PlateComponent();
 
+  /**
+   * Initializes view.
+   */
   @PostConstruct
   public void init() {
     menuLayout.addComponent(menu);

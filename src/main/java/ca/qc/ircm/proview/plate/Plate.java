@@ -110,6 +110,23 @@ public class Plate implements Data, Serializable, Named {
   }
 
   /**
+   * Initializes spots, if type property is not null and spots property is null.
+   */
+  public void initSpots() {
+    if (type != null && spots == null) {
+      List<PlateSpot> spots = new ArrayList<>();
+      for (int row = 0; row < getRowCount(); row++) {
+        for (int column = 0; column < getColumnCount(); column++) {
+          PlateSpot plateSpot = new PlateSpot(row, column);
+          plateSpot.setPlate(this);
+          spots.add(plateSpot);
+        }
+      }
+      setSpots(spots);
+    }
+  }
+
+  /**
    * Returns spot at specified location.
    *
    * @param row

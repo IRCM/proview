@@ -136,6 +136,7 @@ public class TransferViewPresenter {
     prepareSourceTubesGrid();
     view.sourcePlatesField.addStyleName(SOURCE_PLATES);
     view.sourcePlatesField.setCaption(resources.message(SOURCE_PLATES));
+    view.sourcePlatesField.setNullSelectionAllowed(false);
     view.sourcePlatePanel.addStyleName(SOURCE_PLATE_PANEL);
     view.sourcePlateForm.addStyleName(SOURCE_PLATE);
     view.sourcePlateFormPresenter.setMultiSelect(true);
@@ -168,7 +169,6 @@ public class TransferViewPresenter {
     view.destinationPlatesField.setRequiredError(generalResources.message(REQUIRED));
     view.destinationPlatePanel.addStyleName(DESTINATION_PLATE_PANEL);
     view.destinationPlateForm.addStyleName(DESTINATION_PLATE);
-    view.destinationPlateFormPresenter.setMultiSelect(true);
     Plate destinationPlate = new Plate();
     destinationPlate.setType(PlateType.A);
     destinationPlateFieldGroup.setItemDataSource(destinationPlate);
@@ -304,6 +304,7 @@ public class TransferViewPresenter {
         .orElseGet(() -> plates.isEmpty() ? null : plates.get(0));
     if (last != null) {
       view.sourcePlatesField.setValue(last);
+      updateSourcePlate(last);
     }
     destinationTubesContainer.removeAllItems();
     destinationTubesContainer

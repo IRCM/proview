@@ -35,8 +35,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
@@ -59,11 +57,7 @@ public class PlateComponentPresenterTest {
 
   private void initPlate() {
     plate.setType(PlateType.A);
-    List<PlateSpot> spots = IntStream
-        .range(0, columns).mapToObj(column -> IntStream.range(0, rows)
-            .mapToObj(row -> new PlateSpot(row, column)).collect(Collectors.toList()))
-        .flatMap(s -> s.stream()).collect(Collectors.toList());
-    plate.setSpots(spots);
+    plate.initSpots();
   }
 
   @Test

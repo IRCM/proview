@@ -21,7 +21,7 @@ import ca.qc.ircm.proview.plate.web.platelayout.PlateLayout;
 import com.vaadin.ui.CustomComponent;
 
 /**
- * Plate component that allows selection and drag and drop.
+ * Plate component that allows selection.
  */
 public class PlateComponent extends CustomComponent {
   private static final long serialVersionUID = -5886354033312877270L;
