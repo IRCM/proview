@@ -44,7 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
@@ -59,7 +59,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class SavedSamplesComponentTest {
   private SavedSamplesComponent component;
   @Mock

@@ -27,8 +27,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.table.ValidatableTableFieldFactory;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.data.Container;
 import com.vaadin.server.ClientConnector.DetachEvent;
 import com.vaadin.server.ClientConnector.DetachListener;
@@ -46,7 +45,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class ValidatableTableFieldFactoryTest {
   private ValidatableTableFieldFactory factory;
   @Mock

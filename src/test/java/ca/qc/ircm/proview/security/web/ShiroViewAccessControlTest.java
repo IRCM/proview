@@ -24,7 +24,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.ui.UI;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -38,7 +38,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.annotation.security.RolesAllowed;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class ShiroViewAccessControlTest {
   private ShiroViewAccessControl accessControl;
   @Mock

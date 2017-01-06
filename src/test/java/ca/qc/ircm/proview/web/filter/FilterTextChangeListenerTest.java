@@ -22,8 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.filter.FilterTextChangeListener;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.util.filter.SimpleStringFilter;
@@ -37,7 +36,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class FilterTextChangeListenerTest {
   private FilterTextChangeListener listener;
   @Mock

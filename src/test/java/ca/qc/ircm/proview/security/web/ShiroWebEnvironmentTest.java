@@ -21,7 +21,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.mgt.AbstractRememberMeManager;
@@ -35,7 +35,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class ShiroWebEnvironmentTest {
   private ShiroWebEnvironment shiroWebEnvironment;
   @Mock

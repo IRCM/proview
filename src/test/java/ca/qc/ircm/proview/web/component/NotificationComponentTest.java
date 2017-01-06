@@ -21,8 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.component.NotificationComponent;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.server.Page;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
@@ -37,7 +36,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 @SuppressWarnings("deprecation")
 public class NotificationComponentTest {
   private NotificationComponent notificationComponent;

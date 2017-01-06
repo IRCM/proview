@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.user.ForgotPasswordWebContext;
@@ -73,7 +73,7 @@ import java.util.List;
 import java.util.Locale;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class MainViewPresenterTest {
   private MainViewPresenter presenter;
   @Mock

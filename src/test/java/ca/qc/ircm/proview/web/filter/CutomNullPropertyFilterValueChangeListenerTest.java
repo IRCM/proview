@@ -22,8 +22,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.filter.CutomNullPropertyFilterValueChangeListener;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -36,7 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.function.Consumer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class CutomNullPropertyFilterValueChangeListenerTest {
   private CutomNullPropertyFilterValueChangeListener listener;
   @Mock

@@ -26,8 +26,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.filter.RangeFilter;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import org.junit.Test;
@@ -36,7 +35,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class RangeFilterTest {
   private RangeFilter<Integer> filter;
   @Mock

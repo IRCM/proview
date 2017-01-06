@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.security;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.Hex;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ServiceTestAnnotations
+@NonTransactionalTestAnnotations
 public class SecurityConfigurationTest {
   @Inject
   private SecurityConfiguration securityConfiguration;

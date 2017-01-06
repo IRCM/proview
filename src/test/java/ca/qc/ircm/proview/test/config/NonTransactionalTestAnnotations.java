@@ -15,8 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.user.web;
+package ca.qc.ircm.proview.test.config;
 
-public class ViewUserFormPresenterTest {
-  // TODO Program tests.
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@SpringBootTest
+@ActiveProfiles("test")
+public @interface NonTransactionalTestAnnotations {
+
 }
