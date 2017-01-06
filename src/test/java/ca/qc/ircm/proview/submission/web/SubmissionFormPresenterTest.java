@@ -147,7 +147,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import ca.qc.ircm.proview.plate.web.PlateLayoutOld;
+import ca.qc.ircm.proview.plate.web.platelayout.PlateLayout;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -211,8 +211,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -381,7 +379,7 @@ public class SubmissionFormPresenterTest {
     view.samplesPlateContainer = new VerticalLayout();
     int columns = Plate.Type.SUBMISSION.getColumnCount();
     int rows = Plate.Type.SUBMISSION.getRowCount();
-    view.samplesPlateLayout = new PlateLayoutOld(columns, rows);
+    view.samplesPlateLayout = new PlateLayout(columns, rows);
     view.experiencePanel = new Panel();
     view.experienceField = new TextField();
     view.experienceGoalField = new TextField();
@@ -462,8 +460,8 @@ public class SubmissionFormPresenterTest {
     view.plateNameField.setValue(plateName);
     view.sampleCountField.setValue(String.valueOf(sampleCount));
     setValuesInSamplesTable();
-    ((TextField) view.samplesPlateLayout.getWellComponent(0, 0, 0)).setValue(sampleName1);
-    ((TextField) view.samplesPlateLayout.getWellComponent(0, 1, 0)).setValue(sampleName2);
+    plateSampleNameField(0, 0).setValue(sampleName1);
+    plateSampleNameField(0, 1).setValue(sampleName2);
     view.experienceField.setValue(experience);
     view.experienceGoalField.setValue(experienceGoal);
     view.taxonomyField.setValue(taxonomy);
@@ -620,17 +618,15 @@ public class SubmissionFormPresenterTest {
         filesContent2.length);
   }
 
-  private List<List<TextField>> plateSampleNameFieldsArray() {
-    return IntStream.range(0, view.samplesPlateLayout.getColumns())
-        .mapToObj(column -> IntStream.range(0, view.samplesPlateLayout.getRows())
-            .mapToObj(row -> (TextField) view.samplesPlateLayout.getWellComponent(column, row, 0))
-            .collect(Collectors.toList()))
-        .collect(Collectors.toList());
+  private List<TextField> plateSampleNameFields() {
+    List<TextField> components = new ArrayList<>();
+    view.samplesPlateLayout.iterator().forEachRemaining(c -> components.add((TextField) c));
+    return components;
   }
 
-  private List<TextField> plateSampleNameFields() {
-    return plateSampleNameFieldsArray().stream().flatMap(list -> list.stream())
-        .collect(Collectors.toList());
+  private TextField plateSampleNameField(int column, int row) {
+    int index = view.samplesPlateLayout.getRows() * column + row;
+    return plateSampleNameFields().get(index);
   }
 
   private String errorMessage(String message) {
@@ -1131,11 +1127,11 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_SAMPLES_PROPERTY));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_BUTTON_STYLE));
     assertTrue(view.samplesPlateLayout.getStyleName().contains(SAMPLES_PLATE));
-    List<List<TextField>> sampleNameFieldsArray = plateSampleNameFieldsArray();
-    for (int column = 0; column < sampleNameFieldsArray.size(); column++) {
-      List<TextField> sampleNameFields = sampleNameFieldsArray.get(column);
-      for (int row = 0; row < sampleNameFields.size(); row++) {
-        assertTrue(sampleNameFields.get(row).getStyleName()
+    List<TextField> sampleNameFields = plateSampleNameFields();
+    for (int column = 0; column < view.samplesPlateLayout.getColumns(); column++) {
+      for (int row = 0; row < view.samplesPlateLayout.getRows(); row++) {
+        int index = view.samplesPlateLayout.getRows() * column + row;
+        assertTrue(sampleNameFields.get(index).getStyleName()
             .contains(SAMPLES_PLATE + "-" + column + "-" + row));
       }
     }
@@ -3399,7 +3395,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    plateSampleNameFieldsArray().get(0).get(0).setValue("");
+    plateSampleNameField(0, 0).setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3439,7 +3435,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    plateSampleNameFieldsArray().get(0).get(1).setValue("");
+    plateSampleNameField(0, 1).setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3479,7 +3475,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    plateSampleNameFieldsArray().get(0).get(1).setValue(sampleName1);
+    plateSampleNameField(0, 1).setValue(sampleName1);
     uploadStructure();
     uploadGelImages();
     uploadFiles();

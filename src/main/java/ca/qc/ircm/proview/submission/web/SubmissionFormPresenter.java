@@ -621,7 +621,7 @@ public class SubmissionFormPresenter {
       IntStream.range(0, view.samplesPlateLayout.getRows()).forEach(row -> {
         TextField nameField = new TextField();
         columnPlateSampleNameFields.add(nameField);
-        view.samplesPlateLayout.addWellComponent(nameField, column, row);
+        view.samplesPlateLayout.addComponent(nameField, column, row);
       });
       plateSampleNameFields.add(columnPlateSampleNameFields);
     });

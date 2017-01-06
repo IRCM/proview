@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
+import ca.qc.ircm.proview.plate.web.platelayout.PlateLayout;
 import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
@@ -39,9 +40,7 @@ public class PlateView extends PlateViewDesign implements BaseView {
   public static final String VIEW_NAME = "plate";
   private static final long serialVersionUID = -7006664525905554582L;
   private Menu menu = new Menu();
-  private ca.qc.ircm.proview.plate.web.platelayout.PlateLayout newPlateLayout =
-      new ca.qc.ircm.proview.plate.web.platelayout.PlateLayout(12, 8);
-  private PlateLayoutOld plateLayout = new PlateLayoutOld(12, 8);
+  private PlateLayout plateLayout = new PlateLayout(12, 8);
   private PlateComponent plateComponent = new PlateComponent();
   @Inject
   private transient PlateService plateService;
@@ -55,11 +54,8 @@ public class PlateView extends PlateViewDesign implements BaseView {
   public void init() {
     menuLayout.addComponent(menu);
     plateLayoutContainer.addComponent(plateLayout);
-    newPlateLayoutContainer.addComponent(newPlateLayout);
     IntStream.range(0, 12).forEach(i -> IntStream.range(0, 8)
-        .forEach(j -> plateLayout.addWellComponent(new Label("Sample name"), i, j)));
-    IntStream.range(0, 12).forEach(i -> IntStream.range(0, 8)
-        .forEach(j -> newPlateLayout.addComponent(new Label("Sample name"), i, j)));
+        .forEach(j -> plateLayout.addComponent(new Label("Sample name"), i, j)));
   }
 
   @Override

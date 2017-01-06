@@ -20,7 +20,6 @@ import com.vaadin.ui.declarative.Design;
 public class PlateViewDesign extends VerticalLayout {
   protected VerticalLayout menuLayout;
   protected VerticalLayout plateLayoutContainer;
-  protected VerticalLayout newPlateLayoutContainer;
   protected VerticalLayout plateComponentContainer;
   protected Panel plateComponentPanel;
 
