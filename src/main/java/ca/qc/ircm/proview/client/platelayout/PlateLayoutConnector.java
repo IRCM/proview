@@ -51,6 +51,7 @@ public class PlateLayoutConnector extends AbstractComponentContainerConnector {
     super.onStateChanged(stateChangeEvent);
 
     resizeWidget();
+    setCellStyles();
   }
 
   @Override
@@ -63,8 +64,8 @@ public class PlateLayoutConnector extends AbstractComponentContainerConnector {
     for (ComponentConnector connector : children) {
       WellData data = getState().wellData.get(connector);
       widget.setWidget(data.row + 1, data.column + 1, connector.getWidget());
-      widget.setCellStyles(data.row + 1, data.column + 1, data.styles);
     }
+    setCellStyles();
   }
 
   @Override
@@ -78,6 +79,20 @@ public class PlateLayoutConnector extends AbstractComponentContainerConnector {
     PlateLayoutWidget widget = getWidget();
     widget.resizeColumns(columns);
     widget.resizeRows(rows);
+  }
+
+  private void setCellStyles() {
+    PlateLayoutWidget widget = getWidget();
+    for (int row = 0; row < widget.getRowCount(); row++) {
+      for (int column = 0; column < widget.getColumnCount(); column++) {
+        widget.setCellStyles(row, column, null);
+      }
+    }
+    List<ComponentConnector> children = getChildComponents();
+    for (ComponentConnector connector : children) {
+      WellData data = getState().wellData.get(connector);
+      widget.setCellStyles(data.row + 1, data.column + 1, data.styles);
+    }
   }
 
   private class PlateClickHandler implements ClickHandler {

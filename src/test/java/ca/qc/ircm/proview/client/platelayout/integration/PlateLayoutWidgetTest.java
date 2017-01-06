@@ -88,9 +88,35 @@ public class PlateLayoutWidgetTest extends PlateLayoutWidgetPageObject {
   }
 
   @Test
+  public void resizeColumns_Decrease() {
+    open();
+    int columns = this.columns - 1;
+
+    setColumns(columns - 1);
+    clickResize();
+
+    assertEquals(columns, getPlateLayoutColumns());
+    assertEquals(rows, getPlateLayoutRows());
+    validateCellStyles();
+  }
+
+  @Test
   public void resizeRows_Increase() {
     open();
     int rows = this.rows + 2;
+
+    setRows(rows - 1);
+    clickResize();
+
+    assertEquals(columns, getPlateLayoutColumns());
+    assertEquals(rows, getPlateLayoutRows());
+    validateCellStyles();
+  }
+
+  @Test
+  public void resizeRows_Decrease() {
+    open();
+    int rows = this.rows - 1;
 
     setRows(rows - 1);
     clickResize();
@@ -149,7 +175,6 @@ public class PlateLayoutWidgetTest extends PlateLayoutWidgetPageObject {
     for (int column = 1; column < getPlateLayoutColumns(); column++) {
       for (int row = 1; row < getPlateLayoutRows(); row++) {
         AbstractElement cell = plateLayoutCell(column, row);
-        System.out.println(cell.getAttribute("class"));
         assertTrue(cell.getAttribute("class").contains(WELL_CLASSNAME));
         assertTrue(cell.getAttribute("class").contains("test"));
       }

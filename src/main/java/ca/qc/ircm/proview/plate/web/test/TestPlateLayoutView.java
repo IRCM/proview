@@ -90,6 +90,7 @@ public class TestPlateLayoutView extends VerticalLayout implements View {
     String style = styleField.getValue();
     IntStream.range(0, COLUMNS_DEFAULT).forEach(column -> {
       IntStream.range(0, ROWS_DEFAULT).forEach(row -> {
+        plateLayout.clearWellStyleName(column, row);
         plateLayout.addWellStyleName(column, row, style);
       });
     });

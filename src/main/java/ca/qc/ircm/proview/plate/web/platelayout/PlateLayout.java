@@ -257,7 +257,6 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
   public void addWellStyleName(int column, int row, String styleName) {
     validatePosition(column, row);
     wellStyles(column, row).add(styleName);
-    getState(true);
     markAsDirty();
   }
 
@@ -274,7 +273,20 @@ public class PlateLayout extends com.vaadin.ui.AbstractComponentContainer {
   public void removeWellStyleName(int column, int row, String styleName) {
     validatePosition(column, row);
     wellStyles(column, row).remove(styleName);
-    getState(true);
+    markAsDirty();
+  }
+
+  /**
+   * Removes all styles from well.
+   *
+   * @param column
+   *          column
+   * @param row
+   *          row
+   */
+  public void clearWellStyleName(int column, int row) {
+    validatePosition(column, row);
+    wellStyles(column, row).clear();
     markAsDirty();
   }
 
