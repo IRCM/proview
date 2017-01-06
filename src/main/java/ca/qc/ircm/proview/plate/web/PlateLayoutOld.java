@@ -38,7 +38,8 @@ import java.util.stream.Stream;
 /**
  * Plate layout.
  */
-public class PlateLayout extends CustomComponent
+@Deprecated
+public class PlateLayoutOld extends CustomComponent
     implements Layout.AlignmentHandler, Layout.MarginHandler, LayoutClickNotifier {
   public static final String STYLE = "plate";
   public static final String HEADER_STYLE = "plate-header";
@@ -58,7 +59,7 @@ public class PlateLayout extends CustomComponent
   /**
    * Constructor for a plate.
    */
-  public PlateLayout() {
+  public PlateLayoutOld() {
     this(12, 8);
   }
 
@@ -70,7 +71,7 @@ public class PlateLayout extends CustomComponent
    * @param rows
    *          number of rows in the grid
    */
-  public PlateLayout(int columns, int rows) {
+  public PlateLayoutOld(int columns, int rows) {
     this.columnsCount = columns;
     this.rowsCount = rows;
     gridLayout = new GridLayout(columnsCount + 1, rowsCount + 1);
