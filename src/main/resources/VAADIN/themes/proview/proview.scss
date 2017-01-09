@@ -138,7 +138,7 @@
   .v-plate-layout-header {
     @include valo-gradient($v-background-color);
     text-align: center;
-    min-width: 20px;
+    min-width: 30px;
     font-size: $v-table-header-font-size;
   }
   .v-plate-layout-header-column {
