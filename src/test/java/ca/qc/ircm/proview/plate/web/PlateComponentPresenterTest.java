@@ -20,8 +20,10 @@ package ca.qc.ircm.proview.plate.web;
 import static ca.qc.ircm.proview.plate.web.PlateComponentPresenter.SELECTED_STYLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
@@ -272,6 +274,48 @@ public class PlateComponentPresenterTest {
   }
 
   @Test
+  public void getSelectedSpot_NotMulti() {
+    presenter.init(view);
+    presenter.setPlate(plate);
+    PlateSpot spot1 = plate.spot(0, 0);
+    presenter.selectWell(spot1);
+    PlateSpot spot2 = plate.spot(1, 1);
+    presenter.selectWell(spot2);
+
+    PlateSpot spot = presenter.getSelectedSpot();
+
+    assertEquals(spot2, spot);
+  }
+
+  @Test
+  public void getSelectedSpot_None() {
+    presenter.init(view);
+    presenter.setPlate(plate);
+
+    PlateSpot spot = presenter.getSelectedSpot();
+
+    assertNull(spot);
+  }
+
+  @Test
+  public void getSelectedSpot_Multi() {
+    presenter.init(view);
+    presenter.setPlate(plate);
+    presenter.setMultiSelect(true);
+    PlateSpot spot1 = plate.spot(0, 0);
+    presenter.selectWell(spot1);
+    PlateSpot spot2 = plate.spot(1, 1);
+    presenter.selectWell(spot2);
+
+    try {
+      presenter.getSelectedSpot();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException e) {
+      // Success.
+    }
+  }
+
+  @Test
   public void getSelectedSpots_Multi() {
     presenter.init(view);
     presenter.setPlate(plate);
@@ -302,6 +346,22 @@ public class PlateComponentPresenterTest {
     assertEquals(1, spots.size());
     assertFalse(spots.contains(spot1));
     assertTrue(spots.contains(spot2));
+  }
+
+  @Test
+  public void getSelectedSpots_MultiThanNotMulti() {
+    presenter.init(view);
+    presenter.setPlate(plate);
+    presenter.setMultiSelect(true);
+    PlateSpot spot1 = plate.spot(0, 0);
+    presenter.selectWell(spot1);
+    PlateSpot spot2 = plate.spot(1, 1);
+    presenter.selectWell(spot2);
+    presenter.setMultiSelect(false);
+
+    Collection<PlateSpot> spots = presenter.getSelectedSpots();
+
+    assertEquals(0, spots.size());
   }
 
   @Test

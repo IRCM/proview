@@ -43,6 +43,7 @@ import ca.qc.ircm.proview.plate.web.PlateComponent;
 import ca.qc.ircm.proview.plate.web.PlateComponentPresenter;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -87,6 +88,8 @@ public class TransferViewPresenterTest {
   @Mock
   private TransferView view;
   @Mock
+  private TransferService transferService;
+  @Mock
   private TubeService tubeService;
   @Mock
   private PlateService plateService;
@@ -112,8 +115,8 @@ public class TransferViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter =
-        new TransferViewPresenter(tubeService, plateSpotService, plateService, applicationName);
+    presenter = new TransferViewPresenter(transferService, tubeService, plateSpotService,
+        plateService, applicationName);
     view.headerLabel = new Label();
     view.sourceHeaderLabel = new Label();
     view.sourceTabs = new TabSheet();

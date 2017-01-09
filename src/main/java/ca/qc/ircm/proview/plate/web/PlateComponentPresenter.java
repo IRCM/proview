@@ -59,6 +59,12 @@ public class PlateComponentPresenter {
     addListeners();
   }
 
+  private void updateSelectionMode() {
+    if (!multiSelectProperty.getValue() && getSelectedSpots().size() > 1) {
+      deselectAllWells();
+    }
+  }
+
   private void updatePlate() {
     clearPlate();
     view.plateLayout.setColumns(plateProperty.getValue().getColumnCount());
@@ -94,6 +100,7 @@ public class PlateComponentPresenter {
   }
 
   private void addListeners() {
+    multiSelectProperty.addValueChangeListener(e -> updateSelectionMode());
     view.plateLayout.addWellClickListener(e -> toggleWell(e.getColumn(), e.getRow()));
     view.plateLayout.addColumnHeaderClickListener(e -> toggleColumn(e.getColumn()));
     view.plateLayout.addRowHeaderClickListener(e -> toggleRow(e.getRow()));
@@ -248,6 +255,23 @@ public class PlateComponentPresenter {
 
   public void setMultiSelect(boolean multiSelect) {
     this.multiSelectProperty.setValue(multiSelect);
+  }
+
+  /**
+   * Returns select spot in single selection mode or null if no selection was made.
+   *
+   * @return select spot in single selection mode or null if no selection was made
+   * @throws IllegalStateException
+   *           multi selection mode is active with more than one selection
+   */
+  public PlateSpot getSelectedSpot() {
+    if (selectedSpots.size() == 0) {
+      return null;
+    } else if (selectedSpots.size() == 1) {
+      return selectedSpots.iterator().next();
+    } else {
+      throw new IllegalStateException("getSelectedSpot in multi select mode");
+    }
   }
 
   public Collection<PlateSpot> getSelectedSpots() {

@@ -3,7 +3,9 @@ package ca.qc.ircm.proview.transfer.web;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.tube.QTube.tube;
+import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.plate.Plate;
@@ -13,10 +15,13 @@ import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.plate.PlateSpotService;
 import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Item;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
@@ -26,14 +31,19 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -52,6 +62,9 @@ public class TransferViewPresenter {
   public static final String SOURCE_PLATES = "sourcePlates";
   public static final String SOURCE_PLATE_PANEL = "sourcePlatePanel";
   public static final String SOURCE_PLATE = "sourcePlate";
+  public static final String SOURCE_PLATE_EMPTY = "sourcePlate.empty";
+  public static final String SOURCE_PLATE_EMPTY_WELL = "sourcePlate.emptyWell";
+  public static final String SOURCE_PLATE_SAMPLE_NOT_SELECTED = "sourcePlate.sampleNotSelected";
   public static final String DESTINATION = "destination";
   public static final String DESTINATION_TABS = "destinationTabs";
   public static final String DESTINATION_TUBES = "destinationTubes";
@@ -59,6 +72,9 @@ public class TransferViewPresenter {
   public static final String DESTINATION_PLATES_TYPE = "destinationPlatesType";
   public static final String DESTINATION_PLATE_PANEL = "destinationPlatePanel";
   public static final String DESTINATION_PLATE = "destinationPlate";
+  public static final String DESTINATION_PLATE_NO_SELECTION = "destinationPlate.noSelection";
+  public static final String DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE =
+      "destinationPlate.notEnoughFreeSpace";
   public static final String NAME = sample.name.getMetadata().getName();
   public static final String TUBE = tube.getMetadata().getName();
   public static final String PLATE = plate.getMetadata().getName();
@@ -73,8 +89,11 @@ public class TransferViewPresenter {
       new Object[] { DESTINATION_SAMPLE_NAME, DESTINATION_TUBE_NAME };
   static final PlateType[] DESTINATION_PLATE_TYPES =
       new PlateType[] { PlateType.A, PlateType.G, PlateType.PM };
+  private static final Logger logger = LoggerFactory.getLogger(TransferViewPresenter.class);
   private TransferView view;
   private ObjectProperty<List<Sample>> samplesProperty = new ObjectProperty<>(new ArrayList<>());
+  private Map<Object, ComboBox> sourceTubeFields = new HashMap<>();
+  private Map<Object, TextField> destinationTubeFields = new HashMap<>();
   private BeanFieldGroup<Plate> destinationPlateFieldGroup = new BeanFieldGroup<>(Plate.class);
   private BeanItemContainer<Sample> sourceTubesContainer = new BeanItemContainer<>(Sample.class);
   private GeneratedPropertyContainer sourceTubesGeneratedContainer =
@@ -83,6 +102,8 @@ public class TransferViewPresenter {
       new BeanItemContainer<>(DestinationTube.class);
   private GeneratedPropertyContainer destinationTubesGeneratedContainer =
       new GeneratedPropertyContainer(destinationTubesContainer);
+  @Inject
+  private TransferService transferService;
   @Inject
   private TubeService tubeService;
   @Inject
@@ -95,8 +116,9 @@ public class TransferViewPresenter {
   protected TransferViewPresenter() {
   }
 
-  protected TransferViewPresenter(TubeService tubeService, PlateSpotService plateSpotService,
-      PlateService plateService, String applicationName) {
+  protected TransferViewPresenter(TransferService transferService, TubeService tubeService,
+      PlateSpotService plateSpotService, PlateService plateService, String applicationName) {
+    this.transferService = transferService;
     this.tubeService = tubeService;
     this.plateSpotService = plateSpotService;
     this.plateService = plateService;
@@ -110,6 +132,7 @@ public class TransferViewPresenter {
    *          view
    */
   public void init(TransferView view) {
+    logger.debug("Transfer view");
     this.view = view;
     prepareComponents();
     bindFields();
@@ -138,6 +161,7 @@ public class TransferViewPresenter {
     view.sourcePlatesField.setCaption(resources.message(SOURCE_PLATES));
     view.sourcePlatesField.setNullSelectionAllowed(false);
     view.sourcePlatePanel.addStyleName(SOURCE_PLATE_PANEL);
+    view.sourcePlatePanel.setVisible(false);
     view.sourcePlateForm.addStyleName(SOURCE_PLATE);
     view.sourcePlateFormPresenter.setMultiSelect(true);
     view.destinationHeaderLabel.addStyleName(DESTINATION);
@@ -167,7 +191,13 @@ public class TransferViewPresenter {
     view.destinationPlatesField.setNewItemsAllowed(true);
     view.destinationPlatesField.setRequired(true);
     view.destinationPlatesField.setRequiredError(generalResources.message(REQUIRED));
+    view.destinationPlatesField.addValidator(value -> {
+      if (!plateService.nameAvailable((String) value)) {
+        throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
+      }
+    });
     view.destinationPlatePanel.addStyleName(DESTINATION_PLATE_PANEL);
+    view.destinationPlatePanel.setVisible(false);
     view.destinationPlateForm.addStyleName(DESTINATION_PLATE);
     Plate destinationPlate = new Plate();
     destinationPlate.setType(PlateType.A);
@@ -215,6 +245,7 @@ public class TransferViewPresenter {
     if (!comboBox.getItemIds().isEmpty()) {
       comboBox.setValue(comboBox.getItemIds().iterator().next());
     }
+    sourceTubeFields.put(sample, comboBox);
     return comboBox;
   }
 
@@ -230,12 +261,18 @@ public class TransferViewPresenter {
     view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).setRenderer(new ComponentRenderer());
   }
 
-  private TextField prepareDestinationTubeNameField() {
+  private TextField prepareDestinationTubeNameField(Sample sample) {
     MessageResource generalResources = view.getGeneralResources();
     TextField textField = new TextField();
     textField.addStyleName(DESTINATION_TUBE_NAME);
     textField.setRequired(true);
     textField.setRequiredError(generalResources.message(REQUIRED));
+    textField.addValidator(value -> {
+      if (tubeService.get((String) value) != null) {
+        throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
+      }
+    });
+    destinationTubeFields.put(sample, textField);
     return textField;
   }
 
@@ -253,6 +290,7 @@ public class TransferViewPresenter {
   }
 
   private void updateSourcePlate(Plate plate) {
+    view.sourcePlatePanel.setVisible(plate != null);
     if (plate != null) {
       view.sourcePlatePanel.setCaption(plate.getName());
       List<Sample> samples = samplesProperty.getValue();
@@ -282,8 +320,11 @@ public class TransferViewPresenter {
       plate = new Plate();
       plate.setName(name);
       plate.setType((PlateType) view.destinationPlatesTypeField.getValue());
+      plate.initSpots();
     }
 
+    view.destinationPlatePanel.setVisible(plate != null);
+    view.destinationPlatePanel.setCaption(plate.getName());
     view.destinationPlateFormPresenter.setPlate(plate);
   }
 
@@ -299,17 +340,119 @@ public class TransferViewPresenter {
       view.sourcePlatesField.addItem(plate);
       view.sourcePlatesField.setItemCaption(plate, plate.getName());
     });
-    Plate last = samples.stream().map(s -> plateSpotService.last(s)).filter(w -> w != null)
-        .map(w -> w.getPlate()).findFirst()
-        .orElseGet(() -> plates.isEmpty() ? null : plates.get(0));
-    if (last != null) {
-      view.sourcePlatesField.setValue(last);
-      updateSourcePlate(last);
-    }
+    samples.stream().map(s -> plateSpotService.last(s)).findFirst().ifPresent(w -> {
+      plates.stream().filter(p -> p.getId().equals(w.getPlate().getId())).findAny().ifPresent(p -> {
+        view.sourcePlatesField.setValue(p);
+      });
+    });
     destinationTubesContainer.removeAllItems();
-    destinationTubesContainer
-        .addAll(samples.stream().map(s -> new DestinationTube(s, prepareDestinationTubeNameField()))
+    destinationTubesContainer.addAll(
+        samples.stream().map(s -> new DestinationTube(s, prepareDestinationTubeNameField(s)))
             .collect(Collectors.toList()));
+  }
+
+  private boolean isTubeSource() {
+    return view.sourceTabs.getSelectedTab() == view.sourceTubesGrid;
+  }
+
+  private boolean isTubeDestination() {
+    return view.destinationTabs.getSelectedTab() == view.destinationTubesGrid;
+  }
+
+  private boolean validate() {
+    logger.trace("Validate transfer");
+    boolean valid = true;
+    try {
+      if (isTubeSource()) {
+        validateSourceTubes();
+      } else {
+        validateSourcePlate();
+      }
+      if (isTubeDestination()) {
+        validateDestinationTubes();
+      } else {
+        validateDestinationPlate();
+      }
+    } catch (InvalidValueException e) {
+      final MessageResource generalResources = view.getGeneralResources();
+      logger.trace("Validation value failed with message {}", e.getMessage(), e);
+      view.showError(generalResources.message(FIELD_NOTIFICATION));
+      valid = false;
+    }
+    return valid;
+  }
+
+  private void validateSourceTubes() {
+    sourceTubeFields.values().forEach(t -> t.validate());
+  }
+
+  private void validateSourcePlate() {
+    MessageResource resources = view.getResources();
+    Collection<PlateSpot> selectedWells = view.sourcePlateFormPresenter.getSelectedSpots();
+    if (selectedWells.isEmpty()) {
+      logger.debug("No samples to transfer");
+      throw new InvalidValueException(resources.message(SOURCE_PLATE_EMPTY));
+    }
+    Map<Sample, Boolean> sampleSelection =
+        samplesProperty.getValue().stream().collect(Collectors.toMap(s -> s, s -> false));
+    for (PlateSpot well : selectedWells) {
+      if (well.getSample() == null) {
+        logger.debug("A selected well does not have a sample");
+        throw new InvalidValueException(resources.message(SOURCE_PLATE_EMPTY_WELL, well.getName()));
+      }
+      sampleSelection.put(well.getSample(), true);
+    }
+    sampleSelection.entrySet().stream().filter(e -> !e.getValue()).findAny().ifPresent(e -> {
+      throw new InvalidValueException(
+          resources.message(SOURCE_PLATE_SAMPLE_NOT_SELECTED, e.getKey().getName()));
+    });
+  }
+
+  private void validateDestinationTubes() {
+    destinationTubeFields.values().forEach(t -> t.validate());
+  }
+
+  private void validateDestinationPlate() {
+    MessageResource resources = view.getResources();
+    Plate plate = view.destinationPlateFormPresenter.getPlate();
+    PlateSpot spot = view.destinationPlateFormPresenter.getSelectedSpot();
+    if (spot == null) {
+      logger.debug("No selection in destination plate");
+      throw new InvalidValueException(resources.message(DESTINATION_PLATE_NO_SELECTION));
+    }
+    int column = spot.getColumn();
+    int row = spot.getRow();
+    for (int i = 0; i < sources().size(); i++) {
+      if (plate.spot(row, column).getSample() != null) {
+        logger.debug("Not enough free wells in destination plate starting from selection");
+        throw new InvalidValueException(resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE,
+            samplesProperty.getValue().size()));
+      }
+      row++;
+      if (row >= plate.getRowCount()) {
+        row = 0;
+        column++;
+      }
+      if (column >= plate.getColumnCount()) {
+        logger.debug("Not enough free wells in destination plate starting from selection");
+        throw new InvalidValueException(resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE,
+            samplesProperty.getValue().size()));
+      }
+    }
+  }
+
+  private List<SampleContainer> sources() {
+    if (isTubeSource()) {
+      return sourceTubeFields.values().stream().map(f -> (SampleContainer) f.getValue())
+          .collect(Collectors.toList());
+    } else {
+      return new ArrayList<>(view.sourcePlateFormPresenter.getSelectedSpots());
+    }
+  }
+
+  private void save() {
+    if (validate()) {
+    }
   }
 
   public void enter(String parameters) {

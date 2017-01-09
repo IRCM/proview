@@ -15,12 +15,12 @@
     <vaadin-label size-auto plain-text _id="sourceHeaderLabel">
       Source 
     </vaadin-label> 
-    <vaadin-tab-sheet _id="sourceTabs"> 
+    <vaadin-tab-sheet size-auto _id="sourceTabs"> 
      <tab caption="Tab" selected> 
       <vaadin-grid width-full _id="sourceTubesGrid"></vaadin-grid> 
      </tab> 
      <tab caption="Tab"> 
-      <vaadin-vertical-layout _id="sourcePlateLayout"> 
+      <vaadin-vertical-layout spacing margin _id="sourcePlateLayout"> 
        <vaadin-form-layout size-auto> 
         <vaadin-combo-box _id="sourcePlatesField"> 
          <option>Option 1</option> 
@@ -28,7 +28,7 @@
          <option>Option 3</option> 
         </vaadin-combo-box> 
        </vaadin-form-layout> 
-       <vaadin-panel _id="sourcePlatePanel"> 
+       <vaadin-panel size-auto _id="sourcePlatePanel"> 
         <vaadin-vertical-layout _id="sourcePlateFormLayout"></vaadin-vertical-layout> 
        </vaadin-panel> 
       </vaadin-vertical-layout> 
@@ -37,12 +37,12 @@
     <vaadin-label size-auto plain-text _id="destinationHeaderLabel">
       Destination 
     </vaadin-label> 
-    <vaadin-tab-sheet _id="destinationTabs"> 
+    <vaadin-tab-sheet size-auto _id="destinationTabs"> 
      <tab caption="Tab" selected> 
       <vaadin-grid _id="destinationTubesGrid"></vaadin-grid> 
      </tab> 
      <tab caption="Tab"> 
-      <vaadin-vertical-layout _id="destinationPlateLayout"> 
+      <vaadin-vertical-layout spacing margin _id="destinationPlateLayout"> 
        <vaadin-form-layout size-auto> 
         <vaadin-combo-box _id="destinationPlatesTypeField"> 
          <option>Option 1</option> 
@@ -55,7 +55,7 @@
          <option>Option 3</option> 
         </vaadin-combo-box> 
        </vaadin-form-layout> 
-       <vaadin-panel _id="destinationPlatePanel"> 
+       <vaadin-panel size-auto _id="destinationPlatePanel"> 
         <vaadin-vertical-layout _id="destinationPlateFormLayout"></vaadin-vertical-layout> 
        </vaadin-panel> 
       </vaadin-vertical-layout> 
