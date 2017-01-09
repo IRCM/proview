@@ -22,7 +22,7 @@ import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.COMPONENTS
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.DOWN;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.HEADER;
-import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.INVALID_SUBMISSIONS;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.INVALID_SAMPLES;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.NEW_STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.OK;
@@ -185,7 +185,7 @@ public class SampleStatusViewPresenterTest {
   public void samplesGrid_Column() {
     presenter.init(view);
 
-    assertTrue(view.samplesGrid.getSelectionModel() instanceof SelectionModel.Multi);
+    assertTrue(view.samplesGrid.getSelectionModel() instanceof SelectionModel.None);
     assertEquals(NAME, view.samplesGrid.getColumns().get(0).getPropertyId());
     assertEquals(EXPERIENCE, view.samplesGrid.getColumns().get(1).getPropertyId());
     assertEquals(STATUS, view.samplesGrid.getColumns().get(2).getPropertyId());
@@ -221,8 +221,6 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
     SubmissionSample sample = (SubmissionSample) samples.get(0);
-    view.samplesGrid.deselectAll();
-    view.samplesGrid.select(sample);
     ComboBox newStatus =
         (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
     newStatus.setValue(null);
@@ -238,17 +236,14 @@ public class SampleStatusViewPresenterTest {
     verify(submissionSampleService, never()).updateStatus(any());
   }
 
-  @SuppressWarnings("unchecked")
   @Test
+  @SuppressWarnings("unchecked")
   public void updateStatus() {
     presenter.init(view);
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
     SubmissionSample sample1 = (SubmissionSample) samples.get(0);
     SubmissionSample sample2 = (SubmissionSample) samples.get(1);
-    view.samplesGrid.deselectAll();
-    view.samplesGrid.select(sample1);
-    view.samplesGrid.select(sample2);
     ComboBox newStatus1 =
         (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
     ComboBox newStatus2 =
@@ -284,12 +279,12 @@ public class SampleStatusViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    SubmissionSample sample = (SubmissionSample) samples.get(0);
-    view.samplesGrid.deselectAll();
-    view.samplesGrid.select(sample);
-    ComboBox newStatus =
-        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
-    newStatus.setValue(SampleStatus.TO_APPROVE);
+    SubmissionSample sample1 = (SubmissionSample) samples.get(0);
+    SubmissionSample sample2 = (SubmissionSample) samples.get(1);
+    ComboBox newStatus1 =
+        (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
+    container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
+    newStatus1.setValue(SampleStatus.TO_APPROVE);
     when(submissionSampleService.get(any()))
         .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
     final ConfirmDialog confirmDialog = new TestConfirmDialog(true);
@@ -305,11 +300,14 @@ public class SampleStatusViewPresenterTest {
     verify(view, never()).showError(any());
     verify(submissionSampleService).updateStatus(samplesCaptor.capture());
     Collection<SubmissionSample> samples = samplesCaptor.getValue();
-    assertEquals(1, samples.size());
-    assertTrue(find(samples, sample.getId()).isPresent());
-    sample = find(samples, sample.getId()).orElse(null);
-    assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", 1));
+    assertEquals(2, samples.size());
+    assertTrue(find(samples, sample1.getId()).isPresent());
+    assertTrue(find(samples, sample2.getId()).isPresent());
+    sample1 = find(samples, sample1.getId()).orElse(null);
+    sample2 = find(samples, sample2.getId()).orElse(null);
+    assertEquals(SampleStatus.TO_APPROVE, sample1.getStatus());
+    assertEquals(SampleStatus.TO_APPROVE, sample2.getStatus());
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", 2));
   }
 
   @Test
@@ -317,12 +315,12 @@ public class SampleStatusViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
-    SubmissionSample sample = (SubmissionSample) samples.get(0);
-    view.samplesGrid.deselectAll();
-    view.samplesGrid.select(sample);
-    ComboBox newStatus =
-        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
-    newStatus.setValue(SampleStatus.TO_APPROVE);
+    SubmissionSample sample1 = (SubmissionSample) samples.get(0);
+    SubmissionSample sample2 = (SubmissionSample) samples.get(1);
+    ComboBox newStatus1 =
+        (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
+    container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
+    newStatus1.setValue(SampleStatus.TO_APPROVE);
     when(submissionSampleService.get(any()))
         .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
     final ConfirmDialog confirmDialog = new TestConfirmDialog(false);
@@ -357,9 +355,6 @@ public class SampleStatusViewPresenterTest {
     }
     assertTrue(expectedSamples.containsAll(samples));
     assertTrue(samples.containsAll(expectedSamples));
-    Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
-    assertTrue(selectedRows.containsAll(samples));
-    assertTrue(samples.containsAll(selectedRows));
   }
 
   @Test
@@ -371,7 +366,7 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("a");
 
     verify(view).showWarning(stringCaptor.capture());
-    assertEquals(resources.message(INVALID_SUBMISSIONS), stringCaptor.getValue());
+    assertEquals(resources.message(INVALID_SAMPLES), stringCaptor.getValue());
   }
 
   @Test
@@ -383,7 +378,7 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("2");
 
     verify(view).showWarning(stringCaptor.capture());
-    assertEquals(resources.message(INVALID_SUBMISSIONS), stringCaptor.getValue());
+    assertEquals(resources.message(INVALID_SAMPLES), stringCaptor.getValue());
   }
 
   @Test
@@ -395,7 +390,7 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("32,");
 
     verify(view).showWarning(stringCaptor.capture());
-    assertEquals(resources.message(INVALID_SUBMISSIONS), stringCaptor.getValue());
+    assertEquals(resources.message(INVALID_SAMPLES), stringCaptor.getValue());
   }
 
   @Test
@@ -419,9 +414,6 @@ public class SampleStatusViewPresenterTest {
     }
     assertTrue(samples.containsAll(gridSamples));
     assertTrue(gridSamples.containsAll(samples));
-    Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
-    assertTrue(selectedRows.containsAll(samples));
-    assertTrue(samples.containsAll(selectedRows));
   }
 
   @Test
@@ -448,9 +440,6 @@ public class SampleStatusViewPresenterTest {
     }
     assertTrue(samples.containsAll(gridSamples));
     assertTrue(gridSamples.containsAll(samples));
-    Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
-    assertTrue(selectedRows.containsAll(samples));
-    assertTrue(samples.containsAll(selectedRows));
   }
 
   @Test
@@ -475,9 +464,6 @@ public class SampleStatusViewPresenterTest {
     }
     assertTrue(samples.containsAll(gridSamples));
     assertTrue(gridSamples.containsAll(samples));
-    Collection<Object> selectedRows = view.samplesGrid.getSelectedRows();
-    assertTrue(selectedRows.containsAll(samples));
-    assertTrue(samples.containsAll(selectedRows));
   }
 
   @SuppressWarnings("serial")

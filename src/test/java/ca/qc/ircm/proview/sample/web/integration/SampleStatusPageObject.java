@@ -42,14 +42,14 @@ public abstract class SampleStatusPageObject extends AbstractTestBenchTestCase {
   }
 
   protected void openWithSubmissions() {
-    openView(SampleStatusView.VIEW_NAME, "32,33");
+    openView(SampleStatusView.VIEW_NAME, "442,443");
   }
 
   private int gridColumnIndex(String property) {
     Object[] columns = SampleStatusViewPresenter.getSamplesColumns();
     for (int i = 0; i < columns.length; i++) {
       if (property.equals(columns[i])) {
-        return i + 1; // +1 because of select column.
+        return i;
       }
     }
     return -1;

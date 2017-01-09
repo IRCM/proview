@@ -79,7 +79,7 @@ public class SampleStatusViewPresenter {
   public static final String OK = "ok";
   public static final String CANCEL = "cancel";
   public static final String COMPONENTS = "components";
-  public static final String INVALID_SUBMISSIONS = "submissions.invalid";
+  public static final String INVALID_SAMPLES = "samples.invalid";
   private static final Object[] SAMPLES_COLUMNS =
       new Object[] { NAME, EXPERIENCE, STATUS, NEW_STATUS, DOWN };
   public static final String SPLIT_SAMPLES_PARAMETERS = ",";
@@ -165,7 +165,7 @@ public class SampleStatusViewPresenter {
     view.samplesGrid.addStyleName(COMPONENTS);
     ComponentCellKeyExtension.extend(view.samplesGrid);
     view.samplesGrid.setContainerDataSource(samplesGridContainer);
-    view.samplesGrid.setSelectionMode(SelectionMode.MULTI);
+    view.samplesGrid.setSelectionMode(SelectionMode.NONE);
     view.samplesGrid.setColumns(SAMPLES_COLUMNS);
     for (Object propertyId : SAMPLES_COLUMNS) {
       view.samplesGrid.getColumn(propertyId)
@@ -214,7 +214,7 @@ public class SampleStatusViewPresenter {
 
   private boolean validate() {
     boolean valid = true;
-    Collection<Object> itemIds = view.samplesGrid.getSelectedRows();
+    List<SubmissionSample> itemIds = samplesContainer.getItemIds();
     try {
       for (Object itemId : itemIds) {
         samplesFieldGroup.get(itemId).commit();
@@ -231,8 +231,7 @@ public class SampleStatusViewPresenter {
 
   private boolean statusRegress() {
     boolean regress = false;
-    List<SubmissionSample> samples = view.samplesGrid.getSelectedRows().stream()
-        .map(id -> (SubmissionSample) id).collect(Collectors.toList());
+    List<SubmissionSample> samples = samplesContainer.getItemIds();
     for (SubmissionSample sample : samples) {
       SampleStatus currentStatus = submissionSampleService.get(sample.getId()).getStatus();
       SampleStatus newStatus = sample.getStatus();
@@ -266,18 +265,15 @@ public class SampleStatusViewPresenter {
 
   private void saveToDatabase() {
     logger.debug("Save statuses to database");
-    MessageResource resources = view.getResources();
-    List<SubmissionSample> samples = view.samplesGrid.getSelectedRows().stream()
-        .map(id -> (SubmissionSample) id).collect(Collectors.toList());
-    submissionSampleService.updateStatus(samples);
+    final MessageResource resources = view.getResources();
+    List<SubmissionSample> samples = samplesContainer.getItemIds();
+    submissionSampleService.updateStatus(new ArrayList<>(samples));
     refresh();
     view.showTrayNotification(resources.message(SAVE + ".done", samples.size()));
   }
 
   private void refresh() {
-    view.samplesGrid.deselectAll();
-    Collection<?> itemIds = samplesGridContainer.getItemIds();
-    List<SubmissionSample> samples = itemIds.stream().map(itemId -> (SubmissionSample) itemId)
+    List<SubmissionSample> samples = samplesContainer.getItemIds().stream()
         .map(sample -> submissionSampleService.get(sample.getId())).collect(Collectors.toList());
     samplesContainer.removeAllItems();
     samples.stream().forEach(sample -> samplesContainer.addItem(sample));
@@ -315,7 +311,7 @@ public class SampleStatusViewPresenter {
       logger.trace("Recovering samples from session");
       samplesParameters = view.savedSamples();
     } else {
-      logger.trace("Parsing submissions from parameters");
+      logger.trace("Parsing samples from parameters");
       samplesParameters = new ArrayList<>();
       if (validateParameters(parameters)) {
         String[] rawIds = parameters.split(SPLIT_SAMPLES_PARAMETERS, -1);
@@ -324,7 +320,7 @@ public class SampleStatusViewPresenter {
           samplesParameters.add(sampleService.get(id));
         }
       } else {
-        view.showWarning(view.getResources().message(INVALID_SUBMISSIONS));
+        view.showWarning(view.getResources().message(INVALID_SAMPLES));
       }
     }
 
@@ -333,7 +329,6 @@ public class SampleStatusViewPresenter {
             .map(s -> (SubmissionSample) s).collect(Collectors.toList());
     samplesContainer.removeAllItems();
     samplesContainer.addAll(samples);
-    samples.forEach(s -> view.samplesGrid.select(s));
   }
 
   public static Object[] getSamplesColumns() {
