@@ -128,29 +128,6 @@
   }
   
   // Plate.
-  .v-plate-layout-header, .v-plate-layout-well {
-    padding: 3px;
-    border: valo-border($border: $v-panel-border, $color: darkest-color($v-panel-background-color, $v-app-background-color), $strength: 0.7);
-    @if $v-table-border-radius > 0 {
-      border-radius: $v-table-border-radius;
-    }
-  }
-  .v-plate-layout-header {
-    @include valo-gradient($v-background-color);
-    text-align: center;
-    min-width: 30px;
-    font-size: $v-table-header-font-size;
-  }
-  .v-plate-layout-header-column {
-    border-left: none;
-  }
-  .v-plate-layout-header-row {
-    border-top: none;
-  }
-  .v-plate-layout-well {
-    border-left: none;
-    border-top: none;
-  }
   .v-layout.plate-well.selected, .v-plate-layout-well.selected {
     background-color: $v-selection-color;
   }

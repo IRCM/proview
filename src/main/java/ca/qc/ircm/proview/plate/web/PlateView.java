@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.plate.web;
 
+import ca.qc.ircm.platelayout.PlateLayout;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
-import ca.qc.ircm.proview.plate.web.platelayout.PlateLayout;
 import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
