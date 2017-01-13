@@ -68,7 +68,7 @@
     <confirmdialog.version>2.1.3</confirmdialog.version>
     <popupbutton.version>2.6.0</popupbutton.version>
     <componentrenderer.version>1.0.3</componentrenderer.version>
-    <plate-layout.version>0.1</plate-layout.version>
+    <plate-layout.version>0.2</plate-layout.version>
     <multifileupload.version>1.11</multifileupload.version>
     <guava.version>19.0</guava.version>
     <commons-lang3.version>3.5</commons-lang3.version>
