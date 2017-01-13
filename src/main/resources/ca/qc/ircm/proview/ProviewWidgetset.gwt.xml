@@ -21,22 +21,15 @@
         "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
 <module>
   <inherits name="com.google.gwt.logging.Logging" />
+  <inherits name="com.vaadin.DefaultWidgetSet" />
 
     <inherits name="com.ejt.vaadin.loginform.WidgetSet" />
 
-    <inherits name="com.vaadin.DefaultWidgetSet" />
-
-    
-
-    
-
-    
+    <inherits name="org.vaadin.hene.popupbutton.widgetset.PopupbuttonWidgetset" />
 
     <inherits name="de.datenhahn.vaadin.componentrenderer.ComponentRendererWidgetSet" />
 
-    <inherits name="org.vaadin.hene.popupbutton.widgetset.PopupbuttonWidgetset" />
-
-    
+    <inherits name="ca.qc.ircm.platelayout.PlateLayoutWidgetset" />
 
     <inherits name="com.wcs.wcslib.vaadin.widget.multifileupload.MultiFileUploadWidgetSet" />
 </module>

@@ -141,13 +141,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.platelayout.PlateLayout;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import ca.qc.ircm.proview.plate.web.platelayout.PlateLayout;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
