@@ -63,15 +63,18 @@ public class AuthorizationService {
   private JPAQueryFactory queryFactory;
   @Inject
   private AuthenticationService authenticationService;
+  @Inject
+  private SecurityConfiguration securityConfiguration;
 
   protected AuthorizationService() {
   }
 
   protected AuthorizationService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      AuthenticationService authenticationService) {
+      AuthenticationService authenticationService, SecurityConfiguration securityConfiguration) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.authenticationService = authenticationService;
+    this.securityConfiguration = securityConfiguration;
   }
 
   private Subject getSubject() {
@@ -86,8 +89,8 @@ public class AuthorizationService {
     return entityManager.find(User.class, id);
   }
 
-  private String getRealmName() {
-    return ShiroRealm.REALM_NAME;
+  private String realmName() {
+    return securityConfiguration.realmName();
   }
 
   private Sample getSample(Long id) {
@@ -166,7 +169,7 @@ public class AuthorizationService {
     }
 
     AuthorizationInfo authorizationInfo = authenticationService
-        .getAuthorizationInfo(new SimplePrincipalCollection(user.getId(), getRealmName()));
+        .getAuthorizationInfo(new SimplePrincipalCollection(user.getId(), realmName()));
     return authorizationInfo.getRoles() != null && authorizationInfo.getRoles().contains(MANAGER);
   }
 

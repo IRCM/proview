@@ -57,7 +57,7 @@ import java.util.List;
 public class ShiroRealmTest {
   private ShiroRealm shiroRealm;
   @Mock
-  private AuthenticationService authenticatingService;
+  private AuthenticationService authenticationService;
   @Mock
   private CacheManager cacheManager;
   @Mock
@@ -72,7 +72,8 @@ public class ShiroRealmTest {
   private ArgumentCaptor<AuthenticationInfo> authenticationInfoCaptor;
   private Long authenticationId;
   private List<Permission> permissions;
-  private String realmName = ShiroRealm.REALM_NAME;
+  private String realmName = "proviewRealm";
+  private String authorizationCacheName = "authorizationCache";
 
   /**
    * Before test.
@@ -80,9 +81,13 @@ public class ShiroRealmTest {
   @Before
   public void beforeTest() {
     when(cacheManager.getCache(any(String.class))).thenReturn(cache);
-    shiroRealm = new ShiroRealm(authenticatingService, permissionResolver);
+    shiroRealm = new ShiroRealm(authenticationService);
+    shiroRealm.setPermissionResolver(permissionResolver);
+    shiroRealm.setAuthorizationCachingEnabled(true);
+    shiroRealm.setAuthorizationCacheName(authorizationCacheName);
+    shiroRealm.setName(realmName);
     authenticationId = 1L;
-    when(authenticatingService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
+    when(authenticationService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
         .thenReturn(authenticationInfo);
     permissions = new ArrayList<Permission>() {
       private static final long serialVersionUID = 3384781677869656083L;
@@ -102,7 +107,7 @@ public class ShiroRealmTest {
 
   @Test
   public void cacheName() throws Throwable {
-    assertEquals(ShiroRealm.CACHE_NAME, shiroRealm.getAuthorizationCacheName());
+    assertEquals(authorizationCacheName, shiroRealm.getAuthorizationCacheName());
   }
 
   @Test
@@ -111,13 +116,13 @@ public class ShiroRealmTest {
 
     AuthenticationInfo authentication = shiroRealm.getAuthenticationInfo(token);
 
-    verify(authenticatingService).getAuthenticationInfo(token);
+    verify(authenticationService).getAuthenticationInfo(token);
     assertSame(this.authenticationInfo, authentication);
   }
 
   @Test
   public void getAuthenticationInfo_Unknown() throws Throwable {
-    when(authenticatingService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
+    when(authenticationService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
         .thenThrow(new UnknownAccountException());
     UsernamePasswordToken token = new UsernamePasswordToken("poitrac", "test_password");
 
@@ -131,7 +136,7 @@ public class ShiroRealmTest {
 
   @Test
   public void getAuthenticationInfo_Invalid() throws Throwable {
-    when(authenticatingService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
+    when(authenticationService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
         .thenThrow(new InvalidAccountException());
     UsernamePasswordToken token = new UsernamePasswordToken("poitrac", "test_password");
 
@@ -145,7 +150,7 @@ public class ShiroRealmTest {
 
   @Test
   public void getAuthenticationInfo_Inactive() throws Throwable {
-    when(authenticatingService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
+    when(authenticationService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
         .thenThrow(new DisabledAccountException());
     UsernamePasswordToken token = new UsernamePasswordToken("poitrac", "test_password");
 
@@ -159,7 +164,7 @@ public class ShiroRealmTest {
 
   @Test
   public void getAuthenticationInfo_InvalidPassword() throws Throwable {
-    when(authenticatingService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
+    when(authenticationService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
         .thenThrow(new IncorrectCredentialsException());
     UsernamePasswordToken token = new UsernamePasswordToken("poitrac", "test_password");
 
@@ -188,7 +193,7 @@ public class ShiroRealmTest {
 
   @Test
   public void getAuthenticationInfo_Null() throws Throwable {
-    when(authenticatingService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
+    when(authenticationService.getAuthenticationInfo(any(UsernamePasswordToken.class)))
         .thenThrow(new UnknownAccountException());
 
     try {
@@ -201,13 +206,13 @@ public class ShiroRealmTest {
 
   @Test
   public void getAuthorizationInfo() {
-    when(authenticatingService.getAuthorizationInfo(any(PrincipalCollection.class)))
+    when(authenticationService.getAuthorizationInfo(any(PrincipalCollection.class)))
         .thenReturn(authorizationInfo);
     PrincipalCollection principals = new SimplePrincipalCollection(authenticationId, realmName);
 
     AuthorizationInfo authorizationInfo = shiroRealm.doGetAuthorizationInfo(principals);
 
-    verify(authenticatingService).getAuthorizationInfo(principals);
+    verify(authenticationService).getAuthorizationInfo(principals);
     assertEquals(this.authorizationInfo, authorizationInfo);
   }
 
@@ -221,7 +226,7 @@ public class ShiroRealmTest {
 
     shiroRealm.isPermitted(principals, "project:read:1");
 
-    verify(cacheManager).getCache(ShiroRealm.CACHE_NAME);
+    verify(cacheManager).getCache(authorizationCacheName);
     verify(cache).get(principals);
     verify(cachedAuthorizationInfo).getRoles();
     verify(cachedAuthorizationInfo).getObjectPermissions();
@@ -229,11 +234,18 @@ public class ShiroRealmTest {
 
   @Test
   public void getAuthorizationInfo_Null() throws Throwable {
-    when(authenticatingService.getAuthorizationInfo(any(PrincipalCollection.class)))
+    when(authenticationService.getAuthorizationInfo(any(PrincipalCollection.class)))
         .thenReturn(authorizationInfo);
 
     AuthorizationInfo authorizationInfo = shiroRealm.doGetAuthorizationInfo(null);
 
     assertEquals(this.authorizationInfo, authorizationInfo);
+  }
+
+  @Test
+  public void getAuthenticationService() throws Throwable {
+    AuthenticationService authenticationService = shiroRealm.getAuthenticationService();
+
+    assertEquals(this.authenticationService, authenticationService);
   }
 }

@@ -149,7 +149,7 @@ public class AuthenticationService {
       throw new UnauthorizedException("Cannot run as a admin user");
     }
 
-    getSubject().runAs(new SimplePrincipalCollection(user.getId(), getRealmName()));
+    getSubject().runAs(new SimplePrincipalCollection(user.getId(), realmName()));
   }
 
   /**
@@ -199,7 +199,7 @@ public class AuthenticationService {
     }
 
     return new SimpleAuthenticationInfo(user.getId(), user.getHashedPassword(),
-        new SimpleByteSource(Hex.decode(user.getSalt())), getRealmName());
+        new SimpleByteSource(Hex.decode(user.getSalt())), realmName());
   }
 
   private boolean credentialMatches(UsernamePasswordToken token, User user) {
@@ -299,8 +299,8 @@ public class AuthenticationService {
     return permissions;
   }
 
-  private String getRealmName() {
-    return ShiroRealm.REALM_NAME;
+  private String realmName() {
+    return securityConfiguration.realmName();
   }
 
   /**

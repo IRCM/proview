@@ -17,17 +17,23 @@
 
 package ca.qc.ircm.proview.security;
 
+import org.apache.shiro.realm.Realm;
+
 import java.util.List;
 
 /**
  * Security configuration.
  */
 public interface SecurityConfiguration {
+  public String realmName();
+
+  public String authorizationCacheName();
+
+  public Realm shiroRealm();
+
   public List<PasswordVersion> getPasswordVersions();
 
   public PasswordVersion getPasswordVersion();
 
   public byte[] getCipherKeyBytes();
-
-  public String getCipherKey();
 }

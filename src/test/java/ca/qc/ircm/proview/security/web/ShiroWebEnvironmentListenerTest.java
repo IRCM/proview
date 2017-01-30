@@ -18,21 +18,13 @@
 package ca.qc.ircm.proview.security.web;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.security.ShiroRealm;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import org.apache.shiro.authz.permission.WildcardPermissionResolver;
-import org.apache.shiro.realm.Realm;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -47,16 +39,11 @@ public class ShiroWebEnvironmentListenerTest {
   @Mock
   private ShiroWebEnvironment shiroWebEnvironment;
   @Mock
-  private AuthenticationService authenticationService;
-  @Mock
   private SecurityConfiguration securityConfiguration;
-  @Captor
-  private ArgumentCaptor<Realm> realmCaptor;
-  private byte[] cipherKey = new byte[4096];
 
   @Before
   public void beforeTest() {
-    listener = new ShiroWebEnvironmentListener(authenticationService, securityConfiguration);
+    listener = new ShiroWebEnvironmentListener(securityConfiguration);
   }
 
   @Test
@@ -68,15 +55,8 @@ public class ShiroWebEnvironmentListenerTest {
 
   @Test
   public void customizeEnvironment() {
-    when(securityConfiguration.getCipherKeyBytes()).thenReturn(cipherKey);
-
     listener.customizeEnvironment(shiroWebEnvironment);
 
-    verify(shiroWebEnvironment).setRealm(realmCaptor.capture());
-    Realm rawRealm = realmCaptor.getValue();
-    assertTrue(rawRealm instanceof ShiroRealm);
-    ShiroRealm realm = (ShiroRealm) rawRealm;
-    assertTrue(realm.getPermissionResolver() instanceof WildcardPermissionResolver);
-    verify(shiroWebEnvironment).setCipherKey(cipherKey);
+    verify(shiroWebEnvironment).setSecurityConfiguration(securityConfiguration);
   }
 }

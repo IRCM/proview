@@ -19,12 +19,17 @@ package ca.qc.ircm.proview.security;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import org.apache.shiro.authz.permission.WildcardPermissionResolver;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.Hex;
+import org.apache.shiro.realm.Realm;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
@@ -37,12 +42,18 @@ import javax.inject.Inject;
 public class SecurityConfigurationTest {
   @Inject
   private SecurityConfiguration securityConfiguration;
+  @Inject
+  private AuthenticationService authenticationService;
+  @Value("spring.application.name")
+  private String realmName;
 
   @Test
   public void defaultProperties() throws Throwable {
-    assertEquals("0x2c9bff536d5bb8ae5550c93cdadace1b", securityConfiguration.getCipherKey());
     assertArrayEquals(Hex.decode("2c9bff536d5bb8ae5550c93cdadace1b"),
         securityConfiguration.getCipherKeyBytes());
+    assertEquals(realmName, securityConfiguration.realmName());
+    assertEquals(SecurityConfigurationSpringBoot.AUTHORIZATION_CACHE_NAME,
+        securityConfiguration.authorizationCacheName());
     PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
     assertEquals(1, passwordVersion.getVersion());
     assertEquals("SHA-256", passwordVersion.getAlgorithm());
@@ -61,6 +72,20 @@ public class SecurityConfigurationTest {
         .setCipherKey("AcEG7RqLxcP6enoSBJKNjA==");
     assertArrayEquals(Base64.decode("AcEG7RqLxcP6enoSBJKNjA=="),
         securityConfiguration.getCipherKeyBytes());
+  }
+
+  @Test
+  public void shiroRealm() {
+    Realm realm = securityConfiguration.shiroRealm();
+    assertTrue(realm instanceof ShiroRealm);
+    ShiroRealm shiroRealm = (ShiroRealm) realm;
+    assertEquals(realmName, shiroRealm.getName());
+    assertTrue(shiroRealm.getPermissionResolver() instanceof WildcardPermissionResolver);
+    assertFalse(shiroRealm.isAuthenticationCachingEnabled());
+    assertTrue(shiroRealm.isAuthorizationCachingEnabled());
+    assertEquals(SecurityConfigurationSpringBoot.AUTHORIZATION_CACHE_NAME,
+        shiroRealm.getAuthorizationCacheName());
+    assertEquals(authenticationService, shiroRealm.getAuthenticationService());
   }
 
   @Test

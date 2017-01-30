@@ -93,7 +93,7 @@ public class AuthenticationServiceTest {
   private ArgumentCaptor<PrincipalCollection> principalCollectionCaptor;
   @Captor
   private ArgumentCaptor<AuthenticationToken> tokenCaptor;
-  private String realmName = ShiroRealm.REALM_NAME;
+  private String realmName = "proviewRealm";
   private Subject subject;
   private PasswordVersion passwordVersion;
 
@@ -107,6 +107,7 @@ public class AuthenticationServiceTest {
     when(securityConfiguration.getPasswordVersions())
         .thenReturn(Collections.nCopies(1, passwordVersion));
     when(securityConfiguration.getPasswordVersion()).thenReturn(passwordVersion);
+    when(securityConfiguration.realmName()).thenReturn(realmName);
     subject = SecurityUtils.getSubject();
   }
 

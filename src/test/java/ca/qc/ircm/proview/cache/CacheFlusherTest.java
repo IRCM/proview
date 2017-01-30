@@ -21,7 +21,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.ShiroRealm;
+import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
@@ -43,10 +43,14 @@ public class CacheFlusherTest {
   private CacheManager cacheManager;
   @Mock
   private Cache<Object, Object> cache;
+  @Mock
+  private SecurityConfiguration securityConfiguration;
+  private String authorizationCacheName = "authorizationCache";
 
   @Before
   public void beforeTest() {
-    cacheFlusherImpl = new CacheFlusher();
+    cacheFlusherImpl = new CacheFlusher(securityConfiguration);
+    when(securityConfiguration.authorizationCacheName()).thenReturn(authorizationCacheName);
   }
 
   @Test
@@ -58,7 +62,8 @@ public class CacheFlusherTest {
     cacheFlusherImpl.flushShiroCache();
 
     verify(securityManager).getCacheManager();
-    verify(cacheManager).getCache(ShiroRealm.CACHE_NAME);
+    verify(securityConfiguration).authorizationCacheName();
+    verify(cacheManager).getCache(authorizationCacheName);
     verify(cache).clear();
   }
 }

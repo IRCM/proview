@@ -17,14 +17,12 @@
 
 package ca.qc.ircm.proview.security;
 
-import ca.qc.ircm.proview.ApplicationConfiguration;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +31,6 @@ import org.slf4j.LoggerFactory;
  * Custom authenticating realm for Shiro.
  */
 public class ShiroRealm extends org.apache.shiro.realm.AuthorizingRealm {
-  public static final String REALM_NAME = ApplicationConfiguration.APPLICATION_NAME;
-  public static final String CACHE_NAME = "Shiro";
-
   @SuppressWarnings("unused")
   private Logger logger = LoggerFactory.getLogger(ShiroRealm.class);
   private final AuthenticationService authenticationService;
@@ -45,17 +40,10 @@ public class ShiroRealm extends org.apache.shiro.realm.AuthorizingRealm {
    *
    * @param authenticationService
    *          authentication service
-   * @param permissionResolver
-   *          permission resolver
    */
-  public ShiroRealm(AuthenticationService authenticationService,
-      PermissionResolver permissionResolver) {
+  public ShiroRealm(AuthenticationService authenticationService) {
     super(new AllowAllCredentialsMatcher());
     this.authenticationService = authenticationService;
-    this.setPermissionResolver(permissionResolver);
-    this.setAuthorizationCachingEnabled(true);
-    this.setAuthorizationCacheName(CACHE_NAME);
-    this.setName(REALM_NAME);
   }
 
   @Override
@@ -68,5 +56,9 @@ public class ShiroRealm extends org.apache.shiro.realm.AuthorizingRealm {
   @Override
   protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
     return authenticationService.getAuthorizationInfo(principals);
+  }
+
+  public AuthenticationService getAuthenticationService() {
+    return authenticationService;
   }
 }
