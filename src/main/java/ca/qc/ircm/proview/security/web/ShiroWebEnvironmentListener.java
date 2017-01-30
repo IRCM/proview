@@ -17,16 +17,9 @@
 
 package ca.qc.ircm.proview.security.web;
 
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.security.ShiroRealm;
-import org.apache.shiro.authz.permission.PermissionResolver;
-import org.apache.shiro.authz.permission.WildcardPermissionResolver;
-import org.apache.shiro.realm.Realm;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.env.WebEnvironment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -38,18 +31,13 @@ import javax.servlet.ServletContextEvent;
  * Creates Shiro's environment.
  */
 public class ShiroWebEnvironmentListener extends EnvironmentLoaderListener {
-  private static final Logger logger = LoggerFactory.getLogger(ShiroWebEnvironmentListener.class);
-  @Inject
-  private AuthenticationService authenticationService;
   @Inject
   private SecurityConfiguration securityConfiguration;
 
   public ShiroWebEnvironmentListener() {
   }
 
-  protected ShiroWebEnvironmentListener(AuthenticationService authenticationService,
-      SecurityConfiguration securityConfiguration) {
-    this.authenticationService = authenticationService;
+  protected ShiroWebEnvironmentListener(SecurityConfiguration securityConfiguration) {
     this.securityConfiguration = securityConfiguration;
   }
 
@@ -68,20 +56,11 @@ public class ShiroWebEnvironmentListener extends EnvironmentLoaderListener {
 
   @Override
   protected void customizeEnvironment(WebEnvironment environment) {
-    Realm realm = createRealm();
-    logger.debug("Set realm {} in web environment", realm);
     if (!(environment instanceof ShiroWebEnvironment)) {
-      throw new IllegalStateException(
-          WebEnvironment.class.getSimpleName() + " must be mutable to use custom realm");
+      throw new IllegalStateException(WebEnvironment.class.getSimpleName() + " must an instance of "
+          + ShiroWebEnvironment.class.getName());
     }
 
-    ((ShiroWebEnvironment) environment).setRealm(realm);
-    ((ShiroWebEnvironment) environment).setCipherKey(securityConfiguration.getCipherKeyBytes());
-  }
-
-  private Realm createRealm() {
-    PermissionResolver permissionResolver = new WildcardPermissionResolver();
-    Realm realm = new ShiroRealm(authenticationService, permissionResolver);
-    return realm;
+    ((ShiroWebEnvironment) environment).setSecurityConfiguration(securityConfiguration);
   }
 }

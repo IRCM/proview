@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.security.ShiroRealm;
 import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.TestBenchTestCase;
 import org.apache.shiro.codec.Base64;
@@ -111,7 +110,8 @@ public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener 
   }
 
   private String rememberCookie(Long userId) {
-    PrincipalCollection principals = new SimplePrincipalCollection(userId, ShiroRealm.REALM_NAME);
+    PrincipalCollection principals =
+        new SimplePrincipalCollection(userId, securityConfiguration.realmName());
     ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
     try (ObjectOutputStream output = new ObjectOutputStream(byteArrayOutput)) {
       output.writeObject(principals);
@@ -120,7 +120,7 @@ public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener 
     }
     CipherService cipherService = new AesCipherService();
     byte[] encrypted = cipherService
-        .encrypt(byteArrayOutput.toByteArray(), Base64.decode(securityConfiguration.getCipherKey()))
+        .encrypt(byteArrayOutput.toByteArray(), securityConfiguration.getCipherKeyBytes())
         .getBytes();
     return Base64.encodeToString(encrypted);
   }

@@ -17,14 +17,18 @@
 
 package ca.qc.ircm.proview.security;
 
+import org.apache.shiro.authz.permission.WildcardPermissionResolver;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.UnknownAlgorithmException;
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.realm.Realm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
@@ -34,6 +38,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Security configuration.
@@ -43,11 +49,25 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties(prefix = SecurityConfigurationSpringBoot.PREFIX)
 public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
   public static final String PREFIX = "security";
+  static final String AUTHORIZATION_CACHE_NAME = "authorization";
   private static final String HEX_BEGIN_TOKEN = "0x";
   private static final Logger logger =
       LoggerFactory.getLogger(SecurityConfigurationSpringBoot.class);
   private String cipherKey;
   private List<PasswordVersionSpringBoot> passwords;
+  @Inject
+  private Provider<AuthenticationService> authenticationServiceProvider;
+  @Value("spring.application.name")
+  private String realmName;
+
+  protected SecurityConfigurationSpringBoot() {
+  }
+
+  protected SecurityConfigurationSpringBoot(
+      Provider<AuthenticationService> authenticationServiceProvider, String realmName) {
+    this.authenticationServiceProvider = authenticationServiceProvider;
+    this.realmName = realmName;
+  }
 
   @PostConstruct
   protected void processPasswords() {
@@ -99,6 +119,27 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
   }
 
   @Override
+  public String realmName() {
+    return realmName;
+  }
+
+  @Override
+  public String authorizationCacheName() {
+    return AUTHORIZATION_CACHE_NAME;
+  }
+
+  @Bean
+  @Override
+  public Realm shiroRealm() {
+    ShiroRealm realm = new ShiroRealm(authenticationServiceProvider.get());
+    realm.setPermissionResolver(new WildcardPermissionResolver());
+    realm.setAuthorizationCachingEnabled(true);
+    realm.setAuthorizationCacheName(AUTHORIZATION_CACHE_NAME);
+    realm.setName(realmName);
+    return realm;
+  }
+
+  @Override
   public List<PasswordVersion> getPasswordVersions() {
     return new ArrayList<>(passwords);
   }
@@ -121,7 +162,6 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
     }
   }
 
-  @Override
   public String getCipherKey() {
     return cipherKey;
   }

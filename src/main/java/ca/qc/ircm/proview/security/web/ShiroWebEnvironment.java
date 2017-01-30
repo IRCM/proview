@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.security.web;
 
+import ca.qc.ircm.proview.security.SecurityConfiguration;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.AbstractRememberMeManager;
-import org.apache.shiro.realm.Realm;
 import org.apache.shiro.web.env.IniWebEnvironment;
 import org.apache.shiro.web.env.WebEnvironment;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -27,17 +27,12 @@ import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
  * Custom {@link WebEnvironment} for Shiro.
  */
 public class ShiroWebEnvironment extends IniWebEnvironment {
-  @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(ShiroWebEnvironment.class);
-  private Collection<Realm> realms;
-  private byte[] cipherKey;
+  private SecurityConfiguration securityConfiguration;
 
   @Override
   protected WebSecurityManager createWebSecurityManager() {
@@ -45,30 +40,19 @@ public class ShiroWebEnvironment extends IniWebEnvironment {
     DefaultWebSecurityManager manager =
         (DefaultWebSecurityManager) super.createWebSecurityManager();
     manager.setCacheManager(new MemoryConstrainedCacheManager());
-    manager.setRealms(realms);
+    logger.debug("Set realm {} in web environment", securityConfiguration.shiroRealm());
+    manager.setRealm(securityConfiguration.shiroRealm());
     AbstractRememberMeManager rememberMeManager =
         (AbstractRememberMeManager) manager.getRememberMeManager();
-    rememberMeManager.setCipherKey(cipherKey);
+    rememberMeManager.setCipherKey(securityConfiguration.getCipherKeyBytes());
     return manager;
   }
 
-  /**
-   * Sets Shiro's realm.
-   *
-   * @param realm
-   *          realm
-   */
-  public void setRealm(final Realm realm) {
-    Collection<Realm> realms = new ArrayList<>(1);
-    realms.add(realm);
-    this.setRealms(realms);
+  public SecurityConfiguration getSecurityConfiguration() {
+    return securityConfiguration;
   }
 
-  public void setCipherKey(byte[] cipherKey) {
-    this.cipherKey = cipherKey.clone();
-  }
-
-  public void setRealms(Collection<Realm> realms) {
-    this.realms = realms;
+  public void setSecurityConfiguration(SecurityConfiguration securityConfiguration) {
+    this.securityConfiguration = securityConfiguration;
   }
 }

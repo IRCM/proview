@@ -78,21 +78,24 @@ public class AuthorizationServiceTest {
   private ApplicationConfiguration applicationConfiguration;
   @Mock
   private AuthorizationInfo authorizationInfo;
+  @Mock
+  private SecurityConfiguration securityConfiguration;
   @Captor
   private ArgumentCaptor<String> roleCaptor;
   @Captor
   private ArgumentCaptor<PrincipalCollection> principalCollectionCaptor;
   private Subject subject;
-  private String realmName = ShiroRealm.REALM_NAME;
+  private String realmName = "proviewRealm";
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() {
-    authorizationServiceImpl =
-        new AuthorizationService(entityManager, queryFactory, authenticationService);
+    authorizationServiceImpl = new AuthorizationService(entityManager, queryFactory,
+        authenticationService, securityConfiguration);
     subject = SecurityUtils.getSubject();
+    when(securityConfiguration.realmName()).thenReturn(realmName);
   }
 
   @Test

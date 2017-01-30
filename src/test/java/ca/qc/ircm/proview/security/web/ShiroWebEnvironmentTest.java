@@ -20,8 +20,13 @@ package ca.qc.ircm.proview.security.web;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.mgt.AbstractRememberMeManager;
@@ -39,18 +44,24 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ShiroWebEnvironmentTest {
   private ShiroWebEnvironment shiroWebEnvironment;
   @Mock
+  private SecurityConfiguration securityConfiguration;
+  @Mock
   private Realm realm;
   private byte[] cipherKey = Base64.decode("AcEG7RqLxcP6enoSBJKNjA==");
 
+  /**
+   * Before test.
+   */
   @Before
   public void beforeTest() {
     shiroWebEnvironment = new ShiroWebEnvironment();
+    shiroWebEnvironment.setSecurityConfiguration(securityConfiguration);
+    when(securityConfiguration.getCipherKeyBytes()).thenReturn(cipherKey);
+    when(securityConfiguration.shiroRealm()).thenReturn(realm);
   }
 
   @Test
   public void iniConfiguration() {
-    shiroWebEnvironment.setRealm(realm);
-    shiroWebEnvironment.setCipherKey(cipherKey);
     shiroWebEnvironment.init();
 
     Ini ini = shiroWebEnvironment.getIni();
@@ -60,13 +71,13 @@ public class ShiroWebEnvironmentTest {
 
   @Test
   public void createWebSecurityManager() {
-    shiroWebEnvironment.setRealm(realm);
-    shiroWebEnvironment.setCipherKey(cipherKey);
-
     WebSecurityManager rawManager = shiroWebEnvironment.createWebSecurityManager();
 
+    verify(securityConfiguration, atLeastOnce()).shiroRealm();
+    verify(securityConfiguration, atLeastOnce()).getCipherKeyBytes();
     assertTrue(rawManager instanceof DefaultWebSecurityManager);
     DefaultWebSecurityManager manager = (DefaultWebSecurityManager) rawManager;
+    assertTrue(manager.getCacheManager() instanceof MemoryConstrainedCacheManager);
     assertEquals(1, manager.getRealms().size());
     assertEquals(realm, manager.getRealms().iterator().next());
     assertTrue(manager.getRememberMeManager() instanceof AbstractRememberMeManager);
