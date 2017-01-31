@@ -49,7 +49,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class StandardAdditionActivityServiceTest {
-  private StandardAdditionActivityService standardAdditionActivityServiceImpl;
+  private StandardAdditionActivityService standardAdditionActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -61,7 +61,7 @@ public class StandardAdditionActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    standardAdditionActivityServiceImpl =
+    standardAdditionActivityService =
         new StandardAdditionActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -82,7 +82,7 @@ public class StandardAdditionActivityServiceTest {
     standardAddition.setId(123456L);
     standardAddition.setTreatmentSamples(addedStandards);
 
-    Activity activity = standardAdditionActivityServiceImpl.insert(standardAddition);
+    Activity activity = standardAdditionActivityService.insert(standardAddition);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -97,7 +97,7 @@ public class StandardAdditionActivityServiceTest {
     StandardAddition standardAddition = new StandardAddition(5L);
 
     Activity activity =
-        standardAdditionActivityServiceImpl.undoErroneous(standardAddition, "unit_test");
+        standardAdditionActivityService.undoErroneous(standardAddition, "unit_test");
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -112,7 +112,7 @@ public class StandardAdditionActivityServiceTest {
     StandardAddition standardAddition = new StandardAddition(5L);
 
     Activity activity =
-        standardAdditionActivityServiceImpl.undoFailed(standardAddition, "unit_test", null);
+        standardAdditionActivityService.undoFailed(standardAddition, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -131,7 +131,7 @@ public class StandardAdditionActivityServiceTest {
     bannedContainers.add(sourceTube);
     bannedContainers.add(spot);
 
-    Activity activity = standardAdditionActivityServiceImpl.undoFailed(standardAddition,
+    Activity activity = standardAdditionActivityService.undoFailed(standardAddition,
         "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
@@ -172,7 +172,7 @@ public class StandardAdditionActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     Activity activity =
-        standardAdditionActivityServiceImpl.undoFailed(standardAddition, reason, bannedContainers);
+        standardAdditionActivityService.undoFailed(standardAddition, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

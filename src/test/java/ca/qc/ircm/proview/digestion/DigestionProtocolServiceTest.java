@@ -48,7 +48,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DigestionProtocolServiceTest {
-  private DigestionProtocolService digestionProtocolServiceImpl;
+  private DigestionProtocolService digestionProtocolService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -69,13 +69,13 @@ public class DigestionProtocolServiceTest {
    */
   @Before
   public void beforeTest() {
-    digestionProtocolServiceImpl = new DigestionProtocolService(entityManager, queryFactory,
+    digestionProtocolService = new DigestionProtocolService(entityManager, queryFactory,
         protocolActivityService, activityService, authorizationService);
   }
 
   @Test
   public void get() throws Throwable {
-    DigestionProtocol protocol = digestionProtocolServiceImpl.get(1L);
+    DigestionProtocol protocol = digestionProtocolService.get(1L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 1L, protocol.getId());
@@ -85,23 +85,23 @@ public class DigestionProtocolServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    DigestionProtocol protocol = digestionProtocolServiceImpl.get(null);
+    DigestionProtocol protocol = digestionProtocolService.get(null);
 
     assertNull(protocol);
   }
 
   @Test
   public void all() throws Throwable {
-    List<DigestionProtocol> protocols = digestionProtocolServiceImpl.all();
+    List<DigestionProtocol> protocols = digestionProtocolService.all();
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, protocols.size());
-    assertEquals(true, protocols.contains(digestionProtocolServiceImpl.get(1L)));
+    assertEquals(true, protocols.contains(digestionProtocolService.get(1L)));
   }
 
   @Test
   public void availableName_True() throws Throwable {
-    boolean availableName = digestionProtocolServiceImpl.availableName("digestion_protocol_1");
+    boolean availableName = digestionProtocolService.availableName("digestion_protocol_1");
 
     verify(authorizationService).checkAdminRole();
     assertEquals(false, availableName);
@@ -109,7 +109,7 @@ public class DigestionProtocolServiceTest {
 
   @Test
   public void availableName_False() throws Throwable {
-    boolean availableName = digestionProtocolServiceImpl.availableName("some_random_name");
+    boolean availableName = digestionProtocolService.availableName("some_random_name");
 
     verify(authorizationService).checkAdminRole();
     assertEquals(true, availableName);
@@ -117,7 +117,7 @@ public class DigestionProtocolServiceTest {
 
   @Test
   public void availableName_Null() throws Throwable {
-    boolean availableName = digestionProtocolServiceImpl.availableName(null);
+    boolean availableName = digestionProtocolService.availableName(null);
 
     assertEquals(false, availableName);
   }
@@ -128,12 +128,12 @@ public class DigestionProtocolServiceTest {
     protocol.setName("unit_test_digestion_protocol");
     when(protocolActivityService.insert(any(Protocol.class))).thenReturn(activity);
 
-    digestionProtocolServiceImpl.insert(protocol);
+    digestionProtocolService.insert(protocol);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     assertNotNull(protocol.getId());
-    protocol = digestionProtocolServiceImpl.get(protocol.getId());
+    protocol = digestionProtocolService.get(protocol.getId());
     assertEquals("unit_test_digestion_protocol", protocol.getName());
     assertEquals(Protocol.Type.DIGESTION, protocol.getType());
     verify(protocolActivityService).insert(protocol);

@@ -62,7 +62,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SolubilisationServiceTest {
-  private SolubilisationService solubilisationServiceImpl;
+  private SolubilisationService solubilisationService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -84,7 +84,7 @@ public class SolubilisationServiceTest {
    */
   @Before
   public void beforeTest() {
-    solubilisationServiceImpl = new SolubilisationService(entityManager, queryFactory,
+    solubilisationService = new SolubilisationService(entityManager, queryFactory,
         solubilisationActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -102,7 +102,7 @@ public class SolubilisationServiceTest {
 
   @Test
   public void get() {
-    Solubilisation solubilisation = solubilisationServiceImpl.get(1L);
+    Solubilisation solubilisation = solubilisationService.get(1L);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(solubilisation);
@@ -128,7 +128,7 @@ public class SolubilisationServiceTest {
 
   @Test
   public void get_Null() {
-    Solubilisation solubilisation = solubilisationServiceImpl.get(null);
+    Solubilisation solubilisation = solubilisationService.get(null);
 
     assertNull(solubilisation);
   }
@@ -137,7 +137,7 @@ public class SolubilisationServiceTest {
   public void all_Tube() {
     Sample sample = new SubmissionSample(1L);
 
-    List<Solubilisation> solubilisations = solubilisationServiceImpl.all(sample);
+    List<Solubilisation> solubilisations = solubilisationService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, solubilisations.size());
@@ -149,7 +149,7 @@ public class SolubilisationServiceTest {
   public void all_Spot() {
     Sample sample = new SubmissionSample(589L);
 
-    List<Solubilisation> solubilisations = solubilisationServiceImpl.all(sample);
+    List<Solubilisation> solubilisations = solubilisationService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, solubilisations.size());
@@ -159,7 +159,7 @@ public class SolubilisationServiceTest {
 
   @Test
   public void all_Null() {
-    List<Solubilisation> solubilisations = solubilisationServiceImpl.all(null);
+    List<Solubilisation> solubilisations = solubilisationService.all(null);
 
     assertEquals(0, solubilisations.size());
   }
@@ -180,14 +180,14 @@ public class SolubilisationServiceTest {
     solubilisation.setTreatmentSamples(solubilisedSamples);
     when(solubilisationActivityService.insert(any(Solubilisation.class))).thenReturn(activity);
 
-    solubilisationServiceImpl.insert(solubilisation);
+    solubilisationService.insert(solubilisation);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(solubilisationActivityService).insert(eq(solubilisation));
     verify(activityService).insert(eq(activity));
     assertNotNull(solubilisation.getId());
-    solubilisation = solubilisationServiceImpl.get(solubilisation.getId());
+    solubilisation = solubilisationService.get(solubilisation.getId());
     assertEquals(false, solubilisation.isDeleted());
     assertEquals(null, solubilisation.getDeletionType());
     assertEquals(null, solubilisation.getDeletionJustification());
@@ -222,14 +222,14 @@ public class SolubilisationServiceTest {
     solubilisation.setTreatmentSamples(solubilisedSamples);
     when(solubilisationActivityService.insert(any(Solubilisation.class))).thenReturn(activity);
 
-    solubilisationServiceImpl.insert(solubilisation);
+    solubilisationService.insert(solubilisation);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(solubilisationActivityService).insert(eq(solubilisation));
     verify(activityService).insert(eq(activity));
     assertNotNull(solubilisation.getId());
-    solubilisation = solubilisationServiceImpl.get(solubilisation.getId());
+    solubilisation = solubilisationService.get(solubilisation.getId());
     assertEquals(false, solubilisation.isDeleted());
     assertEquals(null, solubilisation.getDeletionType());
     assertEquals(null, solubilisation.getDeletionJustification());
@@ -255,13 +255,13 @@ public class SolubilisationServiceTest {
     when(solubilisationActivityService.undoErroneous(any(Solubilisation.class), any(String.class)))
         .thenReturn(activity);
 
-    solubilisationServiceImpl.undoErroneous(solubilisation, "undo unit test");
+    solubilisationService.undoErroneous(solubilisation, "undo unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(solubilisationActivityService).undoErroneous(eq(solubilisation), eq("undo unit test"));
     verify(activityService).insert(eq(activity));
-    solubilisation = solubilisationServiceImpl.get(solubilisation.getId());
+    solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, solubilisation.getDeletionType());
@@ -275,14 +275,14 @@ public class SolubilisationServiceTest {
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationServiceImpl.undoFailed(solubilisation, "fail unit test", false);
+    solubilisationService.undoFailed(solubilisation, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(solubilisationActivityService).undoFailed(eq(solubilisation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    solubilisation = solubilisationServiceImpl.get(solubilisation.getId());
+    solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());
@@ -298,14 +298,14 @@ public class SolubilisationServiceTest {
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationServiceImpl.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(solubilisationActivityService).undoFailed(eq(solubilisation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    solubilisation = solubilisationServiceImpl.get(solubilisation.getId());
+    solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());
@@ -327,14 +327,14 @@ public class SolubilisationServiceTest {
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationServiceImpl.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(solubilisationActivityService).undoFailed(eq(solubilisation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    solubilisation = solubilisationServiceImpl.get(solubilisation.getId());
+    solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());
@@ -362,14 +362,14 @@ public class SolubilisationServiceTest {
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationServiceImpl.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(solubilisationActivityService).undoFailed(eq(solubilisation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    Solubilisation test = solubilisationServiceImpl.get(solubilisation.getId());
+    Solubilisation test = solubilisationService.get(solubilisation.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
@@ -403,14 +403,14 @@ public class SolubilisationServiceTest {
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationServiceImpl.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(solubilisationActivityService).undoFailed(eq(solubilisation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    solubilisation = solubilisationServiceImpl.get(solubilisation.getId());
+    solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());
@@ -450,14 +450,14 @@ public class SolubilisationServiceTest {
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationServiceImpl.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(solubilisationActivityService).undoFailed(eq(solubilisation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    solubilisation = solubilisationServiceImpl.get(solubilisation.getId());
+    solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());

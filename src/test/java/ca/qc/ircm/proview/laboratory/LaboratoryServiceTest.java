@@ -51,7 +51,7 @@ import javax.persistence.PersistenceContext;
 public class LaboratoryServiceTest {
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(LaboratoryServiceTest.class);
-  private LaboratoryService laboratoryServiceImpl;
+  private LaboratoryService laboratoryService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -64,7 +64,7 @@ public class LaboratoryServiceTest {
    */
   @Before
   public void beforeTest() {
-    laboratoryServiceImpl =
+    laboratoryService =
         new LaboratoryService(entityManager, cacheFlusher, authorizationService);
   }
 
@@ -74,7 +74,7 @@ public class LaboratoryServiceTest {
 
   @Test
   public void get() throws Exception {
-    Laboratory laboratory = laboratoryServiceImpl.get(3L);
+    Laboratory laboratory = laboratoryService.get(3L);
 
     verify(authorizationService).checkLaboratoryReadPermission(laboratory);
     assertEquals((Long) 3L, laboratory.getId());
@@ -86,7 +86,7 @@ public class LaboratoryServiceTest {
 
   @Test
   public void get_Null() throws Exception {
-    Laboratory laboratory = laboratoryServiceImpl.get(null);
+    Laboratory laboratory = laboratoryService.get(null);
 
     assertNull(laboratory);
   }
@@ -99,7 +99,7 @@ public class LaboratoryServiceTest {
     laboratory.setOrganization("test_organization_2");
     laboratory.setName("test_group_2");
 
-    laboratoryServiceImpl.update(laboratory);
+    laboratoryService.update(laboratory);
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
@@ -114,7 +114,7 @@ public class LaboratoryServiceTest {
     entityManager.detach(laboratory);
     User user = entityManager.find(User.class, 5L);
 
-    laboratoryServiceImpl.addManager(laboratory, user);
+    laboratoryService.addManager(laboratory, user);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -133,7 +133,7 @@ public class LaboratoryServiceTest {
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
 
-    laboratoryServiceImpl.addManager(laboratory, user);
+    laboratoryService.addManager(laboratory, user);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -153,7 +153,7 @@ public class LaboratoryServiceTest {
     assertEquals(false, managers.contains(user));
     assertEquals(false, user.isActive());
 
-    laboratoryServiceImpl.addManager(laboratory, user);
+    laboratoryService.addManager(laboratory, user);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -173,7 +173,7 @@ public class LaboratoryServiceTest {
     List<User> managers = laboratory.getManagers();
     assertTrue(find(managers, user.getId()).isPresent());
 
-    laboratoryServiceImpl.addManager(laboratory, user);
+    laboratoryService.addManager(laboratory, user);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -189,7 +189,7 @@ public class LaboratoryServiceTest {
     User user = entityManager.find(User.class, 2L);
     entityManager.detach(user);
 
-    laboratoryServiceImpl.addManager(laboratory, user);
+    laboratoryService.addManager(laboratory, user);
   }
 
   @Test(expected = InvalidUserException.class)
@@ -199,7 +199,7 @@ public class LaboratoryServiceTest {
     User user = entityManager.find(User.class, 7L);
     entityManager.detach(user);
 
-    laboratoryServiceImpl.addManager(laboratory, user);
+    laboratoryService.addManager(laboratory, user);
   }
 
   @Test
@@ -209,7 +209,7 @@ public class LaboratoryServiceTest {
     User user = entityManager.find(User.class, 2L);
     entityManager.detach(user);
 
-    laboratoryServiceImpl.removeManager(laboratory, user);
+    laboratoryService.removeManager(laboratory, user);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -227,7 +227,7 @@ public class LaboratoryServiceTest {
     entityManager.detach(user);
 
     try {
-      laboratoryServiceImpl.removeManager(laboratory, user);
+      laboratoryService.removeManager(laboratory, user);
       fail("Expected UnmanagedLaboratoryException");
     } catch (UnmanagedLaboratoryException e) {
       // Ignore.
@@ -243,7 +243,7 @@ public class LaboratoryServiceTest {
     List<User> managers = laboratory.getManagers();
     assertTrue(find(managers, user.getId()).isPresent());
 
-    laboratoryServiceImpl.removeManager(laboratory, user);
+    laboratoryService.removeManager(laboratory, user);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -262,7 +262,7 @@ public class LaboratoryServiceTest {
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
 
-    laboratoryServiceImpl.removeManager(laboratory, user);
+    laboratoryService.removeManager(laboratory, user);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -278,6 +278,6 @@ public class LaboratoryServiceTest {
     User user = entityManager.find(User.class, 2L);
     entityManager.detach(user);
 
-    laboratoryServiceImpl.removeManager(laboratory, user);
+    laboratoryService.removeManager(laboratory, user);
   }
 }

@@ -63,7 +63,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class TransferServiceTest {
-  private TransferService transferServiceImpl;
+  private TransferService transferService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -85,7 +85,7 @@ public class TransferServiceTest {
    */
   @Before
   public void beforeTest() {
-    transferServiceImpl = new TransferService(entityManager, queryFactory, transferActivityService,
+    transferService = new TransferService(entityManager, queryFactory, transferActivityService,
         activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -103,7 +103,7 @@ public class TransferServiceTest {
 
   @Test
   public void get() {
-    Transfer transfer = transferServiceImpl.get(3L);
+    Transfer transfer = transferService.get(3L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 3L, transfer.getId());
@@ -128,7 +128,7 @@ public class TransferServiceTest {
 
   @Test
   public void get_Null() {
-    Transfer transfer = transferServiceImpl.get(null);
+    Transfer transfer = transferService.get(null);
 
     assertNull(transfer);
   }
@@ -137,7 +137,7 @@ public class TransferServiceTest {
   public void all() {
     Sample sample = new SubmissionSample(1L);
 
-    List<Transfer> transfers = transferServiceImpl.all(sample);
+    List<Transfer> transfers = transferService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, transfers.size());
@@ -147,7 +147,7 @@ public class TransferServiceTest {
 
   @Test
   public void all_Null() {
-    List<Transfer> transfers = transferServiceImpl.all(null);
+    List<Transfer> transfers = transferService.all(null);
 
     assertEquals(0, transfers.size());
   }
@@ -169,14 +169,14 @@ public class TransferServiceTest {
     transfer.setTreatmentSamples(sampleTransfers);
     when(transferActivityService.insert(any(Transfer.class))).thenReturn(activity);
 
-    transferServiceImpl.insert(transfer);
+    transferService.insert(transfer);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
     assertNotNull(transfer.getId());
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionType());
     assertEquals(null, transfer.getDeletionJustification());
@@ -215,13 +215,13 @@ public class TransferServiceTest {
     transfer.setTreatmentSamples(sampleTransfers);
     when(transferActivityService.insert(any(Transfer.class))).thenReturn(activity);
 
-    transferServiceImpl.insert(transfer);
+    transferService.insert(transfer);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionType());
@@ -259,13 +259,13 @@ public class TransferServiceTest {
     transfer.setTreatmentSamples(sampleTransfers);
     when(transferActivityService.insert(any(Transfer.class))).thenReturn(activity);
 
-    transferServiceImpl.insert(transfer);
+    transferService.insert(transfer);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionType());
@@ -303,13 +303,13 @@ public class TransferServiceTest {
     transfer.setTreatmentSamples(sampleTransfers);
     when(transferActivityService.insert(any(Transfer.class))).thenReturn(activity);
 
-    transferServiceImpl.insert(transfer);
+    transferService.insert(transfer);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionType());
@@ -337,14 +337,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoErroneous(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoErroneous(transfer, "undo unit test");
+    transferService.undoErroneous(transfer, "undo unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoErroneous(eq(transfer), eq("undo unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, transfer.getDeletionType());
@@ -366,14 +366,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoErroneous(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoErroneous(transfer, "undo unit test");
+    transferService.undoErroneous(transfer, "undo unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoErroneous(eq(transfer), eq("undo unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, transfer.getDeletionType());
@@ -399,7 +399,7 @@ public class TransferServiceTest {
     entityManager.detach(transfer);
 
     try {
-      transferServiceImpl.undoErroneous(transfer, "undo unit test");
+      transferService.undoErroneous(transfer, "undo unit test");
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
@@ -414,7 +414,7 @@ public class TransferServiceTest {
     entityManager.detach(transfer);
 
     try {
-      transferServiceImpl.undoErroneous(transfer, "undo unit test");
+      transferService.undoErroneous(transfer, "undo unit test");
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
@@ -429,7 +429,7 @@ public class TransferServiceTest {
     entityManager.detach(transfer);
 
     try {
-      transferServiceImpl.undoErroneous(transfer, "undo unit test");
+      transferService.undoErroneous(transfer, "undo unit test");
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
@@ -444,7 +444,7 @@ public class TransferServiceTest {
     entityManager.detach(transfer);
 
     try {
-      transferServiceImpl.undoErroneous(transfer, "undo unit test");
+      transferService.undoErroneous(transfer, "undo unit test");
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
@@ -460,14 +460,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", false);
+    transferService.undoFailed(transfer, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -485,14 +485,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", false);
+    transferService.undoFailed(transfer, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -512,14 +512,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -538,14 +538,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -567,14 +567,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -599,14 +599,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -631,14 +631,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -666,14 +666,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -701,14 +701,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -739,14 +739,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    transfer = transferServiceImpl.get(transfer.getId());
+    transfer = transferService.get(transfer.getId());
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
@@ -777,14 +777,14 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    Transfer test = transferServiceImpl.get(transfer.getId());
+    Transfer test = transferService.get(transfer.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
@@ -818,13 +818,13 @@ public class TransferServiceTest {
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    transferServiceImpl.undoFailed(transfer, "fail unit test", true);
+    transferService.undoFailed(transfer, "fail unit test", true);
 
     entityManager.flush();
     verify(transferActivityService).undoFailed(eq(transfer), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    Transfer test = transferServiceImpl.get(transfer.getId());
+    Transfer test = transferService.get(transfer.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());

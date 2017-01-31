@@ -36,7 +36,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class CacheFlusherTest {
-  private CacheFlusher cacheFlusherImpl;
+  private CacheFlusher cacheFlusher;
   @Mock
   private CachingSecurityManager securityManager;
   @Mock
@@ -49,7 +49,7 @@ public class CacheFlusherTest {
 
   @Before
   public void beforeTest() {
-    cacheFlusherImpl = new CacheFlusher(securityConfiguration);
+    cacheFlusher = new CacheFlusher(securityConfiguration);
     when(securityConfiguration.authorizationCacheName()).thenReturn(authorizationCacheName);
   }
 
@@ -59,7 +59,7 @@ public class CacheFlusherTest {
     when(securityManager.getCacheManager()).thenReturn(cacheManager);
     when(cacheManager.getCache(any())).thenReturn(cache);
 
-    cacheFlusherImpl.flushShiroCache();
+    cacheFlusher.flushShiroCache();
 
     verify(securityManager).getCacheManager();
     verify(securityConfiguration).authorizationCacheName();

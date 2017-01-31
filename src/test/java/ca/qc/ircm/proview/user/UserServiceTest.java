@@ -72,7 +72,7 @@ import javax.persistence.PersistenceContext;
 public class UserServiceTest {
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
-  private UserService userServiceImpl;
+  private UserService userService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -100,7 +100,7 @@ public class UserServiceTest {
   public void beforeTest() throws Throwable {
     SpringConfiguration springConfiguration = new SpringConfiguration();
     TemplateEngine templateEngine = springConfiguration.templateEngine();
-    userServiceImpl = new UserService(entityManager, authenticationService, templateEngine,
+    userService = new UserService(entityManager, authenticationService, templateEngine,
         emailService, cacheFlusher, applicationConfiguration, authorizationService);
     when(applicationConfiguration.getUrl(any(String.class))).thenAnswer(new Answer<String>() {
       @Override
@@ -141,7 +141,7 @@ public class UserServiceTest {
 
   @Test
   public void get_Id() throws Throwable {
-    User user = userServiceImpl.get(3L);
+    User user = userService.get(3L);
 
     verify(authorizationService).checkUserReadPermission(user);
     assertEquals((Long) 3L, user.getId());
@@ -172,14 +172,14 @@ public class UserServiceTest {
 
   @Test
   public void get_NullId() throws Throwable {
-    User user = userServiceImpl.get((Long) null);
+    User user = userService.get((Long) null);
 
     assertNull(user);
   }
 
   @Test
   public void get_Email() throws Throwable {
-    User user = userServiceImpl.get("benoit.coulombe@ircm.qc.ca");
+    User user = userService.get("benoit.coulombe@ircm.qc.ca");
 
     verify(authorizationService).checkUserReadPermission(user);
     assertEquals((Long) 3L, user.getId());
@@ -210,14 +210,14 @@ public class UserServiceTest {
 
   @Test
   public void get_NullEmail() throws Throwable {
-    User user = userServiceImpl.get((String) null);
+    User user = userService.get((String) null);
 
     assertNull(user);
   }
 
   @Test
   public void exists_Email_True() throws Throwable {
-    boolean exists = userServiceImpl.exists("christian.poitras@ircm.qc.ca");
+    boolean exists = userService.exists("christian.poitras@ircm.qc.ca");
 
     assertEquals(true, exists);
 
@@ -226,7 +226,7 @@ public class UserServiceTest {
 
   @Test
   public void exists_Email_False() throws Throwable {
-    boolean exists = userServiceImpl.exists("abc@ircm.qc.ca");
+    boolean exists = userService.exists("abc@ircm.qc.ca");
 
     assertEquals(false, exists);
 
@@ -235,56 +235,56 @@ public class UserServiceTest {
 
   @Test
   public void exists_Email_Null() throws Throwable {
-    boolean exists = userServiceImpl.exists(null);
+    boolean exists = userService.exists(null);
 
     assertEquals(false, exists);
   }
 
   @Test
   public void isManager_Robot() throws Throwable {
-    boolean manager = userServiceImpl.isManager("proview@ircm.qc.ca");
+    boolean manager = userService.isManager("proview@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Admin() throws Throwable {
-    boolean manager = userServiceImpl.isManager("christian.poitras@ircm.qc.ca");
+    boolean manager = userService.isManager("christian.poitras@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Manager() throws Throwable {
-    boolean manager = userServiceImpl.isManager("benoit.coulombe@ircm.qc.ca");
+    boolean manager = userService.isManager("benoit.coulombe@ircm.qc.ca");
 
     assertEquals(true, manager);
   }
 
   @Test
   public void isManager_NonManager() throws Throwable {
-    boolean manager = userServiceImpl.isManager("james.johnson@ircm.qc.ca");
+    boolean manager = userService.isManager("james.johnson@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Invalid() throws Throwable {
-    boolean manager = userServiceImpl.isManager("nicole.francis@ircm.qc.ca");
+    boolean manager = userService.isManager("nicole.francis@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Inactive() throws Throwable {
-    boolean manager = userServiceImpl.isManager("marie.trudel@ircm.qc.ca");
+    boolean manager = userService.isManager("marie.trudel@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Null() throws Throwable {
-    boolean manager = userServiceImpl.isManager(null);
+    boolean manager = userService.isManager(null);
 
     assertEquals(false, manager);
   }
@@ -295,7 +295,7 @@ public class UserServiceTest {
     UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyInvalid().inLaboratory(laboratory);
 
-    List<User> users = userServiceImpl.all(parameters);
+    List<User> users = userService.all(parameters);
 
     verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
     assertEquals(1, users.size());
@@ -307,7 +307,7 @@ public class UserServiceTest {
     UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyInvalid();
 
-    List<User> users = userServiceImpl.all(parameters);
+    List<User> users = userService.all(parameters);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, users.size());
@@ -321,7 +321,7 @@ public class UserServiceTest {
     UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyValid().inLaboratory(laboratory);
 
-    List<User> users = userServiceImpl.all(parameters);
+    List<User> users = userService.all(parameters);
 
     verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
     assertEquals(4, users.size());
@@ -336,7 +336,7 @@ public class UserServiceTest {
     UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyValid();
 
-    List<User> users = userServiceImpl.all(parameters);
+    List<User> users = userService.all(parameters);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(12, users.size());
@@ -359,7 +359,7 @@ public class UserServiceTest {
     UserFilterBuilder parameters = new UserFilterBuilder();
     parameters = parameters.onlyNonAdmin();
 
-    List<User> users = userServiceImpl.all(parameters);
+    List<User> users = userService.all(parameters);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(10, users.size());
@@ -377,7 +377,7 @@ public class UserServiceTest {
 
   @Test
   public void all_Null() throws Throwable {
-    List<User> users = userServiceImpl.all(null);
+    List<User> users = userService.all(null);
 
     authorizationService.checkAdminRole();
     assertEquals(14, users.size());
@@ -421,7 +421,7 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    userServiceImpl.register(user, "password", null, registerUserWebContext());
+    userService.register(user, "password", null, registerUserWebContext());
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -482,7 +482,7 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    userServiceImpl.register(user, "password", manager, registerUserWebContext());
+    userService.register(user, "password", manager, registerUserWebContext());
 
     entityManager.flush();
     verifyZeroInteractions(authorizationService);
@@ -568,7 +568,7 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    userServiceImpl.register(user, "password", manager, registerUserWebContext());
+    userService.register(user, "password", manager, registerUserWebContext());
 
     entityManager.flush();
     MessageResource resources =
@@ -616,7 +616,7 @@ public class UserServiceTest {
     user.setPhoneNumbers(phoneNumbers);
 
     try {
-      userServiceImpl.register(user, "password", manager, registerUserWebContext());
+      userService.register(user, "password", manager, registerUserWebContext());
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -648,7 +648,7 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    userServiceImpl.register(user, "password", null, registerUserWebContext());
+    userService.register(user, "password", null, registerUserWebContext());
 
     entityManager.flush();
     verifyZeroInteractions(authorizationService);
@@ -789,7 +789,7 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber2);
     user.setPhoneNumbers(phoneNumbers);
 
-    userServiceImpl.update(user, null);
+    userService.update(user, null);
 
     entityManager.flush();
     verify(authorizationService).checkUserWritePermission(user);
@@ -830,7 +830,7 @@ public class UserServiceTest {
     User user = entityManager.find(User.class, 4L);
     entityManager.detach(user);
 
-    userServiceImpl.update(user, "unit_test_password");
+    userService.update(user, "unit_test_password");
 
     entityManager.flush();
     verify(authorizationService).checkUserWritePasswordPermission(user);
@@ -850,7 +850,7 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userServiceImpl.validate(users, homeWebContext());
+    userService.validate(users, homeWebContext());
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
@@ -894,7 +894,7 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userServiceImpl.validate(users, homeWebContext());
+    userService.validate(users, homeWebContext());
 
     entityManager.flush();
     MessageResource resources =
@@ -925,7 +925,7 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userServiceImpl.activate(users);
+    userService.activate(users);
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
@@ -945,7 +945,7 @@ public class UserServiceTest {
     when(authorizationService.hasManagerRole(any(User.class))).thenReturn(true);
 
     try {
-      userServiceImpl.deactivate(users);
+      userService.deactivate(users);
       fail("Expected DeactivateManagerException");
     } catch (DeactivateManagerException e) {
       // Ignore.
@@ -960,7 +960,7 @@ public class UserServiceTest {
 
     Collection<User> users = new LinkedList<>();
     users.add(user);
-    userServiceImpl.deactivate(users);
+    userService.deactivate(users);
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
@@ -981,7 +981,7 @@ public class UserServiceTest {
     users.add(user);
 
     try {
-      userServiceImpl.delete(users);
+      userService.delete(users);
       fail("Expected DeleteValidUserException");
     } catch (DeleteValidUserException e) {
       // Ignore.
@@ -996,7 +996,7 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userServiceImpl.delete(users);
+    userService.delete(users);
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
@@ -1012,7 +1012,7 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userServiceImpl.delete(users);
+    userService.delete(users);
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());

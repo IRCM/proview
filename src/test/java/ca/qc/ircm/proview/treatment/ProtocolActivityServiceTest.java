@@ -37,7 +37,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ProtocolActivityServiceTest {
-  private ProtocolActivityService protocolActivityServiceImpl;
+  private ProtocolActivityService protocolActivityService;
   @Mock
   private AuthorizationService authorizationService;
   private User user;
@@ -47,7 +47,7 @@ public class ProtocolActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    protocolActivityServiceImpl = new ProtocolActivityService(authorizationService);
+    protocolActivityService = new ProtocolActivityService(authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -58,7 +58,7 @@ public class ProtocolActivityServiceTest {
     protocol.setId(123456L);
     protocol.setName("unit_test_digestion_protocol");
 
-    Activity activity = protocolActivityServiceImpl.insert(protocol);
+    Activity activity = protocolActivityService.insert(protocol);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("protocol", activity.getTableName());
@@ -74,7 +74,7 @@ public class ProtocolActivityServiceTest {
     protocol.setId(123456L);
     protocol.setName("unit_test_digestion_protocol");
 
-    Activity activity = protocolActivityServiceImpl.insert(protocol);
+    Activity activity = protocolActivityService.insert(protocol);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("protocol", activity.getTableName());

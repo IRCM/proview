@@ -39,7 +39,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SampleServiceTest {
-  private SampleService sampleServiceImpl;
+  private SampleService sampleService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -52,12 +52,12 @@ public class SampleServiceTest {
    */
   @Before
   public void beforeTest() {
-    sampleServiceImpl = new SampleService(entityManager, queryFactory, authorizationService);
+    sampleService = new SampleService(entityManager, queryFactory, authorizationService);
   }
 
   @Test
   public void get_SubmissionSample_Gel() throws Throwable {
-    Sample sample = sampleServiceImpl.get(1L);
+    Sample sample = sampleService.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof SubmissionSample);
@@ -74,7 +74,7 @@ public class SampleServiceTest {
 
   @Test
   public void get_SubmissionSample() throws Throwable {
-    Sample sample = sampleServiceImpl.get(442L);
+    Sample sample = sampleService.get(442L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof SubmissionSample);
@@ -93,7 +93,7 @@ public class SampleServiceTest {
 
   @Test
   public void get_Control() throws Throwable {
-    Sample sample = sampleServiceImpl.get(444L);
+    Sample sample = sampleService.get(444L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof Control);
@@ -111,7 +111,7 @@ public class SampleServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Sample sample = sampleServiceImpl.get(null);
+    Sample sample = sampleService.get(null);
 
     assertNull(sample);
   }
@@ -121,7 +121,7 @@ public class SampleServiceTest {
     Sample sample = entityManager.find(Sample.class, 442L);
     when(authorizationService.hasAdminRole()).thenReturn(false);
 
-    boolean linkedToResults = sampleServiceImpl.linkedToResults(sample);
+    boolean linkedToResults = sampleService.linkedToResults(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(true, linkedToResults);
@@ -132,7 +132,7 @@ public class SampleServiceTest {
     Sample sample = entityManager.find(Sample.class, 447L);
     when(authorizationService.hasAdminRole()).thenReturn(false);
 
-    boolean linkedToResults = sampleServiceImpl.linkedToResults(sample);
+    boolean linkedToResults = sampleService.linkedToResults(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(false, linkedToResults);
@@ -143,7 +143,7 @@ public class SampleServiceTest {
     Sample sample = new SubmissionSample(445L);
     when(authorizationService.hasAdminRole()).thenReturn(true);
 
-    boolean linkedToResults = sampleServiceImpl.linkedToResults(sample);
+    boolean linkedToResults = sampleService.linkedToResults(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(true, linkedToResults);
@@ -154,7 +154,7 @@ public class SampleServiceTest {
     Sample sample = new SubmissionSample(445L);
     when(authorizationService.hasAdminRole()).thenReturn(false);
 
-    boolean linkedToResults = sampleServiceImpl.linkedToResults(sample);
+    boolean linkedToResults = sampleService.linkedToResults(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(false, linkedToResults);
@@ -162,7 +162,7 @@ public class SampleServiceTest {
 
   @Test
   public void linkedToResults_Null() throws Throwable {
-    boolean linkedToResults = sampleServiceImpl.linkedToResults(null);
+    boolean linkedToResults = sampleService.linkedToResults(null);
 
     assertEquals(false, linkedToResults);
   }

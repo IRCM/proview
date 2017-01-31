@@ -72,7 +72,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class MsAnalysisServiceTest {
-  private MsAnalysisService msAnalysisServiceImpl;
+  private MsAnalysisService msAnalysisService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -95,7 +95,7 @@ public class MsAnalysisServiceTest {
    */
   @Before
   public void beforeTest() {
-    msAnalysisServiceImpl = new MsAnalysisService(entityManager, queryFactory,
+    msAnalysisService = new MsAnalysisService(entityManager, queryFactory,
         msAnalysisActivityService, activityService, authorizationService);
   }
 
@@ -120,7 +120,7 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void get() {
-    MsAnalysis msAnalysis = msAnalysisServiceImpl.get(1L);
+    MsAnalysis msAnalysis = msAnalysisService.get(1L);
 
     verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
     assertNotNull(msAnalysis);
@@ -137,14 +137,14 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void get_Null() {
-    MsAnalysis msAnalysis = msAnalysisServiceImpl.get((Long) null);
+    MsAnalysis msAnalysis = msAnalysisService.get((Long) null);
 
     assertNull(msAnalysis);
   }
 
   @Test
   public void get_Acquisition() {
-    MsAnalysis msAnalysis = msAnalysisServiceImpl.get(new Acquisition(1L));
+    MsAnalysis msAnalysis = msAnalysisService.get(new Acquisition(1L));
 
     verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
     assertNotNull(msAnalysis);
@@ -161,7 +161,7 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void get_Acquisition_Null() {
-    MsAnalysis msAnalysis = msAnalysisServiceImpl.get((Acquisition) null);
+    MsAnalysis msAnalysis = msAnalysisService.get((Acquisition) null);
 
     assertNull(msAnalysis);
   }
@@ -170,7 +170,7 @@ public class MsAnalysisServiceTest {
   public void all() {
     SubmissionSample sample = new SubmissionSample(442L);
 
-    List<MsAnalysis> msAnalyses = msAnalysisServiceImpl.all(sample);
+    List<MsAnalysis> msAnalyses = msAnalysisService.all(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(1, msAnalyses.size());
@@ -179,7 +179,7 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void all_SampleNull() {
-    List<MsAnalysis> msAnalyses = msAnalysisServiceImpl.all((Sample) null);
+    List<MsAnalysis> msAnalyses = msAnalysisService.all((Sample) null);
 
     assertEquals(0, msAnalyses.size());
   }
@@ -188,7 +188,7 @@ public class MsAnalysisServiceTest {
   public void all_Submission() {
     Submission submission = new Submission(155L);
 
-    List<MsAnalysis> msAnalyses = msAnalysisServiceImpl.all(submission);
+    List<MsAnalysis> msAnalyses = msAnalysisService.all(submission);
 
     verify(authorizationService).checkSubmissionReadPermission(submission);
     assertEquals(1, msAnalyses.size());
@@ -197,7 +197,7 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void all_SubmissionNull() {
-    List<MsAnalysis> msAnalyses = msAnalysisServiceImpl.all((Submission) null);
+    List<MsAnalysis> msAnalyses = msAnalysisService.all((Submission) null);
 
     assertEquals(0, msAnalyses.size());
   }
@@ -207,7 +207,7 @@ public class MsAnalysisServiceTest {
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 12L);
 
     Map<VerificationType, Map<String, Boolean>> checks =
-        msAnalysisServiceImpl.verifications(msAnalysis);
+        msAnalysisService.verifications(msAnalysis);
 
     verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
     assertTrue(checks.get(VerificationType.SAMPLE).get("acquisitionFile"));
@@ -248,7 +248,7 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void verifications_Null() {
-    Map<VerificationType, Map<String, Boolean>> checks = msAnalysisServiceImpl.verifications(null);
+    Map<VerificationType, Map<String, Boolean>> checks = msAnalysisService.verifications(null);
 
     assertEquals(0, checks.size());
   }
@@ -313,7 +313,7 @@ public class MsAnalysisServiceTest {
     when(msAnalysisActivityService.insert(any(MsAnalysisAggregate.class))).thenReturn(activity);
 
     try {
-      msAnalysisServiceImpl.insert(insertAggregate);
+      msAnalysisService.insert(insertAggregate);
     } catch (SamplesFromMultipleUserException e) {
       fail("SamplesFromMultipleUserException not expected");
     }
@@ -331,7 +331,7 @@ public class MsAnalysisServiceTest {
     assertTrue(before.isBefore(msAnalysis.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(msAnalysis.getInsertTime()));
-    verifications = msAnalysisServiceImpl.verifications(msAnalysis);
+    verifications = msAnalysisService.verifications(msAnalysis);
     assertTrue(verifications.get(VerificationType.INSTRUMENT).get("nitrogenQuantity"));
     assertTrue(verifications.get(VerificationType.INSTRUMENT).get("calibration"));
     assertTrue(verifications.get(VerificationType.INSTRUMENT).get("heliumQuantity"));
@@ -440,7 +440,7 @@ public class MsAnalysisServiceTest {
     };
 
     try {
-      msAnalysisServiceImpl.insert(insertAggregate);
+      msAnalysisService.insert(insertAggregate);
       fail("Expected SamplesFromMultipleUserException");
     } catch (SamplesFromMultipleUserException e) {
       // Ignore.
@@ -517,7 +517,7 @@ public class MsAnalysisServiceTest {
       }
     };
     try {
-      msAnalysisServiceImpl.insert(insertAggregate);
+      msAnalysisService.insert(insertAggregate);
     } catch (SamplesFromMultipleUserException e) {
       fail("SamplesFromMultipleUserException not expected");
     }
@@ -530,7 +530,7 @@ public class MsAnalysisServiceTest {
     when(msAnalysisActivityService.undoErroneous(any(MsAnalysis.class), any(String.class)))
         .thenReturn(activity);
 
-    msAnalysisServiceImpl.undoErroneous(msAnalysis, "undo unit test");
+    msAnalysisService.undoErroneous(msAnalysis, "undo unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -550,7 +550,7 @@ public class MsAnalysisServiceTest {
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisServiceImpl.undoFailed(msAnalysis, "fail unit test", false);
+    msAnalysisService.undoFailed(msAnalysis, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -573,7 +573,7 @@ public class MsAnalysisServiceTest {
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisServiceImpl.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -599,7 +599,7 @@ public class MsAnalysisServiceTest {
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisServiceImpl.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -628,7 +628,7 @@ public class MsAnalysisServiceTest {
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisServiceImpl.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -660,7 +660,7 @@ public class MsAnalysisServiceTest {
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisServiceImpl.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -695,7 +695,7 @@ public class MsAnalysisServiceTest {
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisServiceImpl.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(msAnalysisActivityService).undoFailed(eq(msAnalysis), eq("fail unit test"),

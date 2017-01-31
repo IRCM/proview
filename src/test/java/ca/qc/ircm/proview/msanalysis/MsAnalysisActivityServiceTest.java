@@ -56,7 +56,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class MsAnalysisActivityServiceTest {
-  private MsAnalysisActivityService msAnalysisActivityServiceImpl;
+  private MsAnalysisActivityService msAnalysisActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -68,7 +68,7 @@ public class MsAnalysisActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    msAnalysisActivityServiceImpl =
+    msAnalysisActivityService =
         new MsAnalysisActivityService(entityManager, authorizationService);
     realMsAnalysisVerificationService = new MsAnalysisVerificationService(true);
   }
@@ -104,7 +104,7 @@ public class MsAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity = msAnalysisActivityServiceImpl.insert(new MsAnalysisAggregate() {
+    Activity activity = msAnalysisActivityService.insert(new MsAnalysisAggregate() {
       @Override
       public MsAnalysis getMsAnalysis() {
         return msAnalysis;
@@ -145,7 +145,7 @@ public class MsAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity = msAnalysisActivityServiceImpl.undoErroneous(msAnalysis, "unit_test");
+    Activity activity = msAnalysisActivityService.undoErroneous(msAnalysis, "unit_test");
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.DELETE, activity.getActionType());
@@ -162,7 +162,7 @@ public class MsAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity = msAnalysisActivityServiceImpl.undoFailed(msAnalysis, "unit_test", null);
+    Activity activity = msAnalysisActivityService.undoFailed(msAnalysis, "unit_test", null);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.DELETE, activity.getActionType());
@@ -185,7 +185,7 @@ public class MsAnalysisActivityServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     Activity activity =
-        msAnalysisActivityServiceImpl.undoFailed(msAnalysis, "unit_test", bannedContainers);
+        msAnalysisActivityService.undoFailed(msAnalysis, "unit_test", bannedContainers);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.DELETE, activity.getActionType());
@@ -228,7 +228,7 @@ public class MsAnalysisActivityServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     Activity activity =
-        msAnalysisActivityServiceImpl.undoFailed(msAnalysis, reason, bannedContainers);
+        msAnalysisActivityService.undoFailed(msAnalysis, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

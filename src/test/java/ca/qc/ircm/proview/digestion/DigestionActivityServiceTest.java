@@ -49,7 +49,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DigestionActivityServiceTest {
-  private DigestionActivityService digestionActivityServiceImpl;
+  private DigestionActivityService digestionActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -61,7 +61,7 @@ public class DigestionActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    digestionActivityServiceImpl =
+    digestionActivityService =
         new DigestionActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -82,7 +82,7 @@ public class DigestionActivityServiceTest {
     digestion.setProtocol(protocol);
     digestion.setTreatmentSamples(digestedSamples);
 
-    Activity activity = digestionActivityServiceImpl.insert(digestion);
+    Activity activity = digestionActivityService.insert(digestion);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -96,7 +96,7 @@ public class DigestionActivityServiceTest {
   public void undoErroneous() {
     Digestion digestion = new Digestion(6L);
 
-    Activity activity = digestionActivityServiceImpl.undoErroneous(digestion, "unit_test");
+    Activity activity = digestionActivityService.undoErroneous(digestion, "unit_test");
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -110,7 +110,7 @@ public class DigestionActivityServiceTest {
   public void undoFailed_NoBan() {
     Digestion digestion = new Digestion(6L);
 
-    Activity activity = digestionActivityServiceImpl.undoFailed(digestion, "unit_test", null);
+    Activity activity = digestionActivityService.undoFailed(digestion, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -130,7 +130,7 @@ public class DigestionActivityServiceTest {
     bannedContainers.add(spot);
 
     Activity activity =
-        digestionActivityServiceImpl.undoFailed(digestion, "unit_test", bannedContainers);
+        digestionActivityService.undoFailed(digestion, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -170,7 +170,7 @@ public class DigestionActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     Activity activity =
-        digestionActivityServiceImpl.undoFailed(digestion, reason, bannedContainers);
+        digestionActivityService.undoFailed(digestion, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

@@ -39,7 +39,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ContaminantServiceTest {
-  private ContaminantService contaminantServiceImpl;
+  private ContaminantService contaminantService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -51,13 +51,13 @@ public class ContaminantServiceTest {
 
   @Before
   public void beforeTest() {
-    contaminantServiceImpl =
+    contaminantService =
         new ContaminantService(entityManager, queryFactory, authorizationService);
   }
 
   @Test
   public void get() {
-    Contaminant contaminant = contaminantServiceImpl.get(2L);
+    Contaminant contaminant = contaminantService.get(2L);
 
     verify(authorizationService).checkSampleReadPermission(sampleCaptor.capture());
     assertEquals((Long) 445L, sampleCaptor.getValue().getId());
@@ -69,7 +69,7 @@ public class ContaminantServiceTest {
 
   @Test
   public void get_Null() {
-    Contaminant contaminant = contaminantServiceImpl.get(null);
+    Contaminant contaminant = contaminantService.get(null);
 
     assertNull(contaminant);
   }

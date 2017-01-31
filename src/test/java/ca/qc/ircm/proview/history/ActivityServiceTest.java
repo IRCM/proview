@@ -69,7 +69,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ActivityServiceTest {
-  private ActivityService activityServiceImpl;
+  private ActivityService activityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -79,7 +79,7 @@ public class ActivityServiceTest {
 
   @Before
   public void beforeTest() {
-    activityServiceImpl = create(false);
+    activityService = create(false);
   }
 
   private ActivityService create(boolean useFailsafeDescription) {
@@ -100,7 +100,7 @@ public class ActivityServiceTest {
   public void getRecord_Sample() {
     Activity activity = entityManager.find(Activity.class, 5549L);
 
-    Object record = activityServiceImpl.getRecord(activity);
+    Object record = activityService.getRecord(activity);
 
     assertTrue(record instanceof Sample);
     Sample sample = (Sample) record;
@@ -111,7 +111,7 @@ public class ActivityServiceTest {
   public void getRecord_Submission() {
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    Object record = activityServiceImpl.getRecord(activity);
+    Object record = activityService.getRecord(activity);
 
     assertTrue(record instanceof Submission);
     Submission submission = (Submission) record;
@@ -122,7 +122,7 @@ public class ActivityServiceTest {
   public void getRecord_Plate() {
     Activity activity = entityManager.find(Activity.class, 5714L);
 
-    Object record = activityServiceImpl.getRecord(activity);
+    Object record = activityService.getRecord(activity);
 
     assertTrue(record instanceof Plate);
     Plate plate = (Plate) record;
@@ -133,7 +133,7 @@ public class ActivityServiceTest {
   public void getRecord_Protocol() {
     Activity activity = entityManager.find(Activity.class, 5545L);
 
-    Object record = activityServiceImpl.getRecord(activity);
+    Object record = activityService.getRecord(activity);
 
     assertTrue(record instanceof Protocol);
     Protocol protocol = (Protocol) record;
@@ -144,7 +144,7 @@ public class ActivityServiceTest {
   public void getRecord_Treatment() {
     Activity activity = entityManager.find(Activity.class, 5550L);
 
-    Object record = activityServiceImpl.getRecord(activity);
+    Object record = activityService.getRecord(activity);
 
     assertTrue(record instanceof Treatment);
     Treatment<?> treatment = (Treatment<?>) record;
@@ -155,7 +155,7 @@ public class ActivityServiceTest {
   public void getRecord_MsAnalysis() {
     Activity activity = entityManager.find(Activity.class, 5551L);
 
-    Object record = activityServiceImpl.getRecord(activity);
+    Object record = activityService.getRecord(activity);
 
     assertTrue(record instanceof MsAnalysis);
     MsAnalysis msAnalysis = (MsAnalysis) record;
@@ -166,7 +166,7 @@ public class ActivityServiceTest {
   public void getRecord_MascotFile() {
     Activity activity = entityManager.find(Activity.class, 5567L);
 
-    Object record = activityServiceImpl.getRecord(activity);
+    Object record = activityService.getRecord(activity);
 
     assertTrue(record instanceof AcquisitionMascotFile);
     AcquisitionMascotFile acquisitionMascotFile = (AcquisitionMascotFile) record;
@@ -177,7 +177,7 @@ public class ActivityServiceTest {
   public void getRecord_DataAnalysis() {
     Activity activity = entityManager.find(Activity.class, 5552L);
 
-    Object record = activityServiceImpl.getRecord(activity);
+    Object record = activityService.getRecord(activity);
 
     assertTrue(record instanceof DataAnalysis);
     DataAnalysis dataAnalysis = (DataAnalysis) record;
@@ -186,7 +186,7 @@ public class ActivityServiceTest {
 
   @Test
   public void getRecord_Null() {
-    Object record = activityServiceImpl.getRecord(null);
+    Object record = activityService.getRecord(null);
 
     assertNull(record);
   }
@@ -198,7 +198,7 @@ public class ActivityServiceTest {
     parameters.tableName("submission");
     parameters.recordId(1L);
 
-    List<Activity> activities = activityServiceImpl.search(parameters.build());
+    List<Activity> activities = activityService.search(parameters.build());
 
     verify(authorizationService).checkAdminRole();
     assertFalse(activities.isEmpty());
@@ -215,7 +215,7 @@ public class ActivityServiceTest {
 
   @Test
   public void search_Null() throws Exception {
-    List<Activity> activities = activityServiceImpl.search(null);
+    List<Activity> activities = activityService.search(null);
 
     assertTrue(activities.isEmpty());
   }
@@ -224,7 +224,7 @@ public class ActivityServiceTest {
   public void allInsertActivities_Sample() throws Exception {
     Sample sample = new SubmissionSample(442L);
 
-    List<Activity> activities = activityServiceImpl.allInsertActivities(sample);
+    List<Activity> activities = activityService.allInsertActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     assertFalse(activities.isEmpty());
@@ -242,7 +242,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allInsertActivities_NullSample() throws Exception {
-    List<Activity> activities = activityServiceImpl.allInsertActivities((Sample) null);
+    List<Activity> activities = activityService.allInsertActivities((Sample) null);
 
     assertTrue(activities.isEmpty());
   }
@@ -251,7 +251,7 @@ public class ActivityServiceTest {
   public void allInsertActivities_Plate() throws Exception {
     Plate plate = new Plate(26L);
 
-    List<Activity> activities = activityServiceImpl.allInsertActivities(plate);
+    List<Activity> activities = activityService.allInsertActivities(plate);
 
     verify(authorizationService).checkAdminRole();
     assertFalse(activities.isEmpty());
@@ -269,7 +269,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allInsertActivities_NullPlate() throws Exception {
-    List<Activity> activities = activityServiceImpl.allInsertActivities((Plate) null);
+    List<Activity> activities = activityService.allInsertActivities((Plate) null);
 
     assertTrue(activities.isEmpty());
   }
@@ -278,7 +278,7 @@ public class ActivityServiceTest {
   public void allUpdateActivities() throws Exception {
     SubmissionSample sample = new SubmissionSample(442L);
 
-    List<Activity> activities = activityServiceImpl.allUpdateActivities(sample);
+    List<Activity> activities = activityService.allUpdateActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     assertFalse(activities.isEmpty());
@@ -303,7 +303,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allUpdateActivities_Null() throws Exception {
-    List<Activity> activities = activityServiceImpl.allUpdateActivities(null);
+    List<Activity> activities = activityService.allUpdateActivities(null);
 
     assertTrue(activities.isEmpty());
   }
@@ -312,7 +312,7 @@ public class ActivityServiceTest {
   public void allUpdateSpotActivities() throws Exception {
     Plate plate = new Plate(26L);
 
-    List<Activity> activities = activityServiceImpl.allUpdateSpotActivities(plate);
+    List<Activity> activities = activityService.allUpdateSpotActivities(plate);
 
     verify(authorizationService).checkAdminRole();
     // Ban.
@@ -337,7 +337,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allUpdateSpotActivities_Null() throws Exception {
-    List<Activity> activities = activityServiceImpl.allUpdateSpotActivities(null);
+    List<Activity> activities = activityService.allUpdateSpotActivities(null);
 
     assertTrue(activities.isEmpty());
   }
@@ -346,7 +346,7 @@ public class ActivityServiceTest {
   public void allTreatmentActivities_Sample_Digestion() throws Exception {
     Sample sample = new SubmissionSample(559L);
 
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
+    List<Activity> activities = activityService.allTreatmentActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     Activity activity = activities.get(activities.size() - 1);
@@ -365,7 +365,7 @@ public class ActivityServiceTest {
   public void allTreatmentActivities_Sample_Dilution() throws Exception {
     Sample sample = new SubmissionSample(569L);
 
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
+    List<Activity> activities = activityService.allTreatmentActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     Activity activity = activities.get(activities.size() - 1);
@@ -384,7 +384,7 @@ public class ActivityServiceTest {
   public void allTreatmentActivities_Sample_Enrichment() throws Exception {
     Sample sample = new SubmissionSample(579L);
 
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
+    List<Activity> activities = activityService.allTreatmentActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     Activity activity = activities.get(activities.size() - 1);
@@ -403,7 +403,7 @@ public class ActivityServiceTest {
   public void allTreatmentActivities_Sample_Solubilisation() throws Exception {
     Sample sample = new SubmissionSample(589L);
 
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
+    List<Activity> activities = activityService.allTreatmentActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     Activity activity = activities.get(activities.size() - 1);
@@ -422,7 +422,7 @@ public class ActivityServiceTest {
   public void allTreatmentActivities_Sample_StandardAdition() throws Exception {
     Sample sample = new SubmissionSample(599L);
 
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
+    List<Activity> activities = activityService.allTreatmentActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     Activity activity = activities.get(activities.size() - 1);
@@ -441,7 +441,7 @@ public class ActivityServiceTest {
   public void allTreatmentActivities_Sample_Fractionation() throws Exception {
     Sample sample = new SubmissionSample(628L);
 
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
+    List<Activity> activities = activityService.allTreatmentActivities(sample);
 
     Activity activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -473,7 +473,7 @@ public class ActivityServiceTest {
   public void allTreatmentActivities_Sample_Transfer() throws Exception {
     Sample sample = new SubmissionSample(627L);
 
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities(sample);
+    List<Activity> activities = activityService.allTreatmentActivities(sample);
 
     Activity activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -496,7 +496,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allTreatmentActivities_Sample_Null() throws Exception {
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities((Sample) null);
+    List<Activity> activities = activityService.allTreatmentActivities((Sample) null);
 
     assertEquals(0, activities.size());
   }
@@ -505,7 +505,7 @@ public class ActivityServiceTest {
   public void allTreatmentActivities_Plate() throws Exception {
     Plate plate = new Plate(26L);
 
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities(plate);
+    List<Activity> activities = activityService.allTreatmentActivities(plate);
 
     verify(authorizationService).checkAdminRole();
     // Transfer.
@@ -548,7 +548,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allTreatmentActivities_Plate_Null() throws Exception {
-    List<Activity> activities = activityServiceImpl.allTreatmentActivities((Plate) null);
+    List<Activity> activities = activityService.allTreatmentActivities((Plate) null);
 
     assertEquals(0, activities.size());
   }
@@ -557,7 +557,7 @@ public class ActivityServiceTest {
   public void allMsAnalysisActivities_Sample() throws Exception {
     Sample sample = new SubmissionSample(627L);
 
-    List<Activity> activities = activityServiceImpl.allMsAnalysisActivities(sample);
+    List<Activity> activities = activityService.allMsAnalysisActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     Activity activity = activities.get(0);
@@ -581,7 +581,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allMsAnalysisActivities_Sample_Null() throws Exception {
-    List<Activity> activities = activityServiceImpl.allMsAnalysisActivities((Sample) null);
+    List<Activity> activities = activityService.allMsAnalysisActivities((Sample) null);
 
     assertEquals(0, activities.size());
   }
@@ -590,7 +590,7 @@ public class ActivityServiceTest {
   public void allMsAnalysisActivities_Plate() throws Exception {
     Plate plate = new Plate(115L);
 
-    List<Activity> activities = activityServiceImpl.allMsAnalysisActivities(plate);
+    List<Activity> activities = activityService.allMsAnalysisActivities(plate);
 
     verify(authorizationService).checkAdminRole();
     Activity activity = find(activities, 5829L);
@@ -614,7 +614,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allMsAnalysisActivities_Plate_Null() throws Exception {
-    List<Activity> activities = activityServiceImpl.allMsAnalysisActivities((Plate) null);
+    List<Activity> activities = activityService.allMsAnalysisActivities((Plate) null);
 
     assertEquals(0, activities.size());
   }
@@ -623,7 +623,7 @@ public class ActivityServiceTest {
   public void allDataAnalysisActivities_Insert() throws Exception {
     Sample sample = new SubmissionSample(442L);
 
-    List<Activity> activities = activityServiceImpl.allDataAnalysisActivities(sample);
+    List<Activity> activities = activityService.allDataAnalysisActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     Activity activity = activities.get(activities.size() - 1);
@@ -649,7 +649,7 @@ public class ActivityServiceTest {
   public void allDataAnalysisActivities_Update() throws Exception {
     Sample sample = new SubmissionSample(1L);
 
-    List<Activity> activities = activityServiceImpl.allDataAnalysisActivities(sample);
+    List<Activity> activities = activityService.allDataAnalysisActivities(sample);
 
     Activity activity = activities.get(activities.size() - 2);
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -726,7 +726,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allDataAnalysisActivities_Null() throws Exception {
-    List<Activity> activities = activityServiceImpl.allDataAnalysisActivities(null);
+    List<Activity> activities = activityService.allDataAnalysisActivities(null);
 
     assertEquals(0, activities.size());
   }
@@ -735,7 +735,7 @@ public class ActivityServiceTest {
   public void allMascotFileActivities() {
     Sample sample = new SubmissionSample(442L);
 
-    List<Activity> activities = activityServiceImpl.allMascotFileActivities(sample);
+    List<Activity> activities = activityService.allMascotFileActivities(sample);
 
     verify(authorizationService).checkAdminRole();
     Activity activity = activities.get(0);
@@ -759,7 +759,7 @@ public class ActivityServiceTest {
 
   @Test
   public void allMascotFileActivities_Null() throws Exception {
-    List<Activity> activities = activityServiceImpl.allMascotFileActivities(null);
+    List<Activity> activities = activityService.allMascotFileActivities(null);
 
     assertEquals(0, activities.size());
   }
@@ -769,7 +769,7 @@ public class ActivityServiceTest {
     Sample sample = entityManager.find(Sample.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(description);
@@ -780,7 +780,7 @@ public class ActivityServiceTest {
     Sample sample = entityManager.find(Sample.class, 444L);
     Activity activity = entityManager.find(Activity.class, 5549L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(description);
@@ -791,7 +791,7 @@ public class ActivityServiceTest {
     Sample sample = entityManager.find(Sample.class, 559L);
     Activity activity = entityManager.find(Activity.class, 5635L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(description);
@@ -801,9 +801,9 @@ public class ActivityServiceTest {
   public void sampleDescription_Solubilisation_Insert() {
     Sample sample = entityManager.find(Sample.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5550L);
-    activity = find(activityServiceImpl.allTreatmentActivities(sample), 5550L);
+    activity = find(activityService.allTreatmentActivities(sample), 5550L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -813,9 +813,9 @@ public class ActivityServiceTest {
   public void sampleDescription_Dilution_Insert() {
     Sample sample = entityManager.find(Sample.class, 442L);
     Activity activity = entityManager.find(Activity.class, 5561L);
-    activity = find(activityServiceImpl.allTreatmentActivities(sample), 5561L);
+    activity = find(activityService.allTreatmentActivities(sample), 5561L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -825,9 +825,9 @@ public class ActivityServiceTest {
   public void sampleDescription_Digestion_Insert() {
     Sample sample = entityManager.find(Sample.class, 444L);
     Activity activity = entityManager.find(Activity.class, 5563L);
-    activity = find(activityServiceImpl.allTreatmentActivities(sample), 5563L);
+    activity = find(activityService.allTreatmentActivities(sample), 5563L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -837,9 +837,9 @@ public class ActivityServiceTest {
   public void sampleDescription_Enrichment_Insert() {
     Sample sample = entityManager.find(Sample.class, 444L);
     Activity activity = entityManager.find(Activity.class, 5564L);
-    activity = find(activityServiceImpl.allTreatmentActivities(sample), 5564L);
+    activity = find(activityService.allTreatmentActivities(sample), 5564L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -849,9 +849,9 @@ public class ActivityServiceTest {
   public void sampleDescription_StandardAddition_Insert() {
     Sample sample = entityManager.find(Sample.class, 444L);
     Activity activity = entityManager.find(Activity.class, 5562L);
-    activity = find(activityServiceImpl.allTreatmentActivities(sample), 5562L);
+    activity = find(activityService.allTreatmentActivities(sample), 5562L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -861,9 +861,9 @@ public class ActivityServiceTest {
   public void sampleDescription_Fractionation_Insert() {
     Sample sample = entityManager.find(Sample.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5557L);
-    activity = find(activityServiceImpl.allTreatmentActivities(sample), 5557L);
+    activity = find(activityService.allTreatmentActivities(sample), 5557L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -873,9 +873,9 @@ public class ActivityServiceTest {
   public void sampleDescription_Transfer_Insert() {
     Sample sample = entityManager.find(Sample.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5558L);
-    activity = find(activityServiceImpl.allTreatmentActivities(sample), 5558L);
+    activity = find(activityService.allTreatmentActivities(sample), 5558L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -885,9 +885,9 @@ public class ActivityServiceTest {
   public void sampleDescription_MsAnalysis_Insert() {
     Sample sample = entityManager.find(Sample.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5544L);
-    activity = find(activityServiceImpl.allMsAnalysisActivities(sample), 5544L);
+    activity = find(activityService.allMsAnalysisActivities(sample), 5544L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -897,9 +897,9 @@ public class ActivityServiceTest {
   public void sampleDescription_Mascot_Update() {
     Sample sample = entityManager.find(Sample.class, 442L);
     Activity activity = entityManager.find(Activity.class, 5555L);
-    activity = find(activityServiceImpl.allMascotFileActivities(sample), 5555L);
+    activity = find(activityService.allMascotFileActivities(sample), 5555L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -909,9 +909,9 @@ public class ActivityServiceTest {
   public void sampleDescription_DataAnalysis_Insert() {
     Sample sample = entityManager.find(Sample.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5552L);
-    activity = find(activityServiceImpl.allDataAnalysisActivities(sample), 5552L);
+    activity = find(activityService.allDataAnalysisActivities(sample), 5552L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -919,12 +919,12 @@ public class ActivityServiceTest {
 
   @Test
   public void sampleDescription_Failsafe() {
-    activityServiceImpl = create(true);
+    activityService = create(true);
     Sample sample = entityManager.find(Sample.class, 444L);
     Activity activity = entityManager.find(Activity.class, 5549L);
     activity.setActionType(ActionType.DELETE);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(description);
@@ -936,7 +936,7 @@ public class ActivityServiceTest {
     Activity activity = entityManager.find(Activity.class, 5549L);
     activity.setActionType(ActionType.DELETE);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService).checkAdminRole();
     assertNull(description);
@@ -946,9 +946,9 @@ public class ActivityServiceTest {
   public void sampleDescription_DataAnalysis_Update() {
     Sample sample = entityManager.find(Sample.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5553L);
-    activity = find(activityServiceImpl.allDataAnalysisActivities(sample), 5553L);
+    activity = find(activityService.allDataAnalysisActivities(sample), 5553L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
 
     verify(authorizationService, times(2)).checkAdminRole();
     assertNotNull(description);
@@ -958,7 +958,7 @@ public class ActivityServiceTest {
   public void sampleDescription_NullSample() throws Exception {
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityServiceImpl.sampleDescription(null, activity, Locale.CANADA);
+    String description = activityService.sampleDescription(null, activity, Locale.CANADA);
 
     assertNull(description);
   }
@@ -967,7 +967,7 @@ public class ActivityServiceTest {
   public void sampleDescription_NullActivity() throws Exception {
     Sample sample = entityManager.find(Sample.class, 1L);
 
-    String description = activityServiceImpl.sampleDescription(sample, null, Locale.CANADA);
+    String description = activityService.sampleDescription(sample, null, Locale.CANADA);
 
     assertNull(description);
   }
@@ -977,7 +977,7 @@ public class ActivityServiceTest {
     Sample sample = entityManager.find(Sample.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityServiceImpl.sampleDescription(sample, activity, null);
+    String description = activityService.sampleDescription(sample, activity, null);
 
     assertNull(description);
   }
@@ -987,7 +987,7 @@ public class ActivityServiceTest {
     Plate plate = entityManager.find(Plate.class, 26L);
     Activity activity = entityManager.find(Activity.class, 5559L);
 
-    String description = activityServiceImpl.plateDescription(plate, activity, Locale.CANADA);
+    String description = activityService.plateDescription(plate, activity, Locale.CANADA);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(description);
@@ -998,7 +998,7 @@ public class ActivityServiceTest {
     Plate plate = entityManager.find(Plate.class, 26L);
     Activity activity = entityManager.find(Activity.class, 5570L);
 
-    String description = activityServiceImpl.plateDescription(plate, activity, Locale.CANADA);
+    String description = activityService.plateDescription(plate, activity, Locale.CANADA);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(description);
@@ -1008,7 +1008,7 @@ public class ActivityServiceTest {
   public void plateDescription_NullSample() throws Exception {
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityServiceImpl.plateDescription(null, activity, Locale.CANADA);
+    String description = activityService.plateDescription(null, activity, Locale.CANADA);
 
     assertNull(description);
   }
@@ -1017,7 +1017,7 @@ public class ActivityServiceTest {
   public void plateDescription_NullActivity() throws Exception {
     Plate plate = entityManager.find(Plate.class, 26L);
 
-    String description = activityServiceImpl.plateDescription(plate, null, Locale.CANADA);
+    String description = activityService.plateDescription(plate, null, Locale.CANADA);
 
     assertNull(description);
   }
@@ -1027,7 +1027,7 @@ public class ActivityServiceTest {
     Plate plate = entityManager.find(Plate.class, 26L);
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityServiceImpl.plateDescription(plate, activity, null);
+    String description = activityService.plateDescription(plate, activity, null);
 
     assertNull(description);
   }
@@ -1043,14 +1043,14 @@ public class ActivityServiceTest {
     activity.setJustification("unit_test");
     activity.setUpdates(null);
 
-    activityServiceImpl.insert(activity);
+    activityService.insert(activity);
 
     entityManager.flush();
     ActivityFilterBuilder parameters = new ActivityFilterBuilder();
     parameters.actionType(ActionType.INSERT);
     parameters.tableName("sample");
     parameters.recordId(45L);
-    List<Activity> activities = activityServiceImpl.search(parameters.build());
+    List<Activity> activities = activityService.search(parameters.build());
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -1097,14 +1097,14 @@ public class ActivityServiceTest {
     activity.setJustification("unit_test");
     activity.setUpdates(updateActivities);
 
-    activityServiceImpl.insert(activity);
+    activityService.insert(activity);
 
     entityManager.flush();
     ActivityFilterBuilder parameters = new ActivityFilterBuilder();
     parameters.actionType(ActionType.INSERT);
     parameters.tableName("sample");
     parameters.recordId(45L);
-    List<Activity> activities = activityServiceImpl.search(parameters.build());
+    List<Activity> activities = activityService.search(parameters.build());
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());

@@ -49,7 +49,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class EnrichmentActivityServiceTest {
-  private EnrichmentActivityService enrichmentActivityServiceImpl;
+  private EnrichmentActivityService enrichmentActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -61,7 +61,7 @@ public class EnrichmentActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    enrichmentActivityServiceImpl =
+    enrichmentActivityService =
         new EnrichmentActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -82,7 +82,7 @@ public class EnrichmentActivityServiceTest {
     enrichment.setProtocol(protocol);
     enrichment.setTreatmentSamples(enrichedSamples);
 
-    Activity activity = enrichmentActivityServiceImpl.insert(enrichment);
+    Activity activity = enrichmentActivityService.insert(enrichment);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -96,7 +96,7 @@ public class EnrichmentActivityServiceTest {
   public void undoErroneous() {
     Enrichment enrichment = new Enrichment(7L);
 
-    Activity activity = enrichmentActivityServiceImpl.undoErroneous(enrichment, "unit_test");
+    Activity activity = enrichmentActivityService.undoErroneous(enrichment, "unit_test");
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -110,7 +110,7 @@ public class EnrichmentActivityServiceTest {
   public void undoFailed_NoBan() {
     Enrichment enrichment = new Enrichment(7L);
 
-    Activity activity = enrichmentActivityServiceImpl.undoFailed(enrichment, "unit_test", null);
+    Activity activity = enrichmentActivityService.undoFailed(enrichment, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -130,7 +130,7 @@ public class EnrichmentActivityServiceTest {
     bannedContainers.add(spot);
 
     Activity activity =
-        enrichmentActivityServiceImpl.undoFailed(enrichment, "unit_test", bannedContainers);
+        enrichmentActivityService.undoFailed(enrichment, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -170,7 +170,7 @@ public class EnrichmentActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     Activity activity =
-        enrichmentActivityServiceImpl.undoFailed(enrichment, reason, bannedContainers);
+        enrichmentActivityService.undoFailed(enrichment, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

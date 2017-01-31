@@ -62,7 +62,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionSampleServiceTest {
-  private SubmissionSampleService submissionSampleServiceImpl;
+  private SubmissionSampleService submissionSampleService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -86,14 +86,14 @@ public class SubmissionSampleServiceTest {
    */
   @Before
   public void beforeTest() {
-    submissionSampleServiceImpl = new SubmissionSampleService(entityManager, queryFactory,
+    submissionSampleService = new SubmissionSampleService(entityManager, queryFactory,
         sampleActivityService, activityService, authorizationService);
     optionalActivity = Optional.of(activity);
   }
 
   @Test
   public void get_Gel() throws Throwable {
-    SubmissionSample sample = submissionSampleServiceImpl.get(1L);
+    SubmissionSample sample = submissionSampleService.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof SubmissionSample);
@@ -113,7 +113,7 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void get() throws Throwable {
-    SubmissionSample sample = submissionSampleServiceImpl.get(442L);
+    SubmissionSample sample = submissionSampleService.get(442L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof SubmissionSample);
@@ -135,14 +135,14 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void get_NullId() throws Throwable {
-    SubmissionSample sample = submissionSampleServiceImpl.get((Long) null);
+    SubmissionSample sample = submissionSampleService.get((Long) null);
 
     assertNull(sample);
   }
 
   @Test
   public void get_GelByName() throws Throwable {
-    SubmissionSample sample = submissionSampleServiceImpl.getSubmission("FAM119A_band_01");
+    SubmissionSample sample = submissionSampleService.getSubmission("FAM119A_band_01");
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals((Long) 1L, sample.getId());
@@ -160,7 +160,7 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void get_ByName() throws Throwable {
-    SubmissionSample sample = submissionSampleServiceImpl.getSubmission("CAP_20111013_01");
+    SubmissionSample sample = submissionSampleService.getSubmission("CAP_20111013_01");
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals((Long) 442L, sample.getId());
@@ -180,14 +180,14 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void get_NullName() throws Throwable {
-    SubmissionSample sample = submissionSampleServiceImpl.getSubmission((String) null);
+    SubmissionSample sample = submissionSampleService.getSubmission((String) null);
 
     assertNull(sample);
   }
 
   @Test
   public void exists_True() throws Throwable {
-    boolean exists = submissionSampleServiceImpl.exists("CAP_20111013_05");
+    boolean exists = submissionSampleService.exists("CAP_20111013_05");
 
     verify(authorizationService).checkUserRole();
     assertEquals(true, exists);
@@ -195,7 +195,7 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void exists_False() throws Throwable {
-    boolean exists = submissionSampleServiceImpl.exists("CAP_20111013_80");
+    boolean exists = submissionSampleService.exists("CAP_20111013_80");
 
     verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
@@ -203,7 +203,7 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void exists_Null() throws Throwable {
-    boolean exists = submissionSampleServiceImpl.exists(null);
+    boolean exists = submissionSampleService.exists(null);
 
     assertEquals(false, exists);
   }
@@ -218,7 +218,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -257,7 +257,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -278,7 +278,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -299,7 +299,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -320,7 +320,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -341,7 +341,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -362,7 +362,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -383,7 +383,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -405,7 +405,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -427,7 +427,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -448,7 +448,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -469,7 +469,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -490,7 +490,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -511,7 +511,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -532,7 +532,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -553,7 +553,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -574,7 +574,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -595,7 +595,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -616,7 +616,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -637,7 +637,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -658,7 +658,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -679,7 +679,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -698,7 +698,7 @@ public class SubmissionSampleServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.report(null);
+    SubmissionSampleService.Report report = submissionSampleService.report(null);
 
     verify(authorizationService).checkUserRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -715,7 +715,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.nameContains("CAP");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -771,7 +771,7 @@ public class SubmissionSampleServiceTest {
   public void adminReport_All() throws Throwable {
     SampleFilterBuilder filter = new SampleFilterBuilder();
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -788,7 +788,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.experienceContains("cap_experience");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -805,7 +805,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.laboratoryContains("ircm");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -822,7 +822,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.laboratoryContains("ircm2");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -839,7 +839,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.laboratory(new Laboratory(2L));
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -856,7 +856,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.limsContains("RC20111013");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -874,7 +874,7 @@ public class SubmissionSampleServiceTest {
     filter.maximalSubmissionDate(
         LocalDateTime.of(2011, 10, 15, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -892,7 +892,7 @@ public class SubmissionSampleServiceTest {
     filter.minimalSubmissionDate(
         LocalDateTime.of(2011, 10, 15, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -909,7 +909,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.nameContains("AP_20111013");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -926,7 +926,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.projectContains("cap_project");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -943,7 +943,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS));
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -960,7 +960,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.statuses(Arrays.asList(SampleStatus.DATA_ANALYSIS, SampleStatus.ANALYSED));
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -977,7 +977,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.support(SubmissionSampleService.Support.GEL);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -994,7 +994,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.support(SubmissionSampleService.Support.SOLUTION);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1011,7 +1011,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.support(SubmissionSampleService.Support.MOLECULE_LOW);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1028,7 +1028,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.support(SubmissionSampleService.Support.MOLECULE_HIGH);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1045,7 +1045,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.support(SubmissionSampleService.Support.INTACT_PROTEIN);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1064,7 +1064,7 @@ public class SubmissionSampleServiceTest {
     user.setLaboratory(new Laboratory(2L));
     filter.user(user);
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1081,7 +1081,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.userContains("benoit");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1098,7 +1098,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.userContains("poitras");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1115,7 +1115,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.userContains("Benoit Coulombe");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1132,7 +1132,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.userContains("Benoit Coulombe 2");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1149,7 +1149,7 @@ public class SubmissionSampleServiceTest {
     SampleFilterBuilder filter = new SampleFilterBuilder();
     filter.userContains("Christian Poitras");
 
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(filter.build());
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1163,7 +1163,7 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void adminReport_NullFilter() throws Throwable {
-    SubmissionSampleService.Report report = submissionSampleServiceImpl.adminReport(null);
+    SubmissionSampleService.Report report = submissionSampleService.adminReport(null);
 
     verify(authorizationService).checkAdminRole();
     List<SubmissionSample> samples = report.getSamples();
@@ -1177,7 +1177,7 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void sampleMonitoring() throws Throwable {
-    List<SubmissionSample> samples = submissionSampleServiceImpl.sampleMonitoring();
+    List<SubmissionSample> samples = submissionSampleService.sampleMonitoring();
 
     verify(authorizationService).checkAdminRole();
     assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 1L)));
@@ -1211,7 +1211,7 @@ public class SubmissionSampleServiceTest {
     User user = new User(3L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    List<String> projects = submissionSampleServiceImpl.projects();
+    List<String> projects = submissionSampleService.projects();
 
     verify(authorizationService).checkUserRole();
     assertEquals(2, projects.size());
@@ -1233,7 +1233,7 @@ public class SubmissionSampleServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionSampleServiceImpl.update(sample, "test changes");
+    submissionSampleService.update(sample, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -1269,7 +1269,7 @@ public class SubmissionSampleServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionSampleServiceImpl.update(sample, "test changes");
+    submissionSampleService.update(sample, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -1308,7 +1308,7 @@ public class SubmissionSampleServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionSampleServiceImpl.update(sample, "test changes");
+    submissionSampleService.update(sample, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -1342,7 +1342,7 @@ public class SubmissionSampleServiceTest {
         .thenReturn(optionalActivity);
 
     // Update sample.
-    submissionSampleServiceImpl.update(sample, "test changes");
+    submissionSampleService.update(sample, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -1372,7 +1372,7 @@ public class SubmissionSampleServiceTest {
         .thenReturn(optionalActivity);
 
     // Update sample.
-    submissionSampleServiceImpl.update(sample, "test changes");
+    submissionSampleService.update(sample, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -1411,7 +1411,7 @@ public class SubmissionSampleServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionSampleServiceImpl.update(sample, "test changes");
+    submissionSampleService.update(sample, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -1444,7 +1444,7 @@ public class SubmissionSampleServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionSampleServiceImpl.update(sample, "test changes");
+    submissionSampleService.update(sample, "test changes");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -1475,7 +1475,7 @@ public class SubmissionSampleServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionSampleServiceImpl.updateStatus(samples);
+    submissionSampleService.updateStatus(samples);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();

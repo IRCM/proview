@@ -49,7 +49,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class FractionationActivityServiceTest {
-  private FractionationActivityService fractionationActivityServiceImpl;
+  private FractionationActivityService fractionationActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -61,7 +61,7 @@ public class FractionationActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    fractionationActivityServiceImpl =
+    fractionationActivityService =
         new FractionationActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -87,7 +87,7 @@ public class FractionationActivityServiceTest {
     fractionation.setFractionationType(Fractionation.FractionationType.MUDPIT);
     fractionation.setTreatmentSamples(details);
 
-    Activity activity = fractionationActivityServiceImpl.insert(fractionation);
+    Activity activity = fractionationActivityService.insert(fractionation);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -121,7 +121,7 @@ public class FractionationActivityServiceTest {
     fractionation.setFractionationType(Fractionation.FractionationType.MUDPIT);
     fractionation.setTreatmentSamples(details);
 
-    Activity activity = fractionationActivityServiceImpl.insert(fractionation);
+    Activity activity = fractionationActivityService.insert(fractionation);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -148,7 +148,7 @@ public class FractionationActivityServiceTest {
     samplesRemoved.add(destinationTube);
 
     Activity activity =
-        fractionationActivityServiceImpl.undoErroneous(fractionation, "unit_test", samplesRemoved);
+        fractionationActivityService.undoErroneous(fractionation, "unit_test", samplesRemoved);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -173,7 +173,7 @@ public class FractionationActivityServiceTest {
     samplesRemoved.add(destinationSpot);
 
     Activity activity =
-        fractionationActivityServiceImpl.undoErroneous(fractionation, "unit_test", samplesRemoved);
+        fractionationActivityService.undoErroneous(fractionation, "unit_test", samplesRemoved);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -197,7 +197,7 @@ public class FractionationActivityServiceTest {
     Fractionation fractionation = new Fractionation(2L);
 
     Activity activity =
-        fractionationActivityServiceImpl.undoFailed(fractionation, "unit_test", null);
+        fractionationActivityService.undoFailed(fractionation, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -212,7 +212,7 @@ public class FractionationActivityServiceTest {
     Fractionation fractionation = new Fractionation(8L);
 
     Activity activity =
-        fractionationActivityServiceImpl.undoFailed(fractionation, "unit_test", null);
+        fractionationActivityService.undoFailed(fractionation, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -230,7 +230,7 @@ public class FractionationActivityServiceTest {
     bannedContainers.add(destinationTube);
 
     Activity activity =
-        fractionationActivityServiceImpl.undoFailed(fractionation, "unit_test", bannedContainers);
+        fractionationActivityService.undoFailed(fractionation, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -257,7 +257,7 @@ public class FractionationActivityServiceTest {
     bannedContainers.add(destinationSpot);
 
     Activity activity =
-        fractionationActivityServiceImpl.undoFailed(fractionation, "unit_test", bannedContainers);
+        fractionationActivityService.undoFailed(fractionation, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -289,7 +289,7 @@ public class FractionationActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     Activity activity =
-        fractionationActivityServiceImpl.undoFailed(fractionation, reason, bannedContainers);
+        fractionationActivityService.undoFailed(fractionation, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

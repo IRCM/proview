@@ -62,7 +62,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class StandardAdditionServiceTest {
-  private StandardAdditionService standardAdditionServiceImpl;
+  private StandardAdditionService standardAdditionService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -84,7 +84,7 @@ public class StandardAdditionServiceTest {
    */
   @Before
   public void beforeTest() {
-    standardAdditionServiceImpl = new StandardAdditionService(entityManager, queryFactory,
+    standardAdditionService = new StandardAdditionService(entityManager, queryFactory,
         standardAdditionActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -102,7 +102,7 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void get() {
-    StandardAddition standardAddition = standardAdditionServiceImpl.get(5L);
+    StandardAddition standardAddition = standardAdditionService.get(5L);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(standardAddition);
@@ -128,7 +128,7 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void get_Null() {
-    StandardAddition standardAddition = standardAdditionServiceImpl.get(null);
+    StandardAddition standardAddition = standardAdditionService.get(null);
 
     assertNull(standardAddition);
   }
@@ -137,7 +137,7 @@ public class StandardAdditionServiceTest {
   public void all_Tube() {
     Sample sample = new SubmissionSample(444L);
 
-    List<StandardAddition> standardAdditions = standardAdditionServiceImpl.all(sample);
+    List<StandardAddition> standardAdditions = standardAdditionService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, standardAdditions.size());
@@ -149,7 +149,7 @@ public class StandardAdditionServiceTest {
   public void all_Spot() {
     Sample sample = new SubmissionSample(599L);
 
-    List<StandardAddition> standardAdditions = standardAdditionServiceImpl.all(sample);
+    List<StandardAddition> standardAdditions = standardAdditionService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, standardAdditions.size());
@@ -159,7 +159,7 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void all_Null() {
-    List<StandardAddition> standardAdditions = standardAdditionServiceImpl.all(null);
+    List<StandardAddition> standardAdditions = standardAdditionService.all(null);
 
     assertEquals(0, standardAdditions.size());
   }
@@ -180,13 +180,13 @@ public class StandardAdditionServiceTest {
     standardAddition.setTreatmentSamples(addedStandards);
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
-    standardAdditionServiceImpl.insert(standardAddition);
+    standardAdditionService.insert(standardAddition);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).insert(eq(standardAddition));
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionServiceImpl.get(standardAddition.getId());
+    standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionType());
@@ -222,13 +222,13 @@ public class StandardAdditionServiceTest {
     standardAddition.setTreatmentSamples(addedStandards);
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
-    standardAdditionServiceImpl.insert(standardAddition);
+    standardAdditionService.insert(standardAddition);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).insert(eq(standardAddition));
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionServiceImpl.get(standardAddition.getId());
+    standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionType());
@@ -255,14 +255,14 @@ public class StandardAdditionServiceTest {
     when(standardAdditionActivityService.undoErroneous(any(StandardAddition.class),
         any(String.class))).thenReturn(activity);
 
-    standardAdditionServiceImpl.undoErroneous(standardAddition, "undo unit test");
+    standardAdditionService.undoErroneous(standardAddition, "undo unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoErroneous(eq(standardAddition),
         eq("undo unit test"));
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionServiceImpl.get(standardAddition.getId());
+    standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, standardAddition.getDeletionType());
@@ -276,14 +276,14 @@ public class StandardAdditionServiceTest {
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionServiceImpl.undoFailed(standardAddition, "fail unit test", false);
+    standardAdditionService.undoFailed(standardAddition, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionServiceImpl.get(standardAddition.getId());
+    standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
@@ -299,14 +299,14 @@ public class StandardAdditionServiceTest {
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionServiceImpl.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionServiceImpl.get(standardAddition.getId());
+    standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
@@ -328,14 +328,14 @@ public class StandardAdditionServiceTest {
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionServiceImpl.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionServiceImpl.get(standardAddition.getId());
+    standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
@@ -363,14 +363,14 @@ public class StandardAdditionServiceTest {
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionServiceImpl.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    StandardAddition test = standardAdditionServiceImpl.get(standardAddition.getId());
+    StandardAddition test = standardAdditionService.get(standardAddition.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
@@ -404,14 +404,14 @@ public class StandardAdditionServiceTest {
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionServiceImpl.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionServiceImpl.get(standardAddition.getId());
+    standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
@@ -451,14 +451,14 @@ public class StandardAdditionServiceTest {
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionServiceImpl.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionServiceImpl.get(standardAddition.getId());
+    standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());

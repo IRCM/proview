@@ -60,7 +60,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionActivityServiceTest {
-  private SubmissionActivityService submissionActivityServiceImpl;
+  private SubmissionActivityService submissionActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -72,7 +72,7 @@ public class SubmissionActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    submissionActivityServiceImpl =
+    submissionActivityService =
         new SubmissionActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -93,7 +93,7 @@ public class SubmissionActivityServiceTest {
     submission.setId(123456L);
     submission.setSubmissionDate(Instant.now());
 
-    Activity activity = submissionActivityServiceImpl.insert(submission);
+    Activity activity = submissionActivityService.insert(submission);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("submission", activity.getTableName());
@@ -167,7 +167,7 @@ public class SubmissionActivityServiceTest {
     newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
 
     Optional<Activity> optionalActivity =
-        submissionActivityServiceImpl.update(newSubmission, "unit_test");
+        submissionActivityService.update(newSubmission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -582,7 +582,7 @@ public class SubmissionActivityServiceTest {
     Long solventId = solvent.getId();
 
     Optional<Activity> optionalActivity =
-        submissionActivityServiceImpl.update(submission, "unit_test");
+        submissionActivityService.update(submission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -619,7 +619,7 @@ public class SubmissionActivityServiceTest {
     final Long solventId = solvent.getId();
 
     Optional<Activity> optionalActivity =
-        submissionActivityServiceImpl.update(submission, "unit_test");
+        submissionActivityService.update(submission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -650,7 +650,7 @@ public class SubmissionActivityServiceTest {
     structure.setContent(bytes);
 
     Optional<Activity> optionalActivity =
-        submissionActivityServiceImpl.update(submission, "unit_test");
+        submissionActivityService.update(submission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -677,7 +677,7 @@ public class SubmissionActivityServiceTest {
     entityManager.detach(submission);
 
     Optional<Activity> optionalActivity =
-        submissionActivityServiceImpl.update(submission, "unit_test");
+        submissionActivityService.update(submission, "unit_test");
 
     assertEquals(false, optionalActivity.isPresent());
   }

@@ -47,7 +47,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DataAnalysisActivityServiceTest {
-  private DataAnalysisActivityService dataAnalysisActivityServiceImpl;
+  private DataAnalysisActivityService dataAnalysisActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -58,7 +58,7 @@ public class DataAnalysisActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    dataAnalysisActivityServiceImpl =
+    dataAnalysisActivityService =
         new DataAnalysisActivityService(entityManager, authorizationService);
   }
 
@@ -75,7 +75,7 @@ public class DataAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity = dataAnalysisActivityServiceImpl.insert(dataAnalysis);
+    Activity activity = dataAnalysisActivityService.insert(dataAnalysis);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -108,7 +108,7 @@ public class DataAnalysisActivityServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     Optional<Activity> optionalActivity =
-        dataAnalysisActivityServiceImpl.update(dataAnalysis, "unit_test");
+        dataAnalysisActivityService.update(dataAnalysis, "unit_test");
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(true, optionalActivity.isPresent());
@@ -167,7 +167,7 @@ public class DataAnalysisActivityServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     Optional<Activity> optionalActivity =
-        dataAnalysisActivityServiceImpl.update(dataAnalysis, "unit_test");
+        dataAnalysisActivityService.update(dataAnalysis, "unit_test");
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(true, optionalActivity.isPresent());
@@ -222,7 +222,7 @@ public class DataAnalysisActivityServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     Optional<Activity> optionalActivity =
-        dataAnalysisActivityServiceImpl.update(dataAnalysis, "unit_test");
+        dataAnalysisActivityService.update(dataAnalysis, "unit_test");
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(false, optionalActivity.isPresent());
