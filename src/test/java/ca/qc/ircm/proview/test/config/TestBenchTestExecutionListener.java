@@ -50,11 +50,11 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
 
   @Override
   public void beforeTestClass(TestContext testContext) throws Exception {
-    if (isSkipTestBenchTests()) {
-      assumeTrue(SKIP_TESTS_ERROR_MESSAGE, false);
-    }
-
     if (isTestBenchTest(testContext)) {
+      if (isSkipTestBenchTests()) {
+        assumeTrue(SKIP_TESTS_ERROR_MESSAGE, false);
+      }
+
       boolean licenseFileExists = false;
       for (String licencePath : LICENSE_PATHS) {
         licenseFileExists |=
