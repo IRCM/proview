@@ -741,7 +741,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <configuration>
-          <excludeFilterFile>${basedir}/src/main/filter/findbugs-exclude.xml</excludeFilterFile>
+          <excludeFilterFile>${basedir}/findbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
     </plugins>
