@@ -65,7 +65,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class FractionationServiceTest {
-  private FractionationService fractionationServiceImpl;
+  private FractionationService fractionationService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -87,7 +87,7 @@ public class FractionationServiceTest {
    */
   @Before
   public void beforeTest() {
-    fractionationServiceImpl = new FractionationService(entityManager, queryFactory,
+    fractionationService = new FractionationService(entityManager, queryFactory,
         fractionationActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -110,7 +110,7 @@ public class FractionationServiceTest {
 
   @Test
   public void get() {
-    Fractionation fractionation = fractionationServiceImpl.get(2L);
+    Fractionation fractionation = fractionationService.get(2L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, fractionation.getId());
@@ -137,7 +137,7 @@ public class FractionationServiceTest {
 
   @Test
   public void get_Null() {
-    Fractionation fractionation = fractionationServiceImpl.get(null);
+    Fractionation fractionation = fractionationService.get(null);
 
     assertNull(fractionation);
   }
@@ -148,7 +148,7 @@ public class FractionationServiceTest {
     Tube tube = new Tube(6L);
     tube.setSample(sample);
 
-    FractionationDetail detail = fractionationServiceImpl.find(tube);
+    FractionationDetail detail = fractionationService.find(tube);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNotNull(detail);
@@ -162,7 +162,7 @@ public class FractionationServiceTest {
     Tube tube = new Tube(1L);
     tube.setSample(sample);
 
-    FractionationDetail detail = fractionationServiceImpl.find(tube);
+    FractionationDetail detail = fractionationService.find(tube);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNull(detail);
@@ -170,7 +170,7 @@ public class FractionationServiceTest {
 
   @Test
   public void find_Null() {
-    FractionationDetail detail = fractionationServiceImpl.find(null);
+    FractionationDetail detail = fractionationService.find(null);
 
     assertNull(detail);
   }
@@ -179,7 +179,7 @@ public class FractionationServiceTest {
   public void all() {
     Sample sample = new SubmissionSample(1L);
 
-    List<Fractionation> fractionations = fractionationServiceImpl.all(sample);
+    List<Fractionation> fractionations = fractionationService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, fractionations.size());
@@ -189,7 +189,7 @@ public class FractionationServiceTest {
 
   @Test
   public void all_Null() {
-    List<Fractionation> fractionations = fractionationServiceImpl.all(null);
+    List<Fractionation> fractionations = fractionationService.all(null);
 
     assertEquals(0, fractionations.size());
   }
@@ -212,7 +212,7 @@ public class FractionationServiceTest {
     fractionation.setTreatmentSamples(fractionationDetails);
 
     try {
-      fractionationServiceImpl.insert(fractionation);
+      fractionationService.insert(fractionation);
       fail("Expected IllegalArgumentException to be thrown");
     } catch (IllegalArgumentException e) {
       // Ignore.
@@ -244,13 +244,13 @@ public class FractionationServiceTest {
     fractionation.setTreatmentSamples(fractionationDetails);
     when(fractionationActivityService.insert(any(Fractionation.class))).thenReturn(activity);
 
-    fractionationServiceImpl.insert(fractionation);
+    fractionationService.insert(fractionation);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).insert(eq(fractionation));
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationServiceImpl.get(fractionation.getId());
+    fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(false, fractionation.isDeleted());
     assertEquals(null, fractionation.getDeletionType());
@@ -292,14 +292,14 @@ public class FractionationServiceTest {
     when(fractionationActivityService.undoErroneous(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    fractionationServiceImpl.undoErroneous(fractionation, "undo unit test");
+    fractionationService.undoErroneous(fractionation, "undo unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).undoErroneous(eq(fractionation), eq("undo unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationServiceImpl.get(fractionation.getId());
+    fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, fractionation.getDeletionType());
@@ -320,7 +320,7 @@ public class FractionationServiceTest {
     entityManager.detach(fractionation);
 
     try {
-      fractionationServiceImpl.undoErroneous(fractionation, "undo unit test");
+      fractionationService.undoErroneous(fractionation, "undo unit test");
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(2, e.containers.size());
@@ -336,7 +336,7 @@ public class FractionationServiceTest {
     entityManager.detach(fractionation);
 
     try {
-      fractionationServiceImpl.undoErroneous(fractionation, "undo unit test");
+      fractionationService.undoErroneous(fractionation, "undo unit test");
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(2, e.containers.size());
@@ -353,14 +353,14 @@ public class FractionationServiceTest {
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    fractionationServiceImpl.undoFailed(fractionation, "fail unit test", false);
+    fractionationService.undoFailed(fractionation, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationServiceImpl.get(fractionation.getId());
+    fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
@@ -376,14 +376,14 @@ public class FractionationServiceTest {
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    fractionationServiceImpl.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undoFailed(fractionation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    Fractionation test = fractionationServiceImpl.get(fractionation.getId());
+    Fractionation test = fractionationService.get(fractionation.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
@@ -405,14 +405,14 @@ public class FractionationServiceTest {
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    fractionationServiceImpl.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undoFailed(fractionation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationServiceImpl.get(fractionation.getId());
+    fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
@@ -443,13 +443,13 @@ public class FractionationServiceTest {
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    fractionationServiceImpl.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undoFailed(fractionation, "fail unit test", true);
 
     entityManager.flush();
     verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationServiceImpl.get(fractionation.getId());
+    fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
@@ -486,13 +486,13 @@ public class FractionationServiceTest {
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    fractionationServiceImpl.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undoFailed(fractionation, "fail unit test", true);
 
     entityManager.flush();
     verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationServiceImpl.get(fractionation.getId());
+    fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
@@ -535,13 +535,13 @@ public class FractionationServiceTest {
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    fractionationServiceImpl.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undoFailed(fractionation, "fail unit test", true);
 
     entityManager.flush();
     verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    Fractionation test = fractionationServiceImpl.get(fractionation.getId());
+    Fractionation test = fractionationService.get(fractionation.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());

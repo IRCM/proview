@@ -336,11 +336,6 @@
       <version>${vaadin-icons.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>loginform</artifactId>
-      <version>${loginform.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.vaadin.addon</groupId>
       <artifactId>confirmdialog</artifactId>
       <version>${confirmdialog.version}</version>
@@ -391,6 +386,11 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -736,7 +736,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <configuration>
-          <excludeFilterFile>${basedir}/src/main/filter/findbugs-exclude.xml</excludeFilterFile>
+          <excludeFilterFile>${basedir}/findbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
     </plugins>

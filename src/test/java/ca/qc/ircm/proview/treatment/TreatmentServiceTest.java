@@ -44,7 +44,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class TreatmentServiceTest {
-  private TreatmentService treatmentServiceImpl;
+  private TreatmentService treatmentService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -52,12 +52,12 @@ public class TreatmentServiceTest {
 
   @Before
   public void beforeTest() {
-    treatmentServiceImpl = new TreatmentService(entityManager, authorizationService);
+    treatmentService = new TreatmentService(entityManager, authorizationService);
   }
 
   @Test
   public void get_Solubilisation() throws Throwable {
-    Treatment<?> treatment = treatmentServiceImpl.get(1L);
+    Treatment<?> treatment = treatmentService.get(1L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 1L, treatment.getId());
@@ -84,7 +84,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void get_EnrichmentProtocol() throws Throwable {
-    Treatment<?> treatment = treatmentServiceImpl.get(2L);
+    Treatment<?> treatment = treatmentService.get(2L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, treatment.getId());
@@ -114,7 +114,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Treatment<?> protocol = treatmentServiceImpl.get(null);
+    Treatment<?> protocol = treatmentService.get(null);
 
     assertNull(protocol);
   }

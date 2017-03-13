@@ -67,7 +67,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class AuthorizationServiceTest {
-  private AuthorizationService authorizationServiceImpl;
+  private AuthorizationService authorizationService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -92,7 +92,7 @@ public class AuthorizationServiceTest {
    */
   @Before
   public void beforeTest() {
-    authorizationServiceImpl = new AuthorizationService(entityManager, queryFactory,
+    authorizationService = new AuthorizationService(entityManager, queryFactory,
         authenticationService, securityConfiguration);
     subject = SecurityUtils.getSubject();
     when(securityConfiguration.realmName()).thenReturn(realmName);
@@ -101,7 +101,7 @@ public class AuthorizationServiceTest {
   @Test
   @WithSubject(userId = 3)
   public void getCurrentUser() {
-    User user = authorizationServiceImpl.getCurrentUser();
+    User user = authorizationService.getCurrentUser();
 
     assertEquals((Long) 3L, user.getId());
     assertEquals("benoit.coulombe@ircm.qc.ca", user.getEmail());
@@ -132,7 +132,7 @@ public class AuthorizationServiceTest {
   @Test
   @WithSubject(anonymous = true)
   public void getCurrentUser_Anonymous() {
-    User user = authorizationServiceImpl.getCurrentUser();
+    User user = authorizationService.getCurrentUser();
 
     assertNull(user);
   }
@@ -141,7 +141,7 @@ public class AuthorizationServiceTest {
   public void isUser_Authenticated() {
     when(subject.isAuthenticated()).thenReturn(true);
 
-    boolean value = authorizationServiceImpl.isUser();
+    boolean value = authorizationService.isUser();
 
     assertEquals(true, value);
   }
@@ -150,14 +150,14 @@ public class AuthorizationServiceTest {
   public void isUser_Remembered() {
     when(subject.isRemembered()).thenReturn(true);
 
-    boolean value = authorizationServiceImpl.isUser();
+    boolean value = authorizationService.isUser();
 
     assertEquals(true, value);
   }
 
   @Test
   public void isUser_NotAuthenticatedOrRemembered() {
-    boolean value = authorizationServiceImpl.isUser();
+    boolean value = authorizationService.isUser();
 
     assertEquals(false, value);
   }
@@ -166,7 +166,7 @@ public class AuthorizationServiceTest {
   public void isRunAs_True() {
     when(subject.isRunAs()).thenReturn(true);
 
-    boolean value = authorizationServiceImpl.isRunAs();
+    boolean value = authorizationService.isRunAs();
 
     assertEquals(true, value);
   }
@@ -175,7 +175,7 @@ public class AuthorizationServiceTest {
   public void isRunAs_False() {
     when(subject.isRunAs()).thenReturn(false);
 
-    boolean value = authorizationServiceImpl.isRunAs();
+    boolean value = authorizationService.isRunAs();
 
     assertEquals(false, value);
   }
@@ -184,7 +184,7 @@ public class AuthorizationServiceTest {
   public void hasAdminRole_False() {
     when(subject.hasRole(any(String.class))).thenReturn(false);
 
-    boolean hasRole = authorizationServiceImpl.hasAdminRole();
+    boolean hasRole = authorizationService.hasAdminRole();
 
     verify(subject).hasRole("ADMIN");
     assertEquals(false, hasRole);
@@ -194,7 +194,7 @@ public class AuthorizationServiceTest {
   public void hasAdminRole_True() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
 
-    boolean hasRole = authorizationServiceImpl.hasAdminRole();
+    boolean hasRole = authorizationService.hasAdminRole();
 
     verify(subject).hasRole("ADMIN");
     assertEquals(true, hasRole);
@@ -204,7 +204,7 @@ public class AuthorizationServiceTest {
   public void hasManagerRole_False() {
     when(subject.hasRole(any(String.class))).thenReturn(false);
 
-    boolean hasRole = authorizationServiceImpl.hasManagerRole();
+    boolean hasRole = authorizationService.hasManagerRole();
 
     verify(subject).hasRole("MANAGER");
     assertEquals(false, hasRole);
@@ -214,7 +214,7 @@ public class AuthorizationServiceTest {
   public void hasManagerRole_True() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
 
-    boolean hasRole = authorizationServiceImpl.hasManagerRole();
+    boolean hasRole = authorizationService.hasManagerRole();
 
     verify(subject).hasRole("MANAGER");
     assertEquals(true, hasRole);
@@ -226,7 +226,7 @@ public class AuthorizationServiceTest {
     when(authorizationInfo.getRoles()).thenReturn(new HashSet<>());
     User user = new User(10L);
 
-    boolean hasRole = authorizationServiceImpl.hasManagerRole(user);
+    boolean hasRole = authorizationService.hasManagerRole(user);
 
     assertEquals(false, hasRole);
     verify(authenticationService).getAuthorizationInfo(principalCollectionCaptor.capture());
@@ -244,7 +244,7 @@ public class AuthorizationServiceTest {
     when(authorizationInfo.getRoles()).thenReturn(roles);
     User user = new User(10L);
 
-    boolean hasRole = authorizationServiceImpl.hasManagerRole(user);
+    boolean hasRole = authorizationService.hasManagerRole(user);
 
     assertEquals(true, hasRole);
     verify(authenticationService).getAuthorizationInfo(principalCollectionCaptor.capture());
@@ -256,7 +256,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void hasManagerRole_NullUser() {
-    boolean hasRole = authorizationServiceImpl.hasManagerRole(null);
+    boolean hasRole = authorizationService.hasManagerRole(null);
 
     assertEquals(false, hasRole);
   }
@@ -265,7 +265,7 @@ public class AuthorizationServiceTest {
   public void hasUserRole_False() {
     when(subject.hasRole(any(String.class))).thenReturn(false);
 
-    boolean hasRole = authorizationServiceImpl.hasUserRole();
+    boolean hasRole = authorizationService.hasUserRole();
 
     verify(subject).hasRole("USER");
     assertEquals(false, hasRole);
@@ -275,7 +275,7 @@ public class AuthorizationServiceTest {
   public void hasUserRole_True() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
 
-    boolean hasRole = authorizationServiceImpl.hasUserRole();
+    boolean hasRole = authorizationService.hasUserRole();
 
     verify(subject).hasRole("USER");
     assertEquals(true, hasRole);
@@ -283,7 +283,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkAdminRole_Admin() {
-    authorizationServiceImpl.checkAdminRole();
+    authorizationService.checkAdminRole();
 
     verify(subject).checkRole("ADMIN");
   }
@@ -293,7 +293,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
 
     try {
-      authorizationServiceImpl.checkAdminRole();
+      authorizationService.checkAdminRole();
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -304,7 +304,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkUserRole_User() {
-    authorizationServiceImpl.checkUserRole();
+    authorizationService.checkUserRole();
 
     verify(subject).checkRole("USER");
   }
@@ -314,7 +314,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
 
     try {
-      authorizationServiceImpl.checkUserRole();
+      authorizationService.checkUserRole();
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -325,7 +325,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkRobotRole_Robot() {
-    authorizationServiceImpl.checkRobotRole();
+    authorizationService.checkRobotRole();
 
     verify(subject).checkPermission(new RobotPermission());
   }
@@ -335,7 +335,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(Permission.class));
 
     try {
-      authorizationServiceImpl.checkRobotRole();
+      authorizationService.checkRobotRole();
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -350,7 +350,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Laboratory laboratory = new Laboratory(2L);
 
-    authorizationServiceImpl.checkLaboratoryReadPermission(laboratory);
+    authorizationService.checkLaboratoryReadPermission(laboratory);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -362,7 +362,7 @@ public class AuthorizationServiceTest {
     Laboratory laboratory = new Laboratory(2L);
 
     try {
-      authorizationServiceImpl.checkLaboratoryReadPermission(laboratory);
+      authorizationService.checkLaboratoryReadPermission(laboratory);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -375,7 +375,7 @@ public class AuthorizationServiceTest {
   public void checkLaboratoryReadPermission_Member() {
     Laboratory laboratory = new Laboratory(2L);
 
-    authorizationServiceImpl.checkLaboratoryReadPermission(laboratory);
+    authorizationService.checkLaboratoryReadPermission(laboratory);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -388,7 +388,7 @@ public class AuthorizationServiceTest {
     Laboratory laboratory = new Laboratory(2L);
 
     try {
-      authorizationServiceImpl.checkLaboratoryReadPermission(laboratory);
+      authorizationService.checkLaboratoryReadPermission(laboratory);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -401,7 +401,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkLaboratoryReadPermission_Null() {
-    authorizationServiceImpl.checkLaboratoryReadPermission(null);
+    authorizationService.checkLaboratoryReadPermission(null);
   }
 
   @Test
@@ -409,7 +409,7 @@ public class AuthorizationServiceTest {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     Laboratory laboratory = new Laboratory(1L);
 
-    boolean manager = authorizationServiceImpl.hasLaboratoryManagerPermission(laboratory);
+    boolean manager = authorizationService.hasLaboratoryManagerPermission(laboratory);
 
     verify(subject).hasRole(UserRole.USER.name());
     verify(subject).hasRole(UserRole.ADMIN.name());
@@ -422,7 +422,7 @@ public class AuthorizationServiceTest {
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     Laboratory laboratory = new Laboratory(1L);
 
-    final boolean manager = authorizationServiceImpl.hasLaboratoryManagerPermission(laboratory);
+    final boolean manager = authorizationService.hasLaboratoryManagerPermission(laboratory);
 
     verify(subject).hasRole(UserRole.USER.name());
     verify(subject).hasRole(UserRole.ADMIN.name());
@@ -435,7 +435,7 @@ public class AuthorizationServiceTest {
     when(subject.hasRole(UserRole.USER.name())).thenReturn(true);
     Laboratory laboratory = new Laboratory(1L);
 
-    final boolean manager = authorizationServiceImpl.hasLaboratoryManagerPermission(laboratory);
+    final boolean manager = authorizationService.hasLaboratoryManagerPermission(laboratory);
 
     verify(subject).hasRole(UserRole.USER.name());
     verify(subject).hasRole(UserRole.ADMIN.name());
@@ -445,7 +445,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void hasLaboratoryManagerPermission_Null() {
-    boolean manager = authorizationServiceImpl.hasLaboratoryManagerPermission(null);
+    boolean manager = authorizationService.hasLaboratoryManagerPermission(null);
 
     assertEquals(false, manager);
   }
@@ -456,7 +456,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Laboratory laboratory = new Laboratory(2L);
 
-    authorizationServiceImpl.checkLaboratoryManagerPermission(laboratory);
+    authorizationService.checkLaboratoryManagerPermission(laboratory);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -468,7 +468,7 @@ public class AuthorizationServiceTest {
     Laboratory laboratory = new Laboratory(2L);
 
     try {
-      authorizationServiceImpl.checkLaboratoryManagerPermission(laboratory);
+      authorizationService.checkLaboratoryManagerPermission(laboratory);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -481,7 +481,7 @@ public class AuthorizationServiceTest {
   public void checkLaboratoryManagerPermission_LaboratoryManager() {
     Laboratory laboratory = new Laboratory(2L);
 
-    authorizationServiceImpl.checkLaboratoryManagerPermission(laboratory);
+    authorizationService.checkLaboratoryManagerPermission(laboratory);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -494,7 +494,7 @@ public class AuthorizationServiceTest {
     Laboratory laboratory = new Laboratory(2L);
 
     try {
-      authorizationServiceImpl.checkLaboratoryManagerPermission(laboratory);
+      authorizationService.checkLaboratoryManagerPermission(laboratory);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -507,7 +507,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkLaboratoryManagerPermission_Null() {
-    authorizationServiceImpl.checkLaboratoryManagerPermission(null);
+    authorizationService.checkLaboratoryManagerPermission(null);
   }
 
   @Test
@@ -517,7 +517,7 @@ public class AuthorizationServiceTest {
     User user = new User(6L);
     user.setLaboratory(new Laboratory(1L));
 
-    authorizationServiceImpl.checkUserReadPermission(user);
+    authorizationService.checkUserReadPermission(user);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -530,7 +530,7 @@ public class AuthorizationServiceTest {
     user.setLaboratory(new Laboratory(1L));
 
     try {
-      authorizationServiceImpl.checkUserReadPermission(user);
+      authorizationService.checkUserReadPermission(user);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -544,7 +544,7 @@ public class AuthorizationServiceTest {
     User user = new User(5L);
     user.setLaboratory(new Laboratory(1L));
 
-    authorizationServiceImpl.checkUserReadPermission(user);
+    authorizationService.checkUserReadPermission(user);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -559,7 +559,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    authorizationServiceImpl.checkUserReadPermission(user);
+    authorizationService.checkUserReadPermission(user);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -573,7 +573,7 @@ public class AuthorizationServiceTest {
     user.setLaboratory(new Laboratory(2L));
 
     try {
-      authorizationServiceImpl.checkUserReadPermission(user);
+      authorizationService.checkUserReadPermission(user);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -587,7 +587,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkUserReadPermission_Null() {
-    authorizationServiceImpl.checkUserReadPermission(null);
+    authorizationService.checkUserReadPermission(null);
   }
 
   @Test
@@ -597,7 +597,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    boolean value = authorizationServiceImpl.hasUserWritePermission(user);
+    boolean value = authorizationService.hasUserWritePermission(user);
 
     assertTrue(value);
     verify(subject).hasRole("USER");
@@ -610,7 +610,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    boolean value = authorizationServiceImpl.hasUserWritePermission(user);
+    boolean value = authorizationService.hasUserWritePermission(user);
 
     assertFalse(value);
     verify(subject).hasRole("USER");
@@ -624,7 +624,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    boolean value = authorizationServiceImpl.hasUserWritePermission(user);
+    boolean value = authorizationService.hasUserWritePermission(user);
 
     assertTrue(value);
     verify(subject).hasRole("USER");
@@ -639,7 +639,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    boolean value = authorizationServiceImpl.hasUserWritePermission(user);
+    boolean value = authorizationService.hasUserWritePermission(user);
 
     assertTrue(value);
     verify(subject).hasRole("USER");
@@ -655,7 +655,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    boolean value = authorizationServiceImpl.hasUserWritePermission(user);
+    boolean value = authorizationService.hasUserWritePermission(user);
 
     assertFalse(value);
     verify(subject).hasRole("USER");
@@ -666,7 +666,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void hasUserWritePermission_Null() {
-    boolean value = authorizationServiceImpl.hasUserWritePermission(null);
+    boolean value = authorizationService.hasUserWritePermission(null);
 
     assertFalse(value);
   }
@@ -678,7 +678,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    authorizationServiceImpl.checkUserWritePermission(user);
+    authorizationService.checkUserWritePermission(user);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -691,7 +691,7 @@ public class AuthorizationServiceTest {
     user.setLaboratory(new Laboratory(2L));
 
     try {
-      authorizationServiceImpl.checkUserWritePermission(user);
+      authorizationService.checkUserWritePermission(user);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -708,7 +708,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    authorizationServiceImpl.checkUserWritePermission(user);
+    authorizationService.checkUserWritePermission(user);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -722,7 +722,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    authorizationServiceImpl.checkUserWritePermission(user);
+    authorizationService.checkUserWritePermission(user);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -738,7 +738,7 @@ public class AuthorizationServiceTest {
     user.setLaboratory(new Laboratory(2L));
 
     try {
-      authorizationServiceImpl.checkUserWritePermission(user);
+      authorizationService.checkUserWritePermission(user);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -752,7 +752,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkUserWritePermission_Null() {
-    authorizationServiceImpl.checkUserWritePermission(null);
+    authorizationService.checkUserWritePermission(null);
   }
 
   @Test
@@ -762,7 +762,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    authorizationServiceImpl.checkUserWritePasswordPermission(user);
+    authorizationService.checkUserWritePasswordPermission(user);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -775,7 +775,7 @@ public class AuthorizationServiceTest {
     user.setLaboratory(new Laboratory(2L));
 
     try {
-      authorizationServiceImpl.checkUserWritePasswordPermission(user);
+      authorizationService.checkUserWritePasswordPermission(user);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -791,7 +791,7 @@ public class AuthorizationServiceTest {
     user.setLaboratory(new Laboratory(2L));
 
     try {
-      authorizationServiceImpl.checkUserWritePasswordPermission(user);
+      authorizationService.checkUserWritePasswordPermission(user);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -807,7 +807,7 @@ public class AuthorizationServiceTest {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
-    authorizationServiceImpl.checkUserWritePasswordPermission(user);
+    authorizationService.checkUserWritePasswordPermission(user);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("ADMIN");
@@ -821,7 +821,7 @@ public class AuthorizationServiceTest {
     user.setLaboratory(new Laboratory(2L));
 
     try {
-      authorizationServiceImpl.checkUserWritePasswordPermission(user);
+      authorizationService.checkUserWritePasswordPermission(user);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -834,7 +834,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkUserWritePasswordPermission_Null() {
-    authorizationServiceImpl.checkUserWritePasswordPermission(null);
+    authorizationService.checkUserWritePasswordPermission(null);
   }
 
   @Test
@@ -843,7 +843,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     SubmissionSample sample = new SubmissionSample(446L);
 
-    authorizationServiceImpl.checkSampleReadPermission(sample);
+    authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -855,7 +855,7 @@ public class AuthorizationServiceTest {
     SubmissionSample sample = new SubmissionSample(446L);
 
     try {
-      authorizationServiceImpl.checkSampleReadPermission(sample);
+      authorizationService.checkSampleReadPermission(sample);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -870,7 +870,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     SubmissionSample sample = new SubmissionSample(446L);
 
-    authorizationServiceImpl.checkSampleReadPermission(sample);
+    authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -882,7 +882,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     SubmissionSample sample = new SubmissionSample(446L);
 
-    authorizationServiceImpl.checkSampleReadPermission(sample);
+    authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -895,7 +895,7 @@ public class AuthorizationServiceTest {
     SubmissionSample sample = new SubmissionSample(446L);
 
     try {
-      authorizationServiceImpl.checkSampleReadPermission(sample);
+      authorizationService.checkSampleReadPermission(sample);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -913,7 +913,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Control sample = new Control(444L);
 
-    authorizationServiceImpl.checkSampleReadPermission(sample);
+    authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -925,7 +925,7 @@ public class AuthorizationServiceTest {
     Control sample = new Control(444L);
 
     try {
-      authorizationServiceImpl.checkSampleReadPermission(sample);
+      authorizationService.checkSampleReadPermission(sample);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -940,7 +940,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Control sample = new Control(444L);
 
-    authorizationServiceImpl.checkSampleReadPermission(sample);
+    authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -952,7 +952,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Control sample = new Control(444L);
 
-    authorizationServiceImpl.checkSampleReadPermission(sample);
+    authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -965,7 +965,7 @@ public class AuthorizationServiceTest {
 
     Control sample = new Control(444L);
     try {
-      authorizationServiceImpl.checkSampleReadPermission(sample);
+      authorizationService.checkSampleReadPermission(sample);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -978,7 +978,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkSampleReadPermission_Null() throws Exception {
-    authorizationServiceImpl.checkSampleReadPermission(null);
+    authorizationService.checkSampleReadPermission(null);
   }
 
   @Test
@@ -987,7 +987,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(35L);
 
-    authorizationServiceImpl.checkSubmissionReadPermission(submission);
+    authorizationService.checkSubmissionReadPermission(submission);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -999,7 +999,7 @@ public class AuthorizationServiceTest {
     Submission submission = new Submission(35L);
 
     try {
-      authorizationServiceImpl.checkSubmissionReadPermission(submission);
+      authorizationService.checkSubmissionReadPermission(submission);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -1014,7 +1014,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(35L);
 
-    authorizationServiceImpl.checkSubmissionReadPermission(submission);
+    authorizationService.checkSubmissionReadPermission(submission);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -1026,7 +1026,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(35L);
 
-    authorizationServiceImpl.checkSubmissionReadPermission(submission);
+    authorizationService.checkSubmissionReadPermission(submission);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -1039,7 +1039,7 @@ public class AuthorizationServiceTest {
 
     Submission submission = new Submission(35L);
     try {
-      authorizationServiceImpl.checkSubmissionReadPermission(submission);
+      authorizationService.checkSubmissionReadPermission(submission);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -1053,7 +1053,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkSubmissionReadPermission_Null() {
-    authorizationServiceImpl.checkSubmissionReadPermission(null);
+    authorizationService.checkSubmissionReadPermission(null);
   }
 
   @Test
@@ -1062,7 +1062,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     MsAnalysis msAnalysis = new MsAnalysis(13L);
 
-    authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+    authorizationService.checkMsAnalysisReadPermission(msAnalysis);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -1074,7 +1074,7 @@ public class AuthorizationServiceTest {
     MsAnalysis msAnalysis = new MsAnalysis(13L);
 
     try {
-      authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+      authorizationService.checkMsAnalysisReadPermission(msAnalysis);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -1089,7 +1089,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     MsAnalysis msAnalysis = new MsAnalysis(13L);
 
-    authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+    authorizationService.checkMsAnalysisReadPermission(msAnalysis);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -1101,7 +1101,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     MsAnalysis msAnalysis = new MsAnalysis(13L);
 
-    authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+    authorizationService.checkMsAnalysisReadPermission(msAnalysis);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -1114,7 +1114,7 @@ public class AuthorizationServiceTest {
     MsAnalysis msAnalysis = new MsAnalysis(13L);
 
     try {
-      authorizationServiceImpl.checkMsAnalysisReadPermission(msAnalysis);
+      authorizationService.checkMsAnalysisReadPermission(msAnalysis);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -1127,7 +1127,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkMsAnalysisReadPermission_Null() throws Exception {
-    authorizationServiceImpl.checkMsAnalysisReadPermission(null);
+    authorizationService.checkMsAnalysisReadPermission(null);
   }
 
   @Test
@@ -1136,7 +1136,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     DataAnalysis dataAnalysis = new DataAnalysis(5L);
 
-    authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+    authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -1148,7 +1148,7 @@ public class AuthorizationServiceTest {
     DataAnalysis dataAnalysis = new DataAnalysis(5L);
 
     try {
-      authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+      authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -1163,7 +1163,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     DataAnalysis dataAnalysis = new DataAnalysis(5L);
 
-    authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+    authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -1175,7 +1175,7 @@ public class AuthorizationServiceTest {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     DataAnalysis dataAnalysis = new DataAnalysis(5L);
 
-    authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+    authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
 
     verify(subject).checkRole("USER");
     verify(subject).hasRole("PROTEOMIC");
@@ -1188,7 +1188,7 @@ public class AuthorizationServiceTest {
     DataAnalysis dataAnalysis = new DataAnalysis(5L);
 
     try {
-      authorizationServiceImpl.checkDataAnalysisReadPermission(dataAnalysis);
+      authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -1201,6 +1201,6 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkDataAnalysisReadPermission_Null() throws Exception {
-    authorizationServiceImpl.checkDataAnalysisReadPermission(null);
+    authorizationService.checkDataAnalysisReadPermission(null);
   }
 }

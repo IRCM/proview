@@ -34,11 +34,11 @@ import java.util.Set;
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class MsAnalysisVerificationServiceTest {
-  private MsAnalysisVerificationService msAnalysisVerificationServiceImpl;
+  private MsAnalysisVerificationService msAnalysisVerificationService;
 
   @Before
   public void beforeTest() {
-    msAnalysisVerificationServiceImpl = new MsAnalysisVerificationService(true);
+    msAnalysisVerificationService = new MsAnalysisVerificationService(true);
   }
 
   private void compareSets(Set<?> expected, Set<?> actual) {
@@ -58,7 +58,7 @@ public class MsAnalysisVerificationServiceTest {
    */
   @Test
   public void verifications_VelosNsi() {
-    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
+    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationService
         .verifications(MassDetectionInstrument.VELOS, MassDetectionInstrumentSource.NSI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
@@ -85,7 +85,7 @@ public class MsAnalysisVerificationServiceTest {
 
   @Test
   public void verifications_VelosEsi() {
-    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
+    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationService
         .verifications(MassDetectionInstrument.VELOS, MassDetectionInstrumentSource.ESI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
@@ -112,7 +112,7 @@ public class MsAnalysisVerificationServiceTest {
 
   @Test
   public void verifications_VelosLtdt() {
-    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
+    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationService
         .verifications(MassDetectionInstrument.VELOS, MassDetectionInstrumentSource.LDTD);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
@@ -137,7 +137,7 @@ public class MsAnalysisVerificationServiceTest {
 
   @Test
   public void verifications_LtqorbitrapNsi() {
-    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
+    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationService
         .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, MassDetectionInstrumentSource.NSI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
@@ -164,7 +164,7 @@ public class MsAnalysisVerificationServiceTest {
 
   @Test
   public void verifications_LtqorbitrapEsi() {
-    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
+    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationService
         .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, MassDetectionInstrumentSource.ESI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
@@ -191,7 +191,7 @@ public class MsAnalysisVerificationServiceTest {
 
   @Test
   public void verifications_LtqorbitrapLtdt() {
-    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
+    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationService
         .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, MassDetectionInstrumentSource.LDTD);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
@@ -216,7 +216,7 @@ public class MsAnalysisVerificationServiceTest {
 
   @Test
   public void verifications_QtofNsi() {
-    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
+    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationService
         .verifications(MassDetectionInstrument.Q_TOF, MassDetectionInstrumentSource.NSI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
@@ -249,7 +249,7 @@ public class MsAnalysisVerificationServiceTest {
 
   @Test
   public void verifications_QtofEsi() {
-    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
+    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationService
         .verifications(MassDetectionInstrument.Q_TOF, MassDetectionInstrumentSource.ESI);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
@@ -282,7 +282,7 @@ public class MsAnalysisVerificationServiceTest {
 
   @Test
   public void verifications_QtofLdtd() {
-    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationServiceImpl
+    final Map<VerificationType, Set<String>> verifications = msAnalysisVerificationService
         .verifications(MassDetectionInstrument.Q_TOF, MassDetectionInstrumentSource.LDTD);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
@@ -313,7 +313,7 @@ public class MsAnalysisVerificationServiceTest {
   @Test
   public void verifications_Tof() {
     final Map<VerificationType, Set<String>> verifications =
-        msAnalysisVerificationServiceImpl.verifications(MassDetectionInstrument.TOF, null);
+        msAnalysisVerificationService.verifications(MassDetectionInstrument.TOF, null);
 
     Set<String> verificationStrings = new LinkedHashSet<>();
     verificationStrings.add("diskSpace");

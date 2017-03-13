@@ -43,7 +43,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SampleActivityServiceTest {
-  private SampleActivityService sampleActivityServiceImpl;
+  private SampleActivityService sampleActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -55,7 +55,7 @@ public class SampleActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    sampleActivityServiceImpl = new SampleActivityService(entityManager, authorizationService);
+    sampleActivityService = new SampleActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -70,7 +70,7 @@ public class SampleActivityServiceTest {
     control.setControlType(ControlType.NEGATIVE_CONTROL);
     control.setVolume(300.0);
 
-    Activity activity = sampleActivityServiceImpl.insertControl(control);
+    Activity activity = sampleActivityService.insertControl(control);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("sample", activity.getTableName());
@@ -92,7 +92,7 @@ public class SampleActivityServiceTest {
     submissionSample.setMolecularWeight(20.0);
 
     Optional<Activity> optionalActivity =
-        sampleActivityServiceImpl.update(submissionSample, "unit_test");
+        sampleActivityService.update(submissionSample, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -165,7 +165,7 @@ public class SampleActivityServiceTest {
     submissionSample.getContaminants().add(contaminant);
 
     Optional<Activity> optionalActivity =
-        sampleActivityServiceImpl.update(submissionSample, "unit_test");
+        sampleActivityService.update(submissionSample, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -196,7 +196,7 @@ public class SampleActivityServiceTest {
     contaminant.setComments("new_comments");
 
     Optional<Activity> optionalActivity =
-        sampleActivityServiceImpl.update(submissionSample, "unit_test");
+        sampleActivityService.update(submissionSample, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -241,7 +241,7 @@ public class SampleActivityServiceTest {
     submissionSample.getContaminants().remove(0);
 
     Optional<Activity> optionalActivity =
-        sampleActivityServiceImpl.update(submissionSample, "unit_test");
+        sampleActivityService.update(submissionSample, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -271,7 +271,7 @@ public class SampleActivityServiceTest {
     submissionSample.getStandards().add(standard);
 
     Optional<Activity> optionalActivity =
-        sampleActivityServiceImpl.update(submissionSample, "unit_test");
+        sampleActivityService.update(submissionSample, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -302,7 +302,7 @@ public class SampleActivityServiceTest {
     standard.setComments("new_comments");
 
     Optional<Activity> optionalActivity =
-        sampleActivityServiceImpl.update(submissionSample, "unit_test");
+        sampleActivityService.update(submissionSample, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -347,7 +347,7 @@ public class SampleActivityServiceTest {
     submissionSample.getStandards().remove(0);
 
     Optional<Activity> optionalActivity =
-        sampleActivityServiceImpl.update(submissionSample, "unit_test");
+        sampleActivityService.update(submissionSample, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -375,7 +375,7 @@ public class SampleActivityServiceTest {
     control.setVolume(2.0);
     control.setQuantity("40 μg");
 
-    Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(control, "unit_test");
+    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -439,7 +439,7 @@ public class SampleActivityServiceTest {
     standard.setComments("some_comments");
     control.getStandards().add(standard);
 
-    Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(control, "unit_test");
+    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -469,7 +469,7 @@ public class SampleActivityServiceTest {
     standard.setQuantity("1 pmol");
     standard.setComments("new_comments");
 
-    Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(control, "unit_test");
+    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -513,7 +513,7 @@ public class SampleActivityServiceTest {
     final Standard standard = control.getStandards().get(0);
     control.getStandards().remove(0);
 
-    Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(control, "unit_test");
+    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -536,7 +536,7 @@ public class SampleActivityServiceTest {
     Control control = entityManager.find(Control.class, 448L);
     entityManager.detach(control);
 
-    Optional<Activity> optionalActivity = sampleActivityServiceImpl.update(control, "unit_test");
+    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
 
     assertEquals(false, optionalActivity.isPresent());
   }

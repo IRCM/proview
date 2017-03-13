@@ -35,7 +35,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class AcquisitionServiceTest {
-  private AcquisitionService acquisitionServiceImpl;
+  private AcquisitionService acquisitionService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -43,12 +43,12 @@ public class AcquisitionServiceTest {
 
   @Before
   public void beforeTest() {
-    acquisitionServiceImpl = new AcquisitionService(entityManager, authorizationService);
+    acquisitionService = new AcquisitionService(entityManager, authorizationService);
   }
 
   @Test
   public void get() {
-    Acquisition acquisition = acquisitionServiceImpl.get(1L);
+    Acquisition acquisition = acquisitionService.get(1L);
 
     verify(authorizationService).checkRobotRole();
     assertEquals((Long) 1L, acquisition.getId());
@@ -64,7 +64,7 @@ public class AcquisitionServiceTest {
 
   @Test
   public void get_Null() {
-    Acquisition acquisition = acquisitionServiceImpl.get(null);
+    Acquisition acquisition = acquisitionService.get(null);
 
     assertNull(acquisition);
   }

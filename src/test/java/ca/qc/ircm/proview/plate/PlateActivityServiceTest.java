@@ -44,7 +44,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PlateActivityServiceTest {
-  private PlateActivityService plateActivityServiceImpl;
+  private PlateActivityService plateActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -56,7 +56,7 @@ public class PlateActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    plateActivityServiceImpl = new PlateActivityService(entityManager, authorizationService);
+    plateActivityService = new PlateActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -68,7 +68,7 @@ public class PlateActivityServiceTest {
     plate.setName("unit_test_plate_123456");
     plate.setType(PlateType.A);
 
-    Activity activity = plateActivityServiceImpl.insert(plate);
+    Activity activity = plateActivityService.insert(plate);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("plate", activity.getTableName());
@@ -89,7 +89,7 @@ public class PlateActivityServiceTest {
     spot.setPlate(plate);
     bans.add(spot);
 
-    Activity activity = plateActivityServiceImpl.ban(bans, "unit_test");
+    Activity activity = plateActivityService.ban(bans, "unit_test");
 
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("plate", activity.getTableName());
@@ -129,7 +129,7 @@ public class PlateActivityServiceTest {
     bans.add(spot);
 
     try {
-      plateActivityServiceImpl.ban(bans, "unit_test");
+      plateActivityService.ban(bans, "unit_test");
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Ignore.
@@ -149,7 +149,7 @@ public class PlateActivityServiceTest {
     spot.setBanned(true);
     spots.add(spot);
 
-    Activity activity = plateActivityServiceImpl.activate(spots, "unit_test");
+    Activity activity = plateActivityService.activate(spots, "unit_test");
 
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("plate", activity.getTableName());
@@ -193,7 +193,7 @@ public class PlateActivityServiceTest {
     spots.add(spot);
 
     try {
-      plateActivityServiceImpl.activate(spots, "unit_test");
+      plateActivityService.activate(spots, "unit_test");
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Ignore.

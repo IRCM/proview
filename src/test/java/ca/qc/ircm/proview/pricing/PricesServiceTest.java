@@ -25,16 +25,16 @@ import org.junit.Test;
 import java.io.File;
 
 public class PricesServiceTest {
-  private PricesService pricesServiceImpl;
+  private PricesService pricesService;
 
   @Before
   public void beforeTest() {
-    pricesServiceImpl = new PricesService();
+    pricesService = new PricesService();
   }
 
   @Test
   public void getPrices() throws Throwable {
-    File file = pricesServiceImpl.getPrices();
+    File file = pricesService.getPrices();
     File expectedFile = new File(this.getClass().getResource("/prices.pdf").toURI());
     assertEquals(expectedFile, file);
   }

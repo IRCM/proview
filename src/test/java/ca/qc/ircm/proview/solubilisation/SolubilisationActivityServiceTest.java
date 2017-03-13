@@ -49,7 +49,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SolubilisationActivityServiceTest {
-  private SolubilisationActivityService solubilisationActivityServiceImpl;
+  private SolubilisationActivityService solubilisationActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -61,7 +61,7 @@ public class SolubilisationActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    solubilisationActivityServiceImpl =
+    solubilisationActivityService =
         new SolubilisationActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -82,7 +82,7 @@ public class SolubilisationActivityServiceTest {
     solubilisation.setId(123456L);
     solubilisation.setTreatmentSamples(solubilisedSamples);
 
-    Activity activity = solubilisationActivityServiceImpl.insert(solubilisation);
+    Activity activity = solubilisationActivityService.insert(solubilisation);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -97,7 +97,7 @@ public class SolubilisationActivityServiceTest {
     Solubilisation solubilisation = new Solubilisation(1L);
 
     Activity activity =
-        solubilisationActivityServiceImpl.undoErroneous(solubilisation, "unit_test");
+        solubilisationActivityService.undoErroneous(solubilisation, "unit_test");
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -112,7 +112,7 @@ public class SolubilisationActivityServiceTest {
     Solubilisation solubilisation = new Solubilisation(1L);
 
     Activity activity =
-        solubilisationActivityServiceImpl.undoFailed(solubilisation, "unit_test", null);
+        solubilisationActivityService.undoFailed(solubilisation, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -132,7 +132,7 @@ public class SolubilisationActivityServiceTest {
     bannedContainers.add(spot);
 
     Activity activity =
-        solubilisationActivityServiceImpl.undoFailed(solubilisation, "unit_test", bannedContainers);
+        solubilisationActivityService.undoFailed(solubilisation, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -172,7 +172,7 @@ public class SolubilisationActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     Activity activity =
-        solubilisationActivityServiceImpl.undoFailed(solubilisation, reason, bannedContainers);
+        solubilisationActivityService.undoFailed(solubilisation, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

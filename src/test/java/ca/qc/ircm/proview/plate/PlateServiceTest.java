@@ -51,7 +51,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PlateServiceTest {
-  private PlateService plateServiceImpl;
+  private PlateService plateService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -72,7 +72,7 @@ public class PlateServiceTest {
    */
   @Before
   public void beforeTest() {
-    plateServiceImpl = new PlateService(entityManager, queryFactory, plateActivityService,
+    plateService = new PlateService(entityManager, queryFactory, plateActivityService,
         activityService, authorizationService);
   }
 
@@ -87,7 +87,7 @@ public class PlateServiceTest {
 
   @Test
   public void get() throws Exception {
-    Plate plate = plateServiceImpl.get(26L);
+    Plate plate = plateService.get(26L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
@@ -115,14 +115,14 @@ public class PlateServiceTest {
 
   @Test
   public void get_NullId() throws Exception {
-    Plate plate = plateServiceImpl.get((Long) null);
+    Plate plate = plateService.get((Long) null);
 
     assertNull(plate);
   }
 
   @Test
   public void get_Name() throws Exception {
-    Plate plate = plateServiceImpl.get("A_20111108");
+    Plate plate = plateService.get("A_20111108");
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
@@ -150,7 +150,7 @@ public class PlateServiceTest {
 
   @Test
   public void get_NullName() throws Exception {
-    Plate plate = plateServiceImpl.get((String) null);
+    Plate plate = plateService.get((String) null);
 
     assertNull(plate);
   }
@@ -159,7 +159,7 @@ public class PlateServiceTest {
   public void all() throws Exception {
     PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
 
-    List<Plate> plates = plateServiceImpl.all(filterBuilder.build());
+    List<Plate> plates = plateService.all(filterBuilder.build());
 
     verify(authorizationService).checkAdminRole();
     assertEquals(17, plates.size());
@@ -170,7 +170,7 @@ public class PlateServiceTest {
     PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
     filterBuilder.type(PlateType.A);
 
-    List<Plate> plates = plateServiceImpl.all(filterBuilder.build());
+    List<Plate> plates = plateService.all(filterBuilder.build());
 
     verify(authorizationService).checkAdminRole();
     assertEquals(15, plates.size());
@@ -187,7 +187,7 @@ public class PlateServiceTest {
     Sample sample2 = entityManager.find(Sample.class, 444L);
     filterBuilder.containsAnySamples(sample1, sample2);
 
-    List<Plate> plates = plateServiceImpl.all(filterBuilder.build());
+    List<Plate> plates = plateService.all(filterBuilder.build());
 
     verify(authorizationService).checkAdminRole();
     assertEquals(3, plates.size());
@@ -198,7 +198,7 @@ public class PlateServiceTest {
 
   @Test
   public void all_Null() throws Exception {
-    List<Plate> plates = plateServiceImpl.all(null);
+    List<Plate> plates = plateService.all(null);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(17, plates.size());
@@ -208,7 +208,7 @@ public class PlateServiceTest {
   public void available_True() throws Exception {
     Plate plate = new Plate(26L);
 
-    boolean available = plateServiceImpl.available(plate);
+    boolean available = plateService.available(plate);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(true, available);
@@ -218,7 +218,7 @@ public class PlateServiceTest {
   public void available_New() throws Exception {
     Plate plate = new Plate(122L);
 
-    boolean available = plateServiceImpl.available(plate);
+    boolean available = plateService.available(plate);
 
     assertEquals(true, available);
   }
@@ -227,7 +227,7 @@ public class PlateServiceTest {
   public void available_False() throws Exception {
     Plate plate = new Plate(108L);
 
-    boolean available = plateServiceImpl.available(plate);
+    boolean available = plateService.available(plate);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(false, available);
@@ -235,14 +235,14 @@ public class PlateServiceTest {
 
   @Test
   public void available_Null() throws Exception {
-    boolean available = plateServiceImpl.available(null);
+    boolean available = plateService.available(null);
 
     assertEquals(false, available);
   }
 
   @Test
   public void nameAvailable_True() throws Exception {
-    boolean available = plateServiceImpl.nameAvailable("unit_test");
+    boolean available = plateService.nameAvailable("unit_test");
 
     verify(authorizationService).checkAdminRole();
     assertEquals(true, available);
@@ -250,7 +250,7 @@ public class PlateServiceTest {
 
   @Test
   public void nameAvailable_False() throws Exception {
-    boolean available = plateServiceImpl.nameAvailable("A_20111108");
+    boolean available = plateService.nameAvailable("A_20111108");
 
     verify(authorizationService).checkAdminRole();
     assertEquals(false, available);
@@ -258,7 +258,7 @@ public class PlateServiceTest {
 
   @Test
   public void nameAvailable_Null() throws Exception {
-    boolean available = plateServiceImpl.nameAvailable(null);
+    boolean available = plateService.nameAvailable(null);
 
     assertEquals(false, available);
   }
@@ -270,14 +270,14 @@ public class PlateServiceTest {
     plate.setType(PlateType.A);
     when(plateActivityService.insert(any(Plate.class))).thenReturn(activity);
 
-    plateServiceImpl.insert(plate);
+    plateService.insert(plate);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).insert(plate);
     verify(activityService).insert(activity);
     assertNotNull(plate.getId());
-    plate = plateServiceImpl.get(plate.getId());
+    plate = plateService.get(plate.getId());
     assertEquals("test_plate_4896415", plate.getName());
     assertEquals(PlateType.A, plate.getType());
   }
@@ -290,7 +290,7 @@ public class PlateServiceTest {
     when(plateActivityService.ban(anyCollectionOf(PlateSpot.class), any(String.class)))
         .thenReturn(activity);
 
-    plateServiceImpl.ban(plate, location, location, "unit test");
+    plateService.ban(plate, location, location, "unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -312,13 +312,13 @@ public class PlateServiceTest {
     when(plateActivityService.ban(anyCollectionOf(PlateSpot.class), any(String.class)))
         .thenReturn(activity);
 
-    plateServiceImpl.ban(plate, from, to, "unit test");
+    plateService.ban(plate, from, to, "unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).ban(spotsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    List<PlateSpot> bannedSpots = plateServiceImpl.get(plate.getId()).spots(from, to);
+    List<PlateSpot> bannedSpots = plateService.get(plate.getId()).spots(from, to);
     for (PlateSpot bannedSpot : bannedSpots) {
       PlateSpot spot = entityManager.find(PlateSpot.class, bannedSpot.getId());
       assertEquals(true, spot.isBanned());
@@ -335,7 +335,7 @@ public class PlateServiceTest {
     when(plateActivityService.activate(anyCollectionOf(PlateSpot.class), any(String.class)))
         .thenReturn(activity);
 
-    plateServiceImpl.activate(plate, location, location, "unit test");
+    plateService.activate(plate, location, location, "unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -357,7 +357,7 @@ public class PlateServiceTest {
     when(plateActivityService.activate(anyCollectionOf(PlateSpot.class), any(String.class)))
         .thenReturn(activity);
 
-    plateServiceImpl.activate(plate, from, to, "unit test");
+    plateService.activate(plate, from, to, "unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();

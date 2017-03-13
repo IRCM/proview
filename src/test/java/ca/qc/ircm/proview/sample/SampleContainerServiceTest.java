@@ -44,7 +44,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SampleContainerServiceTest {
-  private SampleContainerService sampleContainerServiceImpl;
+  private SampleContainerService sampleContainerService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -54,7 +54,7 @@ public class SampleContainerServiceTest {
 
   @Before
   public void beforeTest() {
-    sampleContainerServiceImpl =
+    sampleContainerService =
         new SampleContainerService(entityManager, queryFactory, authorizationService);
   }
 
@@ -69,7 +69,7 @@ public class SampleContainerServiceTest {
 
   @Test
   public void get_Id() throws Throwable {
-    SampleContainer container = sampleContainerServiceImpl.get(1L);
+    SampleContainer container = sampleContainerService.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(container.getSample());
     assertEquals((Long) 1L, container.getId());
@@ -83,7 +83,7 @@ public class SampleContainerServiceTest {
 
   @Test
   public void get_NullId() throws Throwable {
-    SampleContainer container = sampleContainerServiceImpl.get((Long) null);
+    SampleContainer container = sampleContainerService.get((Long) null);
 
     assertNull(container);
   }
@@ -92,7 +92,7 @@ public class SampleContainerServiceTest {
   public void last() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    SampleContainer container = sampleContainerServiceImpl.last(sample);
+    SampleContainer container = sampleContainerService.last(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals((Long) 129L, container.getId());
@@ -106,7 +106,7 @@ public class SampleContainerServiceTest {
 
   @Test
   public void last_Null() throws Throwable {
-    SampleContainer container = sampleContainerServiceImpl.last(null);
+    SampleContainer container = sampleContainerService.last(null);
 
     assertNull(container);
   }
@@ -115,7 +115,7 @@ public class SampleContainerServiceTest {
   public void all() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    List<SampleContainer> containers = sampleContainerServiceImpl.all(sample);
+    List<SampleContainer> containers = sampleContainerService.all(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(5, containers.size());
@@ -128,7 +128,7 @@ public class SampleContainerServiceTest {
 
   @Test
   public void all_Null() throws Throwable {
-    List<SampleContainer> containers = sampleContainerServiceImpl.all(null);
+    List<SampleContainer> containers = sampleContainerService.all(null);
 
     assertEquals(0, containers.size());
   }

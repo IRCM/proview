@@ -62,7 +62,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DigestionServiceTest {
-  private DigestionService digestionServiceImpl;
+  private DigestionService digestionService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -84,7 +84,7 @@ public class DigestionServiceTest {
    */
   @Before
   public void beforeTest() {
-    digestionServiceImpl = new DigestionService(entityManager, queryFactory,
+    digestionService = new DigestionService(entityManager, queryFactory,
         digestionActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -102,7 +102,7 @@ public class DigestionServiceTest {
 
   @Test
   public void get() {
-    Digestion digestion = digestionServiceImpl.get(6L);
+    Digestion digestion = digestionService.get(6L);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(digestion);
@@ -126,7 +126,7 @@ public class DigestionServiceTest {
 
   @Test
   public void get_Null() {
-    Digestion digestion = digestionServiceImpl.get(null);
+    Digestion digestion = digestionService.get(null);
 
     assertNull(digestion);
   }
@@ -135,7 +135,7 @@ public class DigestionServiceTest {
   public void all_Tube() {
     Sample sample = new SubmissionSample(444L);
 
-    List<Digestion> digestions = digestionServiceImpl.all(sample);
+    List<Digestion> digestions = digestionService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, digestions.size());
@@ -147,7 +147,7 @@ public class DigestionServiceTest {
   public void all_Spot() {
     Sample sample = new SubmissionSample(559L);
 
-    List<Digestion> digestions = digestionServiceImpl.all(sample);
+    List<Digestion> digestions = digestionService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, digestions.size());
@@ -157,7 +157,7 @@ public class DigestionServiceTest {
 
   @Test
   public void all_Null() {
-    List<Digestion> digestions = digestionServiceImpl.all(null);
+    List<Digestion> digestions = digestionService.all(null);
 
     assertTrue(digestions.isEmpty());
   }
@@ -177,7 +177,7 @@ public class DigestionServiceTest {
     digestion.setTreatmentSamples(digestedSamples);
     when(digestionActivityService.insert(any(Digestion.class))).thenReturn(activity);
 
-    digestionServiceImpl.insert(digestion);
+    digestionService.insert(digestion);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -217,14 +217,14 @@ public class DigestionServiceTest {
     digestion.setTreatmentSamples(digestedSamples);
     when(digestionActivityService.insert(any(Digestion.class))).thenReturn(activity);
 
-    digestionServiceImpl.insert(digestion);
+    digestionService.insert(digestion);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).insert(eq(digestion));
     verify(activityService).insert(activity);
     assertNotNull(digestion.getId());
-    digestion = digestionServiceImpl.get(digestion.getId());
+    digestion = digestionService.get(digestion.getId());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionType());
     assertEquals(null, digestion.getDeletionJustification());
@@ -249,13 +249,13 @@ public class DigestionServiceTest {
     when(digestionActivityService.undoErroneous(any(Digestion.class), any(String.class)))
         .thenReturn(activity);
 
-    digestionServiceImpl.undoErroneous(digestion, "undo unit test");
+    digestionService.undoErroneous(digestion, "undo unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoErroneous(eq(digestion), eq("undo unit test"));
     verify(activityService).insert(activity);
-    digestion = digestionServiceImpl.get(digestion.getId());
+    digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, digestion.getDeletionType());
@@ -269,14 +269,14 @@ public class DigestionServiceTest {
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionServiceImpl.undoFailed(digestion, "fail unit test", false);
+    digestionService.undoFailed(digestion, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
-    digestion = digestionServiceImpl.get(digestion.getId());
+    digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
@@ -293,14 +293,14 @@ public class DigestionServiceTest {
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionServiceImpl.undoFailed(digestion, "fail unit test", true);
+    digestionService.undoFailed(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
-    digestion = digestionServiceImpl.get(digestion.getId());
+    digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
@@ -323,14 +323,14 @@ public class DigestionServiceTest {
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionServiceImpl.undoFailed(digestion, "fail unit test", true);
+    digestionService.undoFailed(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
-    Digestion test = digestionServiceImpl.get(digestion.getId());
+    Digestion test = digestionService.get(digestion.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
@@ -359,14 +359,14 @@ public class DigestionServiceTest {
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionServiceImpl.undoFailed(digestion, "fail unit test", true);
+    digestionService.undoFailed(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
-    Digestion test = digestionServiceImpl.get(digestion.getId());
+    Digestion test = digestionService.get(digestion.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
@@ -401,7 +401,7 @@ public class DigestionServiceTest {
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionServiceImpl.undoFailed(digestion, "fail unit test", true);
+    digestionService.undoFailed(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -409,7 +409,7 @@ public class DigestionServiceTest {
         containersCaptor.capture());
     verify(activityService).insert(activity);
     // Test that digestion failed.
-    digestion = digestionServiceImpl.get(digestion.getId());
+    digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
@@ -450,7 +450,7 @@ public class DigestionServiceTest {
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionServiceImpl.undoFailed(digestion, "fail unit test", true);
+    digestionService.undoFailed(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -458,7 +458,7 @@ public class DigestionServiceTest {
         containersCaptor.capture());
     verify(activityService).insert(activity);
     // Test that digestion failed.
-    digestion = digestionServiceImpl.get(digestion.getId());
+    digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
@@ -506,14 +506,14 @@ public class DigestionServiceTest {
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
     // Digestion failed.
-    digestionServiceImpl.undoFailed(digestion, "fail unit test", true);
+    digestionService.undoFailed(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    digestion = digestionServiceImpl.get(digestion.getId());
+    digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());

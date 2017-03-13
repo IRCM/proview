@@ -50,7 +50,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class TubeServiceTest {
-  private TubeService tubeServiceImpl;
+  private TubeService tubeService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -60,7 +60,7 @@ public class TubeServiceTest {
 
   @Before
   public void beforeTest() {
-    tubeServiceImpl = new TubeService(entityManager, queryFactory, authorizationService);
+    tubeService = new TubeService(entityManager, queryFactory, authorizationService);
   }
 
   private <D extends Data> D find(Collection<D> datas, long id) {
@@ -74,7 +74,7 @@ public class TubeServiceTest {
 
   @Test
   public void get_Id() throws Throwable {
-    Tube tube = tubeServiceImpl.get(1L);
+    Tube tube = tubeService.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(tube.getSample());
     assertEquals((Long) 1L, tube.getId());
@@ -89,14 +89,14 @@ public class TubeServiceTest {
 
   @Test
   public void get_NullId() throws Throwable {
-    Tube tube = tubeServiceImpl.get((Long) null);
+    Tube tube = tubeService.get((Long) null);
 
     assertNull(tube);
   }
 
   @Test
   public void get_Name() throws Throwable {
-    Tube tube = tubeServiceImpl.get("FAM119A_band_01");
+    Tube tube = tubeService.get("FAM119A_band_01");
 
     verify(authorizationService).checkSampleReadPermission(tube.getSample());
     assertEquals((Long) 1L, tube.getId());
@@ -111,7 +111,7 @@ public class TubeServiceTest {
 
   @Test
   public void get_NullName() throws Throwable {
-    Tube tube = tubeServiceImpl.get((String) null);
+    Tube tube = tubeService.get((String) null);
 
     assertNull(tube);
   }
@@ -120,7 +120,7 @@ public class TubeServiceTest {
   public void original() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    Tube tube = tubeServiceImpl.original(sample);
+    Tube tube = tubeService.original(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals((Long) 1L, tube.getId());
@@ -135,7 +135,7 @@ public class TubeServiceTest {
 
   @Test
   public void original_Null() throws Throwable {
-    Tube tube = tubeServiceImpl.original(null);
+    Tube tube = tubeService.original(null);
 
     assertNull(tube);
   }
@@ -144,7 +144,7 @@ public class TubeServiceTest {
   public void last() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    Tube tube = tubeServiceImpl.last(sample);
+    Tube tube = tubeService.last(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals((Long) 7L, tube.getId());
@@ -159,7 +159,7 @@ public class TubeServiceTest {
 
   @Test
   public void last_Null() throws Throwable {
-    Tube tube = tubeServiceImpl.last(null);
+    Tube tube = tubeService.last(null);
 
     assertNull(tube);
   }
@@ -168,7 +168,7 @@ public class TubeServiceTest {
   public void all() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    List<Tube> tubes = tubeServiceImpl.all(sample);
+    List<Tube> tubes = tubeService.all(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(3, tubes.size());
@@ -180,14 +180,14 @@ public class TubeServiceTest {
 
   @Test
   public void all_Null() throws Throwable {
-    List<Tube> tubes = tubeServiceImpl.all(null);
+    List<Tube> tubes = tubeService.all(null);
 
     assertEquals(0, tubes.size());
   }
 
   @Test
   public void selectNameSuggestion() throws Throwable {
-    List<String> tubeNames = tubeServiceImpl.selectNameSuggestion("FAM");
+    List<String> tubeNames = tubeService.selectNameSuggestion("FAM");
 
     verify(authorizationService).checkAdminRole();
     assertEquals(3, tubeNames.size());
@@ -199,7 +199,7 @@ public class TubeServiceTest {
 
   @Test
   public void selectNameSuggestion_Null() throws Throwable {
-    List<String> tubeNames = tubeServiceImpl.selectNameSuggestion(null);
+    List<String> tubeNames = tubeService.selectNameSuggestion(null);
 
     assertEquals(0, tubeNames.size());
   }
@@ -209,7 +209,7 @@ public class TubeServiceTest {
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     Set<String> exludes = Collections.emptySet();
 
-    String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
+    String tubeName = tubeService.generateTubeName(sample, exludes);
 
     verify(authorizationService).checkUserRole();
     assertEquals("FAM119A_band_01_1", tubeName);
@@ -221,7 +221,7 @@ public class TubeServiceTest {
     Set<String> exludes = new HashSet<>();
     exludes.add("FAM119A_band_01_1");
 
-    String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
+    String tubeName = tubeService.generateTubeName(sample, exludes);
 
     verify(authorizationService).checkUserRole();
     assertEquals("FAM119A_band_01_2", tubeName);
@@ -233,7 +233,7 @@ public class TubeServiceTest {
     Set<String> exludes = new HashSet<>();
     exludes.add("test");
 
-    String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
+    String tubeName = tubeService.generateTubeName(sample, exludes);
 
     verify(authorizationService).checkUserRole();
     assertEquals("FAM119A_band_01_1", tubeName);
@@ -244,7 +244,7 @@ public class TubeServiceTest {
     Sample sample = new SubmissionSample(null, "test");
     Set<String> exludes = Collections.emptySet();
 
-    String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
+    String tubeName = tubeService.generateTubeName(sample, exludes);
 
     verify(authorizationService).checkUserRole();
     assertEquals("test", tubeName);
@@ -258,7 +258,7 @@ public class TubeServiceTest {
     exludes.add("test_1");
     exludes.add("test_2");
 
-    String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
+    String tubeName = tubeService.generateTubeName(sample, exludes);
 
     verify(authorizationService).checkUserRole();
     assertEquals("test_3", tubeName);
@@ -272,7 +272,7 @@ public class TubeServiceTest {
     exludes.add("abc_1");
     exludes.add("abc_2");
 
-    String tubeName = tubeServiceImpl.generateTubeName(sample, exludes);
+    String tubeName = tubeService.generateTubeName(sample, exludes);
 
     verify(authorizationService).checkUserRole();
     assertEquals("test", tubeName);
@@ -282,7 +282,7 @@ public class TubeServiceTest {
   public void generateTubeName_NullSample() throws Throwable {
     Set<String> exludes = Collections.emptySet();
 
-    String tubeName = tubeServiceImpl.generateTubeName(null, exludes);
+    String tubeName = tubeService.generateTubeName(null, exludes);
 
     assertNull(tubeName);
   }
@@ -291,7 +291,7 @@ public class TubeServiceTest {
   public void generateTubeName_NullExcludes() throws Throwable {
     Sample sample = new SubmissionSample(null, "test");
 
-    String tubeName = tubeServiceImpl.generateTubeName(sample, null);
+    String tubeName = tubeService.generateTubeName(sample, null);
 
     verify(authorizationService).checkUserRole();
     assertEquals("test", tubeName);

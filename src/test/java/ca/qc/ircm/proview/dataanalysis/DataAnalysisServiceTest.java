@@ -53,7 +53,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DataAnalysisServiceTest {
-  private DataAnalysisService dataAnalysisServiceImpl;
+  private DataAnalysisService dataAnalysisService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -75,14 +75,14 @@ public class DataAnalysisServiceTest {
    */
   @Before
   public void beforeTest() {
-    dataAnalysisServiceImpl = new DataAnalysisService(entityManager, queryFactory,
+    dataAnalysisService = new DataAnalysisService(entityManager, queryFactory,
         dataAnalysisActivityService, activityService, authorizationService);
     optionalActivity = Optional.of(activity);
   }
 
   @Test
   public void get() {
-    DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(3L);
+    DataAnalysis dataAnalysis = dataAnalysisService.get(3L);
 
     verify(authorizationService).checkDataAnalysisReadPermission(dataAnalysis);
     assertEquals((Long) 3L, dataAnalysis.getId());
@@ -98,7 +98,7 @@ public class DataAnalysisServiceTest {
 
   @Test
   public void get_Null() {
-    DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(null);
+    DataAnalysis dataAnalysis = dataAnalysisService.get(null);
 
     assertNull(dataAnalysis);
   }
@@ -107,7 +107,7 @@ public class DataAnalysisServiceTest {
   public void all() {
     SubmissionSample sample = new SubmissionSample(1L);
 
-    List<DataAnalysis> dataAnalyses = dataAnalysisServiceImpl.all(sample);
+    List<DataAnalysis> dataAnalyses = dataAnalysisService.all(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(1, dataAnalyses.size());
@@ -125,7 +125,7 @@ public class DataAnalysisServiceTest {
 
   @Test
   public void all_Null() {
-    List<DataAnalysis> dataAnalyses = dataAnalysisServiceImpl.all(null);
+    List<DataAnalysis> dataAnalyses = dataAnalysisService.all(null);
 
     assertEquals(0, dataAnalyses.size());
   }
@@ -144,12 +144,12 @@ public class DataAnalysisServiceTest {
     dataAnalyses.add(dataAnalysis);
     when(dataAnalysisActivityService.insert(any(DataAnalysis.class))).thenReturn(activity);
 
-    dataAnalysisServiceImpl.insert(dataAnalyses);
+    dataAnalysisService.insert(dataAnalyses);
 
     entityManager.flush();
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNotNull(dataAnalysis.getId());
-    dataAnalysis = dataAnalysisServiceImpl.get(dataAnalysis.getId());
+    dataAnalysis = dataAnalysisService.get(dataAnalysis.getId());
     assertEquals(dataAnalysis.getId(), dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("85574", dataAnalysis.getProtein());
@@ -179,7 +179,7 @@ public class DataAnalysisServiceTest {
   public void analyse() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
-    DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(4L);
+    DataAnalysis dataAnalysis = dataAnalysisService.get(4L);
     entityManager.detach(dataAnalysis);
     assertEquals((Long) 4L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
@@ -198,11 +198,11 @@ public class DataAnalysisServiceTest {
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    dataAnalysisServiceImpl.analyse(dataAnalyses);
+    dataAnalysisService.analyse(dataAnalyses);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    dataAnalysis = dataAnalysisServiceImpl.get(4L);
+    dataAnalysis = dataAnalysisService.get(4L);
     assertEquals((Long) 4L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456, 58774", dataAnalysis.getProtein());
@@ -233,7 +233,7 @@ public class DataAnalysisServiceTest {
   public void update() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
-    DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(3L);
+    DataAnalysis dataAnalysis = dataAnalysisService.get(3L);
     entityManager.detach(dataAnalysis);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
@@ -250,11 +250,11 @@ public class DataAnalysisServiceTest {
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    dataAnalysisServiceImpl.update(dataAnalysis, "unit_test");
+    dataAnalysisService.update(dataAnalysis, "unit_test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    dataAnalysis = dataAnalysisServiceImpl.get(3L);
+    dataAnalysis = dataAnalysisService.get(3L);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456", dataAnalysis.getProtein());
@@ -285,7 +285,7 @@ public class DataAnalysisServiceTest {
   public void update_Status_Todo() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
-    DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(3L);
+    DataAnalysis dataAnalysis = dataAnalysisService.get(3L);
     entityManager.detach(dataAnalysis);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
@@ -302,10 +302,10 @@ public class DataAnalysisServiceTest {
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    dataAnalysisServiceImpl.update(dataAnalysis, "unit_test");
+    dataAnalysisService.update(dataAnalysis, "unit_test");
 
     entityManager.flush();
-    dataAnalysis = dataAnalysisServiceImpl.get(3L);
+    dataAnalysis = dataAnalysisService.get(3L);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456", dataAnalysis.getProtein());
@@ -336,7 +336,7 @@ public class DataAnalysisServiceTest {
   public void updateToAnalysed() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
-    DataAnalysis dataAnalysis = dataAnalysisServiceImpl.get(4L);
+    DataAnalysis dataAnalysis = dataAnalysisService.get(4L);
     entityManager.detach(dataAnalysis);
     assertEquals((Long) 4L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
@@ -353,10 +353,10 @@ public class DataAnalysisServiceTest {
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    dataAnalysisServiceImpl.update(dataAnalysis, "unit_test");
+    dataAnalysisService.update(dataAnalysis, "unit_test");
 
     entityManager.flush();
-    dataAnalysis = dataAnalysisServiceImpl.get(4L);
+    dataAnalysis = dataAnalysisService.get(4L);
     assertEquals((Long) 4L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456, 58774", dataAnalysis.getProtein());

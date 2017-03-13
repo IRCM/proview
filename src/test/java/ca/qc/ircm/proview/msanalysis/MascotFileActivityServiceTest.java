@@ -44,7 +44,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class MascotFileActivityServiceTest {
-  private MascotFileActivityService mascotFileActivityServiceImpl;
+  private MascotFileActivityService mascotFileActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -55,7 +55,7 @@ public class MascotFileActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    mascotFileActivityServiceImpl =
+    mascotFileActivityService =
         new MascotFileActivityService(entityManager, authorizationService);
   }
 
@@ -68,7 +68,7 @@ public class MascotFileActivityServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     Optional<Activity> optionalActivity =
-        mascotFileActivityServiceImpl.update(acquisitionMascotFile);
+        mascotFileActivityService.update(acquisitionMascotFile);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(true, optionalActivity.isPresent());
@@ -106,7 +106,7 @@ public class MascotFileActivityServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     Optional<Activity> optionalActivity =
-        mascotFileActivityServiceImpl.update(acquisitionMascotFile);
+        mascotFileActivityService.update(acquisitionMascotFile);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(false, optionalActivity.isPresent());

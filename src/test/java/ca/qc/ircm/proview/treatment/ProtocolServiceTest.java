@@ -38,7 +38,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ProtocolServiceTest {
-  private ProtocolService protocolServiceImpl;
+  private ProtocolService protocolService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -46,12 +46,12 @@ public class ProtocolServiceTest {
 
   @Before
   public void beforeTest() {
-    protocolServiceImpl = new ProtocolService(entityManager, authorizationService);
+    protocolService = new ProtocolService(entityManager, authorizationService);
   }
 
   @Test
   public void get_DigestionProtocol() throws Throwable {
-    Protocol protocol = protocolServiceImpl.get(1L);
+    Protocol protocol = protocolService.get(1L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 1L, protocol.getId());
@@ -62,7 +62,7 @@ public class ProtocolServiceTest {
 
   @Test
   public void get_EnrichmentProtocol() throws Throwable {
-    Protocol protocol = protocolServiceImpl.get(2L);
+    Protocol protocol = protocolService.get(2L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, protocol.getId());
@@ -73,7 +73,7 @@ public class ProtocolServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Protocol protocol = protocolServiceImpl.get(null);
+    Protocol protocol = protocolService.get(null);
 
     assertNull(protocol);
   }

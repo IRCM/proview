@@ -62,7 +62,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class EnrichmentServiceTest {
-  private EnrichmentService enrichmentServiceImpl;
+  private EnrichmentService enrichmentService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -84,7 +84,7 @@ public class EnrichmentServiceTest {
    */
   @Before
   public void beforeTest() {
-    enrichmentServiceImpl = new EnrichmentService(entityManager, queryFactory,
+    enrichmentService = new EnrichmentService(entityManager, queryFactory,
         enrichmentActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -102,7 +102,7 @@ public class EnrichmentServiceTest {
 
   @Test
   public void get() {
-    Enrichment enrichment = enrichmentServiceImpl.get(7L);
+    Enrichment enrichment = enrichmentService.get(7L);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(enrichment);
@@ -127,7 +127,7 @@ public class EnrichmentServiceTest {
 
   @Test
   public void get_Null() {
-    Enrichment enrichment = enrichmentServiceImpl.get(null);
+    Enrichment enrichment = enrichmentService.get(null);
 
     assertNull(enrichment);
   }
@@ -136,7 +136,7 @@ public class EnrichmentServiceTest {
   public void all_Tube() {
     Sample sample = new SubmissionSample(444L);
 
-    List<Enrichment> enrichments = enrichmentServiceImpl.all(sample);
+    List<Enrichment> enrichments = enrichmentService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, enrichments.size());
@@ -148,7 +148,7 @@ public class EnrichmentServiceTest {
   public void all_Spot() {
     Sample sample = new SubmissionSample(581L);
 
-    List<Enrichment> enrichments = enrichmentServiceImpl.all(sample);
+    List<Enrichment> enrichments = enrichmentService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, enrichments.size());
@@ -158,7 +158,7 @@ public class EnrichmentServiceTest {
 
   @Test
   public void all_Null() {
-    List<Enrichment> enrichments = enrichmentServiceImpl.all(null);
+    List<Enrichment> enrichments = enrichmentService.all(null);
 
     assertEquals(0, enrichments.size());
   }
@@ -178,14 +178,14 @@ public class EnrichmentServiceTest {
     enrichment.setTreatmentSamples(enrichedSamples);
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
-    enrichmentServiceImpl.insert(enrichment);
+    enrichmentService.insert(enrichment);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).insert(eq(enrichment));
     verify(activityService).insert(eq(activity));
     assertNotNull(enrichment.getId());
-    enrichment = enrichmentServiceImpl.get(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionType());
     assertEquals(null, enrichment.getDeletionJustification());
@@ -218,14 +218,14 @@ public class EnrichmentServiceTest {
     enrichment.setTreatmentSamples(enrichedSamples);
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
-    enrichmentServiceImpl.insert(enrichment);
+    enrichmentService.insert(enrichment);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).insert(eq(enrichment));
     verify(activityService).insert(eq(activity));
     assertNotNull(enrichment.getId());
-    enrichment = enrichmentServiceImpl.get(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionType());
     assertEquals(null, enrichment.getDeletionJustification());
@@ -250,13 +250,13 @@ public class EnrichmentServiceTest {
     when(enrichmentActivityService.undoErroneous(any(Enrichment.class), any(String.class)))
         .thenReturn(activity);
 
-    enrichmentServiceImpl.undoErroneous(enrichment, "undo unit test");
+    enrichmentService.undoErroneous(enrichment, "undo unit test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).undoErroneous(eq(enrichment), eq("undo unit test"));
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentServiceImpl.get(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, enrichment.getDeletionType());
@@ -270,14 +270,14 @@ public class EnrichmentServiceTest {
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentServiceImpl.undoFailed(enrichment, "fail unit test", false);
+    enrichmentService.undoFailed(enrichment, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentServiceImpl.get(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
@@ -293,14 +293,14 @@ public class EnrichmentServiceTest {
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentServiceImpl.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undoFailed(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentServiceImpl.get(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
@@ -322,14 +322,14 @@ public class EnrichmentServiceTest {
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentServiceImpl.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undoFailed(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentServiceImpl.get(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
@@ -357,14 +357,14 @@ public class EnrichmentServiceTest {
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentServiceImpl.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undoFailed(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentServiceImpl.get(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
@@ -398,13 +398,13 @@ public class EnrichmentServiceTest {
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentServiceImpl.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undoFailed(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentServiceImpl.get(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
@@ -444,13 +444,13 @@ public class EnrichmentServiceTest {
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentServiceImpl.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undoFailed(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentServiceImpl.get(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());

@@ -48,7 +48,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class EnrichmentProtocolServiceTest {
-  private EnrichmentProtocolService enrichmentProtocolServiceImpl;
+  private EnrichmentProtocolService enrichmentProtocolService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -69,13 +69,13 @@ public class EnrichmentProtocolServiceTest {
    */
   @Before
   public void beforeTest() {
-    enrichmentProtocolServiceImpl = new EnrichmentProtocolService(entityManager,
+    enrichmentProtocolService = new EnrichmentProtocolService(entityManager,
         queryFactory, protocolActivityService, activityService, authorizationService);
   }
 
   @Test
   public void get() throws Throwable {
-    EnrichmentProtocol protocol = enrichmentProtocolServiceImpl.get(2L);
+    EnrichmentProtocol protocol = enrichmentProtocolService.get(2L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, protocol.getId());
@@ -85,39 +85,39 @@ public class EnrichmentProtocolServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    EnrichmentProtocol protocol = enrichmentProtocolServiceImpl.get(null);
+    EnrichmentProtocol protocol = enrichmentProtocolService.get(null);
 
     assertNull(protocol);
   }
 
   @Test
   public void all() throws Throwable {
-    List<EnrichmentProtocol> protocols = enrichmentProtocolServiceImpl.all();
+    List<EnrichmentProtocol> protocols = enrichmentProtocolService.all();
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, protocols.size());
-    assertEquals(true, protocols.contains(enrichmentProtocolServiceImpl.get(2L)));
+    assertEquals(true, protocols.contains(enrichmentProtocolService.get(2L)));
   }
 
   @Test
   public void availableNameSecurity() throws Throwable {
-    enrichmentProtocolServiceImpl.availableName("enrichment_protocol_1");
+    enrichmentProtocolService.availableName("enrichment_protocol_1");
     verify(authorizationService).checkAdminRole();
   }
 
   @Test
   public void availableName_False() throws Throwable {
-    boolean available = enrichmentProtocolServiceImpl.availableName("enrichment_protocol_1");
+    boolean available = enrichmentProtocolService.availableName("enrichment_protocol_1");
 
     verify(authorizationService).checkAdminRole();
     assertEquals(false, available);
 
-    assertEquals(true, enrichmentProtocolServiceImpl.availableName("some_random_name"));
+    assertEquals(true, enrichmentProtocolService.availableName("some_random_name"));
   }
 
   @Test
   public void availableName_True() throws Throwable {
-    boolean available = enrichmentProtocolServiceImpl.availableName("some_random_name");
+    boolean available = enrichmentProtocolService.availableName("some_random_name");
 
     verify(authorizationService).checkAdminRole();
     assertEquals(true, available);
@@ -125,7 +125,7 @@ public class EnrichmentProtocolServiceTest {
 
   @Test
   public void availableName_Null() throws Throwable {
-    boolean available = enrichmentProtocolServiceImpl.availableName(null);
+    boolean available = enrichmentProtocolService.availableName(null);
 
     assertEquals(false, available);
   }
@@ -136,12 +136,12 @@ public class EnrichmentProtocolServiceTest {
     protocol.setName("unit_test_enrichment_protocol");
     when(protocolActivityService.insert(any(Protocol.class))).thenReturn(activity);
 
-    enrichmentProtocolServiceImpl.insert(protocol);
+    enrichmentProtocolService.insert(protocol);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     assertNotNull(protocol.getId());
-    protocol = enrichmentProtocolServiceImpl.get(protocol.getId());
+    protocol = enrichmentProtocolService.get(protocol.getId());
     assertEquals("unit_test_enrichment_protocol", protocol.getName());
     assertEquals(Protocol.Type.ENRICHMENT, protocol.getType());
     verify(protocolActivityService).insert(protocol);

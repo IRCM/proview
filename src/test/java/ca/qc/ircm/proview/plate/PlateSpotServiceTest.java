@@ -45,7 +45,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PlateSpotServiceTest {
-  private PlateSpotService plateSpotServiceImpl;
+  private PlateSpotService plateSpotService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -55,7 +55,7 @@ public class PlateSpotServiceTest {
 
   @Before
   public void beforeTest() {
-    plateSpotServiceImpl = new PlateSpotService(entityManager, queryFactory, authorizationService);
+    plateSpotService = new PlateSpotService(entityManager, queryFactory, authorizationService);
   }
 
   private PlateSpot find(Collection<PlateSpot> spots, long id) {
@@ -69,7 +69,7 @@ public class PlateSpotServiceTest {
 
   @Test
   public void get() throws Exception {
-    PlateSpot spot = plateSpotServiceImpl.get(129L);
+    PlateSpot spot = plateSpotService.get(129L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 129L, spot.getId());
@@ -86,7 +86,7 @@ public class PlateSpotServiceTest {
 
   @Test
   public void get_Null() throws Exception {
-    PlateSpot spot = plateSpotServiceImpl.get(null);
+    PlateSpot spot = plateSpotService.get(null);
 
     assertNull(spot);
   }
@@ -96,7 +96,7 @@ public class PlateSpotServiceTest {
     Plate plate = new Plate(26L);
     SpotLocation location = new SpotLocation(2, 3);
 
-    PlateSpot spot = plateSpotServiceImpl.get(plate, location);
+    PlateSpot spot = plateSpotService.get(plate, location);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 155L, spot.getId());
@@ -115,7 +115,7 @@ public class PlateSpotServiceTest {
   public void get_LocationNullPlate() throws Exception {
     SpotLocation location = new SpotLocation(2, 3);
 
-    PlateSpot spot = plateSpotServiceImpl.get(null, location);
+    PlateSpot spot = plateSpotService.get(null, location);
 
     assertNull(spot);
   }
@@ -124,7 +124,7 @@ public class PlateSpotServiceTest {
   public void get_LocationNullLocation() throws Exception {
     Plate plate = new Plate(26L);
 
-    PlateSpot spot = plateSpotServiceImpl.get(plate, null);
+    PlateSpot spot = plateSpotService.get(plate, null);
 
     assertNull(spot);
   }
@@ -133,7 +133,7 @@ public class PlateSpotServiceTest {
   public void last() throws Exception {
     Sample sample = new SubmissionSample(1L);
 
-    PlateSpot spot = plateSpotServiceImpl.last(sample);
+    PlateSpot spot = plateSpotService.last(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 129L, spot.getId());
@@ -141,7 +141,7 @@ public class PlateSpotServiceTest {
 
   @Test
   public void last_Null() throws Exception {
-    PlateSpot spot = plateSpotServiceImpl.last(null);
+    PlateSpot spot = plateSpotService.last(null);
 
     assertNull(spot);
   }
@@ -150,7 +150,7 @@ public class PlateSpotServiceTest {
   public void all_Plate() throws Exception {
     Plate plate = new Plate(26L);
 
-    List<PlateSpot> spots = plateSpotServiceImpl.all(plate);
+    List<PlateSpot> spots = plateSpotService.all(plate);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(96, spots.size());
@@ -161,7 +161,7 @@ public class PlateSpotServiceTest {
 
   @Test
   public void all_NullPlate() throws Exception {
-    List<PlateSpot> spots = plateSpotServiceImpl.all((Plate) null);
+    List<PlateSpot> spots = plateSpotService.all((Plate) null);
 
     assertEquals(0, spots.size());
   }
@@ -170,7 +170,7 @@ public class PlateSpotServiceTest {
   public void all_Sample() throws Exception {
     Sample sample = new SubmissionSample(629L);
 
-    List<PlateSpot> spots = plateSpotServiceImpl.all(sample);
+    List<PlateSpot> spots = plateSpotService.all(sample);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(3, spots.size());
@@ -181,7 +181,7 @@ public class PlateSpotServiceTest {
 
   @Test
   public void all_NullSample() throws Exception {
-    List<PlateSpot> spots = plateSpotServiceImpl.all((Sample) null);
+    List<PlateSpot> spots = plateSpotService.all((Sample) null);
 
     assertEquals(0, spots.size());
   }
@@ -191,7 +191,7 @@ public class PlateSpotServiceTest {
     Plate plate = new Plate(108L);
     Sample sample = new SubmissionSample(564L);
 
-    List<PlateSpot> spots = plateSpotServiceImpl.location(sample, plate);
+    List<PlateSpot> spots = plateSpotService.location(sample, plate);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, spots.size());
@@ -203,7 +203,7 @@ public class PlateSpotServiceTest {
   public void location_NullSample() throws Exception {
     Plate plate = new Plate(108L);
 
-    List<PlateSpot> spots = plateSpotServiceImpl.location(null, plate);
+    List<PlateSpot> spots = plateSpotService.location(null, plate);
 
     assertEquals(0, spots.size());
   }
@@ -212,7 +212,7 @@ public class PlateSpotServiceTest {
   public void location_NullPlate() throws Exception {
     Sample sample = new SubmissionSample(564L);
 
-    List<PlateSpot> spots = plateSpotServiceImpl.location(sample, null);
+    List<PlateSpot> spots = plateSpotService.location(sample, null);
 
     assertEquals(0, spots.size());
   }

@@ -17,10 +17,10 @@
 
 package ca.qc.ircm.proview.web;
 
-import com.ejt.vaadin.loginform.LoginForm;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.LoginForm;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 

@@ -49,7 +49,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DilutionActivityServiceTest {
-  private DilutionActivityService dilutionActivityServiceImpl;
+  private DilutionActivityService dilutionActivityService;
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
@@ -61,7 +61,7 @@ public class DilutionActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    dilutionActivityServiceImpl =
+    dilutionActivityService =
         new DilutionActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -83,7 +83,7 @@ public class DilutionActivityServiceTest {
     dilution.setId(123456L);
     dilution.setTreatmentSamples(dilutedSamples);
 
-    Activity activity = dilutionActivityServiceImpl.insert(dilution);
+    Activity activity = dilutionActivityService.insert(dilution);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -97,7 +97,7 @@ public class DilutionActivityServiceTest {
   public void undoErroneous() {
     Dilution dilution = new Dilution(4L);
 
-    Activity activity = dilutionActivityServiceImpl.undoErroneous(dilution, "unit_test");
+    Activity activity = dilutionActivityService.undoErroneous(dilution, "unit_test");
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -111,7 +111,7 @@ public class DilutionActivityServiceTest {
   public void undoFailed_NoBan() {
     Dilution dilution = new Dilution(4L);
 
-    Activity activity = dilutionActivityServiceImpl.undoFailed(dilution, "unit_test", null);
+    Activity activity = dilutionActivityService.undoFailed(dilution, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -131,7 +131,7 @@ public class DilutionActivityServiceTest {
     bannedContainers.add(spot);
 
     Activity activity =
-        dilutionActivityServiceImpl.undoFailed(dilution, "unit_test", bannedContainers);
+        dilutionActivityService.undoFailed(dilution, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -172,7 +172,7 @@ public class DilutionActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-    Activity activity = dilutionActivityServiceImpl.undoFailed(dilution, reason, bannedContainers);
+    Activity activity = dilutionActivityService.undoFailed(dilution, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

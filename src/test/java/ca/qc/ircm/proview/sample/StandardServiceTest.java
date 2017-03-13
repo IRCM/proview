@@ -39,7 +39,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class StandardServiceTest {
-  private StandardService standardServiceImpl;
+  private StandardService standardService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -51,13 +51,13 @@ public class StandardServiceTest {
 
   @Before
   public void beforeTest() {
-    standardServiceImpl =
+    standardService =
         new StandardService(entityManager, queryFactory, authorizationService);
   }
 
   @Test
   public void get() {
-    Standard standard = standardServiceImpl.get(4L);
+    Standard standard = standardService.get(4L);
 
     verify(authorizationService).checkSampleReadPermission(sampleCaptor.capture());
     assertEquals((Long) 445L, sampleCaptor.getValue().getId());
@@ -69,7 +69,7 @@ public class StandardServiceTest {
 
   @Test
   public void get_ControlSample() {
-    Standard standard = standardServiceImpl.get(6L);
+    Standard standard = standardService.get(6L);
 
     verify(authorizationService).checkSampleReadPermission(sampleCaptor.capture());
     assertEquals((Long) 448L, sampleCaptor.getValue().getId());
@@ -81,7 +81,7 @@ public class StandardServiceTest {
 
   @Test
   public void get_Null() {
-    Standard standard = standardServiceImpl.get(null);
+    Standard standard = standardService.get(null);
 
     assertNull(standard);
   }

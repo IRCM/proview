@@ -50,7 +50,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class MascotFileServiceTest {
-  private MascotFileService mascotFileServiceImpl;
+  private MascotFileService mascotFileService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -76,14 +76,14 @@ public class MascotFileServiceTest {
    */
   @Before
   public void beforeTest() {
-    mascotFileServiceImpl = new MascotFileService(entityManager, queryFactory,
+    mascotFileService = new MascotFileService(entityManager, queryFactory,
         mascotFileActivityService, msAnalysisService, activityService, authorizationService);
     optionalActivity = Optional.of(activity);
   }
 
   @Test
   public void get() throws Throwable {
-    AcquisitionMascotFile acquisitionMascotFile = mascotFileServiceImpl.get(1L);
+    AcquisitionMascotFile acquisitionMascotFile = mascotFileService.get(1L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 1L, acquisitionMascotFile.getId());
@@ -104,7 +104,7 @@ public class MascotFileServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    AcquisitionMascotFile acquisitionMascotFile = mascotFileServiceImpl.get(null);
+    AcquisitionMascotFile acquisitionMascotFile = mascotFileService.get(null);
 
     assertNull(acquisitionMascotFile);
   }
@@ -114,7 +114,7 @@ public class MascotFileServiceTest {
     Acquisition acquisition = new Acquisition(409L);
     when(msAnalysisService.get(any(Acquisition.class))).thenReturn(msAnalysis);
 
-    List<AcquisitionMascotFile> acquisitionMascotFiles = mascotFileServiceImpl.all(acquisition);
+    List<AcquisitionMascotFile> acquisitionMascotFiles = mascotFileService.all(acquisition);
 
     verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
     assertEquals(1, acquisitionMascotFiles.size());
@@ -137,7 +137,7 @@ public class MascotFileServiceTest {
 
   @Test
   public void all_Null() throws Throwable {
-    List<AcquisitionMascotFile> acquisitionMascotFiles = mascotFileServiceImpl.all(null);
+    List<AcquisitionMascotFile> acquisitionMascotFiles = mascotFileService.all(null);
 
     assertEquals(0, acquisitionMascotFiles.size());
   }
@@ -146,7 +146,7 @@ public class MascotFileServiceTest {
   public void exists_Sample_True() throws Throwable {
     Sample sample = new SubmissionSample(442L);
 
-    boolean exists = mascotFileServiceImpl.exists(sample);
+    boolean exists = mascotFileService.exists(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     verify(authorizationService).hasAdminRole();
@@ -157,7 +157,7 @@ public class MascotFileServiceTest {
   public void exists_Sample_False() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    boolean exists = mascotFileServiceImpl.exists(sample);
+    boolean exists = mascotFileService.exists(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     verify(authorizationService).hasAdminRole();
@@ -169,7 +169,7 @@ public class MascotFileServiceTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     Sample sample = new SubmissionSample(445L);
 
-    boolean exists = mascotFileServiceImpl.exists(sample);
+    boolean exists = mascotFileService.exists(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     verify(authorizationService).hasAdminRole();
@@ -181,7 +181,7 @@ public class MascotFileServiceTest {
     when(authorizationService.hasAdminRole()).thenReturn(false);
     Sample sample = new SubmissionSample(445L);
 
-    boolean exists = mascotFileServiceImpl.exists(sample);
+    boolean exists = mascotFileService.exists(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     verify(authorizationService).hasAdminRole();
@@ -190,7 +190,7 @@ public class MascotFileServiceTest {
 
   @Test
   public void exists_Null() throws Throwable {
-    boolean exists = mascotFileServiceImpl.exists(null);
+    boolean exists = mascotFileService.exists(null);
 
     assertEquals(false, exists);
   }
@@ -206,7 +206,7 @@ public class MascotFileServiceTest {
     when(mascotFileActivityService.update(any(AcquisitionMascotFile.class)))
         .thenReturn(optionalActivity);
 
-    mascotFileServiceImpl.update(acquisitionMascotFile);
+    mascotFileService.update(acquisitionMascotFile);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
