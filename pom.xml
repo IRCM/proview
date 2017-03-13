@@ -336,11 +336,6 @@
       <version>${vaadin-icons.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>loginform</artifactId>
-      <version>${loginform.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.vaadin.addon</groupId>
       <artifactId>confirmdialog</artifactId>
       <version>${confirmdialog.version}</version>
