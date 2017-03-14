@@ -87,7 +87,7 @@ public class PlateSpot extends SampleContainer implements Data, Named, Serializa
 
   @Override
   public String getName() {
-    return ((char) ('a' + this.getRow())) + "-" + (this.getColumn() + 1);
+    return ((char) ('A' + this.getRow())) + "-" + (this.getColumn() + 1);
   }
 
   @Override
