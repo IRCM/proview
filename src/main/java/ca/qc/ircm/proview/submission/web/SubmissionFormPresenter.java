@@ -94,6 +94,7 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
+import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.table.EmptyNullTableFieldFactory;
 import ca.qc.ircm.proview.web.table.ValidatableTableFieldFactory;
 import ca.qc.ircm.utils.MessageResource;
@@ -121,6 +122,10 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Upload.ProgressListener;
+import com.vaadin.ui.Upload.Receiver;
+import com.vaadin.ui.Upload.SucceededEvent;
+import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +136,7 @@ import org.springframework.stereotype.Controller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -375,7 +381,11 @@ public class SubmissionFormPresenter {
    */
   public void init(SubmissionForm view) {
     this.view = view;
-    view.createStructureUploader(structureFileHandler());
+    view.createStructureUploader();
+    StructureUploaderReceiver structureUploaderReceiver = new StructureUploaderReceiver();
+    view.structureUploader.setReceiver(structureUploaderReceiver);
+    view.structureUploader.addSucceededListener(structureUploaderReceiver);
+    view.structureUploader.addProgressListener(structureUploaderReceiver);
     view.createGelImagesUploader(gelImageFileHandler());
     view.createFilesUploader(fileHandler());
     prepareComponents();
@@ -516,9 +526,8 @@ public class SubmissionFormPresenter {
     view.structureButton.addStyleName(STRUCTURE_PROPERTY);
     view.structureButton.setVisible(false);
     view.structureUploader.addStyleName(STRUCTURE_UPLOADER);
-    view.structureUploader.setUploadButtonCaption(resources.message(STRUCTURE_UPLOADER));
-    view.structureUploader.setMaxFileCount(1000000); // Count is required if size is set.
-    view.structureUploader.setMaxFileSize(MAXIMUM_STRUCTURE_SIZE);
+    view.structureUploader.setButtonCaption(resources.message(STRUCTURE_UPLOADER));
+    view.structureUploader.setImmediate(true);
     view.monoisotopicMassField.addStyleName(MONOISOTOPIC_MASS_PROPERTY);
     view.monoisotopicMassField.setCaption(resources.message(MONOISOTOPIC_MASS_PROPERTY));
     view.monoisotopicMassField.setConverter(new StringToDoubleConverter());
@@ -1444,32 +1453,6 @@ public class SubmissionFormPresenter {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private MultiFileUploadFileHandler structureFileHandler() {
-    return (file, fileName, mimeType, length) -> {
-      logger.debug("Received structure file {}", fileName);
-      ByteArrayOutputStream content = new ByteArrayOutputStream();
-      try {
-        Files.copy(file.toPath(), content);
-      } catch (IOException e) {
-        MessageResource resources = view.getResources();
-        view.showError(resources.message(STRUCTURE_PROPERTY + ".error", fileName));
-        return;
-      }
-
-      Property<Structure> structureProperty =
-          submissionFieldGroup.getItemDataSource().getItemProperty(STRUCTURE_PROPERTY);
-      if (structureProperty.getValue() == null) {
-        structureProperty.setValue(new Structure());
-      }
-      Structure structure = structureProperty.getValue();
-      structure.setFilename(fileName);
-      structure.setContent(content.toByteArray());
-      view.structureButton.setVisible(true);
-      updateStructureButton(structure);
-    };
-  }
-
   private void updateStructureButton(Structure structure) {
     view.structureButton.getExtensions().stream().collect(Collectors.toList())
         .forEach(e -> e.remove());
@@ -1966,5 +1949,44 @@ public class SubmissionFormPresenter {
 
   public void setEditable(boolean editable) {
     editableProperty.setValue(editable);
+  }
+
+  @SuppressWarnings("serial")
+  private class StructureUploaderReceiver implements Receiver, SucceededListener, ProgressListener {
+    private ByteArrayOutputStream output;
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void uploadSucceeded(SucceededEvent event) {
+      String fileName = event.getFilename();
+      logger.debug("Received structure file {}", fileName);
+
+      Property<Structure> structureProperty =
+          submissionFieldGroup.getItemDataSource().getItemProperty(STRUCTURE_PROPERTY);
+      if (structureProperty.getValue() == null) {
+        structureProperty.setValue(new Structure());
+      }
+      Structure structure = structureProperty.getValue();
+      structure.setFilename(fileName);
+      structure.setContent(output.toByteArray());
+      view.structureButton.setVisible(true);
+      updateStructureButton(structure);
+    }
+
+    @Override
+    public OutputStream receiveUpload(String filename, String mimeType) {
+      output = new ByteArrayOutputStream();
+      return output;
+    }
+
+    @Override
+    public void updateProgress(long readBytes, long contentLength) {
+      if (output != null && output.size() > MAXIMUM_STRUCTURE_SIZE) {
+        view.structureUploader.interruptUpload();
+        MessageResource generalResources = view.getGeneralResources();
+        view.showError(
+            generalResources.message(WebConstants.OVER_MAXIMUM_SIZE, MAXIMUM_STRUCTURE_SIZE));
+      }
+    }
   }
 }

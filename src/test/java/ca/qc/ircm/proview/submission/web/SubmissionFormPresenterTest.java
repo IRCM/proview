@@ -137,6 +137,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.io.ByteStreams;
+
 import ca.qc.ircm.platelayout.PlateLayout;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -189,6 +191,10 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.Upload.Receiver;
+import com.vaadin.ui.Upload.SucceededEvent;
+import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
@@ -203,6 +209,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -229,7 +236,7 @@ public class SubmissionFormPresenterTest {
   @Mock
   private SubmissionForm view;
   @Mock
-  private DefaultMultiFileUpload structureUploader;
+  private Upload structureUploader;
   @Mock
   private DefaultMultiFileUpload gelImagesUploader;
   @Mock
@@ -238,6 +245,10 @@ public class SubmissionFormPresenterTest {
   private ArgumentCaptor<String> stringCaptor;
   @Captor
   private ArgumentCaptor<Boolean> booleanCaptor;
+  @Captor
+  private ArgumentCaptor<Receiver> receiverCaptor;
+  @Captor
+  private ArgumentCaptor<SucceededListener> succeededListenerCaptor;
   @Captor
   private ArgumentCaptor<MultiFileUploadFileHandler> uploadFinishedHandlerCaptor;
   @Captor
@@ -588,13 +599,15 @@ public class SubmissionFormPresenterTest {
   }
 
   private void uploadStructure() throws IOException {
-    verify(view).createStructureUploader(uploadFinishedHandlerCaptor.capture());
-    MultiFileUploadFileHandler handler = uploadFinishedHandlerCaptor.getValue();
+    verify(view.structureUploader).setReceiver(receiverCaptor.capture());
+    verify(view.structureUploader).addSucceededListener(succeededListenerCaptor.capture());
+    Receiver receiver = receiverCaptor.getValue();
+    SucceededListener listener = succeededListenerCaptor.getValue();
     random.nextBytes(structureContent);
-    Path structurePath = temporaryFolder.getRoot().toPath().resolve("structure.tmp");
-    Files.copy(new ByteArrayInputStream(structureContent), structurePath);
-    handler.handleFile(structurePath.toFile(), structureFilename, structureMimeType,
-        structureContent.length);
+    OutputStream output = receiver.receiveUpload(structureFilename, structureMimeType);
+    ByteStreams.copy(new ByteArrayInputStream(structureContent), output);
+    listener.uploadSucceeded(new SucceededEvent(view.structureUploader, structureFilename,
+        structureMimeType, structureContent.length));
   }
 
   private void uploadGelImages() throws IOException {
@@ -1237,7 +1250,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(FORMULA_PROPERTY), view.formulaField.getCaption());
     assertEquals(resources.message(STRUCTURE_PROPERTY), view.structureLayout.getCaption());
     assertEquals("", view.structureButton.getCaption());
-    verify(view.structureUploader).setUploadButtonCaption(resources.message(STRUCTURE_UPLOADER));
+    verify(view.structureUploader).setButtonCaption(resources.message(STRUCTURE_UPLOADER));
+    verify(view.structureUploader).setImmediate(true);
     assertEquals(resources.message(MONOISOTOPIC_MASS_PROPERTY),
         view.monoisotopicMassField.getCaption());
     assertEquals(resources.message(AVERAGE_MASS_PROPERTY), view.averageMassField.getCaption());

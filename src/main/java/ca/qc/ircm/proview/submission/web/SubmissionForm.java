@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.ui.Upload;
 import org.vaadin.easyuploads.MultiFileUpload;
 
 /**
@@ -30,7 +31,7 @@ import org.vaadin.easyuploads.MultiFileUpload;
 public class SubmissionForm extends SubmissionFormDesign implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
   private transient SubmissionFormPresenter presenter;
-  protected DefaultMultiFileUpload structureUploader;
+  protected Upload structureUploader;
   protected DefaultMultiFileUpload gelImagesUploader;
   protected DefaultMultiFileUpload filesUploader;
   protected PlateLayout samplesPlateLayout;
@@ -58,13 +59,10 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
   /**
    * Creates uploader for molecule structure.
    *
-   * @param fileHandler
-   *          handles uploaded files
    * @return uploader for molecule structure
    */
-  public MultiFileUpload createStructureUploader(MultiFileUploadFileHandler fileHandler) {
-    structureUploader = new DefaultMultiFileUpload();
-    structureUploader.setFileHandler(fileHandler);
+  public Upload createStructureUploader() {
+    structureUploader = new Upload();
     structureUploaderLayout.addComponent(structureUploader);
     return structureUploader;
   }
