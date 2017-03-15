@@ -19,11 +19,10 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.platelayout.PlateLayout;
 import ca.qc.ircm.proview.plate.PlateType;
+import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
+import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStartedHandler;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
+import org.vaadin.easyuploads.MultiFileUpload;
 
 /**
  * Submission form.
@@ -31,10 +30,9 @@ import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
 public class SubmissionForm extends SubmissionFormDesign implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
   private transient SubmissionFormPresenter presenter;
-  protected UploadStateWindow uploadStateWindow;
-  protected MultiFileUpload structureUploader;
-  protected MultiFileUpload gelImagesUploader;
-  protected MultiFileUpload filesUploader;
+  protected DefaultMultiFileUpload structureUploader;
+  protected DefaultMultiFileUpload gelImagesUploader;
+  protected DefaultMultiFileUpload filesUploader;
   protected PlateLayout samplesPlateLayout;
 
   public void setPresenter(SubmissionFormPresenter presenter) {
@@ -45,7 +43,6 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
    * Creates SubmissionForm.
    */
   public SubmissionForm() {
-    uploadStateWindow = new UploadStateWindow();
     int columns = PlateType.SUBMISSION.getColumnCount();
     int rows = PlateType.SUBMISSION.getRowCount();
     samplesPlateLayout = new PlateLayout(columns, rows);
@@ -61,18 +58,13 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
   /**
    * Creates uploader for molecule structure.
    *
-   * @param startedHandler
-   *          handler for upload started
-   * @param finishedHandler
-   *          handler for upload finished
-   * @param multi
-   *          true to allow multiple file upload, false otherwise
+   * @param fileHandler
+   *          handles uploaded files
    * @return uploader for molecule structure
    */
-  public MultiFileUpload createStructureUploader(UploadStartedHandler startedHandler,
-      UploadFinishedHandler finishedHandler, boolean multi) {
-    structureUploader =
-        new MultiFileUpload(startedHandler, finishedHandler, uploadStateWindow, multi);
+  public MultiFileUpload createStructureUploader(MultiFileUploadFileHandler fileHandler) {
+    structureUploader = new DefaultMultiFileUpload();
+    structureUploader.setFileHandler(fileHandler);
     structureUploaderLayout.addComponent(structureUploader);
     return structureUploader;
   }
@@ -80,18 +72,13 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
   /**
    * Creates uploader for gel images.
    *
-   * @param startedHandler
-   *          handler for upload started
-   * @param finishedHandler
-   *          handler for upload finished
-   * @param multi
-   *          true to allow multiple file upload, false otherwise
+   * @param fileHandler
+   *          handles uploaded files
    * @return uploader for gel images
    */
-  public MultiFileUpload createGelImagesUploader(UploadStartedHandler startedHandler,
-      UploadFinishedHandler finishedHandler, boolean multi) {
-    gelImagesUploader =
-        new MultiFileUpload(startedHandler, finishedHandler, uploadStateWindow, multi);
+  public MultiFileUpload createGelImagesUploader(MultiFileUploadFileHandler fileHandler) {
+    gelImagesUploader = new DefaultMultiFileUpload();
+    gelImagesUploader.setFileHandler(fileHandler);
     gelImagesUploaderLayout.addComponent(gelImagesUploader);
     return gelImagesUploader;
   }
@@ -99,17 +86,13 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
   /**
    * Creates uploader for additional files.
    *
-   * @param startedHandler
-   *          handler for upload started
-   * @param finishedHandler
-   *          handler for upload finished
-   * @param multi
-   *          true to allow multiple file upload, false otherwise
+   * @param fileHandler
+   *          handles uploaded files
    * @return uploader for additional files
    */
-  public MultiFileUpload createFilesUploader(UploadStartedHandler startedHandler,
-      UploadFinishedHandler finishedHandler, boolean multi) {
-    filesUploader = new MultiFileUpload(startedHandler, finishedHandler, uploadStateWindow, multi);
+  public MultiFileUpload createFilesUploader(MultiFileUploadFileHandler fileHandler) {
+    filesUploader = new DefaultMultiFileUpload();
+    filesUploader.setFileHandler(fileHandler);
     filesUploaderLayout.addComponent(filesUploader);
     return filesUploader;
   }

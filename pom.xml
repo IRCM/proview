@@ -69,7 +69,7 @@
     <popupbutton.version>2.6.0</popupbutton.version>
     <componentrenderer.version>1.0.3</componentrenderer.version>
     <plate-layout.version>0.2</plate-layout.version>
-    <multifileupload.version>1.11</multifileupload.version>
+    <easyuploads.version>7.4.10</easyuploads.version>
     <guava.version>19.0</guava.version>
     <commons-lang3.version>3.5</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
@@ -355,11 +355,11 @@
       <artifactId>plate-layout</artifactId>
       <version>${plate-layout.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.wcs.wcslib</groupId>
-      <artifactId>wcslib-vaadin-widget-multifileupload</artifactId>
-      <version>${multifileupload.version}</version>
-    </dependency>
+		<dependency>
+			<groupId>org.vaadin.addon</groupId>
+			<artifactId>easyuploads</artifactId>
+			<version>${easyuploads.version}</version>
+		</dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>

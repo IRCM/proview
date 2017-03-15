@@ -61,10 +61,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
-import static ca.qc.ircm.proview.web.WebConstants.OVER_MAXIMUM_SIZE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
-import static ca.qc.ircm.proview.web.WebConstants.UPLOAD_INTERRUPTED;
-import static ca.qc.ircm.proview.web.WebConstants.UPLOAD_STATUS;
 
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -96,7 +93,7 @@ import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
-import ca.qc.ircm.proview.web.WebConstants;
+import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.table.EmptyNullTableFieldFactory;
 import ca.qc.ircm.proview.web.table.ValidatableTableFieldFactory;
 import ca.qc.ircm.utils.MessageResource;
@@ -125,8 +122,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
-import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStartedHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -136,6 +131,7 @@ import org.springframework.stereotype.Controller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -155,7 +151,6 @@ import javax.inject.Inject;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionFormPresenter {
-  public static final String UPLOAD_STATE_WINDOW = "submission-upload-state";
   public static final String SAMPLE_TYPE_LABEL = "sampleTypeLabel";
   public static final String INACTIVE_LABEL = "inactive";
   public static final String SERVICE_PANEL = "servicePanel";
@@ -173,7 +168,7 @@ public class SubmissionFormPresenter {
   public static final String STRUCTURE_PROPERTY = submission.structure.getMetadata().getName();
   public static final String STRUCTURE_UPLOADER =
       submission.structure.getMetadata().getName() + "Uploader";
-  public static final long MAXIMUM_STRUCTURE_SIZE = 10 * 1024 * 1024; // 10MB
+  public static final int MAXIMUM_STRUCTURE_SIZE = 10 * 1024 * 1024; // 10MB
   public static final String MONOISOTOPIC_MASS_PROPERTY =
       submission.monoisotopicMass.getMetadata().getName();
   public static final String AVERAGE_MASS_PROPERTY = submission.averageMass.getMetadata().getName();
@@ -240,7 +235,7 @@ public class SubmissionFormPresenter {
   public static final String GEL_IMAGES_UPLOADER =
       submission.gelImages.getMetadata().getName() + "Uploader";
   public static final String GEL_IMAGES_TABLE = GEL_IMAGES_PROPERTY + "Table";
-  public static final long MAXIMUM_GEL_IMAGES_SIZE = 10 * 1024 * 1024; // 10MB;
+  public static final int MAXIMUM_GEL_IMAGES_SIZE = 10 * 1024 * 1024; // 10MB;
   public static final int MAXIMUM_GEL_IMAGES_COUNT = 4;
   public static final int GEL_IMAGES_TABLE_LENGTH = 3;
   public static final String GEL_IMAGE_FILENAME_PROPERTY =
@@ -282,7 +277,7 @@ public class SubmissionFormPresenter {
   public static final String FILES_PROPERTY = submission.files.getMetadata().getName();
   public static final String FILES_UPLOADER = submission.files.getMetadata().getName() + "Uploader";
   public static final String FILES_TABLE = FILES_PROPERTY + "Table";
-  public static final long MAXIMUM_FILES_SIZE = 10 * 1024 * 1024; // 10MB
+  public static final int MAXIMUM_FILES_SIZE = 10 * 1024 * 1024; // 10MB
   public static final int MAXIMUM_FILES_COUNT = 4;
   public static final int FILES_TABLE_LENGTH = 3;
   public static final String FILE_FILENAME_PROPERTY =
@@ -380,9 +375,9 @@ public class SubmissionFormPresenter {
    */
   public void init(SubmissionForm view) {
     this.view = view;
-    view.createStructureUploader(voidUploadStartedHandler(), structureFileHandler(), false);
-    view.createGelImagesUploader(voidUploadStartedHandler(), gelImageFileHandler(), true);
-    view.createFilesUploader(voidUploadStartedHandler(), fileHandler(), true);
+    view.createStructureUploader(structureFileHandler());
+    view.createGelImagesUploader(gelImageFileHandler());
+    view.createFilesUploader(fileHandler());
     prepareComponents();
     setItemDataSource(null);
     bindFields();
@@ -399,9 +394,6 @@ public class SubmissionFormPresenter {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.uploadStateWindow.addStyleName(UPLOAD_STATE_WINDOW);
-    view.uploadStateWindow.setUploadStatusCaption(generalResources.message(UPLOAD_STATUS));
-    view.uploadStateWindow.setCancelButtonCaption(generalResources.message(WebConstants.CANCEL));
     view.sampleTypeLabel.addStyleName(SAMPLE_TYPE_LABEL);
     view.sampleTypeLabel.setValue(resources.message(SAMPLE_TYPE_LABEL));
     view.inactiveLabel.addStyleName(INACTIVE_LABEL);
@@ -431,13 +423,9 @@ public class SubmissionFormPresenter {
     view.filesPanel.addStyleName(FILES_PROPERTY);
     view.filesPanel.setCaption(resources.message(FILES_PROPERTY));
     view.filesUploader.addStyleName(FILES_UPLOADER);
-    view.filesUploader.setUploadButtonCaptions(resources.message(FILES_UPLOADER),
-        resources.message(FILES_UPLOADER));
-    view.filesUploader.setUploadButtonIcon(FontAwesome.FILES_O);
-    view.filesUploader.setPanelCaption(resources.message(FILES_PROPERTY));
+    view.filesUploader.setUploadButtonCaption(resources.message(FILES_UPLOADER));
+    view.filesUploader.setMaxFileCount(1000000); // Count is required if size is set.
     view.filesUploader.setMaxFileSize(MAXIMUM_FILES_SIZE);
-    view.filesUploader.setInterruptedMsg(generalResources.message(UPLOAD_INTERRUPTED));
-    view.filesUploader.setSizeErrorMsgPattern(generalResources.message(OVER_MAXIMUM_SIZE));
     filesGeneratedContainer.addGeneratedProperty(FILE_FILENAME_PROPERTY,
         new PropertyValueGenerator<Button>() {
           @Override
@@ -528,13 +516,9 @@ public class SubmissionFormPresenter {
     view.structureButton.addStyleName(STRUCTURE_PROPERTY);
     view.structureButton.setVisible(false);
     view.structureUploader.addStyleName(STRUCTURE_UPLOADER);
-    view.structureUploader.setUploadButtonCaptions(resources.message(STRUCTURE_UPLOADER),
-        resources.message(STRUCTURE_UPLOADER));
-    view.structureUploader.setUploadButtonIcon(FontAwesome.FILE_O);
-    view.structureUploader.setPanelCaption(resources.message(STRUCTURE_PROPERTY));
+    view.structureUploader.setUploadButtonCaption(resources.message(STRUCTURE_UPLOADER));
+    view.structureUploader.setMaxFileCount(1000000); // Count is required if size is set.
     view.structureUploader.setMaxFileSize(MAXIMUM_STRUCTURE_SIZE);
-    view.structureUploader.setInterruptedMsg(generalResources.message(UPLOAD_INTERRUPTED));
-    view.structureUploader.setSizeErrorMsgPattern(generalResources.message(OVER_MAXIMUM_SIZE));
     view.monoisotopicMassField.addStyleName(MONOISOTOPIC_MASS_PROPERTY);
     view.monoisotopicMassField.setCaption(resources.message(MONOISOTOPIC_MASS_PROPERTY));
     view.monoisotopicMassField.setConverter(new StringToDoubleConverter());
@@ -827,13 +811,9 @@ public class SubmissionFormPresenter {
     view.gelImagesLayout.addStyleName(REQUIRED);
     view.gelImagesLayout.setCaption(resources.message(GEL_IMAGES_PROPERTY));
     view.gelImagesUploader.addStyleName(GEL_IMAGES_PROPERTY);
-    view.gelImagesUploader.setUploadButtonCaptions(resources.message(GEL_IMAGES_UPLOADER),
-        resources.message(GEL_IMAGES_UPLOADER));
-    view.gelImagesUploader.setUploadButtonIcon(FontAwesome.FILES_O);
-    view.gelImagesUploader.setPanelCaption(resources.message(GEL_IMAGES_PROPERTY));
+    view.gelImagesUploader.setUploadButtonCaption(resources.message(GEL_IMAGES_UPLOADER));
+    view.gelImagesUploader.setMaxFileCount(1000000); // Count is required if size is set.
     view.gelImagesUploader.setMaxFileSize(MAXIMUM_GEL_IMAGES_SIZE);
-    view.gelImagesUploader.setInterruptedMsg(generalResources.message(UPLOAD_INTERRUPTED));
-    view.gelImagesUploader.setSizeErrorMsgPattern(generalResources.message(OVER_MAXIMUM_SIZE));
     gelImagesGeneratedContainer.addGeneratedProperty(GEL_IMAGE_FILENAME_PROPERTY,
         new PropertyValueGenerator<Button>() {
           @Override
@@ -1464,25 +1444,16 @@ public class SubmissionFormPresenter {
     }
   }
 
-  private UploadStartedHandler voidUploadStartedHandler() {
-    return () -> {
-    };
-  }
-
   @SuppressWarnings("unchecked")
-  private UploadFinishedHandler structureFileHandler() {
-    return (input, filename, mimetype, length) -> {
-      logger.debug("Received structure file {}", filename);
+  private MultiFileUploadFileHandler structureFileHandler() {
+    return (file, fileName, mimeType, length) -> {
+      logger.debug("Received structure file {}", fileName);
       ByteArrayOutputStream content = new ByteArrayOutputStream();
       try {
-        byte[] buff = new byte[4096];
-        int read;
-        while ((read = input.read(buff)) > -1) {
-          content.write(buff, 0, read);
-        }
+        Files.copy(file.toPath(), content);
       } catch (IOException e) {
         MessageResource resources = view.getResources();
-        view.showError(resources.message(STRUCTURE_PROPERTY + ".error", filename));
+        view.showError(resources.message(STRUCTURE_PROPERTY + ".error", fileName));
         return;
       }
 
@@ -1492,7 +1463,7 @@ public class SubmissionFormPresenter {
         structureProperty.setValue(new Structure());
       }
       Structure structure = structureProperty.getValue();
-      structure.setFilename(filename);
+      structure.setFilename(fileName);
       structure.setContent(content.toByteArray());
       view.structureButton.setVisible(true);
       updateStructureButton(structure);
@@ -1513,27 +1484,23 @@ public class SubmissionFormPresenter {
     }
   }
 
-  private UploadFinishedHandler gelImageFileHandler() {
-    return (input, filename, mimetype, length) -> {
+  private MultiFileUploadFileHandler gelImageFileHandler() {
+    return (file, fileName, mimetype, length) -> {
       if (gelImagesContainer.size() >= MAXIMUM_GEL_IMAGES_COUNT) {
         return;
       }
 
       ByteArrayOutputStream content = new ByteArrayOutputStream();
       try {
-        byte[] buff = new byte[4096];
-        int read;
-        while ((read = input.read(buff)) > -1) {
-          content.write(buff, 0, read);
-        }
+        Files.copy(file.toPath(), content);
       } catch (IOException e) {
         MessageResource resources = view.getResources();
-        view.showError(resources.message(STRUCTURE_PROPERTY + ".error", filename));
+        view.showError(resources.message(GEL_IMAGES_PROPERTY + ".error", fileName));
         return;
       }
 
       GelImage gelImage = new GelImage();
-      gelImage.setFilename(filename);
+      gelImage.setFilename(fileName);
       gelImage.setContent(content.toByteArray());
       gelImagesContainer.addBean(gelImage);
       warnIfGelImageAtMaximum();
@@ -1548,27 +1515,23 @@ public class SubmissionFormPresenter {
     }
   }
 
-  private UploadFinishedHandler fileHandler() {
-    return (input, filename, mimetype, length) -> {
+  private MultiFileUploadFileHandler fileHandler() {
+    return (file, fileName, mimetype, length) -> {
       if (filesContainer.size() >= MAXIMUM_GEL_IMAGES_COUNT) {
         return;
       }
 
       ByteArrayOutputStream content = new ByteArrayOutputStream();
       try {
-        byte[] buff = new byte[4096];
-        int read;
-        while ((read = input.read(buff)) > -1) {
-          content.write(buff, 0, read);
-        }
+        Files.copy(file.toPath(), content);
       } catch (IOException e) {
         MessageResource resources = view.getResources();
-        view.showError(resources.message(STRUCTURE_PROPERTY + ".error", filename));
+        view.showError(resources.message(FILES_PROPERTY + ".error", fileName));
         return;
       }
 
       SubmissionFile submissionFile = new SubmissionFile();
-      submissionFile.setFilename(filename);
+      submissionFile.setFilename(fileName);
       submissionFile.setContent(content.toByteArray());
       filesContainer.addBean(submissionFile);
       warnIfFilesAtMaximum();
