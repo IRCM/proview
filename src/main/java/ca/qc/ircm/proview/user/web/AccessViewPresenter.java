@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+
 import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.QUser;
@@ -88,7 +90,6 @@ public class AccessViewPresenter {
   public static final String CLEAR = "clear";
   public static final String ALL = "all";
   public static final String HIDE_SELECTION = "hide-selection";
-  public static final String COMPONENTS = "components";
   public static final Object NULL_ID = -1;
   private static final String[] COLUMNS =
       { SELECT, EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, ACTIVE, VIEW };

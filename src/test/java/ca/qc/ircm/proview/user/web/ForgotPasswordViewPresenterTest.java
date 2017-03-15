@@ -93,6 +93,7 @@ public class ForgotPasswordViewPresenterTest {
     view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     when(forgotPasswordService.get(any(), any())).thenReturn(forgotPassword);
     parameters = id + "/" + confirmNumber;
     presenter.init(view);

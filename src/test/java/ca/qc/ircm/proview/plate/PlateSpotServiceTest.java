@@ -55,8 +55,7 @@ public class PlateSpotServiceTest {
 
   @Before
   public void beforeTest() {
-    plateSpotService =
-        new PlateSpotService(entityManager, queryFactory, authorizationService);
+    plateSpotService = new PlateSpotService(entityManager, queryFactory, authorizationService);
   }
 
   private PlateSpot find(Collection<PlateSpot> spots, long id) {
@@ -148,7 +147,7 @@ public class PlateSpotServiceTest {
   }
 
   @Test
-  public void all() throws Exception {
+  public void all_Plate() throws Exception {
     Plate plate = new Plate(26L);
 
     List<PlateSpot> spots = plateSpotService.all(plate);
@@ -161,8 +160,28 @@ public class PlateSpotServiceTest {
   }
 
   @Test
-  public void all_Null() throws Exception {
-    List<PlateSpot> spots = plateSpotService.all(null);
+  public void all_NullPlate() throws Exception {
+    List<PlateSpot> spots = plateSpotService.all((Plate) null);
+
+    assertEquals(0, spots.size());
+  }
+
+  @Test
+  public void all_Sample() throws Exception {
+    Sample sample = new SubmissionSample(629L);
+
+    List<PlateSpot> spots = plateSpotService.all(sample);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(3, spots.size());
+    assertNotNull(find(spots, 1474));
+    assertNotNull(find(spots, 1568));
+    assertNotNull(find(spots, 1580));
+  }
+
+  @Test
+  public void all_NullSample() throws Exception {
+    List<PlateSpot> spots = plateSpotService.all((Sample) null);
 
     assertEquals(0, spots.size());
   }

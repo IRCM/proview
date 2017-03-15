@@ -145,9 +145,9 @@ import ca.qc.ircm.platelayout.PlateLayout;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
-import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -377,8 +377,8 @@ public class SubmissionFormPresenterTest {
     view.samplesTable = new Table();
     view.fillSamplesButton = new Button();
     view.samplesPlateContainer = new VerticalLayout();
-    int columns = Plate.Type.SUBMISSION.getColumnCount();
-    int rows = Plate.Type.SUBMISSION.getRowCount();
+    int columns = PlateType.SUBMISSION.getColumnCount();
+    int rows = PlateType.SUBMISSION.getRowCount();
     view.samplesPlateLayout = new PlateLayout(columns, rows);
     view.experiencePanel = new Panel();
     view.experienceField = new TextField();
@@ -444,6 +444,7 @@ public class SubmissionFormPresenterTest {
     view.submitButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     when(plateService.nameAvailable(any())).thenReturn(true);
   }
 

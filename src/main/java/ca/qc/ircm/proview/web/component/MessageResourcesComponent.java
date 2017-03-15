@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.web.component;
 
+import static ca.qc.ircm.proview.web.WebConstants.GENERAL_MESSAGES;
+
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Component;
 
@@ -26,5 +28,9 @@ import com.vaadin.ui.Component;
 public interface MessageResourcesComponent extends Component {
   default MessageResource getResources() {
     return new MessageResource(getClass(), getLocale());
+  }
+
+  default MessageResource getGeneralResources() {
+    return new MessageResource(GENERAL_MESSAGES, getLocale());
   }
 }

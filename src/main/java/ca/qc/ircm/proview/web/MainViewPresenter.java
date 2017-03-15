@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
-import static ca.qc.ircm.proview.web.WebConstants.GENERAL_MESSAGES;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -103,8 +102,7 @@ public class MainViewPresenter {
 
   private void prepareComponents() {
     MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(WebConstants.GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.setTitle(resources.message(TITLE, applicationName));
     view.header.addStyleName(HEADER);
     view.header.setValue(resources.message(HEADER));
@@ -165,8 +163,7 @@ public class MainViewPresenter {
       view.signForm.getUserNameField().commit();
       view.signForm.getPasswordField().commit();
     } catch (InvalidValueException e) {
-      final MessageResource generalResources =
-          new MessageResource(GENERAL_MESSAGES, view.getLocale());
+      final MessageResource generalResources = view.getGeneralResources();
       logger.debug("Validation failed for sign user with message {}", e.getMessage());
       view.showError(generalResources.message(FIELD_NOTIFICATION));
       valid = false;
@@ -201,8 +198,7 @@ public class MainViewPresenter {
     try {
       view.forgotPasswordEmailField.commit();
     } catch (InvalidValueException e) {
-      final MessageResource generalResources =
-          new MessageResource(GENERAL_MESSAGES, view.getLocale());
+      final MessageResource generalResources = view.getGeneralResources();
       logger.trace("Validation failed for forgot password with message {}", e.getMessage(), e);
       view.showError(generalResources.message(FIELD_NOTIFICATION));
       valid = false;

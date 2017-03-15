@@ -187,6 +187,7 @@ public class UserFormPresenterTest {
     view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     when(defaultAddressConfiguration.getAddress()).thenReturn(defaultAddressLine);
     when(defaultAddressConfiguration.getTown()).thenReturn(defaultTown);
     when(defaultAddressConfiguration.getState()).thenReturn(defaultState);

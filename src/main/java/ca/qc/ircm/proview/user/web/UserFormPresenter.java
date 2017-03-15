@@ -23,7 +23,6 @@ import static ca.qc.ircm.proview.user.QPhoneNumber.phoneNumber;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
-import static ca.qc.ircm.proview.web.WebConstants.GENERAL_MESSAGES;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -141,8 +140,7 @@ public class UserFormPresenter {
 
   private void prepareComponents() {
     MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     view.userPanel.addStyleName(USER);
     view.userPanel.setCaption(resources.message(USER));
     view.emailField.addStyleName(EMAIL);
@@ -338,8 +336,7 @@ public class UserFormPresenter {
 
   private void addPhoneNumber(PhoneNumber phoneNumber) {
     final MessageResource resources = view.getResources();
-    final MessageResource generalResources =
-        new MessageResource(GENERAL_MESSAGES, view.getLocale());
+    final MessageResource generalResources = view.getGeneralResources();
     BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup = new BeanFieldGroup<>(PhoneNumber.class);
     phoneNumberFieldGroup.setItemDataSource(new BeanItem<>(phoneNumber));
     phoneNumberFieldGroups.add(phoneNumberFieldGroup);
@@ -413,8 +410,7 @@ public class UserFormPresenter {
         phoneNumberFieldGroup.commit();
       }
     } catch (InvalidValueException | CommitException e) {
-      final MessageResource generalResources =
-          new MessageResource(GENERAL_MESSAGES, view.getLocale());
+      final MessageResource generalResources = view.getGeneralResources();
       logger.trace("Validation {} failed with message {}",
           e instanceof CommitException ? "commit" : "value", e.getMessage(), e);
       view.showError(generalResources.message(FIELD_NOTIFICATION));

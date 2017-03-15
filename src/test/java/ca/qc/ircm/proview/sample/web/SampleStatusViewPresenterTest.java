@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.CANCEL;
-import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.COMPONENTS;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.DOWN;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.HEADER;
@@ -32,6 +31,7 @@ import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAMPLES;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAVE;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.TITLE;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
@@ -124,6 +124,7 @@ public class SampleStatusViewPresenterTest {
     view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     when(view.savedSamples()).thenReturn(samples);
     samples.add(entityManager.find(Sample.class, 442L));
     samples.add(entityManager.find(Sample.class, 443L));

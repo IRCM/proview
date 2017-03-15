@@ -508,7 +508,7 @@ VALUES (246,'SPOT',NULL,107,10,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
 VALUES (247,'SPOT',NULL,107,11,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (248,'SPOT',NULL,107,0,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (248,'SPOT',NULL,107,0,2,444,193,'2014-10-08 10:41:52',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
 VALUES (249,'SPOT',NULL,107,1,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)

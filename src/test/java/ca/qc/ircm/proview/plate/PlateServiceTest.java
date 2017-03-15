@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -91,13 +92,13 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertEquals(Plate.Type.A, plate.getType());
+    assertEquals(PlateType.A, plate.getType());
     assertEquals((Long) 26L, plate.getId());
     final List<PlateSpot> spots = plate.getSpots();
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertEquals(Plate.Type.A, plate.getType());
+    assertEquals(PlateType.A, plate.getType());
     assertEquals(96, spots.size());
     final int rowCount = plate.getType().getRowCount();
     List<PlateSpot> someSpots = plate.spots(new SpotLocation(0, 1), new SpotLocation(rowCount, 1));
@@ -113,40 +114,94 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void get_Null() throws Exception {
-    Plate plate = plateService.get(null);
+  public void get_NullId() throws Exception {
+    Plate plate = plateService.get((Long) null);
 
     assertNull(plate);
   }
 
   @Test
-  public void getWithSpots() throws Exception {
-    Plate plate = plateService.getWithSpots(26L);
+  public void get_Name() throws Exception {
+    Plate plate = plateService.get("A_20111108");
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
+    assertEquals("A_20111108", plate.getName());
+    assertEquals(PlateType.A, plate.getType());
+    assertEquals((Long) 26L, plate.getId());
+    final List<PlateSpot> spots = plate.getSpots();
+    verify(authorizationService).checkAdminRole();
+    assertEquals((Long) 26L, plate.getId());
+    assertEquals("A_20111108", plate.getName());
+    assertEquals(PlateType.A, plate.getType());
+    assertEquals(96, spots.size());
+    final int rowCount = plate.getType().getRowCount();
+    List<PlateSpot> someSpots = plate.spots(new SpotLocation(0, 1), new SpotLocation(rowCount, 1));
+    assertEquals(plate.getType().getRowCount(), someSpots.size());
+    for (PlateSpot testSpot : someSpots) {
+      assertEquals(1, testSpot.getColumn());
+    }
+    PlateSpot spot = plate.spot(2, 3);
+    assertEquals(2, spot.getRow());
+    assertEquals(3, spot.getColumn());
+    assertEquals(91, plate.getEmptySpotCount());
+    assertEquals(2, plate.getSampleCount());
   }
 
   @Test
-  public void getWithSpots_Null() throws Exception {
-    Plate plate = plateService.getWithSpots(null);
+  public void get_NullName() throws Exception {
+    Plate plate = plateService.get((String) null);
 
     assertNull(plate);
   }
 
   @Test
-  public void choices() throws Exception {
-    List<Plate> plates = plateService.choices(Plate.Type.A);
+  public void all() throws Exception {
+    PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
+
+    List<Plate> plates = plateService.all(filterBuilder.build());
 
     verify(authorizationService).checkAdminRole();
-    assertNotNull(find(plates, 26L));
+    assertEquals(17, plates.size());
   }
 
   @Test
-  public void choices_Null() throws Exception {
-    List<Plate> plates = plateService.choices(null);
+  public void all_Type() throws Exception {
+    PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
+    filterBuilder.type(PlateType.A);
 
-    assertEquals(0, plates.size());
+    List<Plate> plates = plateService.all(filterBuilder.build());
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(15, plates.size());
+    assertNotNull(find(plates, 26L));
+    assertNotNull(find(plates, 122L));
+    assertNull(find(plates, 107L));
+    assertNull(find(plates, 111L));
+  }
+
+  @Test
+  public void all_ContainsAnySamples() throws Exception {
+    PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
+    Sample sample1 = entityManager.find(Sample.class, 629L);
+    Sample sample2 = entityManager.find(Sample.class, 444L);
+    filterBuilder.containsAnySamples(sample1, sample2);
+
+    List<Plate> plates = plateService.all(filterBuilder.build());
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(3, plates.size());
+    assertNotNull(find(plates, 107L));
+    assertNotNull(find(plates, 120L));
+    assertNotNull(find(plates, 121L));
+  }
+
+  @Test
+  public void all_Null() throws Exception {
+    List<Plate> plates = plateService.all(null);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(17, plates.size());
   }
 
   @Test
@@ -212,7 +267,7 @@ public class PlateServiceTest {
   public void insert() throws Exception {
     Plate plate = new Plate();
     plate.setName("test_plate_4896415");
-    plate.setType(Plate.Type.A);
+    plate.setType(PlateType.A);
     when(plateActivityService.insert(any(Plate.class))).thenReturn(activity);
 
     plateService.insert(plate);
@@ -224,7 +279,7 @@ public class PlateServiceTest {
     assertNotNull(plate.getId());
     plate = plateService.get(plate.getId());
     assertEquals("test_plate_4896415", plate.getName());
-    assertEquals(Plate.Type.A, plate.getType());
+    assertEquals(PlateType.A, plate.getType());
   }
 
   @Test
@@ -263,7 +318,7 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).ban(spotsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    List<PlateSpot> bannedSpots = plateService.getWithSpots(plate.getId()).spots(from, to);
+    List<PlateSpot> bannedSpots = plateService.get(plate.getId()).spots(from, to);
     for (PlateSpot bannedSpot : bannedSpots) {
       PlateSpot spot = entityManager.find(PlateSpot.class, bannedSpot.getId());
       assertEquals(true, spot.isBanned());

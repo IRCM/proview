@@ -138,6 +138,25 @@ public class PlateSpotService {
   }
 
   /**
+   * Selects all spots where sample is located.
+   *
+   * @param sample
+   *          sample
+   * @return all spots where sample is located
+   */
+  public List<PlateSpot> all(Sample sample) {
+    if (sample == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<PlateSpot> query = queryFactory.select(plateSpot);
+    query.from(plateSpot);
+    query.where(plateSpot.sample.eq(sample));
+    return query.fetch();
+  }
+
+  /**
    * Returns spots where sample is located on plate.
    *
    * @param sample

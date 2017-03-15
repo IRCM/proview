@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -99,7 +100,6 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_SAMPLES = "selectSamples";
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
   public static final String UPDATE_STATUS = "updateStatus";
-  public static final String COMPONENTS = "components";
   public static final String CONDITION_FALSE = "condition-false";
   private static final Object[] COLUMNS = new Object[] { EXPERIENCE, SAMPLE_COUNT, SAMPLE_NAME,
       EXPERIENCE_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS };

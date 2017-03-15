@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.platelayout.PlateLayout;
-import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
@@ -46,8 +46,8 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
    */
   public SubmissionForm() {
     uploadStateWindow = new UploadStateWindow();
-    int columns = Plate.Type.SUBMISSION.getColumnCount();
-    int rows = Plate.Type.SUBMISSION.getRowCount();
+    int columns = PlateType.SUBMISSION.getColumnCount();
+    int rows = PlateType.SUBMISSION.getRowCount();
     samplesPlateLayout = new PlateLayout(columns, rows);
     samplesPlateContainer.addComponent(samplesPlateLayout);
   }

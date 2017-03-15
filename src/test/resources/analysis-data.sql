@@ -276,6 +276,8 @@ VALUES (8,8,'FRACTIONATION',1,1,128,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL);
 INSERT INTO treatmentsample (id,treatmentId,treatmentType,sampleId,containerId,destinationContainerId,comments,sourceVolume,solvent,solventVolume,name,quantity,position,number,piInterval)
 VALUES (9,9,'TRANSFER',1,1,129,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatmentsample (id,treatmentId,treatmentType,sampleId,containerId,destinationContainerId,comments,sourceVolume,solvent,solventVolume,name,quantity,position,number,piInterval)
+VALUES (193,194,'TRANSFER',444,4,248,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO treatmentsample (id,treatmentId,treatmentType,sampleId,containerId,destinationContainerId,comments,sourceVolume,solvent,solventVolume,name,quantity,position,number,piInterval)
 VALUES (194,194,'TRANSFER',559,11,224,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatmentsample (id,treatmentId,treatmentType,sampleId,containerId,destinationContainerId,comments,sourceVolume,solvent,solventVolume,name,quantity,position,number,piInterval)
 VALUES (195,194,'TRANSFER',560,12,236,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);

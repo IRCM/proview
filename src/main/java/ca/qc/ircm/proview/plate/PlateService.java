@@ -73,7 +73,7 @@ public class PlateService {
   }
 
   /**
-   * Finds plate in database.
+   * Returns plate with specified id.
    *
    * @param id
    *          plate's database identifier
@@ -89,19 +89,47 @@ public class PlateService {
   }
 
   /**
-   * Finds plate in database.
+   * Returns plate with specified name.
    *
-   * @param id
-   *          plate's database identifier
+   * @param name
+   *          plate's name
    * @return plate
    */
-  public Plate getWithSpots(Long id) {
-    if (id == null) {
+  public Plate get(String name) {
+    if (name == null) {
       return null;
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Plate.class, id);
+    JPAQuery<Plate> query = queryFactory.select(plate);
+    query.from(plate);
+    query.where(plate.name.eq(name));
+    return query.fetchOne();
+  }
+
+  /**
+   * Selects all plates passing filter.
+   *
+   * @param filter
+   *          filters plates
+   * @return all plates passing filter
+   */
+  public List<Plate> all(PlateFilter filter) {
+    authorizationService.checkAdminRole();
+
+    if (filter == null) {
+      filter = new PlateFilterBuilder().build();
+    }
+    JPAQuery<Plate> query = queryFactory.select(plate);
+    query.from(plate);
+    if (filter.type() != null) {
+      query.where(plate.type.eq(filter.type()));
+    }
+    if (filter.containsAnySamples() != null) {
+      query.from(plate.spots, plateSpot);
+      query.where(plateSpot.sample.in(filter.containsAnySamples()));
+    }
+    return query.distinct().fetch();
   }
 
   /**
@@ -111,7 +139,7 @@ public class PlateService {
    *          plate's type
    * @return all plates of specified type
    */
-  public List<Plate> choices(Plate.Type type) {
+  public List<Plate> choices(PlateType type) {
     if (type == null) {
       return new ArrayList<>();
     }
@@ -186,16 +214,8 @@ public class PlateService {
   }
 
   private void initPlateSpotList(Plate plate) {
-    List<PlateSpot> spots = new ArrayList<>();
-    for (int row = 0; row < plate.getRowCount(); row++) {
-      for (int column = 0; column < plate.getColumnCount(); column++) {
-        PlateSpot plateSpot = new PlateSpot(row, column);
-        plateSpot.setTimestamp(Instant.now());
-        plateSpot.setPlate(plate);
-        spots.add(plateSpot);
-      }
-    }
-    plate.setSpots(spots);
+    plate.initSpots();
+    plate.getSpots().forEach(spot -> spot.setTimestamp(Instant.now()));
   }
 
   /**
