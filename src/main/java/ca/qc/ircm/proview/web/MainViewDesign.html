@@ -1,38 +1,39 @@
 <!doctype html>
 <html>
- <head>  
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
-  <meta name="vaadin-version" content="8.0.2">
-  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
- </head> 
- <body> 
-  <vaadin7-vertical-layout size-auto> 
-   <vaadin7-vertical-layout _id="menuLayout"></vaadin7-vertical-layout> 
-   <vaadin7-vertical-layout spacing size-auto margin> 
-    <vaadin7-label style-name="h1" size-auto plain-text _id="header">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="8.0.0">
+  <meta name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+ </head>
+ <body>
+  <vaadin-vertical-layout spacing="false" size-auto margin="false">
+   <vaadin-vertical-layout spacing="false" margin="false" _id="menuLayout"></vaadin-vertical-layout>
+   <vaadin-vertical-layout size-auto>
+    <vaadin-label style-name="h1" plain-text _id="header">
       Proteomics-MS Core Facility 
-    </vaadin7-label> 
-    <vaadin-panel caption="Sign in" size-auto _id="signPanel"> 
-     <vaadin7-vertical-layout spacing margin _id="signLayout"></vaadin7-vertical-layout> 
-    </vaadin-panel> 
-    <vaadin-panel caption="Forgot password" size-auto _id="forgotPasswordPanel"> 
-     <vaadin7-vertical-layout spacing margin> 
-      <vaadin-form-layout margin-top="false" margin-bottom="false"> 
-       <vaadin7-text-field caption="Email" _id="forgotPasswordEmailField"></vaadin7-text-field> 
+    </vaadin-label>
+    <vaadin-panel caption="Sign in" size-auto _id="signPanel">
+     <vaadin-vertical-layout _id="signLayout"></vaadin-vertical-layout>
+    </vaadin-panel>
+    <vaadin-panel caption="Forgot password" size-auto _id="forgotPasswordPanel">
+     <vaadin-vertical-layout>
+      <vaadin-form-layout>
+       <vaadin-text-field caption="Email" _id="forgotPasswordEmailField"></vaadin-text-field>
        <vaadin-button plain-text _id="forgotPasswordButton">
          Submit 
-       </vaadin-button> 
-      </vaadin-form-layout> 
-     </vaadin7-vertical-layout> 
-    </vaadin-panel> 
-    <vaadin-panel caption="If not registered," size-auto _id="registerPanel"> 
-     <vaadin7-vertical-layout spacing margin> 
+       </vaadin-button>
+      </vaadin-form-layout>
+     </vaadin-vertical-layout>
+    </vaadin-panel>
+    <vaadin-panel caption="If not registered," size-auto _id="registerPanel">
+     <vaadin-vertical-layout>
       <vaadin-button style-name="link" plain-text _id="registerButton">
         Register 
-      </vaadin-button> 
-     </vaadin7-vertical-layout> 
-    </vaadin-panel> 
-   </vaadin7-vertical-layout> 
-  </vaadin7-vertical-layout>  
+      </vaadin-button>
+     </vaadin-vertical-layout>
+    </vaadin-panel>
+   </vaadin-vertical-layout>
+  </vaadin-vertical-layout>
  </body>
 </html>
