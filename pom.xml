@@ -74,7 +74,8 @@
     <thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
     <selenium.version>3.0.1</selenium.version>
     <greenmail.version>1.5.2</greenmail.version>
-    <testbench-tests.skip>true</testbench-tests.skip>
+    <testbench.skip>true</testbench.skip>
+    <testbench.driver>org.openqa.selenium.firefox.FirefoxDriver</testbench.driver>
     <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
     <resources-plugin.version>2.6</resources-plugin.version>
     <staticweave-maven-plugin.version>1.0.0</staticweave-maven-plugin.version>
@@ -474,7 +475,8 @@
           <version>${maven-failsafe-plugin.version}</version>
           <configuration>
             <systemPropertyVariables>
-              <testbench-tests.skip>${testbench-tests.skip}</testbench-tests.skip>
+              <testbench.skip>${testbench.skip}</testbench.skip>
+              <testbench.driver>${testbench.driver}</testbench.driver>
               <slow-tests.skip>${slow-tests.skip}</slow-tests.skip>
               <spring.devtools.restart.enabled>false</spring.devtools.restart.enabled>
             </systemPropertyVariables>
@@ -753,9 +755,26 @@
       </properties>
     </profile>
     <profile>
-      <id>test-testbench</id>
+      <id>testbench</id>
       <properties>
-        <testbench-tests.skip>false</testbench-tests.skip>
+        <testbench.skip>false</testbench.skip>
+      </properties>
+    </profile>
+    <profile>
+      <id>chrome</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
+      </properties>
+    </profile>
+    <profile>
+      <id>firefox</id>
+      <properties>
+        <testbench.driver>org.openqa.selenium.firefox.FirefoxDriver</testbench.driver>
       </properties>
     </profile>
     <profile>
