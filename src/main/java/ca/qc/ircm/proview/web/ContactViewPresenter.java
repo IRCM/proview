@@ -18,8 +18,8 @@
 package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.FontAwesome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,31 +81,31 @@ public class ContactViewPresenter {
     view.proteomicContactPanel.setCaption(resources.message(PROTEOMIC));
     view.proteomicContactNameLink.addStyleName(PROTEOMIC + "-" + NAME);
     view.proteomicContactNameLink.setCaption(resources.message(PROTEOMIC + "." + NAME));
-    view.proteomicContactNameLink.setIcon(FontAwesome.ENVELOPE);
+    view.proteomicContactNameLink.setIcon(VaadinIcons.ENVELOPE);
     view.proteomicContactNameLink.setResource(new ExternalResource(PROTEOMIC_EMAIL_RESOURCE));
     view.proteomicContactAddressLink.addStyleName(PROTEOMIC + "-" + ADDRESS);
     view.proteomicContactAddressLink.setCaption(resources.message(PROTEOMIC + "." + ADDRESS));
     view.proteomicContactAddressLink.setCaptionAsHtml(true);
-    view.proteomicContactAddressLink.setIcon(FontAwesome.MAP_MARKER);
+    view.proteomicContactAddressLink.setIcon(VaadinIcons.MAP_MARKER);
     view.proteomicContactAddressLink.setResource(new ExternalResource(PROTEOMIC_ADDRESS_RESOURCE));
     view.proteomicContactPhoneLink.addStyleName(PROTEOMIC + "-" + PHONE);
     view.proteomicContactPhoneLink.setCaption(resources.message(PROTEOMIC + "." + PHONE));
-    view.proteomicContactPhoneLink.setIcon(FontAwesome.PHONE);
+    view.proteomicContactPhoneLink.setIcon(VaadinIcons.PHONE);
     view.proteomicContactPhoneLink.setResource(new ExternalResource(PROTEOMIC_PHONE_RESOURCE));
     view.websiteContactPanel.addStyleName(WEBSITE);
     view.websiteContactPanel.setCaption(resources.message(WEBSITE));
     view.websiteContactNameLink.addStyleName(WEBSITE + "-" + NAME);
     view.websiteContactNameLink.setCaption(resources.message(WEBSITE + "." + NAME));
-    view.websiteContactNameLink.setIcon(FontAwesome.ENVELOPE);
+    view.websiteContactNameLink.setIcon(VaadinIcons.ENVELOPE);
     view.websiteContactNameLink.setResource(new ExternalResource(WEBSITE_EMAIL_RESOURCE));
     view.websiteContactAddressLink.addStyleName(WEBSITE + "-" + ADDRESS);
     view.websiteContactAddressLink.setCaption(resources.message(WEBSITE + "." + ADDRESS));
     view.websiteContactAddressLink.setCaptionAsHtml(true);
-    view.websiteContactAddressLink.setIcon(FontAwesome.MAP_MARKER);
+    view.websiteContactAddressLink.setIcon(VaadinIcons.MAP_MARKER);
     view.websiteContactAddressLink.setResource(new ExternalResource(WEBSITE_ADDRESS_RESOURCE));
     view.websiteContactPhoneLink.addStyleName(WEBSITE + "-" + PHONE);
     view.websiteContactPhoneLink.setCaption(resources.message(WEBSITE + "." + PHONE));
-    view.websiteContactPhoneLink.setIcon(FontAwesome.PHONE);
+    view.websiteContactPhoneLink.setIcon(VaadinIcons.PHONE);
     view.websiteContactPhoneLink.setResource(new ExternalResource(WEBSITE_PHONE_RESOURCE));
   }
 }
