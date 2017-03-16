@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.web.filter;
 
 import com.google.common.collect.Range;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Property.ValueChangeListener;
 
 /**
  * Filters container based on user's range input.

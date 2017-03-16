@@ -17,10 +17,10 @@
 
 package ca.qc.ircm.proview.web.table;
 
-import com.vaadin.data.Container;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.TableFieldFactory;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.ui.Field;
+import com.vaadin.v7.ui.TableFieldFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -24,9 +24,9 @@ import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.v7.data.util.ObjectProperty;
+import com.vaadin.v7.data.util.PropertysetItem;
 import org.junit.Before;
 import org.junit.Test;
 

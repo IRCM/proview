@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.web.filter;
 
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.Item;
 
 import java.util.function.BiFunction;
 

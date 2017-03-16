@@ -22,11 +22,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.web.table.EmptyNullTableFieldFactory;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.data.util.BeanItemContainer;
+import com.vaadin.v7.ui.Field;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.TextField;
 import org.junit.Before;
 import org.junit.Test;
 

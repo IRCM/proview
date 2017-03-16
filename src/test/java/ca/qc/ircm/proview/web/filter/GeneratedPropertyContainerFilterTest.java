@@ -24,9 +24,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.GeneratedPropertyContainer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

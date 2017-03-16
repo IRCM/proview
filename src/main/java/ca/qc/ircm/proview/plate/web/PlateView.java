@@ -23,7 +23,7 @@ import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 
 import java.util.stream.IntStream;
 

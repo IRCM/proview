@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.data.util.ObjectProperty;
+import com.vaadin.v7.ui.Label;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;

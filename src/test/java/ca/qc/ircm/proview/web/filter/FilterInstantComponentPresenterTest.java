@@ -41,8 +41,8 @@ import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

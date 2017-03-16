@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
-import com.vaadin.data.util.converter.Converter.ConversionException;
+import com.vaadin.v7.data.util.converter.Converter.ConversionException;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.web.filter;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.v7.data.util.ObjectProperty;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;

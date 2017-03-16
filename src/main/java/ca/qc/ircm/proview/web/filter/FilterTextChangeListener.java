@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.web.filter;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.util.filter.SimpleStringFilter;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 
 /**
  * Filters container based on user's text input.

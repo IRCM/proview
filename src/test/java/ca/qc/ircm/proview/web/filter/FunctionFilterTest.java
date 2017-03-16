@@ -28,8 +28,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

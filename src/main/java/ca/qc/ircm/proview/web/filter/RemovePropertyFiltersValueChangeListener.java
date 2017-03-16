@@ -17,13 +17,13 @@
 
 package ca.qc.ircm.proview.web.filter;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Container.SimpleFilterable;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.Container.SimpleFilterable;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,10 +17,10 @@
 
 package ca.qc.ircm.proview.web.filter;
 
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.AbstractInMemoryContainer;
-import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.AbstractInMemoryContainer;
+import com.vaadin.v7.data.util.GeneratedPropertyContainer;
 
 /**
  * Filter that overcomes the fact that {@link GeneratedPropertyContainer} does not override

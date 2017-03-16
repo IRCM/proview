@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.web.filter;
 
-import com.vaadin.data.Container;
+import com.vaadin.v7.data.Container;
 
 /**
  * Allows to set a custom value as being a accept all filter.

@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.web.filter;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.filter.Compare;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.filter.Compare;
 
 /**
  * Filters container based on user's value input using equality.

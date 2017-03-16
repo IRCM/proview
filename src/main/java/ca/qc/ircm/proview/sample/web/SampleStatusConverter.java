@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.sample.web;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 
 import java.util.Locale;
 
@@ -30,7 +30,7 @@ public class SampleStatusConverter implements Converter<String, SampleStatus> {
 
   @Override
   public SampleStatus convertToModel(String value, Class<? extends SampleStatus> targetType,
-      Locale locale) throws com.vaadin.data.util.converter.Converter.ConversionException {
+      Locale locale) throws Converter.ConversionException {
     if (value == null || value.isEmpty()) {
       return null;
     }
@@ -46,7 +46,7 @@ public class SampleStatusConverter implements Converter<String, SampleStatus> {
 
   @Override
   public String convertToPresentation(SampleStatus value, Class<? extends String> targetType,
-      Locale locale) throws com.vaadin.data.util.converter.Converter.ConversionException {
+      Locale locale) throws Converter.ConversionException {
     return value != null ? value.getLabel(locale) : "";
   }
 

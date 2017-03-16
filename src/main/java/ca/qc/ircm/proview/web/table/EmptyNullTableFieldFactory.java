@@ -17,12 +17,12 @@
 
 package ca.qc.ircm.proview.web.table;
 
-import com.vaadin.data.Container;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.TableFieldFactory;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.ui.DefaultFieldFactory;
+import com.vaadin.v7.ui.Field;
+import com.vaadin.v7.ui.TableFieldFactory;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * TableFieldFactory that uses empty string to represent null values.

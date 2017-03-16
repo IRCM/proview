@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.web.converter;
 
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 
 import java.time.Instant;
 import java.time.LocalDate;

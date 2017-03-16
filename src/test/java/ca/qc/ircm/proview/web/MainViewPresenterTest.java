@@ -51,7 +51,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -136,7 +135,7 @@ public class MainViewPresenterTest {
   }
 
   private String errorMessage(String message) {
-    return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
+    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test
@@ -168,37 +167,9 @@ public class MainViewPresenterTest {
     assertEquals(resources.message(REGISTER_BUTTON), view.registerButton.getCaption());
   }
 
-  private String requiredError(String caption) {
-    return generalResources.message("required", caption);
-  }
-
-  @Test
-  public void requiredFields() {
-    assertTrue(signFormUsername.isRequired());
-    assertEquals(requiredError(resources.message("sign.username")),
-        signFormUsername.getRequiredError());
-    assertTrue(signFormPassword.isRequired());
-    assertEquals(requiredError(resources.message("sign.password")),
-        signFormPassword.getRequiredError());
-    assertTrue(view.forgotPasswordEmailField.isRequired());
-    assertEquals(requiredError(resources.message("forgotPassword.email")),
-        view.forgotPasswordEmailField.getRequiredError());
-  }
-
   @Test
   public void title() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
-  }
-
-  @Test
-  public void required() {
-    assertTrue(signFormUsername.isRequired());
-    assertEquals(generalResources.message(REQUIRED), signFormUsername.getRequiredError());
-    assertTrue(signFormPassword.isRequired());
-    assertEquals(generalResources.message(REQUIRED), signFormPassword.getRequiredError());
-    assertTrue(view.forgotPasswordEmailField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.forgotPasswordEmailField.getRequiredError());
   }
 
   private void clickLoginButton() {

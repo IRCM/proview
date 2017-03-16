@@ -22,7 +22,7 @@ import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.ui.Upload;
+import com.vaadin.v7.ui.Upload;
 import org.vaadin.easyuploads.MultiFileUpload;
 
 /**

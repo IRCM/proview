@@ -2,73 +2,73 @@
 <html>
  <head>
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
-  <meta charset="UTF-8" name="vaadin-version" content="7.7.0">
+  <meta name="vaadin-version" content="8.0.2">
  </head> 
  <body> 
-  <vaadin-vertical-layout spacing> 
+  <vaadin7-vertical-layout spacing> 
    <vaadin-panel caption="User" size-auto _id="userPanel"> 
-    <vaadin-vertical-layout spacing margin> 
+    <vaadin7-vertical-layout spacing margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-text-field caption="Email" _id="emailField"></vaadin-text-field> 
-      <vaadin-text-field caption="Name" _id="nameField"></vaadin-text-field> 
-      <vaadin-password-field caption="Password" _id="passwordField"></vaadin-password-field> 
-      <vaadin-password-field caption="Confirm password" _id="confirmPasswordField"></vaadin-password-field> 
+      <vaadin7-text-field caption="Email" _id="emailField"></vaadin7-text-field> 
+      <vaadin7-text-field caption="Name" _id="nameField"></vaadin7-text-field> 
+      <vaadin7-password-field caption="Password" _id="passwordField"></vaadin7-password-field> 
+      <vaadin7-password-field caption="Confirm password" _id="confirmPasswordField"></vaadin7-password-field> 
      </vaadin-form-layout> 
-    </vaadin-vertical-layout> 
+    </vaadin7-vertical-layout> 
    </vaadin-panel> 
    <vaadin-panel caption="Laboratory" size-auto _id="laboratoryPanel"> 
-    <vaadin-vertical-layout spacing size-auto margin> 
+    <vaadin7-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-check-box caption="New laboratory" _id="newLaboratoryField"></vaadin-check-box> 
-      <vaadin-text-field caption="Laboratory manager email" _id="managerField"></vaadin-text-field> 
-      <vaadin-text-field caption="Organization" _id="organizationField"></vaadin-text-field> 
-      <vaadin-text-field caption="Name" _id="laboratoryNameField"></vaadin-text-field> 
+      <vaadin7-check-box caption="New laboratory" _id="newLaboratoryField"></vaadin7-check-box> 
+      <vaadin7-text-field caption="Laboratory manager email" _id="managerField"></vaadin7-text-field> 
+      <vaadin7-text-field caption="Organization" _id="organizationField"></vaadin7-text-field> 
+      <vaadin7-text-field caption="Name" _id="laboratoryNameField"></vaadin7-text-field> 
      </vaadin-form-layout> 
-    </vaadin-vertical-layout> 
+    </vaadin7-vertical-layout> 
    </vaadin-panel> 
    <vaadin-panel caption="Address" size-auto _id="addressPanel"> 
-    <vaadin-vertical-layout spacing size-auto margin> 
+    <vaadin7-vertical-layout spacing size-auto margin> 
      <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-      <vaadin-text-field caption="Address" _id="addressLineField"></vaadin-text-field> 
-      <vaadin-text-field caption="Town" _id="townField"></vaadin-text-field> 
-      <vaadin-text-field caption="State" _id="stateField"></vaadin-text-field> 
-      <vaadin-text-field caption="Country" _id="countryField"></vaadin-text-field> 
-      <vaadin-text-field caption="Postal code" _id="postalCodeField"></vaadin-text-field> 
+      <vaadin7-text-field caption="Address" _id="addressLineField"></vaadin7-text-field> 
+      <vaadin7-text-field caption="Town" _id="townField"></vaadin7-text-field> 
+      <vaadin7-text-field caption="State" _id="stateField"></vaadin7-text-field> 
+      <vaadin7-text-field caption="Country" _id="countryField"></vaadin7-text-field> 
+      <vaadin7-text-field caption="Postal code" _id="postalCodeField"></vaadin7-text-field> 
       <vaadin-button plain-text _id="clearAddressButton">
         Clear 
       </vaadin-button> 
      </vaadin-form-layout> 
-    </vaadin-vertical-layout> 
+    </vaadin7-vertical-layout> 
    </vaadin-panel> 
    <vaadin-panel caption="Phone numbers" size-auto _id="phoneNumbersPanel"> 
-    <vaadin-vertical-layout spacing size-auto margin> 
-     <vaadin-vertical-layout _id="phoneNumbersLayout"> 
+    <vaadin7-vertical-layout spacing size-auto margin> 
+     <vaadin7-vertical-layout _id="phoneNumbersLayout"> 
       <vaadin-form-layout size-auto margin-top="false" margin-bottom="false"> 
-       <vaadin-combo-box caption="Type" _id="phoneNumberTypeField"> 
+       <vaadin7-combo-box caption="Type" _id="phoneNumberTypeField"> 
         <option>Work</option> 
         <option>Cell</option> 
         <option>Fax</option> 
-       </vaadin-combo-box> 
-       <vaadin-text-field caption="Phone number" _id="numberField"></vaadin-text-field> 
-       <vaadin-text-field caption="Extension" _id="extensionField"></vaadin-text-field> 
+       </vaadin7-combo-box> 
+       <vaadin7-text-field caption="Phone number" _id="numberField"></vaadin7-text-field> 
+       <vaadin7-text-field caption="Extension" _id="extensionField"></vaadin7-text-field> 
        <vaadin-button plain-text _id="removePhoneNumberButton">
          Remove 
        </vaadin-button> 
       </vaadin-form-layout> 
-     </vaadin-vertical-layout> 
+     </vaadin7-vertical-layout> 
      <vaadin-button plain-text _id="addPhoneNumberButton">
        Add phone number 
      </vaadin-button> 
-    </vaadin-vertical-layout> 
+    </vaadin7-vertical-layout> 
    </vaadin-panel> 
-   <vaadin-vertical-layout _id="saveLayout"> 
-    <vaadin-label size-auto plain-text _id="registerWarningLabel">
+   <vaadin7-vertical-layout _id="saveLayout"> 
+    <vaadin7-label size-auto plain-text _id="registerWarningLabel">
       Once registered, a manager will need to accept you before you can sign in 
-    </vaadin-label> 
+    </vaadin7-label> 
     <vaadin-button plain-text _id="saveButton">
       Save 
     </vaadin-button> 
-   </vaadin-vertical-layout> 
-  </vaadin-vertical-layout>  
+   </vaadin7-vertical-layout> 
+  </vaadin7-vertical-layout>  
  </body>
 </html>

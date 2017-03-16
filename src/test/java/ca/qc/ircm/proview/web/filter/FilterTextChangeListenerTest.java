@@ -23,10 +23,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import com.vaadin.data.Container;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.util.filter.SimpleStringFilter;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -27,8 +27,8 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

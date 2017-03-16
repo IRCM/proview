@@ -21,7 +21,7 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.TextField;
 import org.junit.Before;
 import org.junit.Test;
 

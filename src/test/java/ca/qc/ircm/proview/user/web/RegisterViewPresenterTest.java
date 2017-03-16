@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

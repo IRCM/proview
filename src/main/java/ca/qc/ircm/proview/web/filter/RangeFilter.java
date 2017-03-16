@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.web.filter;
 
 import com.google.common.collect.Range;
 
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.Item;
 
 public class RangeFilter<T extends Comparable<?>> implements Filter {
   private static final long serialVersionUID = 3935971819294022440L;

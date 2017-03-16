@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.web.filter;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.v7.data.util.ObjectProperty;
 
 import java.time.Instant;
 

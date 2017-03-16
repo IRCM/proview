@@ -18,11 +18,11 @@
 package ca.qc.ircm.proview.sample.web;
 
 import ca.qc.ircm.proview.sample.ControlType;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
-import com.vaadin.data.sort.SortOrder;
-import com.vaadin.data.util.PropertyValueGenerator;
-import com.vaadin.data.util.filter.UnsupportedFilterException;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.sort.SortOrder;
+import com.vaadin.v7.data.util.PropertyValueGenerator;
+import com.vaadin.v7.data.util.filter.UnsupportedFilterException;
 
 import java.util.Locale;
 import java.util.function.Supplier;

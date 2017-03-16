@@ -19,9 +19,9 @@ package ca.qc.ircm.proview.sample.web;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.data.util.ObjectProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

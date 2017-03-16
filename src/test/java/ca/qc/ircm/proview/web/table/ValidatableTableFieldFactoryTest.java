@@ -28,12 +28,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import com.vaadin.data.Container;
 import com.vaadin.server.ClientConnector.DetachEvent;
 import com.vaadin.server.ClientConnector.DetachListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.TableFieldFactory;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.ui.Field;
+import com.vaadin.v7.ui.TableFieldFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
