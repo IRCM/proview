@@ -35,8 +35,6 @@ import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.BeanItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +57,7 @@ public class UserViewPresenterTest {
   @Mock
   private AuthorizationService authorizationService;
   @Captor
-  private ArgumentCaptor<Item> itemCaptor;
+  private ArgumentCaptor<User> userCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private Locale locale = Locale.FRENCH;
@@ -100,10 +98,9 @@ public class UserViewPresenterTest {
 
     presenter.enter("");
 
-    verify(view.userFormPresenter).setItemDataSource(itemCaptor.capture());
-    assertTrue(itemCaptor.getValue() instanceof BeanItem);
-    BeanItem<User> item = (BeanItem<User>) itemCaptor.getValue();
-    assertEquals(user, item.getBean());
+    verify(view.userFormPresenter).setBean(userCaptor.capture());
+    User user = userCaptor.getValue();
+    assertEquals(this.user, user);
     verify(view.userFormPresenter, never()).setEditable(true);
     verify(authorizationService).hasUserWritePermission(user);
   }
@@ -116,10 +113,9 @@ public class UserViewPresenterTest {
 
     presenter.enter("");
 
-    verify(view.userFormPresenter).setItemDataSource(itemCaptor.capture());
-    assertTrue(itemCaptor.getValue() instanceof BeanItem);
-    BeanItem<User> item = (BeanItem<User>) itemCaptor.getValue();
-    assertEquals(user, item.getBean());
+    verify(view.userFormPresenter).setBean(userCaptor.capture());
+    User user = userCaptor.getValue();
+    assertEquals(this.user, user);
     verify(view.userFormPresenter).setEditable(true);
     verify(authorizationService).hasUserWritePermission(user);
   }
@@ -131,10 +127,9 @@ public class UserViewPresenterTest {
 
     presenter.enter("1");
 
-    verify(view.userFormPresenter).setItemDataSource(itemCaptor.capture());
-    assertTrue(itemCaptor.getValue() instanceof BeanItem);
-    BeanItem<User> item = (BeanItem<User>) itemCaptor.getValue();
-    assertEquals(user, item.getBean());
+    verify(view.userFormPresenter).setBean(userCaptor.capture());
+    User user = userCaptor.getValue();
+    assertEquals(this.user, user);
     verify(view.userFormPresenter, never()).setEditable(true);
     verify(authorizationService).hasUserWritePermission(user);
   }
@@ -147,10 +142,9 @@ public class UserViewPresenterTest {
 
     presenter.enter("1");
 
-    verify(view.userFormPresenter).setItemDataSource(itemCaptor.capture());
-    assertTrue(itemCaptor.getValue() instanceof BeanItem);
-    BeanItem<User> item = (BeanItem<User>) itemCaptor.getValue();
-    assertEquals(user, item.getBean());
+    verify(view.userFormPresenter).setBean(userCaptor.capture());
+    User user = userCaptor.getValue();
+    assertEquals(this.user, user);
     verify(view.userFormPresenter).setEditable(true);
     verify(authorizationService).hasUserWritePermission(user);
   }
@@ -159,7 +153,7 @@ public class UserViewPresenterTest {
   public void enter_InvalidId() {
     presenter.enter("a");
 
-    verify(view.userFormPresenter, never()).setItemDataSource(itemCaptor.capture());
+    verify(view.userFormPresenter, never()).setBean(any());
     verify(view.userFormPresenter, never()).setEditable(true);
     verify(view).showWarning(resources.message(INVALID_USER));
   }
@@ -170,7 +164,7 @@ public class UserViewPresenterTest {
 
     presenter.enter("1");
 
-    verify(view.userFormPresenter, never()).setItemDataSource(itemCaptor.capture());
+    verify(view.userFormPresenter, never()).setBean(any());
     verify(view.userFormPresenter, never()).setEditable(true);
     verify(view).showWarning(resources.message(INVALID_USER));
   }

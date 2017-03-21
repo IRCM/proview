@@ -21,7 +21,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
-import com.vaadin.v7.data.util.BeanItem;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -61,7 +60,7 @@ public class UserWindow extends Window implements BaseComponent {
   public void attach() {
     super.attach();
     setCaption(getResources().message(TITLE, user.getEmail()));
-    presenter.setItemDataSource(new BeanItem<>(user));
+    presenter.setBean(user);
     presenter.addSaveListener(e -> close());
   }
 

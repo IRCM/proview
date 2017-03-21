@@ -37,22 +37,18 @@ import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.data.Binder;
+import com.vaadin.data.BinderValidationStatus;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.Validator.InvalidValueException;
-import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.v7.data.fieldgroup.FieldGroup;
-import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.v7.data.util.BeanItem;
-import com.vaadin.v7.data.util.ObjectProperty;
-import com.vaadin.v7.data.util.PropertysetItem;
-import com.vaadin.v7.data.validator.EmailValidator;
-import com.vaadin.v7.data.validator.RegexpValidator;
-import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.v7.ui.TextField;
+import com.vaadin.ui.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -100,12 +96,13 @@ public class UserFormPresenter {
   public static final String SAVE = "save";
   private static final Logger logger = LoggerFactory.getLogger(UserFormPresenter.class);
   private UserForm view;
-  private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
-  private BeanFieldGroup<User> userFieldGroup = new BeanFieldGroup<>(User.class);
-  private BeanFieldGroup<Laboratory> laboratoryFieldGroup = new BeanFieldGroup<>(Laboratory.class);
-  private PropertysetItem passwordItem = new PropertysetItem();
-  private FieldGroup passwordFieldGroup = new FieldGroup();
-  private List<BeanFieldGroup<PhoneNumber>> phoneNumberFieldGroups = new ArrayList<>();
+  private CheckBox editableProperty = new CheckBox(null, false);
+  private Binder<User> userBinder = new Binder<>(User.class);
+  private Binder<Passwords> passwordsBinder = new Binder<>(Passwords.class);
+  private Binder<User> managerBinder = new Binder<>(User.class);
+  private Binder<Laboratory> laboratoryBinder = new Binder<>(Laboratory.class);
+  private Binder<Address> addressBinder = new Binder<>(Address.class);
+  private List<Binder<PhoneNumber>> phoneNumberBinders = new ArrayList<>();
   private List<Button> removePhoneNumberButtons = new ArrayList<>();
   @Inject
   private UserService userService;
@@ -133,9 +130,9 @@ public class UserFormPresenter {
   public void init(UserForm view) {
     this.view = view;
     prepareComponents();
-    bindFields();
     addListeners();
-    setItemDataSource(null);
+    passwordsBinder.setBean(new Passwords());
+    setBean(null);
   }
 
   private void prepareComponents() {
@@ -145,93 +142,77 @@ public class UserFormPresenter {
     view.userPanel.setCaption(resources.message(USER));
     view.emailField.addStyleName(EMAIL);
     view.emailField.setCaption(resources.message(EMAIL));
-    view.emailField.setNullRepresentation("");
-    view.emailField.setRequired(true);
-    view.emailField.setRequiredError(generalResources.message(REQUIRED));
-    view.emailField.addValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)));
-    view.emailField.addValidator((value) -> {
-      String email = view.emailField.getValue();
-      Long userId = userFieldGroup.getItemDataSource().getBean().getId();
-      if (userService.exists(email)
-          && (userId == null || !userService.get(userId).getEmail().equals(email))) {
-        throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
-      }
-    });
+    userBinder.forField(view.emailField).asRequired(generalResources.message(REQUIRED))
+        .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
+        .withValidator(email -> {
+          Long userId = userBinder.getBean().getId();
+          return !userService.exists(email)
+              || (userId != null && userService.get(userId).getEmail().equals(email));
+        }, generalResources.message(ALREADY_EXISTS)).bind(User::getEmail, User::setEmail);
     view.nameField.addStyleName(NAME);
     view.nameField.setCaption(resources.message(NAME));
-    view.nameField.setNullRepresentation("");
-    view.nameField.setRequired(true);
-    view.nameField.setRequiredError(generalResources.message(REQUIRED));
-    passwordItem.addItemProperty(PASSWORD, new ObjectProperty<>(null, String.class));
-    passwordItem.addItemProperty(CONFIRM_PASSWORD, new ObjectProperty<>(null, String.class));
-    passwordFieldGroup.setItemDataSource(passwordItem);
+    userBinder.forField(view.nameField).asRequired(generalResources.message(REQUIRED))
+        .bind(User::getName, User::setName);
     view.passwordField.addStyleName(PASSWORD);
     view.passwordField.setCaption(resources.message(PASSWORD));
-    view.passwordField.setNullRepresentation("");
-    view.passwordField.setRequiredError(generalResources.message(REQUIRED));
-    view.passwordField.addValidator((value) -> {
-      String password = view.passwordField.getValue();
-      String confirmPassword = view.confirmPasswordField.getValue();
-      if (password != null && !password.isEmpty() && confirmPassword != null
-          && !confirmPassword.isEmpty() && !password.equals(confirmPassword)) {
-        throw new InvalidValueException(resources.message(PASSWORD + ".notMatch"));
-      }
-    });
+    passwordsBinder.forField(view.passwordField)
+        .withValidator(password -> !isNewUser() || !password.isEmpty(),
+            generalResources.message(REQUIRED))
+        .withValidator(password -> {
+          String confirmPassword = view.confirmPasswordField.getValue();
+          return password == null || password.isEmpty() || confirmPassword == null
+              || confirmPassword.isEmpty() || password.equals(confirmPassword);
+        }, resources.message(PASSWORD + ".notMatch"))
+        .bind(Passwords::getPassword, Passwords::setPassword);
     view.confirmPasswordField.addStyleName(CONFIRM_PASSWORD);
     view.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD));
-    view.confirmPasswordField.setNullRepresentation("");
-    view.confirmPasswordField.setRequiredError(generalResources.message(REQUIRED));
+    passwordsBinder.forField(view.confirmPasswordField)
+        .withValidator(password -> !isNewUser() || !password.isEmpty(),
+            generalResources.message(REQUIRED))
+        .bind(Passwords::getConfirmPassword, Passwords::setConfirmPassword);
     view.laboratoryPanel.addStyleName(LABORATORY);
     view.laboratoryPanel.setCaption(resources.message(LABORATORY));
     view.newLaboratoryField.addStyleName(NEW_LABORATORY);
     view.newLaboratoryField.setCaption(resources.message(NEW_LABORATORY));
     view.managerField.addStyleName(MANAGER);
     view.managerField.setCaption(resources.message(MANAGER));
-    view.managerField.setNullRepresentation("");
-    view.managerField.setRequiredError(generalResources.message(REQUIRED));
-    view.managerField.addValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)));
-    view.managerField.addValidator((value) -> {
-      String manager = view.managerField.getValue();
-      if (!userService.isManager(manager)) {
-        throw new InvalidValueException(resources.message(MANAGER + ".notExists"));
-      }
-    });
+    managerBinder.forField(view.managerField).asRequired(generalResources.message(REQUIRED))
+        .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
+        .withValidator(manager -> userService.isManager(manager),
+            resources.message(MANAGER + ".notExists"))
+        .bind(User::getEmail, User::setEmail);
     view.organizationField.addStyleName(LABORATORY_ORGANIZATION);
     view.organizationField
         .setCaption(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION));
-    view.organizationField.setNullRepresentation("");
-    view.organizationField.setRequiredError(generalResources.message(REQUIRED));
+    laboratoryBinder.forField(view.organizationField).asRequired(generalResources.message(REQUIRED))
+        .bind(Laboratory::getOrganization, Laboratory::setOrganization);
     view.laboratoryNameField.addStyleName(LABORATORY + "-" + LABORATORY_NAME);
     view.laboratoryNameField.setCaption(resources.message(LABORATORY + "." + LABORATORY_NAME));
-    view.laboratoryNameField.setNullRepresentation("");
-    view.laboratoryNameField.setRequiredError(generalResources.message(REQUIRED));
+    laboratoryBinder.forField(view.laboratoryNameField)
+        .asRequired(generalResources.message(REQUIRED))
+        .bind(Laboratory::getName, Laboratory::setName);
     view.addressPanel.addStyleName(ADDRESS);
     view.addressPanel.setCaption(resources.message(ADDRESS));
     view.addressLineField.addStyleName(ADDRESS_LINE);
     view.addressLineField.setCaption(resources.message(ADDRESS + "." + ADDRESS_LINE));
-    view.addressLineField.setNullRepresentation("");
-    view.addressLineField.setRequired(true);
-    view.addressLineField.setRequiredError(generalResources.message(REQUIRED));
+    addressBinder.forField(view.addressLineField).asRequired(generalResources.message(REQUIRED))
+        .bind(Address::getLine, Address::setLine);
     view.townField.addStyleName(ADDRESS_TOWN);
     view.townField.setCaption(resources.message(ADDRESS + "." + ADDRESS_TOWN));
-    view.townField.setNullRepresentation("");
-    view.townField.setRequired(true);
-    view.townField.setRequiredError(generalResources.message(REQUIRED));
+    addressBinder.forField(view.townField).asRequired(generalResources.message(REQUIRED))
+        .bind(Address::getTown, Address::setTown);
     view.stateField.addStyleName(ADDRESS_STATE);
     view.stateField.setCaption(resources.message(ADDRESS + "." + ADDRESS_STATE));
-    view.stateField.setNullRepresentation("");
-    view.stateField.setRequired(true);
-    view.stateField.setRequiredError(generalResources.message(REQUIRED));
+    addressBinder.forField(view.stateField).asRequired(generalResources.message(REQUIRED))
+        .bind(Address::getState, Address::setState);
     view.countryField.addStyleName(ADDRESS_COUNTRY);
     view.countryField.setCaption(resources.message(ADDRESS + "." + ADDRESS_COUNTRY));
-    view.countryField.setNullRepresentation("");
-    view.countryField.setRequired(true);
-    view.countryField.setRequiredError(generalResources.message(REQUIRED));
+    addressBinder.forField(view.countryField).asRequired(generalResources.message(REQUIRED))
+        .bind(Address::getCountry, Address::setCountry);
     view.postalCodeField.addStyleName(ADDRESS_POSTAL_CODE);
     view.postalCodeField.setCaption(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE));
-    view.postalCodeField.setNullRepresentation("");
-    view.postalCodeField.setRequired(true);
-    view.postalCodeField.setRequiredError(generalResources.message(REQUIRED));
+    addressBinder.forField(view.postalCodeField).asRequired(generalResources.message(REQUIRED))
+        .bind(Address::getPostalCode, Address::setPostalCode);
     view.clearAddressButton.addStyleName(CLEAR_ADDRESS);
     view.clearAddressButton.setCaption(resources.message(CLEAR_ADDRESS));
     view.phoneNumbersPanel.addStyleName(PHONE_NUMBERS);
@@ -240,30 +221,15 @@ public class UserFormPresenter {
     view.addPhoneNumberButton.setCaption(resources.message(ADD_PHONE_NUMBER));
     view.registerWarningLabel.addStyleName(REGISTER_WARNING);
     view.registerWarningLabel.setValue(resources.message(REGISTER_WARNING));
-    view.registerWarningLabel.setIcon(FontAwesome.WARNING);
+    view.registerWarningLabel.setIcon(VaadinIcons.WARNING);
     view.saveButton.addStyleName(SAVE);
     view.saveButton.setCaption(resources.message(SAVE));
-  }
-
-  private void bindFields() {
-    userFieldGroup.bind(view.emailField, EMAIL);
-    userFieldGroup.bind(view.nameField, NAME);
-    passwordFieldGroup.bind(view.passwordField, PASSWORD);
-    passwordFieldGroup.bind(view.confirmPasswordField, CONFIRM_PASSWORD);
-    laboratoryFieldGroup.bind(view.organizationField, LABORATORY_ORGANIZATION);
-    laboratoryFieldGroup.bind(view.laboratoryNameField, LABORATORY_NAME);
-    userFieldGroup.bind(view.addressLineField, ADDRESS + "." + ADDRESS_LINE);
-    userFieldGroup.bind(view.townField, ADDRESS + "." + ADDRESS_TOWN);
-    userFieldGroup.bind(view.stateField, ADDRESS + "." + ADDRESS_STATE);
-    userFieldGroup.bind(view.countryField, ADDRESS + "." + ADDRESS_COUNTRY);
-    userFieldGroup.bind(view.postalCodeField, ADDRESS + "." + ADDRESS_POSTAL_CODE);
   }
 
   private void addListeners() {
     editableProperty.addValueChangeListener(e -> updateEditable());
     view.confirmPasswordField.addValueChangeListener(e -> {
-      view.passwordField.isValid();
-      view.passwordField.markAsDirty();
+      passwordsBinder.validate();
     });
     view.newLaboratoryField.addValueChangeListener(e -> updateVisible());
     view.clearAddressButton.addClickListener(e -> clearAddress());
@@ -286,11 +252,7 @@ public class UserFormPresenter {
     view.stateField.setReadOnly(!editable);
     view.countryField.setReadOnly(!editable);
     view.postalCodeField.setReadOnly(!editable);
-    phoneNumberFieldGroups.forEach(fieldGroup -> {
-      fieldGroup.getField(PHONE_NUMBER_TYPE).setReadOnly(!editable);
-      fieldGroup.getField(PHONE_NUMBER_NUMBER).setReadOnly(!editable);
-      fieldGroup.getField(PHONE_NUMBER_EXTENSION).setReadOnly(!editable);
-    });
+    phoneNumberBinders.forEach(binder -> binder.setReadOnly(!editable));
     updateVisible();
   }
 
@@ -337,58 +299,50 @@ public class UserFormPresenter {
   private void addPhoneNumber(PhoneNumber phoneNumber) {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup = new BeanFieldGroup<>(PhoneNumber.class);
-    phoneNumberFieldGroup.setItemDataSource(new BeanItem<>(phoneNumber));
-    phoneNumberFieldGroups.add(phoneNumberFieldGroup);
+    Binder<PhoneNumber> phoneNumberBinder = new Binder<>(PhoneNumber.class);
+    phoneNumberBinder.setBean(phoneNumber);
+    phoneNumberBinders.add(phoneNumberBinder);
     FormLayout layout = new FormLayout();
     layout.setMargin(false);
     view.phoneNumbersLayout.addComponent(layout);
-    ComboBox typeField = new ComboBox();
+    ComboBox<PhoneNumberType> typeField = new ComboBox<>();
     typeField.addStyleName(PHONE_NUMBER_TYPE);
     typeField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_TYPE));
-    typeField.setNullSelectionAllowed(false);
-    typeField.setNewItemsAllowed(false);
-    for (PhoneNumberType type : PhoneNumberType.values()) {
-      typeField.addItem(type);
-      typeField.setItemCaption(type, type.getLabel(view.getLocale()));
-    }
-    typeField.setRequired(true);
-    typeField.setRequiredError(generalResources.message(REQUIRED));
+    typeField.setEmptySelectionAllowed(false);
+    typeField.setItems(PhoneNumberType.values());
+    typeField.setItemCaptionGenerator(type -> type.getLabel(view.getLocale()));
+    phoneNumberBinder.forField(typeField).asRequired(generalResources.message(REQUIRED))
+        .bind(PhoneNumber::getType, PhoneNumber::setType);
     layout.addComponent(typeField);
     TextField numberField = new TextField();
-    numberField.setNullRepresentation("");
     numberField.addStyleName(PHONE_NUMBER_NUMBER);
     numberField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER));
-    numberField.setNullRepresentation("");
-    numberField.setRequired(true);
-    numberField.setRequiredError(generalResources.message(REQUIRED));
-    numberField.addValidator(new RegexpValidator("[\\d\\-]*",
-        resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + ".invalid")));
+    phoneNumberBinder.forField(numberField).asRequired(generalResources.message(REQUIRED))
+        .withValidator(new RegexpValidator(
+            resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + ".invalid"), "[\\d\\-]*"))
+        .bind(PhoneNumber::getNumber, PhoneNumber::setNumber);
     layout.addComponent(numberField);
     TextField extensionField = new TextField();
-    extensionField.setNullRepresentation("");
     extensionField.addStyleName(PHONE_NUMBER_EXTENSION);
     extensionField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION));
-    extensionField.setNullRepresentation("");
-    extensionField.addValidator(new RegexpValidator("[\\d\\-]*",
-        resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + ".invalid")));
+    phoneNumberBinder.forField(extensionField)
+        .withValidator(new RegexpValidator(
+            resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + ".invalid"),
+            "[\\d\\-]*"))
+        .bind(PhoneNumber::getExtension, PhoneNumber::setExtension);
     layout.addComponent(extensionField);
     Button removeButton = new Button();
     removeButton.addStyleName(REMOVE_PHONE_NUMBER);
     removeButton.setCaption(resources.message(REMOVE_PHONE_NUMBER));
-    removeButton
-        .addClickListener(e -> removePhoneNumber(phoneNumberFieldGroup, layout, removeButton));
+    removeButton.addClickListener(e -> removePhoneNumber(phoneNumberBinder, layout, removeButton));
     removePhoneNumberButtons.add(removeButton);
     layout.addComponent(removeButton);
-    phoneNumberFieldGroup.bind(typeField, PHONE_NUMBER_TYPE);
-    phoneNumberFieldGroup.bind(numberField, PHONE_NUMBER_NUMBER);
-    phoneNumberFieldGroup.bind(extensionField, PHONE_NUMBER_EXTENSION);
     updateEditable();
   }
 
-  private void removePhoneNumber(BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup,
-      Component layout, Button remove) {
-    phoneNumberFieldGroups.remove(phoneNumberFieldGroup);
+  private void removePhoneNumber(Binder<PhoneNumber> phoneNumberBinder, Component layout,
+      Button remove) {
+    phoneNumberBinders.remove(phoneNumberBinder);
     view.phoneNumbersLayout.removeComponent(layout);
     removePhoneNumberButtons.remove(remove);
   }
@@ -396,38 +350,52 @@ public class UserFormPresenter {
   private boolean validate() {
     logger.trace("Validate user");
     boolean valid = true;
-    try {
-      userFieldGroup.commit();
-      passwordFieldGroup.commit();
-      if (isNewUser() && !isAdmin()) {
-        if (view.newLaboratoryField.getValue()) {
-          laboratoryFieldGroup.commit();
-        } else {
-          view.managerField.validate();
-        }
+    valid &= validate(userBinder);
+    valid &= validate(passwordsBinder);
+    if (isNewUser() && !isAdmin()) {
+      if (view.newLaboratoryField.getValue()) {
+        valid &= validate(laboratoryBinder);
+      } else {
+        valid &= validate(managerBinder);
       }
-      for (BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup : phoneNumberFieldGroups) {
-        phoneNumberFieldGroup.commit();
-      }
-    } catch (InvalidValueException | CommitException e) {
+    }
+    valid &= validate(addressBinder);
+    for (Binder<PhoneNumber> phoneNumberBinder : phoneNumberBinders) {
+      valid &= validate(phoneNumberBinder);
+    }
+    if (!valid) {
       final MessageResource generalResources = view.getGeneralResources();
-      logger.trace("Validation {} failed with message {}",
-          e instanceof CommitException ? "commit" : "value", e.getMessage(), e);
+      logger.trace("User validation failed");
       view.showError(generalResources.message(FIELD_NOTIFICATION));
-      valid = false;
     }
     return valid;
   }
 
+  private boolean validate(Binder<?> binder) {
+    BinderValidationStatus<?> status = binder.validate();
+    status.getFieldValidationErrors().forEach(error -> {
+      logger.trace("User validation error {} for field {} with value {} in binder {}",
+          error.getMessage(), ((Component) error.getField()).getStyleName(),
+          error.getField().getValue(), binder.getBean());
+    });
+    status.getBeanValidationErrors().forEach(error -> {
+      logger.trace("User validation error {} in binder {}", error.getErrorMessage(),
+          binder.getBean());
+    });
+    return status.isOk();
+  }
+
   private void save() {
     if (validate()) {
-      User user = userFieldGroup.getItemDataSource().getBean();
+      User user = userBinder.getBean();
+      logger.debug("Save user {}", user);
+      user.setAddress(addressBinder.getBean());
       if (user.getPhoneNumbers() == null) {
         user.setPhoneNumbers(new ArrayList<>());
       }
       user.getPhoneNumbers().clear();
-      for (BeanFieldGroup<PhoneNumber> phoneNumberFieldGroup : phoneNumberFieldGroups) {
-        user.getPhoneNumbers().add(phoneNumberFieldGroup.getItemDataSource().getBean());
+      for (Binder<PhoneNumber> phoneNumberBinder : phoneNumberBinders) {
+        user.getPhoneNumbers().add(phoneNumberBinder.getBean());
       }
       String password = view.passwordField.getValue();
       if (password.isEmpty()) {
@@ -438,7 +406,7 @@ public class UserFormPresenter {
         if (!view.newLaboratoryField.getValue()) {
           manager = new User(null, view.managerField.getValue());
         } else {
-          user.setLaboratory(laboratoryFieldGroup.getItemDataSource().getBean());
+          user.setLaboratory(laboratoryBinder.getBean());
         }
         user.setLocale(view.getLocale());
         if (isAdmin()) {
@@ -456,32 +424,32 @@ public class UserFormPresenter {
   }
 
   private boolean isNewUser() {
-    return userFieldGroup.getItemDataSource().getBean().getId() == null;
+    return userBinder.getBean().getId() == null;
   }
 
   private boolean isAdmin() {
     return authorizationService.hasAdminRole();
   }
 
-  public Item getItemDataSource() {
-    return userFieldGroup.getItemDataSource();
+  public User getBean() {
+    return userBinder.getBean();
   }
 
   /**
-   * Sets user as an item.
+   * Sets user.
    *
-   * @param item
-   *          user as an item
+   * @param user
+   *          user
    */
-  public void setItemDataSource(Item item) {
-    if (item == null) {
+  public void setBean(User user) {
+    if (user == null) {
       Address address = new Address();
       address.setLine(defaultAddressConfiguration.getAddress());
       address.setTown(defaultAddressConfiguration.getTown());
       address.setState(defaultAddressConfiguration.getState());
       address.setCountry(defaultAddressConfiguration.getCountry());
       address.setPostalCode(defaultAddressConfiguration.getPostalCode());
-      User user = new User();
+      user = new User();
       user.setAddress(address);
       user.setLaboratory(new Laboratory());
       if (isAdmin()) {
@@ -490,21 +458,18 @@ public class UserFormPresenter {
         user.getLaboratory().setOrganization(currentUser.getLaboratory().getOrganization());
       }
       user.setPhoneNumbers(new ArrayList<>());
-      item = new BeanItem<>(user);
-    } else if (!(item instanceof BeanItem)) {
-      throw new IllegalArgumentException("item must be an instance of BeanItem");
     }
 
-    userFieldGroup.setItemDataSource(item);
-    final User user = userFieldGroup.getItemDataSource().getBean();
-    laboratoryFieldGroup.setItemDataSource(new BeanItem<>(user.getLaboratory()));
+    userBinder.setBean(user);
+    laboratoryBinder.setBean(user.getLaboratory());
+    addressBinder.setBean(user.getAddress());
     final boolean newUser = isNewUser();
-    view.passwordField.setRequired(newUser);
-    view.confirmPasswordField.setRequired(newUser);
-    view.managerField.setRequired(newUser);
-    view.organizationField.setRequired(newUser);
-    view.laboratoryNameField.setRequired(newUser);
-    phoneNumberFieldGroups.clear();
+    view.passwordField.setRequiredIndicatorVisible(newUser);
+    view.confirmPasswordField.setRequiredIndicatorVisible(newUser);
+    view.managerField.setRequiredIndicatorVisible(newUser);
+    view.organizationField.setRequiredIndicatorVisible(newUser);
+    view.laboratoryNameField.setRequiredIndicatorVisible(newUser);
+    phoneNumberBinders.clear();
     removePhoneNumberButtons.clear();
     view.phoneNumbersLayout.removeAllComponents();
     if (user.getPhoneNumbers() != null) {
@@ -521,11 +486,33 @@ public class UserFormPresenter {
     editableProperty.setValue(editable);
   }
 
-  public void addSaveListener(SaveListener listener) {
-    view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
+  public Registration addSaveListener(SaveListener listener) {
+    return view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
+  @Deprecated
   public void removeSaveListener(SaveListener listener) {
     view.removeListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
+  }
+
+  private static class Passwords {
+    private String password;
+    private String confirmPassword;
+
+    public String getPassword() {
+      return password;
+    }
+
+    public void setPassword(String password) {
+      this.password = password;
+    }
+
+    public String getConfirmPassword() {
+      return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+      this.confirmPassword = confirmPassword;
+    }
   }
 }
