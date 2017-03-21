@@ -33,8 +33,8 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.v7.ui.Label;
-import com.vaadin.v7.ui.VerticalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,6 +82,7 @@ public class UserViewPresenterTest {
 
   @Test
   public void styles() {
+    assertTrue(view.header.getStyleName().contains("h1"));
     assertTrue(view.header.getStyleName().contains(HEADER));
   }
 
@@ -92,7 +93,6 @@ public class UserViewPresenterTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void enter() {
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
@@ -106,7 +106,6 @@ public class UserViewPresenterTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void enter_Editable() {
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(authorizationService.hasUserWritePermission(any())).thenReturn(true);
@@ -121,7 +120,6 @@ public class UserViewPresenterTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void enter_User() {
     when(userService.get(any(Long.class))).thenReturn(user);
 
@@ -135,7 +133,6 @@ public class UserViewPresenterTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void enter_UserEditable() {
     when(userService.get(any(Long.class))).thenReturn(user);
     when(authorizationService.hasUserWritePermission(any())).thenReturn(true);

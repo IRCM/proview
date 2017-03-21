@@ -73,6 +73,7 @@ public class UserViewPresenter {
   private void prepareComponents() {
     view.setTitle(view.getResources().message(TITLE, applicationName));
     view.header.addStyleName(HEADER);
+    view.header.addStyleName("h1");
     view.header.setValue(view.getResources().message(HEADER));
   }
 
