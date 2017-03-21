@@ -63,6 +63,7 @@ public class RegisterViewPresenter {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.addStyleName(HEADER);
+    view.headerLabel.addStyleName("h1");
     view.headerLabel.setValue(resources.message(HEADER));
     view.userFormPresenter.setEditable(true);
     view.userFormPresenter.addPhoneNumber();
