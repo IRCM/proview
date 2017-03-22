@@ -18,12 +18,20 @@
 package ca.qc.ircm.proview.laboratory.web;
 
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
 
 /**
  * Laboratory form.
  */
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class LaboratoryForm extends LaboratoryFormDesign implements BaseComponent {
   private static final long serialVersionUID = 6501017653094381754L;
+  @Inject
   private transient LaboratoryFormPresenter presenter;
 
   public void setPresenter(LaboratoryFormPresenter presenter) {
@@ -33,6 +41,6 @@ public class LaboratoryForm extends LaboratoryFormDesign implements BaseComponen
   @Override
   public void attach() {
     super.attach();
-    presenter.attach();
+    presenter.init(this);
   }
 }
