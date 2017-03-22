@@ -28,9 +28,14 @@ import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.v7.filter.FilterEqualsChangeListener;
 import ca.qc.ircm.proview.web.v7.filter.FilterTextChangeListener;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.sort.SortOrder;
@@ -38,14 +43,9 @@ import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.GeneratedPropertyContainer;
 import com.vaadin.v7.data.util.PropertyValueGenerator;
 import com.vaadin.v7.data.util.filter.UnsupportedFilterException;
-import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.Grid.HeaderCell;
 import com.vaadin.v7.ui.Grid.HeaderRow;
 import com.vaadin.v7.ui.Grid.SelectionMode;
-import com.vaadin.v7.ui.Label;
-import com.vaadin.v7.ui.TextField;
 import de.datenhahn.vaadin.componentrenderer.ComponentCellKeyExtension;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.slf4j.Logger;
@@ -184,7 +184,7 @@ public class AccessViewPresenter {
         User user = (User) itemId;
         boolean active = user.isActive();
         Label label = new Label();
-        FontAwesome icon = active ? FontAwesome.CHECK : FontAwesome.CLOSE;
+        VaadinIcons icon = active ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
         label.setContentMode(ContentMode.HTML);
         label.setValue(icon.getHtml() + " " + resources.message(ACTIVE + "." + active));
         return label;
@@ -250,12 +250,10 @@ public class AccessViewPresenter {
         cell.setComponent(createFilterTextField(propertyId, resources));
       } else if (propertyId.equals(ACTIVE)) {
         Boolean[] values = new Boolean[] { true, false };
-        ComboBox filter = createFilterComboBox(propertyId, resources, values);
+        ComboBox<Boolean> filter = createFilterComboBox(propertyId, resources, values);
         filter.addValueChangeListener(
             new FilterEqualsChangeListener(gridContainer, propertyId, NULL_ID));
-        for (Boolean value : values) {
-          filter.setItemCaption(value, resources.message(ACTIVE + "." + value));
-        }
+        filter.setItemCaptionGenerator(value -> resources.message(ACTIVE + "." + value));
         cell.setComponent(filter);
       }
     }
@@ -263,25 +261,23 @@ public class AccessViewPresenter {
 
   private TextField createFilterTextField(Object propertyId, MessageResource resources) {
     TextField filter = new TextField();
-    filter.addTextChangeListener(
+    filter.addValueChangeListener(
         new FilterTextChangeListener(gridContainer, propertyId, true, false));
     filter.setWidth("100%");
     filter.addStyleName("tiny");
-    filter.setInputPrompt(resources.message(ALL));
+    filter.setPlaceholder(resources.message(ALL));
     return filter;
   }
 
-  private ComboBox createFilterComboBox(Object propertyId, MessageResource resources,
-      Object[] values) {
-    ComboBox filter = new ComboBox();
-    filter.setNullSelectionAllowed(false);
+  private <V> ComboBox<V> createFilterComboBox(Object propertyId, MessageResource resources,
+      V[] values) {
+    ComboBox<V> filter = new ComboBox<>();
     filter.setTextInputAllowed(false);
-    filter.addItem(NULL_ID);
-    filter.setItemCaption(NULL_ID, resources.message(ALL));
-    for (Object value : values) {
-      filter.addItem(value);
-    }
-    filter.select(NULL_ID);
+    filter.setEmptySelectionAllowed(true);
+    filter.setEmptySelectionCaption(resources.message(ALL));
+    filter.setPlaceholder(resources.message(ALL));
+    filter.setItems(values);
+    filter.setSelectedItem(null);
     filter.setWidth("100%");
     filter.addStyleName("tiny");
     return filter;

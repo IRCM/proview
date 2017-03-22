@@ -1,30 +1,31 @@
 <!doctype html>
 <html>
- <head>  
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta name="vaadin-version" content="8.0.2">
-  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
- </head> 
- <body> 
-  <vaadin7-vertical-layout> 
-   <vaadin7-vertical-layout size-auto _id="menuLayout"></vaadin7-vertical-layout> 
-   <vaadin7-vertical-layout spacing margin> 
-    <vaadin7-label size-auto plain-text _id="headerLabel">
+  <meta name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+ </head>
+ <body>
+  <vaadin-vertical-layout spacing="false" margin="false">
+   <vaadin-vertical-layout spacing="false" size-auto margin="false" _id="menuLayout"></vaadin-vertical-layout>
+   <vaadin-vertical-layout>
+    <vaadin-label plain-text _id="headerLabel">
       User access 
-    </vaadin7-label> 
-    <vaadin7-grid width-full _id="usersGrid"></vaadin7-grid> 
-    <vaadin7-horizontal-layout spacing> 
+    </vaadin-label>
+    <vaadin7-grid width-full _id="usersGrid"></vaadin7-grid>
+    <vaadin-horizontal-layout>
      <vaadin-button plain-text _id="activateButton">
        Activate 
-     </vaadin-button> 
+     </vaadin-button>
      <vaadin-button plain-text _id="deactivateButton">
        Deactivate 
-     </vaadin-button> 
+     </vaadin-button>
      <vaadin-button plain-text _id="clearButton">
        Clear 
-     </vaadin-button> 
-    </vaadin7-horizontal-layout> 
-   </vaadin7-vertical-layout> 
-  </vaadin7-vertical-layout>  
+     </vaadin-button>
+    </vaadin-horizontal-layout>
+   </vaadin-vertical-layout>
+  </vaadin-vertical-layout>
  </body>
 </html>

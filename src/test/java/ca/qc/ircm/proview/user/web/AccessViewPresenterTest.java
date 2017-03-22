@@ -49,29 +49,29 @@ import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ClientConnector.AttachEvent;
 import com.vaadin.server.ClientConnector.AttachListener;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.sort.SortOrder;
 import com.vaadin.v7.data.util.GeneratedPropertyContainer;
 import com.vaadin.v7.data.util.filter.Compare;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
-import com.vaadin.v7.event.FieldEvents.TextChangeListener;
-import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.Grid;
 import com.vaadin.v7.ui.Grid.Column;
 import com.vaadin.v7.ui.Grid.HeaderCell;
 import com.vaadin.v7.ui.Grid.HeaderRow;
 import com.vaadin.v7.ui.Grid.SelectionModel;
-import com.vaadin.v7.ui.TextField;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.junit.Before;
 import org.junit.Test;
@@ -194,12 +194,12 @@ public class AccessViewPresenterTest {
     HeaderCell cell = filterRow.getCell(EMAIL);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
     GeneratedPropertyContainer container =
         (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
@@ -218,12 +218,12 @@ public class AccessViewPresenterTest {
     HeaderCell cell = filterRow.getCell(NAME);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
     GeneratedPropertyContainer container =
         (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
@@ -242,12 +242,12 @@ public class AccessViewPresenterTest {
     HeaderCell cell = filterRow.getCell(LABORATORY_NAME);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
     GeneratedPropertyContainer container =
         (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
@@ -266,12 +266,12 @@ public class AccessViewPresenterTest {
     HeaderCell cell = filterRow.getCell(ORGANIZATION);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
     GeneratedPropertyContainer container =
         (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
@@ -395,7 +395,7 @@ public class AccessViewPresenterTest {
     Label label = (Label) container.getItem(user).getItemProperty(ACTIVE).getValue();
 
     assertEquals(ContentMode.HTML, label.getContentMode());
-    assertEquals(FontAwesome.CHECK.getHtml() + " " + resources.message(ACTIVE + ".true"),
+    assertEquals(VaadinIcons.CHECK.getHtml() + " " + resources.message(ACTIVE + ".true"),
         label.getValue());
   }
 
@@ -407,7 +407,7 @@ public class AccessViewPresenterTest {
     Label label = (Label) container.getItem(user).getItemProperty(ACTIVE).getValue();
 
     assertEquals(ContentMode.HTML, label.getContentMode());
-    assertEquals(FontAwesome.CLOSE.getHtml() + " " + resources.message(ACTIVE + ".false"),
+    assertEquals(VaadinIcons.CLOSE.getHtml() + " " + resources.message(ACTIVE + ".false"),
         label.getValue());
   }
 
