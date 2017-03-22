@@ -23,12 +23,9 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.v7.data.Validator.InvalidValueException;
-import com.vaadin.v7.data.fieldgroup.FieldGroup;
-import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.v7.data.util.ObjectProperty;
-import com.vaadin.v7.data.util.PropertysetItem;
+import com.vaadin.data.Binder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +40,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ForgotPasswordViewPresenter {
+public class ForgotPasswordViewPresenter implements BinderValidator {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
   public static final String PASSWORD_PANEL = "passwordPanel";
@@ -53,8 +50,7 @@ public class ForgotPasswordViewPresenter {
   public static final String INVALID_FORGOT_PASSWORD = "invalidForgotPassword";
   private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewPresenter.class);
   private ForgotPasswordView view;
-  private PropertysetItem passwordItem = new PropertysetItem();
-  private FieldGroup passwordFieldGroup = new FieldGroup();
+  private Binder<Passwords> passwordsBinder = new Binder<>(Passwords.class);
   private ForgotPassword forgotPassword;
   @Inject
   private ForgotPasswordService forgotPasswordService;
@@ -79,7 +75,7 @@ public class ForgotPasswordViewPresenter {
   public void init(ForgotPasswordView view) {
     this.view = view;
     prepareComponents();
-    bindFields();
+    passwordsBinder.setBean(new Passwords());
     addListeners();
   }
 
@@ -90,42 +86,29 @@ public class ForgotPasswordViewPresenter {
     view.headerLabel.addStyleName(HEADER);
     view.headerLabel.addStyleName("h1");
     view.headerLabel.setValue(resources.message(HEADER));
-    passwordItem.addItemProperty(PASSWORD, new ObjectProperty<>(null, String.class));
-    passwordItem.addItemProperty(CONFIRM_PASSWORD, new ObjectProperty<>(null, String.class));
-    passwordFieldGroup.setItemDataSource(passwordItem);
     view.passwordPanel.addStyleName(PASSWORD_PANEL);
     view.passwordPanel.setCaption(resources.message(PASSWORD_PANEL));
     view.passwordField.addStyleName(PASSWORD);
     view.passwordField.setCaption(resources.message(PASSWORD));
-    view.passwordField.setNullRepresentation("");
-    view.passwordField.setRequired(true);
-    view.passwordField.setRequiredError(generalResources.message(REQUIRED));
-    view.passwordField.addValidator((value) -> {
-      String password = view.passwordField.getValue();
-      String confirmPassword = view.confirmPasswordField.getValue();
-      if (password != null && !password.isEmpty() && confirmPassword != null
-          && !confirmPassword.isEmpty() && !password.equals(confirmPassword)) {
-        throw new InvalidValueException(resources.message(PASSWORD + ".notMatch"));
-      }
-    });
+    passwordsBinder.forField(view.passwordField).asRequired(generalResources.message(REQUIRED))
+        .withValidator(password -> {
+          String confirmPassword = view.confirmPasswordField.getValue();
+          return password == null || password.isEmpty() || confirmPassword == null
+              || confirmPassword.isEmpty() || password.equals(confirmPassword);
+        }, resources.message(PASSWORD + ".notMatch"))
+        .bind(Passwords::getPassword, Passwords::setPassword);
     view.confirmPasswordField.addStyleName(CONFIRM_PASSWORD);
     view.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD));
-    view.confirmPasswordField.setNullRepresentation("");
-    view.confirmPasswordField.setRequired(true);
-    view.confirmPasswordField.setRequiredError(generalResources.message(REQUIRED));
+    passwordsBinder.forField(view.confirmPasswordField)
+        .asRequired(generalResources.message(REQUIRED))
+        .bind(Passwords::getConfirmPassword, Passwords::setConfirmPassword);
     view.saveButton.addStyleName(SAVE);
     view.saveButton.setCaption(resources.message(SAVE));
   }
 
-  private void bindFields() {
-    passwordFieldGroup.bind(view.passwordField, PASSWORD);
-    passwordFieldGroup.bind(view.confirmPasswordField, CONFIRM_PASSWORD);
-  }
-
   private void addListeners() {
     view.confirmPasswordField.addValueChangeListener(e -> {
-      view.passwordField.isValid();
-      view.passwordField.markAsDirty();
+      passwordsBinder.validate();
     });
     view.saveButton.addClickListener(e -> save());
   }
@@ -135,16 +118,14 @@ public class ForgotPasswordViewPresenter {
       view.showError(view.getResources().message(INVALID_FORGOT_PASSWORD));
       return false;
     }
-    try {
-      passwordFieldGroup.commit();
-    } catch (CommitException e) {
-      final MessageResource generalResources = view.getGeneralResources();
-      logger.trace("Validation commit failed with message {}", e.getMessage(), e);
-      view.showError(generalResources.message(FIELD_NOTIFICATION));
-      return false;
-    }
 
-    return true;
+    boolean valid = validate(passwordsBinder);
+    if (!valid) {
+      final MessageResource generalResources = view.getGeneralResources();
+      logger.trace("Forgot password validation failed");
+      view.showError(generalResources.message(FIELD_NOTIFICATION));
+    }
+    return valid;
   }
 
   private void save() {
@@ -182,6 +163,27 @@ public class ForgotPasswordViewPresenter {
 
     if (forgotPassword == null) {
       view.showError(view.getResources().message(INVALID_FORGOT_PASSWORD));
+    }
+  }
+
+  private static class Passwords {
+    private String password;
+    private String confirmPassword;
+
+    public String getPassword() {
+      return password;
+    }
+
+    public void setPassword(String password) {
+      this.password = password;
+    }
+
+    public String getConfirmPassword() {
+      return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+      this.confirmPassword = confirmPassword;
     }
   }
 }
