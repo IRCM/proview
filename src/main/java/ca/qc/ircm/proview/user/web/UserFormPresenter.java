@@ -36,9 +36,9 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
+import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Binder;
-import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.icons.VaadinIcons;
@@ -65,7 +65,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class UserFormPresenter {
+public class UserFormPresenter implements BinderValidator {
   public static final String USER = user.getMetadata().getName();
   public static final String ID = user.id.getMetadata().getName();
   public static final String EMAIL = user.email.getMetadata().getName();
@@ -369,20 +369,6 @@ public class UserFormPresenter {
       view.showError(generalResources.message(FIELD_NOTIFICATION));
     }
     return valid;
-  }
-
-  private boolean validate(Binder<?> binder) {
-    BinderValidationStatus<?> status = binder.validate();
-    status.getFieldValidationErrors().forEach(error -> {
-      logger.trace("User validation error {} for field {} with value {} in binder {}",
-          error.getMessage(), ((Component) error.getField()).getStyleName(),
-          error.getField().getValue(), binder.getBean());
-    });
-    status.getBeanValidationErrors().forEach(error -> {
-      logger.trace("User validation error {} in binder {}", error.getErrorMessage(),
-          binder.getBean());
-    });
-    return status.isOk();
   }
 
   private void save() {
