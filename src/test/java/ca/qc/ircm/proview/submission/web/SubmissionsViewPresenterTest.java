@@ -31,9 +31,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TITLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -63,7 +62,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Container.Filter;
@@ -83,6 +81,7 @@ import com.vaadin.v7.ui.Grid.Column;
 import com.vaadin.v7.ui.Grid.HeaderCell;
 import com.vaadin.v7.ui.Grid.HeaderRow;
 import com.vaadin.v7.ui.Grid.SelectionModel;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.TextField;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.junit.Before;
@@ -392,7 +391,7 @@ public class SubmissionsViewPresenterTest {
     presenter.init(view);
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER_LABEL_ID), view.headerLabel.getValue());
+    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
     for (Column column : view.submissionsGrid.getColumns()) {
       assertEquals(resources.message((String) column.getPropertyId()), column.getHeaderCaption());
     }

@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.user.web.integration;
 
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID_ID;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON_ID;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.ValidateView;
@@ -58,11 +58,11 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   }
 
   protected LabelElement headerLabel() {
-    return $(LabelElement.class).id(HEADER_LABEL_ID);
+    return $(LabelElement.class).id(HEADER);
   }
 
   protected GridElement usersGrid() {
-    return $(GridElement.class).id(USERS_GRID_ID);
+    return $(GridElement.class).id(USERS_GRID);
   }
 
   private void processUsersGridRow(String email, Consumer<Integer> consumer) {
@@ -117,7 +117,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   }
 
   protected ButtonElement validateSelectedButton() {
-    return $(ButtonElement.class).id(VALIDATE_SELECTED_BUTTON_ID);
+    return $(ButtonElement.class).id(VALIDATE_SELECTED_BUTTON);
   }
 
   protected void clickValidateSelected() {

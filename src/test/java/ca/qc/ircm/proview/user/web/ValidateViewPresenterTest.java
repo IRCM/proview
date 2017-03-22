@@ -18,14 +18,14 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.EMAIL;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER_LABEL_ID;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.NAME;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.ORGANIZATION;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID_ID;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON_ID;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VIEW;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -45,17 +45,15 @@ import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.sort.SortOrder;
 import com.vaadin.v7.ui.Grid;
 import com.vaadin.v7.ui.Grid.Column;
 import com.vaadin.v7.ui.Grid.SelectionModel;
-import com.vaadin.v7.ui.renderers.ButtonRenderer;
-import com.vaadin.v7.ui.renderers.ClickableRenderer.RendererClickEvent;
-import com.vaadin.v7.ui.renderers.ClickableRenderer.RendererClickListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -165,16 +163,17 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
-  public void ids() {
-    assertEquals(HEADER_LABEL_ID, view.headerLabel.getId());
-    assertEquals(USERS_GRID_ID, view.usersGrid.getId());
-    assertEquals(VALIDATE_SELECTED_BUTTON_ID, view.validateSelectedButton.getId());
+  public void styles() {
+    assertTrue(view.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(view.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));
+    assertTrue(view.validateSelectedButton.getStyleName().contains(VALIDATE_SELECTED_BUTTON));
   }
 
   @Test
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER_LABEL_ID), view.headerLabel.getValue());
+    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
     assertEquals(resources.message(EMAIL), view.usersGrid.getColumn(EMAIL).getHeaderCaption());
     assertEquals(resources.message(NAME), view.usersGrid.getColumn(NAME).getHeaderCaption());
     assertEquals(resources.message(LABORATORY_NAME),
@@ -184,7 +183,7 @@ public class ValidateViewPresenterTest {
     assertEquals(resources.message(VIEW), view.usersGrid.getColumn(VIEW).getHeaderCaption());
     assertEquals(resources.message(VALIDATE),
         view.usersGrid.getColumn(VALIDATE).getHeaderCaption());
-    assertEquals(resources.message(VALIDATE_SELECTED_BUTTON_ID),
+    assertEquals(resources.message(VALIDATE_SELECTED_BUTTON),
         view.validateSelectedButton.getCaption());
   }
 
@@ -213,17 +212,12 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
-  @SuppressWarnings({ "serial", "unchecked" })
   public void viewUser() {
     final User user = usersToValidate.get(0);
-    Column column = view.usersGrid.getColumn(VIEW);
-    ButtonRenderer renderer = (ButtonRenderer) column.getRenderer();
-    RendererClickListener viewListener =
-        ((Collection<RendererClickListener>) renderer.getListeners(RendererClickEvent.class))
-            .iterator().next();
+    Container.Indexed container = view.usersGrid.getContainerDataSource();
+    Button button = (Button) container.getItem(user).getItemProperty(VIEW).getValue();
 
-    viewListener
-        .click(new RendererClickEvent(view.usersGrid, user, column, new MouseEventDetails()) {});
+    button.click();
 
     verify(userWindowProvider).get();
     verify(userWindow).setUser(user);
@@ -232,7 +226,6 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
-  @SuppressWarnings({ "serial", "unchecked" })
   public void validateOne() {
     final User user = usersToValidate.get(0);
     List<User> usersToValidateAfter = new ArrayList<>(usersToValidate);
@@ -240,14 +233,10 @@ public class ValidateViewPresenterTest {
     when(userService.all(any())).thenReturn(usersToValidateAfter);
     String homeUrl = "homeUrl";
     when(view.getUrl(any())).thenReturn(homeUrl);
-    Column column = view.usersGrid.getColumn(VALIDATE);
-    ButtonRenderer renderer = (ButtonRenderer) column.getRenderer();
-    final RendererClickListener viewListener =
-        ((Collection<RendererClickListener>) renderer.getListeners(RendererClickEvent.class))
-            .iterator().next();
+    Container.Indexed container = view.usersGrid.getContainerDataSource();
+    Button button = (Button) container.getItem(user).getItemProperty(VALIDATE).getValue();
 
-    viewListener
-        .click(new RendererClickEvent(view.usersGrid, user, column, new MouseEventDetails()) {});
+    button.click();
 
     verify(userService).validate(usersCaptor.capture(), homeWebContextCaptor.capture());
     Collection<User> users = usersCaptor.getValue();

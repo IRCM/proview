@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+
 import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.QUser;
@@ -27,13 +29,16 @@ import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.GeneratedPropertyContainer;
 import com.vaadin.v7.data.util.PropertyValueGenerator;
 import com.vaadin.v7.ui.Grid;
 import com.vaadin.v7.ui.Grid.SelectionMode;
-import com.vaadin.v7.ui.renderers.ButtonRenderer;
+import de.datenhahn.vaadin.componentrenderer.ComponentCellKeyExtension;
+import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,8 +61,8 @@ import javax.inject.Provider;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ValidateViewPresenter {
   public static final String TITLE = "title";
-  public static final String HEADER_LABEL_ID = "header";
-  public static final String USERS_GRID_ID = "usersGrid";
+  public static final String HEADER = "header";
+  public static final String USERS_GRID = "usersGrid";
   public static final String EMAIL = QUser.user.email.getMetadata().getName();
   public static final String NAME = QUser.user.name.getMetadata().getName();
   public static final String LABORATORY_PREFIX =
@@ -68,7 +73,7 @@ public class ValidateViewPresenter {
       LABORATORY_PREFIX + QLaboratory.laboratory.organization.getMetadata().getName();
   public static final String VIEW = "viewUser";
   public static final String VALIDATE = "validateUser";
-  public static final String VALIDATE_SELECTED_BUTTON_ID = "validateSelected";
+  public static final String VALIDATE_SELECTED_BUTTON = "validateSelected";
   private static final String[] COLUMNS =
       { EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, VIEW, VALIDATE };
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewPresenter.class);
@@ -112,12 +117,13 @@ public class ValidateViewPresenter {
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.setId(HEADER_LABEL_ID);
-    view.headerLabel.setValue(resources.message(HEADER_LABEL_ID));
-    view.usersGrid.setId(USERS_GRID_ID);
+    view.headerLabel.addStyleName(HEADER);
+    view.headerLabel.addStyleName(ValoTheme.LABEL_H1);
+    view.headerLabel.setValue(resources.message(HEADER));
+    view.usersGrid.addStyleName(USERS_GRID);
     prepareUsersGrid();
-    view.validateSelectedButton.setId(VALIDATE_SELECTED_BUTTON_ID);
-    view.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON_ID));
+    view.validateSelectedButton.addStyleName(VALIDATE_SELECTED_BUTTON);
+    view.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON));
   }
 
   @SuppressWarnings("serial")
@@ -127,44 +133,48 @@ public class ValidateViewPresenter {
     container.addNestedContainerProperty(LABORATORY_NAME);
     container.addNestedContainerProperty(ORGANIZATION);
     gridContainer = new GeneratedPropertyContainer(container);
-    gridContainer.addGeneratedProperty(VIEW, new PropertyValueGenerator<String>() {
+    gridContainer.addGeneratedProperty(VIEW, new PropertyValueGenerator<Button>() {
       @Override
-      public String getValue(Item item, Object itemId, Object propertyId) {
+      public Button getValue(Item item, Object itemId, Object propertyId) {
         MessageResource resources = view.getResources();
-        return resources.message(VIEW);
+        User user = (User) itemId;
+        Button button = new Button();
+        button.setCaption(resources.message(VIEW));
+        button.addClickListener(event -> viewUser(user));
+        return button;
       }
 
       @Override
-      public Class<String> getType() {
-        return String.class;
+      public Class<Button> getType() {
+        return Button.class;
       }
     });
-    gridContainer.addGeneratedProperty(VALIDATE, new PropertyValueGenerator<String>() {
+    gridContainer.addGeneratedProperty(VALIDATE, new PropertyValueGenerator<Button>() {
       @Override
-      public String getValue(Item item, Object itemId, Object propertyId) {
+      public Button getValue(Item item, Object itemId, Object propertyId) {
         MessageResource resources = view.getResources();
-        return resources.message(VALIDATE);
+        User user = (User) itemId;
+        Button button = new Button();
+        button.setCaption(resources.message(VALIDATE));
+        button.addClickListener(event -> validateUser(user));
+        return button;
       }
 
       @Override
-      public Class<String> getType() {
-        return String.class;
+      public Class<Button> getType() {
+        return Button.class;
       }
     });
+    ComponentCellKeyExtension.extend(view.usersGrid);
     view.usersGrid.setContainerDataSource(gridContainer);
     view.usersGrid.setColumns((Object[]) COLUMNS);
     view.usersGrid.setSelectionMode(SelectionMode.MULTI);
     view.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
+    view.usersGrid.addStyleName(COMPONENTS);
     Grid.Column viewColumn = view.usersGrid.getColumn(VIEW);
-    viewColumn.setRenderer(new ButtonRenderer(event -> {
-      User user = (User) event.getItemId();
-      viewUser(user);
-    }));
+    viewColumn.setRenderer(new ComponentRenderer());
     Grid.Column validateColumn = view.usersGrid.getColumn(VALIDATE);
-    validateColumn.setRenderer(new ButtonRenderer(event -> {
-      User user = (User) event.getItemId();
-      validateUser(user);
-    }));
+    validateColumn.setRenderer(new ComponentRenderer());
     for (String propertyId : COLUMNS) {
       view.usersGrid.getColumn(propertyId).setHeaderCaption(resources.message(propertyId));
     }
