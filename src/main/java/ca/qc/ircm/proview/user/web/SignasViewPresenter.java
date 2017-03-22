@@ -26,7 +26,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.MainView;
-import ca.qc.ircm.proview.web.filter.FilterTextChangeListener;
+import ca.qc.ircm.proview.web.v7.filter.FilterTextChangeListener;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;

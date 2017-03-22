@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web.converter;
+package ca.qc.ircm.proview.web.v7.converter;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.web.converter.StringToInstantConverter;
+import ca.qc.ircm.proview.web.v7.converter.StringToInstantConverter;
 import org.junit.Before;
 import org.junit.Test;
 

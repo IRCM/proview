@@ -15,18 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web.filter;
+package ca.qc.ircm.proview.web.v7.filter;
 
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.ALL;
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.BASE_STYLE;
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.CLEAR;
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.FILTER;
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.FROM;
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.RANGE;
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.RANGE_ONLY_FROM;
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.RANGE_ONLY_TO;
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.SET;
-import static ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter.TO;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.ALL;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.BASE_STYLE;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.CLEAR;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.FILTER;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.FROM;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.RANGE;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.RANGE_ONLY_FROM;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.RANGE_ONLY_TO;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.SET;
+import static ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter.TO;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -40,6 +40,8 @@ import static org.mockito.Mockito.verify;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.web.v7.filter.FilterInstantComponent;
+import ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.ObjectProperty;
