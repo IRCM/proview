@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import ca.qc.ircm.proview.web.v7.filter.RemovePropertyFiltersValueChangeListener;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.Property;
@@ -45,7 +44,9 @@ public class RemovePropertyFiltersValueChangeListenerTest {
   @Mock
   private Container.Filterable container;
   @Mock
-  private ValueChangeEvent event;
+  private com.vaadin.data.HasValue.ValueChangeEvent<Integer> valueChangeEvent;
+  @Mock
+  private ValueChangeEvent valueChangeEvent7;
   @Mock
   private Property<Integer> eventProperty;
   @Mock
@@ -57,7 +58,7 @@ public class RemovePropertyFiltersValueChangeListenerTest {
   @Before
   public void beforeTest() {
     listener = new DefaultRemovePropertyFiltersValueChangeListener(container, propertyId);
-    when(event.getProperty()).thenReturn(eventProperty);
+    when(valueChangeEvent7.getProperty()).thenReturn(eventProperty);
   }
 
   @Test
@@ -65,9 +66,9 @@ public class RemovePropertyFiltersValueChangeListenerTest {
     IndexedContainer container = mock(IndexedContainer.class);
     listener = new DefaultRemovePropertyFiltersValueChangeListener(container, propertyId);
     Integer propertyValue = 20;
-    when(eventProperty.getValue()).thenReturn(propertyValue);
+    when(valueChangeEvent.getValue()).thenReturn(propertyValue);
 
-    listener.valueChange(event);
+    listener.valueChange(valueChangeEvent);
 
     verify(container).removeContainerFilters(propertyId);
     verify(addFilter).accept(propertyValue);
@@ -78,9 +79,9 @@ public class RemovePropertyFiltersValueChangeListenerTest {
     IndexedContainer container = mock(IndexedContainer.class);
     listener = new DefaultRemovePropertyFiltersValueChangeListener(container, propertyId);
     Integer propertyValue = null;
-    when(eventProperty.getValue()).thenReturn(propertyValue);
+    when(valueChangeEvent.getValue()).thenReturn(propertyValue);
 
-    listener.valueChange(event);
+    listener.valueChange(valueChangeEvent);
 
     verify(container).removeContainerFilters(propertyId);
     verify(addFilter).accept(propertyValue);
@@ -96,9 +97,9 @@ public class RemovePropertyFiltersValueChangeListenerTest {
     when(filter3.appliesToProperty(propertyId)).thenReturn(true);
     when(container.getContainerFilters()).thenReturn(Arrays.asList(filter1, filter2, filter3));
     Integer propertyValue = 20;
-    when(eventProperty.getValue()).thenReturn(propertyValue);
+    when(valueChangeEvent.getValue()).thenReturn(propertyValue);
 
-    listener.valueChange(event);
+    listener.valueChange(valueChangeEvent);
 
     verify(container).removeContainerFilter(filter1);
     verify(container).removeContainerFilter(filter3);
@@ -115,9 +116,73 @@ public class RemovePropertyFiltersValueChangeListenerTest {
     when(filter3.appliesToProperty(propertyId)).thenReturn(true);
     when(container.getContainerFilters()).thenReturn(Arrays.asList(filter1, filter2, filter3));
     Integer propertyValue = null;
+    when(valueChangeEvent.getValue()).thenReturn(propertyValue);
+
+    listener.valueChange(valueChangeEvent);
+
+    verify(container).removeContainerFilter(filter1);
+    verify(container).removeContainerFilter(filter3);
+    verify(addFilter).accept(propertyValue);
+  }
+
+  @Test
+  public void valueChange7_SimpleFilterable() {
+    IndexedContainer container = mock(IndexedContainer.class);
+    listener = new DefaultRemovePropertyFiltersValueChangeListener(container, propertyId);
+    Integer propertyValue = 20;
     when(eventProperty.getValue()).thenReturn(propertyValue);
 
-    listener.valueChange(event);
+    listener.valueChange(valueChangeEvent7);
+
+    verify(container).removeContainerFilters(propertyId);
+    verify(addFilter).accept(propertyValue);
+  }
+
+  @Test
+  public void valueChange7_SimpleFilterable_NullValue() {
+    IndexedContainer container = mock(IndexedContainer.class);
+    listener = new DefaultRemovePropertyFiltersValueChangeListener(container, propertyId);
+    Integer propertyValue = null;
+    when(eventProperty.getValue()).thenReturn(propertyValue);
+
+    listener.valueChange(valueChangeEvent7);
+
+    verify(container).removeContainerFilters(propertyId);
+    verify(addFilter).accept(propertyValue);
+  }
+
+  @Test
+  public void valueChange7_Other() {
+    Filter filter1 = mock(Filter.class);
+    when(filter1.appliesToProperty(propertyId)).thenReturn(true);
+    Filter filter2 = mock(Filter.class);
+    when(filter2.appliesToProperty(propertyId)).thenReturn(false);
+    Filter filter3 = mock(Filter.class);
+    when(filter3.appliesToProperty(propertyId)).thenReturn(true);
+    when(container.getContainerFilters()).thenReturn(Arrays.asList(filter1, filter2, filter3));
+    Integer propertyValue = 20;
+    when(eventProperty.getValue()).thenReturn(propertyValue);
+
+    listener.valueChange(valueChangeEvent7);
+
+    verify(container).removeContainerFilter(filter1);
+    verify(container).removeContainerFilter(filter3);
+    verify(addFilter).accept(propertyValue);
+  }
+
+  @Test
+  public void valueChange7_Other_NullValue() {
+    Filter filter1 = mock(Filter.class);
+    when(filter1.appliesToProperty(propertyId)).thenReturn(true);
+    Filter filter2 = mock(Filter.class);
+    when(filter2.appliesToProperty(propertyId)).thenReturn(false);
+    Filter filter3 = mock(Filter.class);
+    when(filter3.appliesToProperty(propertyId)).thenReturn(true);
+    when(container.getContainerFilters()).thenReturn(Arrays.asList(filter1, filter2, filter3));
+    Integer propertyValue = null;
+    when(eventProperty.getValue()).thenReturn(propertyValue);
+
+    listener.valueChange(valueChangeEvent7);
 
     verify(container).removeContainerFilter(filter1);
     verify(container).removeContainerFilter(filter3);

@@ -31,8 +31,8 @@ import java.util.List;
 /**
  * Removes filters associated with property before adding a new filter.
  */
-public abstract class RemovePropertyFiltersValueChangeListener
-    implements ValueChangeListener, TextChangeListener {
+public abstract class RemovePropertyFiltersValueChangeListener<V> implements
+    com.vaadin.data.HasValue.ValueChangeListener<V>, ValueChangeListener, TextChangeListener {
   private static final long serialVersionUID = -5664330958927608720L;
   protected final Container.Filterable container;
   protected final Object propertyId;
@@ -57,6 +57,12 @@ public abstract class RemovePropertyFiltersValueChangeListener
         container.removeContainerFilter(filter);
       }
     }
+  }
+
+  @Override
+  public void valueChange(com.vaadin.data.HasValue.ValueChangeEvent<V> event) {
+    removeContainerFilters();
+    addFilter(event.getValue());
   }
 
   @Override
