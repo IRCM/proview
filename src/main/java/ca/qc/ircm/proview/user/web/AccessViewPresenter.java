@@ -90,7 +90,6 @@ public class AccessViewPresenter {
   public static final String CLEAR = "clear";
   public static final String ALL = "all";
   public static final String HIDE_SELECTION = "hide-selection";
-  public static final Object NULL_ID = -1;
   private static final String[] COLUMNS =
       { SELECT, EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, ACTIVE, VIEW };
   private static final Logger logger = LoggerFactory.getLogger(AccessViewPresenter.class);
@@ -252,7 +251,7 @@ public class AccessViewPresenter {
         Boolean[] values = new Boolean[] { true, false };
         ComboBox<Boolean> filter = createFilterComboBox(propertyId, resources, values);
         filter.addValueChangeListener(
-            new FilterEqualsChangeListener(gridContainer, propertyId, NULL_ID));
+            new FilterEqualsChangeListener(gridContainer, propertyId, null));
         filter.setItemCaptionGenerator(value -> resources.message(ACTIVE + "." + value));
         cell.setComponent(filter);
       }
