@@ -34,13 +34,13 @@ public class LaboratoryForm extends LaboratoryFormDesign implements BaseComponen
   @Inject
   private transient LaboratoryFormPresenter presenter;
 
-  public void setPresenter(LaboratoryFormPresenter presenter) {
-    this.presenter = presenter;
-  }
-
   @Override
   public void attach() {
     super.attach();
     presenter.init(this);
+  }
+
+  public LaboratoryFormPresenter getPresenter() {
+    return presenter;
   }
 }
