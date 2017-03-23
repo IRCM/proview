@@ -31,7 +31,6 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
-import ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SubmissionFirstSample;
 import ca.qc.ircm.proview.web.v7.converter.StringToInstantConverter;
 import ca.qc.ircm.proview.web.v7.filter.FilterEqualsChangeListener;
 import ca.qc.ircm.proview.web.v7.filter.FilterInstantComponent;
@@ -41,6 +40,8 @@ import ca.qc.ircm.proview.web.v7.filter.FilterTextChangeListener;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.Item;
@@ -49,12 +50,10 @@ import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.GeneratedPropertyContainer;
 import com.vaadin.v7.data.util.PropertyValueGenerator;
 import com.vaadin.v7.data.util.filter.UnsupportedFilterException;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.Grid.Column;
 import com.vaadin.v7.ui.Grid.HeaderCell;
 import com.vaadin.v7.ui.Grid.HeaderRow;
 import com.vaadin.v7.ui.Grid.SelectionMode;
-import com.vaadin.v7.ui.TextField;
 import de.datenhahn.vaadin.componentrenderer.ComponentCellKeyExtension;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.slf4j.Logger;
@@ -272,7 +271,7 @@ public class SubmissionsViewPresenter {
         for (SampleStatus status : SampleStatus.values()) {
           sampleStatusLabels.add(status.getLabel(locale));
         }
-        ComboBox filter = createFilterComboBox(propertyId, resources, "", sampleStatusLabels);
+        ComboBox<String> filter = createFilterComboBox(propertyId, resources, sampleStatusLabels);
         filter.addValueChangeListener(
             new FilterTextChangeListener(submissionsGeneratedContainer, propertyId, true, false));
         cell.setComponent(filter);
@@ -280,12 +279,10 @@ public class SubmissionsViewPresenter {
         cell.setComponent(createFilterInstantComponent(propertyId));
       } else if (propertyId.equals(LINKED_TO_RESULTS)) {
         List<Boolean> values = Arrays.asList(new Boolean[] { true, false });
-        ComboBox filter = createFilterComboBox(propertyId, resources, nullId, values);
+        ComboBox<Boolean> filter = createFilterComboBox(propertyId, resources, values);
         filter.addValueChangeListener(
-            new FilterEqualsChangeListener(submissionsGeneratedContainer, propertyId, nullId));
-        for (Boolean value : values) {
-          filter.setItemCaption(value, resources.message(LINKED_TO_RESULTS + "." + value));
-        }
+            new FilterEqualsChangeListener(submissionsGeneratedContainer, propertyId));
+        filter.setItemCaptionGenerator(value -> resources.message(LINKED_TO_RESULTS + "." + value));
         cell.setComponent(filter);
       }
     }
@@ -293,27 +290,25 @@ public class SubmissionsViewPresenter {
 
   private TextField createFilterTextField(Object propertyId, MessageResource resources) {
     TextField filter = new TextField();
-    filter.addTextChangeListener(
+    filter.addValueChangeListener(
         new FilterTextChangeListener(submissionsGeneratedContainer, propertyId, true, false));
     filter.setWidth("100%");
     filter.addStyleName("tiny");
-    filter.setInputPrompt(resources.message(ALL));
+    filter.setPlaceholder(resources.message(ALL));
     return filter;
   }
 
-  private ComboBox createFilterComboBox(Object propertyId, MessageResource resources, Object nullId,
-      Collection<?> values) {
-    ComboBox filter = new ComboBox();
-    filter.setNullSelectionAllowed(false);
+  private <V> ComboBox<V> createFilterComboBox(Object propertyId, MessageResource resources,
+      Collection<V> values) {
+    ComboBox<V> filter = new ComboBox<>();
+    filter.setEmptySelectionAllowed(true);
     filter.setTextInputAllowed(false);
-    filter.addItem(nullId);
-    filter.setItemCaption(nullId, resources.message(ALL));
-    for (Object value : values) {
-      filter.addItem(value);
-    }
-    filter.select(nullId);
+    filter.setEmptySelectionCaption(resources.message(ALL));
+    filter.setPlaceholder(resources.message(ALL));
+    filter.setItems(values);
+    filter.setSelectedItem(null);
     filter.setWidth("100%");
-    filter.addStyleName("tiny");
+    filter.addStyleName(ValoTheme.COMBOBOX_TINY);
     return filter;
   }
 
@@ -324,7 +319,7 @@ public class SubmissionsViewPresenter {
     presenter.getRangeProperty().addValueChangeListener(
         new FilterRangeChangeListener(submissionsGeneratedContainer, propertyId));
     filter.setWidth("100%");
-    filter.addStyleName("tiny");
+    filter.addStyleName(ValoTheme.BUTTON_TINY);
     return filter;
   }
 

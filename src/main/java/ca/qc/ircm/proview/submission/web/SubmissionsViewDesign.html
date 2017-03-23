@@ -1,33 +1,34 @@
 <!doctype html>
 <html>
- <head>   
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta name="vaadin-version" content="8.0.2">
-  <meta charset="UTF-8" name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
-  <meta charset="UTF-8" name="package-mapping" content="org_tepi_filtertable:org.tepi.filtertable">
- </head> 
- <body> 
-  <vaadin7-vertical-layout size-full> 
-   <vaadin7-vertical-layout size-auto _id="menuLayout"></vaadin7-vertical-layout> 
-   <vaadin7-vertical-layout spacing size-full margin :expand> 
-    <vaadin7-label style-name="h1" size-auto plain-text _id="headerLabel">
+  <meta name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+  <meta name="package-mapping" content="org_tepi_filtertable:org.tepi.filtertable">
+ </head>
+ <body>
+  <vaadin-vertical-layout spacing="false" margin="false">
+   <vaadin-vertical-layout spacing="false" size-auto margin="false" _id="menuLayout"></vaadin-vertical-layout>
+   <vaadin-vertical-layout size-full :expand>
+    <vaadin-label style-name="h1" plain-text _id="headerLabel">
       My submissions 
-    </vaadin7-label> 
-    <vaadin7-grid size-full _id="submissionsGrid" :expand></vaadin7-grid> 
-    <vaadin7-horizontal-layout spacing> 
+    </vaadin-label>
+    <vaadin7-grid size-full _id="submissionsGrid" :expand></vaadin7-grid>
+    <vaadin-horizontal-layout>
      <vaadin-button plain-text _id="selectSamplesButton">
        Select samples 
-     </vaadin-button> 
-     <vaadin7-label size-auto plain-text _id="selectedSamplesLabel" :middle>
+     </vaadin-button>
+     <vaadin-label plain-text _id="selectedSamplesLabel" :middle>
        12 samples are selected 
-     </vaadin7-label> 
-    </vaadin7-horizontal-layout> 
-    <vaadin7-horizontal-layout> 
+     </vaadin-label>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout>
      <vaadin-button plain-text _id="updateStatusButton">
        Update status 
-     </vaadin-button> 
-    </vaadin7-horizontal-layout> 
-   </vaadin7-vertical-layout> 
-  </vaadin7-vertical-layout>  
+     </vaadin-button>
+    </vaadin-horizontal-layout>
+   </vaadin-vertical-layout>
+  </vaadin-vertical-layout>
  </body>
 </html>

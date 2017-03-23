@@ -60,29 +60,28 @@ import ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter;
 import ca.qc.ircm.proview.web.v7.filter.RangeFilter;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.sort.SortOrder;
 import com.vaadin.v7.data.util.GeneratedPropertyContainer;
 import com.vaadin.v7.data.util.ObjectProperty;
 import com.vaadin.v7.data.util.filter.Compare;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
-import com.vaadin.v7.event.FieldEvents.TextChangeListener;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.Grid;
 import com.vaadin.v7.ui.Grid.Column;
 import com.vaadin.v7.ui.Grid.HeaderCell;
 import com.vaadin.v7.ui.Grid.HeaderRow;
 import com.vaadin.v7.ui.Grid.SelectionModel;
-import com.vaadin.v7.ui.Label;
-import com.vaadin.v7.ui.TextField;
 import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.junit.Before;
 import org.junit.Test;
@@ -146,7 +145,7 @@ public class SubmissionsViewPresenterTest {
   @Captor
   private ArgumentCaptor<List<Sample>> samplesListCaptor;
   @Captor
-  private ArgumentCaptor<ValueChangeListener> listenerCaptor;
+  private ArgumentCaptor<com.vaadin.v7.data.Property.ValueChangeListener> listenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private FilterInstantComponentPresenter filterInstantComponentPresenter =
@@ -243,12 +242,12 @@ public class SubmissionsViewPresenterTest {
     HeaderCell cell = filterRow.getCell(EXPERIENCE);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener listener =
+        (ValueChangeListener) textField.getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
     GeneratedPropertyContainer container =
         (GeneratedPropertyContainer) view.submissionsGrid.getContainerDataSource();
@@ -268,12 +267,12 @@ public class SubmissionsViewPresenterTest {
     HeaderCell cell = filterRow.getCell(SAMPLE_NAME);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener listener =
+        (ValueChangeListener) textField.getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
     GeneratedPropertyContainer container =
         (GeneratedPropertyContainer) view.submissionsGrid.getContainerDataSource();
@@ -293,12 +292,12 @@ public class SubmissionsViewPresenterTest {
     HeaderCell cell = filterRow.getCell(EXPERIENCE_GOAL);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener listener =
+        (ValueChangeListener) textField.getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
     GeneratedPropertyContainer container =
         (GeneratedPropertyContainer) view.submissionsGrid.getContainerDataSource();
@@ -543,7 +542,7 @@ public class SubmissionsViewPresenterTest {
     verify(sampleSelectionWindow).selectedSamplesProperty();
     verify(selectedSamplesProperty).addValueChangeListener(listenerCaptor.capture());
     verify(view).addWindow(sampleSelectionWindow);
-    ValueChangeListener listener = listenerCaptor.getValue();
+    com.vaadin.v7.data.Property.ValueChangeListener listener = listenerCaptor.getValue();
     Property.ValueChangeEvent event = mock(Property.ValueChangeEvent.class);
     Property<Object> eventProperty = mock(Property.class);
     when(event.getProperty()).thenReturn(eventProperty);
