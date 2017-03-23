@@ -66,7 +66,7 @@
     <confirmdialog.version>3.1.1</confirmdialog.version>
     <popupbutton.version>3.0.0</popupbutton.version>
     <componentrenderer.version>2.0.0</componentrenderer.version>
-    <plate-layout.version>0.8-SNAPSHOT</plate-layout.version>
+    <plate-layout.version>0.8</plate-layout.version>
     <easyuploads.version>8.0.2-SNAPSHOT</easyuploads.version>
     <guava.version>19.0</guava.version>
     <commons-lang3.version>3.5</commons-lang3.version>
