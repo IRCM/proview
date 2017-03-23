@@ -19,12 +19,20 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.platelayout.PlateLayout;
 import com.vaadin.ui.CustomComponent;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
 
 /**
  * Plate component that allows selection.
  */
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PlateComponent extends CustomComponent {
   private static final long serialVersionUID = -5886354033312877270L;
+  @Inject
   private transient PlateComponentPresenter presenter;
   protected PlateLayout plateLayout;
 
@@ -33,13 +41,13 @@ public class PlateComponent extends CustomComponent {
     setCompositionRoot(plateLayout);
   }
 
-  public void setPresenter(PlateComponentPresenter presenter) {
-    this.presenter = presenter;
-  }
-
   @Override
   public void attach() {
     super.attach();
     presenter.init(this);
+  }
+
+  public PlateComponentPresenter getPresenter() {
+    return presenter;
   }
 }

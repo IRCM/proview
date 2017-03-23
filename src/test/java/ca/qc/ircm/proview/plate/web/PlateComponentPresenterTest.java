@@ -54,7 +54,6 @@ public class PlateComponentPresenterTest {
   public void beforeTest() {
     initPlate();
     presenter = new PlateComponentPresenter();
-    view.setPresenter(presenter);
   }
 
   private void initPlate() {

@@ -22,13 +22,13 @@ public class TransferView extends TransferViewDesign implements BaseView, SavedS
   private static final long serialVersionUID = -4719228370965227442L;
   @Inject
   private TransferViewPresenter presenter;
-  @Inject
-  protected PlateComponentPresenter sourcePlateFormPresenter;
-  @Inject
-  protected PlateComponentPresenter destinationPlateFormPresenter;
   protected Menu menu = new Menu();
-  protected PlateComponent sourcePlateForm = new PlateComponent();
-  protected PlateComponent destinationPlateForm = new PlateComponent();
+  @Inject
+  protected PlateComponent sourcePlateForm;
+  @Inject
+  protected PlateComponent destinationPlateForm;
+  protected PlateComponentPresenter sourcePlateFormPresenter;
+  protected PlateComponentPresenter destinationPlateFormPresenter;
 
   /**
    * Initializes view.
@@ -37,11 +37,11 @@ public class TransferView extends TransferViewDesign implements BaseView, SavedS
   public void init() {
     menuLayout.addComponent(menu);
     sourcePlateForm.setWidth("100%");
-    sourcePlateForm.setPresenter(sourcePlateFormPresenter);
     sourcePlateFormLayout.addComponent(sourcePlateForm);
     destinationPlateForm.setWidth("100%");
-    destinationPlateForm.setPresenter(destinationPlateFormPresenter);
     destinationPlateFormLayout.addComponent(destinationPlateForm);
+    sourcePlateFormPresenter = sourcePlateForm.getPresenter();
+    destinationPlateFormPresenter = destinationPlateForm.getPresenter();
   }
 
   @Override
