@@ -43,7 +43,6 @@ public class SubmissionWindow extends Window implements BaseComponent {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionWindow.class);
   private SubmissionForm view = new SubmissionForm();
   private Panel panel;
-  private Submission submission;
   @Inject
   private SubmissionFormPresenter presenter;
 
@@ -63,16 +62,25 @@ public class SubmissionWindow extends Window implements BaseComponent {
   @Override
   public void attach() {
     super.attach();
-    logger.debug("Submission window for submission {}", submission);
-    setCaption(getResources().message(TITLE, submission.getExperience()));
   }
 
+  /**
+   * Sets submission.
+   * 
+   * @param submission
+   *          submission
+   */
   public void setSubmission(Submission submission) {
-    this.submission = submission;
     if (isAttached()) {
-      presenter.setItemDataSource(new BeanItem<>(submission));
+      updateSubmission(submission);
     } else {
-      addAttachListener(e -> presenter.setItemDataSource(new BeanItem<>(submission)));
+      addAttachListener(e -> updateSubmission(submission));
     }
+  }
+
+  private void updateSubmission(Submission submission) {
+    logger.debug("Submission window for submission {}", submission);
+    setCaption(getResources().message(TITLE, submission.getExperience()));
+    presenter.setItemDataSource(new BeanItem<>(submission));
   }
 }
