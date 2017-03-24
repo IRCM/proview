@@ -65,10 +65,14 @@ public class SubmissionWindow extends Window implements BaseComponent {
     super.attach();
     logger.debug("Submission window for submission {}", submission);
     setCaption(getResources().message(TITLE, submission.getExperience()));
-    presenter.setItemDataSource(new BeanItem<>(submission));
   }
 
   public void setSubmission(Submission submission) {
     this.submission = submission;
+    if (isAttached()) {
+      presenter.setItemDataSource(new BeanItem<>(submission));
+    } else {
+      addAttachListener(e -> presenter.setItemDataSource(new BeanItem<>(submission)));
+    }
   }
 }
