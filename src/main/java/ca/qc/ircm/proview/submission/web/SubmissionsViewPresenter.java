@@ -363,7 +363,7 @@ public class SubmissionsViewPresenter {
     }
     window.setSelectedSamples(samples);
     window.center();
-    window.addCloseListener(e -> {
+    window.addSaveListener(e -> {
       MessageResource resources = view.getResources();
       List<Sample> selectedSamples = window.getSelectedSamples();
       view.submissionsGrid.deselectAll();

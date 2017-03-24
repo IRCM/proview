@@ -54,6 +54,8 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.v7.converter.StringToInstantConverter;
 import ca.qc.ircm.proview.web.v7.filter.FilterInstantComponent;
 import ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter;
@@ -67,8 +69,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Container.Filter;
@@ -144,7 +144,7 @@ public class SubmissionsViewPresenterTest {
   @Captor
   private ArgumentCaptor<List<Sample>> samplesListCaptor;
   @Captor
-  private ArgumentCaptor<CloseListener> closeListenerCaptor;
+  private ArgumentCaptor<SaveListener> saveListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private FilterInstantComponentPresenter filterInstantComponentPresenter =
@@ -535,13 +535,13 @@ public class SubmissionsViewPresenterTest {
 
     verify(sampleSelectionWindowProvider).get();
     verify(sampleSelectionWindow).setSelectedSamples(samplesListCaptor.capture());
-    verify(sampleSelectionWindow).addCloseListener(closeListenerCaptor.capture());
+    verify(sampleSelectionWindow).addSaveListener(saveListenerCaptor.capture());
     List<Sample> samples = samplesListCaptor.getValue();
     assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
     assertTrue(samples.containsAll(submission1.getSamples()));
     assertTrue(samples.containsAll(submission2.getSamples()));
     verify(view).addWindow(sampleSelectionWindow);
-    closeListenerCaptor.getValue().windowClose(mock(CloseEvent.class));
+    saveListenerCaptor.getValue().saved(mock(SaveEvent.class));
     verify(sampleSelectionWindow).getSelectedSamples();
     verify(view).saveSamples(samplesCaptor.capture());
     Collection<Sample> savedSamples = samplesCaptor.getValue();

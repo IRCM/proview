@@ -18,7 +18,9 @@
 package ca.qc.ircm.proview.sample.web;
 
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 import org.slf4j.Logger;
@@ -64,6 +66,10 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
     logger.debug("Sample selection window");
     setCaption(getResources().message(TITLE));
     view.getPresenter().addSaveListener(e -> close());
+  }
+
+  public Registration addSaveListener(SaveListener listener) {
+    return view.getPresenter().addSaveListener(listener);
   }
 
   public List<Sample> getSelectedSamples() {
