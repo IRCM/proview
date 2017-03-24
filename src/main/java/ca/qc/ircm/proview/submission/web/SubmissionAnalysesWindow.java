@@ -73,6 +73,7 @@ public class SubmissionAnalysesWindow extends Window implements BaseComponent {
    *          submission
    */
   public void setSubmission(Submission submission) {
+    this.submission = submission;
     if (isAttached()) {
       presenter.setBean(submission);
     } else {
