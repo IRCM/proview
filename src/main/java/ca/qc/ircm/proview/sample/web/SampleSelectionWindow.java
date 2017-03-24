@@ -72,7 +72,7 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
 
   /**
    * Sets selected samples.
-   * 
+   *
    * @param samples
    *          selected samples
    */
@@ -80,9 +80,7 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
     if (isAttached()) {
       view.getPresenter().setSelectedSamples(samples);
     } else {
-      this.addAttachListener(e -> {
-        view.getPresenter().setSelectedSamples(samples);
-      });
+      addAttachListener(e -> view.getPresenter().setSelectedSamples(samples));
     }
   }
 }

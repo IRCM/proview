@@ -63,7 +63,7 @@ public class UserWindow extends Window implements BaseComponent {
 
   /**
    * Sets user.
-   * 
+   *
    * @param user
    *          user
    */
@@ -71,9 +71,7 @@ public class UserWindow extends Window implements BaseComponent {
     if (isAttached()) {
       view.getPresenter().setBean(user);
     } else {
-      addAttachListener(e -> {
-        view.getPresenter().setBean(user);
-      });
+      addAttachListener(e -> view.getPresenter().setBean(user));
     }
   }
 }
