@@ -36,7 +36,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.ui.Label;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.BeanItem;
 import org.junit.Before;
@@ -68,7 +68,6 @@ public class SubmissionViewPresenterTest {
   private ArgumentCaptor<Boolean> booleanCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
-  private Label headerLabel = new Label();
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionView.class, locale);
 
@@ -78,7 +77,7 @@ public class SubmissionViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new SubmissionViewPresenter(submissionService, applicationName);
-    view.headerLabel = headerLabel;
+    view.headerLabel = new Label();
     view.submissionForm = mock(SubmissionForm.class);
     view.submissionFormPresenter = mock(SubmissionFormPresenter.class);
     when(view.getLocale()).thenReturn(locale);
