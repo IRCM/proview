@@ -1,25 +1,26 @@
 <!doctype html>
 <html>
  <head>
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta name="vaadin-version" content="8.0.2">
- </head> 
- <body> 
-  <vaadin7-vertical-layout spacing> 
-   <vaadin-panel _id="samplesPanel"> 
-    <vaadin7-grid _id="samplesGrid"></vaadin7-grid> 
-   </vaadin-panel> 
-   <vaadin-panel _id="controlsPanel"> 
-    <vaadin7-grid _id="controlsGrid"></vaadin7-grid> 
-   </vaadin-panel> 
-   <vaadin7-horizontal-layout spacing> 
+ </head>
+ <body>
+  <vaadin-vertical-layout margin="false">
+   <vaadin-panel _id="samplesPanel">
+    <vaadin7-grid _id="samplesGrid"></vaadin7-grid>
+   </vaadin-panel>
+   <vaadin-panel _id="controlsPanel">
+    <vaadin7-grid _id="controlsGrid"></vaadin7-grid>
+   </vaadin-panel>
+   <vaadin-horizontal-layout>
     <vaadin-button plain-text _id="selectButton">
       Select 
-    </vaadin-button> 
+    </vaadin-button>
     <vaadin-button plain-text _id="clearButton">
       Clear 
-    </vaadin-button> 
-   </vaadin7-horizontal-layout> 
-  </vaadin7-vertical-layout>  
+    </vaadin-button>
+   </vaadin-horizontal-layout>
+  </vaadin-vertical-layout>
  </body>
 </html>
