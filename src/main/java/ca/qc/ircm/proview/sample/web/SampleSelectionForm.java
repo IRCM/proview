@@ -18,21 +18,29 @@
 package ca.qc.ircm.proview.sample.web;
 
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
 
 /**
  * Sample selection form.
  */
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SampleSelectionForm extends SampleSelectionFormDesign implements BaseComponent {
   private static final long serialVersionUID = -2890553778973734044L;
+  @Inject
   private transient SampleSelectionFormPresenter presenter;
-
-  public void setPresenter(SampleSelectionFormPresenter presenter) {
-    this.presenter = presenter;
-  }
 
   @Override
   public void attach() {
     super.attach();
     presenter.init(this);
+  }
+
+  public SampleSelectionFormPresenter getPresenter() {
+    return presenter;
   }
 }

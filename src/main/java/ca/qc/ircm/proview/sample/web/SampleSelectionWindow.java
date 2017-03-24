@@ -43,14 +43,12 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
   public static final String TITLE = "title";
   private static final long serialVersionUID = 988315877226604037L;
   private static final Logger logger = LoggerFactory.getLogger(SampleSelectionWindow.class);
-  private SampleSelectionForm view = new SampleSelectionForm();
   private Panel panel;
   @Inject
-  private SampleSelectionFormPresenter presenter;
+  private SampleSelectionForm view;
 
   @PostConstruct
   protected void init() {
-    view.setPresenter(presenter);
     addStyleName(WINDOW_STYLE);
     panel = new Panel();
     setContent(panel);
@@ -69,14 +67,14 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
   }
 
   public List<Sample> getSelectedSamples() {
-    return presenter.getSelectedSamples();
+    return view.getPresenter().getSelectedSamples();
   }
 
   public void setSelectedSamples(List<Sample> samples) {
-    presenter.setSelectedSamples(samples);
+    view.getPresenter().setSelectedSamples(samples);
   }
 
   public ObjectProperty<List<Sample>> selectedSamplesProperty() {
-    return presenter.selectedSamplesProperty();
+    return view.getPresenter().selectedSamplesProperty();
   }
 }
