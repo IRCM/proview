@@ -58,11 +58,22 @@ public class UserWindow extends Window implements BaseComponent {
   public void attach() {
     super.attach();
     setCaption(getResources().message(TITLE, user.getEmail()));
-    view.getPresenter().setBean(user);
     view.getPresenter().addSaveListener(e -> close());
   }
 
+  /**
+   * Sets user.
+   * 
+   * @param user
+   *          user
+   */
   public void setUser(User user) {
-    this.user = user;
+    if (isAttached()) {
+      view.getPresenter().setBean(user);
+    } else {
+      addAttachListener(e -> {
+        view.getPresenter().setBean(user);
+      });
+    }
   }
 }
