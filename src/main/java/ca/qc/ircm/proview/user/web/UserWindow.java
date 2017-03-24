@@ -37,15 +37,13 @@ public class UserWindow extends Window implements BaseComponent {
   public static final String WINDOW_STYLE = "user-window";
   public static final String TITLE = "title";
   private static final long serialVersionUID = 9032686080431923743L;
-  private UserForm view = new UserForm();
   private Panel panel;
   private User user;
   @Inject
-  private UserFormPresenter presenter;
+  private UserForm view;
 
   @PostConstruct
   protected void init() {
-    view.setPresenter(presenter);
     addStyleName(WINDOW_STYLE);
     panel = new Panel();
     setContent(panel);
@@ -60,8 +58,8 @@ public class UserWindow extends Window implements BaseComponent {
   public void attach() {
     super.attach();
     setCaption(getResources().message(TITLE, user.getEmail()));
-    presenter.setBean(user);
-    presenter.addSaveListener(e -> close());
+    view.getPresenter().setBean(user);
+    view.getPresenter().addSaveListener(e -> close());
   }
 
   public void setUser(User user) {

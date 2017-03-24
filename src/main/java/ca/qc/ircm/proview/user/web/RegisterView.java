@@ -33,10 +33,10 @@ public class RegisterView extends RegisterViewDesign implements BaseView {
   private static final long serialVersionUID = 7586918222688019429L;
   @Inject
   private transient RegisterViewPresenter presenter;
-  @Inject
-  protected transient UserFormPresenter userFormPresenter;
   protected Menu menu = new Menu();
-  protected UserForm userForm = new UserForm();
+  @Inject
+  protected UserForm userForm;
+  protected transient UserFormPresenter userFormPresenter;
 
   /**
    * Initializes view.
@@ -45,7 +45,7 @@ public class RegisterView extends RegisterViewDesign implements BaseView {
   public void init() {
     menuLayout.addComponent(menu);
     userFormLayout.addComponent(userForm);
-    userForm.setPresenter(userFormPresenter);
+    userFormPresenter = userForm.getPresenter();
   }
 
   @Override
