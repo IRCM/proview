@@ -64,10 +64,19 @@ public class SubmissionAnalysesWindow extends Window implements BaseComponent {
     super.attach();
     logger.debug("Submission analyses window for submission {}", submission);
     setCaption(getResources().message(TITLE, submission.getExperience()));
-    presenter.setBean(submission);
   }
 
+  /**
+   * Sets submission.
+   *
+   * @param submission
+   *          submission
+   */
   public void setSubmission(Submission submission) {
-    this.submission = submission;
+    if (isAttached()) {
+      presenter.setBean(submission);
+    } else {
+      addAttachListener(e -> presenter.setBean(submission));
+    }
   }
 }
