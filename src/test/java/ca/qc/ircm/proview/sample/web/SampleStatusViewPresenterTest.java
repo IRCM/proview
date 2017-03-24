@@ -52,12 +52,12 @@ import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.server.CompositeErrorMessage;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Label;
 import com.vaadin.v7.data.Container;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.Grid;
 import com.vaadin.v7.ui.Grid.Column;
 import com.vaadin.v7.ui.Grid.SelectionModel;
@@ -136,7 +136,7 @@ public class SampleStatusViewPresenterTest {
   }
 
   private String errorMessage(String message) {
-    return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
+    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test
@@ -150,8 +150,8 @@ public class SampleStatusViewPresenterTest {
     assertTrue(view.saveButton.getStyleName().contains(SAVE));
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
     SubmissionSample sample = (SubmissionSample) samples.get(0);
-    ComboBox newStatus =
-        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
+    ComboBox<SampleStatus> newStatus =
+        (ComboBox<SampleStatus>) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
     assertTrue(newStatus.getStyleName().contains(NEW_STATUS));
     Button down = (Button) container.getItem(sample).getItemProperty(DOWN).getValue();
     assertTrue(down.getStyleName().contains(DOWN));
@@ -172,11 +172,11 @@ public class SampleStatusViewPresenterTest {
     SubmissionSample sample = (SubmissionSample) samples.get(0);
     Object statusValue = container.getItem(sample).getItemProperty(STATUS).getValue();
     assertEquals(sample.getStatus().getLabel(locale), statusValue);
-    ComboBox newStatus =
-        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
+    ComboBox<SampleStatus> newStatus =
+        (ComboBox<SampleStatus>) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
     for (SampleStatus status : SampleStatus.values()) {
-      assertTrue(newStatus.getItemIds().contains(status));
-      assertEquals(status.getLabel(locale), newStatus.getItemCaption(status));
+      assertTrue(((ListDataProvider) newStatus.getDataProvider()).getItems().contains(status));
+      assertEquals(status.getLabel(locale), newStatus.getItemCaptionGenerator().apply(status));
     }
     Button down = (Button) container.getItem(sample).getItemProperty(DOWN).getValue();
     assertEquals(resources.message(DOWN), down.getCaption());
@@ -203,10 +203,10 @@ public class SampleStatusViewPresenterTest {
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
     SubmissionSample sample1 = (SubmissionSample) samples.get(0);
     SubmissionSample sample2 = (SubmissionSample) samples.get(1);
-    final ComboBox newStatus1 =
-        (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
-    final ComboBox newStatus2 =
-        (ComboBox) container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
+    final ComboBox<SampleStatus> newStatus1 =
+        (ComboBox<SampleStatus>) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
+    final ComboBox<SampleStatus> newStatus2 =
+        (ComboBox<SampleStatus>) container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
     Button down1 = (Button) container.getItem(sample1).getItemProperty(DOWN).getValue();
     newStatus1.setValue(SampleStatus.ANALYSED);
 
@@ -222,8 +222,11 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("");
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
     SubmissionSample sample = (SubmissionSample) samples.get(0);
-    ComboBox newStatus =
-        (ComboBox) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
+    ComboBox<SampleStatus> newStatus =
+        (ComboBox<SampleStatus>) container.getItem(sample).getItemProperty(NEW_STATUS).getValue();
+    samples.stream().skip(1).forEach(otherSample -> {
+      container.getItem(otherSample).getItemProperty(NEW_STATUS).getValue();
+    });
     newStatus.setValue(null);
     when(submissionSampleService.get(any()))
         .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
@@ -245,10 +248,10 @@ public class SampleStatusViewPresenterTest {
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
     SubmissionSample sample1 = (SubmissionSample) samples.get(0);
     SubmissionSample sample2 = (SubmissionSample) samples.get(1);
-    ComboBox newStatus1 =
-        (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
-    ComboBox newStatus2 =
-        (ComboBox) container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
+    ComboBox<SampleStatus> newStatus1 =
+        (ComboBox<SampleStatus>) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
+    ComboBox<SampleStatus> newStatus2 =
+        (ComboBox<SampleStatus>) container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
     newStatus1.setValue(SampleStatus.ANALYSED);
     newStatus2.setValue(SampleStatus.TO_DIGEST);
     when(submissionSampleService.get(any()))
@@ -282,8 +285,8 @@ public class SampleStatusViewPresenterTest {
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
     SubmissionSample sample1 = (SubmissionSample) samples.get(0);
     SubmissionSample sample2 = (SubmissionSample) samples.get(1);
-    ComboBox newStatus1 =
-        (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
+    ComboBox<SampleStatus> newStatus1 =
+        (ComboBox<SampleStatus>) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
     container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
     newStatus1.setValue(SampleStatus.TO_APPROVE);
     when(submissionSampleService.get(any()))
@@ -318,8 +321,8 @@ public class SampleStatusViewPresenterTest {
     Container.Indexed container = view.samplesGrid.getContainerDataSource();
     SubmissionSample sample1 = (SubmissionSample) samples.get(0);
     SubmissionSample sample2 = (SubmissionSample) samples.get(1);
-    ComboBox newStatus1 =
-        (ComboBox) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
+    ComboBox<SampleStatus> newStatus1 =
+        (ComboBox<SampleStatus>) container.getItem(sample1).getItemProperty(NEW_STATUS).getValue();
     container.getItem(sample2).getItemProperty(NEW_STATUS).getValue();
     newStatus1.setValue(SampleStatus.TO_APPROVE);
     when(submissionSampleService.get(any()))
