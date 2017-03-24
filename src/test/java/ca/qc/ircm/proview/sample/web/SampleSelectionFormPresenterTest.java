@@ -31,7 +31,9 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.getControlsColumns;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.getSamplesColumns;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,12 +42,13 @@ import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Panel;
 import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.ui.Grid;
 import com.vaadin.v7.ui.Grid.Column;
 import com.vaadin.v7.ui.Grid.SelectionModel;
@@ -57,6 +60,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -75,9 +79,11 @@ public class SampleSelectionFormPresenterTest {
   @Mock
   private ControlService controlService;
   @Mock
-  private ValueChangeListener valueChangeListener;
+  private SaveListener saveListener;
+  @Mock
+  private Registration registration;
   @Captor
-  private ArgumentCaptor<ValueChangeEvent> valueChangeEventCaptor;
+  private ArgumentCaptor<List<Sample>> samplesCaptor;
   @PersistenceContext
   private EntityManager entityManager;
   private Locale locale = Locale.FRENCH;
@@ -206,99 +212,82 @@ public class SampleSelectionFormPresenterTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void select_Samples() {
     presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    presenter.selectedSamplesProperty().addValueChangeListener(valueChangeListener);
     allSamples.forEach(sample -> view.samplesGrid.select(sample));
 
     view.selectButton.click();
 
-    verify(valueChangeListener).valueChange(valueChangeEventCaptor.capture());
-    ValueChangeEvent valueChangeEvent = valueChangeEventCaptor.getValue();
-    assertTrue(valueChangeEvent.getProperty().getValue() instanceof List);
-    List<Sample> samples = (List<Sample>) valueChangeEvent.getProperty().getValue();
-    assertEquals(this.allSamples.size(), samples.size());
-    assertTrue(this.allSamples.containsAll(samples));
-    assertTrue(samples.containsAll(this.allSamples));
+    verify(view).fireSaveEvent(samplesCaptor.capture());
+    assertEquals(allSamples, samplesCaptor.getValue());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void select_Controls() {
     presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    presenter.selectedSamplesProperty().addValueChangeListener(valueChangeListener);
     view.samplesGrid.deselectAll();
     controls.forEach(sample -> view.controlsGrid.select(sample));
 
     view.selectButton.click();
 
-    verify(valueChangeListener).valueChange(valueChangeEventCaptor.capture());
-    ValueChangeEvent valueChangeEvent = valueChangeEventCaptor.getValue();
-    assertTrue(valueChangeEvent.getProperty().getValue() instanceof List);
-    List<Sample> samples = (List<Sample>) valueChangeEvent.getProperty().getValue();
-    assertEquals(this.controls.size(), samples.size());
-    assertTrue(this.controls.containsAll(samples));
-    assertTrue(samples.containsAll(this.controls));
+    verify(view).fireSaveEvent(samplesCaptor.capture());
+    assertEquals(controls, samplesCaptor.getValue());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void select_SamplesAndControls() {
     presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    presenter.selectedSamplesProperty().addValueChangeListener(valueChangeListener);
     view.controlsGrid.select(controls.get(0));
 
     view.selectButton.click();
 
-    verify(valueChangeListener).valueChange(valueChangeEventCaptor.capture());
-    ValueChangeEvent valueChangeEvent = valueChangeEventCaptor.getValue();
-    assertTrue(valueChangeEvent.getProperty().getValue() instanceof List);
-    List<Sample> samples = (List<Sample>) valueChangeEvent.getProperty().getValue();
+    verify(view).fireSaveEvent(samplesCaptor.capture());
+    List<Sample> samples = samplesCaptor.getValue();
     assertEquals(selectedSamples.size() + 1, samples.size());
     assertTrue(samples.containsAll(this.selectedSamples));
     assertTrue(samples.contains(this.controls.get(0)));
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void select_None() {
     presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    presenter.selectedSamplesProperty().addValueChangeListener(valueChangeListener);
     view.samplesGrid.deselectAll();
 
     view.selectButton.click();
 
-    verify(valueChangeListener).valueChange(valueChangeEventCaptor.capture());
-    ValueChangeEvent valueChangeEvent = valueChangeEventCaptor.getValue();
-    assertTrue(valueChangeEvent.getProperty().getValue() instanceof List);
-    List<Sample> samples = (List<Sample>) valueChangeEvent.getProperty().getValue();
-    assertEquals(0, samples.size());
+    verify(view).fireSaveEvent(samplesCaptor.capture());
+    assertTrue(samplesCaptor.getValue().isEmpty());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void clear() {
     presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    presenter.selectedSamplesProperty().addValueChangeListener(valueChangeListener);
     view.controlsGrid.select(controls.get(0));
 
     view.clearButton.click();
 
-    verify(valueChangeListener).valueChange(valueChangeEventCaptor.capture());
-    ValueChangeEvent valueChangeEvent = valueChangeEventCaptor.getValue();
-    assertTrue(valueChangeEvent.getProperty().getValue() instanceof List);
-    List<Sample> samples = (List<Sample>) valueChangeEvent.getProperty().getValue();
-    assertEquals(0, samples.size());
+    verify(view).fireSaveEvent(samplesCaptor.capture());
+    assertTrue(samplesCaptor.getValue().isEmpty());
+  }
+
+  @Test
+  public void addSaveListener() {
+    presenter.init(view);
+    when(view.addListener(any(), any(), any(Method.class))).thenReturn(registration);
+
+    Registration registration = presenter.addSaveListener(saveListener);
+
+    verify(view).addListener(SaveEvent.class, saveListener, SaveListener.SAVED_METHOD);
+    assertSame(this.registration, registration);
   }
 }

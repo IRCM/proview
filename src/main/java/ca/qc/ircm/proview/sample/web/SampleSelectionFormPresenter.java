@@ -28,11 +28,13 @@ import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.shared.Registration;
 import com.vaadin.v7.data.sort.Sort;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.GeneratedPropertyContainer;
-import com.vaadin.v7.data.util.ObjectProperty;
 import com.vaadin.v7.ui.Grid.SelectionMode;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -70,7 +72,7 @@ public class SampleSelectionFormPresenter {
   private static final Object[] CONTROLS_COLUMNS =
       new Object[] { NAME, CONTROL_TYPE, ORIGINAL_CONTAINER_NAME };
   private SampleSelectionForm view;
-  private ObjectProperty<List<Sample>> selectedSamples = new ObjectProperty<>(new ArrayList<>());
+  private List<Sample> selectedSamples = new ArrayList<>();
   private BeanItemContainer<SubmissionSample> samplesContainer =
       new BeanItemContainer<>(SubmissionSample.class);
   private GeneratedPropertyContainer samplesGridContainer =
@@ -143,7 +145,6 @@ public class SampleSelectionFormPresenter {
   }
 
   private void addListeners() {
-    selectedSamples.addValueChangeListener(e -> updateSamples());
     view.selectButton.addClickListener(e -> selectSamples());
     view.clearButton.addClickListener(e -> clearSamples());
   }
@@ -151,9 +152,9 @@ public class SampleSelectionFormPresenter {
   private void updateSamples() {
     view.samplesGrid.deselectAll();
     samplesContainer.removeAllItems();
-    Set<Long> selectedIds = selectedSamples.getValue().stream().map(sample -> sample.getId())
-        .collect(Collectors.toSet());
-    List<Submission> submissions = selectedSamples.getValue().stream()
+    Set<Long> selectedIds =
+        selectedSamples.stream().map(sample -> sample.getId()).collect(Collectors.toSet());
+    List<Submission> submissions = selectedSamples.stream()
         .filter(sample -> sample instanceof SubmissionSample)
         .map(sample -> ((SubmissionSample) sample).getSubmission()).collect(Collectors.toList());
     samplesContainer.addAll(submissions.stream()
@@ -168,28 +169,40 @@ public class SampleSelectionFormPresenter {
   }
 
   private void selectSamples() {
-    List<Sample> samples = new ArrayList<>();
-    samples.addAll(view.samplesGrid.getSelectedRows().stream().map(o -> (Sample) o)
+    selectedSamples.clear();
+    selectedSamples.addAll(view.samplesGrid.getSelectedRows().stream().map(o -> (Sample) o)
         .collect(Collectors.toList()));
-    samples.addAll(view.controlsGrid.getSelectedRows().stream().map(o -> (Sample) o)
+    selectedSamples.addAll(view.controlsGrid.getSelectedRows().stream().map(o -> (Sample) o)
         .collect(Collectors.toList()));
-    selectedSamples.setValue(samples);
+    updateSamples();
+    view.fireSaveEvent(selectedSamples);
   }
 
   private void clearSamples() {
-    selectedSamples.setValue(new ArrayList<>());
-  }
-
-  public ObjectProperty<List<Sample>> selectedSamplesProperty() {
-    return selectedSamples;
+    selectedSamples.clear();
+    updateSamples();
+    view.fireSaveEvent(selectedSamples);
   }
 
   public List<Sample> getSelectedSamples() {
-    return selectedSamples.getValue();
+    return selectedSamples;
   }
 
+  /**
+   * Sets selected samples.
+   *
+   * @param samples
+   *          selected samples
+   */
   public void setSelectedSamples(List<Sample> samples) {
-    selectedSamples.setValue(samples);
+    selectedSamples = new ArrayList<>(samples);
+    if (view != null) {
+      updateSamples();
+    }
+  }
+
+  public Registration addSaveListener(SaveListener listener) {
+    return view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
   public static Object[] getSamplesColumns() {

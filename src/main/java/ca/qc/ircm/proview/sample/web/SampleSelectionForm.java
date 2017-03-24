@@ -17,10 +17,14 @@
 
 package ca.qc.ircm.proview.sample.web;
 
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,6 +42,10 @@ public class SampleSelectionForm extends SampleSelectionFormDesign implements Ba
   public void attach() {
     super.attach();
     presenter.init(this);
+  }
+
+  public void fireSaveEvent(List<Sample> selectedSamples) {
+    fireEvent(new SaveEvent(this, selectedSamples));
   }
 
   public SampleSelectionFormPresenter getPresenter() {

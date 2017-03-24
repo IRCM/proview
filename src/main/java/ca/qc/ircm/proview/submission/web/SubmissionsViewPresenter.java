@@ -352,6 +352,7 @@ public class SubmissionsViewPresenter {
 
   private void selectSamples() {
     SampleSelectionWindow window = sampleSelectionWindowProvider.get();
+    view.addWindow(window);
     List<Sample> samples;
     if (!view.submissionsGrid.getSelectedRows().isEmpty()) {
       samples = view.submissionsGrid.getSelectedRows().stream()
@@ -362,18 +363,15 @@ public class SubmissionsViewPresenter {
     }
     window.setSelectedSamples(samples);
     window.center();
-    window.selectedSamplesProperty().addValueChangeListener(e -> {
-      window.close();
+    window.addCloseListener(e -> {
       MessageResource resources = view.getResources();
-      @SuppressWarnings("unchecked")
-      List<Sample> selectedSamples = (List<Sample>) e.getProperty().getValue();
+      List<Sample> selectedSamples = window.getSelectedSamples();
       view.submissionsGrid.deselectAll();
       view.saveSamples(selectedSamples);
       view.selectedSamplesLabel
           .setValue(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
       logger.debug("Selected samples {}", selectedSamples);
     });
-    view.addWindow(window);
   }
 
   private void updateStatus() {

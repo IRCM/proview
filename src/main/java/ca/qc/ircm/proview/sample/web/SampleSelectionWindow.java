@@ -21,7 +21,6 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
-import com.vaadin.v7.data.util.ObjectProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -64,17 +63,26 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
     super.attach();
     logger.debug("Sample selection window");
     setCaption(getResources().message(TITLE));
+    view.getPresenter().addSaveListener(e -> close());
   }
 
   public List<Sample> getSelectedSamples() {
     return view.getPresenter().getSelectedSamples();
   }
 
+  /**
+   * Sets selected samples.
+   * 
+   * @param samples
+   *          selected samples
+   */
   public void setSelectedSamples(List<Sample> samples) {
-    view.getPresenter().setSelectedSamples(samples);
-  }
-
-  public ObjectProperty<List<Sample>> selectedSamplesProperty() {
-    return view.getPresenter().selectedSamplesProperty();
+    if (isAttached()) {
+      view.getPresenter().setSelectedSamples(samples);
+    } else {
+      this.addAttachListener(e -> {
+        view.getPresenter().setSelectedSamples(samples);
+      });
+    }
   }
 }

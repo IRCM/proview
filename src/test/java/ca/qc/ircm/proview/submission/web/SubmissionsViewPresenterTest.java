@@ -67,14 +67,14 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.sort.SortOrder;
 import com.vaadin.v7.data.util.GeneratedPropertyContainer;
-import com.vaadin.v7.data.util.ObjectProperty;
 import com.vaadin.v7.data.util.filter.Compare;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.ui.Grid;
@@ -93,6 +93,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -138,14 +139,12 @@ public class SubmissionsViewPresenterTest {
   private SubmissionAnalysesWindow submissionAnalysesWindow;
   @Mock
   private SampleSelectionWindow sampleSelectionWindow;
-  @Mock
-  private ObjectProperty<List<Sample>> selectedSamplesProperty;
   @Captor
   private ArgumentCaptor<Collection<Sample>> samplesCaptor;
   @Captor
   private ArgumentCaptor<List<Sample>> samplesListCaptor;
   @Captor
-  private ArgumentCaptor<com.vaadin.v7.data.Property.ValueChangeListener> listenerCaptor;
+  private ArgumentCaptor<CloseListener> closeListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private FilterInstantComponentPresenter filterInstantComponentPresenter =
@@ -529,25 +528,21 @@ public class SubmissionsViewPresenterTest {
     final Submission submission2 = find(submissions, 156L).orElse(null);
     view.submissionsGrid.select(containerItemId(submission1));
     view.submissionsGrid.select(containerItemId(submission2));
-    when(sampleSelectionWindow.selectedSamplesProperty()).thenReturn(selectedSamplesProperty);
+    when(sampleSelectionWindow.getSelectedSamples())
+        .thenReturn(new ArrayList<Sample>(submission2.getSamples()));
 
     view.selectSamplesButton.click();
 
     verify(sampleSelectionWindowProvider).get();
     verify(sampleSelectionWindow).setSelectedSamples(samplesListCaptor.capture());
+    verify(sampleSelectionWindow).addCloseListener(closeListenerCaptor.capture());
     List<Sample> samples = samplesListCaptor.getValue();
     assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
     assertTrue(samples.containsAll(submission1.getSamples()));
     assertTrue(samples.containsAll(submission2.getSamples()));
-    verify(sampleSelectionWindow).selectedSamplesProperty();
-    verify(selectedSamplesProperty).addValueChangeListener(listenerCaptor.capture());
     verify(view).addWindow(sampleSelectionWindow);
-    com.vaadin.v7.data.Property.ValueChangeListener listener = listenerCaptor.getValue();
-    Property.ValueChangeEvent event = mock(Property.ValueChangeEvent.class);
-    Property<Object> eventProperty = mock(Property.class);
-    when(event.getProperty()).thenReturn(eventProperty);
-    when(eventProperty.getValue()).thenReturn(submission2.getSamples());
-    listener.valueChange(event);
+    closeListenerCaptor.getValue().windowClose(mock(CloseEvent.class));
+    verify(sampleSelectionWindow).getSelectedSamples();
     verify(view).saveSamples(samplesCaptor.capture());
     Collection<Sample> savedSamples = samplesCaptor.getValue();
     assertEquals(submission2.getSamples().size(), savedSamples.size());
