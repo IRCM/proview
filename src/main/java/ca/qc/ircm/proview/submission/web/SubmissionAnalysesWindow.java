@@ -42,7 +42,6 @@ public class SubmissionAnalysesWindow extends Window implements BaseComponent {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionAnalysesWindow.class);
   private SubmissionAnalysesForm view = new SubmissionAnalysesForm();
   private Panel panel;
-  private Submission submission;
   @Inject
   private SubmissionAnalysesFormPresenter presenter;
 
@@ -62,8 +61,6 @@ public class SubmissionAnalysesWindow extends Window implements BaseComponent {
   @Override
   public void attach() {
     super.attach();
-    logger.debug("Submission analyses window for submission {}", submission);
-    setCaption(getResources().message(TITLE, submission.getExperience()));
   }
 
   /**
@@ -73,11 +70,16 @@ public class SubmissionAnalysesWindow extends Window implements BaseComponent {
    *          submission
    */
   public void setSubmission(Submission submission) {
-    this.submission = submission;
     if (isAttached()) {
-      presenter.setBean(submission);
+      updateSubmission(submission);
     } else {
-      addAttachListener(e -> presenter.setBean(submission));
+      addAttachListener(e -> updateSubmission(submission));
     }
+  }
+
+  private void updateSubmission(Submission submission) {
+    logger.debug("Submission analyses window for submission {}", submission);
+    setCaption(getResources().message(TITLE, submission.getExperience()));
+    presenter.setBean(submission);
   }
 }
