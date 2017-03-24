@@ -301,7 +301,7 @@ public class PlateComponentPresenter {
    */
   public void setPlate(Plate plate) {
     if (plate == null) {
-      throw new NullPointerException();
+      throw new NullPointerException("plate cannot be null");
     }
     this.plate = plate;
     updatePlate();
