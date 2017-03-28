@@ -37,8 +37,6 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Label;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.BeanItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,8 +60,6 @@ public class SubmissionViewPresenterTest {
   private SubmissionService submissionService;
   @Mock
   private Submission submission;
-  @Captor
-  private ArgumentCaptor<Item> itemCaptor;
   @Captor
   private ArgumentCaptor<Boolean> booleanCaptor;
   @Value("${spring.application.name}")
@@ -102,14 +98,13 @@ public class SubmissionViewPresenterTest {
     presenter.enter("");
 
     verify(submissionService, never()).get(any());
-    verify(view.submissionFormPresenter, never()).setItemDataSource(any());
+    verify(view.submissionFormPresenter, never()).setBean(any());
     verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void enter_Submission_Editable() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
@@ -121,17 +116,13 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setItemDataSource(itemCaptor.capture());
-    assertTrue(itemCaptor.getValue() instanceof BeanItem);
-    BeanItem<Submission> item = (BeanItem<Submission>) itemCaptor.getValue();
-    assertEquals(submission, item.getBean());
+    verify(view.submissionFormPresenter).setBean(submission);
     verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void enter_Submission_NotEditable_Received() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
@@ -143,17 +134,13 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setItemDataSource(itemCaptor.capture());
-    assertTrue(itemCaptor.getValue() instanceof BeanItem);
-    BeanItem<Submission> item = (BeanItem<Submission>) itemCaptor.getValue();
-    assertEquals(submission, item.getBean());
+    verify(view.submissionFormPresenter).setBean(submission);
     verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void enter_Submission_NotEditable_ToAnalyse() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
@@ -165,17 +152,13 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setItemDataSource(itemCaptor.capture());
-    assertTrue(itemCaptor.getValue() instanceof BeanItem);
-    BeanItem<Submission> item = (BeanItem<Submission>) itemCaptor.getValue();
-    assertEquals(submission, item.getBean());
+    verify(view.submissionFormPresenter).setBean(submission);
     verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void enter_Submission_NotEditable_DataAnalysis() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
@@ -187,17 +170,13 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setItemDataSource(itemCaptor.capture());
-    assertTrue(itemCaptor.getValue() instanceof BeanItem);
-    BeanItem<Submission> item = (BeanItem<Submission>) itemCaptor.getValue();
-    assertEquals(submission, item.getBean());
+    verify(view.submissionFormPresenter).setBean(submission);
     verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void enter_Submission_NotEditable_Analysed() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
@@ -209,10 +188,7 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setItemDataSource(itemCaptor.capture());
-    assertTrue(itemCaptor.getValue() instanceof BeanItem);
-    BeanItem<Submission> item = (BeanItem<Submission>) itemCaptor.getValue();
-    assertEquals(submission, item.getBean());
+    verify(view.submissionFormPresenter).setBean(submission);
     verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
@@ -223,7 +199,7 @@ public class SubmissionViewPresenterTest {
     presenter.enter("a");
 
     verify(submissionService, never()).get(any());
-    verify(view.submissionFormPresenter, never()).setItemDataSource(any());
+    verify(view.submissionFormPresenter, never()).setBean(any());
     verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     verify(view).showWarning(resources.message(INVALID_SUBMISSION));

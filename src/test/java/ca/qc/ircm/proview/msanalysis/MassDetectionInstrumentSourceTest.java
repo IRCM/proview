@@ -21,12 +21,27 @@ import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.ESI;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.LDTD;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.NSI;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Locale;
 
 public class MassDetectionInstrumentSourceTest {
+  @Test
+  public void availables() {
+    assertTrue(ESI.available);
+    assertTrue(NSI.available);
+    assertFalse(LDTD.available);
+
+    List<MassDetectionInstrumentSource> availables = MassDetectionInstrumentSource.availables();
+    assertEquals(2, availables.size());
+    assertEquals(ESI, availables.get(0));
+    assertEquals(NSI, availables.get(1));
+  }
+
   @Test
   public void getNullLabel() {
     assertEquals("Undetermined", MassDetectionInstrumentSource.getNullLabel(Locale.ENGLISH));

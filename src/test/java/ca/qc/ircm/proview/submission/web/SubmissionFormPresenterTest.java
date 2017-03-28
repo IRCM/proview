@@ -67,7 +67,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTIO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.NULL_ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
@@ -76,7 +75,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NA
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME_PROPERTY;
@@ -175,24 +173,22 @@ import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.HorizontalLayout;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.v7.ui.VerticalLayout;
+import com.vaadin.ui.RadioButtonGroup;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.util.BeanItem;
-import com.vaadin.v7.data.util.converter.StringToDoubleConverter;
-import com.vaadin.v7.data.util.converter.StringToIntegerConverter;
-import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.v7.ui.OptionGroup;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.v7.ui.TextArea;
-import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.Upload;
 import com.vaadin.v7.ui.Upload.Receiver;
 import com.vaadin.v7.ui.Upload.SucceededEvent;
@@ -341,20 +337,20 @@ public class SubmissionFormPresenterTest {
   private String filesFilename2 = "samples.xlsx";
   private String filesMimeType2 = "xlsx";
   private byte[] filesContent2 = new byte[10240];
-  private TextField sampleNameField1;
-  private TextField sampleNameField2;
-  private TextField sampleNumberProteinField1;
-  private TextField sampleNumberProteinField2;
-  private TextField sampleProteinWeightField1;
-  private TextField sampleProteinWeightField2;
-  private TextField standardNameField1;
-  private TextField standardNameField2;
-  private TextField standardQuantityField1;
-  private TextField standardQuantityField2;
-  private TextField contaminantNameField1;
-  private TextField contaminantNameField2;
-  private TextField contaminantQuantityField1;
-  private TextField contaminantQuantityField2;
+  private com.vaadin.v7.ui.TextField sampleNameField1;
+  private com.vaadin.v7.ui.TextField sampleNameField2;
+  private com.vaadin.v7.ui.TextField sampleNumberProteinField1;
+  private com.vaadin.v7.ui.TextField sampleNumberProteinField2;
+  private com.vaadin.v7.ui.TextField sampleProteinWeightField1;
+  private com.vaadin.v7.ui.TextField sampleProteinWeightField2;
+  private com.vaadin.v7.ui.TextField standardNameField1;
+  private com.vaadin.v7.ui.TextField standardNameField2;
+  private com.vaadin.v7.ui.TextField standardQuantityField1;
+  private com.vaadin.v7.ui.TextField standardQuantityField2;
+  private com.vaadin.v7.ui.TextField contaminantNameField1;
+  private com.vaadin.v7.ui.TextField contaminantNameField2;
+  private com.vaadin.v7.ui.TextField contaminantQuantityField1;
+  private com.vaadin.v7.ui.TextField contaminantQuantityField2;
 
   /**
    * Before test.
@@ -366,9 +362,9 @@ public class SubmissionFormPresenterTest {
     view.sampleTypeLabel = new Label();
     view.inactiveLabel = new Label();
     view.servicePanel = new Panel();
-    view.serviceOptions = new OptionGroup();
+    view.serviceOptions = new RadioButtonGroup<>();
     view.samplesPanel = new Panel();
-    view.sampleSupportOptions = new OptionGroup();
+    view.sampleSupportOptions = new RadioButtonGroup<>();
     view.solutionSolventField = new TextField();
     view.sampleCountField = new TextField();
     view.sampleNameField = new TextField();
@@ -380,8 +376,8 @@ public class SubmissionFormPresenterTest {
     view.averageMassField = new TextField();
     view.toxicityField = new TextField();
     view.lightSensitiveField = new CheckBox();
-    view.storageTemperatureOptions = new OptionGroup();
-    view.sampleContainerTypeOptions = new OptionGroup();
+    view.storageTemperatureOptions = new RadioButtonGroup<>();
+    view.sampleContainerTypeOptions = new RadioButtonGroup<>();
     view.plateNameField = new TextField();
     view.samplesLabel = new Label();
     view.samplesTableLayout = new HorizontalLayout();
@@ -423,21 +419,21 @@ public class SubmissionFormPresenterTest {
     view.gelImagesUploader = gelImagesUploader;
     view.gelImagesTable = new Table();
     view.servicesPanel = new Panel();
-    view.digestionOptions = new OptionGroup();
+    view.digestionOptions = new RadioButtonGroup<>();
     view.usedProteolyticDigestionMethodField = new TextField();
     view.otherProteolyticDigestionMethodField = new TextField();
     view.otherProteolyticDigestionMethodNote = new Label();
     view.enrichmentLabel = new Label();
     view.exclusionsLabel = new Label();
-    view.injectionTypeOptions = new OptionGroup();
-    view.sourceOptions = new OptionGroup();
-    view.proteinContentOptions = new OptionGroup();
-    view.instrumentOptions = new OptionGroup();
-    view.proteinIdentificationOptions = new OptionGroup();
+    view.injectionTypeOptions = new RadioButtonGroup<>();
+    view.sourceOptions = new RadioButtonGroup<>();
+    view.proteinContentOptions = new RadioButtonGroup<>();
+    view.instrumentOptions = new RadioButtonGroup<>();
+    view.proteinIdentificationOptions = new RadioButtonGroup<>();
     view.proteinIdentificationLinkField = new TextField();
-    view.quantificationOptions = new OptionGroup();
+    view.quantificationOptions = new RadioButtonGroup<>();
     view.quantificationLabelsField = new TextArea();
-    view.highResolutionOptions = new OptionGroup();
+    view.highResolutionOptions = new RadioButtonGroup<>();
     view.solventsLayout = new VerticalLayout();
     view.acetonitrileSolventsField = new CheckBox();
     view.methanolSolventsField = new CheckBox();
@@ -533,10 +529,10 @@ public class SubmissionFormPresenterTest {
         String.valueOf(proteinWeight2), PROTEIN_WEIGHT_PROPERTY);
   }
 
-  private TextField setValueInSamplesTable(Container samplesContainer, SubmissionSample sample,
-      String value, String property) {
-    TextField field = (TextField) view.samplesTable.getTableFieldFactory()
-        .createField(samplesContainer, sample, property, view.samplesTable);
+  private com.vaadin.v7.ui.TextField setValueInSamplesTable(Container samplesContainer,
+      SubmissionSample sample, String value, String property) {
+    com.vaadin.v7.ui.TextField field = (com.vaadin.v7.ui.TextField) view.samplesTable
+        .getTableFieldFactory().createField(samplesContainer, sample, property, view.samplesTable);
     field.setPropertyDataSource(samplesContainer.getContainerProperty(sample, property));
     field.setValue(value);
     return field;
@@ -561,10 +557,11 @@ public class SubmissionFormPresenterTest {
         STANDARD_COMMENTS_PROPERTY);
   }
 
-  private TextField setValueInStandardsTable(Container standardsContainer, Standard standard,
-      String value, String property) {
-    TextField field = (TextField) view.standardsTable.getTableFieldFactory()
-        .createField(standardsContainer, standard, property, view.standardsTable);
+  private com.vaadin.v7.ui.TextField setValueInStandardsTable(Container standardsContainer,
+      Standard standard, String value, String property) {
+    com.vaadin.v7.ui.TextField field =
+        (com.vaadin.v7.ui.TextField) view.standardsTable.getTableFieldFactory()
+            .createField(standardsContainer, standard, property, view.standardsTable);
     field.setPropertyDataSource(standardsContainer.getContainerProperty(standard, property));
     field.setValue(value);
     return field;
@@ -589,10 +586,11 @@ public class SubmissionFormPresenterTest {
         CONTAMINANT_COMMENTS_PROPERTY);
   }
 
-  private TextField setValueInContaminantsTable(Container contaminantsContainer,
+  private com.vaadin.v7.ui.TextField setValueInContaminantsTable(Container contaminantsContainer,
       Contaminant contaminant, String value, String property) {
-    TextField field = (TextField) view.contaminantsTable.getTableFieldFactory()
-        .createField(contaminantsContainer, contaminant, property, view.contaminantsTable);
+    com.vaadin.v7.ui.TextField field =
+        (com.vaadin.v7.ui.TextField) view.contaminantsTable.getTableFieldFactory()
+            .createField(contaminantsContainer, contaminant, property, view.contaminantsTable);
     field.setPropertyDataSource(contaminantsContainer.getContainerProperty(contaminant, property));
     field.setValue(value);
     return field;
@@ -638,13 +636,14 @@ public class SubmissionFormPresenterTest {
     handler.handleFile(file2Path.toFile(), filesFilename2, filesMimeType2, filesContent2.length);
   }
 
-  private List<TextField> plateSampleNameFields() {
-    List<TextField> components = new ArrayList<>();
-    view.samplesPlateLayout.iterator().forEachRemaining(c -> components.add((TextField) c));
+  private List<com.vaadin.v7.ui.TextField> plateSampleNameFields() {
+    List<com.vaadin.v7.ui.TextField> components = new ArrayList<>();
+    view.samplesPlateLayout.iterator()
+        .forEachRemaining(c -> components.add((com.vaadin.v7.ui.TextField) c));
     return components;
   }
 
-  private TextField plateSampleNameField(int column, int row) {
+  private com.vaadin.v7.ui.TextField plateSampleNameField(int column, int row) {
     int index = view.samplesPlateLayout.getRows() * column + row;
     return plateSampleNameFields().get(index);
   }
@@ -749,68 +748,47 @@ public class SubmissionFormPresenterTest {
   public void requiredFields() {
     presenter.init(view);
 
-    assertTrue(view.serviceOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.serviceOptions.getRequiredError());
-    assertTrue(view.sampleSupportOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleSupportOptions.getRequiredError());
-    assertTrue(view.solutionSolventField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.solutionSolventField.getRequiredError());
-    assertTrue(view.sampleCountField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleCountField.getRequiredError());
-    assertTrue(view.sampleNameField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleNameField.getRequiredError());
-    assertTrue(view.formulaField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.formulaField.getRequiredError());
-    assertTrue(view.monoisotopicMassField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.monoisotopicMassField.getRequiredError());
-    assertFalse(view.averageMassField.isRequired());
-    assertFalse(view.toxicityField.isRequired());
-    assertFalse(view.lightSensitiveField.isRequired());
-    assertTrue(view.storageTemperatureOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.storageTemperatureOptions.getRequiredError());
-    assertTrue(view.sampleContainerTypeOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.sampleContainerTypeOptions.getRequiredError());
+    assertTrue(view.serviceOptions.isRequiredIndicatorVisible());
+    assertTrue(view.sampleSupportOptions.isRequiredIndicatorVisible());
+    assertTrue(view.solutionSolventField.isRequiredIndicatorVisible());
+    assertTrue(view.sampleCountField.isRequiredIndicatorVisible());
+    assertTrue(view.sampleNameField.isRequiredIndicatorVisible());
+    assertTrue(view.formulaField.isRequiredIndicatorVisible());
+    assertTrue(view.monoisotopicMassField.isRequiredIndicatorVisible());
+    assertFalse(view.averageMassField.isRequiredIndicatorVisible());
+    assertFalse(view.toxicityField.isRequiredIndicatorVisible());
+    assertFalse(view.lightSensitiveField.isRequiredIndicatorVisible());
+    assertTrue(view.storageTemperatureOptions.isRequiredIndicatorVisible());
+    assertTrue(view.sampleContainerTypeOptions.isRequiredIndicatorVisible());
     Container samplesContainer = view.samplesTable.getContainerDataSource();
     if (samplesContainer.size() < 1) {
       samplesContainer.addItem(new SubmissionSample());
     }
-    assertTrue(view.plateNameField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.plateNameField.getRequiredError());
+    assertTrue(view.plateNameField.isRequiredIndicatorVisible());
     SubmissionSample firstSample =
         (SubmissionSample) samplesContainer.getItemIds().iterator().next();
     TextField sampleNameTableField = (TextField) view.samplesTable.getTableFieldFactory()
         .createField(samplesContainer, firstSample, SAMPLE_NAME_PROPERTY, view.samplesTable);
-    assertTrue(sampleNameTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), sampleNameTableField.getRequiredError());
+    assertTrue(sampleNameTableField.isRequiredIndicatorVisible());
     TextField sampleNumberProteinTableField =
         (TextField) view.samplesTable.getTableFieldFactory().createField(samplesContainer,
             firstSample, SAMPLE_NUMBER_PROTEIN_PROPERTY, view.samplesTable);
-    assertTrue(sampleNumberProteinTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        sampleNumberProteinTableField.getRequiredError());
+    assertTrue(sampleNumberProteinTableField.isRequiredIndicatorVisible());
     TextField sampleProteinWeightTableField = (TextField) view.samplesTable.getTableFieldFactory()
         .createField(samplesContainer, firstSample, PROTEIN_WEIGHT_PROPERTY, view.samplesTable);
-    assertTrue(sampleProteinWeightTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        sampleProteinWeightTableField.getRequiredError());
-    for (TextField sampleNameField : plateSampleNameFields()) {
+    assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
+    for (com.vaadin.v7.ui.TextField sampleNameField : plateSampleNameFields()) {
       assertFalse(sampleNameField.isRequired());
     }
-    assertTrue(view.experienceField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.experienceField.getRequiredError());
-    assertFalse(view.experienceGoalField.isRequired());
-    assertTrue(view.taxonomyField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.taxonomyField.getRequiredError());
-    assertFalse(view.proteinNameField.isRequired());
-    assertFalse(view.proteinWeightField.isRequired());
-    assertFalse(view.postTranslationModificationField.isRequired());
-    assertTrue(view.sampleQuantityField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleQuantityField.getRequiredError());
-    assertTrue(view.sampleVolumeField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleVolumeField.getRequiredError());
-    assertFalse(view.standardCountField.isRequired());
+    assertTrue(view.experienceField.isRequiredIndicatorVisible());
+    assertFalse(view.experienceGoalField.isRequiredIndicatorVisible());
+    assertTrue(view.taxonomyField.isRequiredIndicatorVisible());
+    assertFalse(view.proteinNameField.isRequiredIndicatorVisible());
+    assertFalse(view.proteinWeightField.isRequiredIndicatorVisible());
+    assertFalse(view.postTranslationModificationField.isRequiredIndicatorVisible());
+    assertTrue(view.sampleQuantityField.isRequiredIndicatorVisible());
+    assertTrue(view.sampleVolumeField.isRequiredIndicatorVisible());
+    assertFalse(view.standardCountField.isRequiredIndicatorVisible());
     Container standardsContainer = view.standardsTable.getContainerDataSource();
     if (standardsContainer.size() < 1) {
       standardsContainer.addItem(new Standard());
@@ -819,18 +797,16 @@ public class SubmissionFormPresenterTest {
     TextField standardNameTableField =
         (TextField) view.standardsTable.getTableFieldFactory().createField(standardsContainer,
             firstStandard, STANDARD_NAME_PROPERTY, view.standardsTable);
-    assertTrue(standardNameTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), standardNameTableField.getRequiredError());
+    assertTrue(standardNameTableField.isRequiredIndicatorVisible());
     TextField standardQuantityTableField =
         (TextField) view.standardsTable.getTableFieldFactory().createField(standardsContainer,
             firstStandard, STANDARD_QUANTITY_PROPERTY, view.standardsTable);
-    assertTrue(standardQuantityTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), standardQuantityTableField.getRequiredError());
+    assertTrue(standardQuantityTableField.isRequiredIndicatorVisible());
     TextField standardCommentsTableField =
         (TextField) view.standardsTable.getTableFieldFactory().createField(standardsContainer,
             firstStandard, STANDARD_COMMENTS_PROPERTY, view.standardsTable);
-    assertFalse(standardCommentsTableField.isRequired());
-    assertFalse(view.contaminantCountField.isRequired());
+    assertFalse(standardCommentsTableField.isRequiredIndicatorVisible());
+    assertFalse(view.contaminantCountField.isRequiredIndicatorVisible());
     Container contaminantsContainer = view.contaminantsTable.getContainerDataSource();
     if (contaminantsContainer.size() < 1) {
       contaminantsContainer.addItem(new Contaminant());
@@ -840,62 +816,40 @@ public class SubmissionFormPresenterTest {
     TextField contaminantNameTableField =
         (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
             firstContaminant, CONTAMINANT_NAME_PROPERTY, view.contaminantsTable);
-    assertTrue(contaminantNameTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), contaminantNameTableField.getRequiredError());
+    assertTrue(contaminantNameTableField.isRequiredIndicatorVisible());
     TextField contaminantQuantityTableField =
         (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
             firstContaminant, CONTAMINANT_QUANTITY_PROPERTY, view.contaminantsTable);
-    assertTrue(contaminantQuantityTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        contaminantQuantityTableField.getRequiredError());
+    assertTrue(contaminantQuantityTableField.isRequiredIndicatorVisible());
     TextField contaminantCommentsTableField =
         (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
             firstContaminant, CONTAMINANT_COMMENTS_PROPERTY, view.contaminantsTable);
-    assertFalse(contaminantCommentsTableField.isRequired());
-    assertTrue(view.separationField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.separationField.getRequiredError());
-    assertTrue(view.thicknessField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.thicknessField.getRequiredError());
-    assertFalse(view.colorationField.isRequired());
-    assertTrue(view.otherColorationField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.otherColorationField.getRequiredError());
-    assertFalse(view.developmentTimeField.isRequired());
-    assertFalse(view.decolorationField.isRequired());
-    assertFalse(view.weightMarkerQuantityField.isRequired());
-    assertFalse(view.proteinQuantityField.isRequired());
-    assertTrue(view.digestionOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.digestionOptions.getRequiredError());
-    assertTrue(view.usedProteolyticDigestionMethodField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.usedProteolyticDigestionMethodField.getRequiredError());
-    assertTrue(view.otherProteolyticDigestionMethodField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.otherProteolyticDigestionMethodField.getRequiredError());
-    assertTrue(view.injectionTypeOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.injectionTypeOptions.getRequiredError());
-    assertTrue(view.sourceOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sourceOptions.getRequiredError());
-    assertTrue(view.proteinContentOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.proteinContentOptions.getRequiredError());
-    assertFalse(view.instrumentOptions.isRequired());
-    assertTrue(view.proteinIdentificationOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.proteinIdentificationOptions.getRequiredError());
-    assertTrue(view.proteinIdentificationLinkField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.proteinIdentificationLinkField.getRequiredError());
-    assertFalse(view.quantificationOptions.isRequired());
-    assertFalse(view.quantificationLabelsField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.quantificationLabelsField.getRequiredError());
-    assertTrue(view.highResolutionOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.highResolutionOptions.getRequiredError());
-    assertFalse(view.acetonitrileSolventsField.isRequired());
-    assertFalse(view.methanolSolventsField.isRequired());
-    assertFalse(view.chclSolventsField.isRequired());
-    assertFalse(view.otherSolventsField.isRequired());
-    assertTrue(view.otherSolventField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.otherSolventField.getRequiredError());
+    assertFalse(contaminantCommentsTableField.isRequiredIndicatorVisible());
+    assertTrue(view.separationField.isRequiredIndicatorVisible());
+    assertTrue(view.thicknessField.isRequiredIndicatorVisible());
+    assertFalse(view.colorationField.isRequiredIndicatorVisible());
+    assertTrue(view.otherColorationField.isRequiredIndicatorVisible());
+    assertFalse(view.developmentTimeField.isRequiredIndicatorVisible());
+    assertFalse(view.decolorationField.isRequiredIndicatorVisible());
+    assertFalse(view.weightMarkerQuantityField.isRequiredIndicatorVisible());
+    assertFalse(view.proteinQuantityField.isRequiredIndicatorVisible());
+    assertTrue(view.digestionOptions.isRequiredIndicatorVisible());
+    assertTrue(view.usedProteolyticDigestionMethodField.isRequiredIndicatorVisible());
+    assertTrue(view.otherProteolyticDigestionMethodField.isRequiredIndicatorVisible());
+    assertTrue(view.injectionTypeOptions.isRequiredIndicatorVisible());
+    assertTrue(view.sourceOptions.isRequiredIndicatorVisible());
+    assertTrue(view.proteinContentOptions.isRequiredIndicatorVisible());
+    assertTrue(view.instrumentOptions.isRequiredIndicatorVisible());
+    assertTrue(view.proteinIdentificationOptions.isRequiredIndicatorVisible());
+    assertTrue(view.proteinIdentificationLinkField.isRequiredIndicatorVisible());
+    assertFalse(view.quantificationOptions.isRequiredIndicatorVisible());
+    assertFalse(view.quantificationLabelsField.isRequiredIndicatorVisible());
+    assertTrue(view.highResolutionOptions.isRequiredIndicatorVisible());
+    assertFalse(view.acetonitrileSolventsField.isRequiredIndicatorVisible());
+    assertFalse(view.methanolSolventsField.isRequiredIndicatorVisible());
+    assertFalse(view.chclSolventsField.isRequiredIndicatorVisible());
+    assertFalse(view.otherSolventsField.isRequiredIndicatorVisible());
+    assertTrue(view.otherSolventField.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -913,7 +867,7 @@ public class SubmissionFormPresenterTest {
         .createField(samplesContainer, firstSample, PROTEIN_WEIGHT_PROPERTY, view.samplesTable);
     view.serviceOptions.setValue(LC_MS_MS); // Force field update.
 
-    assertFalse(sampleProteinWeightTableField.isRequired());
+    assertFalse(sampleProteinWeightTableField.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -931,28 +885,13 @@ public class SubmissionFormPresenterTest {
         .createField(samplesContainer, firstSample, PROTEIN_WEIGHT_PROPERTY, view.samplesTable);
     view.serviceOptions.setValue(INTACT_PROTEIN); // Force field update.
 
-    assertTrue(sampleProteinWeightTableField.isRequired());
+    assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
   }
 
   @Test
   public void converters() {
     presenter.init(view);
 
-    assertNotNull(view.sampleCountField.getConverter());
-    assertTrue(StringToIntegerConverter.class
-        .isAssignableFrom(view.sampleCountField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER),
-        view.sampleCountField.getConversionError());
-    assertNotNull(view.monoisotopicMassField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.monoisotopicMassField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.monoisotopicMassField.getConversionError());
-    assertNotNull(view.averageMassField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.averageMassField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.averageMassField.getConversionError());
     Container samplesContainer = view.samplesTable.getContainerDataSource();
     if (samplesContainer.size() < 1) {
       samplesContainer.addItem(new SubmissionSample());
@@ -962,43 +901,34 @@ public class SubmissionFormPresenterTest {
     TextField sampleNumberProteinTableField =
         (TextField) view.samplesTable.getTableFieldFactory().createField(samplesContainer,
             firstSample, SAMPLE_NUMBER_PROTEIN_PROPERTY, view.samplesTable);
-    assertNotNull(sampleNumberProteinTableField.getConverter());
-    assertTrue(StringToIntegerConverter.class
-        .isAssignableFrom(sampleNumberProteinTableField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER),
-        sampleNumberProteinTableField.getConversionError());
     TextField sampleProteinWeightTableField = (TextField) view.samplesTable.getTableFieldFactory()
         .createField(samplesContainer, firstSample, PROTEIN_WEIGHT_PROPERTY, view.samplesTable);
-    assertNotNull(sampleProteinWeightTableField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(sampleProteinWeightTableField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        sampleProteinWeightTableField.getConversionError());
-    assertNotNull(view.proteinWeightField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.proteinWeightField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.proteinWeightField.getConversionError());
-    assertNotNull(view.sampleVolumeField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.sampleVolumeField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.sampleVolumeField.getConversionError());
-    assertNotNull(view.standardCountField.getConverter());
-    assertTrue(StringToIntegerConverter.class
-        .isAssignableFrom(view.standardCountField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER),
-        view.standardCountField.getConversionError());
-    assertNotNull(view.contaminantCountField.getConverter());
-    assertTrue(StringToIntegerConverter.class
-        .isAssignableFrom(view.contaminantCountField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER),
-        view.contaminantCountField.getConversionError());
-    assertNotNull(view.weightMarkerQuantityField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.weightMarkerQuantityField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.weightMarkerQuantityField.getConversionError());
+  }
+
+  @Test
+  public void service_Options() {
+    presenter.init(view);
+
+    assertEquals(Service.availables().size(),
+        ((ListDataProvider) view.serviceOptions.getDataProvider()).getItems().size());
+    for (Service service : Service.availables()) {
+      assertTrue(service.name(),
+          ((ListDataProvider) view.serviceOptions.getDataProvider()).getItems().contains(service));
+    }
+  }
+
+  @Test
+  public void service_DisabledOption() {
+    Service service = Service.MALDI_MS;
+    Submission submission = new Submission();
+    submission.setService(service);
+
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertTrue(
+        ((ListDataProvider) view.serviceOptions.getDataProvider()).getItems().contains(service));
+    assertFalse(view.serviceOptions.getItemEnabledProvider().test(service));
   }
 
   @Test
@@ -1007,7 +937,7 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
 
-    assertFalse(view.sampleSupportOptions.isItemEnabled(GEL));
+    assertFalse(view.sampleSupportOptions.getItemEnabledProvider().test(GEL));
   }
 
   @Test
@@ -1016,18 +946,7 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
 
-    assertFalse(view.sampleSupportOptions.isItemEnabled(GEL));
-  }
-
-  @Test
-  public void digestion_Options() {
-    presenter.init(view);
-
-    assertEquals(SubmissionFormPresenter.DIGESTIONS.length,
-        view.digestionOptions.getItemIds().size());
-    for (ProteolyticDigestion digestion : SubmissionFormPresenter.DIGESTIONS) {
-      assertTrue(digestion.name(), view.digestionOptions.getItemIds().contains(digestion));
-    }
+    assertFalse(view.sampleSupportOptions.getItemEnabledProvider().test(GEL));
   }
 
   @Test
@@ -1050,27 +969,67 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void source_Options() {
+    presenter.init(view);
+
+    assertEquals(MassDetectionInstrumentSource.availables().size(),
+        ((ListDataProvider) view.sourceOptions.getDataProvider()).getItems().size());
+    for (MassDetectionInstrumentSource source : MassDetectionInstrumentSource.availables()) {
+      assertTrue(source.name(),
+          ((ListDataProvider) view.sourceOptions.getDataProvider()).getItems().contains(source));
+    }
+  }
+
+  @Test
+  public void source_DisabledOption() {
+    source = MassDetectionInstrumentSource.LDTD;
+    Submission submission = new Submission();
+    submission.setSource(source);
+
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertTrue(
+        ((ListDataProvider) view.sourceOptions.getDataProvider()).getItems().contains(source));
+    assertFalse(view.sourceOptions.getItemEnabledProvider().test(source));
+  }
+
+  @Test
+  public void instrument_Options() {
+    presenter.init(view);
+
+    assertEquals(MassDetectionInstrument.availables().size(),
+        ((ListDataProvider) view.instrumentOptions.getDataProvider()).getItems().size());
+    for (MassDetectionInstrument instrument : MassDetectionInstrument.availables()) {
+      assertTrue(instrument.name(), ((ListDataProvider) view.instrumentOptions.getDataProvider())
+          .getItems().contains(instrument));
+    }
+  }
+
+  @Test
   public void instrument_DisabledOption() {
     instrument = MassDetectionInstrument.TOF;
     Submission submission = new Submission();
     submission.setMassDetectionInstrument(instrument);
 
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
-    assertTrue(view.instrumentOptions.getItemIds().contains(instrument));
-    assertFalse(view.instrumentOptions.isItemEnabled(instrument));
+    assertTrue(((ListDataProvider) view.instrumentOptions.getDataProvider()).getItems()
+        .contains(instrument));
+    assertFalse(view.instrumentOptions.getItemEnabledProvider().test(instrument));
   }
 
   @Test
   public void proteinIdentification_Options() {
     presenter.init(view);
 
-    assertEquals(PROTEIN_IDENTIFICATIONS.length,
-        view.proteinIdentificationOptions.getItemIds().size());
-    for (ProteinIdentification proteinIdentification : PROTEIN_IDENTIFICATIONS) {
+    assertEquals(ProteinIdentification.availables().size(),
+        ((ListDataProvider) view.proteinIdentificationOptions.getDataProvider()).getItems().size());
+    for (ProteinIdentification proteinIdentification : ProteinIdentification.availables()) {
       assertTrue(proteinIdentification.name(),
-          view.proteinIdentificationOptions.getItemIds().contains(proteinIdentification));
+          ((ListDataProvider) view.proteinIdentificationOptions.getDataProvider()).getItems()
+              .contains(proteinIdentification));
     }
   }
 
@@ -1081,10 +1040,12 @@ public class SubmissionFormPresenterTest {
     submission.setProteinIdentification(proteinIdentification);
 
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
-    assertTrue(view.proteinIdentificationOptions.getItemIds().contains(proteinIdentification));
-    assertFalse(view.proteinIdentificationOptions.isItemEnabled(proteinIdentification));
+    assertTrue(((ListDataProvider) view.proteinIdentificationOptions.getDataProvider()).getItems()
+        .contains(proteinIdentification));
+    assertFalse(
+        view.proteinIdentificationOptions.getItemEnabledProvider().test(proteinIdentification));
   }
 
   @Test
@@ -1106,11 +1067,11 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
 
     view.quantificationOptions.setValue(null);
-    assertFalse(view.quantificationLabelsField.isRequired());
+    assertFalse(view.quantificationLabelsField.isRequiredIndicatorVisible());
     view.quantificationOptions.setValue(Quantification.LABEL_FREE);
-    assertFalse(view.quantificationLabelsField.isRequired());
+    assertFalse(view.quantificationLabelsField.isRequiredIndicatorVisible());
     view.quantificationOptions.setValue(Quantification.SILAC);
-    assertTrue(view.quantificationLabelsField.isRequired());
+    assertTrue(view.quantificationLabelsField.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -1146,7 +1107,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_SAMPLES_PROPERTY));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_BUTTON_STYLE));
     assertTrue(view.samplesPlateLayout.getStyleName().contains(SAMPLES_PLATE));
-    List<TextField> sampleNameFields = plateSampleNameFields();
+    List<com.vaadin.v7.ui.TextField> sampleNameFields = plateSampleNameFields();
     for (int column = 0; column < view.samplesPlateLayout.getColumns(); column++) {
       for (int row = 0; row < view.samplesPlateLayout.getRows(); row++) {
         int index = view.samplesPlateLayout.getRows() * column + row;
@@ -1234,14 +1195,16 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(INACTIVE_LABEL), view.inactiveLabel.getValue());
     assertEquals(resources.message(SERVICE_PROPERTY), view.servicePanel.getCaption());
     assertEquals(null, view.serviceOptions.getCaption());
-    for (Service service : SubmissionFormPresenter.SERVICES) {
-      assertEquals(service.getLabel(locale), view.serviceOptions.getItemCaption(service));
+    for (Service service : Service.availables()) {
+      assertEquals(service.getLabel(locale),
+          view.serviceOptions.getItemCaptionGenerator().apply(service));
     }
     assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
     assertEquals(resources.message(SAMPLE_SUPPORT_PROPERTY),
         view.sampleSupportOptions.getCaption());
-    for (SampleSupport support : SubmissionFormPresenter.SUPPORT) {
-      assertEquals(support.getLabel(locale), view.sampleSupportOptions.getItemCaption(support));
+    for (SampleSupport support : SampleSupport.values()) {
+      assertEquals(support.getLabel(locale),
+          view.sampleSupportOptions.getItemCaptionGenerator().apply(support));
     }
     assertEquals(resources.message(SOLUTION_SOLVENT_PROPERTY),
         view.solutionSolventField.getCaption());
@@ -1260,15 +1223,15 @@ public class SubmissionFormPresenterTest {
         view.lightSensitiveField.getCaption());
     assertEquals(resources.message(STORAGE_TEMPERATURE_PROPERTY),
         view.storageTemperatureOptions.getCaption());
-    for (StorageTemperature storageTemperature : SubmissionFormPresenter.STORAGE_TEMPERATURES) {
+    for (StorageTemperature storageTemperature : StorageTemperature.values()) {
       assertEquals(storageTemperature.getLabel(locale),
-          view.storageTemperatureOptions.getItemCaption(storageTemperature));
+          view.storageTemperatureOptions.getItemCaptionGenerator().apply(storageTemperature));
     }
     assertEquals(resources.message(SAMPLES_CONTAINER_TYPE_PROPERTY),
         view.sampleContainerTypeOptions.getCaption());
     for (SampleContainerType containerType : SampleContainerType.values()) {
       assertEquals(containerType.getLabel(locale),
-          view.sampleContainerTypeOptions.getItemCaption(containerType));
+          view.sampleContainerTypeOptions.getItemCaptionGenerator().apply(containerType));
     }
     assertEquals(resources.message(PLATE_PROPERTY + "." + PLATE_NAME_PROPERTY),
         view.plateNameField.getCaption());
@@ -1282,7 +1245,7 @@ public class SubmissionFormPresenterTest {
         view.samplesTable.getColumnHeader(PROTEIN_WEIGHT_PROPERTY));
     assertEquals(resources.message(FILL_SAMPLES_PROPERTY), view.fillSamplesButton.getCaption());
     assertEquals(null, view.samplesPlateLayout.getCaption());
-    for (TextField sampleNameField : plateSampleNameFields()) {
+    for (com.vaadin.v7.ui.TextField sampleNameField : plateSampleNameFields()) {
       assertEquals(null, sampleNameField.getCaption());
     }
     assertEquals(resources.message(EXPERIENCE_PANEL), view.experiencePanel.getCaption());
@@ -1297,7 +1260,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(SAMPLE_QUANTITY_PROPERTY),
         view.sampleQuantityField.getCaption());
     assertEquals(resources.message(SAMPLE_QUANTITY_PROPERTY + "." + EXAMPLE),
-        view.sampleQuantityField.getInputPrompt());
+        view.sampleQuantityField.getPlaceholder());
     assertEquals(resources.message(SAMPLE_VOLUME_PROPERTY), view.sampleVolumeField.getCaption());
     assertEquals(resources.message(STANDARDS_PANEL), view.standardsPanel.getCaption());
     assertEquals(resources.message(STANDARD_COUNT_PROPERTY), view.standardCountField.getCaption());
@@ -1323,33 +1286,37 @@ public class SubmissionFormPresenterTest {
         view.fillContaminantsButton.getCaption());
     assertEquals(resources.message(GEL_PANEL), view.gelPanel.getCaption());
     assertEquals(resources.message(SEPARATION_PROPERTY), view.separationField.getCaption());
-    for (GelSeparation separation : SubmissionFormPresenter.SEPARATION) {
-      assertEquals(separation.getLabel(locale), view.separationField.getItemCaption(separation));
+    for (GelSeparation separation : GelSeparation.values()) {
+      assertEquals(separation.getLabel(locale),
+          view.separationField.getItemCaptionGenerator().apply(separation));
     }
     assertEquals(resources.message(THICKNESS_PROPERTY), view.thicknessField.getCaption());
-    for (GelThickness thickness : SubmissionFormPresenter.THICKNESS) {
-      assertEquals(thickness.getLabel(locale), view.thicknessField.getItemCaption(thickness));
+    for (GelThickness thickness : GelThickness.values()) {
+      assertEquals(thickness.getLabel(locale),
+          view.thicknessField.getItemCaptionGenerator().apply(thickness));
     }
     assertEquals(resources.message(COLORATION_PROPERTY), view.colorationField.getCaption());
-    assertEquals(GelColoration.getNullLabel(locale), view.colorationField.getItemCaption(NULL_ID));
-    for (GelColoration coloration : SubmissionFormPresenter.COLORATION) {
-      assertEquals(coloration.getLabel(locale), view.colorationField.getItemCaption(coloration));
+    assertEquals(GelColoration.getNullLabel(locale),
+        view.colorationField.getEmptySelectionCaption());
+    for (GelColoration coloration : GelColoration.values()) {
+      assertEquals(coloration.getLabel(locale),
+          view.colorationField.getItemCaptionGenerator().apply(coloration));
     }
     assertEquals(resources.message(OTHER_COLORATION_PROPERTY),
         view.otherColorationField.getCaption());
     assertEquals(resources.message(DEVELOPMENT_TIME_PROPERTY),
         view.developmentTimeField.getCaption());
     assertEquals(resources.message(DEVELOPMENT_TIME_PROPERTY + "." + EXAMPLE),
-        view.developmentTimeField.getInputPrompt());
+        view.developmentTimeField.getPlaceholder());
     assertEquals(resources.message(DECOLORATION_PROPERTY), view.decolorationField.getCaption());
     assertEquals(resources.message(WEIGHT_MARKER_QUANTITY_PROPERTY),
         view.weightMarkerQuantityField.getCaption());
     assertEquals(resources.message(WEIGHT_MARKER_QUANTITY_PROPERTY + "." + EXAMPLE),
-        view.weightMarkerQuantityField.getInputPrompt());
+        view.weightMarkerQuantityField.getPlaceholder());
     assertEquals(resources.message(PROTEIN_QUANTITY_PROPERTY),
         view.proteinQuantityField.getCaption());
     assertEquals(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE),
-        view.proteinQuantityField.getInputPrompt());
+        view.proteinQuantityField.getPlaceholder());
     assertEquals(resources.message(GEL_IMAGES_PROPERTY), view.gelImagesLayout.getCaption());
     verify(view.gelImagesUploader).setUploadButtonCaption(resources.message(GEL_IMAGES_UPLOADER));
     assertEquals(null, view.gelImagesTable.getCaption());
@@ -1359,8 +1326,9 @@ public class SubmissionFormPresenterTest {
         view.gelImagesTable.getColumnHeader(REMOVE_GEL_IMAGE));
     assertEquals(resources.message(SERVICES_PANEL), view.servicesPanel.getCaption());
     assertEquals(resources.message(DIGESTION_PROPERTY), view.digestionOptions.getCaption());
-    for (ProteolyticDigestion digestion : SubmissionFormPresenter.DIGESTIONS) {
-      assertEquals(digestion.getLabel(locale), view.digestionOptions.getItemCaption(digestion));
+    for (ProteolyticDigestion digestion : ProteolyticDigestion.values()) {
+      assertEquals(digestion.getLabel(locale),
+          view.digestionOptions.getItemCaptionGenerator().apply(digestion));
     }
     assertEquals(resources.message(USED_DIGESTION_PROPERTY),
         view.usedProteolyticDigestionMethodField.getCaption());
@@ -1376,49 +1344,53 @@ public class SubmissionFormPresenterTest {
         view.exclusionsLabel.getValue());
     assertEquals(resources.message(INJECTION_TYPE_PROPERTY),
         view.injectionTypeOptions.getCaption());
-    for (InjectionType injectionType : SubmissionFormPresenter.INJECTION_TYPES) {
+    for (InjectionType injectionType : InjectionType.values()) {
       assertEquals(injectionType.getLabel(locale),
-          view.injectionTypeOptions.getItemCaption(injectionType));
+          view.injectionTypeOptions.getItemCaptionGenerator().apply(injectionType));
     }
     assertEquals(resources.message(SOURCE_PROPERTY), view.sourceOptions.getCaption());
-    for (MassDetectionInstrumentSource source : SubmissionFormPresenter.SOURCES) {
-      assertEquals(source.getLabel(locale), view.sourceOptions.getItemCaption(source));
+    for (MassDetectionInstrumentSource source : MassDetectionInstrumentSource.values()) {
+      assertEquals(source.getLabel(locale),
+          view.sourceOptions.getItemCaptionGenerator().apply(source));
     }
     assertEquals(resources.message(PROTEIN_CONTENT_PROPERTY),
         view.proteinContentOptions.getCaption());
     for (ProteinContent proteinContent : ProteinContent.values()) {
       assertEquals(proteinContent.getLabel(locale),
-          view.proteinContentOptions.getItemCaption(proteinContent));
+          view.proteinContentOptions.getItemCaptionGenerator().apply(proteinContent));
     }
     assertEquals(resources.message(INSTRUMENT_PROPERTY), view.instrumentOptions.getCaption());
-    for (MassDetectionInstrument instrument : SubmissionFormPresenter.INSTRUMENTS) {
-      assertEquals(instrument.getLabel(locale), view.instrumentOptions.getItemCaption(instrument));
+    assertEquals(MassDetectionInstrument.getNullLabel(locale),
+        view.instrumentOptions.getItemCaptionGenerator().apply(null));
+    for (MassDetectionInstrument instrument : MassDetectionInstrument.availables()) {
+      assertEquals(instrument.getLabel(locale),
+          view.instrumentOptions.getItemCaptionGenerator().apply(instrument));
     }
     assertEquals(resources.message(PROTEIN_IDENTIFICATION_PROPERTY),
         view.proteinIdentificationOptions.getCaption());
-    for (ProteinIdentification proteinIdentification : PROTEIN_IDENTIFICATIONS) {
+    for (ProteinIdentification proteinIdentification : ProteinIdentification.availables()) {
       assertEquals(proteinIdentification.getLabel(locale),
-          view.proteinIdentificationOptions.getItemCaption(proteinIdentification));
+          view.proteinIdentificationOptions.getItemCaptionGenerator().apply(proteinIdentification));
     }
     assertEquals(resources.message(PROTEIN_IDENTIFICATION_LINK_PROPERTY),
         view.proteinIdentificationLinkField.getCaption());
     assertEquals(resources.message(QUANTIFICATION_PROPERTY),
         view.quantificationOptions.getCaption());
     assertEquals(Quantification.getNullLabel(locale),
-        view.quantificationOptions.getItemCaption(NULL_ID));
-    for (Quantification quantification : SubmissionFormPresenter.QUANTIFICATION) {
+        view.quantificationOptions.getItemCaptionGenerator().apply(null));
+    for (Quantification quantification : Quantification.values()) {
       assertEquals(quantification.getLabel(locale),
-          view.quantificationOptions.getItemCaption(quantification));
+          view.quantificationOptions.getItemCaptionGenerator().apply(quantification));
     }
     assertEquals(resources.message(QUANTIFICATION_LABELS_PROPERTY),
         view.quantificationLabelsField.getCaption());
     assertEquals(resources.message(QUANTIFICATION_LABELS_PROPERTY + "." + EXAMPLE),
-        view.quantificationLabelsField.getInputPrompt());
+        view.quantificationLabelsField.getPlaceholder());
     assertEquals(resources.message(HIGH_RESOLUTION_PROPERTY),
         view.highResolutionOptions.getCaption());
     for (boolean value : new boolean[] { false, true }) {
       assertEquals(resources.message(HIGH_RESOLUTION_PROPERTY + "." + value),
-          view.highResolutionOptions.getItemCaption(value));
+          view.highResolutionOptions.getItemCaptionGenerator().apply(value));
     }
     assertEquals(resources.message(SOLVENTS_PROPERTY), view.solventsLayout.getCaption());
     assertEquals(Solvent.ACETONITRILE.getLabel(locale),
@@ -1448,7 +1420,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertTrue(view.serviceOptions.isReadOnly());
     assertTrue(view.sampleSupportOptions.isReadOnly());
@@ -1464,7 +1436,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleContainerTypeOptions.isReadOnly());
     assertTrue(view.plateNameField.isReadOnly());
     assertFalse(view.samplesTable.isEditable());
-    for (TextField sampleNameField : plateSampleNameFields()) {
+    for (com.vaadin.v7.ui.TextField sampleNameField : plateSampleNameFields()) {
       assertTrue(sampleNameField.isReadOnly());
     }
     assertTrue(view.experienceField.isReadOnly());
@@ -1525,7 +1497,7 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
     presenter.setEditable(true);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.serviceOptions.isReadOnly());
     assertFalse(view.sampleSupportOptions.isReadOnly());
@@ -1541,7 +1513,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isReadOnly());
     assertFalse(view.plateNameField.isReadOnly());
     assertTrue(view.samplesTable.isEditable());
-    for (TextField sampleNameField : plateSampleNameFields()) {
+    for (com.vaadin.v7.ui.TextField sampleNameField : plateSampleNameFields()) {
       assertFalse(sampleNameField.isReadOnly());
     }
     assertFalse(view.experienceField.isReadOnly());
@@ -1603,7 +1575,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -1812,7 +1784,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -1980,7 +1952,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2162,7 +2134,7 @@ public class SubmissionFormPresenterTest {
     submission.setStructure(new Structure());
     submission.getStructure().setFilename("structure.png");
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2357,7 +2329,7 @@ public class SubmissionFormPresenterTest {
     submission.setStructure(new Structure());
     submission.getStructure().setFilename("structure.png");
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2526,7 +2498,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2694,7 +2666,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -4346,19 +4318,6 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void submit_InvalidGelSeparation() {
-    presenter.init(view);
-    presenter.setEditable(true);
-    view.serviceOptions.setValue(LC_MS_MS);
-    view.sampleSupportOptions.setValue(GEL);
-    setFields();
-
-    view.separationField.setValue("abc");
-
-    assertEquals(gelSeparation, view.separationField.getValue());
-  }
-
-  @Test
   public void submit_MissingGelThickness() throws Throwable {
     presenter.init(view);
     presenter.setEditable(true);
@@ -4377,32 +4336,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         view.thicknessField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void submit_InvalidGelThickness() {
-    presenter.init(view);
-    presenter.setEditable(true);
-    view.serviceOptions.setValue(LC_MS_MS);
-    view.sampleSupportOptions.setValue(GEL);
-    setFields();
-
-    view.thicknessField.setValue("a");
-
-    assertEquals(gelThickness, view.thicknessField.getValue());
-  }
-
-  @Test
-  public void submit_InvalidGelColoration() {
-    presenter.init(view);
-    presenter.setEditable(true);
-    view.serviceOptions.setValue(LC_MS_MS);
-    view.sampleSupportOptions.setValue(GEL);
-    setFields();
-
-    view.colorationField.setValue("a");
-
-    assertEquals(gelColoration, view.colorationField.getValue());
   }
 
   @Test

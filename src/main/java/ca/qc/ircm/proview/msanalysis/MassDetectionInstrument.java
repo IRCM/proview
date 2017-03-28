@@ -19,13 +19,28 @@ package ca.qc.ircm.proview.msanalysis;
 
 import ca.qc.ircm.utils.MessageResource;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Instruments available for protein mass detection.
  */
 public enum MassDetectionInstrument {
-  VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION, LTQ_ORBI_TRAP, Q_TOF, TOF;
+  VELOS(true), Q_EXACTIVE(true), TSQ_VANTAGE(true), ORBITRAP_FUSION(true), LTQ_ORBI_TRAP(false),
+  Q_TOF(false), TOF(false);
+
+  public final boolean available;
+
+  MassDetectionInstrument(boolean available) {
+    this.available = available;
+  }
+
+  public static List<MassDetectionInstrument> availables() {
+    return Stream.of(MassDetectionInstrument.values()).filter(instrument -> instrument.available)
+        .collect(Collectors.toList());
+  }
 
   private static MessageResource getResources(Locale locale) {
     return new MessageResource(MassDetectionInstrument.class, locale);

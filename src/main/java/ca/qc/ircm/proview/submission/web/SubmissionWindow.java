@@ -21,7 +21,6 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
-import com.vaadin.v7.data.util.BeanItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -66,7 +65,7 @@ public class SubmissionWindow extends Window implements BaseComponent {
 
   /**
    * Sets submission.
-   * 
+   *
    * @param submission
    *          submission
    */
@@ -81,6 +80,6 @@ public class SubmissionWindow extends Window implements BaseComponent {
   private void updateSubmission(Submission submission) {
     logger.debug("Submission window for submission {}", submission);
     setCaption(getResources().message(TITLE, submission.getExperience()));
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
   }
 }
