@@ -25,29 +25,22 @@ import ca.qc.ircm.proview.user.QUser;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.v7.filter.FilterEqualsChangeListener;
-import ca.qc.ircm.proview.web.v7.filter.FilterTextChangeListener;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.ItemCaptionGenerator;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
-import com.vaadin.v7.data.Container.Filter;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.sort.SortOrder;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.GeneratedPropertyContainer;
-import com.vaadin.v7.data.util.PropertyValueGenerator;
-import com.vaadin.v7.data.util.filter.UnsupportedFilterException;
-import com.vaadin.v7.ui.Grid.HeaderCell;
-import com.vaadin.v7.ui.Grid.HeaderRow;
-import com.vaadin.v7.ui.Grid.SelectionMode;
-import de.datenhahn.vaadin.componentrenderer.ComponentCellKeyExtension;
-import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
+import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +49,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,9 +86,9 @@ public class AccessViewPresenter {
       { SELECT, EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, ACTIVE, VIEW };
   private static final Logger logger = LoggerFactory.getLogger(AccessViewPresenter.class);
   private AccessView view;
-  private BeanItemContainer<User> container;
-  private GeneratedPropertyContainer gridContainer;
-  private Map<Object, CheckBox> selectionCheckboxes = new HashMap<>();
+  private Map<User, CheckBox> selectionCheckboxes = new HashMap<>();
+  private ListDataProvider<User> usersProvider;
+  private UserWebFilter filter;
   @Inject
   private UserService userService;
   @Inject
@@ -126,6 +118,7 @@ public class AccessViewPresenter {
   public void init(AccessView view) {
     this.view = view;
     logger.debug("Users access view");
+    filter = new UserWebFilter(view.getLocale());
     prepareComponents();
     addFieldListeners();
   }
@@ -146,137 +139,100 @@ public class AccessViewPresenter {
     view.clearButton.setCaption(resources.message(CLEAR));
   }
 
-  @SuppressWarnings("serial")
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
-    container = new BeanItemContainer<>(User.class, searchUsers());
-    container.addNestedContainerProperty(LABORATORY_NAME);
-    container.addNestedContainerProperty(ORGANIZATION);
-    gridContainer = new GeneratedPropertyContainer(container);
-    gridContainer.addGeneratedProperty(SELECT, new PropertyValueGenerator<CheckBox>() {
-      @Override
-      public CheckBox getValue(Item item, Object itemId, Object propertyId) {
-        User user = (User) itemId;
-        CheckBox checkbox = new CheckBox();
-        checkbox.addValueChangeListener(e -> {
-          if (checkbox.getValue()) {
-            view.usersGrid.select(itemId);
-          } else {
-            view.usersGrid.deselect(itemId);
-          }
-        });
-        checkbox.addAttachListener(e -> selectionCheckboxes.put(itemId, checkbox));
-        checkbox.setValue(view.usersGrid.getSelectedRows().contains(itemId));
-        checkbox.setVisible(!authorizationService.hasManagerRole(user));
-        return checkbox;
-      }
-
-      @Override
-      public Class<CheckBox> getType() {
-        return CheckBox.class;
-      }
-    });
-    gridContainer.addGeneratedProperty(ACTIVE, new PropertyValueGenerator<Label>() {
-      @Override
-      public Label getValue(Item item, Object itemId, Object propertyId) {
-        MessageResource resources = view.getResources();
-        User user = (User) itemId;
-        boolean active = user.isActive();
-        Label label = new Label();
-        VaadinIcons icon = active ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
-        label.setContentMode(ContentMode.HTML);
-        label.setValue(icon.getHtml() + " " + resources.message(ACTIVE + "." + active));
-        return label;
-      }
-
-      @Override
-      public Class<Label> getType() {
-        return Label.class;
-      }
-
-      @Override
-      public SortOrder[] getSortProperties(SortOrder order) {
-        return new SortOrder[] {
-            new SortOrder(order.getPropertyId(), order.getDirection().getOpposite()) };
-      }
-
-      @Override
-      public Filter modifyFilter(Filter filter) throws UnsupportedFilterException {
-        return filter;
-      }
-    });
-    gridContainer.addGeneratedProperty(VIEW, new PropertyValueGenerator<Button>() {
-      @Override
-      public Button getValue(Item item, Object itemId, Object propertyId) {
-        MessageResource resources = view.getResources();
-        User user = (User) itemId;
-        Button button = new Button();
-        button.setCaption(resources.message(VIEW));
-        button.addClickListener(event -> viewUser(user));
-        return button;
-      }
-
-      @Override
-      public Class<Button> getType() {
-        return Button.class;
-      }
-    });
-    ComponentCellKeyExtension.extend(view.usersGrid);
-    view.usersGrid.setContainerDataSource(gridContainer);
-    view.usersGrid.setColumns((Object[]) COLUMNS);
+    view.usersGrid.setDataProvider(searchUsers());
+    view.usersGrid.addColumn(user -> selectCheckBox(user), new ComponentRenderer()).setId(SELECT)
+        .setCaption(resources.message(SELECT)).setWidth(56);
+    view.usersGrid.addColumn(User::getEmail).setId(EMAIL).setCaption(resources.message(EMAIL));
+    view.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
+    view.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
+        .setCaption(resources.message(LABORATORY_NAME));
+    view.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
+        .setCaption(resources.message(ORGANIZATION));
     view.usersGrid.setFrozenColumnCount(2);
-    view.usersGrid.getColumn(SELECT).setWidth(56);
-    view.usersGrid.getColumn(SELECT).setRenderer(new ComponentRenderer());
-    view.usersGrid.getColumn(ACTIVE).setRenderer(new ComponentRenderer());
-    view.usersGrid.getColumn(VIEW).setRenderer(new ComponentRenderer());
+    view.usersGrid.addColumn(user -> activeLabel(user), new ComponentRenderer()).setId(ACTIVE)
+        .setCaption(resources.message(ACTIVE));
+    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(VIEW)
+        .setCaption(resources.message(VIEW));
     view.usersGrid.setSelectionMode(SelectionMode.MULTI);
     view.usersGrid.addStyleName(HIDE_SELECTION);
     view.usersGrid.addStyleName(COMPONENTS);
     view.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
-    for (String propertyId : COLUMNS) {
-      view.usersGrid.getColumn(propertyId).setHeaderCaption(resources.message(propertyId));
-    }
     HeaderRow filterRow = view.usersGrid.appendHeaderRow();
-    for (String propertyId : COLUMNS) {
-      HeaderCell cell = filterRow.getCell(propertyId);
-      if (propertyId.equals(EMAIL)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(NAME)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(LABORATORY_NAME)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(ORGANIZATION)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(ACTIVE)) {
-        Boolean[] values = new Boolean[] { true, false };
-        ComboBox<Boolean> filter = createFilterComboBox(propertyId, resources, values);
-        filter.addValueChangeListener(
-            new FilterEqualsChangeListener(gridContainer, propertyId, null));
-        filter.setItemCaptionGenerator(value -> resources.message(ACTIVE + "." + value));
-        cell.setComponent(filter);
-      }
-    }
+    filterRow.getCell(EMAIL).setComponent(textFilter(e -> {
+      filter.setEmailContains(e.getValue());
+      view.usersGrid.getDataProvider().refreshAll();
+    }, resources));
+    filterRow.getCell(NAME).setComponent(textFilter(e -> {
+      filter.setNameContains(e.getValue());
+      view.usersGrid.getDataProvider().refreshAll();
+    }, resources));
+    filterRow.getCell(LABORATORY_NAME).setComponent(textFilter(e -> {
+      filter.setLaboratoryNameContains(e.getValue());
+      view.usersGrid.getDataProvider().refreshAll();
+    }, resources));
+    filterRow.getCell(ORGANIZATION).setComponent(textFilter(e -> {
+      filter.setOrganizationContains(e.getValue());
+      view.usersGrid.getDataProvider().refreshAll();
+    }, resources));
+    filterRow.getCell(ACTIVE).setComponent(comboBoxFilter(e -> {
+      filter.setActive(e.getValue());
+      view.usersGrid.getDataProvider().refreshAll();
+    }, resources, value -> resources.message(ACTIVE + "." + value), new Boolean[] { true, false }));
   }
 
-  private TextField createFilterTextField(Object propertyId, MessageResource resources) {
+  private CheckBox selectCheckBox(User user) {
+    CheckBox checkbox = new CheckBox();
+    checkbox.addValueChangeListener(e -> {
+      if (checkbox.getValue()) {
+        view.usersGrid.select(user);
+      } else {
+        view.usersGrid.deselect(user);
+      }
+    });
+    selectionCheckboxes.put(user, checkbox);
+    checkbox.setValue(view.usersGrid.getSelectedItems().contains(user));
+    checkbox.setVisible(!authorizationService.hasManagerRole(user));
+    return checkbox;
+  }
+
+  private Label activeLabel(User user) {
+    MessageResource resources = view.getResources();
+    boolean active = user.isActive();
+    Label label = new Label();
+    VaadinIcons icon = active ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
+    label.setContentMode(ContentMode.HTML);
+    label.setValue(icon.getHtml() + " " + resources.message(ACTIVE + "." + active));
+    return label;
+  }
+
+  private Button viewButton(User user) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.setCaption(resources.message(VIEW));
+    button.addClickListener(event -> viewUser(user));
+    return button;
+  }
+
+  private TextField textFilter(ValueChangeListener<String> listener, MessageResource resources) {
     TextField filter = new TextField();
-    filter.addValueChangeListener(
-        new FilterTextChangeListener(gridContainer, propertyId, true, false));
+    filter.addValueChangeListener(listener);
     filter.setWidth("100%");
     filter.addStyleName("tiny");
     filter.setPlaceholder(resources.message(ALL));
     return filter;
   }
 
-  private <V> ComboBox<V> createFilterComboBox(Object propertyId, MessageResource resources,
-      V[] values) {
+  private <V> ComboBox<V> comboBoxFilter(ValueChangeListener<V> listener, MessageResource resources,
+      ItemCaptionGenerator<V> itemCaptionGenerator, V[] values) {
     ComboBox<V> filter = new ComboBox<>();
-    filter.setTextInputAllowed(false);
     filter.setEmptySelectionAllowed(true);
     filter.setEmptySelectionCaption(resources.message(ALL));
     filter.setPlaceholder(resources.message(ALL));
     filter.setItems(values);
-    filter.setSelectedItem(null);
+    filter.setItemCaptionGenerator(itemCaptionGenerator);
+    filter.addValueChangeListener(listener);
     filter.setWidth("100%");
     filter.addStyleName("tiny");
     return filter;
@@ -284,10 +240,10 @@ public class AccessViewPresenter {
 
   private void addFieldListeners() {
     view.usersGrid.addSelectionListener(e -> {
-      Set<Object> itemIds = e.getSelected();
-      for (Map.Entry<Object, CheckBox> checkboxEntry : selectionCheckboxes.entrySet()) {
+      Set<User> users = e.getAllSelectedItems();
+      for (Map.Entry<User, CheckBox> checkboxEntry : selectionCheckboxes.entrySet()) {
         CheckBox checkbox = checkboxEntry.getValue();
-        checkbox.setValue(itemIds.contains(checkboxEntry.getKey()));
+        checkbox.setValue(users.contains(checkboxEntry.getKey()));
       }
     });
     view.activateButton.addClickListener(event -> activateUsers());
@@ -295,19 +251,21 @@ public class AccessViewPresenter {
     view.clearButton.addClickListener(event -> clear());
   }
 
-  private List<User> searchUsers() {
+  private DataProvider<User, ?> searchUsers() {
     UserFilterBuilder parameters = new UserFilterBuilder();
     parameters.onlyValid();
     if (!authorizationService.hasAdminRole()) {
       parameters.inLaboratory(authorizationService.getCurrentUser().getLaboratory());
     }
-    return userService.all(parameters);
+    List<User> users = userService.all(parameters);
+    usersProvider = DataProvider.ofCollection(users);
+    usersProvider.setFilter(filter);
+    return usersProvider;
   }
 
-  private void refresh() {
-    view.usersGrid.getSelectionModel().reset();
-    container.removeAllItems();
-    container.addAll(searchUsers());
+  private void refreshUsers() {
+    view.usersGrid.getSelectionModel().deselectAll();
+    view.usersGrid.setDataProvider(searchUsers());
     view.usersGrid.setSortOrder(new ArrayList<>(view.usersGrid.getSortOrder()));
   }
 
@@ -319,12 +277,7 @@ public class AccessViewPresenter {
   }
 
   private List<User> selectedUsers() {
-    Collection<Object> ids = view.usersGrid.getSelectedRows();
-    List<User> users = new ArrayList<>();
-    for (Object id : ids) {
-      users.add((User) id);
-    }
-    return users;
+    return new ArrayList<>(view.usersGrid.getSelectedItems());
   }
 
   private void activateUsers() {
@@ -347,7 +300,7 @@ public class AccessViewPresenter {
           emails.append(resources.message("userSeparator", 0));
         }
       }
-      refresh();
+      refreshUsers();
       view.showTrayNotification(resources.message(ACTIVATE + ".done", users.size(), emails));
     }
   }
@@ -372,7 +325,7 @@ public class AccessViewPresenter {
           emails.append(resources.message("userSeparator", 0));
         }
       }
-      refresh();
+      refreshUsers();
       view.showTrayNotification(resources.message(DEACTIVATE + ".done", users.size(), emails));
     }
   }
@@ -380,6 +333,10 @@ public class AccessViewPresenter {
   private void clear() {
     logger.trace("Clear selected users");
     view.usersGrid.deselectAll();
+  }
+
+  UserWebFilter getFilter() {
+    return filter;
   }
 
   public static String[] getColumns() {
