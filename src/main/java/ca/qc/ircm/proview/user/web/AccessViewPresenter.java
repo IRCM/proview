@@ -82,8 +82,6 @@ public class AccessViewPresenter {
   public static final String CLEAR = "clear";
   public static final String ALL = "all";
   public static final String HIDE_SELECTION = "hide-selection";
-  private static final String[] COLUMNS =
-      { SELECT, EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, ACTIVE, VIEW };
   private static final Logger logger = LoggerFactory.getLogger(AccessViewPresenter.class);
   private AccessView view;
   private Map<User, CheckBox> selectionCheckboxes = new HashMap<>();
@@ -338,9 +336,5 @@ public class AccessViewPresenter {
 
   UserWebFilter getFilter() {
     return filter;
-  }
-
-  public static String[] getColumns() {
-    return COLUMNS.clone();
   }
 }
