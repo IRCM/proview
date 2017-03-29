@@ -26,19 +26,15 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilterBuilder;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.MainView;
-import ca.qc.ircm.proview.web.v7.filter.FilterTextChangeListener;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.GeneratedPropertyContainer;
-import com.vaadin.v7.data.util.PropertyValueGenerator;
-import com.vaadin.v7.ui.Grid.HeaderCell;
-import com.vaadin.v7.ui.Grid.HeaderRow;
-import com.vaadin.v7.ui.TextField;
-import de.datenhahn.vaadin.componentrenderer.ComponentCellKeyExtension;
-import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,12 +67,10 @@ public class SignasViewPresenter {
   public static final String VIEW = "view";
   public static final String SIGN_AS = "signas";
   public static final String ALL = "all";
-  private static final String[] COLUMNS =
-      { EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, VIEW, SIGN_AS };
   private static final Logger logger = LoggerFactory.getLogger(SignasViewPresenter.class);
   private SignasView view;
-  private BeanItemContainer<User> container;
-  private GeneratedPropertyContainer gridContainer;
+  private ListDataProvider<User> usersProvider;
+  private UserWebFilter filter;
   @Inject
   private UserService userService;
   @Inject
@@ -107,6 +101,7 @@ public class SignasViewPresenter {
   public void init(SignasView view) {
     this.view = view;
     logger.debug("Users access view");
+    filter = new UserWebFilter(view.getLocale());
     prepareComponents();
   }
 
@@ -120,86 +115,75 @@ public class SignasViewPresenter {
     prepareUsersGrid();
   }
 
-  @SuppressWarnings("serial")
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
-    container = new BeanItemContainer<>(User.class, searchUsers());
-    container.addNestedContainerProperty(LABORATORY_NAME);
-    container.addNestedContainerProperty(ORGANIZATION);
-    gridContainer = new GeneratedPropertyContainer(container);
-    gridContainer.addGeneratedProperty(VIEW, new PropertyValueGenerator<Button>() {
-      @Override
-      public Button getValue(Item item, Object itemId, Object propertyId) {
-        MessageResource resources = view.getResources();
-        User user = (User) itemId;
-        Button button = new Button();
-        button.setCaption(resources.message(VIEW));
-        button.addClickListener(event -> viewUser(user));
-        return button;
-      }
-
-      @Override
-      public Class<Button> getType() {
-        return Button.class;
-      }
-    });
-    gridContainer.addGeneratedProperty(SIGN_AS, new PropertyValueGenerator<Button>() {
-      @Override
-      public Button getValue(Item item, Object itemId, Object propertyId) {
-        MessageResource resources = view.getResources();
-        User user = (User) itemId;
-        Button button = new Button();
-        button.setCaption(resources.message(SIGN_AS));
-        button.addClickListener(event -> signasUser(user));
-        return button;
-      }
-
-      @Override
-      public Class<Button> getType() {
-        return Button.class;
-      }
-    });
-    ComponentCellKeyExtension.extend(view.usersGrid);
-    view.usersGrid.setContainerDataSource(gridContainer);
-    view.usersGrid.setColumns((Object[]) COLUMNS);
+    view.usersGrid.setDataProvider(searchUsers());
+    view.usersGrid.addColumn(User::getEmail).setId(EMAIL).setCaption(resources.message(EMAIL));
+    view.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
+    view.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
+        .setCaption(resources.message(LABORATORY_NAME));
+    view.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
+        .setCaption(resources.message(ORGANIZATION));
     view.usersGrid.setFrozenColumnCount(2);
-    view.usersGrid.getColumn(VIEW).setRenderer(new ComponentRenderer());
-    view.usersGrid.getColumn(SIGN_AS).setRenderer(new ComponentRenderer());
+    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(VIEW)
+        .setCaption(resources.message(VIEW));
+    view.usersGrid.addColumn(user -> signasButton(user), new ComponentRenderer()).setId(SIGN_AS)
+        .setCaption(resources.message(SIGN_AS));
+    view.usersGrid.setFrozenColumnCount(2);
     view.usersGrid.addStyleName(COMPONENTS);
     view.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
-    for (String propertyId : COLUMNS) {
-      view.usersGrid.getColumn(propertyId).setHeaderCaption(resources.message(propertyId));
-    }
     HeaderRow filterRow = view.usersGrid.appendHeaderRow();
-    for (String propertyId : COLUMNS) {
-      HeaderCell cell = filterRow.getCell(propertyId);
-      if (propertyId.equals(EMAIL)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(NAME)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(LABORATORY_NAME)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(ORGANIZATION)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      }
-    }
+    filterRow.getCell(EMAIL).setComponent(textFilter(e -> {
+      filter.setEmailContains(e.getValue());
+      view.usersGrid.getDataProvider().refreshAll();
+    }, resources));
+    filterRow.getCell(NAME).setComponent(textFilter(e -> {
+      filter.setNameContains(e.getValue());
+      view.usersGrid.getDataProvider().refreshAll();
+    }, resources));
+    filterRow.getCell(LABORATORY_NAME).setComponent(textFilter(e -> {
+      filter.setLaboratoryNameContains(e.getValue());
+      view.usersGrid.getDataProvider().refreshAll();
+    }, resources));
+    filterRow.getCell(ORGANIZATION).setComponent(textFilter(e -> {
+      filter.setOrganizationContains(e.getValue());
+      view.usersGrid.getDataProvider().refreshAll();
+    }, resources));
   }
 
-  private TextField createFilterTextField(Object propertyId, MessageResource resources) {
+  private TextField textFilter(ValueChangeListener<String> listener, MessageResource resources) {
     TextField filter = new TextField();
-    filter.addTextChangeListener(
-        new FilterTextChangeListener(gridContainer, propertyId, true, false));
+    filter.addValueChangeListener(listener);
     filter.setWidth("100%");
     filter.addStyleName("tiny");
-    filter.setInputPrompt(resources.message(ALL));
+    filter.setPlaceholder(resources.message(ALL));
     return filter;
   }
 
-  private List<User> searchUsers() {
+  private ListDataProvider<User> searchUsers() {
     UserFilterBuilder parameters = new UserFilterBuilder();
     parameters.onlyNonAdmin();
     parameters.onlyActive();
-    return userService.all(parameters);
+    List<User> users = userService.all(parameters);
+    usersProvider = DataProvider.ofCollection(users);
+    usersProvider.setFilter(filter);
+    return usersProvider;
+  }
+
+  private Button viewButton(User user) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.setCaption(resources.message(VIEW));
+    button.addClickListener(event -> viewUser(user));
+    return button;
+  }
+
+  private Button signasButton(User user) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.setCaption(resources.message(SIGN_AS));
+    button.addClickListener(event -> signasUser(user));
+    return button;
   }
 
   private void viewUser(User user) {
@@ -216,7 +200,7 @@ public class SignasViewPresenter {
     view.navigateTo(MainView.VIEW_NAME);
   }
 
-  public static String[] getColumns() {
-    return COLUMNS.clone();
+  UserWebFilter getFilter() {
+    return filter;
   }
 }

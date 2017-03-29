@@ -47,7 +47,6 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -109,8 +108,6 @@ public class AccessViewPresenterTest {
   private ArgumentCaptor<Collection<User>> usersCaptor;
   @Captor
   private ArgumentCaptor<UserFilter> userFilterCaptor;
-  @Captor
-  private ArgumentCaptor<HomeWebContext> homeWebContextCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private User signedUser;

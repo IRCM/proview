@@ -17,18 +17,14 @@
 
 package ca.qc.ircm.proview.user.web.integration;
 
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.VIEW;
 import static ca.qc.ircm.proview.web.Menu.MANAGER;
 import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.SignasView;
-import ca.qc.ircm.proview.user.web.SignasViewPresenter;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.LabelElement;
@@ -43,22 +39,12 @@ import java.util.function.Consumer;
 public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SignasPageObject.class);
-  private static final int EMAIL_COLUMN = gridColumnIndex(EMAIL);
-  private static final int VIEW_COLUMN = gridColumnIndex(VIEW);
-  private static final int SIGN_AS_COLUMN = gridColumnIndex(SIGN_AS);
+  private static final int EMAIL_COLUMN = 0;
+  private static final int VIEW_COLUMN = 4;
+  private static final int SIGN_AS_COLUMN = 5;
 
   protected void open() {
     openView(SignasView.VIEW_NAME);
-  }
-
-  private static int gridColumnIndex(String property) {
-    String[] columns = SignasViewPresenter.getColumns();
-    for (int i = 0; i < columns.length; i++) {
-      if (property.equals(columns[i])) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   protected LabelElement headerLabel() {
