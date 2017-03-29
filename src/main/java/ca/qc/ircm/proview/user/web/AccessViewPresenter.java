@@ -230,6 +230,7 @@ public class AccessViewPresenter {
     filter.setEmptySelectionAllowed(true);
     filter.setEmptySelectionCaption(resources.message(ALL));
     filter.setPlaceholder(resources.message(ALL));
+    filter.setTextInputAllowed(false);
     filter.setItems(values);
     filter.setItemCaptionGenerator(itemCaptionGenerator);
     filter.addValueChangeListener(listener);
