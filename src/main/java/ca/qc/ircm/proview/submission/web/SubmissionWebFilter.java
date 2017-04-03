@@ -6,7 +6,8 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.submission.Submission;
 import com.vaadin.server.SerializablePredicate;
 
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Locale;
 
 /**
@@ -18,7 +19,7 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
   private String anySampleNameContains;
   private String goalContains;
   private SampleStatus anySampleStatus;
-  private Range<Instant> dateRange;
+  private Range<LocalDate> dateRange;
   private Boolean results;
   private Locale locale;
 
@@ -46,7 +47,8 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
           .anyMatch(sample -> anySampleStatus.equals(sample.getStatus()));
     }
     if (dateRange != null) {
-      test &= dateRange.contains(submission.getSubmissionDate());
+      test &= dateRange
+          .contains(submission.getSubmissionDate().atZone(ZoneId.systemDefault()).toLocalDate());
     }
     if (results != null) {
       boolean analysed = submission.getSamples().isEmpty() || submission.getSamples().stream()
@@ -88,11 +90,11 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
     this.anySampleStatus = anySampleStatus;
   }
 
-  public Range<Instant> getDateRange() {
+  public Range<LocalDate> getDateRange() {
     return dateRange;
   }
 
-  public void setDateRange(Range<Instant> dateRange) {
+  public void setDateRange(Range<LocalDate> dateRange) {
     this.dateRange = dateRange;
   }
 

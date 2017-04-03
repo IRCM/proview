@@ -34,7 +34,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.web.SaveListener;
-import ca.qc.ircm.proview.web.filter.InstantFilterComponent;
+import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.DataProvider;
@@ -56,7 +56,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -102,7 +102,7 @@ public class SubmissionsViewPresenter {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
-  private Provider<InstantFilterComponent> instantFilterComponentProvider;
+  private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
   @Inject
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Inject
@@ -117,13 +117,13 @@ public class SubmissionsViewPresenter {
 
   protected SubmissionsViewPresenter(SubmissionService submissionService,
       AuthorizationService authorizationService,
-      Provider<InstantFilterComponent> instantFilterComponentProvider,
+      Provider<LocalDateFilterComponent> localDateFilterComponentProvider,
       Provider<SubmissionWindow> submissionWindowProvider,
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
       Provider<SampleSelectionWindow> sampleSelectionWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
-    this.instantFilterComponentProvider = instantFilterComponentProvider;
+    this.localDateFilterComponentProvider = localDateFilterComponentProvider;
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
     this.sampleSelectionWindowProvider = sampleSelectionWindowProvider;
@@ -208,7 +208,7 @@ public class SubmissionsViewPresenter {
       view.submissionsGrid.getDataProvider().refreshAll();
     }, SampleStatus.values(), status -> status.getLabel(locale)));
     filterRow.getCell(DATE).setComponent(instantFilter(e -> {
-      filter.setDateRange((Range<Instant>) e.getSavedObject());
+      filter.setDateRange((Range<LocalDate>) e.getSavedObject());
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(LINKED_TO_RESULTS).setComponent(comboBoxFilter(e -> {
@@ -276,9 +276,9 @@ public class SubmissionsViewPresenter {
   }
 
   private Component instantFilter(SaveListener listener) {
-    InstantFilterComponent instantFilterComponent = instantFilterComponentProvider.get();
-    instantFilterComponent.getPresenter().addSaveListener(listener);
-    return instantFilterComponent;
+    LocalDateFilterComponent localDateFilterComponent = localDateFilterComponentProvider.get();
+    localDateFilterComponent.getPresenter().addSaveListener(listener);
+    return localDateFilterComponent;
   }
 
   private void addListeners() {

@@ -57,7 +57,8 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.InstantFilterComponent;
-import ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter;
+import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
+import ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.data.HasValue.ValueChangeEvent;
@@ -117,7 +118,7 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private AuthorizationService authorizationService;
   @Mock
-  private Provider<InstantFilterComponent> instantFilterComponentProvider;
+  private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
   @Mock
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Mock
@@ -137,9 +138,9 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private ListDataProvider<Submission> submissionsDataProvider;
   @Mock
-  private InstantFilterComponent instantFilterComponent;
+  private LocalDateFilterComponent localDateFilterComponent;
   @Mock
-  private InstantFilterComponentPresenter instantFilterComponentPresenter;
+  private LocalDateFilterComponentPresenter localDateFilterComponentPresenter;
   @Captor
   private ArgumentCaptor<Collection<Sample>> samplesCaptor;
   @Captor
@@ -159,8 +160,8 @@ public class SubmissionsViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
-        instantFilterComponentProvider, submissionWindowProvider, submissionAnalysesWindowProvider,
-        sampleSelectionWindowProvider, applicationName);
+        localDateFilterComponentProvider, submissionWindowProvider,
+        submissionAnalysesWindowProvider, sampleSelectionWindowProvider, applicationName);
     view.headerLabel = new Label();
     view.submissionsGrid = new Grid<>();
     view.selectSamplesButton = new Button();
@@ -179,8 +180,8 @@ public class SubmissionsViewPresenterTest {
     }
     when(report.getSubmissions()).thenReturn(submissions);
     when(report.getLinkedToResults()).thenReturn(linkedToResults);
-    when(instantFilterComponentProvider.get()).thenReturn(instantFilterComponent);
-    when(instantFilterComponent.getPresenter()).thenReturn(instantFilterComponentPresenter);
+    when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
+    when(localDateFilterComponent.getPresenter()).thenReturn(localDateFilterComponentPresenter);
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
     when(sampleSelectionWindowProvider.get()).thenReturn(sampleSelectionWindow);
@@ -323,9 +324,9 @@ public class SubmissionsViewPresenterTest {
     view.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
 
-    verify(instantFilterComponentProvider).get();
-    verify(instantFilterComponent).getPresenter();
-    verify(instantFilterComponentPresenter).addSaveListener(saveListenerCaptor.capture());
+    verify(localDateFilterComponentProvider).get();
+    verify(localDateFilterComponent).getPresenter();
+    verify(localDateFilterComponentPresenter).addSaveListener(saveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DATE);
     assertTrue(cell.getComponent() instanceof InstantFilterComponent);
 

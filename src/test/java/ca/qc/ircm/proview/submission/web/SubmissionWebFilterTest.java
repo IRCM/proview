@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -170,12 +171,14 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void dateRange() {
-    LocalDateTime from = LocalDateTime.of(2011, 1, 2, 0, 0);
-    LocalDateTime to = LocalDateTime.of(2011, 10, 9, 0, 0);
-    filter.setDateRange(Range.open(toInstant(from), toInstant(to)));
+    LocalDate from = LocalDate.of(2011, 1, 2);
+    LocalDate to = LocalDate.of(2011, 10, 9);
+    filter.setDateRange(Range.open(from, to));
 
+    assertFalse(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 9, 40)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 2, 9, 40)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 10, 8, 23, 40)))));
+    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 10, 9, 23, 40)))));
     assertFalse(filter.test(date(toInstant(LocalDateTime.of(2011, 12, 1, 0, 0)))));
     assertFalse(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 0, 0)))));
   }
@@ -184,8 +187,10 @@ public class SubmissionWebFilterTest {
   public void dateRange_Null() {
     filter.setDateRange(null);
 
+    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 9, 40)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 2, 9, 40)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 10, 8, 23, 40)))));
+    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 10, 9, 23, 40)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 12, 1, 0, 0)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 0, 0)))));
   }
