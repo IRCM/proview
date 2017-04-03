@@ -32,7 +32,6 @@ public class DefaultMultiFileUpload extends MultiFileUpload implements BaseCompo
 
   @Override
   public void onMaxSizeExceeded(long contentLength) {
-    System.out.println("onMaxSizeExceeded");
     final MessageResource generalResources = getGeneralResources();
     showError(generalResources.message(WebConstants.OVER_MAXIMUM_SIZE, contentLength));
   }
