@@ -17,16 +17,13 @@
 
 package ca.qc.ircm.proview.submission.web.integration;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
-import ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
@@ -37,20 +34,17 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
+  private static final int EXPERIENCE_COLUMN = 0;
+  private static final int LINKED_TO_RESULTS_COLUMN = 6;
+
   protected void open() {
     openView(SubmissionsView.VIEW_NAME);
   }
 
   protected abstract boolean isAdmin();
 
-  private int gridColumnIndex(String property) {
-    Object[] columns = SubmissionsViewPresenter.getColumns();
-    for (int i = 0; i < columns.length; i++) {
-      if (property.equals(columns[i])) {
-        return i + (isAdmin() ? 1 : 0); // +1 because of select column.
-      }
-    }
-    return -1;
+  private int gridColumnIndex(int column) {
+    return column + (isAdmin() ? 1 : 0); // +1 because of select column.
   }
 
   protected LabelElement header() {
@@ -64,7 +58,7 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   protected String experienceByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
     ButtonElement button = wrap(ButtonElement.class, submissionsGrid
-        .getCell(row, gridColumnIndex(EXPERIENCE)).findElement(className("v-button")));
+        .getCell(row, gridColumnIndex(EXPERIENCE_COLUMN)).findElement(className("v-button")));
     return button.getCaption();
   }
 
@@ -79,12 +73,12 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickViewSubmissionByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
-    submissionsGrid.getCell(row, gridColumnIndex(EXPERIENCE)).click();
+    submissionsGrid.getCell(row, gridColumnIndex(EXPERIENCE_COLUMN)).click();
   }
 
   protected void clickViewSubmissionResultsByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
-    submissionsGrid.getCell(row, gridColumnIndex(LINKED_TO_RESULTS)).click();
+    submissionsGrid.getCell(row, gridColumnIndex(LINKED_TO_RESULTS_COLUMN)).click();
   }
 
   protected ButtonElement selectSamplesButton() {
