@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class LocalDateFilterComponent extends InstantFilterComponentDesign
+public class LocalDateFilterComponent extends LocalDateFilterComponentDesign
     implements BaseComponent {
   private static final long serialVersionUID = -5938290034747610261L;
   @Inject

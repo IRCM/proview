@@ -17,16 +17,16 @@
 
 package ca.qc.ircm.proview.web.filter;
 
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.ALL;
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.BASE_STYLE;
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.CLEAR;
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.FILTER;
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.FROM;
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.RANGE;
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.RANGE_ONLY_FROM;
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.RANGE_ONLY_TO;
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.SET;
-import static ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter.TO;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.ALL;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.BASE_STYLE;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.CLEAR;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.FILTER;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.FROM;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.RANGE;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.RANGE_ONLY_FROM;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.RANGE_ONLY_TO;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.SET;
+import static ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter.TO;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -70,7 +70,7 @@ public class LocalDateFilterComponentPresenterTest {
   @Mock
   private Registration registration;
   private Locale locale = Locale.FRENCH;
-  private MessageResource resources = new MessageResource(InstantFilterComponent.class, locale);
+  private MessageResource resources = new MessageResource(LocalDateFilterComponent.class, locale);
   private LocalDate fromDate = LocalDate.of(2016, 5, 11);
   private LocalDate toDate = LocalDate.of(2016, 9, 20);
 

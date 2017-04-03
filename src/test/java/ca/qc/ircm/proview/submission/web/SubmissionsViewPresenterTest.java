@@ -56,7 +56,6 @@ import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
-import ca.qc.ircm.proview.web.filter.InstantFilterComponent;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter;
 import ca.qc.ircm.utils.MessageResource;
@@ -328,7 +327,7 @@ public class SubmissionsViewPresenterTest {
     verify(localDateFilterComponent).getPresenter();
     verify(localDateFilterComponentPresenter).addSaveListener(saveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DATE);
-    assertTrue(cell.getComponent() instanceof InstantFilterComponent);
+    assertTrue(cell.getComponent() instanceof LocalDateFilterComponent);
 
     Range<Instant> range = Range.open(Instant.now(), Instant.now());
     SaveListener listener = saveListenerCaptor.getValue();
