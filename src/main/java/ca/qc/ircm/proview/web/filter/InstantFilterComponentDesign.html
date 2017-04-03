@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="8.0.2">
+  <meta name="package-mapping" content="org_vaadin_hene_popupbutton:org.vaadin.hene.popupbutton">
+ </head>
+ <body>
+  <vaadin-vertical-layout size-full margin="false">
+   <org_vaadin_hene_popupbutton-popup-button caption="All" size-full _id="filter"></org_vaadin_hene_popupbutton-popup-button>
+   <vaadin-vertical-layout size-auto margin="false" _id="popup">
+    <vaadin-horizontal-layout>
+     <vaadin-inline-date-field caption="From" _id="from"></vaadin-inline-date-field>
+     <vaadin-inline-date-field caption="To" _id="to"></vaadin-inline-date-field>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout :middle :right>
+     <vaadin-button plain-text _id="set">
+       Button 
+     </vaadin-button>
+     <vaadin-button plain-text _id="clear">
+       Button 
+     </vaadin-button>
+    </vaadin-horizontal-layout>
+   </vaadin-vertical-layout>
+  </vaadin-vertical-layout>
+ </body>
+</html>
