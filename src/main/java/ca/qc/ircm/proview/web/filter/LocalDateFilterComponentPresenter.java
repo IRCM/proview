@@ -115,7 +115,7 @@ public class LocalDateFilterComponentPresenter {
       } else if (from.equals(to)) {
         range = Range.singleton(from);
       } else {
-        range = Range.open(from, to);
+        range = Range.closed(from, to);
       }
     } else if (from != null) {
       range = Range.atLeast(from);

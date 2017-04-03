@@ -154,7 +154,7 @@ public class LocalDateFilterComponentPresenterTest {
     assertTrue(presenter.getRange().hasUpperBound());
     assertEquals(toDate, presenter.getRange().upperEndpoint());
     assertEquals(intervalCaption(), view.filter.getCaption());
-    verify(view).fireSaveEvent(Range.open(fromDate, toDate));
+    verify(view).fireSaveEvent(Range.closed(fromDate, toDate));
   }
 
   @Test
@@ -253,7 +253,7 @@ public class LocalDateFilterComponentPresenterTest {
     assertTrue(presenter.getRange().hasUpperBound());
     assertEquals(toDate, presenter.getRange().upperEndpoint());
     assertEquals(intervalCaption(), view.filter.getCaption());
-    verify(view).fireSaveEvent(Range.open(fromDate, toDate));
+    verify(view).fireSaveEvent(Range.closed(fromDate, toDate));
 
     view.clear.click();
 
@@ -289,7 +289,7 @@ public class LocalDateFilterComponentPresenterTest {
 
   @Test
   public void setRange() {
-    presenter.setRange(Range.open(fromDate, toDate));
+    presenter.setRange(Range.closed(fromDate, toDate));
 
     assertNotNull(presenter.getRange());
     assertTrue(presenter.getRange().hasLowerBound());
