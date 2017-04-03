@@ -41,6 +41,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Range;
+
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -54,7 +56,8 @@ import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
-import ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter;
+import ca.qc.ircm.proview.web.filter.InstantFilterComponent;
+import ca.qc.ircm.proview.web.filter.InstantFilterComponentPresenter;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.data.HasValue.ValueChangeEvent;
@@ -83,6 +86,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -113,7 +117,7 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private AuthorizationService authorizationService;
   @Mock
-  private Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider;
+  private Provider<InstantFilterComponent> instantFilterComponentProvider;
   @Mock
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Mock
@@ -132,6 +136,10 @@ public class SubmissionsViewPresenterTest {
   private SampleSelectionWindow sampleSelectionWindow;
   @Mock
   private ListDataProvider<Submission> submissionsDataProvider;
+  @Mock
+  private InstantFilterComponent instantFilterComponent;
+  @Mock
+  private InstantFilterComponentPresenter instantFilterComponentPresenter;
   @Captor
   private ArgumentCaptor<Collection<Sample>> samplesCaptor;
   @Captor
@@ -140,8 +148,6 @@ public class SubmissionsViewPresenterTest {
   private ArgumentCaptor<SaveListener> saveListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
-  private FilterInstantComponentPresenter filterInstantComponentPresenter =
-      new FilterInstantComponentPresenter();
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionsView.class, locale);
   private List<Submission> submissions;
@@ -153,8 +159,8 @@ public class SubmissionsViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
-        filterInstantComponentPresenterProvider, submissionWindowProvider,
-        submissionAnalysesWindowProvider, sampleSelectionWindowProvider, applicationName);
+        instantFilterComponentProvider, submissionWindowProvider, submissionAnalysesWindowProvider,
+        sampleSelectionWindowProvider, applicationName);
     view.headerLabel = new Label();
     view.submissionsGrid = new Grid<>();
     view.selectSamplesButton = new Button();
@@ -173,7 +179,8 @@ public class SubmissionsViewPresenterTest {
     }
     when(report.getSubmissions()).thenReturn(submissions);
     when(report.getLinkedToResults()).thenReturn(linkedToResults);
-    when(filterInstantComponentPresenterProvider.get()).thenReturn(filterInstantComponentPresenter);
+    when(instantFilterComponentProvider.get()).thenReturn(instantFilterComponent);
+    when(instantFilterComponent.getPresenter()).thenReturn(instantFilterComponentPresenter);
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
     when(sampleSelectionWindowProvider.get()).thenReturn(sampleSelectionWindow);
@@ -315,8 +322,20 @@ public class SubmissionsViewPresenterTest {
     presenter.init(view);
     view.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
+
+    verify(instantFilterComponentProvider).get();
+    verify(instantFilterComponent).getPresenter();
+    verify(instantFilterComponentPresenter).addSaveListener(saveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DATE);
-    // TODO Program test.
+    assertTrue(cell.getComponent() instanceof InstantFilterComponent);
+
+    Range<Instant> range = Range.open(Instant.now(), Instant.now());
+    SaveListener listener = saveListenerCaptor.getValue();
+    listener.saved(new SaveEvent(cell.getComponent(), range));
+
+    verify(submissionsDataProvider).refreshAll();
+    SubmissionWebFilter filter = presenter.getFilter();
+    assertEquals(range, filter.getDateRange());
   }
 
   @Test

@@ -33,7 +33,8 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
-import ca.qc.ircm.proview.web.v7.filter.FilterInstantComponentPresenter;
+import ca.qc.ircm.proview.web.SaveListener;
+import ca.qc.ircm.proview.web.filter.InstantFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.DataProvider;
@@ -101,7 +102,7 @@ public class SubmissionsViewPresenter {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
-  private Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider;
+  private Provider<InstantFilterComponent> instantFilterComponentProvider;
   @Inject
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Inject
@@ -116,13 +117,13 @@ public class SubmissionsViewPresenter {
 
   protected SubmissionsViewPresenter(SubmissionService submissionService,
       AuthorizationService authorizationService,
-      Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider,
+      Provider<InstantFilterComponent> instantFilterComponentProvider,
       Provider<SubmissionWindow> submissionWindowProvider,
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
       Provider<SampleSelectionWindow> sampleSelectionWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
-    this.filterInstantComponentPresenterProvider = filterInstantComponentPresenterProvider;
+    this.instantFilterComponentProvider = instantFilterComponentProvider;
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
     this.sampleSelectionWindowProvider = sampleSelectionWindowProvider;
@@ -207,7 +208,7 @@ public class SubmissionsViewPresenter {
       view.submissionsGrid.getDataProvider().refreshAll();
     }, SampleStatus.values(), status -> status.getLabel(locale)));
     filterRow.getCell(DATE).setComponent(instantFilter(e -> {
-      filter.setDateRange(e.getValue());
+      filter.setDateRange((Range<Instant>) e.getSavedObject());
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(LINKED_TO_RESULTS).setComponent(comboBoxFilter(e -> {
@@ -274,9 +275,10 @@ public class SubmissionsViewPresenter {
     return filter;
   }
 
-  private Component instantFilter(ValueChangeListener<Range<Instant>> listener) {
-    // TODO Program instant filter.
-    return new Button();
+  private Component instantFilter(SaveListener listener) {
+    InstantFilterComponent instantFilterComponent = instantFilterComponentProvider.get();
+    instantFilterComponent.getPresenter().addSaveListener(listener);
+    return instantFilterComponent;
   }
 
   private void addListeners() {

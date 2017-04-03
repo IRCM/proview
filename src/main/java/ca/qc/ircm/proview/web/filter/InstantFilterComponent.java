@@ -20,7 +20,7 @@ import javax.inject.Inject;
 public class InstantFilterComponent extends InstantFilterComponentDesign implements BaseComponent {
   private static final long serialVersionUID = -5938290034747610261L;
   @Inject
-  private InstantFilterComponentPresenter presenter;
+  private transient InstantFilterComponentPresenter presenter;
 
   @Override
   public void attach() {
@@ -30,5 +30,9 @@ public class InstantFilterComponent extends InstantFilterComponentDesign impleme
 
   public void fireSaveEvent(Range<Instant> range) {
     fireEvent(new SaveEvent(this, range));
+  }
+
+  public InstantFilterComponentPresenter getPresenter() {
+    return presenter;
   }
 }
