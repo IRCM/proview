@@ -68,7 +68,7 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
     view.getPresenter().addSaveListener(e -> close());
   }
 
-  public Registration addSaveListener(SaveListener listener) {
+  public Registration addSaveListener(SaveListener<List<Sample>> listener) {
     return view.getPresenter().addSaveListener(listener);
   }
 

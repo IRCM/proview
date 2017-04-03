@@ -472,12 +472,12 @@ public class UserFormPresenter implements BinderValidator {
     editableProperty.setValue(editable);
   }
 
-  public Registration addSaveListener(SaveListener listener) {
+  public Registration addSaveListener(SaveListener<User> listener) {
     return view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
   @Deprecated
-  public void removeSaveListener(SaveListener listener) {
+  public void removeSaveListener(SaveListener<User> listener) {
     view.removeListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 

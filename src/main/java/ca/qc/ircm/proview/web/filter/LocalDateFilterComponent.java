@@ -30,7 +30,7 @@ public class LocalDateFilterComponent extends LocalDateFilterComponentDesign
   }
 
   public void fireSaveEvent(Range<LocalDate> range) {
-    fireEvent(new SaveEvent(this, range));
+    fireEvent(new SaveEvent<>(this, range));
   }
 
   public LocalDateFilterComponentPresenter getPresenter() {

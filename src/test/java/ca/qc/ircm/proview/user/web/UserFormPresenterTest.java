@@ -109,7 +109,7 @@ public class UserFormPresenterTest {
   @Mock
   private DefaultAddressConfiguration defaultAddressConfiguration;
   @Mock
-  private SaveListener listener;
+  private SaveListener<User> listener;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   @Captor

@@ -66,7 +66,7 @@ public class LocalDateFilterComponentPresenterTest {
   @Mock
   private LocalDateFilterComponent view;
   @Mock
-  private SaveListener saveListener;
+  private SaveListener<Range<LocalDate>> saveListener;
   @Mock
   private Registration registration;
   private Locale locale = Locale.FRENCH;

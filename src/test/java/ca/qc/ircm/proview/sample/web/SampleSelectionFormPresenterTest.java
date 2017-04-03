@@ -79,7 +79,7 @@ public class SampleSelectionFormPresenterTest {
   @Mock
   private ControlService controlService;
   @Mock
-  private SaveListener saveListener;
+  private SaveListener<List<Sample>> saveListener;
   @Mock
   private Registration registration;
   @Captor

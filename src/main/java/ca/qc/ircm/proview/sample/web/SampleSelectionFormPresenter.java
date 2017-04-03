@@ -201,7 +201,7 @@ public class SampleSelectionFormPresenter {
     }
   }
 
-  public Registration addSaveListener(SaveListener listener) {
+  public Registration addSaveListener(SaveListener<List<Sample>> listener) {
     return view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 

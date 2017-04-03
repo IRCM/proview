@@ -136,7 +136,7 @@ public class LocalDateFilterComponentPresenter {
     view.fireSaveEvent(range);
   }
 
-  public Registration addSaveListener(SaveListener listener) {
+  public Registration addSaveListener(SaveListener<Range<LocalDate>> listener) {
     return view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 

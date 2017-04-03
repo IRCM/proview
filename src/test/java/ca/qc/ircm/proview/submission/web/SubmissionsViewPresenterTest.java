@@ -86,7 +86,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -145,7 +145,9 @@ public class SubmissionsViewPresenterTest {
   @Captor
   private ArgumentCaptor<List<Sample>> samplesListCaptor;
   @Captor
-  private ArgumentCaptor<SaveListener> saveListenerCaptor;
+  private ArgumentCaptor<SaveListener<List<Sample>>> samplesSaveListenerCaptor;
+  @Captor
+  private ArgumentCaptor<SaveListener<Range<LocalDate>>> localDateRangeSaveListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private Locale locale = Locale.ENGLISH;
@@ -325,13 +327,14 @@ public class SubmissionsViewPresenterTest {
 
     verify(localDateFilterComponentProvider).get();
     verify(localDateFilterComponent).getPresenter();
-    verify(localDateFilterComponentPresenter).addSaveListener(saveListenerCaptor.capture());
+    verify(localDateFilterComponentPresenter)
+        .addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DATE);
     assertTrue(cell.getComponent() instanceof LocalDateFilterComponent);
 
-    Range<Instant> range = Range.open(Instant.now(), Instant.now());
-    SaveListener listener = saveListenerCaptor.getValue();
-    listener.saved(new SaveEvent(cell.getComponent(), range));
+    Range<LocalDate> range = Range.open(LocalDate.now(), LocalDate.now());
+    SaveListener<Range<LocalDate>> listener = localDateRangeSaveListenerCaptor.getValue();
+    listener.saved(new SaveEvent<>(cell.getComponent(), range));
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
@@ -503,6 +506,7 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void selectSamples() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
@@ -517,13 +521,13 @@ public class SubmissionsViewPresenterTest {
 
     verify(sampleSelectionWindowProvider).get();
     verify(sampleSelectionWindow).setSelectedSamples(samplesListCaptor.capture());
-    verify(sampleSelectionWindow).addSaveListener(saveListenerCaptor.capture());
+    verify(sampleSelectionWindow).addSaveListener(samplesSaveListenerCaptor.capture());
     List<Sample> samples = samplesListCaptor.getValue();
     assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
     assertTrue(samples.containsAll(submission1.getSamples()));
     assertTrue(samples.containsAll(submission2.getSamples()));
     verify(view).addWindow(sampleSelectionWindow);
-    saveListenerCaptor.getValue().saved(mock(SaveEvent.class));
+    samplesSaveListenerCaptor.getValue().saved(mock(SaveEvent.class));
     verify(sampleSelectionWindow).getSelectedSamples();
     verify(view).saveSamples(samplesCaptor.capture());
     Collection<Sample> savedSamples = samplesCaptor.getValue();

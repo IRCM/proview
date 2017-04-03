@@ -50,7 +50,7 @@ public class RegisterViewPresenterTest {
   @Mock
   private RegisterView view;
   @Captor
-  private ArgumentCaptor<SaveListener> saveListenerCaptor;
+  private ArgumentCaptor<SaveListener<User>> saveListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private Locale locale = Locale.ENGLISH;
@@ -96,7 +96,7 @@ public class RegisterViewPresenterTest {
   public void save() {
     verify(view.userFormPresenter).addSaveListener(saveListenerCaptor.capture());
     saveListenerCaptor.getValue()
-        .saved(new SaveEvent(view.userForm, new User(1L, "test@ircm.qc.ca")));
+        .saved(new SaveEvent<>(view.userForm, new User(1L, "test@ircm.qc.ca")));
     verify(view).navigateTo(MainView.VIEW_NAME);
   }
 }

@@ -275,7 +275,7 @@ public class SubmissionsViewPresenter {
     return filter;
   }
 
-  private Component instantFilter(SaveListener listener) {
+  private Component instantFilter(SaveListener<Range<LocalDate>> listener) {
     LocalDateFilterComponent localDateFilterComponent = localDateFilterComponentProvider.get();
     localDateFilterComponent.getPresenter().addSaveListener(listener);
     return localDateFilterComponent;

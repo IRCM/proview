@@ -44,7 +44,7 @@ public class UserForm extends UserFormDesign implements BaseComponent {
   }
 
   public void fireSaveEvent(User user) {
-    fireEvent(new SaveEvent(this, user));
+    fireEvent(new SaveEvent<>(this, user));
   }
 
   public UserFormPresenter getPresenter() {
