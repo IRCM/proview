@@ -8,7 +8,6 @@ import com.vaadin.server.SerializablePredicate;
 
 import java.time.Instant;
 import java.util.Locale;
-import java.util.Set;
 
 /**
  * Filters submissions.
@@ -16,9 +15,9 @@ import java.util.Set;
 public class SubmissionWebFilter implements SerializablePredicate<Submission> {
   private static final long serialVersionUID = -5902082214544061745L;
   private String experienceContains;
-  private String firstSampleNameContains;
+  private String anySampleNameContains;
   private String goalContains;
-  private Set<SampleStatus> anySampleStatuses;
+  private SampleStatus anySampleStatus;
   private Range<Instant> dateRange;
   private Boolean results;
   private Locale locale;
@@ -29,8 +28,32 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
 
   @Override
   public boolean test(Submission submission) {
-    // TODO Auto-generated method stub
-    return true;
+    boolean test = true;
+    if (experienceContains != null) {
+      test &= submission.getExperience().toLowerCase(locale)
+          .contains(experienceContains.toLowerCase(locale));
+    }
+    if (anySampleNameContains != null) {
+      test &= submission.getSamples().isEmpty()
+          || submission.getSamples().stream().anyMatch(sample -> sample.getName()
+              .toLowerCase(locale).contains(anySampleNameContains.toLowerCase(locale)));
+    }
+    if (goalContains != null) {
+      test &= submission.getGoal().toLowerCase(locale).contains(goalContains.toLowerCase(locale));
+    }
+    if (anySampleStatus != null) {
+      test &= submission.getSamples().isEmpty() || submission.getSamples().stream()
+          .anyMatch(sample -> anySampleStatus.equals(sample.getStatus()));
+    }
+    if (dateRange != null) {
+      test &= dateRange.contains(submission.getSubmissionDate());
+    }
+    if (results != null) {
+      boolean analysed = submission.getSamples().isEmpty() || submission.getSamples().stream()
+          .anyMatch(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0);
+      test &= submission.getSamples().isEmpty() || results ? analysed : !analysed;
+    }
+    return test;
   }
 
   public String getExperienceContains() {
@@ -41,12 +64,12 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
     this.experienceContains = experienceContains;
   }
 
-  public String getFirstSampleNameContains() {
-    return firstSampleNameContains;
+  public String getAnySampleNameContains() {
+    return anySampleNameContains;
   }
 
-  public void setFirstSampleNameContains(String firstSampleNameContains) {
-    this.firstSampleNameContains = firstSampleNameContains;
+  public void setAnySampleNameContains(String anySampleNameContains) {
+    this.anySampleNameContains = anySampleNameContains;
   }
 
   public String getGoalContains() {
@@ -57,12 +80,12 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
     this.goalContains = goalContains;
   }
 
-  public Set<SampleStatus> getAnySampleStatuses() {
-    return anySampleStatuses;
+  public SampleStatus getAnySampleStatus() {
+    return anySampleStatus;
   }
 
-  public void setAnySampleStatuses(Set<SampleStatus> anySampleStatuses) {
-    this.anySampleStatuses = anySampleStatuses;
+  public void setAnySampleStatus(SampleStatus anySampleStatus) {
+    this.anySampleStatus = anySampleStatus;
   }
 
   public Range<Instant> getDateRange() {

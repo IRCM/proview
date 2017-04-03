@@ -25,7 +25,10 @@ public class UserWebFilterTest {
   }
 
   private User email(String email) {
-    User user = new User();
+    return email(new User(), email);
+  }
+
+  private User email(User user, String email) {
     user.setEmail(email);
     return user;
   }
@@ -51,7 +54,10 @@ public class UserWebFilterTest {
   }
 
   private User active(boolean active) {
-    User user = new User();
+    return active(new User(), active);
+  }
+
+  private User active(User user, boolean active) {
     user.setActive(active);
     return user;
   }
@@ -158,5 +164,16 @@ public class UserWebFilterTest {
 
     assertTrue(filter.test(active(true)));
     assertTrue(filter.test(active(false)));
+  }
+
+  @Test
+  public void emailContainsAndActive() {
+    filter.setEmailContains("test");
+    filter.setActive(true);
+
+    assertTrue(filter.test(active(email("test@abc.com"), true)));
+    assertFalse(filter.test(active(email("abc@abc.com"), true)));
+    assertFalse(filter.test(active(email("test@abc.com"), false)));
+    assertFalse(filter.test(active(email("abc@abc.com"), false)));
   }
 }

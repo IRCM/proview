@@ -58,7 +58,6 @@ import org.springframework.stereotype.Controller;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -196,7 +195,7 @@ public class SubmissionsViewPresenter {
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
-      filter.setFirstSampleNameContains(e.getValue());
+      filter.setAnySampleNameContains(e.getValue());
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(EXPERIENCE_GOAL).setComponent(textFilter(e -> {
@@ -204,7 +203,7 @@ public class SubmissionsViewPresenter {
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_STATUSES).setComponent(comboBoxFilter(e -> {
-      filter.setAnySampleStatuses(Collections.singleton(e.getValue()));
+      filter.setAnySampleStatus(e.getValue());
       view.submissionsGrid.getDataProvider().refreshAll();
     }, SampleStatus.values(), status -> status.getLabel(locale)));
     filterRow.getCell(DATE).setComponent(instantFilter(e -> {

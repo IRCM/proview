@@ -268,7 +268,7 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getFirstSampleNameContains());
+    assertEquals(filterValue, filter.getAnySampleNameContains());
   }
 
   @Test
@@ -306,8 +306,7 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(1, filter.getAnySampleStatuses().size());
-    assertTrue(filter.getAnySampleStatuses().contains(filterValue));
+    assertEquals(filterValue, filter.getAnySampleStatus());
   }
 
   @Test
