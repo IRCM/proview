@@ -19,7 +19,9 @@ package ca.qc.ircm.proview.sample.web;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.shared.Registration;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -38,10 +40,21 @@ public class SampleSelectionForm extends SampleSelectionFormDesign implements Ba
   @Inject
   private transient SampleSelectionFormPresenter presenter;
 
+  protected SampleSelectionForm() {
+  }
+
+  protected SampleSelectionForm(SampleSelectionFormPresenter presenter) {
+    this.presenter = presenter;
+  }
+
   @Override
   public void attach() {
     super.attach();
     presenter.init(this);
+  }
+
+  public Registration addSaveListener(SaveListener<List<Sample>> listener) {
+    return addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
   protected void fireSaveEvent(List<Sample> selectedSamples) {

@@ -28,11 +28,8 @@ import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.ControlType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.web.SaveEvent;
-import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.GridSortOrderBuilder;
-import com.vaadin.shared.Registration;
 import com.vaadin.ui.Grid.SelectionMode;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -176,10 +173,6 @@ public class SampleSelectionFormPresenter {
     if (view != null) {
       updateSamples();
     }
-  }
-
-  public Registration addSaveListener(SaveListener<List<Sample>> listener) {
-    return view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
   public static Object[] getSamplesColumns() {

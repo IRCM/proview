@@ -65,11 +65,11 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
     super.attach();
     logger.debug("Sample selection window");
     setCaption(getResources().message(TITLE));
-    view.getPresenter().addSaveListener(e -> close());
+    view.addSaveListener(e -> close());
   }
 
   public Registration addSaveListener(SaveListener<List<Sample>> listener) {
-    return view.getPresenter().addSaveListener(listener);
+    return view.addSaveListener(listener);
   }
 
   public List<Sample> getSelectedSamples() {

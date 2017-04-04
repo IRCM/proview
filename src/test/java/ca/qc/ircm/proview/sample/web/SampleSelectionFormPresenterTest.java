@@ -29,9 +29,7 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SELECT;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +38,6 @@ import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.SelectionModel;
@@ -58,7 +55,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -288,16 +284,5 @@ public class SampleSelectionFormPresenterTest {
 
     verify(view).fireSaveEvent(samplesCaptor.capture());
     assertTrue(samplesCaptor.getValue().isEmpty());
-  }
-
-  @Test
-  public void addSaveListener() {
-    presenter.init(view);
-    when(view.addListener(any(), any(), any(Method.class))).thenReturn(registration);
-
-    Registration registration = presenter.addSaveListener(saveListener);
-
-    verify(view).addListener(SaveEvent.class, saveListener, SaveListener.SAVED_METHOD);
-    assertSame(this.registration, registration);
   }
 }
