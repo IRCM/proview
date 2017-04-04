@@ -26,7 +26,6 @@ import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -341,70 +340,5 @@ public class SubmissionsViewPresenter {
 
   SubmissionWebFilter getFilter() {
     return filter;
-  }
-
-  public class SubmissionFirstSample {
-    private Submission submission;
-    private SubmissionSample sample;
-    private String statuses;
-    private int sampleCount;
-    private boolean results;
-
-    private SubmissionFirstSample(Submission submission, Report report) {
-      this.submission = submission;
-      this.sample = submission.getSamples().get(0);
-      this.statuses = statuses(submission);
-      this.sampleCount = submission.getSamples().size();
-      this.results = report.getLinkedToResults().get(submission);
-    }
-
-    private String statuses(Submission submission) {
-      MessageResource resources = view.getResources();
-      List<SampleStatus> statuses = submission.getSamples().stream().map(s -> s.getStatus())
-          .distinct().sorted().collect(Collectors.toList());
-      String separator = resources.message(SAMPLE_STATUSES + ".separator");
-      return statuses.stream().map(s -> s.getLabel(view.getLocale()))
-          .collect(Collectors.joining(separator));
-    }
-
-    public Submission getSubmission() {
-      return submission;
-    }
-
-    public void setSubmission(Submission submission) {
-      this.submission = submission;
-    }
-
-    public SubmissionSample getSample() {
-      return sample;
-    }
-
-    public void setSample(SubmissionSample sample) {
-      this.sample = sample;
-    }
-
-    public int getSampleCount() {
-      return sampleCount;
-    }
-
-    public void setSampleCount(int sampleCount) {
-      this.sampleCount = sampleCount;
-    }
-
-    public boolean isResults() {
-      return results;
-    }
-
-    public void setResults(boolean results) {
-      this.results = results;
-    }
-
-    public String getStatuses() {
-      return statuses;
-    }
-
-    public void setStatuses(String statuses) {
-      this.statuses = statuses;
-    }
   }
 }
