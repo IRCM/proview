@@ -58,6 +58,7 @@ public class LocalDateFilterComponentPresenter {
     view.filter.addStyleName(FILTER);
     view.filter.setCaption(resources.message(ALL));
     view.filter.setContent(view.popup);
+    view.removeComponent(view.popup);
     view.from.addStyleName(FROM);
     view.from.setCaption(resources.message(FROM));
     view.to.addStyleName(TO);

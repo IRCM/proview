@@ -109,6 +109,7 @@ public class LocalDateFilterComponentPresenterTest {
   @Test
   public void popup() {
     assertEquals(view.popup, view.filter.getContent());
+    verify(view).removeComponent(view.popup);
   }
 
   @Test
