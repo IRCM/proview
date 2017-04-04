@@ -327,8 +327,7 @@ public class SubmissionsViewPresenterTest {
 
     verify(localDateFilterComponentProvider).get();
     verify(localDateFilterComponent).getPresenter();
-    verify(localDateFilterComponentPresenter)
-        .addSaveListener(localDateRangeSaveListenerCaptor.capture());
+    verify(localDateFilterComponent).addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DATE);
     assertTrue(cell.getComponent() instanceof LocalDateFilterComponent);
 

@@ -40,8 +40,6 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import ca.qc.ircm.proview.web.SaveEvent;
-import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.Button;
@@ -54,7 +52,6 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -65,8 +62,6 @@ public class LocalDateFilterComponentPresenterTest {
   private LocalDateFilterComponentPresenter presenter;
   @Mock
   private LocalDateFilterComponent view;
-  @Mock
-  private SaveListener<Range<LocalDate>> saveListener;
   @Mock
   private Registration registration;
   private Locale locale = Locale.FRENCH;
@@ -262,16 +257,6 @@ public class LocalDateFilterComponentPresenterTest {
     assertNull(view.from.getValue());
     assertNull(view.to.getValue());
     verify(view).fireSaveEvent(Range.all());
-  }
-
-  @Test
-  public void addSaveListener() {
-    when(view.addListener(any(), any(), any(Method.class))).thenReturn(registration);
-
-    Registration registration = presenter.addSaveListener(saveListener);
-
-    verify(view).addListener(SaveEvent.class, saveListener, SaveListener.SAVED_METHOD);
-    assertEquals(this.registration, registration);
   }
 
   @Test

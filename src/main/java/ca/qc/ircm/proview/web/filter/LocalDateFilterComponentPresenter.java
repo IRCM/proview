@@ -2,10 +2,9 @@ package ca.qc.ircm.proview.web.filter;
 
 import com.google.common.collect.Range;
 
-import ca.qc.ircm.proview.web.SaveEvent;
-import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.shared.Registration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -34,6 +33,8 @@ public class LocalDateFilterComponentPresenter {
   public static final String CLEAR = "clear";
   public static final Instant MINIMAL_DATE =
       LocalDateTime.of(0, 1, 1, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant();
+  private static final Logger logger =
+      LoggerFactory.getLogger(LocalDateFilterComponentPresenter.class);
   private LocalDateFilterComponent view;
   private Range<LocalDate> range;
 
@@ -134,10 +135,6 @@ public class LocalDateFilterComponentPresenter {
     view.filter.setPopupVisible(false);
     rangeChanged();
     view.fireSaveEvent(range);
-  }
-
-  public Registration addSaveListener(SaveListener<Range<LocalDate>> listener) {
-    return view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
   public Range<LocalDate> getRange() {

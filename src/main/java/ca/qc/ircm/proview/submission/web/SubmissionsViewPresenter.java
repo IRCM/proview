@@ -207,7 +207,7 @@ public class SubmissionsViewPresenter {
       view.submissionsGrid.getDataProvider().refreshAll();
     }, SampleStatus.values(), status -> status.getLabel(locale)));
     filterRow.getCell(DATE).setComponent(instantFilter(e -> {
-      filter.setDateRange((Range<LocalDate>) e.getSavedObject());
+      filter.setDateRange(e.getSavedObject());
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(LINKED_TO_RESULTS).setComponent(comboBoxFilter(e -> {
@@ -276,7 +276,7 @@ public class SubmissionsViewPresenter {
 
   private Component instantFilter(SaveListener<Range<LocalDate>> listener) {
     LocalDateFilterComponent localDateFilterComponent = localDateFilterComponentProvider.get();
-    localDateFilterComponent.getPresenter().addSaveListener(listener);
+    localDateFilterComponent.addSaveListener(listener);
     return localDateFilterComponent;
   }
 

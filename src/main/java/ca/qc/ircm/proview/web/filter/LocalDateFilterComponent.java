@@ -3,7 +3,9 @@ package ca.qc.ircm.proview.web.filter;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.shared.Registration;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -23,10 +25,21 @@ public class LocalDateFilterComponent extends LocalDateFilterComponentDesign
   @Inject
   private transient LocalDateFilterComponentPresenter presenter;
 
+  protected LocalDateFilterComponent() {
+  }
+
+  protected LocalDateFilterComponent(LocalDateFilterComponentPresenter presenter) {
+    this.presenter = presenter;
+  }
+
   @Override
   public void attach() {
     super.attach();
     presenter.init(this);
+  }
+
+  public Registration addSaveListener(SaveListener<Range<LocalDate>> listener) {
+    return addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
   public void fireSaveEvent(Range<LocalDate> range) {
