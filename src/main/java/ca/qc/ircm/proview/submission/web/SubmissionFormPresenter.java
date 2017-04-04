@@ -42,6 +42,7 @@ import static ca.qc.ircm.proview.treatment.Solvent.ACETONITRILE;
 import static ca.qc.ircm.proview.treatment.Solvent.CHCL3;
 import static ca.qc.ircm.proview.treatment.Solvent.METHANOL;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
@@ -81,8 +82,6 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.proview.web.table.EmptyNullTableFieldFactory;
-import ca.qc.ircm.proview.web.table.ValidatableTableFieldFactory;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Binder;
@@ -90,25 +89,18 @@ import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
 import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.converter.StringToIntegerConverter;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.validator.IntegerRangeValidator;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileDownloader;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.AbstractListing;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.Validator.InvalidValueException;
-import com.vaadin.v7.data.fieldgroup.FieldGroup;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.GeneratedPropertyContainer;
-import com.vaadin.v7.data.util.PropertyValueGenerator;
-import com.vaadin.v7.data.validator.BeanValidator;
-import com.vaadin.v7.ui.Field;
-import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.Upload.ProgressListener;
 import com.vaadin.v7.ui.Upload.Receiver;
 import com.vaadin.v7.ui.Upload.SucceededEvent;
@@ -126,10 +118,14 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -269,7 +265,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String COMMENTS_PROPERTY = submission.comments.getMetadata().getName();
   public static final String FILES_PROPERTY = submission.files.getMetadata().getName();
   public static final String FILES_UPLOADER = submission.files.getMetadata().getName() + "Uploader";
-  public static final String FILES_TABLE = FILES_PROPERTY + "Table";
+  public static final String FILES_GRID = FILES_PROPERTY + "Grid";
   public static final int MAXIMUM_FILES_SIZE = 10 * 1024 * 1024; // 10MB
   public static final int MAXIMUM_FILES_COUNT = 4;
   public static final int FILES_TABLE_LENGTH = 3;
@@ -283,19 +279,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String FORM_CAPTION_STYLE = "formcaption";
   public static final String CLICKABLE_STYLE = "clickable";
   public static final String HIDE_REQUIRED_STYLE = "hide-required";
-  private static final Object[] SAMPLES_COLUMNS = new Object[] { SAMPLE_NAME_PROPERTY };
-  private static final Object[] INTACT_PROTEIN_SAMPLES_COLUMNS = new Object[] {
-      SAMPLE_NAME_PROPERTY, SAMPLE_NUMBER_PROTEIN_PROPERTY, PROTEIN_WEIGHT_PROPERTY };
-  private static final Object[] STANDARDS_COLUMNS = new Object[] { STANDARD_NAME_PROPERTY,
-      STANDARD_QUANTITY_PROPERTY, STANDARD_COMMENTS_PROPERTY };
-  private static final Object[] CONTAMINANTS_COLUMNS = new Object[] { CONTAMINANT_NAME_PROPERTY,
-      CONTAMINANT_QUANTITY_PROPERTY, CONTAMINANT_COMMENTS_PROPERTY };
-  private static final Object[] GEL_IMAGES_COLUMNS = new Object[] { GEL_IMAGE_FILENAME_PROPERTY };
-  private static final Object[] EDITABLE_GEL_IMAGES_COLUMNS =
-      new Object[] { GEL_IMAGE_FILENAME_PROPERTY, REMOVE_GEL_IMAGE };
-  private static final Object[] FILES_COLUMNS = new Object[] { FILE_FILENAME_PROPERTY };
-  private static final Object[] EDITABLE_FILES_COLUMNS =
-      new Object[] { FILE_FILENAME_PROPERTY, REMOVE_FILE };
   private static final int MAX_SAMPLE_COUNT = 200;
   private static final int MAX_STANDARD_COUNT = 10;
   private static final int MAX_CONTAMINANT_COUNT = 10;
@@ -308,22 +291,20 @@ public class SubmissionFormPresenter implements BinderValidator {
   private Binder<ItemCount> sampleCountBinder = new Binder<>(ItemCount.class);
   private Binder<ItemCount> standardCountBinder = new Binder<>(ItemCount.class);
   private Binder<ItemCount> contaminantCountBinder = new Binder<>(ItemCount.class);
-  private BeanItemContainer<SubmissionSample> samplesContainer =
-      new BeanItemContainer<>(SubmissionSample.class);
-  private ValidatableTableFieldFactory sampleTableFieldFactory;
-  private List<List<TextField>> plateSampleNameFields = new ArrayList<>();
-  private BeanItemContainer<Standard> standardsContainer = new BeanItemContainer<>(Standard.class);
-  private ValidatableTableFieldFactory standardsTableFieldFactory;
-  private BeanItemContainer<Contaminant> contaminantsContainer =
-      new BeanItemContainer<>(Contaminant.class);
-  private ValidatableTableFieldFactory contaminantsTableFieldFactory;
-  private BeanItemContainer<GelImage> gelImagesContainer = new BeanItemContainer<>(GelImage.class);
-  private GeneratedPropertyContainer gelImagesGeneratedContainer =
-      new GeneratedPropertyContainer(gelImagesContainer);
-  private BeanItemContainer<SubmissionFile> filesContainer =
-      new BeanItemContainer<>(SubmissionFile.class);
-  private GeneratedPropertyContainer filesGeneratedContainer =
-      new GeneratedPropertyContainer(filesContainer);
+  private ListDataProvider<SubmissionSample> samplesDataProvider =
+      DataProvider.ofCollection(new ArrayList<>());
+  private Map<SubmissionSample, Binder<SubmissionSample>> sampleBinders = new HashMap<>();
+  private List<List<Binder<SubmissionSample>>> plateSampleBinders = new ArrayList<>();
+  private ListDataProvider<Standard> standardsDataProvider =
+      DataProvider.ofCollection(new ArrayList<>());
+  private Map<Standard, Binder<Standard>> standardBinders = new HashMap<>();
+  private ListDataProvider<Contaminant> contaminantsDataProvider =
+      DataProvider.ofCollection(new ArrayList<>());
+  private Map<Contaminant, Binder<Contaminant>> contaminantBinders = new HashMap<>();
+  private ListDataProvider<GelImage> gelImagesDataProvider =
+      DataProvider.ofCollection(new ArrayList<>());
+  private ListDataProvider<SubmissionFile> filesDataProvider =
+      DataProvider.ofCollection(new ArrayList<>());
   @Inject
   private SubmissionService submissionService;
   @Inject
@@ -366,7 +347,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     updateContaminantsTable(view.contaminantCountField.getValue());
   }
 
-  @SuppressWarnings("serial")
   private void prepareComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
@@ -401,54 +381,38 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.filesUploader.setUploadButtonCaption(resources.message(FILES_UPLOADER));
     view.filesUploader.setMaxFileCount(1000000); // Count is required if size is set.
     view.filesUploader.setMaxFileSize(MAXIMUM_FILES_SIZE);
-    filesGeneratedContainer.addGeneratedProperty(FILE_FILENAME_PROPERTY,
-        new PropertyValueGenerator<Button>() {
-          @Override
-          public Button getValue(Item item, Object itemId, Object propertyId) {
-            SubmissionFile file = (SubmissionFile) itemId;
-            Button button = new Button();
-            button.setCaption(file.getFilename());
-            button.setIcon(FontAwesome.DOWNLOAD);
-            StreamResource resource = new StreamResource(
-                () -> new ByteArrayInputStream(file.getContent()), file.getFilename());
-            FileDownloader fileDownloader = new FileDownloader(resource);
-            fileDownloader.extend(button);
-            return button;
-          }
-
-          @Override
-          public Class<Button> getType() {
-            return Button.class;
-          }
-        });
-    filesGeneratedContainer.addGeneratedProperty(REMOVE_FILE, new PropertyValueGenerator<Button>() {
-      @Override
-      public Button getValue(Item item, Object itemId, Object propertyId) {
-        MessageResource resources = view.getResources();
-        SubmissionFile file = (SubmissionFile) itemId;
-        Button button = new Button();
-        button.setCaption(resources.message(FILES_PROPERTY + "." + REMOVE_FILE));
-        button.addClickListener(e -> filesContainer.removeItem(file));
-        return button;
-      }
-
-      @Override
-      public Class<Button> getType() {
-        return Button.class;
-      }
-    });
-    view.filesTable.addStyleName(FILES_TABLE);
-    view.filesTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
-    view.filesTable.setContainerDataSource(filesGeneratedContainer);
-    view.filesTable.setPageLength(FILES_TABLE_LENGTH);
-    for (Object column : EDITABLE_FILES_COLUMNS) {
-      view.filesTable.setColumnHeader(column, resources.message(FILES_PROPERTY + "." + column));
-    }
+    view.filesGrid.addStyleName(FILES_GRID);
+    view.filesGrid.addStyleName(COMPONENTS);
+    view.filesGrid.addColumn(file -> downloadFileButton(file), new ComponentRenderer())
+        .setId(FILE_FILENAME_PROPERTY)
+        .setCaption(resources.message(FILES_PROPERTY + "." + FILE_FILENAME_PROPERTY));
+    view.filesGrid.addColumn(file -> removeFileButton(file), new ComponentRenderer())
+        .setId(REMOVE_FILE).setCaption(resources.message(FILES_PROPERTY + "." + REMOVE_FILE));
+    view.filesGrid.setDataProvider(filesDataProvider);
     view.submitButton.addStyleName(SUBMIT_ID);
     view.submitButton.setCaption(resources.message(SUBMIT_ID));
   }
 
-  @SuppressWarnings("serial")
+  private Button downloadFileButton(SubmissionFile file) {
+    Button button = new Button();
+    button.setCaption(file.getFilename());
+    button.setIcon(VaadinIcons.DOWNLOAD);
+    StreamResource resource =
+        new StreamResource(() -> new ByteArrayInputStream(file.getContent()), file.getFilename());
+    FileDownloader fileDownloader = new FileDownloader(resource);
+    fileDownloader.extend(button);
+    return button;
+  }
+
+  private Button removeFileButton(SubmissionFile file) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.setCaption(resources.message(FILES_PROPERTY + "." + REMOVE_FILE));
+    button.addClickListener(e -> filesDataProvider.getItems().remove(file));
+    filesDataProvider.refreshAll();
+    return button;
+  }
+
   private void prepareSamplesComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
@@ -533,58 +497,101 @@ public class SubmissionFormPresenter implements BinderValidator {
         .withValidator(validatePlateName()).bind(PLATE_NAME_PROPERTY);
     view.samplesLabel.addStyleName(SAMPLES_PROPERTY);
     view.samplesLabel.setCaption(resources.message(SAMPLES_PROPERTY));
-    sampleTableFieldFactory = new ValidatableTableFieldFactory(new EmptyNullTableFieldFactory() {
-      @Override
-      public Field<?> createField(Container container, Object itemId, Object propertyId,
-          Component uiContext) {
-        TextField field = (TextField) super.createField(container, itemId, propertyId, uiContext);
-        field.setRequired(true);
-        field.setRequiredError(generalResources.message(REQUIRED));
-        field.addValidator(new BeanValidator(SubmissionSample.class, (String) propertyId));
-        if (propertyId == SAMPLE_NAME_PROPERTY) {
-          field.addValidator(v -> validateSampleName7((String) v, true));
-        } else if (propertyId == SAMPLE_NUMBER_PROTEIN_PROPERTY) {
-          field.setConverter(new com.vaadin.v7.data.util.converter.StringToIntegerConverter());
-          field.setConversionError(generalResources.message(INVALID_INTEGER));
-        } else if (propertyId == PROTEIN_WEIGHT_PROPERTY) {
-          field.setConverter(new com.vaadin.v7.data.util.converter.StringToDoubleConverter());
-          field.setConversionError(generalResources.message(INVALID_NUMBER));
-        }
-        return field;
-      }
-    });
-    view.samplesTable.addStyleName(SAMPLES_TABLE);
-    view.samplesTable.setTableFieldFactory(sampleTableFieldFactory);
-    view.samplesTable.setContainerDataSource(samplesContainer);
-    view.samplesTable.setPageLength(SAMPLES_NAMES_TABLE_LENGTH);
-    view.samplesTable.setVisibleColumns(SAMPLES_COLUMNS);
-    view.samplesTable.setColumnHeader(SAMPLE_NAME_PROPERTY,
-        resources.message(SAMPLE_NAME_PROPERTY));
-    view.samplesTable.setColumnHeader(SAMPLE_NUMBER_PROTEIN_PROPERTY,
-        resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY));
-    view.samplesTable.setColumnHeader(PROTEIN_WEIGHT_PROPERTY,
-        resources.message(PROTEIN_WEIGHT_PROPERTY));
+    view.samplesGrid.addStyleName(SAMPLES_TABLE);
+    view.samplesGrid.addStyleName(COMPONENTS);
+    view.samplesGrid.setDataProvider(samplesDataProvider);
+    view.samplesGrid.addColumn(sample -> sampleNameTextField(sample), new ComponentRenderer())
+        .setId(SAMPLE_NAME_PROPERTY).setCaption(resources.message(SAMPLE_NAME_PROPERTY));
+    view.samplesGrid
+        .addColumn(sample -> sampleNumberProteinTextField(sample), new ComponentRenderer())
+        .setId(SAMPLE_NUMBER_PROTEIN_PROPERTY)
+        .setCaption(resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY));
+    view.samplesGrid.addColumn(sample -> proteinWeightTextField(sample), new ComponentRenderer())
+        .setId(PROTEIN_WEIGHT_PROPERTY).setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY));
     view.fillSamplesButton.addStyleName(FILL_SAMPLES_PROPERTY);
     view.fillSamplesButton.addStyleName(FILL_BUTTON_STYLE);
     view.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
     view.samplesPlateLayout.addStyleName(SAMPLES_PLATE);
     IntStream.range(0, view.samplesPlateLayout.getColumns()).forEach(column -> {
-      List<TextField> columnPlateSampleNameFields = new ArrayList<>();
+      List<Binder<SubmissionSample>> columnPlateSampleBinders = new ArrayList<>();
       IntStream.range(0, view.samplesPlateLayout.getRows()).forEach(row -> {
-        TextField nameField = new TextField();
-        columnPlateSampleNameFields.add(nameField);
-        view.samplesPlateLayout.addComponent(nameField, column, row);
+        TextField field = new TextField();
+        // TODO nameField.setColumns(7);
+        field.addStyleName(SAMPLES_PLATE + "-" + column + "-" + row);
+        Binder<SubmissionSample> binder = new Binder<>(SubmissionSample.class);
+        binder.setBean(new SubmissionSample());
+        binder.forField(field).withValidator(validateSampleName(false)).bind(SAMPLE_NAME_PROPERTY);
+        columnPlateSampleBinders.add(binder);
+        view.samplesPlateLayout.addComponent(field, column, row);
       });
-      plateSampleNameFields.add(columnPlateSampleNameFields);
+      plateSampleBinders.add(columnPlateSampleBinders);
     });
-    IntStream.range(0, plateSampleNameFields.size())
-        .forEach(column -> IntStream.range(0, plateSampleNameFields.get(column).size())
-            .forEach(row -> plateSampleNameFields.get(column).get(row)
-                .addStyleName(SAMPLES_PLATE + "-" + column + "-" + row)));
-    plateSampleNameFields.forEach(l -> l.forEach(field -> {
-      field.setColumns(7);
-      field.addValidator(v -> validateSampleName7((String) v, false));
-    }));
+  }
+
+  private TextField sampleNameTextField(SubmissionSample sample) {
+    if (sampleBinders.containsKey(sample)
+        && sampleBinders.get(sample).getBinding(SAMPLE_NAME_PROPERTY).isPresent()) {
+      return (TextField) sampleBinders.get(sample).getBinding(SAMPLE_NAME_PROPERTY).get()
+          .getField();
+    } else {
+      final MessageResource generalResources = view.getGeneralResources();
+      Binder<SubmissionSample> binder = sampleBinders.get(sample);
+      if (binder == null) {
+        binder = new Binder<>(SubmissionSample.class);
+      }
+      sampleBinders.put(sample, binder);
+      TextField field = new TextField();
+      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      binder.forField(field).asRequired(generalResources.message(REQUIRED))
+          .withValidator(validateSampleName(true)).bind(SAMPLE_NAME_PROPERTY);
+      return field;
+    }
+  }
+
+  private TextField sampleNumberProteinTextField(SubmissionSample sample) {
+    if (sampleBinders.containsKey(sample)
+        && sampleBinders.get(sample).getBinding(SAMPLE_NUMBER_PROTEIN_PROPERTY).isPresent()) {
+      return (TextField) sampleBinders.get(sample).getBinding(SAMPLE_NUMBER_PROTEIN_PROPERTY).get()
+          .getField();
+    } else {
+      final MessageResource generalResources = view.getGeneralResources();
+      Binder<SubmissionSample> binder = sampleBinders.get(sample);
+      if (binder == null) {
+        binder = new Binder<>(SubmissionSample.class);
+      }
+      sampleBinders.put(sample, binder);
+      TextField field = new TextField();
+      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setRequiredIndicatorVisible(true);
+      binder.forField(field)
+          .withValidator(requiredTextIf(n -> view.serviceOptions.getValue() == INTACT_PROTEIN))
+          .withConverter(new StringToIntegerConverter(generalResources.message(INVALID_INTEGER)))
+          .bind(SAMPLE_NUMBER_PROTEIN_PROPERTY);
+      return field;
+    }
+  }
+
+  private TextField proteinWeightTextField(SubmissionSample sample) {
+    if (sampleBinders.containsKey(sample)
+        && sampleBinders.get(sample).getBinding(PROTEIN_WEIGHT_PROPERTY).isPresent()) {
+      return (TextField) sampleBinders.get(sample).getBinding(PROTEIN_WEIGHT_PROPERTY).get()
+          .getField();
+    } else {
+      final MessageResource generalResources = view.getGeneralResources();
+      Binder<SubmissionSample> binder = sampleBinders.get(sample);
+      if (binder == null) {
+        binder = new Binder<>(SubmissionSample.class);
+      }
+      sampleBinders.put(sample, binder);
+      TextField field = new TextField();
+      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setRequiredIndicatorVisible(true);
+      binder.forField(field)
+          .withValidator(requiredTextIf(n -> view.serviceOptions.getValue() == INTACT_PROTEIN))
+          .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
+          .bind(PROTEIN_WEIGHT_PROPERTY);
+      return field;
+    }
   }
 
   private void prepareExperienceComponents() {
@@ -634,7 +641,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         .bind(SAMPLE_VOLUME_PROPERTY);
   }
 
-  @SuppressWarnings("serial")
   private void prepareStandardsComponents() {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
@@ -647,39 +653,87 @@ public class SubmissionFormPresenter implements BinderValidator {
         .withValidator(new IntegerRangeValidator(
             generalResources.message(OUT_OF_RANGE, 0, MAX_STANDARD_COUNT), 0, MAX_STANDARD_COUNT))
         .bind(ItemCount::getCount, ItemCount::setCount);
-    standardsTableFieldFactory = new ValidatableTableFieldFactory(new EmptyNullTableFieldFactory() {
-      @Override
-      public Field<?> createField(Container container, Object itemId, Object propertyId,
-          Component uiContext) {
-        Field<?> field = super.createField(container, itemId, propertyId, uiContext);
-        field.addValidator(new BeanValidator(Standard.class, (String) propertyId));
-        if (propertyId.equals(STANDARD_QUANTITY_PROPERTY)) {
-          ((TextField) field).setInputPrompt(resources
-              .message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY + "." + EXAMPLE));
-        }
-        if (propertyId.equals(STANDARD_NAME_PROPERTY)
-            || propertyId.equals(STANDARD_QUANTITY_PROPERTY)) {
-          field.setRequired(true);
-          field.setRequiredError(generalResources.message(REQUIRED));
-        }
-        return field;
-      }
-    });
-    view.standardsTable.addStyleName(STANDARD_PROPERTY);
-    view.standardsTable.setTableFieldFactory(standardsTableFieldFactory);
-    view.standardsTable.setContainerDataSource(standardsContainer);
-    view.standardsTable.setPageLength(STANDARDS_TABLE_LENGTH);
-    view.standardsTable.setVisibleColumns(STANDARDS_COLUMNS);
-    for (Object column : STANDARDS_COLUMNS) {
-      view.standardsTable.setColumnHeader(column,
-          resources.message(STANDARD_PROPERTY + "." + column));
-    }
+    view.standardsGrid.addStyleName(STANDARD_PROPERTY);
+    view.standardsGrid.addStyleName(COMPONENTS);
+    view.standardsGrid.setDataProvider(standardsDataProvider);
+    view.standardsGrid
+        .addColumn(standard -> standardNameTextField(standard), new ComponentRenderer())
+        .setId(STANDARD_NAME_PROPERTY)
+        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_NAME_PROPERTY));
+    view.standardsGrid
+        .addColumn(standard -> standardQuantityTextField(standard), new ComponentRenderer())
+        .setId(STANDARD_QUANTITY_PROPERTY)
+        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY));
+    view.standardsGrid
+        .addColumn(standard -> standardCommentsTextField(standard), new ComponentRenderer())
+        .setId(STANDARD_COMMENTS_PROPERTY)
+        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENTS_PROPERTY));
     view.fillStandardsButton.addStyleName(FILL_STANDARDS_PROPERTY);
     view.fillStandardsButton.addStyleName(FILL_BUTTON_STYLE);
     view.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS_PROPERTY));
   }
 
-  @SuppressWarnings("serial")
+  private TextField standardNameTextField(Standard standard) {
+    if (standardBinders.containsKey(standard)
+        && standardBinders.get(standard).getBinding(STANDARD_NAME_PROPERTY).isPresent()) {
+      return (TextField) standardBinders.get(standard).getBinding(STANDARD_NAME_PROPERTY).get()
+          .getField();
+    } else {
+      final MessageResource generalResources = view.getGeneralResources();
+      Binder<Standard> binder = standardBinders.get(standard);
+      if (binder == null) {
+        binder = new Binder<>(Standard.class);
+      }
+      standardBinders.put(standard, binder);
+      TextField field = new TextField();
+      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      binder.forField(field).asRequired(generalResources.message(REQUIRED))
+          .bind(STANDARD_NAME_PROPERTY);
+      return field;
+    }
+  }
+
+  private TextField standardQuantityTextField(Standard standard) {
+    if (standardBinders.containsKey(standard)
+        && standardBinders.get(standard).getBinding(STANDARD_QUANTITY_PROPERTY).isPresent()) {
+      return (TextField) standardBinders.get(standard).getBinding(STANDARD_QUANTITY_PROPERTY).get()
+          .getField();
+    } else {
+      final MessageResource resources = view.getResources();
+      final MessageResource generalResources = view.getGeneralResources();
+      Binder<Standard> binder = standardBinders.get(standard);
+      if (binder == null) {
+        binder = new Binder<>(Standard.class);
+      }
+      standardBinders.put(standard, binder);
+      TextField field = new TextField();
+      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setPlaceholder(
+          resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY + "." + EXAMPLE));
+      binder.forField(field).asRequired(generalResources.message(REQUIRED))
+          .bind(STANDARD_QUANTITY_PROPERTY);
+      return field;
+    }
+  }
+
+  private TextField standardCommentsTextField(Standard standard) {
+    if (standardBinders.containsKey(standard)
+        && standardBinders.get(standard).getBinding(STANDARD_COMMENTS_PROPERTY).isPresent()) {
+      return (TextField) standardBinders.get(standard).getBinding(STANDARD_COMMENTS_PROPERTY).get()
+          .getField();
+    } else {
+      Binder<Standard> binder = standardBinders.get(standard);
+      if (binder == null) {
+        binder = new Binder<>(Standard.class);
+      }
+      standardBinders.put(standard, binder);
+      TextField field = new TextField();
+      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      binder.forField(field).bind(STANDARD_COMMENTS_PROPERTY);
+      return field;
+    }
+  }
+
   private void prepareContaminantsComponents() {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
@@ -693,40 +747,84 @@ public class SubmissionFormPresenter implements BinderValidator {
             generalResources.message(OUT_OF_RANGE, 0, MAX_CONTAMINANT_COUNT), 0,
             MAX_CONTAMINANT_COUNT))
         .bind(ItemCount::getCount, ItemCount::setCount);
-    contaminantsTableFieldFactory =
-        new ValidatableTableFieldFactory(new EmptyNullTableFieldFactory() {
-          @Override
-          public Field<?> createField(Container container, Object itemId, Object propertyId,
-              Component uiContext) {
-            Field<?> field = super.createField(container, itemId, propertyId, uiContext);
-            field.addValidator(new BeanValidator(Contaminant.class, (String) propertyId));
-            if (propertyId.equals(CONTAMINANT_QUANTITY_PROPERTY)) {
-              ((TextField) field).setInputPrompt(resources.message(
-                  CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY + "." + EXAMPLE));
-            }
-            if (propertyId.equals(CONTAMINANT_NAME_PROPERTY)
-                || propertyId.equals(CONTAMINANT_QUANTITY_PROPERTY)) {
-              field.setRequired(true);
-              field.setRequiredError(generalResources.message(REQUIRED));
-            }
-            return field;
-          }
-        });
-    view.contaminantsTable.addStyleName(CONTAMINANT_PROPERTY);
-    view.contaminantsTable.setTableFieldFactory(contaminantsTableFieldFactory);
-    view.contaminantsTable.setContainerDataSource(contaminantsContainer);
-    view.contaminantsTable.setPageLength(CONTAMINANTS_TABLE_LENGTH);
-    view.contaminantsTable.setVisibleColumns(CONTAMINANTS_COLUMNS);
-    for (Object column : CONTAMINANTS_COLUMNS) {
-      view.contaminantsTable.setColumnHeader(column,
-          resources.message(CONTAMINANT_PROPERTY + "." + column));
-    }
+    view.contaminantsGrid.addStyleName(CONTAMINANT_PROPERTY);
+    view.contaminantsGrid.addStyleName(COMPONENTS);
+    view.contaminantsGrid.setDataProvider(contaminantsDataProvider);
+    view.contaminantsGrid.addColumn(contaminant -> contaminantNameTextField(contaminant))
+        .setId(CONTAMINANT_NAME_PROPERTY)
+        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_NAME_PROPERTY));
+    view.contaminantsGrid.addColumn(contaminant -> contaminantQuantityTextField(contaminant))
+        .setId(CONTAMINANT_QUANTITY_PROPERTY)
+        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY));
+    view.contaminantsGrid.addColumn(contaminant -> contaminantCommentsTextField(contaminant))
+        .setId(CONTAMINANT_COMMENTS_PROPERTY)
+        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENTS_PROPERTY));
     view.fillContaminantsButton.addStyleName(FILL_CONTAMINANTS_PROPERTY);
     view.fillContaminantsButton.addStyleName(FILL_BUTTON_STYLE);
     view.fillContaminantsButton.setCaption(resources.message(FILL_CONTAMINANTS_PROPERTY));
   }
 
-  @SuppressWarnings("serial")
+  private TextField contaminantNameTextField(Contaminant contaminant) {
+    if (contaminantBinders.containsKey(standard)
+        && contaminantBinders.get(standard).getBinding(CONTAMINANT_NAME_PROPERTY).isPresent()) {
+      return (TextField) contaminantBinders.get(standard).getBinding(CONTAMINANT_NAME_PROPERTY)
+          .get().getField();
+    } else {
+      final MessageResource generalResources = view.getGeneralResources();
+      Binder<Contaminant> binder = contaminantBinders.get(standard);
+      if (binder == null) {
+        binder = new Binder<>(Contaminant.class);
+      }
+      contaminantBinders.put(contaminant, binder);
+      TextField field = new TextField();
+      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      binder.forField(field).asRequired(generalResources.message(REQUIRED))
+          .bind(CONTAMINANT_NAME_PROPERTY);
+      return field;
+    }
+  }
+
+  private TextField contaminantQuantityTextField(Contaminant contaminant) {
+    if (contaminantBinders.containsKey(standard)
+        && contaminantBinders.get(standard).getBinding(CONTAMINANT_QUANTITY_PROPERTY).isPresent()) {
+      return (TextField) contaminantBinders.get(standard).getBinding(CONTAMINANT_QUANTITY_PROPERTY)
+          .get().getField();
+    } else {
+      final MessageResource resources = view.getResources();
+      final MessageResource generalResources = view.getGeneralResources();
+      Binder<Contaminant> binder = contaminantBinders.get(standard);
+      if (binder == null) {
+        binder = new Binder<>(Contaminant.class);
+      }
+      contaminantBinders.put(contaminant, binder);
+      TextField field = new TextField();
+      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setPlaceholder(resources
+          .message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY + "." + EXAMPLE));
+      binder.forField(field).asRequired(generalResources.message(REQUIRED))
+          .bind(CONTAMINANT_QUANTITY_PROPERTY);
+      return field;
+    }
+  }
+
+  private TextField contaminantCommentsTextField(Contaminant contaminant) {
+    if (contaminantBinders.containsKey(standard)
+        && contaminantBinders.get(standard).getBinding(CONTAMINANT_COMMENTS_PROPERTY).isPresent()) {
+      return (TextField) contaminantBinders.get(standard).getBinding(CONTAMINANT_COMMENTS_PROPERTY)
+          .get().getField();
+    } else {
+      Binder<Contaminant> binder = contaminantBinders.get(standard);
+      if (binder == null) {
+        binder = new Binder<>(Contaminant.class);
+      }
+      contaminantBinders.put(contaminant, binder);
+      TextField field = new TextField();
+      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      binder.forField(field).bind(CONTAMINANT_COMMENTS_PROPERTY);
+      return field;
+    }
+  }
+
   private void prepareGelComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
@@ -789,51 +887,34 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.gelImagesUploader.setUploadButtonCaption(resources.message(GEL_IMAGES_UPLOADER));
     view.gelImagesUploader.setMaxFileCount(1000000); // Count is required if size is set.
     view.gelImagesUploader.setMaxFileSize(MAXIMUM_GEL_IMAGES_SIZE);
-    gelImagesGeneratedContainer.addGeneratedProperty(GEL_IMAGE_FILENAME_PROPERTY,
-        new PropertyValueGenerator<Button>() {
-          @Override
-          public Button getValue(Item item, Object itemId, Object propertyId) {
-            GelImage gelImage = (GelImage) itemId;
-            Button button = new Button();
-            button.setCaption(gelImage.getFilename());
-            button.setIcon(FontAwesome.DOWNLOAD);
-            StreamResource resource = new StreamResource(
-                () -> new ByteArrayInputStream(gelImage.getContent()), gelImage.getFilename());
-            FileDownloader fileDownloader = new FileDownloader(resource);
-            fileDownloader.extend(button);
-            return button;
-          }
+    view.gelImagesGrid.addStyleName(GEL_IMAGES_TABLE);
+    view.gelImagesGrid.addStyleName(COMPONENTS);
+    view.gelImagesGrid.addColumn(image -> downloadGelImageButton(image))
+        .setId(GEL_IMAGE_FILENAME_PROPERTY)
+        .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + GEL_IMAGE_FILENAME_PROPERTY));
+    view.gelImagesGrid.addColumn(image -> removeGelImageButton(image)).setId(REMOVE_GEL_IMAGE)
+        .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE));
+    view.gelImagesGrid.setDataProvider(gelImagesDataProvider);
+  }
 
-          @Override
-          public Class<Button> getType() {
-            return Button.class;
-          }
-        });
-    gelImagesGeneratedContainer.addGeneratedProperty(REMOVE_GEL_IMAGE,
-        new PropertyValueGenerator<Button>() {
-          @Override
-          public Button getValue(Item item, Object itemId, Object propertyId) {
-            MessageResource resources = view.getResources();
-            GelImage gelImage = (GelImage) itemId;
-            Button button = new Button();
-            button.setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE));
-            button.addClickListener(e -> gelImagesContainer.removeItem(gelImage));
-            return button;
-          }
+  private Button downloadGelImageButton(GelImage file) {
+    Button button = new Button();
+    button.setCaption(file.getFilename());
+    button.setIcon(VaadinIcons.DOWNLOAD);
+    StreamResource resource =
+        new StreamResource(() -> new ByteArrayInputStream(file.getContent()), file.getFilename());
+    FileDownloader fileDownloader = new FileDownloader(resource);
+    fileDownloader.extend(button);
+    return button;
+  }
 
-          @Override
-          public Class<Button> getType() {
-            return Button.class;
-          }
-        });
-    view.gelImagesTable.addStyleName(GEL_IMAGES_TABLE);
-    view.gelImagesTable.setTableFieldFactory(new EmptyNullTableFieldFactory());
-    view.gelImagesTable.setContainerDataSource(gelImagesGeneratedContainer);
-    view.gelImagesTable.setPageLength(GEL_IMAGES_TABLE_LENGTH);
-    for (Object column : EDITABLE_GEL_IMAGES_COLUMNS) {
-      view.gelImagesTable.setColumnHeader(column,
-          resources.message(GEL_IMAGES_PROPERTY + "." + column));
-    }
+  private Button removeGelImageButton(GelImage file) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE));
+    button.addClickListener(e -> gelImagesDataProvider.getItems().remove(file));
+    gelImagesDataProvider.refreshAll();
+    return button;
   }
 
   private void prepareServicesComponents() {
@@ -992,6 +1073,17 @@ public class SubmissionFormPresenter implements BinderValidator {
     };
   }
 
+  private Validator<String> requiredTextIf(Predicate<Void> predicate) {
+    return (value, context) -> {
+      if (predicate.test(null) && value.isEmpty()) {
+        final MessageResource generalResources = view.getGeneralResources();
+        return ValidationResult.error(generalResources.message(REQUIRED));
+      } else {
+        return ValidationResult.ok();
+      }
+    };
+  }
+
   private void addFieldListeners() {
     view.serviceOptions.addValueChangeListener(e -> updateVisible());
     view.sampleSupportOptions.addValueChangeListener(e -> updateVisible());
@@ -1042,14 +1134,12 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.plateNameField
         .setVisible(service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == SPOT);
     view.samplesLabel.setVisible(service != SMALL_MOLECULE);
-    view.samplesTableLayout.setVisible(service == INTACT_PROTEIN
+    view.samplesGridLayout.setVisible(service == INTACT_PROTEIN
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT));
-    view.samplesTable.setVisible(service == INTACT_PROTEIN
+    view.samplesGrid.setVisible(service == INTACT_PROTEIN
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT));
-    view.samplesTable.setVisibleColumns(
-        service == INTACT_PROTEIN ? INTACT_PROTEIN_SAMPLES_COLUMNS : SAMPLES_COLUMNS);
-    sampleTableFieldFactory.getFields(PROTEIN_WEIGHT_PROPERTY)
-        .forEach(f -> f.setRequired(service == INTACT_PROTEIN));
+    view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).setHidden(service != INTACT_PROTEIN);
+    view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).setHidden(service != INTACT_PROTEIN);
     view.fillSamplesButton.setVisible((service == INTACT_PROTEIN
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT))
         && editable);
@@ -1069,7 +1159,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
     view.standardCountField
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.standardsTable
+    view.standardsGrid
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
     view.fillStandardsButton.setVisible(
         service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && editable);
@@ -1077,7 +1167,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
     view.contaminantCountField
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.contaminantsTable
+    view.contaminantsGrid
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
     view.fillContaminantsButton.setVisible(
         service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && editable);
@@ -1093,7 +1183,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.proteinQuantityField.setVisible(service == LC_MS_MS && support == GEL);
     view.gelImagesLayout.setVisible(service == LC_MS_MS && support == GEL);
     view.gelImagesUploader.setVisible(service == LC_MS_MS && support == GEL && editable);
-    view.gelImagesTable.setVisible(service == LC_MS_MS && support == GEL);
+    view.gelImagesGrid.setVisible(service == LC_MS_MS && support == GEL);
     view.digestionOptions.setVisible(service == LC_MS_MS);
     view.usedProteolyticDigestionMethodField.setVisible(
         view.digestionOptions.isVisible() && view.digestionOptions.getValue() == DIGESTED);
@@ -1140,9 +1230,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.sampleContainerTypeOptions.setReadOnly(!editable);
     view.plateNameField.setReadOnly(!editable);
     view.sampleCountField.setReadOnly(!editable);
-    view.samplesTable.setEditable(editable);
+    sampleBinders.values().forEach(binder -> binder.setReadOnly(!editable));
     view.fillSamplesButton.setVisible(editable);
-    plateSampleNameFields.forEach(l -> l.forEach(field -> field.setReadOnly(!editable)));
+    plateSampleBinders.stream().flatMap(list -> list.stream())
+        .forEach(binder -> binder.setReadOnly(!editable));
     view.experienceField.setReadOnly(!editable);
     view.experienceGoalField.setReadOnly(!editable);
     view.taxonomyField.setReadOnly(!editable);
@@ -1152,9 +1243,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.sampleQuantityField.setReadOnly(!editable);
     view.sampleVolumeField.setReadOnly(!editable);
     view.standardCountField.setReadOnly(!editable);
-    view.standardsTable.setEditable(editable);
+    standardBinders.values().forEach(binder -> binder.setReadOnly(!editable));
     view.contaminantCountField.setReadOnly(!editable);
-    view.contaminantsTable.setEditable(editable);
+    contaminantBinders.values().forEach(binder -> binder.setReadOnly(!editable));
     view.separationField.setReadOnly(!editable);
     view.thicknessField.setReadOnly(!editable);
     view.colorationField.setReadOnly(!editable);
@@ -1163,8 +1254,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.decolorationField.setReadOnly(!editable);
     view.weightMarkerQuantityField.setReadOnly(!editable);
     view.proteinQuantityField.setReadOnly(!editable);
-    view.gelImagesTable
-        .setVisibleColumns(editable ? EDITABLE_GEL_IMAGES_COLUMNS : GEL_IMAGES_COLUMNS);
+    view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).setHidden(!editable);
     view.digestionOptions.setReadOnly(!editable);
     view.usedProteolyticDigestionMethodField.setReadOnly(!editable);
     view.otherProteolyticDigestionMethodField.setReadOnly(!editable);
@@ -1183,19 +1273,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.otherSolventsField.setReadOnly(!editable);
     view.otherSolventField.setReadOnly(!editable);
     view.commentsField.setReadOnly(!editable);
-    view.filesTable.setVisibleColumns(editable ? EDITABLE_FILES_COLUMNS : FILES_COLUMNS);
-  }
-
-  private void bindVisibleField(FieldGroup fieldGroup, Field<?> field, Object propertyId) {
-    if (field.isVisible()) {
-      if (fieldGroup.getField(propertyId) == null) {
-        fieldGroup.bind(field, propertyId);
-      }
-    } else {
-      if (fieldGroup.getField(propertyId) != null) {
-        fieldGroup.unbind(field);
-      }
-    }
+    view.filesGrid.getColumn(REMOVE_FILE).setHidden(!editable);
   }
 
   private void updateSampleCount(String countValue) {
@@ -1205,15 +1283,16 @@ public class SubmissionFormPresenter implements BinderValidator {
     } catch (NumberFormatException e) {
       count = 1;
     }
-    while (count > samplesContainer.size()) {
+    while (count > samplesDataProvider.getItems().size()) {
       SubmissionSample sample = new SubmissionSample();
       sample.setNumberProtein(1);
-      samplesContainer.addBean(sample);
+      samplesDataProvider.getItems().add(sample);
     }
-    while (count < samplesContainer.size()) {
-      samplesContainer.removeItem(samplesContainer.getIdByIndex(samplesContainer.size() - 1));
+    while (count < samplesDataProvider.getItems().size()) {
+      SubmissionSample remove = samplesDataProvider.getItems().stream()
+          .skip(samplesDataProvider.getItems().size() - 1).findFirst().orElse(null);
+      samplesDataProvider.getItems().remove(remove);
     }
-    view.samplesTable.setPageLength(Math.min(count, SAMPLES_NAMES_TABLE_LENGTH));
   }
 
   private void updateStandardsTable(String countValue) {
@@ -1223,11 +1302,13 @@ public class SubmissionFormPresenter implements BinderValidator {
     } catch (NumberFormatException e) {
       count = 0;
     }
-    while (standardsContainer.size() > count) {
-      standardsContainer.removeItem(standardsContainer.lastItemId());
+    while (standardsDataProvider.getItems().size() > count) {
+      Standard remove = standardsDataProvider.getItems().stream()
+          .skip(standardsDataProvider.getItems().size() - 1).findFirst().orElse(null);
+      standardsDataProvider.getItems().remove(remove);
     }
-    while (standardsContainer.size() < count) {
-      standardsContainer.addBean(new Standard());
+    while (standardsDataProvider.getItems().size() < count) {
+      standardsDataProvider.getItems().add(new Standard());
     }
     view.standardsTableLayout.setVisible(count > 0);
   }
@@ -1239,66 +1320,48 @@ public class SubmissionFormPresenter implements BinderValidator {
     } catch (NumberFormatException e) {
       count = 0;
     }
-    while (contaminantsContainer.size() > count) {
-      contaminantsContainer.removeItem(contaminantsContainer.lastItemId());
+    while (contaminantsDataProvider.getItems().size() > count) {
+      Contaminant remove = contaminantsDataProvider.getItems().stream()
+          .skip(contaminantsDataProvider.getItems().size() - 1).findFirst().orElse(null);
+      contaminantsDataProvider.getItems().remove(remove);
     }
-    while (contaminantsContainer.size() < count) {
-      contaminantsContainer.addBean(new Contaminant());
+    while (contaminantsDataProvider.getItems().size() < count) {
+      contaminantsDataProvider.getItems().add(new Contaminant());
     }
     view.contaminantsTableLayout.setVisible(count > 0);
   }
 
-  @SuppressWarnings("unchecked")
   private void fillSamples() {
-    Object first = samplesContainer.getIdByIndex(0);
-    String name =
-        (String) samplesContainer.getContainerProperty(first, SAMPLE_NAME_PROPERTY).getValue();
-    for (Object itemId : samplesContainer.getItemIds().subList(1, samplesContainer.size())) {
-      name = incrementLastNumber(name);
-      samplesContainer.getContainerProperty(itemId, SAMPLE_NAME_PROPERTY).setValue(name);
-    }
-    view.samplesTable.refreshRowCache();
+    SubmissionSample first = samplesDataProvider.getItems().iterator().next();
+    String name = first.getName();
+    samplesDataProvider.getItems().forEach(sample -> sample.setName(incrementLastNumber(name)));
+    samplesDataProvider.refreshAll();
   }
 
-  @SuppressWarnings("unchecked")
   private void fillStandards() {
-    Object first = standardsContainer.getIdByIndex(0);
-    String name =
-        (String) standardsContainer.getContainerProperty(first, STANDARD_NAME_PROPERTY).getValue();
-    String quantity = (String) standardsContainer
-        .getContainerProperty(first, STANDARD_QUANTITY_PROPERTY).getValue();
-    String comments = (String) standardsContainer
-        .getContainerProperty(first, STANDARD_COMMENTS_PROPERTY).getValue();
-    for (Object itemId : standardsContainer.getItemIds().subList(1, standardsContainer.size())) {
-      name = incrementLastNumber(name);
-      standardsContainer.getContainerProperty(itemId, STANDARD_NAME_PROPERTY).setValue(name);
-      standardsContainer.getContainerProperty(itemId, STANDARD_QUANTITY_PROPERTY)
-          .setValue(quantity);
-      standardsContainer.getContainerProperty(itemId, STANDARD_COMMENTS_PROPERTY)
-          .setValue(comments);
-    }
-    view.standardsTable.refreshRowCache();
+    Standard first = standardsDataProvider.getItems().iterator().next();
+    String name = first.getName();
+    String quantity = first.getQuantity();
+    String comments = first.getComments();
+    standardsDataProvider.getItems().forEach(standard -> {
+      standard.setName(name);
+      standard.setQuantity(quantity);
+      standard.setComments(comments);
+    });
+    standardsDataProvider.refreshAll();
   }
 
-  @SuppressWarnings("unchecked")
   private void fillContaminants() {
-    Object first = contaminantsContainer.getIdByIndex(0);
-    String name = (String) contaminantsContainer
-        .getContainerProperty(first, CONTAMINANT_NAME_PROPERTY).getValue();
-    String quantity = (String) contaminantsContainer
-        .getContainerProperty(first, CONTAMINANT_QUANTITY_PROPERTY).getValue();
-    String comments = (String) contaminantsContainer
-        .getContainerProperty(first, CONTAMINANT_COMMENTS_PROPERTY).getValue();
-    for (Object itemId : contaminantsContainer.getItemIds().subList(1,
-        contaminantsContainer.size())) {
-      name = incrementLastNumber(name);
-      contaminantsContainer.getContainerProperty(itemId, CONTAMINANT_NAME_PROPERTY).setValue(name);
-      contaminantsContainer.getContainerProperty(itemId, CONTAMINANT_QUANTITY_PROPERTY)
-          .setValue(quantity);
-      contaminantsContainer.getContainerProperty(itemId, CONTAMINANT_COMMENTS_PROPERTY)
-          .setValue(comments);
-    }
-    view.contaminantsTable.refreshRowCache();
+    Contaminant first = contaminantsDataProvider.getItems().iterator().next();
+    String name = first.getName();
+    String quantity = first.getQuantity();
+    String comments = first.getComments();
+    contaminantsDataProvider.getItems().forEach(contaminant -> {
+      contaminant.setName(name);
+      contaminant.setQuantity(quantity);
+      contaminant.setComments(comments);
+    });
+    contaminantsDataProvider.refreshAll();
   }
 
   private String incrementLastNumber(String value) {
@@ -1341,7 +1404,7 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   private MultiFileUploadFileHandler gelImageFileHandler() {
     return (file, fileName, mimetype, length) -> {
-      if (gelImagesContainer.size() >= MAXIMUM_GEL_IMAGES_COUNT) {
+      if (gelImagesDataProvider.getItems().size() >= MAXIMUM_GEL_IMAGES_COUNT) {
         return;
       }
 
@@ -1357,13 +1420,14 @@ public class SubmissionFormPresenter implements BinderValidator {
       GelImage gelImage = new GelImage();
       gelImage.setFilename(fileName);
       gelImage.setContent(content.toByteArray());
-      gelImagesContainer.addBean(gelImage);
+      gelImagesDataProvider.getItems().add(gelImage);
+      gelImagesDataProvider.refreshAll();
       warnIfGelImageAtMaximum();
     };
   }
 
   private void warnIfGelImageAtMaximum() {
-    if (gelImagesContainer.size() >= MAXIMUM_GEL_IMAGES_COUNT) {
+    if (gelImagesDataProvider.getItems().size() >= MAXIMUM_GEL_IMAGES_COUNT) {
       MessageResource resources = view.getResources();
       view.showWarning(
           resources.message(GEL_IMAGES_PROPERTY + ".overMaximumCount", MAXIMUM_GEL_IMAGES_COUNT));
@@ -1372,7 +1436,7 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   private MultiFileUploadFileHandler fileHandler() {
     return (file, fileName, mimetype, length) -> {
-      if (filesContainer.size() >= MAXIMUM_GEL_IMAGES_COUNT) {
+      if (filesDataProvider.getItems().size() >= MAXIMUM_GEL_IMAGES_COUNT) {
         return;
       }
 
@@ -1388,13 +1452,14 @@ public class SubmissionFormPresenter implements BinderValidator {
       SubmissionFile submissionFile = new SubmissionFile();
       submissionFile.setFilename(fileName);
       submissionFile.setContent(content.toByteArray());
-      filesContainer.addBean(submissionFile);
+      filesDataProvider.getItems().add(submissionFile);
+      filesDataProvider.refreshAll();
       warnIfFilesAtMaximum();
     };
   }
 
   private void warnIfFilesAtMaximum() {
-    if (filesContainer.size() >= MAXIMUM_FILES_COUNT) {
+    if (filesDataProvider.getItems().size() >= MAXIMUM_FILES_COUNT) {
       MessageResource resources = view.getResources();
       view.showWarning(
           resources.message(FILES_PROPERTY + ".overMaximumCount", MAXIMUM_FILES_COUNT));
@@ -1417,19 +1482,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     };
   }
 
-  private void validateSampleName7(String name, boolean testExists) {
-    if (name == null || name.isEmpty()) {
-      return;
-    }
-    MessageResource generalResources = view.getGeneralResources();
-    if (!Pattern.matches("\\w*", name)) {
-      throw new InvalidValueException(generalResources.message(ONLY_WORDS));
-    }
-    if (testExists && submissionSampleService.exists(name)) {
-      throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
-    }
-  }
-
   private Validator<String> validatePlateName() {
     return (value, context) -> {
       if (value.isEmpty()) {
@@ -1443,129 +1495,134 @@ public class SubmissionFormPresenter implements BinderValidator {
     };
   }
 
-  private void validatePlateName7(String name) {
-    if (name == null || name.isEmpty()) {
-      return;
-    }
-    MessageResource generalResources = view.getGeneralResources();
-    if (!plateService.nameAvailable(name)) {
-      throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
-    }
-  }
-
   private boolean validate() {
     logger.trace("Validate submission");
     boolean valid = true;
-    try {
-      valid &= validate(submissionBinder);
-      valid &= validate(firstSampleBinder);
-      Submission submission = submissionBinder.getBean();
-      SubmissionSample sample = firstSampleBinder.getBean();
-      if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
-        valid &= validate(sampleCountBinder);
-        if (view.sampleContainerTypeOptions.getValue() != SPOT) {
-          sampleTableFieldFactory.commit();
-        } else {
-          valid &= validate(plateBinder);
-          for (List<TextField> sampleNameFields : plateSampleNameFields) {
-            for (TextField sampleNameField : sampleNameFields) {
-              sampleNameField.validate();
-            }
+    valid &= validate(submissionBinder);
+    valid &= validate(firstSampleBinder);
+    Submission submission = submissionBinder.getBean();
+    SubmissionSample sample = firstSampleBinder.getBean();
+    if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
+      valid &= validate(sampleCountBinder);
+      if (view.sampleContainerTypeOptions.getValue() != SPOT) {
+        for (Binder<SubmissionSample> binder : sampleBinders.values()) {
+          valid &= validate(binder);
+        }
+      } else {
+        valid &= validate(plateBinder);
+        for (List<Binder<SubmissionSample>> binders : plateSampleBinders) {
+          for (Binder<SubmissionSample> binder : binders) {
+            valid &= validate(binder);
           }
         }
-        if (sample.getSupport() == DRY || sample.getSupport() == SOLUTION) {
-          valid &= validate(standardCountBinder);
-          standardsTableFieldFactory.commit();
-          valid &= validate(contaminantCountBinder);
-          contaminantsTableFieldFactory.commit();
+      }
+      if (sample.getSupport() == DRY || sample.getSupport() == SOLUTION) {
+        valid &= validate(standardCountBinder);
+        for (Binder<Standard> binder : standardBinders.values()) {
+          valid &= validate(binder);
+        }
+        valid &= validate(contaminantCountBinder);
+        for (Binder<Contaminant> binder : contaminantBinders.values()) {
+          valid &= validate(binder);
         }
       }
-    } catch (InvalidValueException e) {
+    }
+    if (!valid) {
       final MessageResource generalResources = view.getGeneralResources();
-      logger.trace("Validation value failed with message {}", e.getMessage(), e);
+      logger.trace("Submission field validation failed");
       view.showError(generalResources.message(FIELD_NOTIFICATION));
       valid = false;
     }
     if (valid) {
-      try {
-        Submission submission = submissionBinder.getBean();
-        SubmissionSample sample = firstSampleBinder.getBean();
-        if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
-          validateSampleNames();
-          if (sample.getSupport() == GEL) {
-            validateGelImages(submission);
-          }
+      if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
+        valid &= validate(() -> validateSampleNames());
+        if (sample.getSupport() == GEL) {
+          valid &= validate(() -> validateGelImages(submission));
         }
-        if (submission.getService() == Service.SMALL_MOLECULE) {
-          validateStructure(submission);
-          validateSolvents();
-        }
-      } catch (InvalidValueException e) {
-        logger.trace("Validation commit failed with message {}", e.getMessage(), e);
-        view.showError(e.getMessage());
-        valid = false;
+      }
+      if (submission.getService() == Service.SMALL_MOLECULE) {
+        valid &= validate(() -> validateStructure(submission));
+        valid &= validate(() -> validateSolvents());
       }
     }
     return valid;
   }
 
-  private void validateSampleNames() {
+  private boolean validate(Supplier<ValidationResult> validator) {
+    ValidationResult result = validator.get();
+    if (result.isError()) {
+      logger.trace("Validation error {}", result.getErrorMessage());
+      view.showError(result.getErrorMessage());
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  private ValidationResult validateSampleNames() {
     MessageResource resources = view.getResources();
     Set<String> names = new HashSet<>();
     if (view.sampleContainerTypeOptions.getValue() != SPOT) {
-      for (SubmissionSample sample : samplesContainer.getItemIds()) {
+      for (SubmissionSample sample : samplesDataProvider.getItems()) {
         if (!names.add(sample.getName())) {
-          throw new InvalidValueException(
-              resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sample.getName()));
+          return ValidationResult
+              .error(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sample.getName()));
         }
       }
     } else {
       int count = 0;
-      for (List<TextField> sampleNameFields : plateSampleNameFields) {
-        for (TextField sampleNameField : sampleNameFields) {
-          if (sampleNameField.getValue() != null && !sampleNameField.getValue().isEmpty()) {
+      for (List<Binder<SubmissionSample>> binders : plateSampleBinders) {
+        for (Binder<SubmissionSample> binder : binders) {
+          String name = binder.getBean().getName();
+          if (name != null && !name.isEmpty()) {
             count++;
-            if (!names.add(sampleNameField.getValue())) {
-              throw new InvalidValueException(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate",
-                  sampleNameField.getValue()));
+            if (!names.add(name)) {
+              return ValidationResult
+                  .error(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", name));
             }
           }
         }
       }
       if (count < sampleCountBinder.getBean().getCount()) {
-        throw new InvalidValueException(resources.message(SAMPLES_PROPERTY + ".missing",
+        return ValidationResult.error(resources.message(SAMPLES_PROPERTY + ".missing",
             sampleCountBinder.getBean().getCount()));
       }
     }
+    return ValidationResult.ok();
   }
 
-  private void validateStructure(Submission submission) {
+  private ValidationResult validateStructure(Submission submission) {
     if (submission.getStructure() == null || submission.getStructure().getFilename() == null) {
       MessageResource resources = view.getResources();
-      throw new InvalidValueException(resources.message(STRUCTURE_PROPERTY + "." + REQUIRED));
+      return ValidationResult.error(resources.message(STRUCTURE_PROPERTY + "." + REQUIRED));
     }
+    return ValidationResult.ok();
   }
 
-  private void validateGelImages(Submission submission) {
-    if (gelImagesContainer.size() == 0) {
+  private ValidationResult validateGelImages(Submission submission) {
+    if (gelImagesDataProvider.getItems().size() == 0) {
       MessageResource resources = view.getResources();
-      throw new InvalidValueException(resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED));
+      return ValidationResult.error(resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED));
     }
+    return ValidationResult.ok();
   }
 
-  private void validateSolvents() {
+  private ValidationResult validateSolvents() {
     if (!view.acetonitrileSolventsField.getValue() && !view.methanolSolventsField.getValue()
         && !view.chclSolventsField.getValue() && !view.otherSolventsField.getValue()) {
       MessageResource resources = view.getResources();
-      throw new InvalidValueException(resources.message(SOLVENTS_PROPERTY + "." + REQUIRED));
+      return ValidationResult.error(resources.message(SOLVENTS_PROPERTY + "." + REQUIRED));
     }
+    return ValidationResult.ok();
   }
 
   private void clearSamplesTableInvisibleFields() {
     if (view.serviceOptions.getValue() != INTACT_PROTEIN) {
-      sampleTableFieldFactory.getFields(SAMPLE_NUMBER_PROTEIN_PROPERTY)
-          .forEach(f -> ((TextField) f).setConvertedValue(1));
-      sampleTableFieldFactory.getFields(PROTEIN_WEIGHT_PROPERTY).forEach(f -> f.setValue(null));
+      samplesDataProvider.getItems().forEach(sample -> {
+        sample.setNumberProtein(1);
+        sample.setMolecularWeight(null);
+      });
+      samplesDataProvider.refreshAll();
     }
   }
 
@@ -1610,12 +1667,12 @@ public class SubmissionFormPresenter implements BinderValidator {
         submission.setSource(null);
       }
       if (firstSample.getSupport() == GEL) {
-        submission.setGelImages(gelImagesContainer.getItemIds());
+        submission.setGelImages(new ArrayList<>(gelImagesDataProvider.getItems()));
       } else {
         submission.setSeparation(null);
         submission.setThickness(null);
       }
-      submission.setFiles(filesContainer.getItemIds());
+      submission.setFiles(new ArrayList<>(filesDataProvider.getItems()));
       logger.debug("Save submission {}", submission);
       submissionService.insert(submission);
       MessageResource resources = view.getResources();
@@ -1635,7 +1692,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   private List<SubmissionSample> samplesFromTable(Submission submission) {
     List<SubmissionSample> samples = new ArrayList<>();
     SubmissionSample firstSample = firstSampleBinder.getBean();
-    for (SubmissionSample sample : samplesContainer.getItemIds()) {
+    for (SubmissionSample sample : samplesDataProvider.getItems()) {
       sample.setSupport(firstSample.getSupport());
       sample.setQuantity(firstSample.getQuantity());
       sample.setVolume(firstSample.getVolume());
@@ -1656,12 +1713,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     List<SubmissionSample> samples = new ArrayList<>();
     SubmissionSample firstSample = firstSampleBinder.getBean();
     Plate plate = plateBinder.getBean();
-    for (int column = 0; column < plateSampleNameFields.size(); column++) {
-      for (int row = 0; row < plateSampleNameFields.get(column).size(); row++) {
-        TextField nameField = plateSampleNameFields.get(column).get(row);
-        if (nameField.getValue() != null && !nameField.getValue().isEmpty()) {
-          SubmissionSample sample = new SubmissionSample();
-          sample.setName(nameField.getValue());
+    for (int column = 0; column < plateSampleBinders.size(); column++) {
+      for (int row = 0; row < plateSampleBinders.get(column).size(); row++) {
+        SubmissionSample sample = plateSampleBinders.get(column).get(row).getBean();
+        if (sample.getName() != null && !sample.getName().isEmpty()) {
           sample.setSupport(firstSample.getSupport());
           sample.setQuantity(firstSample.getQuantity());
           sample.setVolume(firstSample.getVolume());
@@ -1683,7 +1738,7 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   private void copyStandardsFromTableToSample(SubmissionSample sample) {
     sample.setStandards(new ArrayList<>());
-    for (Standard standard : standardsContainer.getItemIds()) {
+    for (Standard standard : standardsDataProvider.getItems()) {
       Standard copy = new Standard();
       copy.setName(standard.getName());
       copy.setQuantity(standard.getQuantity());
@@ -1694,7 +1749,7 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   private void copyContaminantsFromTableToSample(SubmissionSample sample) {
     sample.setContaminants(new ArrayList<>());
-    for (Contaminant contaminant : contaminantsContainer.getItemIds()) {
+    for (Contaminant contaminant : contaminantsDataProvider.getItems()) {
       Contaminant copy = new Contaminant();
       copy.setName(contaminant.getName());
       copy.setQuantity(contaminant.getQuantity());
@@ -1713,7 +1768,6 @@ public class SubmissionFormPresenter implements BinderValidator {
    * @param submission
    *          submission
    */
-  @SuppressWarnings("unchecked")
   public void setBean(Submission submission) {
     if (submission == null) {
       submission = new Submission();
@@ -1763,43 +1817,46 @@ public class SubmissionFormPresenter implements BinderValidator {
     } else {
       plateBinder.setBean(new Plate());
     }
-    final Locale locale = view.getLocale();
     Service service = submission.getService();
     if (service != null && !service.available) {
       view.serviceOptions
           .setItems(Stream.concat(Service.availables().stream(), Stream.of(service)));
     }
-    samplesContainer.removeAllItems();
-    samplesContainer.addAll(samples);
+    samplesDataProvider.getItems().clear();
+    samplesDataProvider.getItems().addAll(samples);
+    samplesDataProvider.refreshAll();
     view.sampleCountField.setReadOnly(false);
     sampleCountBinder.setBean(new ItemCount(samples.size()));
     view.sampleContainerTypeOptions.setReadOnly(false);
     view.sampleContainerTypeOptions.setValue(firstSample.getOriginalContainer().getType());
-    view.samplesTable.sort(new Object[] { SAMPLE_NAME_PROPERTY }, new boolean[] { true });
+    view.samplesGrid.sort(SAMPLE_NAME_PROPERTY);
     Structure structure = submission.getStructure();
     updateStructureButton(structure);
     List<Standard> standards = firstSample.getStandards();
     if (standards == null) {
       standards = new ArrayList<>();
     }
-    standardsContainer.removeAllItems();
-    standardsContainer.addAll(standards);
+    standardsDataProvider.getItems().clear();
+    standardsDataProvider.getItems().addAll(standards);
+    standardsDataProvider.refreshAll();
     view.standardCountField.setReadOnly(false);
     standardCountBinder.setBean(new ItemCount(standards.size()));
     List<Contaminant> contaminants = firstSample.getContaminants();
     if (contaminants == null) {
       contaminants = new ArrayList<>();
     }
-    contaminantsContainer.removeAllItems();
-    contaminantsContainer.addAll(contaminants);
+    contaminantsDataProvider.getItems().clear();
+    contaminantsDataProvider.getItems().addAll(contaminants);
+    contaminantsDataProvider.refreshAll();
     view.contaminantCountField.setReadOnly(false);
     contaminantCountBinder.setBean(new ItemCount(contaminants.size()));
     List<GelImage> gelImages = submission.getGelImages();
     if (gelImages == null) {
       gelImages = new ArrayList<>();
     }
-    gelImagesContainer.removeAllItems();
-    gelImagesContainer.addAll(gelImages);
+    gelImagesDataProvider.getItems().clear();
+    gelImagesDataProvider.getItems().addAll(gelImages);
+    gelImagesDataProvider.refreshAll();
     MassDetectionInstrumentSource source = submission.getSource();
     if (source != null && !source.available) {
       view.sourceOptions.setItems(
@@ -1829,6 +1886,13 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.chclSolventsField.setValue(solvents.contains(Solvent.CHCL3));
     view.acetonitrileSolventsField.setReadOnly(false);
     view.otherSolventsField.setValue(solvents.contains(Solvent.OTHER));
+    List<SubmissionFile> files = submission.getFiles();
+    if (files == null) {
+      files = new ArrayList<>();
+    }
+    filesDataProvider.getItems().clear();
+    filesDataProvider.getItems().addAll(files);
+    filesDataProvider.refreshAll();
     updateVisible();
     updateEditable();
   }
@@ -1861,7 +1925,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     private ByteArrayOutputStream output;
 
     @Override
-    @SuppressWarnings("unchecked")
     public void uploadSucceeded(SucceededEvent event) {
       String fileName = event.getFilename();
       logger.debug("Received structure file {}", fileName);

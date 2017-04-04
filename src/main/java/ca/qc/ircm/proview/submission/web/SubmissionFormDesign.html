@@ -45,8 +45,8 @@
       <vaadin-text-field caption="Plate name" null-representation="" _id="plateNameField"></vaadin-text-field>
       <vaadin-label caption="Samples" _id="samplesLabel"></vaadin-label>
      </vaadin-form-layout>
-     <vaadin-horizontal-layout _id="samplesTableLayout">
-      <vaadin7-table _id="samplesTable"></vaadin7-table>
+     <vaadin-horizontal-layout _id="samplesGridLayout">
+      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samplesGrid"></vaadin-grid>
       <vaadin-vertical-layout size-auto margin="false">
        <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillSamplesButton">
          Fill Down 
@@ -76,7 +76,7 @@
       <vaadin-text-field caption="Number of standards" null-representation="" _id="standardCountField"></vaadin-text-field>
      </vaadin-form-layout>
      <vaadin-horizontal-layout _id="standardsTableLayout">
-      <vaadin7-table height="220px" _id="standardsTable"></vaadin7-table>
+      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.Standard" _id="standardsGrid"></vaadin-grid>
       <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillStandardsButton">
         Fill down 
       </vaadin-button>
@@ -89,7 +89,7 @@
       <vaadin-text-field caption="Number of contaminants" null-representation="" _id="contaminantCountField"></vaadin-text-field>
      </vaadin-form-layout>
      <vaadin-horizontal-layout _id="contaminantsTableLayout">
-      <vaadin7-table height="220px" _id="contaminantsTable"></vaadin7-table>
+      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.Contaminant" _id="contaminantsGrid"></vaadin-grid>
       <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillContaminantsButton">
         Fill down 
       </vaadin-button>
@@ -112,7 +112,7 @@
       </vaadin-horizontal-layout>
      </vaadin-form-layout>
      <vaadin-vertical-layout margin="false">
-      <vaadin7-table width-full _id="gelImagesTable"></vaadin7-table>
+      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.submission.GelImage" _id="gelImagesGrid"></vaadin-grid>
      </vaadin-vertical-layout>
     </vaadin-vertical-layout>
    </vaadin-panel>
@@ -161,7 +161,7 @@
    <vaadin-panel caption="Additional files" width="600px" _id="filesPanel">
     <vaadin-vertical-layout>
      <vaadin-vertical-layout spacing="false" size-auto margin="false" _id="filesUploaderLayout"></vaadin-vertical-layout>
-     <vaadin7-table width-full _id="filesTable"></vaadin7-table>
+     <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.submission.SubmissionFile" _id="filesGrid"></vaadin-grid>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-horizontal-layout _id="buttonsLayout">

@@ -167,6 +167,7 @@ public class SubmissionsViewPresenter {
     final DateTimeFormatter dateFormatter =
         DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
     view.submissionsGrid.addStyleName(SUBMISSIONS);
+    view.submissionsGrid.addStyleName(COMPONENTS);
     view.submissionsGrid.setDataProvider(searchSubmissions());
     view.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
         .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE));
@@ -188,7 +189,6 @@ public class SubmissionsViewPresenter {
     if (authorizationService.hasAdminRole()) {
       view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
     }
-    view.submissionsGrid.addStyleName(COMPONENTS);
     HeaderRow filterRow = view.submissionsGrid.appendHeaderRow();
     filterRow.getCell(EXPERIENCE).setComponent(textFilter(e -> {
       filter.setExperienceContains(e.getValue());

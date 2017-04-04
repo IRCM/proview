@@ -33,7 +33,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIEN
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_TABLE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_GRID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES_PROPERTY;
@@ -578,7 +578,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TableElement filesTable() {
-    return wrap(TableElement.class, findElement(className(FILES_TABLE)));
+    return wrap(TableElement.class, findElement(className(FILES_GRID)));
   }
 
   protected ButtonElement saveButton() {
