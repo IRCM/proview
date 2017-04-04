@@ -44,7 +44,7 @@ public class SampleSelectionForm extends SampleSelectionFormDesign implements Ba
     presenter.init(this);
   }
 
-  public void fireSaveEvent(List<Sample> selectedSamples) {
+  protected void fireSaveEvent(List<Sample> selectedSamples) {
     fireEvent(new SaveEvent<>(this, selectedSamples));
   }
 

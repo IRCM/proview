@@ -43,7 +43,7 @@ public class UserForm extends UserFormDesign implements BaseComponent {
     presenter.init(this);
   }
 
-  public void fireSaveEvent(User user) {
+  protected void fireSaveEvent(User user) {
     fireEvent(new SaveEvent<>(this, user));
   }
 

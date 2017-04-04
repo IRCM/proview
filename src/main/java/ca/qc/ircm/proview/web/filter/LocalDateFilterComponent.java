@@ -42,7 +42,7 @@ public class LocalDateFilterComponent extends LocalDateFilterComponentDesign
     return addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
-  public void fireSaveEvent(Range<LocalDate> range) {
+  protected void fireSaveEvent(Range<LocalDate> range) {
     fireEvent(new SaveEvent<>(this, range));
   }
 
