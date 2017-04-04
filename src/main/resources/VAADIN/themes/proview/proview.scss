@@ -133,6 +133,13 @@
   }
 
   // Instant filter.
+  .instant-filter .v-popupbutton {
+    text-align: left;
+  }
+  .instant-filter .v-popup-indicator {
+    margin-left: 0.3em;
+    margin-right: 0.3em;
+  }
   .filter-instant .v-popupbutton {
     text-align: left;
   }
