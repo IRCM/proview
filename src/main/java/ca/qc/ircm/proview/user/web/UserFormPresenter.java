@@ -34,15 +34,12 @@ import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.SaveEvent;
-import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.shared.Registration;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
@@ -470,10 +467,6 @@ public class UserFormPresenter implements BinderValidator {
 
   public void setEditable(boolean editable) {
     editableProperty.setValue(editable);
-  }
-
-  public Registration addSaveListener(SaveListener<User> listener) {
-    return view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
   private static class Passwords {

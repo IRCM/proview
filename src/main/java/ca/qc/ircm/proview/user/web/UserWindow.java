@@ -59,7 +59,7 @@ public class UserWindow extends Window implements BaseComponent {
   @Override
   public void attach() {
     super.attach();
-    view.getPresenter().addSaveListener(e -> close());
+    view.addSaveListener(e -> close());
   }
 
   /**

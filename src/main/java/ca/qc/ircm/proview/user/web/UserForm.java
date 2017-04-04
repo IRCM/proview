@@ -19,7 +19,9 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.shared.Registration;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -36,11 +38,22 @@ public class UserForm extends UserFormDesign implements BaseComponent {
   @Inject
   private transient UserFormPresenter presenter;
 
+  protected UserForm() {
+  }
+
+  protected UserForm(UserFormPresenter presenter) {
+    this.presenter = presenter;
+  }
+
   @Override
   public void attach() {
     super.attach();
     phoneNumbersLayout.removeAllComponents();
     presenter.init(this);
+  }
+
+  public Registration addSaveListener(SaveListener<User> listener) {
+    return addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
   protected void fireSaveEvent(User user) {

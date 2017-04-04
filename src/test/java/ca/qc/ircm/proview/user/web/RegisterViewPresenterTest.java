@@ -94,7 +94,7 @@ public class RegisterViewPresenterTest {
 
   @Test
   public void save() {
-    verify(view.userFormPresenter).addSaveListener(saveListenerCaptor.capture());
+    verify(view.userForm).addSaveListener(saveListenerCaptor.capture());
     saveListenerCaptor.getValue()
         .saved(new SaveEvent<>(view.userForm, new User(1L, "test@ircm.qc.ca")));
     verify(view).navigateTo(MainView.VIEW_NAME);

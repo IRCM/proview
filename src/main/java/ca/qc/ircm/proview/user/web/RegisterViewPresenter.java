@@ -70,6 +70,6 @@ public class RegisterViewPresenter {
   }
 
   private void addFieldListeners() {
-    view.userFormPresenter.addSaveListener(e -> view.navigateTo(MainView.VIEW_NAME));
+    view.userForm.addSaveListener(e -> view.navigateTo(MainView.VIEW_NAME));
   }
 }

@@ -67,7 +67,6 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.RegisterUserWebContext;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -1684,12 +1683,5 @@ public class UserFormPresenterTest {
     assertEquals(type2, phoneNumber.getType());
     assertEquals(number2, phoneNumber.getNumber());
     assertEquals(extension2, phoneNumber.getExtension());
-  }
-
-  @Test
-  public void addSaveListener() {
-    presenter.addSaveListener(listener);
-
-    verify(view).addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 }
