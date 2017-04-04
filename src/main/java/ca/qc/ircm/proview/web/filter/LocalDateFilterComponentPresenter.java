@@ -33,6 +33,7 @@ public class LocalDateFilterComponentPresenter {
   public static final String CLEAR = "clear";
   public static final Instant MINIMAL_DATE =
       LocalDateTime.of(0, 1, 1, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant();
+  @SuppressWarnings("unused")
   private static final Logger logger =
       LoggerFactory.getLogger(LocalDateFilterComponentPresenter.class);
   private LocalDateFilterComponent view;
