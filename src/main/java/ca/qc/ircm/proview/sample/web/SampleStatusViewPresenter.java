@@ -31,15 +31,12 @@ import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Binder;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.GeneratedPropertyContainer;
-import com.vaadin.v7.data.util.PropertyValueGenerator;
-import com.vaadin.v7.ui.Grid.SelectionMode;
-import de.datenhahn.vaadin.componentrenderer.ComponentCellKeyExtension;
-import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
+import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,10 +81,7 @@ public class SampleStatusViewPresenter implements BinderValidator {
   public static final String SPLIT_SAMPLES_PARAMETERS = ",";
   private static final Logger logger = LoggerFactory.getLogger(SampleStatusViewPresenter.class);
   private SampleStatusView view;
-  private BeanItemContainer<SubmissionSample> samplesContainer =
-      new BeanItemContainer<>(SubmissionSample.class);
-  private GeneratedPropertyContainer samplesGridContainer =
-      new GeneratedPropertyContainer(samplesContainer);
+  private ListDataProvider<SubmissionSample> dataProvider;
   private Map<Object, Binder<SubmissionSample>> sampleBinders = new HashMap<>();
   private Map<Object, ComboBox<SampleStatus>> sampleStatusFields = new HashMap<>();
   @Inject
@@ -120,67 +114,24 @@ public class SampleStatusViewPresenter implements BinderValidator {
     addListeners();
   }
 
-  @SuppressWarnings("serial")
   private void prepareComponents() {
-    MessageResource resources = view.getResources();
+    final MessageResource resources = view.getResources();
+    final Locale locale = view.getLocale();
     view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.addStyleName(HEADER);
     view.headerLabel.setValue(resources.message(HEADER));
-    samplesContainer.addNestedContainerProperty(EXPERIENCE);
-    samplesGridContainer.addGeneratedProperty(STATUS,
-        new SampleStatusGenerator(() -> view.getLocale()));
-    samplesGridContainer.addGeneratedProperty(NEW_STATUS, new PropertyValueGenerator<ComboBox>() {
-      @Override
-      public ComboBox getValue(Item item, Object itemId, Object propertyId) {
-        SubmissionSample sample = (SubmissionSample) itemId;
-        if (sampleStatusFields.containsKey(sample)) {
-          return sampleStatusFields.get(sample);
-        } else {
-          Binder<SubmissionSample> binder = new Binder<>(SubmissionSample.class);
-          binder.setBean(sample);
-          final MessageResource generalResources = view.getGeneralResources();
-          ComboBox<SampleStatus> statuses = statusesComboBox();
-          binder.forField(statuses).asRequired(generalResources.message(REQUIRED))
-              .bind(SubmissionSample::getStatus, SubmissionSample::setStatus);
-          sampleBinders.put(sample, binder);
-          sampleStatusFields.put(sample, statuses);
-          return statuses;
-        }
-      }
-
-      @Override
-      public Class<ComboBox> getType() {
-        return ComboBox.class;
-      }
-    });
-    samplesGridContainer.addGeneratedProperty(DOWN, new PropertyValueGenerator<Button>() {
-      @Override
-      public Button getValue(Item item, Object itemId, Object propertyId) {
-        SubmissionSample sample = (SubmissionSample) itemId;
-        Button down = new Button();
-        down.addStyleName(DOWN);
-        down.setCaption(resources.message(DOWN));
-        down.addClickListener(e -> copyStatusDown(sample));
-        return down;
-      }
-
-      @Override
-      public Class<Button> getType() {
-        return Button.class;
-      }
-    });
     view.samplesGrid.addStyleName(SAMPLES);
     view.samplesGrid.addStyleName(COMPONENTS);
-    ComponentCellKeyExtension.extend(view.samplesGrid);
-    view.samplesGrid.setContainerDataSource(samplesGridContainer);
+    view.samplesGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
+    view.samplesGrid.addColumn(sample -> sample.getSubmission().getExperience()).setId(EXPERIENCE)
+        .setCaption(resources.message(EXPERIENCE));
+    view.samplesGrid.addColumn(sample -> sample.getStatus().getLabel(locale)).setId(STATUS)
+        .setCaption(resources.message(STATUS));
+    view.samplesGrid.addColumn(sample -> statusesComboBox(sample), new ComponentRenderer())
+        .setId(NEW_STATUS).setCaption(resources.message(NEW_STATUS));
+    view.samplesGrid.addColumn(sample -> downButton(sample), new ComponentRenderer()).setId(DOWN)
+        .setCaption(resources.message(DOWN));
     view.samplesGrid.setSelectionMode(SelectionMode.NONE);
-    view.samplesGrid.setColumns(SAMPLES_COLUMNS);
-    for (Object propertyId : SAMPLES_COLUMNS) {
-      view.samplesGrid.getColumn(propertyId)
-          .setHeaderCaption(resources.message((String) propertyId));
-    }
-    view.samplesGrid.getColumn(NEW_STATUS).setRenderer(new ComponentRenderer());
-    view.samplesGrid.getColumn(DOWN).setRenderer(new ComponentRenderer());
     view.saveButton.addStyleName(SAVE);
     view.saveButton.setCaption(resources.message(SAVE));
   }
@@ -189,35 +140,53 @@ public class SampleStatusViewPresenter implements BinderValidator {
     view.saveButton.addClickListener(e -> save());
   }
 
-  private ComboBox<SampleStatus> statusesComboBox() {
-    Locale locale = view.getLocale();
-    ComboBox<SampleStatus> statuses = new ComboBox<>();
-    statuses.addStyleName(NEW_STATUS);
-    statuses.setEmptySelectionAllowed(false);
-    statuses.setItems(SampleStatus.values());
-    statuses.setItemCaptionGenerator(status -> status.getLabel(locale));
-    return statuses;
+  private ComboBox<SampleStatus> statusesComboBox(SubmissionSample sample) {
+    if (sampleStatusFields.containsKey(sample)) {
+      return sampleStatusFields.get(sample);
+    } else {
+      final Locale locale = view.getLocale();
+      final MessageResource generalResources = view.getGeneralResources();
+      Binder<SubmissionSample> binder = new Binder<>(SubmissionSample.class);
+      binder.setBean(sample);
+      ComboBox<SampleStatus> statuses = new ComboBox<>();
+      statuses.addStyleName(NEW_STATUS);
+      statuses.setEmptySelectionAllowed(false);
+      statuses.setItems(SampleStatus.values());
+      statuses.setItemCaptionGenerator(status -> status.getLabel(locale));
+      binder.forField(statuses).asRequired(generalResources.message(REQUIRED))
+          .bind(SubmissionSample::getStatus, SubmissionSample::setStatus);
+      sampleBinders.put(sample, binder);
+      sampleStatusFields.put(sample, statuses);
+      return statuses;
+    }
+  }
+
+  private Button downButton(SubmissionSample sample) {
+    MessageResource resources = view.getResources();
+    Button down = new Button();
+    down.addStyleName(DOWN);
+    down.setCaption(resources.message(DOWN));
+    down.addClickListener(e -> copyStatusDown(sample));
+    return down;
   }
 
   private void copyStatusDown(SubmissionSample sample) {
     boolean copy = false;
     SampleStatus value = sampleStatusFields.get(sample).getValue();
-    for (int i = 0; i < samplesGridContainer.size(); i++) {
-      Object iterateItemId = samplesContainer.getIdByIndex(i);
-      if (sample.equals(iterateItemId)) {
+    for (SubmissionSample other : dataProvider.getItems()) {
+      if (sample.equals(other)) {
         copy = true;
       }
       if (copy) {
-        sampleStatusFields.get(iterateItemId).setValue(value);
+        sampleStatusFields.get(other).setValue(value);
       }
     }
   }
 
   private boolean validate() {
     boolean valid = true;
-    List<SubmissionSample> itemIds = samplesContainer.getItemIds();
-    for (SubmissionSample sample : itemIds) {
-      valid &= validate(sampleBinders.get(sample));
+    for (Binder<SubmissionSample> binder : sampleBinders.values()) {
+      valid &= validate(binder);
     }
     if (!valid) {
       final MessageResource generalResources = view.getGeneralResources();
@@ -229,7 +198,8 @@ public class SampleStatusViewPresenter implements BinderValidator {
 
   private boolean statusRegress() {
     boolean regress = false;
-    List<SubmissionSample> samples = samplesContainer.getItemIds();
+    List<SubmissionSample> samples = sampleBinders.values().stream().map(binder -> binder.getBean())
+        .collect(Collectors.toList());
     for (SubmissionSample sample : samples) {
       SampleStatus currentStatus = submissionSampleService.get(sample.getId()).getStatus();
       SampleStatus newStatus = sample.getStatus();
@@ -264,17 +234,18 @@ public class SampleStatusViewPresenter implements BinderValidator {
   private void saveToDatabase() {
     logger.debug("Save statuses to database");
     final MessageResource resources = view.getResources();
-    List<SubmissionSample> samples = samplesContainer.getItemIds();
+    List<SubmissionSample> samples = sampleBinders.values().stream().map(binder -> binder.getBean())
+        .collect(Collectors.toList());
     submissionSampleService.updateStatus(new ArrayList<>(samples));
     refresh();
     view.showTrayNotification(resources.message(SAVE + ".done", samples.size()));
   }
 
   private void refresh() {
-    List<SubmissionSample> samples = samplesContainer.getItemIds().stream()
+    List<SubmissionSample> samples = dataProvider.getItems().stream()
         .map(sample -> submissionSampleService.get(sample.getId())).collect(Collectors.toList());
-    samplesContainer.removeAllItems();
-    samples.stream().forEach(sample -> samplesContainer.addItem(sample));
+    dataProvider = DataProvider.ofCollection(samples);
+    view.samplesGrid.setDataProvider(dataProvider);
     view.samplesGrid.setSortOrder(new ArrayList<>(view.samplesGrid.getSortOrder()));
   }
 
@@ -325,8 +296,8 @@ public class SampleStatusViewPresenter implements BinderValidator {
     List<SubmissionSample> samples =
         samplesParameters.stream().filter(s -> s instanceof SubmissionSample)
             .map(s -> (SubmissionSample) s).collect(Collectors.toList());
-    samplesContainer.removeAllItems();
-    samplesContainer.addAll(samples);
+    dataProvider = DataProvider.ofCollection(samples);
+    view.samplesGrid.setDataProvider(dataProvider);
   }
 
   public static Object[] getSamplesColumns() {
