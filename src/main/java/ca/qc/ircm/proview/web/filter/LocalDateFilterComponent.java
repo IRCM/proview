@@ -38,6 +38,24 @@ public class LocalDateFilterComponent extends LocalDateFilterComponentDesign
     presenter.init(this);
   }
 
+  @Override
+  public void addStyleName(String style) {
+    super.addStyleName(style);
+    filter.addStyleName(style);
+  }
+
+  @Override
+  public void setStyleName(String style) {
+    super.setStyleName(style);
+    filter.setStyleName(style);
+  }
+
+  @Override
+  public void removeStyleName(String style) {
+    super.removeStyleName(style);
+    filter.removeStyleName(style);
+  }
+
   public Registration addSaveListener(SaveListener<Range<LocalDate>> listener) {
     return addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }

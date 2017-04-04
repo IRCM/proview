@@ -18,7 +18,9 @@
 package ca.qc.ircm.proview.web.filter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.Range;
@@ -56,6 +58,31 @@ public class LocalDateFilterComponentTest {
   @Before
   public void beforeTest() {
     view = new LocalDateFilterComponent(presenter);
+  }
+
+  @Test
+  public void addStyleName() {
+    view.addStyleName("test");
+
+    assertTrue(view.getStyleName().contains("test"));
+    assertTrue(view.filter.getStyleName().contains("test"));
+  }
+
+  @Test
+  public void setStyleName() {
+    view.setStyleName("test");
+
+    assertTrue(view.getStyleName().contains("test"));
+    assertTrue(view.filter.getStyleName().contains("test"));
+  }
+
+  @Test
+  public void removeStyleName() {
+    view.addStyleName("test");
+    view.removeStyleName("test");
+
+    assertFalse(view.getStyleName().contains("test"));
+    assertFalse(view.filter.getStyleName().contains("test"));
   }
 
   @Test

@@ -275,9 +275,10 @@ public class SubmissionsViewPresenter {
   }
 
   private Component instantFilter(SaveListener<Range<LocalDate>> listener) {
-    LocalDateFilterComponent localDateFilterComponent = localDateFilterComponentProvider.get();
-    localDateFilterComponent.addSaveListener(listener);
-    return localDateFilterComponent;
+    LocalDateFilterComponent filter = localDateFilterComponentProvider.get();
+    filter.addStyleName(ValoTheme.BUTTON_TINY);
+    filter.addSaveListener(listener);
+    return filter;
   }
 
   private void addListeners() {
