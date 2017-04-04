@@ -476,11 +476,6 @@ public class UserFormPresenter implements BinderValidator {
     return view.addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
 
-  @Deprecated
-  public void removeSaveListener(SaveListener<User> listener) {
-    view.removeListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
-  }
-
   private static class Passwords {
     private String password;
     private String confirmPassword;

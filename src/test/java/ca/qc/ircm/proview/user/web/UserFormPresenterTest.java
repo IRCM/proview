@@ -1692,14 +1692,4 @@ public class UserFormPresenterTest {
 
     verify(view).addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
   }
-
-  @Test
-  @Deprecated
-  public void removeSaveListener() {
-    presenter.addSaveListener(listener);
-
-    presenter.removeSaveListener(listener);
-
-    verify(view).removeListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
-  }
 }
