@@ -28,8 +28,6 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SELECT;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
-import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.getControlsColumns;
-import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.getSamplesColumns;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -45,13 +43,13 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.SelectionModel;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Panel;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.ui.Grid;
-import com.vaadin.v7.ui.Grid.Column;
-import com.vaadin.v7.ui.Grid.SelectionModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,9 +97,9 @@ public class SampleSelectionFormPresenterTest {
   public void beforeTest() {
     presenter = new SampleSelectionFormPresenter(controlService);
     view.samplesPanel = new Panel();
-    view.samplesGrid = new Grid();
+    view.samplesGrid = new Grid<>();
     view.controlsPanel = new Panel();
-    view.controlsGrid = new Grid();
+    view.controlsGrid = new Grid<>();
     view.clearButton = new Button();
     view.selectButton = new Button();
     when(view.getLocale()).thenReturn(locale);
@@ -113,6 +111,11 @@ public class SampleSelectionFormPresenterTest {
             .collect(Collectors.toList());
     controls.add(entityManager.find(Control.class, 444L));
     controls.add(entityManager.find(Control.class, 448L));
+  }
+
+  @SuppressWarnings("unchecked")
+  private <V> ListDataProvider<V> gridDataProvider(Grid<V> grid) {
+    return (ListDataProvider<V>) grid.getDataProvider();
   }
 
   @Test
@@ -134,23 +137,30 @@ public class SampleSelectionFormPresenterTest {
     presenter.init(view);
 
     assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
-    for (Object propertyId : getSamplesColumns()) {
-      assertEquals(resources.message((String) propertyId),
-          view.samplesGrid.getColumn(propertyId).getHeaderCaption());
-    }
-    Container.Indexed container = view.samplesGrid.getContainerDataSource();
     SubmissionSample sample = selectedSamples.get(0);
-    Object statusValue = container.getItem(sample).getItemProperty(STATUS).getValue();
-    assertEquals(sample.getStatus().getLabel(locale), statusValue);
+    assertEquals(resources.message(NAME), view.samplesGrid.getColumn(NAME).getCaption());
+    assertEquals(sample.getName(),
+        view.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
+    assertEquals(resources.message(EXPERIENCE),
+        view.samplesGrid.getColumn(EXPERIENCE).getCaption());
+    assertEquals(sample.getSubmission().getExperience(),
+        view.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
+    assertEquals(resources.message(STATUS), view.samplesGrid.getColumn(STATUS).getCaption());
+    assertEquals(sample.getStatus().getLabel(locale),
+        view.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
     assertEquals(resources.message(CONTROLS_PANEL), view.controlsPanel.getCaption());
-    for (Object propertyId : getControlsColumns()) {
-      assertEquals(resources.message((String) propertyId),
-          view.controlsGrid.getColumn(propertyId).getHeaderCaption());
-    }
-    container = view.controlsGrid.getContainerDataSource();
     Control control = controls.get(0);
-    Object controlTypeValue = container.getItem(control).getItemProperty(CONTROL_TYPE).getValue();
-    assertEquals(control.getControlType().getLabel(locale), controlTypeValue);
+    assertEquals(resources.message(NAME), view.controlsGrid.getColumn(NAME).getCaption());
+    assertEquals(control.getName(),
+        view.controlsGrid.getColumn(NAME).getValueProvider().apply(control));
+    assertEquals(resources.message(CONTROL_TYPE),
+        view.controlsGrid.getColumn(CONTROL_TYPE).getCaption());
+    assertEquals(control.getControlType().getLabel(locale),
+        view.controlsGrid.getColumn(CONTROL_TYPE).getValueProvider().apply(control));
+    assertEquals(resources.message(ORIGINAL_CONTAINER_NAME),
+        view.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getCaption());
+    assertEquals(control.getOriginalContainer().getName(),
+        view.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getValueProvider().apply(control));
     assertEquals(resources.message(SELECT), view.selectButton.getCaption());
     assertEquals(resources.message(CLEAR), view.clearButton.getCaption());
   }
@@ -159,12 +169,12 @@ public class SampleSelectionFormPresenterTest {
   public void samplesGridColumns() {
     presenter.init(view);
 
-    List<Column> columns = view.samplesGrid.getColumns();
+    List<Column<SubmissionSample, ?>> columns = view.samplesGrid.getColumns();
 
     assertTrue(view.samplesGrid.getSelectionModel() instanceof SelectionModel.Multi);
-    assertEquals(NAME, columns.get(0).getPropertyId());
-    assertEquals(EXPERIENCE, columns.get(1).getPropertyId());
-    assertEquals(STATUS, columns.get(2).getPropertyId());
+    assertEquals(NAME, columns.get(0).getId());
+    assertEquals(EXPERIENCE, columns.get(1).getId());
+    assertEquals(STATUS, columns.get(2).getId());
     assertEquals(1, view.samplesGrid.getFrozenColumnCount());
   }
 
@@ -172,12 +182,12 @@ public class SampleSelectionFormPresenterTest {
   public void controlsGridColumns() {
     presenter.init(view);
 
-    List<Column> columns = view.controlsGrid.getColumns();
+    List<Column<Control, ?>> columns = view.controlsGrid.getColumns();
 
     assertTrue(view.controlsGrid.getSelectionModel() instanceof SelectionModel.Multi);
-    assertEquals(NAME, columns.get(0).getPropertyId());
-    assertEquals(CONTROL_TYPE, columns.get(1).getPropertyId());
-    assertEquals(ORIGINAL_CONTAINER_NAME, columns.get(2).getPropertyId());
+    assertEquals(NAME, columns.get(0).getId());
+    assertEquals(CONTROL_TYPE, columns.get(1).getId());
+    assertEquals(ORIGINAL_CONTAINER_NAME, columns.get(2).getId());
     assertEquals(1, view.controlsGrid.getFrozenColumnCount());
   }
 
@@ -186,12 +196,12 @@ public class SampleSelectionFormPresenterTest {
     presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
     presenter.init(view);
 
-    Container.Indexed container = view.samplesGrid.getContainerDataSource();
+    ListDataProvider<SubmissionSample> dataProvider = gridDataProvider(view.samplesGrid);
 
-    assertEquals(allSamples.size(), container.size());
-    assertTrue(allSamples.containsAll(container.getItemIds()));
-    assertTrue(container.getItemIds().containsAll(allSamples));
-    Collection<Object> selection = view.samplesGrid.getSelectedRows();
+    assertEquals(allSamples.size(), dataProvider.getItems().size());
+    assertTrue(allSamples.containsAll(dataProvider.getItems()));
+    assertTrue(dataProvider.getItems().containsAll(allSamples));
+    Collection<SubmissionSample> selection = view.samplesGrid.getSelectedItems();
     assertEquals(selectedSamples.size(), selection.size());
     assertTrue(selectedSamples.containsAll(selection));
     assertTrue(selection.containsAll(selectedSamples));
@@ -202,12 +212,12 @@ public class SampleSelectionFormPresenterTest {
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
 
-    Container.Indexed container = view.controlsGrid.getContainerDataSource();
+    ListDataProvider<Control> dataProvider = gridDataProvider(view.controlsGrid);
 
-    assertEquals(controls.size(), container.size());
-    assertTrue(controls.containsAll(container.getItemIds()));
-    assertTrue(container.getItemIds().containsAll(controls));
-    Collection<Object> selection = view.controlsGrid.getSelectedRows();
+    assertEquals(controls.size(), dataProvider.getItems().size());
+    assertTrue(controls.containsAll(dataProvider.getItems()));
+    assertTrue(dataProvider.getItems().containsAll(controls));
+    Collection<Control> selection = view.controlsGrid.getSelectedItems();
     assertEquals(0, selection.size());
   }
 
