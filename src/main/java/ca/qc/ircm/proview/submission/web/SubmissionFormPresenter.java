@@ -99,12 +99,12 @@ import com.vaadin.ui.AbstractListing;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Upload.ProgressListener;
+import com.vaadin.ui.Upload.Receiver;
+import com.vaadin.ui.Upload.SucceededEvent;
+import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.ui.Upload.ProgressListener;
-import com.vaadin.v7.ui.Upload.Receiver;
-import com.vaadin.v7.ui.Upload.SucceededEvent;
-import com.vaadin.v7.ui.Upload.SucceededListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -455,7 +455,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.structureButton.setVisible(false);
     view.structureUploader.addStyleName(STRUCTURE_UPLOADER);
     view.structureUploader.setButtonCaption(resources.message(STRUCTURE_UPLOADER));
-    view.structureUploader.setImmediate(true);
+    view.structureUploader.setImmediateMode(true);
     view.monoisotopicMassField.addStyleName(MONOISOTOPIC_MASS_PROPERTY);
     view.monoisotopicMassField.setCaption(resources.message(MONOISOTOPIC_MASS_PROPERTY));
     view.monoisotopicMassField.setRequiredIndicatorVisible(true);
@@ -1901,6 +1901,12 @@ public class SubmissionFormPresenter implements BinderValidator {
     return editable;
   }
 
+  /**
+   * Sets if form is editable.
+   * 
+   * @param editable
+   *          editable
+   */
   public void setEditable(boolean editable) {
     this.editable = editable;
     updateVisible();

@@ -185,12 +185,12 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.Upload.Receiver;
+import com.vaadin.ui.Upload.SucceededEvent;
+import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.ui.Upload;
-import com.vaadin.v7.ui.Upload.Receiver;
-import com.vaadin.v7.ui.Upload.SucceededEvent;
-import com.vaadin.v7.ui.Upload.SucceededListener;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -1171,7 +1171,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(STRUCTURE_PROPERTY), view.structureLayout.getCaption());
     assertEquals("", view.structureButton.getCaption());
     verify(view.structureUploader).setButtonCaption(resources.message(STRUCTURE_UPLOADER));
-    verify(view.structureUploader).setImmediate(true);
+    verify(view.structureUploader).setImmediateMode(true);
     assertEquals(resources.message(MONOISOTOPIC_MASS_PROPERTY),
         view.monoisotopicMassField.getCaption());
     assertEquals(resources.message(AVERAGE_MASS_PROPERTY), view.averageMassField.getCaption());
