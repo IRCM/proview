@@ -6,67 +6,55 @@
   <meta name="vaadin-version" content="8.0.2">
  </head>
  <body>
-  <vaadin7-vertical-layout>
-   <vaadin7-vertical-layout _id="menuLayout"></vaadin7-vertical-layout>
-   <vaadin7-vertical-layout spacing margin>
-    <vaadin7-label size-auto plain-text _id="headerLabel">
+  <vaadin-vertical-layout spacing="false" margin="false">
+   <vaadin-vertical-layout spacing="false" margin="false" _id="menuLayout"></vaadin-vertical-layout>
+   <vaadin-vertical-layout>
+    <vaadin-label plain-text _id="headerLabel">
       Sample transfer 
-    </vaadin7-label>
-    <vaadin7-label size-auto plain-text _id="sourceHeaderLabel">
+    </vaadin-label>
+    <vaadin-label plain-text _id="sourceHeaderLabel">
       Source 
-    </vaadin7-label>
+    </vaadin-label>
     <vaadin-tab-sheet size-auto _id="sourceTabs">
      <tab caption="Tab" selected>
-      <vaadin7-grid width-full _id="sourceTubesGrid"></vaadin7-grid>
+      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.Sample" _id="sourceTubesGrid"></vaadin-grid>
      </tab>
      <tab caption="Tab">
-      <vaadin7-vertical-layout spacing margin _id="sourcePlateLayout">
+      <vaadin-vertical-layout _id="sourcePlateLayout">
        <vaadin-form-layout size-auto>
-        <vaadin7-combo-box _id="sourcePlatesField">
-         <option>Option 1</option>
-         <option>Option 2</option>
-         <option>Option 3</option>
-        </vaadin7-combo-box>
+        <vaadin-combo-box data-item-type="ca.qc.ircm.proview.plate.Plate" _id="sourcePlatesField"></vaadin-combo-box>
        </vaadin-form-layout>
        <vaadin-panel size-auto _id="sourcePlatePanel">
-        <vaadin7-vertical-layout _id="sourcePlateFormLayout"></vaadin7-vertical-layout>
+        <vaadin-vertical-layout spacing="false" margin="false" _id="sourcePlateFormLayout"></vaadin-vertical-layout>
        </vaadin-panel>
-      </vaadin7-vertical-layout>
+      </vaadin-vertical-layout>
      </tab>
     </vaadin-tab-sheet>
-    <vaadin7-label size-auto plain-text _id="destinationHeaderLabel">
+    <vaadin-label plain-text _id="destinationHeaderLabel">
       Destination 
-    </vaadin7-label>
+    </vaadin-label>
     <vaadin-tab-sheet size-auto _id="destinationTabs">
      <tab caption="Tab" selected>
-      <vaadin7-grid _id="destinationTubesGrid"></vaadin7-grid>
+      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.Sample" _id="destinationTubesGrid"></vaadin-grid>
      </tab>
      <tab caption="Tab">
-      <vaadin7-vertical-layout spacing margin _id="destinationPlateLayout">
+      <vaadin-vertical-layout _id="destinationPlateLayout">
        <vaadin-form-layout size-auto>
-        <vaadin7-combo-box _id="destinationPlatesTypeField">
-         <option>Option 1</option>
-         <option>Option 2</option>
-         <option>Option 3</option>
-        </vaadin7-combo-box>
-        <vaadin7-combo-box _id="destinationPlatesField">
-         <option>Option 1</option>
-         <option>Option 2</option>
-         <option>Option 3</option>
-        </vaadin7-combo-box>
+        <vaadin-combo-box data-item-type="ca.qc.ircm.proview.plate.PlateType" _id="destinationPlatesTypeField"></vaadin-combo-box>
+        <vaadin-combo-box data-item-type="java.lang.String" _id="destinationPlatesField"></vaadin-combo-box>
        </vaadin-form-layout>
        <vaadin-panel size-auto _id="destinationPlatePanel">
-        <vaadin7-vertical-layout _id="destinationPlateFormLayout"></vaadin7-vertical-layout>
+        <vaadin-vertical-layout spacing="false" margin="false" _id="destinationPlateFormLayout"></vaadin-vertical-layout>
        </vaadin-panel>
-      </vaadin7-vertical-layout>
+      </vaadin-vertical-layout>
      </tab>
     </vaadin-tab-sheet>
-    <vaadin7-horizontal-layout>
+    <vaadin-horizontal-layout>
      <vaadin-button plain-text _id="saveButton">
        Save 
      </vaadin-button>
-    </vaadin7-horizontal-layout>
-   </vaadin7-vertical-layout>
-  </vaadin7-vertical-layout>
+    </vaadin-horizontal-layout>
+   </vaadin-vertical-layout>
+  </vaadin-vertical-layout>
  </body>
 </html>

@@ -11,7 +11,6 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_SAMPLE_NAME;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TABS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBES;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBE_COLUMNS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBE_NAME;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.HEADER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.NAME;
@@ -25,7 +24,6 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE_SAMPLE_NOT_SELECTED;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_TABS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_TUBES;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_TUBE_COLUMNS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TITLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TUBE;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
@@ -34,6 +32,7 @@ import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -61,19 +60,18 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.server.CompositeErrorMessage;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.v7.ui.VerticalLayout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.v7.ui.Grid;
-import com.vaadin.v7.ui.TextField;
-import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -140,23 +138,23 @@ public class TransferViewPresenterTest {
     view.headerLabel = new Label();
     view.sourceHeaderLabel = new Label();
     view.sourceTabs = new TabSheet();
-    view.sourceTubesGrid = new Grid();
+    view.sourceTubesGrid = new Grid<>();
     view.sourceTabs.addComponent(view.sourceTubesGrid);
     view.sourcePlateLayout = new VerticalLayout();
     view.sourceTabs.addComponent(view.sourcePlateLayout);
-    view.sourcePlatesField = new ComboBox();
+    view.sourcePlatesField = new ComboBox<>();
     view.sourcePlatePanel = new Panel();
     view.sourcePlateFormLayout = new VerticalLayout();
     view.sourcePlateForm = new PlateComponent();
     view.sourcePlateFormPresenter = mock(PlateComponentPresenter.class);
     view.destinationHeaderLabel = new Label();
     view.destinationTabs = new TabSheet();
-    view.destinationTubesGrid = new Grid();
+    view.destinationTubesGrid = new Grid<>();
     view.destinationTabs.addComponent(view.destinationTubesGrid);
     view.destinationPlateLayout = new VerticalLayout();
     view.destinationTabs.addComponent(view.destinationPlateLayout);
-    view.destinationPlatesField = new ComboBox();
-    view.destinationPlatesTypeField = new ComboBox();
+    view.destinationPlatesField = new ComboBox<>();
+    view.destinationPlatesTypeField = new ComboBox<>();
     view.destinationPlatePanel = new Panel();
     view.destinationPlateFormLayout = new VerticalLayout();
     view.destinationPlateForm = new PlateComponent();
@@ -209,12 +207,27 @@ public class TransferViewPresenterTest {
     return datas.stream().filter(d -> d.getId() == id).findFirst();
   }
 
+  private <V> boolean containsInstanceOf(Collection<V> extensions, Class<? extends V> clazz) {
+    return extensions.stream().filter(extension -> clazz.isInstance(extension)).findAny()
+        .isPresent();
+  }
+
+  @SuppressWarnings("unchecked")
+  private <V> ListDataProvider<V> dataProvider(Grid<V> grid) {
+    return (ListDataProvider<V>) grid.getDataProvider();
+  }
+
+  @SuppressWarnings("unchecked")
+  private <V> ListDataProvider<V> dataProvider(ComboBox<V> comboBox) {
+    return (ListDataProvider<V>) comboBox.getDataProvider();
+  }
+
   private List<SampleTransfer> all(Collection<SampleTransfer> datas, Sample sample) {
     return datas.stream().filter(d -> sample.equals(d.getSample())).collect(Collectors.toList());
   }
 
   private String errorMessage(String message) {
-    return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
+    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test
@@ -255,47 +268,49 @@ public class TransferViewPresenterTest {
     assertEquals(resources.message(SOURCE), view.sourceHeaderLabel.getValue());
     assertEquals(resources.message(SOURCE_TUBES),
         view.sourceTabs.getTab(view.sourceTubesGrid).getCaption());
-    for (Object propertyId : SOURCE_TUBE_COLUMNS) {
-      assertEquals(resources.message((String) propertyId),
-          view.sourceTubesGrid.getColumn(propertyId).getHeaderCaption());
-    }
+    assertEquals(resources.message(NAME), view.sourceTubesGrid.getColumn(NAME).getCaption());
+    assertEquals(resources.message(TUBE), view.sourceTubesGrid.getColumn(TUBE).getCaption());
     assertEquals(resources.message(SOURCE_PLATE),
         view.sourceTabs.getTab(view.sourcePlateLayout).getCaption());
     assertEquals(resources.message(SOURCE_PLATES), view.sourcePlatesField.getCaption());
     assertEquals(resources.message(DESTINATION), view.destinationHeaderLabel.getValue());
     assertEquals(resources.message(DESTINATION_TUBES),
         view.destinationTabs.getTab(view.destinationTubesGrid).getCaption());
-    for (Object propertyId : DESTINATION_TUBE_COLUMNS) {
-      assertEquals(resources.message((String) propertyId),
-          view.destinationTubesGrid.getColumn(propertyId).getHeaderCaption());
-    }
+    assertEquals(resources.message(DESTINATION_SAMPLE_NAME),
+        view.destinationTubesGrid.getColumn(DESTINATION_SAMPLE_NAME).getCaption());
+    assertEquals(resources.message(DESTINATION_TUBE_NAME),
+        view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getCaption());
     assertEquals(resources.message(DESTINATION_PLATE),
         view.destinationTabs.getTab(view.destinationPlateLayout).getCaption());
     assertEquals(resources.message(DESTINATION_PLATES_TYPE),
         view.destinationPlatesTypeField.getCaption());
     for (PlateType type : DESTINATION_PLATE_TYPES) {
-      assertEquals(type.getLabel(locale), view.destinationPlatesTypeField.getItemCaption(type));
+      assertEquals(type.getLabel(locale),
+          view.destinationPlatesTypeField.getItemCaptionGenerator().apply(type));
     }
     assertEquals(resources.message(DESTINATION_PLATES), view.destinationPlatesField.getCaption());
     assertEquals(resources.message(SAVE), view.saveButton.getCaption());
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void sourceTubesColumns() {
     presenter.init(view);
     presenter.enter("");
 
-    assertEquals(NAME, view.sourceTubesGrid.getColumns().get(0).getPropertyId());
-    assertEquals(TUBE, view.sourceTubesGrid.getColumns().get(1).getPropertyId());
-    assertTrue(view.sourceTubesGrid.getColumns().get(1).getRenderer() instanceof ComponentRenderer);
-    Container.Indexed container = view.sourceTubesGrid.getContainerDataSource();
-    Sample sample = samples.get(0);
-    ComboBox comboBox = (ComboBox) container.getItem(sample).getItemProperty(TUBE).getValue();
-    assertEquals(sourceTubes.get(sample).size(), comboBox.getItemIds().size());
-    assertTrue(sourceTubes.get(sample).containsAll(comboBox.getItemIds()));
-    assertTrue(comboBox.getItemIds().containsAll(sourceTubes.get(sample)));
+    assertEquals(NAME, view.sourceTubesGrid.getColumns().get(0).getId());
+    assertEquals(TUBE, view.sourceTubesGrid.getColumns().get(1).getId());
+    assertTrue(containsInstanceOf(view.sourceTubesGrid.getColumns().get(1).getExtensions(),
+        ComponentRenderer.class));
+    Sample sample = dataProvider(view.sourceTubesGrid).getItems().iterator().next();
+    ComboBox<Tube> comboBox =
+        (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    Collection<Tube> tubes = dataProvider(comboBox).getItems();
+    assertEquals(sourceTubes.get(sample).size(), tubes.size());
+    assertTrue(sourceTubes.get(sample).containsAll(tubes));
+    assertTrue(tubes.containsAll(sourceTubes.get(sample)));
     for (Tube tube : sourceTubes.get(sample)) {
-      assertEquals(tube.getName(), comboBox.getItemCaption(tube));
+      assertEquals(tube.getName(), comboBox.getItemCaptionGenerator().apply(tube));
     }
   }
 
@@ -304,12 +319,12 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    Collection<?> itemIds = view.sourcePlatesField.getItemIds();
-    assertEquals(sourcePlates.size(), itemIds.size());
-    assertTrue(sourcePlates.containsAll(itemIds));
-    assertTrue(itemIds.containsAll(sourcePlates));
+    Collection<Plate> plates = dataProvider(view.sourcePlatesField).getItems();
+    assertEquals(sourcePlates.size(), plates.size());
+    assertTrue(sourcePlates.containsAll(plates));
+    assertTrue(plates.containsAll(sourcePlates));
     for (Plate plate : sourcePlates) {
-      assertEquals(plate.getName(), view.sourcePlatesField.getItemCaption(plate));
+      assertEquals(plate.getName(), view.sourcePlatesField.getItemCaptionGenerator().apply(plate));
     }
     assertEquals(sourcePlates.get(0), view.sourcePlatesField.getValue());
   }
@@ -321,12 +336,12 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    Collection<?> itemIds = view.sourcePlatesField.getItemIds();
-    assertEquals(sourcePlates.size(), itemIds.size());
-    assertTrue(sourcePlates.containsAll(itemIds));
-    assertTrue(itemIds.containsAll(sourcePlates));
+    Collection<Plate> plates = dataProvider(view.sourcePlatesField).getItems();
+    assertEquals(sourcePlates.size(), plates.size());
+    assertTrue(sourcePlates.containsAll(plates));
+    assertTrue(plates.containsAll(sourcePlates));
     for (Plate plate : sourcePlates) {
-      assertEquals(plate.getName(), view.sourcePlatesField.getItemCaption(plate));
+      assertEquals(plate.getName(), view.sourcePlatesField.getItemCaptionGenerator().apply(plate));
     }
     assertEquals(sourcePlates.get(0), view.sourcePlatesField.getValue());
   }
@@ -376,20 +391,14 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    assertEquals(DESTINATION_SAMPLE_NAME,
-        view.destinationTubesGrid.getColumns().get(0).getPropertyId());
-    assertEquals(DESTINATION_TUBE_NAME,
-        view.destinationTubesGrid.getColumns().get(1).getPropertyId());
-    assertTrue(
-        view.destinationTubesGrid.getColumns().get(1).getRenderer() instanceof ComponentRenderer);
-    Container.Indexed container = view.destinationTubesGrid.getContainerDataSource();
-    Object itemId = container.getIdByIndex(0);
-    Object rawTubeNameField =
-        container.getItem(itemId).getItemProperty(DESTINATION_TUBE_NAME).getValue();
-    assertTrue(rawTubeNameField instanceof TextField);
-    TextField tubeNameField = (TextField) rawTubeNameField;
-    assertTrue(tubeNameField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), tubeNameField.getRequiredError());
+    assertEquals(DESTINATION_SAMPLE_NAME, view.destinationTubesGrid.getColumns().get(0).getId());
+    assertEquals(DESTINATION_TUBE_NAME, view.destinationTubesGrid.getColumns().get(1).getId());
+    assertTrue(containsInstanceOf(view.destinationTubesGrid.getColumns().get(1).getExtensions(),
+        ComponentRenderer.class));
+    Sample sample = dataProvider(view.destinationTubesGrid).getItems().iterator().next();
+    TextField tubeNameField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
+        .getValueProvider().apply(sample);
+    assertTrue(tubeNameField.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -397,17 +406,15 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    assertFalse(view.destinationPlatesTypeField.isNullSelectionAllowed());
-    assertFalse(view.destinationPlatesTypeField.isNewItemsAllowed());
-    Collection<?> itemIds = view.destinationPlatesTypeField.getItemIds();
-    assertEquals(DESTINATION_PLATE_TYPES.length, itemIds.size());
+    assertFalse(view.destinationPlatesTypeField.isEmptySelectionAllowed());
+    assertNull(view.destinationPlatesTypeField.getNewItemHandler());
+    Collection<PlateType> plateTypes = dataProvider(view.destinationPlatesTypeField).getItems();
+    assertEquals(DESTINATION_PLATE_TYPES.length, plateTypes.size());
     for (PlateType type : DESTINATION_PLATE_TYPES) {
-      assertTrue(itemIds.contains(type));
+      assertTrue(plateTypes.contains(type));
     }
     assertEquals(PlateType.A, view.destinationPlatesTypeField.getValue());
-    assertTrue(view.destinationPlatesTypeField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.destinationPlatesTypeField.getRequiredError());
+    assertTrue(view.destinationPlatesTypeField.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -420,12 +427,12 @@ public class TransferViewPresenterTest {
 
     view.destinationPlatesTypeField.setValue(PlateType.G);
 
-    Collection<?> itemIds = view.destinationPlatesField.getItemIds();
-    List<String> plateNames =
+    Collection<String> plateNames = dataProvider(view.destinationPlatesField).getItems();
+    List<String> expectedPlateNames =
         sourcePlates.stream().map(p -> p.getName()).collect(Collectors.toList());
-    assertEquals(sourcePlates.size(), itemIds.size());
-    assertTrue(itemIds.containsAll(plateNames));
-    assertTrue(plateNames.containsAll(itemIds));
+    assertEquals(sourcePlates.size(), plateNames.size());
+    assertTrue(plateNames.containsAll(expectedPlateNames));
+    assertTrue(expectedPlateNames.containsAll(plateNames));
   }
 
   @Test
@@ -433,27 +440,32 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    assertFalse(view.destinationPlatesField.isNullSelectionAllowed());
-    assertTrue(view.destinationPlatesField.isNewItemsAllowed());
-    assertTrue(view.destinationPlatesField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.destinationPlatesField.getRequiredError());
-    Collection<?> itemIds = view.destinationPlatesField.getItemIds();
-    List<String> plateNames =
+    assertFalse(view.destinationPlatesField.isEmptySelectionAllowed());
+    assertNotNull(view.destinationPlatesField.getNewItemHandler() != null);
+    assertTrue(view.destinationPlatesField.isRequiredIndicatorVisible());
+    Collection<String> plateNames = dataProvider(view.destinationPlatesField).getItems();
+    List<String> expectedPlateNames =
         sourcePlates.stream().map(p -> p.getName()).collect(Collectors.toList());
-    assertEquals(sourcePlates.size(), itemIds.size());
-    assertTrue(itemIds.containsAll(plateNames));
-    assertTrue(plateNames.containsAll(itemIds));
+    assertEquals(sourcePlates.size(), plateNames.size());
+    assertTrue(plateNames.containsAll(expectedPlateNames));
+    assertTrue(expectedPlateNames.containsAll(plateNames));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_NoSourceTube() {
     Sample sample = samples.get(0);
     sourceTubes.put(sample, new ArrayList<>());
     presenter.init(view);
     presenter.enter("");
-    Container.Indexed container = view.sourceTubesGrid.getContainerDataSource();
-    ComboBox comboBox = (ComboBox) container.getItem(sample).getItemProperty(TUBE).getValue();
+    for (Sample samp : samples) {
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(samp);
+    }
+    for (Sample samp : samples) {
+      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(samp);
+    }
+    ComboBox<Tube> comboBox =
+        (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
 
     view.saveButton.click();
 
@@ -468,6 +480,12 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     view.sourceTabs.setSelectedTab(1);
+    for (Sample sample : samples) {
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    }
+    for (Sample sample : samples) {
+      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(sample);
+    }
 
     view.saveButton.click();
 
@@ -482,6 +500,12 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     view.sourceTabs.setSelectedTab(1);
+    for (Sample sample : samples) {
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    }
+    for (Sample sample : samples) {
+      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(sample);
+    }
     Plate plate = sourcePlates.get(0);
     when(view.sourcePlateFormPresenter.getSelectedSpots())
         .thenReturn(plate.spots(new SpotLocation(0, 2), new SpotLocation(0, 3)));
@@ -500,6 +524,12 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     view.sourceTabs.setSelectedTab(1);
+    for (Sample sample : samples) {
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    }
+    for (Sample sample : samples) {
+      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(sample);
+    }
     Plate plate = sourcePlates.get(0);
     when(view.sourcePlateFormPresenter.getSelectedSpots())
         .thenReturn(plate.spots(new SpotLocation(1, 0), new SpotLocation(samples.size() - 1, 0)));
@@ -517,10 +547,15 @@ public class TransferViewPresenterTest {
   public void save_NoDestinationTube() {
     presenter.init(view);
     presenter.enter("");
-    Container.Indexed container = view.destinationTubesGrid.getContainerDataSource();
-    Object itemId = container.getIdByIndex(0);
-    TextField textField =
-        (TextField) container.getItem(itemId).getItemProperty(DESTINATION_TUBE_NAME).getValue();
+    for (Sample sample : samples) {
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    }
+    for (Sample sample : samples) {
+      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(sample);
+    }
+    Sample sample = dataProvider(view.destinationTubesGrid).getItems().iterator().next();
+    TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
+        .getValueProvider().apply(sample);
 
     view.saveButton.click();
 
@@ -534,10 +569,15 @@ public class TransferViewPresenterTest {
   public void save_DestinationTubeExists() {
     presenter.init(view);
     presenter.enter("");
-    Container.Indexed container = view.destinationTubesGrid.getContainerDataSource();
-    Object itemId = container.getIdByIndex(0);
-    TextField textField =
-        (TextField) container.getItem(itemId).getItemProperty(DESTINATION_TUBE_NAME).getValue();
+    for (Sample sample : samples) {
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    }
+    for (Sample sample : samples) {
+      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(sample);
+    }
+    Sample sample = dataProvider(view.destinationTubesGrid).getItems().iterator().next();
+    TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
+        .getValueProvider().apply(sample);
     textField.setValue("test");
     when(tubeService.get("test")).thenReturn(new Tube(null, "test"));
 
@@ -554,11 +594,9 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     samples.forEach(sample -> {
-      Container.Indexed container = view.sourceTubesGrid.getContainerDataSource();
-      container.getItem(sample).getItemProperty(TUBE).getValue();
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     });
     view.destinationTabs.setSelectedTab(1);
-    view.destinationPlatesField.addItem("test");
     view.destinationPlatesField.setValue("test");
 
     view.saveButton.click();
@@ -575,13 +613,11 @@ public class TransferViewPresenterTest {
     presenter.enter("");
     view.destinationTabs.setSelectedTab(1);
     samples.forEach(sample -> {
-      Container.Indexed container = view.sourceTubesGrid.getContainerDataSource();
-      container.getItem(sample).getItemProperty(TUBE).getValue();
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     });
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initSpots();
-    view.destinationPlatesField.addItem(plate.getName());
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateFormPresenter.getPlate()).thenReturn(plate);
     when(view.destinationPlateFormPresenter.getSelectedSpot())
@@ -602,14 +638,12 @@ public class TransferViewPresenterTest {
     presenter.enter("");
     view.destinationTabs.setSelectedTab(1);
     samples.forEach(sample -> {
-      Container.Indexed container = view.sourceTubesGrid.getContainerDataSource();
-      container.getItem(sample).getItemProperty(TUBE).getValue();
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     });
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initSpots();
     plate.spot(1, 0).setSample(samples.get(0));
-    view.destinationPlatesField.addItem(plate.getName());
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateFormPresenter.getPlate()).thenReturn(plate);
     when(view.destinationPlateFormPresenter.getSelectedSpot()).thenReturn(plate.spot(0, 0));
@@ -624,20 +658,23 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_TubeToTube() {
     presenter.init(view);
     presenter.enter("");
     Map<Sample, Tube> sources = new HashMap<>();
     samples.forEach(sample -> {
-      Container.Indexed container = view.sourceTubesGrid.getContainerDataSource();
-      ComboBox comboBox = (ComboBox) container.getItem(sample).getItemProperty(TUBE).getValue();
-      sources.put(sample, (Tube) comboBox.getValue());
+      ComboBox<Tube> comboBox =
+          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+      sources.put(sample, comboBox.getValue());
     });
+    for (Sample sample : samples) {
+      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    }
     IntStream.range(0, samples.size()).forEach(i -> {
-      Container.Indexed container = view.destinationTubesGrid.getContainerDataSource();
-      Object itemId = container.getIdByIndex(i);
-      TextField textField =
-          (TextField) container.getItem(itemId).getItemProperty(DESTINATION_TUBE_NAME).getValue();
+      Sample sample = samples.get(i);
+      TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
+          .getValueProvider().apply(sample);
       textField.setValue("test" + i);
     });
 
@@ -661,20 +698,20 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_TubeToNewPlate() {
     presenter.init(view);
     presenter.enter("");
     Map<Sample, Tube> sources = new HashMap<>();
     samples.forEach(sample -> {
-      Container.Indexed container = view.sourceTubesGrid.getContainerDataSource();
-      ComboBox comboBox = (ComboBox) container.getItem(sample).getItemProperty(TUBE).getValue();
-      sources.put(sample, (Tube) comboBox.getValue());
+      ComboBox<Tube> comboBox =
+          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+      sources.put(sample, comboBox.getValue());
     });
     view.destinationTabs.setSelectedTab(1);
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initSpots();
-    view.destinationPlatesField.addItem(plate.getName());
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateFormPresenter.getPlate()).thenReturn(plate);
     when(view.destinationPlateFormPresenter.getSelectedSpot()).thenReturn(plate.spot(0, 0));
@@ -702,18 +739,18 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_TubeToExistingPlate() {
     presenter.init(view);
     presenter.enter("");
     Map<Sample, Tube> sources = new HashMap<>();
     samples.forEach(sample -> {
-      Container.Indexed container = view.sourceTubesGrid.getContainerDataSource();
-      ComboBox comboBox = (ComboBox) container.getItem(sample).getItemProperty(TUBE).getValue();
-      sources.put(sample, (Tube) comboBox.getValue());
+      ComboBox<Tube> comboBox =
+          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+      sources.put(sample, comboBox.getValue());
     });
     view.destinationTabs.setSelectedTab(1);
     Plate plate = sourcePlates.get(0);
-    view.destinationPlatesField.addItem(plate.getName());
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateFormPresenter.getPlate()).thenReturn(plate);
     when(view.destinationPlateFormPresenter.getSelectedSpot()).thenReturn(plate.spot(0, 4));
@@ -749,10 +786,9 @@ public class TransferViewPresenterTest {
     when(view.sourcePlateFormPresenter.getSelectedSpots()).thenReturn(
         sourcePlate.spots(new SpotLocation(0, 0), new SpotLocation(samples.size() - 1, 0)));
     IntStream.range(0, samples.size()).forEach(i -> {
-      Container.Indexed container = view.destinationTubesGrid.getContainerDataSource();
-      Object itemId = container.getIdByIndex(i);
-      TextField textField =
-          (TextField) container.getItem(itemId).getItemProperty(DESTINATION_TUBE_NAME).getValue();
+      Sample sample = samples.get(i);
+      TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
+          .getValueProvider().apply(sample);
       textField.setValue("test" + i);
     });
 
@@ -787,7 +823,6 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initSpots();
-    view.destinationPlatesField.addItem(plate.getName());
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateFormPresenter.getPlate()).thenReturn(plate);
     when(view.destinationPlateFormPresenter.getSelectedSpot()).thenReturn(plate.spot(0, 0));
@@ -824,7 +859,6 @@ public class TransferViewPresenterTest {
         sourcePlate.spots(new SpotLocation(0, 0), new SpotLocation(samples.size() - 1, 0)));
     view.destinationTabs.setSelectedTab(1);
     Plate plate = sourcePlates.get(0);
-    view.destinationPlatesField.addItem(plate.getName());
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateFormPresenter.getPlate()).thenReturn(plate);
     when(view.destinationPlateFormPresenter.getSelectedSpot()).thenReturn(plate.spot(0, 4));
@@ -862,10 +896,9 @@ public class TransferViewPresenterTest {
         .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
     when(view.sourcePlateFormPresenter.getSelectedSpots()).thenReturn(sourceWells);
     IntStream.range(0, samples.size()).forEach(i -> {
-      Container.Indexed container = view.destinationTubesGrid.getContainerDataSource();
-      Object itemId = container.getIdByIndex(i);
-      TextField textField =
-          (TextField) container.getItem(itemId).getItemProperty(DESTINATION_TUBE_NAME).getValue();
+      Sample sample = samples.get(i);
+      TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
+          .getValueProvider().apply(sample);
       textField.setValue("test" + i);
     });
 
@@ -907,7 +940,6 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initSpots();
-    view.destinationPlatesField.addItem(plate.getName());
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateFormPresenter.getPlate()).thenReturn(plate);
     when(view.destinationPlateFormPresenter.getSelectedSpot()).thenReturn(plate.spot(0, 0));
@@ -954,7 +986,6 @@ public class TransferViewPresenterTest {
     when(view.sourcePlateFormPresenter.getSelectedSpots()).thenReturn(sourceWells);
     view.destinationTabs.setSelectedTab(1);
     Plate plate = sourcePlates.get(0);
-    view.destinationPlatesField.addItem(plate.getName());
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateFormPresenter.getPlate()).thenReturn(plate);
     when(view.destinationPlateFormPresenter.getSelectedSpot()).thenReturn(plate.spot(0, 4));
