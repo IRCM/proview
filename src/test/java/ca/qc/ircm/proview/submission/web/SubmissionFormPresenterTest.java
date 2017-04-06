@@ -665,9 +665,9 @@ public class SubmissionFormPresenterTest {
     assertEquals(SAMPLE_NAME_PROPERTY, view.samplesGrid.getColumns().get(0).getId());
     assertFalse(view.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isHidden());
     assertEquals(SAMPLE_NUMBER_PROTEIN_PROPERTY, view.samplesGrid.getColumns().get(1).getId());
-    assertTrue(view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isHidden());
+    assertFalse(view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isHidden());
     assertEquals(PROTEIN_WEIGHT_PROPERTY, view.samplesGrid.getColumns().get(2).getId());
-    assertTrue(view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
+    assertFalse(view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
   }
 
   @Test
@@ -698,7 +698,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(GEL_IMAGE_FILENAME_PROPERTY, view.gelImagesGrid.getColumns().get(0).getId());
     assertFalse(view.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isHidden());
     assertEquals(REMOVE_GEL_IMAGE, view.gelImagesGrid.getColumns().get(1).getId());
-    assertFalse(view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
+    assertTrue(view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
   }
 
   @Test
@@ -710,7 +710,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(GEL_IMAGE_FILENAME_PROPERTY, view.gelImagesGrid.getColumns().get(0).getId());
     assertFalse(view.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isHidden());
     assertEquals(REMOVE_GEL_IMAGE, view.gelImagesGrid.getColumns().get(1).getId());
-    assertTrue(view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
+    assertFalse(view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
   }
 
   @Test
@@ -822,7 +822,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.injectionTypeOptions.isRequiredIndicatorVisible());
     assertTrue(view.sourceOptions.isRequiredIndicatorVisible());
     assertTrue(view.proteinContentOptions.isRequiredIndicatorVisible());
-    assertTrue(view.instrumentOptions.isRequiredIndicatorVisible());
+    assertFalse(view.instrumentOptions.isRequiredIndicatorVisible());
     assertTrue(view.proteinIdentificationOptions.isRequiredIndicatorVisible());
     assertTrue(view.proteinIdentificationLinkField.isRequiredIndicatorVisible());
     assertFalse(view.quantificationOptions.isRequiredIndicatorVisible());
@@ -849,7 +849,8 @@ public class SubmissionFormPresenterTest {
         .getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider().apply(firstSample);
     view.serviceOptions.setValue(LC_MS_MS); // Force field update.
 
-    assertFalse(sampleProteinWeightTableField.isRequiredIndicatorVisible());
+    assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
+    assertTrue(view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
   }
 
   @Test
@@ -867,6 +868,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(INTACT_PROTEIN); // Force field update.
 
     assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
+    assertFalse(view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
   }
 
   @Test
@@ -957,7 +959,7 @@ public class SubmissionFormPresenterTest {
   public void instrument_Options() {
     presenter.init(view);
 
-    assertEquals(MassDetectionInstrument.availables().size(),
+    assertEquals(MassDetectionInstrument.availables().size() + 1,
         dataProvider(view.instrumentOptions).getItems().size());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.availables()) {
       assertTrue(instrument.name(),
@@ -1375,6 +1377,8 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setSupport(support);
     sample.setOriginalContainer(new Tube());
+    sample.setStandards(Arrays.asList(new Standard()));
+    sample.setContaminants(Arrays.asList(new Contaminant()));
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
     presenter.setBean(submission);
@@ -1460,6 +1464,8 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setSupport(support);
     sample.setOriginalContainer(new Tube());
+    sample.setStandards(Arrays.asList(new Standard()));
+    sample.setContaminants(Arrays.asList(new Contaminant()));
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
     presenter.setEditable(true);
@@ -3170,27 +3176,6 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void submit_MissingSampleContainerType() throws Throwable {
-    presenter.init(view);
-    presenter.setEditable(true);
-    view.serviceOptions.setValue(LC_MS_MS);
-    view.sampleSupportOptions.setValue(support);
-    setFields();
-    view.sampleContainerTypeOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
-    uploadFiles();
-
-    view.submitButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.sampleContainerTypeOptions.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
   public void submit_MissingPlateName() throws Throwable {
     presenter.init(view);
     presenter.setEditable(true);
@@ -3198,7 +3183,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    view.plateNameField.setValue(null);
+    view.plateNameField.setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -4546,7 +4531,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.proteinIdentificationOptions.setValue(ProteinIdentification.OTHER);
-    view.proteinIdentificationLinkField.setValue(null);
+    view.proteinIdentificationLinkField.setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -4568,7 +4553,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.quantificationOptions.setValue(Quantification.SILAC);
-    view.quantificationLabelsField.setValue(null);
+    view.quantificationLabelsField.setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
