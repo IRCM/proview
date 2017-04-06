@@ -173,7 +173,7 @@ public class SubmissionWebFilterTest {
   public void dateRange() {
     LocalDate from = LocalDate.of(2011, 1, 2);
     LocalDate to = LocalDate.of(2011, 10, 9);
-    filter.setDateRange(Range.open(from, to));
+    filter.setDateRange(Range.closed(from, to));
 
     assertFalse(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 9, 40)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 2, 9, 40)))));
