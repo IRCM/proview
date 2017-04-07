@@ -54,7 +54,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
-import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -138,9 +138,9 @@ public class SignasViewPresenterTest {
     assertEquals(LABORATORY_NAME, columns.get(2).getId());
     assertEquals(ORGANIZATION, columns.get(3).getId());
     assertEquals(VIEW, columns.get(4).getId());
-    containsInstanceOf(columns.get(4).getExtensions(), ComponentRenderer.class);
+    assertTrue(containsInstanceOf(columns.get(4).getExtensions(), ComponentRenderer.class));
     assertEquals(SIGN_AS, columns.get(5).getId());
-    containsInstanceOf(columns.get(5).getExtensions(), ComponentRenderer.class);
+    assertTrue(containsInstanceOf(columns.get(5).getExtensions(), ComponentRenderer.class));
   }
 
   @Test
