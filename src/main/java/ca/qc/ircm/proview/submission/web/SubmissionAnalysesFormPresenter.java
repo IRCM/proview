@@ -56,7 +56,6 @@ public class SubmissionAnalysesFormPresenter {
   public static final String NAME = SAMPLE + "." + acquisition.sample.name.getMetadata().getName();
   public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
   public static final String ACQUISITION_INDEX = acquisition.listIndex.getMetadata().getName();
-  private static final Object[] ACQUISITIONS_COLUMNS = new Object[] { NAME, ACQUISITION_FILE };
   @SuppressWarnings("unused")
   private static final Logger logger =
       LoggerFactory.getLogger(SubmissionAnalysesFormPresenter.class);
@@ -120,9 +119,5 @@ public class SubmissionAnalysesFormPresenter {
     analyses.forEach(analysis -> {
       createAnalysisPanel(analysis);
     });
-  }
-
-  public static Object[] getAcquisitionsColumns() {
-    return ACQUISITIONS_COLUMNS.clone();
   }
 }
