@@ -24,6 +24,7 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.server.UserError;
@@ -100,7 +101,7 @@ public class TransferViewPresenter implements BinderValidator {
   private Map<Object, TextField> destinationTubeFields = new HashMap<>();
   private Map<Sample, Binder<SampleSourceTube>> sourceTubeBinders = new HashMap<>();
   private Map<Sample, Binder<Tube>> destinationTubeBinders = new HashMap<>();
-  private Binder<Plate> destinationPlateBinder = new Binder<>(Plate.class);
+  private Binder<Plate> destinationPlateBinder = new BeanValidationBinder<>(Plate.class);
   @Inject
   private TransferService transferService;
   @Inject
@@ -222,7 +223,7 @@ public class TransferViewPresenter implements BinderValidator {
       comboBox.setItems(tubes);
       comboBox.setItemCaptionGenerator(Tube::getName);
       comboBox.setRequiredIndicatorVisible(true);
-      Binder<SampleSourceTube> binder = new Binder<>();
+      Binder<SampleSourceTube> binder = new BeanValidationBinder<>(SampleSourceTube.class);
       binder.setBean(new SampleSourceTube(tubes.isEmpty() ? null : tubes.get(0)));
       binder.forField(comboBox).asRequired(generalResources.message(REQUIRED))
           .bind(SampleSourceTube::getTube, SampleSourceTube::setTube);
@@ -250,7 +251,7 @@ public class TransferViewPresenter implements BinderValidator {
       MessageResource generalResources = view.getGeneralResources();
       TextField textField = new TextField();
       textField.addStyleName(DESTINATION_TUBE_NAME);
-      Binder<Tube> binder = new Binder<>(Tube.class);
+      Binder<Tube> binder = new BeanValidationBinder<>(Tube.class);
       binder.setBean(new Tube());
       binder.forField(textField).asRequired(generalResources.message(REQUIRED))
           .withValidator((value, context) -> tubeService.get(value) != null
