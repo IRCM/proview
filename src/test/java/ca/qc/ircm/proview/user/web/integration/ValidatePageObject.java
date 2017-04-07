@@ -23,7 +23,6 @@ import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTE
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.ValidateView;
-import ca.qc.ircm.proview.user.web.ValidateViewPresenter;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
@@ -39,22 +38,12 @@ import java.util.function.Consumer;
 public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   private static final Logger logger = LoggerFactory.getLogger(ValidatePageObject.class);
   private static final int SELECT_COLUMN = 0;
-  private static final int EMAIL_COLUMN = gridColumnIndex(ValidateViewPresenter.EMAIL);
-  private static final int VIEW_COLUMN = gridColumnIndex(ValidateViewPresenter.VIEW);
-  private static final int VALIDATE_COLUMN = gridColumnIndex(ValidateViewPresenter.VALIDATE);
+  private static final int EMAIL_COLUMN = 1;
+  private static final int VIEW_COLUMN = 5;
+  private static final int VALIDATE_COLUMN = 6;
 
   protected void open() {
     openView(ValidateView.VIEW_NAME);
-  }
-
-  private static int gridColumnIndex(String property) {
-    String[] columns = ValidateViewPresenter.getColumns();
-    for (int i = 0; i < columns.length; i++) {
-      if (property.equals(columns[i])) {
-        return i + 1; // +1 because of select column.
-      }
-    }
-    return -1;
   }
 
   protected LabelElement headerLabel() {

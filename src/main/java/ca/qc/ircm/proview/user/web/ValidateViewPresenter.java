@@ -67,8 +67,6 @@ public class ValidateViewPresenter {
   public static final String VIEW = "viewUser";
   public static final String VALIDATE = "validateUser";
   public static final String VALIDATE_SELECTED_BUTTON = "validateSelected";
-  private static final String[] COLUMNS =
-      { EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, VIEW, VALIDATE };
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewPresenter.class);
   private ValidateView view;
   @Inject
@@ -214,9 +212,5 @@ public class ValidateViewPresenter {
 
   public HomeWebContext homeWebContext() {
     return locale -> view.getUrl(MainView.VIEW_NAME);
-  }
-
-  public static String[] getColumns() {
-    return COLUMNS.clone();
   }
 }
