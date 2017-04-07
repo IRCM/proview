@@ -30,6 +30,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
@@ -146,7 +147,7 @@ public class SampleStatusViewPresenter implements BinderValidator {
     } else {
       final Locale locale = view.getLocale();
       final MessageResource generalResources = view.getGeneralResources();
-      Binder<SubmissionSample> binder = new Binder<>(SubmissionSample.class);
+      Binder<SubmissionSample> binder = new BeanValidationBinder<>(SubmissionSample.class);
       binder.setBean(sample);
       ComboBox<SampleStatus> statuses = new ComboBox<>();
       statuses.addStyleName(NEW_STATUS);
