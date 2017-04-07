@@ -49,8 +49,6 @@
     <url>https://bitbucket.org/ircm/proview-2/issues</url>
   </issueManagement>
   <properties>
-    <!-- TODO Remove next line -->
-    <enforce-release-dependencies.skip>true</enforce-release-dependencies.skip>
     <start-class>ca.qc.ircm.proview.Main</start-class>
     <javac.version>1.8</javac.version>
     <javax.inject.version>1</javax.inject.version>
