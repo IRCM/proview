@@ -5,13 +5,8 @@
 @import "../../../VAADIN/addons/platelayout/plate-layout.scss";
 
 
-/* Provided by componentrenderer-2.0.0.jar */
-@import "../../../VAADIN/addons/componentrenderer/componentrenderer.scss";
-
-
 /* Import and include this mixin into your project theme to include the addon themes */
 @mixin addons {
 	@include plate-layout;
-	@include componentrenderer;
 }
 

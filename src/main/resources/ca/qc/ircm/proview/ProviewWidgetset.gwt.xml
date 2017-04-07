@@ -27,7 +27,7 @@
 
     <inherits name="org.vaadin.hene.popupbutton.widgetset.PopupbuttonWidgetset" />
 
-    <inherits name="de.datenhahn.vaadin.componentrenderer.ComponentRendererWidgetSet" />
+    
 
     <inherits name="ca.qc.ircm.platelayout.PlateLayoutWidgetset" />
 
