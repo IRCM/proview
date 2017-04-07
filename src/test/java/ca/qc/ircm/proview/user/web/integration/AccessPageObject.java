@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.user.web.AccessViewPresenter.CLEAR;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.DEACTIVATE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.user.web.AccessViewPresenter.VIEW;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -74,10 +75,10 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
     processUsersGridRow(email, row -> {
-      usersGrid.scrollLeft(usersGrid.getRect().getX() + usersGrid.getRect().getWidth());
-      waitForPageLoad();
-      GridCellElement buttonCell = usersGrid.getCell(row, VIEW_COLUMN);
-      buttonCell.click();
+      usersGrid.getCell(row, VIEW_COLUMN);
+      ButtonElement button =
+          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(VIEW)));
+      button.click();
     });
   }
 

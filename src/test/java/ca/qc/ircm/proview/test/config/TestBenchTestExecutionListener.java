@@ -22,6 +22,7 @@ import static org.junit.Assume.assumeTrue;
 import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.TestBenchTestCase;
 import org.apache.commons.lang3.SystemUtils;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,7 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
       WebDriver driver = driver();
       TestBenchTestCase target = getInstance(testContext);
       target.setDriver(driver);
+      driver.manage().window().setSize(new Dimension(1280, 960));
     }
   }
 

@@ -336,10 +336,17 @@ public class AccessViewPresenterTest {
   @Test
   public void styles() {
     presenter.init(view);
+    final User user = users.get(0);
 
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
     assertTrue(view.headerLabel.getStyleName().contains("h1"));
     assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));
+    CheckBox select = (CheckBox) view.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
+    assertTrue(select.getStyleName().contains(SELECT));
+    Label active = (Label) view.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
+    assertTrue(active.getStyleName().contains(ACTIVE));
+    Button viewButton = (Button) view.usersGrid.getColumn(VIEW).getValueProvider().apply(user);
+    assertTrue(viewButton.getStyleName().contains(VIEW));
     assertTrue(view.activateButton.getStyleName().contains(ACTIVATE));
     assertTrue(view.deactivateButton.getStyleName().contains(DEACTIVATE));
     assertTrue(view.clearButton.getStyleName().contains(CLEAR));

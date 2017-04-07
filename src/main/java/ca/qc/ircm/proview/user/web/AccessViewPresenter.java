@@ -41,6 +41,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -182,6 +183,7 @@ public class AccessViewPresenter {
 
   private CheckBox selectCheckBox(User user) {
     CheckBox checkbox = new CheckBox();
+    checkbox.addStyleName(SELECT);
     checkbox.addValueChangeListener(e -> {
       if (checkbox.getValue()) {
         view.usersGrid.select(user);
@@ -199,6 +201,7 @@ public class AccessViewPresenter {
     MessageResource resources = view.getResources();
     boolean active = user.isActive();
     Label label = new Label();
+    label.addStyleName(ACTIVE);
     VaadinIcons icon = active ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
     label.setContentMode(ContentMode.HTML);
     label.setValue(icon.getHtml() + " " + resources.message(ACTIVE + "." + active));
@@ -208,6 +211,7 @@ public class AccessViewPresenter {
   private Button viewButton(User user) {
     MessageResource resources = view.getResources();
     Button button = new Button();
+    button.addStyleName(VIEW);
     button.setCaption(resources.message(VIEW));
     button.addClickListener(event -> viewUser(user));
     return button;
@@ -217,7 +221,7 @@ public class AccessViewPresenter {
     TextField filter = new TextField();
     filter.addValueChangeListener(listener);
     filter.setWidth("100%");
-    filter.addStyleName("tiny");
+    filter.addStyleName(ValoTheme.TEXTFIELD_TINY);
     filter.setPlaceholder(resources.message(ALL));
     return filter;
   }
