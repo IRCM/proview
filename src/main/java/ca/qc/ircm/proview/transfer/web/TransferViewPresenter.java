@@ -89,9 +89,6 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String DESTINATION_SAMPLE_NAME =
       DESTINATION_SAMPLE + "." + sample.name.getMetadata().getName();
   public static final String DESTINATION_TUBE_NAME = "tubeName";
-  static final Object[] SOURCE_TUBE_COLUMNS = new Object[] { NAME, TUBE };
-  static final Object[] DESTINATION_TUBE_COLUMNS =
-      new Object[] { DESTINATION_SAMPLE_NAME, DESTINATION_TUBE_NAME };
   static final PlateType[] DESTINATION_PLATE_TYPES =
       new PlateType[] { PlateType.A, PlateType.G, PlateType.PM };
   private static final Logger logger = LoggerFactory.getLogger(TransferViewPresenter.class);
