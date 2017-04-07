@@ -36,6 +36,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
@@ -94,11 +95,11 @@ public class UserFormPresenter implements BinderValidator {
   private static final Logger logger = LoggerFactory.getLogger(UserFormPresenter.class);
   private UserForm view;
   private CheckBox editableProperty = new CheckBox(null, false);
-  private Binder<User> userBinder = new Binder<>(User.class);
-  private Binder<Passwords> passwordsBinder = new Binder<>(Passwords.class);
-  private Binder<User> managerBinder = new Binder<>(User.class);
-  private Binder<Laboratory> laboratoryBinder = new Binder<>(Laboratory.class);
-  private Binder<Address> addressBinder = new Binder<>(Address.class);
+  private Binder<User> userBinder = new BeanValidationBinder<>(User.class);
+  private Binder<Passwords> passwordsBinder = new BeanValidationBinder<>(Passwords.class);
+  private Binder<User> managerBinder = new BeanValidationBinder<>(User.class);
+  private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
+  private Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
   private List<Binder<PhoneNumber>> phoneNumberBinders = new ArrayList<>();
   private List<Button> removePhoneNumberButtons = new ArrayList<>();
   @Inject
@@ -296,7 +297,7 @@ public class UserFormPresenter implements BinderValidator {
   private void addPhoneNumber(PhoneNumber phoneNumber) {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    Binder<PhoneNumber> phoneNumberBinder = new Binder<>(PhoneNumber.class);
+    Binder<PhoneNumber> phoneNumberBinder = new BeanValidationBinder<>(PhoneNumber.class);
     phoneNumberBinder.setBean(phoneNumber);
     phoneNumberBinders.add(phoneNumberBinder);
     FormLayout layout = new FormLayout();
