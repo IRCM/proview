@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.ui.CheckBox;
@@ -40,7 +41,7 @@ public class LaboratoryFormPresenter {
   public static final String ORGANIZATION_PROPERTY =
       QLaboratory.laboratory.organization.getMetadata().getName();
   private CheckBox editableProperty = new CheckBox(null, false);
-  private Binder<Laboratory> laboratoryBinder = new Binder<>(Laboratory.class);
+  private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
   private LaboratoryForm view;
 
   /**
