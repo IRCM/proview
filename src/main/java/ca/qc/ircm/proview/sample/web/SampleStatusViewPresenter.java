@@ -77,8 +77,6 @@ public class SampleStatusViewPresenter implements BinderValidator {
   public static final String OK = "ok";
   public static final String CANCEL = "cancel";
   public static final String INVALID_SAMPLES = "samples.invalid";
-  private static final Object[] SAMPLES_COLUMNS =
-      new Object[] { NAME, EXPERIENCE, STATUS, NEW_STATUS, DOWN };
   public static final String SPLIT_SAMPLES_PARAMETERS = ",";
   private static final Logger logger = LoggerFactory.getLogger(SampleStatusViewPresenter.class);
   private SampleStatusView view;
@@ -299,9 +297,5 @@ public class SampleStatusViewPresenter implements BinderValidator {
             .map(s -> (SubmissionSample) s).collect(Collectors.toList());
     dataProvider = DataProvider.ofCollection(samples);
     view.samplesGrid.setDataProvider(dataProvider);
-  }
-
-  public static Object[] getSamplesColumns() {
-    return SAMPLES_COLUMNS.clone();
   }
 }
