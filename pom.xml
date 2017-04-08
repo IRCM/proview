@@ -454,42 +454,14 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <excludes>
-              <exclude>ca/qc/ircm/proview/**/integration/**/*.java</exclude>
               <exclude>ca/qc/ircm/proview/test/**/*.java</exclude>
             </excludes>
             <systemPropertyVariables>
               <slow-tests.skip>${slow-tests.skip}</slow-tests.skip>
-            </systemPropertyVariables>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${maven-failsafe-plugin.version}</version>
-          <configuration>
-            <systemPropertyVariables>
               <testbench.skip>${testbench.skip}</testbench.skip>
               <testbench.driver>${testbench.driver}</testbench.driver>
-              <slow-tests.skip>${slow-tests.skip}</slow-tests.skip>
-              <spring.devtools.restart.enabled>false</spring.devtools.restart.enabled>
             </systemPropertyVariables>
-            <includes>
-              <include>ca/qc/ircm/proview/**/integration/**/*.java</include>
-            </includes>
           </configuration>
-          <executions>
-            <execution>
-              <id>integration-test</id>
-              <goals>
-                <goal>integration-test</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>verify</id>
-              <goals>
-                <goal>verify</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
@@ -664,10 +636,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
