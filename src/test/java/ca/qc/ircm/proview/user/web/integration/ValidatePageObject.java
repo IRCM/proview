@@ -19,7 +19,10 @@ package ca.qc.ircm.proview.user.web.integration;
 
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VIEW;
+import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.ValidateView;
@@ -47,11 +50,11 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   }
 
   protected LabelElement headerLabel() {
-    return $(LabelElement.class).id(HEADER);
+    return wrap(LabelElement.class, findElement(className(HEADER)));
   }
 
   protected GridElement usersGrid() {
-    return $(GridElement.class).id(USERS_GRID);
+    return wrap(GridElement.class, findElement(className(USERS_GRID)));
   }
 
   private void processUsersGridRow(String email, Consumer<Integer> consumer) {
@@ -71,8 +74,10 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
     processUsersGridRow(email, row -> {
-      GridCellElement buttonCell = usersGrid.getCell(row, VIEW_COLUMN);
-      buttonCell.click();
+      usersGrid.getCell(row, VIEW_COLUMN);
+      ButtonElement button =
+          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(VIEW)));
+      button.click();
     });
   }
 
@@ -80,8 +85,10 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
     logger.debug("clickValidateUser for user {}", email);
     GridElement usersGrid = usersGrid();
     processUsersGridRow(email, row -> {
-      GridCellElement buttonCell = usersGrid.getCell(row, VALIDATE_COLUMN);
-      buttonCell.click();
+      usersGrid.getCell(row, VALIDATE_COLUMN);
+      ButtonElement button =
+          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(VALIDATE)));
+      button.click();
     });
   }
 
@@ -106,7 +113,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   }
 
   protected ButtonElement validateSelectedButton() {
-    return $(ButtonElement.class).id(VALIDATE_SELECTED_BUTTON);
+    return wrap(ButtonElement.class, findElement(className(VALIDATE_SELECTED_BUTTON)));
   }
 
   protected void clickValidateSelected() {

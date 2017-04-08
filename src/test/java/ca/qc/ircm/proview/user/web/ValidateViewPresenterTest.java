@@ -179,6 +179,12 @@ public class ValidateViewPresenterTest {
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
     assertTrue(view.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
     assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));
+    final User user = usersToValidate.get(0);
+    Button viewButton = (Button) view.usersGrid.getColumn(VIEW).getValueProvider().apply(user);
+    assertTrue(viewButton.getStyleName().contains(VIEW));
+    Button validateButton =
+        (Button) view.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
+    assertTrue(validateButton.getStyleName().contains(VALIDATE));
     assertTrue(view.validateSelectedButton.getStyleName().contains(VALIDATE_SELECTED_BUTTON));
   }
 

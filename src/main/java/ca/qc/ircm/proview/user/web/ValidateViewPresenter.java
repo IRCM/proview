@@ -152,6 +152,7 @@ public class ValidateViewPresenter {
   private Button viewButton(User user) {
     MessageResource resources = view.getResources();
     Button button = new Button();
+    button.addStyleName(VIEW);
     button.setCaption(resources.message(VIEW));
     button.addClickListener(event -> viewUser(user));
     return button;
@@ -160,6 +161,7 @@ public class ValidateViewPresenter {
   private Button validateButton(User user) {
     MessageResource resources = view.getResources();
     Button button = new Button();
+    button.addStyleName(VALIDATE);
     button.setCaption(resources.message(VALIDATE));
     button.addClickListener(event -> validateUser(user));
     return button;
