@@ -29,7 +29,6 @@ import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.MenuBarElement;
 import com.vaadin.testbench.elements.NotificationElement;
-import com.vaadin.testbench.elements.OptionGroupElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -181,16 +180,6 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   protected void setCheckBoxValue(CheckBoxElement field, boolean value) {
     if (value != getCheckBoxValue(field)) {
       field.findElement(tagName("label")).click();
-    }
-  }
-
-  // Workaround for Vaadin referring to wrong element when doing click.
-  protected void setOptionValue(OptionGroupElement field, String value) {
-    Optional<WebElement> valueField = field.findElements(className("v-select-option")).stream()
-        .map(option -> option.findElement(tagName("label")))
-        .filter(label -> value.equals(label.getText())).findFirst();
-    if (valueField.isPresent()) {
-      valueField.get().click();
     }
   }
 }
