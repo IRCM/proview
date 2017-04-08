@@ -96,6 +96,7 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileDownloader;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.AbstractListing;
 import com.vaadin.ui.AbstractTextField;
@@ -518,13 +519,15 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.samplesGrid.addStyleName(COMPONENTS);
     view.samplesGrid.setDataProvider(samplesDataProvider);
     view.samplesGrid.addColumn(sample -> sampleNameTextField(sample), new ComponentRenderer())
-        .setId(SAMPLE_NAME_PROPERTY).setCaption(resources.message(SAMPLE_NAME_PROPERTY));
+        .setId(SAMPLE_NAME_PROPERTY).setCaption(resources.message(SAMPLE_NAME_PROPERTY))
+        .setWidth(230);
     view.samplesGrid
         .addColumn(sample -> sampleNumberProteinTextField(sample), new ComponentRenderer())
         .setId(SAMPLE_NUMBER_PROTEIN_PROPERTY)
-        .setCaption(resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY));
+        .setCaption(resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY)).setWidth(230);
     view.samplesGrid.addColumn(sample -> proteinWeightTextField(sample), new ComponentRenderer())
-        .setId(PROTEIN_WEIGHT_PROPERTY).setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY));
+        .setId(PROTEIN_WEIGHT_PROPERTY).setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY))
+        .setWidth(230);
     view.fillSamplesButton.addStyleName(FILL_SAMPLES_PROPERTY);
     view.fillSamplesButton.addStyleName(FILL_BUTTON_STYLE);
     view.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
@@ -1176,6 +1179,9 @@ public class SubmissionFormPresenter implements BinderValidator {
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT));
     view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).setHidden(service != INTACT_PROTEIN);
     view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).setHidden(service != INTACT_PROTEIN);
+    view.samplesGrid.setWidth((float) view.samplesGrid.getColumns().stream()
+        .filter(column -> !column.isHidden()).mapToDouble(column -> column.getWidth()).sum(),
+        Unit.PIXELS);
     view.fillSamplesButton.setVisible((service == INTACT_PROTEIN
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT))
         && editable);
@@ -1330,6 +1336,7 @@ public class SubmissionFormPresenter implements BinderValidator {
             .skip(samplesDataProvider.getItems().size() - 1).findFirst().orElse(null);
         samplesDataProvider.getItems().remove(remove);
       }
+      samplesDataProvider.refreshAll();
     }
   }
 
@@ -1350,6 +1357,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         standardsDataProvider.getItems().add(new Standard());
       }
       view.standardsTableLayout.setVisible(count > 0);
+      standardsDataProvider.refreshAll();
     }
   }
 
@@ -1370,6 +1378,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         contaminantsDataProvider.getItems().add(new Contaminant());
       }
       view.contaminantsTableLayout.setVisible(count > 0);
+      contaminantsDataProvider.refreshAll();
     }
   }
 
