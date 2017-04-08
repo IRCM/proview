@@ -35,7 +35,9 @@ import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.SignasView;
+import ca.qc.ircm.proview.user.web.SignasViewPresenter;
 import ca.qc.ircm.proview.web.MainView;
+import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.MenuBarElement;
@@ -173,10 +175,10 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
       GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
       try {
         if (email.equals(emailCell.getText())) {
-          usersGrid.scrollLeft(usersGrid.getRect().getX() + usersGrid.getRect().getWidth());
-          waitForPageLoad();
-          GridCellElement buttonCell = usersGrid.getCell(row, SIGN_AS_COLUMN);
-          buttonCell.click();
+          usersGrid.getCell(row, SIGN_AS_COLUMN);
+          ButtonElement button = wrap(ButtonElement.class,
+              usersGrid.getRow(row).findElement(className(SignasViewPresenter.SIGN_AS)));
+          button.click();
         }
       } catch (RuntimeException e) {
         throw e;
