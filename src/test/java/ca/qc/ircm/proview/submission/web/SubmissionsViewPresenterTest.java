@@ -77,7 +77,6 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -319,19 +318,17 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
-  @Ignore("Date filter does not work")
   public void dateFilter() {
     presenter.init(view);
     view.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
 
     verify(localDateFilterComponentProvider).get();
-    verify(localDateFilterComponent).getPresenter();
     verify(localDateFilterComponent).addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DATE);
     assertTrue(cell.getComponent() instanceof LocalDateFilterComponent);
 
-    Range<LocalDate> range = Range.open(LocalDate.now(), LocalDate.now());
+    Range<LocalDate> range = Range.open(LocalDate.now().minusDays(2), LocalDate.now());
     SaveListener<Range<LocalDate>> listener = localDateRangeSaveListenerCaptor.getValue();
     listener.saved(new SaveEvent<>(cell.getComponent(), range));
 
