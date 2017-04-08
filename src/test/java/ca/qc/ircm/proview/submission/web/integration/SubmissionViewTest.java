@@ -115,8 +115,8 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setSampleSupport(support);
     setSampleContainerType(sampleContainerType);
     setSampleCount(sampleCount);
-    setSampleNameInTable(0, sampleName1);
-    setSampleNameInTable(1, sampleName2);
+    setSampleNameInGrid(0, sampleName1);
+    setSampleNameInGrid(1, sampleName2);
     setExperience(experience);
     setExperienceGoal(experienceGoal);
     setTaxonomy(taxonomy);
@@ -184,7 +184,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertNotNull(plateNameField());
     assertNotNull(samplesLabel());
     setSampleContainerType(TUBE);
-    assertNotNull(samplesTable());
+    assertNotNull(samplesGrid());
     assertNotNull(fillSamplesButton());
     setSampleContainerType(SPOT);
     assertNotNull(samplesPlate());
@@ -201,12 +201,12 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertNotNull(standardsPanel());
     assertNotNull(standardCountField());
     setStandardCount(1);
-    assertNotNull(standardsTable());
+    assertNotNull(standardsGrid());
     assertNotNull(fillStandardsButton());
     assertNotNull(contaminantsPanel());
     assertNotNull(contaminantCountField());
     setContaminantCount(1);
-    assertNotNull(contaminantsTable());
+    assertNotNull(contaminantsGrid());
     assertNotNull(fillContaminantsButton());
     setSampleSupport(GEL);
     assertNotNull(gelPanel());
@@ -220,7 +220,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertNotNull(weightMarkerQuantityField());
     assertNotNull(proteinQuantityField());
     assertNotNull(gelImagesUploader());
-    assertNotNull(gelImagesTable());
+    assertNotNull(gelImagesGrid());
     setSampleSupport(SOLUTION);
     assertNotNull(servicesPanel());
     assertNotNull(digestionOptions());
@@ -255,7 +255,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertNotNull(commentsField());
     assertNotNull(filesPanel());
     assertNotNull(filesUploader());
-    assertNotNull(filesTable());
+    assertNotNull(filesGrid());
     assertNotNull(saveButton());
   }
 

@@ -1018,7 +1018,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.instrumentOptions.setItems(instrumentValues());
     view.instrumentOptions.setItemCaptionGenerator(instrument -> instrument != null
         ? instrument.getLabel(locale) : MassDetectionInstrument.getNullLabel(locale));
-    view.instrumentOptions.setItemEnabledProvider(instrument -> instrument.available);
+    view.instrumentOptions
+        .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : false);
     submissionBinder.forField(view.instrumentOptions).bind(INSTRUMENT_PROPERTY);
     view.proteinIdentificationOptions.addStyleName(PROTEIN_IDENTIFICATION_PROPERTY);
     view.proteinIdentificationOptions
