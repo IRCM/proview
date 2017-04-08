@@ -126,13 +126,14 @@ public class SignasViewTest extends SignasPageObject {
   public void viewUser() throws Throwable {
     open();
     String email = "christopher.anderson@ircm.qc.ca";
+    String name = "Christopher Anderson";
 
     clickViewUser(email);
 
     assertNotNull(findElement(className(UserWindow.WINDOW_STYLE)));
     WindowElement userWindow =
         wrap(WindowElement.class, findElement(className(UserWindow.WINDOW_STYLE)));
-    assertTrue(resources(UserWindow.class).message(UserWindow.TITLE, email)
+    assertTrue(resources(UserWindow.class).message(UserWindow.TITLE, name)
         .contains(userWindow.getCaption()));
     assertNotNull(userWindow.findElement(className(UserFormPresenter.USER)));
   }

@@ -173,6 +173,7 @@ public class SignasViewPresenter {
   private Button viewButton(User user) {
     MessageResource resources = view.getResources();
     Button button = new Button();
+    button.addStyleName(VIEW);
     button.setCaption(resources.message(VIEW));
     button.addClickListener(event -> viewUser(user));
     return button;
@@ -181,6 +182,7 @@ public class SignasViewPresenter {
   private Button signasButton(User user) {
     MessageResource resources = view.getResources();
     Button button = new Button();
+    button.addStyleName(SIGN_AS);
     button.setCaption(resources.message(SIGN_AS));
     button.addClickListener(event -> signasUser(user));
     return button;

@@ -18,13 +18,16 @@
 package ca.qc.ircm.proview.user.web.integration;
 
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
+import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.user.web.SignasViewPresenter.VIEW;
 import static ca.qc.ircm.proview.web.Menu.MANAGER;
 import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.SignasView;
+import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.LabelElement;
@@ -72,20 +75,20 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
     processUsersGridRow(email, row -> {
-      usersGrid.scrollLeft(usersGrid.getRect().getX() + usersGrid.getRect().getWidth());
-      waitForPageLoad();
-      GridCellElement buttonCell = usersGrid.getCell(row, VIEW_COLUMN);
-      buttonCell.click();
+      usersGrid.getCell(row, VIEW_COLUMN);
+      ButtonElement button =
+          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(VIEW)));
+      button.click();
     });
   }
 
   protected void clickSignas(String email) {
     GridElement usersGrid = usersGrid();
     processUsersGridRow(email, row -> {
-      usersGrid.scrollLeft(usersGrid.getRect().getX() + usersGrid.getRect().getWidth());
-      waitForPageLoad();
-      GridCellElement buttonCell = usersGrid.getCell(row, SIGN_AS_COLUMN);
-      buttonCell.click();
+      usersGrid.getCell(row, SIGN_AS_COLUMN);
+      ButtonElement button =
+          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(SIGN_AS)));
+      button.click();
     });
   }
 
