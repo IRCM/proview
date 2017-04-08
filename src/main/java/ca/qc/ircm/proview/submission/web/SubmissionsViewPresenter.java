@@ -219,6 +219,7 @@ public class SubmissionsViewPresenter {
 
   private Button viewButton(Submission submission) {
     Button button = new Button();
+    button.addStyleName(EXPERIENCE);
     button.setCaption(submission.getExperience());
     button.addClickListener(e -> viewSubmission(submission));
     return button;
@@ -237,6 +238,7 @@ public class SubmissionsViewPresenter {
     boolean results = submission.getSamples().stream()
         .filter(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0).count() > 0;
     Button button = new Button();
+    button.addStyleName(LINKED_TO_RESULTS);
     button.setCaption(resources.message(LINKED_TO_RESULTS + "." + results));
     if (results) {
       button.addClickListener(e -> viewSubmissionResults(submission));

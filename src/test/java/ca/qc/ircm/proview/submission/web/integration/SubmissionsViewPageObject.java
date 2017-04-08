@@ -17,7 +17,9 @@
 
 package ca.qc.ircm.proview.submission.web.integration;
 
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
@@ -73,12 +75,14 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickViewSubmissionByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
-    submissionsGrid.getCell(row, gridColumnIndex(EXPERIENCE_COLUMN)).click();
+    submissionsGrid.getCell(row, gridColumnIndex(EXPERIENCE_COLUMN))
+        .findElement(className(EXPERIENCE)).click();
   }
 
   protected void clickViewSubmissionResultsByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
-    submissionsGrid.getCell(row, gridColumnIndex(LINKED_TO_RESULTS_COLUMN)).click();
+    submissionsGrid.getCell(row, gridColumnIndex(LINKED_TO_RESULTS_COLUMN));
+    submissionsGrid.getRow(row).findElement(className(LINKED_TO_RESULTS)).click();
   }
 
   protected ButtonElement selectSamplesButton() {

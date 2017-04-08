@@ -125,12 +125,12 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void viewSubmissionResults() throws Throwable {
     open();
 
-    clickViewSubmissionResultsByRow(13);
+    clickViewSubmissionResultsByRow(2);
 
     assertNotNull(findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(13);
+    String experience = experienceByRow(2);
     assertTrue(resources(SubmissionAnalysesWindow.class)
         .message(SubmissionAnalysesWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));

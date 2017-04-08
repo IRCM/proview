@@ -364,6 +364,13 @@ public class SubmissionsViewPresenterTest {
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
     assertTrue(view.submissionsGrid.getStyleName().contains(SUBMISSIONS));
     assertTrue(view.submissionsGrid.getStyleName().contains(COMPONENTS));
+    final Submission submission = submissions.get(0);
+    Button viewButton =
+        (Button) view.submissionsGrid.getColumn(EXPERIENCE).getValueProvider().apply(submission);
+    assertTrue(viewButton.getStyleName().contains(EXPERIENCE));
+    Button viewResultsButton = (Button) view.submissionsGrid.getColumn(LINKED_TO_RESULTS)
+        .getValueProvider().apply(submission);
+    assertTrue(viewResultsButton.getStyleName().contains(LINKED_TO_RESULTS));
     assertTrue(view.selectSamplesButton.getStyleName().contains(SELECT_SAMPLES));
     assertTrue(view.selectedSamplesLabel.getStyleName().contains(SELECT_SAMPLES_LABEL));
     assertTrue(view.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
