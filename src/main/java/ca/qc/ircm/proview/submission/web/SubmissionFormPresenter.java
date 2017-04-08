@@ -536,8 +536,8 @@ public class SubmissionFormPresenter implements BinderValidator {
       List<Binder<SubmissionSample>> columnPlateSampleBinders = new ArrayList<>();
       IntStream.range(0, view.samplesPlateLayout.getRows()).forEach(row -> {
         TextField field = new TextField();
-        // TODO nameField.setColumns(7);
         field.addStyleName(SAMPLES_PLATE + "-" + column + "-" + row);
+        field.setWidth("100px");
         Binder<SubmissionSample> binder = new BeanValidationBinder<>(SubmissionSample.class);
         binder.setBean(new SubmissionSample());
         binder.forField(field).withNullRepresentation("").withValidator(validateSampleName(false))
