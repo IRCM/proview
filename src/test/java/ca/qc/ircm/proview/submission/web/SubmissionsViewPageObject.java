@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.submission.web.integration;
+package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
