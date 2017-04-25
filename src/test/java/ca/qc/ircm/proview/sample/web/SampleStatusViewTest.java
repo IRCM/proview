@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.sample.web.integration;
+package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAVE;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.TITLE;
