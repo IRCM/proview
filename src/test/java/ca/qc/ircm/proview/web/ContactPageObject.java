@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web.integration;
+package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.web.ContactViewPresenter.ADDRESS;
 import static ca.qc.ircm.proview.web.ContactViewPresenter.HEADER;
