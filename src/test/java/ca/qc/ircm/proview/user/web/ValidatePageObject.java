@@ -15,18 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.user.web.integration;
+package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVATE;
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.CLEAR;
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.DEACTIVATE;
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.HEADER;
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.VIEW;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VIEW;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.user.web.AccessView;
+import ca.qc.ircm.proview.user.web.ValidateView;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
@@ -39,15 +38,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class AccessPageObject extends AbstractTestBenchTestCase {
-  @SuppressWarnings("unused")
-  private static final Logger logger = LoggerFactory.getLogger(AccessPageObject.class);
-  private static final int SELECT_COLUMN = 1;
-  private static final int EMAIL_COLUMN = 2;
-  private static final int VIEW_COLUMN = 7;
+public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
+  private static final Logger logger = LoggerFactory.getLogger(ValidatePageObject.class);
+  private static final int SELECT_COLUMN = 0;
+  private static final int EMAIL_COLUMN = 1;
+  private static final int VIEW_COLUMN = 5;
+  private static final int VALIDATE_COLUMN = 6;
 
   protected void open() {
-    openView(AccessView.VIEW_NAME);
+    openView(ValidateView.VIEW_NAME);
   }
 
   protected LabelElement headerLabel() {
@@ -82,6 +81,17 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
     });
   }
 
+  protected void clickValidateUser(String email) {
+    logger.debug("clickValidateUser for user {}", email);
+    GridElement usersGrid = usersGrid();
+    processUsersGridRow(email, row -> {
+      usersGrid.getCell(row, VALIDATE_COLUMN);
+      ButtonElement button =
+          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(VALIDATE)));
+      button.click();
+    });
+  }
+
   protected void selectUsers(String... emails) {
     GridElement usersGrid = usersGrid();
     Arrays.asList(emails).forEach(email -> {
@@ -102,27 +112,11 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
     return selectedFiles;
   }
 
-  protected ButtonElement activateButton() {
-    return wrap(ButtonElement.class, findElement(className(ACTIVATE)));
+  protected ButtonElement validateSelectedButton() {
+    return wrap(ButtonElement.class, findElement(className(VALIDATE_SELECTED_BUTTON)));
   }
 
-  protected void clickActivate() {
-    activateButton().click();
-  }
-
-  protected ButtonElement deactivateButton() {
-    return wrap(ButtonElement.class, findElement(className(DEACTIVATE)));
-  }
-
-  protected void clickDeactivate() {
-    deactivateButton().click();
-  }
-
-  protected ButtonElement clearButton() {
-    return wrap(ButtonElement.class, findElement(className(CLEAR)));
-  }
-
-  protected void clickClear() {
-    clearButton().click();
+  protected void clickValidateSelected() {
+    validateSelectedButton().click();
   }
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.user.web.integration;
+package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_COUNTRY;

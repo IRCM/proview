@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.user.web.integration;
+package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.web.UserViewPresenter.TITLE;
