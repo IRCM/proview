@@ -26,7 +26,6 @@ import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.RegisterView;
-import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import org.junit.Ignore;
@@ -73,7 +72,6 @@ public class MainViewTest extends MainPageObject {
 
     clickSignButton();
 
-    waitForPageLoad();
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
     assertNotNull(notification.getCaption());
@@ -99,7 +97,6 @@ public class MainViewTest extends MainPageObject {
 
     clickSignButton();
 
-    waitForPageLoad();
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
@@ -110,7 +107,6 @@ public class MainViewTest extends MainPageObject {
 
     clickForgotPasswordButton();
 
-    waitForPageLoad();
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals(Notification.Type.WARNING_MESSAGE.getStyle(), notification.getType());
     assertNotNull(notification.getCaption());
@@ -123,7 +119,6 @@ public class MainViewTest extends MainPageObject {
 
     clickForgotPasswordButton();
 
-    waitForPageLoad();
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals(Notification.Type.WARNING_MESSAGE.getStyle(), notification.getType());
     assertNotNull(notification.getCaption());

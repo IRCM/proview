@@ -28,9 +28,6 @@ import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.web.UserFormPresenter;
-import ca.qc.ircm.proview.user.web.UserWindow;
-import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -191,7 +188,6 @@ public class ValidateViewTest extends ValidatePageObject {
     assertEquals(true, user.isActive());
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
-    waitForNotificationCaption(notification);
     assertNotNull(notification.getCaption());
     assertTrue(notification.getCaption().contains(email));
   }
@@ -214,7 +210,6 @@ public class ValidateViewTest extends ValidatePageObject {
     }
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
-    waitForNotificationCaption(notification);
     assertNotNull(notification.getCaption());
     for (String email : emails) {
       assertTrue(notification.getCaption().contains(email));

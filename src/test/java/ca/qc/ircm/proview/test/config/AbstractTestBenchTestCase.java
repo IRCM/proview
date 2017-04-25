@@ -28,14 +28,12 @@ import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.MenuBarElement;
-import com.vaadin.testbench.elements.NotificationElement;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -46,8 +44,6 @@ import java.util.stream.IntStream;
  * Additional functions for TestBenchTestCase.
  */
 public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
-  private static final long MAX_WAIT = 500;
-  private static final long SINGLE_WAIT = 100;
   @Value("http://localhost:${local.server.port}")
   protected String baseUrl;
 
@@ -59,25 +55,11 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     return baseUrl + "/#!" + view;
   }
 
-  /**
-   * This method loads a page and fixes the issue with get method returning too quickly.
-   *
-   * @param view
-   *          view to load
-   */
-  public void openView(String view) {
+  protected void openView(String view) {
     openView(view, null);
   }
 
-  /**
-   * This method loads a page and fixes the issue with get method returning too quickly.
-   *
-   * @param view
-   *          view to load
-   * @param parameters
-   *          view parameters
-   */
-  public void openView(String view, String parameters) {
+  protected void openView(String view, String parameters) {
     String url = viewUrl(view);
     if (parameters != null && !parameters.isEmpty()) {
       url += "/" + parameters;
@@ -87,7 +69,6 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     } else {
       getDriver().get(url);
     }
-    waitForPageLoad();
   }
 
   protected Locale currentLocale() {
@@ -104,38 +85,10 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     return new MessageResource(baseClass, currentLocale());
   }
 
-  public void waitForPageLoad() {
-    findElement(By.className("v-loading-indicator"));
-  }
-
-  public void waitForNotificationCaption(NotificationElement notification) {
-    waitFor(() -> !notification.getCaption().isEmpty());
-  }
-
-  private void waitFor(Supplier<Boolean> condition) {
-    long totalWait = 0;
-    try {
-      while (!condition.get() && totalWait < MAX_WAIT) {
-        Thread.sleep(SINGLE_WAIT);
-        totalWait += SINGLE_WAIT;
-      }
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
-  }
-
   protected <T> Optional<T> optional(Supplier<T> supplier) {
     try {
       return Optional.of(supplier.get());
     } catch (Throwable e) {
-      return Optional.empty();
-    }
-  }
-
-  protected Optional<WebElement> findOptionalElement(By by) {
-    try {
-      return Optional.of(findElement(by));
-    } catch (NoSuchElementException e) {
       return Optional.empty();
     }
   }
@@ -173,7 +126,8 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
 
   // Workaround for Vaadin referring to wrong element when doing isSelected test.
   protected boolean getCheckBoxValue(CheckBoxElement field) {
-    return field.findElement(tagName("input")).isSelected();
+    String value = field.getValue();
+    return value.equals("checked");
   }
 
   // Workaround for Vaadin referring to wrong element when doing click.

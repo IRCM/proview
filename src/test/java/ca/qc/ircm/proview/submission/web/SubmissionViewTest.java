@@ -47,8 +47,6 @@ import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
-import ca.qc.ircm.proview.submission.web.SubmissionView;
-import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.web.MainView;
@@ -100,6 +98,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
 
   @Before
   public void beforeTest() throws Throwable {
+    System.out.println("beforeTest");
     additionalFile1 = Paths.get(getClass().getResource("/submissionfile1.txt").toURI());
   }
 
@@ -130,7 +129,6 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setProteinIdentification(proteinIdentification);
     setComments(comments);
     uploadFile(additionalFile1);
-    waitForPageLoad();
   }
 
   @Test
@@ -169,7 +167,6 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertNotNull(sampleNameField());
     assertNotNull(formulaField());
     uploadStructure(Paths.get(getClass().getResource("/structure1").toURI()));
-    waitForPageLoad();
     assertNotNull(structureButton());
     assertNotNull(structureUploader());
     assertNotNull(monoisotopicMassField());

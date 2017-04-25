@@ -44,9 +44,6 @@ import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
-import ca.qc.ircm.proview.web.ContactView;
-import ca.qc.ircm.proview.web.MainView;
-import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.utils.MessageResource;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -249,7 +246,6 @@ public class MenuTest extends MenuPageObject {
 
     clickSignout();
 
-    waitForPageLoad();
     assertEquals(homeUrl(), getDriver().getCurrentUrl());
     Set<Cookie> cookies = driver.manage().getCookies();
     assertFalse(cookies.stream().filter(cookie -> cookie.getName().equals(REMEMBER_ME_COOKIE_NAME))
