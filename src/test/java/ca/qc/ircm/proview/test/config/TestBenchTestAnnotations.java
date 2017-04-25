@@ -37,5 +37,10 @@ import java.lang.annotation.Target;
     "/sample-data.sql", "/activity-data.sql", "/analysis-data.sql", "/database-after-insert.sql" })
 @WithSubject(anonymous = true)
 public @interface TestBenchTestAnnotations {
-
+  /**
+   * Returns true if ScreenshotOnFailureRule is used, false otherwise.
+   *
+   * @return true if ScreenshotOnFailureRule is used, false otherwise
+   */
+  public boolean useScreenshotRule() default false;
 }
