@@ -133,13 +133,14 @@ public class ValidateViewTest extends ValidatePageObject {
   public void viewUser() throws Throwable {
     open();
     String email = "francois.robert@ircm.qc.ca";
+    String name = "François Robert";
 
     clickViewUser(email);
 
     assertNotNull(findElement(className(UserWindow.WINDOW_STYLE)));
     WindowElement userWindow =
         wrap(WindowElement.class, findElement(className(UserWindow.WINDOW_STYLE)));
-    assertTrue(resources(UserWindow.class).message(UserWindow.TITLE, email)
+    assertTrue(resources(UserWindow.class).message(UserWindow.TITLE, name)
         .contains(userWindow.getCaption()));
     assertNotNull(userWindow.findElement(className(UserFormPresenter.USER)));
   }

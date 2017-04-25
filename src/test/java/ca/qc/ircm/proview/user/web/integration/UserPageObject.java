@@ -80,7 +80,11 @@ public abstract class UserPageObject extends AbstractTestBenchTestCase {
   }
 
   protected void setEmail(String value) {
-    emailField().setValue(value);
+    if (value == null || value.isEmpty()) {
+      emailField().clear();
+    } else {
+      emailField().setValue(value);
+    }
   }
 
   protected TextFieldElement nameField() {

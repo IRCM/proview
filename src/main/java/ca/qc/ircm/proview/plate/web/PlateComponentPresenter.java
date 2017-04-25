@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Label;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -41,10 +40,10 @@ import java.util.stream.IntStream;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PlateComponentPresenter {
   public static final String SELECTED_STYLE = "selected";
-  private ObjectProperty<Boolean> multiSelectProperty = new ObjectProperty<>(false);
   private PlateComponent view;
-  private ObjectProperty<Plate> plateProperty = new ObjectProperty<>(null, Plate.class);
-  private ObjectProperty<Boolean> readOnlyProperty = new ObjectProperty<>(false);
+  private boolean multiSelect = false;
+  private boolean readOnly = false;
+  private Plate plate;
   private Set<PlateSpot> selectedSpots = new HashSet<>();
 
   /**
@@ -55,20 +54,19 @@ public class PlateComponentPresenter {
    */
   public void init(PlateComponent view) {
     this.view = view;
-    plateProperty.addValueChangeListener(e -> updatePlate());
     addListeners();
   }
 
   private void updateSelectionMode() {
-    if (!multiSelectProperty.getValue() && getSelectedSpots().size() > 1) {
+    if (!multiSelect && getSelectedSpots().size() > 1) {
       deselectAllWells();
     }
   }
 
   private void updatePlate() {
     clearPlate();
-    view.plateLayout.setColumns(plateProperty.getValue().getColumnCount());
-    view.plateLayout.setRows(plateProperty.getValue().getRowCount());
+    view.plateLayout.setColumns(plate.getColumnCount());
+    view.plateLayout.setRows(plate.getRowCount());
     setWellsContent();
   }
 
@@ -88,7 +86,6 @@ public class PlateComponentPresenter {
   }
 
   private void setWellsContent() {
-    Plate plate = plateProperty.getValue();
     forEachSpot((column, row) -> {
       PlateSpot well = plate.spot(row, column);
       Label sampleName = new Label();
@@ -100,15 +97,14 @@ public class PlateComponentPresenter {
   }
 
   private void addListeners() {
-    multiSelectProperty.addValueChangeListener(e -> updateSelectionMode());
     view.plateLayout.addWellClickListener(e -> toggleWell(e.getColumn(), e.getRow()));
     view.plateLayout.addColumnHeaderClickListener(e -> toggleColumn(e.getColumn()));
     view.plateLayout.addRowHeaderClickListener(e -> toggleRow(e.getRow()));
   }
 
   private void toggleColumn(int column) {
-    if (multiSelectProperty.getValue()) {
-      List<PlateSpot> spots = plateProperty.getValue().column(column);
+    if (multiSelect) {
+      List<PlateSpot> spots = plate.column(column);
       if (!selectedSpots.containsAll(spots)) {
         selectColumn(column);
       } else {
@@ -118,12 +114,11 @@ public class PlateComponentPresenter {
   }
 
   private List<PlateSpot> plateRow(int row) {
-    Plate plate = plateProperty.getValue();
     return columnsStream().mapToObj(column -> plate.spot(row, column)).collect(Collectors.toList());
   }
 
   private void toggleRow(int row) {
-    if (multiSelectProperty.getValue()) {
+    if (multiSelect) {
       List<PlateSpot> spots = plateRow(row);
       if (!selectedSpots.containsAll(spots)) {
         selectRow(row);
@@ -134,7 +129,7 @@ public class PlateComponentPresenter {
   }
 
   private void toggleWell(int column, int row) {
-    toggleWell(plateProperty.getValue().spot(row, column));
+    toggleWell(plate.spot(row, column));
   }
 
   private void toggleWell(PlateSpot spot) {
@@ -152,11 +147,11 @@ public class PlateComponentPresenter {
    *          spot associated with well
    */
   public void selectWell(PlateSpot spot) {
-    if (readOnlyProperty.getValue()) {
+    if (readOnly) {
       return;
     }
 
-    if (!multiSelectProperty.getValue()) {
+    if (!multiSelect) {
       deselectAllWells();
     }
     selectedSpots.add(spot);
@@ -170,7 +165,7 @@ public class PlateComponentPresenter {
    *          spot associated with well
    */
   public void deselectWell(PlateSpot spot) {
-    if (readOnlyProperty.getValue()) {
+    if (readOnly) {
       return;
     }
 
@@ -195,8 +190,8 @@ public class PlateComponentPresenter {
    *          column
    */
   public void selectColumn(int column) {
-    if (multiSelectProperty.getValue()) {
-      List<PlateSpot> spots = plateProperty.getValue().column(column);
+    if (multiSelect) {
+      List<PlateSpot> spots = plate.column(column);
       spots.forEach(spot -> selectWell(spot));
     }
   }
@@ -211,8 +206,8 @@ public class PlateComponentPresenter {
    *          column
    */
   public void deselectColumn(int column) {
-    if (multiSelectProperty.getValue()) {
-      List<PlateSpot> spots = plateProperty.getValue().column(column);
+    if (multiSelect) {
+      List<PlateSpot> spots = plate.column(column);
       spots.forEach(spot -> deselectWell(spot));
     }
   }
@@ -227,7 +222,7 @@ public class PlateComponentPresenter {
    *          row
    */
   public void selectRow(int row) {
-    if (multiSelectProperty.getValue()) {
+    if (multiSelect) {
       List<PlateSpot> spots = plateRow(row);
       spots.forEach(spot -> selectWell(spot));
     }
@@ -243,18 +238,19 @@ public class PlateComponentPresenter {
    *          row
    */
   public void deselectRow(int row) {
-    if (multiSelectProperty.getValue()) {
+    if (multiSelect) {
       List<PlateSpot> spots = plateRow(row);
       spots.forEach(spot -> deselectWell(spot));
     }
   }
 
   public boolean isMultiSelect() {
-    return multiSelectProperty.getValue();
+    return multiSelect;
   }
 
   public void setMultiSelect(boolean multiSelect) {
-    this.multiSelectProperty.setValue(multiSelect);
+    this.multiSelect = multiSelect;
+    updateSelectionMode();
   }
 
   /**
@@ -285,7 +281,7 @@ public class PlateComponentPresenter {
    *          selected spots
    */
   public void setSelectedSpots(Collection<PlateSpot> selectedSpots) {
-    if (readOnlyProperty.getValue()) {
+    if (readOnly) {
       return;
     }
 
@@ -294,7 +290,7 @@ public class PlateComponentPresenter {
   }
 
   public Plate getPlate() {
-    return plateProperty.getValue();
+    return plate;
   }
 
   /**
@@ -305,16 +301,17 @@ public class PlateComponentPresenter {
    */
   public void setPlate(Plate plate) {
     if (plate == null) {
-      throw new NullPointerException();
+      throw new NullPointerException("plate cannot be null");
     }
-    this.plateProperty.setValue(plate);
+    this.plate = plate;
+    updatePlate();
   }
 
   public boolean isReadOnly() {
-    return readOnlyProperty.getValue();
+    return readOnly;
   }
 
   public void setReadOnly(boolean readOnly) {
-    this.readOnlyProperty.setValue(readOnly);
+    this.readOnly = readOnly;
   }
 }

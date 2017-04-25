@@ -25,9 +25,6 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -59,12 +56,11 @@ public class SubmissionAnalysesFormPresenter {
   public static final String NAME = SAMPLE + "." + acquisition.sample.name.getMetadata().getName();
   public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
   public static final String ACQUISITION_INDEX = acquisition.listIndex.getMetadata().getName();
-  private static final Object[] ACQUISITIONS_COLUMNS = new Object[] { NAME, ACQUISITION_FILE };
   @SuppressWarnings("unused")
   private static final Logger logger =
       LoggerFactory.getLogger(SubmissionAnalysesFormPresenter.class);
   private SubmissionAnalysesForm view;
-  private BeanItem<Submission> item = new BeanItem<>(null, Submission.class);
+  private Submission submission;
   @Inject
   private MsAnalysisService msAnalysisService;
 
@@ -92,46 +88,36 @@ public class SubmissionAnalysesFormPresenter {
     panel.addStyleName(ANALYSIS);
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
     panel.setCaption(resources.message(ANALYSIS, formatter.format(date(analysis.getInsertTime()))));
-    BeanItemContainer<Acquisition> container = new BeanItemContainer<>(Acquisition.class);
-    container.addAll(analysis.getAcquisitions());
-    container.addNestedContainerProperty(NAME);
-    container.sort(new Object[] { ACQUISITION_INDEX }, new boolean[] { true });
-    Grid grid = new Grid();
+    Grid<Acquisition> grid = new Grid<>();
     grid.setWidth("100%");
     grid.addStyleName(ACQUISITIONS);
-    grid.setContainerDataSource(container);
-    grid.setColumns(ACQUISITIONS_COLUMNS);
-    for (Object propertyId : ACQUISITIONS_COLUMNS) {
-      grid.getColumn(propertyId).setHeaderCaption(resources.message((String) propertyId));
-    }
+    grid.setItems(analysis.getAcquisitions());
+    grid.addColumn(acquisition -> acquisition.getSample().getName()).setId(NAME)
+        .setCaption(resources.message(NAME));
+    grid.addColumn(acquisition -> acquisition.getAcquisitionFile()).setId(ACQUISITION_FILE)
+        .setCaption(resources.message(ACQUISITION_FILE));
+    grid.addColumn(acquisition -> acquisition.getListIndex()).setId(ACQUISITION_INDEX)
+        .setHidden(true);
+    grid.sort(ACQUISITION_INDEX);
     layout.addComponent(grid);
   }
 
-  public Item getItemDataSource() {
-    return item;
+  public Submission getBean() {
+    return submission;
   }
 
   /**
-   * Sets submission as an item.
+   * Sets submission.
    *
-   * @param item
-   *          submission as an item
+   * @param submission
+   *          submission
    */
-  @SuppressWarnings("unchecked")
-  public void setItemDataSource(Item item) {
-    if (item != null && !(item instanceof BeanItem)) {
-      throw new IllegalArgumentException("item must be null or a BeanItem containing a submission");
-    }
-
-    this.item = item != null ? (BeanItem<Submission>) item : new BeanItem<>(null, Submission.class);
-    List<MsAnalysis> analyses = msAnalysisService.all(this.item.getBean());
+  public void setBean(Submission submission) {
+    this.submission = submission;
+    List<MsAnalysis> analyses = msAnalysisService.all(submission);
     view.removeAllComponents();
     analyses.forEach(analysis -> {
       createAnalysisPanel(analysis);
     });
-  }
-
-  public static Object[] getAcquisitionsColumns() {
-    return ACQUISITIONS_COLUMNS.clone();
   }
 }

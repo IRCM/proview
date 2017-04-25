@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+
 import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.QUser;
@@ -26,14 +28,11 @@ import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.renderers.ButtonRenderer;
+import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +41,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,8 +54,8 @@ import javax.inject.Provider;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ValidateViewPresenter {
   public static final String TITLE = "title";
-  public static final String HEADER_LABEL_ID = "header";
-  public static final String USERS_GRID_ID = "usersGrid";
+  public static final String HEADER = "header";
+  public static final String USERS_GRID = "usersGrid";
   public static final String EMAIL = QUser.user.email.getMetadata().getName();
   public static final String NAME = QUser.user.name.getMetadata().getName();
   public static final String LABORATORY_PREFIX =
@@ -68,13 +66,9 @@ public class ValidateViewPresenter {
       LABORATORY_PREFIX + QLaboratory.laboratory.organization.getMetadata().getName();
   public static final String VIEW = "viewUser";
   public static final String VALIDATE = "validateUser";
-  public static final String VALIDATE_SELECTED_BUTTON_ID = "validateSelected";
-  private static final String[] COLUMNS =
-      { EMAIL, NAME, LABORATORY_NAME, ORGANIZATION, VIEW, VALIDATE };
+  public static final String VALIDATE_SELECTED_BUTTON = "validateSelected";
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewPresenter.class);
   private ValidateView view;
-  private BeanItemContainer<User> container;
-  private GeneratedPropertyContainer gridContainer;
   @Inject
   private UserService userService;
   @Inject
@@ -112,62 +106,32 @@ public class ValidateViewPresenter {
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.setId(HEADER_LABEL_ID);
-    view.headerLabel.setValue(resources.message(HEADER_LABEL_ID));
-    view.usersGrid.setId(USERS_GRID_ID);
+    view.headerLabel.addStyleName(HEADER);
+    view.headerLabel.addStyleName(ValoTheme.LABEL_H1);
+    view.headerLabel.setValue(resources.message(HEADER));
+    view.usersGrid.addStyleName(USERS_GRID);
     prepareUsersGrid();
-    view.validateSelectedButton.setId(VALIDATE_SELECTED_BUTTON_ID);
-    view.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON_ID));
+    view.validateSelectedButton.addStyleName(VALIDATE_SELECTED_BUTTON);
+    view.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON));
   }
 
-  @SuppressWarnings("serial")
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
-    container = new BeanItemContainer<>(User.class, searchUsers());
-    container.addNestedContainerProperty(LABORATORY_NAME);
-    container.addNestedContainerProperty(ORGANIZATION);
-    gridContainer = new GeneratedPropertyContainer(container);
-    gridContainer.addGeneratedProperty(VIEW, new PropertyValueGenerator<String>() {
-      @Override
-      public String getValue(Item item, Object itemId, Object propertyId) {
-        MessageResource resources = view.getResources();
-        return resources.message(VIEW);
-      }
-
-      @Override
-      public Class<String> getType() {
-        return String.class;
-      }
-    });
-    gridContainer.addGeneratedProperty(VALIDATE, new PropertyValueGenerator<String>() {
-      @Override
-      public String getValue(Item item, Object itemId, Object propertyId) {
-        MessageResource resources = view.getResources();
-        return resources.message(VALIDATE);
-      }
-
-      @Override
-      public Class<String> getType() {
-        return String.class;
-      }
-    });
-    view.usersGrid.setContainerDataSource(gridContainer);
-    view.usersGrid.setColumns((Object[]) COLUMNS);
+    view.usersGrid.setItems(searchUsers());
+    view.usersGrid.addColumn(User::getEmail).setId(EMAIL).setCaption(resources.message(EMAIL));
+    view.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
+    view.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
+        .setCaption(resources.message(LABORATORY_NAME));
+    view.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
+        .setCaption(resources.message(ORGANIZATION));
+    view.usersGrid.setFrozenColumnCount(2);
+    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(VIEW)
+        .setCaption(resources.message(VIEW));
+    view.usersGrid.addColumn(user -> validateButton(user), new ComponentRenderer()).setId(VALIDATE)
+        .setCaption(resources.message(VALIDATE));
     view.usersGrid.setSelectionMode(SelectionMode.MULTI);
     view.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
-    Grid.Column viewColumn = view.usersGrid.getColumn(VIEW);
-    viewColumn.setRenderer(new ButtonRenderer(event -> {
-      User user = (User) event.getItemId();
-      viewUser(user);
-    }));
-    Grid.Column validateColumn = view.usersGrid.getColumn(VALIDATE);
-    validateColumn.setRenderer(new ButtonRenderer(event -> {
-      User user = (User) event.getItemId();
-      validateUser(user);
-    }));
-    for (String propertyId : COLUMNS) {
-      view.usersGrid.getColumn(propertyId).setHeaderCaption(resources.message(propertyId));
-    }
+    view.usersGrid.addStyleName(COMPONENTS);
   }
 
   private void addFieldListeners() {
@@ -185,10 +149,27 @@ public class ValidateViewPresenter {
     return userService.all(parameters);
   }
 
+  private Button viewButton(User user) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.addStyleName(VIEW);
+    button.setCaption(resources.message(VIEW));
+    button.addClickListener(event -> viewUser(user));
+    return button;
+  }
+
+  private Button validateButton(User user) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.addStyleName(VALIDATE);
+    button.setCaption(resources.message(VALIDATE));
+    button.addClickListener(event -> validateUser(user));
+    return button;
+  }
+
   private void refresh() {
-    view.usersGrid.getSelectionModel().reset();
-    container.removeAllItems();
-    container.addAll(searchUsers());
+    view.usersGrid.getSelectionModel().deselectAll();
+    view.usersGrid.setItems(searchUsers());
     view.usersGrid.setSortOrder(new ArrayList<>(view.usersGrid.getSortOrder()));
   }
 
@@ -208,38 +189,30 @@ public class ValidateViewPresenter {
   }
 
   private void validateMany() {
-    Collection<Object> ids = view.usersGrid.getSelectedRows();
-    List<User> selected = new ArrayList<>();
-    for (Object id : ids) {
-      selected.add((User) id);
-    }
-    if (selected.isEmpty()) {
+    List<User> users = new ArrayList<>(view.usersGrid.getSelectedItems());
+    if (users.isEmpty()) {
       final MessageResource resources = view.getResources();
       view.showError(resources.message("validateSelected.none"));
     } else {
-      logger.debug("Validate users {}", selected);
-      userService.validate(selected, homeWebContext());
+      logger.debug("Validate users {}", users);
+      userService.validate(users, homeWebContext());
       final MessageResource resources = view.getResources();
       StringBuilder emails = new StringBuilder();
-      for (int i = 0; i < selected.size(); i++) {
-        User user = selected.get(i);
+      for (int i = 0; i < users.size(); i++) {
+        User user = users.get(i);
         emails.append(user.getEmail());
-        if (i == selected.size() - 2) {
+        if (i == users.size() - 2) {
           emails.append(resources.message("userSeparator", 1));
-        } else if (i < selected.size() - 2) {
+        } else if (i < users.size() - 2) {
           emails.append(resources.message("userSeparator", 0));
         }
       }
       refresh();
-      view.showTrayNotification(resources.message("done", selected.size(), emails));
+      view.showTrayNotification(resources.message("done", users.size(), emails));
     }
   }
 
   public HomeWebContext homeWebContext() {
     return locale -> view.getUrl(MainView.VIEW_NAME);
-  }
-
-  public static String[] getColumns() {
-    return COLUMNS.clone();
   }
 }

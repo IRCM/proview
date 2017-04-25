@@ -37,8 +37,8 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
@@ -103,24 +103,24 @@ public class ContactViewPresenterTest {
     assertEquals(resources.message(PROTEOMIC), view.proteomicContactPanel.getCaption());
     assertEquals(resources.message(PROTEOMIC + "." + NAME),
         view.proteomicContactNameLink.getCaption());
-    assertEquals(FontAwesome.ENVELOPE, view.proteomicContactNameLink.getIcon());
+    assertEquals(VaadinIcons.ENVELOPE, view.proteomicContactNameLink.getIcon());
     assertEquals(resources.message(PROTEOMIC + "." + ADDRESS),
         view.proteomicContactAddressLink.getCaption());
     assertTrue(view.proteomicContactAddressLink.isCaptionAsHtml());
-    assertEquals(FontAwesome.MAP_MARKER, view.proteomicContactAddressLink.getIcon());
+    assertEquals(VaadinIcons.MAP_MARKER, view.proteomicContactAddressLink.getIcon());
     assertEquals(resources.message(PROTEOMIC + "." + PHONE),
         view.proteomicContactPhoneLink.getCaption());
-    assertEquals(FontAwesome.PHONE, view.proteomicContactPhoneLink.getIcon());
+    assertEquals(VaadinIcons.PHONE, view.proteomicContactPhoneLink.getIcon());
     assertEquals(resources.message(WEBSITE), view.websiteContactPanel.getCaption());
     assertEquals(resources.message(WEBSITE + "." + NAME), view.websiteContactNameLink.getCaption());
-    assertEquals(FontAwesome.ENVELOPE, view.websiteContactNameLink.getIcon());
+    assertEquals(VaadinIcons.ENVELOPE, view.websiteContactNameLink.getIcon());
     assertEquals(resources.message(WEBSITE + "." + ADDRESS),
         view.websiteContactAddressLink.getCaption());
     assertTrue(view.websiteContactAddressLink.isCaptionAsHtml());
-    assertEquals(FontAwesome.MAP_MARKER, view.websiteContactAddressLink.getIcon());
+    assertEquals(VaadinIcons.MAP_MARKER, view.websiteContactAddressLink.getIcon());
     assertEquals(resources.message(WEBSITE + "." + PHONE),
         view.websiteContactPhoneLink.getCaption());
-    assertEquals(FontAwesome.PHONE, view.websiteContactPhoneLink.getIcon());
+    assertEquals(VaadinIcons.PHONE, view.websiteContactPhoneLink.getIcon());
   }
 
   @Test

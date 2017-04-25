@@ -41,11 +41,10 @@ public class PlateView extends PlateViewDesign implements BaseView {
   private static final long serialVersionUID = -7006664525905554582L;
   private Menu menu = new Menu();
   private PlateLayout plateLayout = new PlateLayout(12, 8);
-  private PlateComponent plateComponent = new PlateComponent();
+  @Inject
+  private PlateComponent plateComponent;
   @Inject
   private transient PlateService plateService;
-  @Inject
-  private transient PlateComponentPresenter plateComponentPresenter;
 
   /**
    * Initializes view.
@@ -56,16 +55,15 @@ public class PlateView extends PlateViewDesign implements BaseView {
     plateLayoutContainer.addComponent(plateLayout);
     IntStream.range(0, 12).forEach(i -> IntStream.range(0, 8)
         .forEach(j -> plateLayout.addComponent(new Label("Sample name"), i, j)));
+    plateComponentPanel.setContent(plateComponent);
   }
 
   @Override
   public void attach() {
-    Plate plate = plateService.get(1L);
-    plateComponentPresenter.setPlate(plate);
-    plateComponentPresenter.setMultiSelect(true);
-    plateComponent.setPresenter(plateComponentPresenter);
     super.attach();
+    Plate plate = plateService.get(1L);
+    plateComponent.getPresenter().setPlate(plate);
+    plateComponent.getPresenter().setMultiSelect(true);
     plateComponentPanel.setCaption(plate.getName());
-    plateComponentPanel.setContent(plateComponent);
   }
 }

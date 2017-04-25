@@ -17,19 +17,16 @@
 
 package ca.qc.ircm.proview.laboratory.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +41,6 @@ public class LaboratoryFormPresenterTest {
   private LaboratoryFormPresenter presenter;
   private LaboratoryForm view = new LaboratoryForm();
   private Laboratory laboratory = new Laboratory();
-  private BeanItem<Laboratory> item = new BeanItem<>(laboratory);
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources;
   private MessageResource generalResources =
@@ -61,7 +57,6 @@ public class LaboratoryFormPresenterTest {
     view.setLocale(locale);
     resources = view.getResources();
     presenter.init(view);
-    presenter.attach();
   }
 
   private void setFields() {
@@ -69,12 +64,8 @@ public class LaboratoryFormPresenterTest {
     view.nameField.setValue(name);
   }
 
-  @Test
-  public void setPresenterInView() {
-    LaboratoryForm view = mock(LaboratoryForm.class);
-    presenter.init(view);
-
-    verify(view).setPresenter(presenter);
+  private String errorMessage(String message) {
+    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test
@@ -87,12 +78,8 @@ public class LaboratoryFormPresenterTest {
 
   @Test
   public void required() {
-    assertTrue(view.organizationField.isRequired());
-    assertEquals(generalResources.message("required", view.organizationField.getCaption()),
-        view.organizationField.getRequiredError());
-    assertTrue(view.nameField.isRequired());
-    assertEquals(generalResources.message("required", view.nameField.getCaption()),
-        view.nameField.getRequiredError());
+    assertTrue(view.organizationField.isRequiredIndicatorVisible());
+    assertTrue(view.nameField.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -125,47 +112,36 @@ public class LaboratoryFormPresenterTest {
 
   @Test
   public void allFieldsValid() throws Throwable {
-    presenter.setItemDataSource(item);
+    presenter.setBean(laboratory);
     presenter.setEditable(true);
     setFields();
 
-    assertTrue(presenter.isValid());
-    presenter.commit();
+    assertTrue(presenter.validate().isOk());
     assertEquals(organization, laboratory.getOrganization());
     assertEquals(name, laboratory.getName());
   }
 
   @Test
   public void organization_Empty() throws Throwable {
-    presenter.setItemDataSource(item);
+    presenter.setBean(laboratory);
     presenter.setEditable(true);
     setFields();
     view.organizationField.setValue("");
 
-    assertFalse(view.organizationField.isValid());
-    assertFalse(presenter.isValid());
-    try {
-      presenter.commit();
-      fail("Expected CommitException");
-    } catch (CommitException e) {
-      // Success.
-    }
+    assertFalse(presenter.validate().isOk());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.organizationField.getErrorMessage().getFormattedHtmlMessage());
   }
 
   @Test
   public void name_Empty() throws Throwable {
-    presenter.setItemDataSource(item);
+    presenter.setBean(laboratory);
     presenter.setEditable(true);
     setFields();
     view.nameField.setValue("");
 
-    assertFalse(view.nameField.isValid());
-    assertFalse(presenter.isValid());
-    try {
-      presenter.commit();
-      fail("Expected CommitException");
-    } catch (CommitException e) {
-      // Success.
-    }
+    assertFalse(presenter.validate().isOk());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.nameField.getErrorMessage().getFormattedHtmlMessage());
   }
 }

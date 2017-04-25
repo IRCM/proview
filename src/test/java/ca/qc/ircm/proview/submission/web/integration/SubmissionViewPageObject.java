@@ -32,8 +32,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_GRID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_TABLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES_PROPERTY;
@@ -110,11 +110,11 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
+import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridLayoutElement;
 import com.vaadin.testbench.elements.LabelElement;
-import com.vaadin.testbench.elements.OptionGroupElement;
 import com.vaadin.testbench.elements.PanelElement;
-import com.vaadin.testbench.elements.TableElement;
+import com.vaadin.testbench.elements.RadioButtonGroupElement;
 import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 import org.openqa.selenium.WebElement;
@@ -142,24 +142,24 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(PanelElement.class, findElement(className(SERVICE_PANEL)));
   }
 
-  protected OptionGroupElement serviceOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(SERVICE_PROPERTY)));
+  protected RadioButtonGroupElement serviceOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(SERVICE_PROPERTY)));
   }
 
   protected void setService(Service service) {
-    setOptionValue(serviceOptions(), service.getLabel(currentLocale()));
+    serviceOptions().setValue(service.getLabel(currentLocale()));
   }
 
   protected PanelElement samplesPanel() {
     return wrap(PanelElement.class, findElement(className(SAMPLES_PANEL)));
   }
 
-  protected OptionGroupElement sampleSupportOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(SAMPLE_SUPPORT_PROPERTY)));
+  protected RadioButtonGroupElement sampleSupportOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(SAMPLE_SUPPORT_PROPERTY)));
   }
 
   protected void setSampleSupport(SampleSupport support) {
-    setOptionValue(sampleSupportOptions(), support.getLabel(currentLocale()));
+    sampleSupportOptions().setValue(support.getLabel(currentLocale()));
   }
 
   protected TextFieldElement solutionSolventField() {
@@ -202,8 +202,9 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(CheckBoxElement.class, findElement(className(LIGHT_SENSITIVE_PROPERTY)));
   }
 
-  protected OptionGroupElement storageTemperatureOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(STORAGE_TEMPERATURE_PROPERTY)));
+  protected RadioButtonGroupElement storageTemperatureOptions() {
+    return wrap(RadioButtonGroupElement.class,
+        findElement(className(STORAGE_TEMPERATURE_PROPERTY)));
   }
 
   protected TextFieldElement sampleCountField() {
@@ -222,12 +223,13 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     sampleCountField().setValue(count != null ? count.toString() : "");
   }
 
-  protected OptionGroupElement sampleContainerTypeOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(SAMPLES_CONTAINER_TYPE_PROPERTY)));
+  protected RadioButtonGroupElement sampleContainerTypeOptions() {
+    return wrap(RadioButtonGroupElement.class,
+        findElement(className(SAMPLES_CONTAINER_TYPE_PROPERTY)));
   }
 
   protected void setSampleContainerType(SampleContainerType type) {
-    setOptionValue(sampleContainerTypeOptions(), type.getLabel(currentLocale()));
+    sampleContainerTypeOptions().setValue(type.getLabel(currentLocale()));
   }
 
   protected TextFieldElement plateNameField() {
@@ -239,12 +241,12 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(LabelElement.class, findElement(className(SAMPLES_PROPERTY)));
   }
 
-  protected TableElement samplesTable() {
-    return wrap(TableElement.class, findElement(className(SAMPLES_TABLE)));
+  protected GridElement samplesGrid() {
+    return wrap(GridElement.class, findElement(className(SAMPLES_TABLE)));
   }
 
-  protected void setSampleNameInTable(int row, String name) {
-    samplesTable().getRow(row).getCell(0).$(TextFieldElement.class).first().setValue(name);
+  protected void setSampleNameInGrid(int row, String name) {
+    samplesGrid().getRow(row).getCell(0).$(TextFieldElement.class).first().setValue(name);
   }
 
   protected ButtonElement fillSamplesButton() {
@@ -356,8 +358,8 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     standardCountField().setValue(count != null ? count.toString() : "");
   }
 
-  protected TableElement standardsTable() {
-    return wrap(TableElement.class, findElement(className(STANDARD_PROPERTY)));
+  protected GridElement standardsGrid() {
+    return wrap(GridElement.class, findElement(className(STANDARD_PROPERTY)));
   }
 
   protected ButtonElement fillStandardsButton() {
@@ -384,8 +386,8 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     contaminantCountField().setValue(count != null ? count.toString() : "");
   }
 
-  protected TableElement contaminantsTable() {
-    return wrap(TableElement.class, findElement(className(CONTAMINANT_PROPERTY)));
+  protected GridElement contaminantsGrid() {
+    return wrap(GridElement.class, findElement(className(CONTAMINANT_PROPERTY)));
   }
 
   protected ButtonElement fillContaminantsButton() {
@@ -436,20 +438,20 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return findElement(className(GEL_IMAGES_PROPERTY));
   }
 
-  protected TableElement gelImagesTable() {
-    return wrap(TableElement.class, findElement(className(GEL_IMAGES_TABLE)));
+  protected GridElement gelImagesGrid() {
+    return wrap(GridElement.class, findElement(className(GEL_IMAGES_TABLE)));
   }
 
   protected PanelElement servicesPanel() {
     return wrap(PanelElement.class, findElement(className(SERVICES_PANEL)));
   }
 
-  protected OptionGroupElement digestionOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(DIGESTION_PROPERTY)));
+  protected RadioButtonGroupElement digestionOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(DIGESTION_PROPERTY)));
   }
 
   protected void setDigestion(ProteolyticDigestion digestion) {
-    setOptionValue(digestionOptions(), digestion.getLabel(currentLocale()));
+    digestionOptions().setValue(digestion.getLabel(currentLocale()));
   }
 
   protected TextFieldElement usedDigestionField() {
@@ -468,36 +470,37 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(LabelElement.class, findElement(className(EXCLUSIONS_PROPERTY)));
   }
 
-  protected OptionGroupElement injectionTypeOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(INJECTION_TYPE_PROPERTY)));
+  protected RadioButtonGroupElement injectionTypeOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(INJECTION_TYPE_PROPERTY)));
   }
 
-  protected OptionGroupElement sourceOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(SOURCE_PROPERTY)));
+  protected RadioButtonGroupElement sourceOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(SOURCE_PROPERTY)));
   }
 
-  protected OptionGroupElement proteinContentOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(PROTEIN_CONTENT_PROPERTY)));
+  protected RadioButtonGroupElement proteinContentOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(PROTEIN_CONTENT_PROPERTY)));
   }
 
   protected void setProteinContent(ProteinContent proteinContent) {
-    setOptionValue(proteinContentOptions(), proteinContent.getLabel(currentLocale()));
+    proteinContentOptions().setValue(proteinContent.getLabel(currentLocale()));
   }
 
-  protected OptionGroupElement instrumentOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(INSTRUMENT_PROPERTY)));
+  protected RadioButtonGroupElement instrumentOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(INSTRUMENT_PROPERTY)));
   }
 
   protected void setInstrument(MassDetectionInstrument instrument) {
-    setOptionValue(instrumentOptions(), instrument.getLabel(currentLocale()));
+    instrumentOptions().setValue(instrument.getLabel(currentLocale()));
   }
 
-  protected OptionGroupElement proteinIdentificationOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(PROTEIN_IDENTIFICATION_PROPERTY)));
+  protected RadioButtonGroupElement proteinIdentificationOptions() {
+    return wrap(RadioButtonGroupElement.class,
+        findElement(className(PROTEIN_IDENTIFICATION_PROPERTY)));
   }
 
   protected void setProteinIdentification(ProteinIdentification proteinIdentification) {
-    setOptionValue(proteinIdentificationOptions(), proteinIdentification.getLabel(currentLocale()));
+    proteinIdentificationOptions().setValue(proteinIdentification.getLabel(currentLocale()));
   }
 
   protected TextFieldElement proteinIdentificationLinkField() {
@@ -505,16 +508,16 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
         findElement(className(PROTEIN_IDENTIFICATION_LINK_PROPERTY)));
   }
 
-  protected OptionGroupElement quantificationOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(QUANTIFICATION_PROPERTY)));
+  protected RadioButtonGroupElement quantificationOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(QUANTIFICATION_PROPERTY)));
   }
 
   protected TextAreaElement quantificationLabelsField() {
     return wrap(TextAreaElement.class, findElement(className(QUANTIFICATION_LABELS_PROPERTY)));
   }
 
-  protected OptionGroupElement highResolutionOptions() {
-    return wrap(OptionGroupElement.class, findElement(className(HIGH_RESOLUTION_PROPERTY)));
+  protected RadioButtonGroupElement highResolutionOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(HIGH_RESOLUTION_PROPERTY)));
   }
 
   protected CheckBoxElement acetonitrileField() {
@@ -577,8 +580,8 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     uploadFile(filesUploader(), file);
   }
 
-  protected TableElement filesTable() {
-    return wrap(TableElement.class, findElement(className(FILES_TABLE)));
+  protected GridElement filesGrid() {
+    return wrap(GridElement.class, findElement(className(FILES_GRID)));
   }
 
   protected ButtonElement saveButton() {

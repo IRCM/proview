@@ -25,12 +25,33 @@ import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TOF;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TSQ_VANTAGE;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.VELOS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Locale;
 
 public class MassDetectionInstrumentTest {
+  @Test
+  public void availables() {
+    assertTrue(VELOS.available);
+    assertTrue(Q_EXACTIVE.available);
+    assertTrue(TSQ_VANTAGE.available);
+    assertTrue(ORBITRAP_FUSION.available);
+    assertFalse(LTQ_ORBI_TRAP.available);
+    assertFalse(Q_TOF.available);
+    assertFalse(TOF.available);
+
+    List<MassDetectionInstrument> availables = MassDetectionInstrument.availables();
+    assertEquals(4, availables.size());
+    assertEquals(VELOS, availables.get(0));
+    assertEquals(Q_EXACTIVE, availables.get(1));
+    assertEquals(TSQ_VANTAGE, availables.get(2));
+    assertEquals(ORBITRAP_FUSION, availables.get(3));
+  }
+
   @Test
   public void getNullLabel() {
     assertEquals("Specialist's choice", MassDetectionInstrument.getNullLabel(Locale.ENGLISH));

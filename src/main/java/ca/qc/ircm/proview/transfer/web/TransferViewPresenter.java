@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.qc.ircm.proview.transfer.web;
 
 import static ca.qc.ircm.proview.plate.QPlate.plate;
@@ -22,19 +39,16 @@ import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
+import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Item;
-import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertyValueGenerator;
+import com.vaadin.data.BeanValidationBinder;
+import com.vaadin.data.Binder;
+import com.vaadin.data.ValidationResult;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +62,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -57,7 +73,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TransferViewPresenter {
+public class TransferViewPresenter implements BinderValidator {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
   public static final String SOURCE = "source";
@@ -90,24 +106,16 @@ public class TransferViewPresenter {
   public static final String DESTINATION_SAMPLE_NAME =
       DESTINATION_SAMPLE + "." + sample.name.getMetadata().getName();
   public static final String DESTINATION_TUBE_NAME = "tubeName";
-  static final Object[] SOURCE_TUBE_COLUMNS = new Object[] { NAME, TUBE };
-  static final Object[] DESTINATION_TUBE_COLUMNS =
-      new Object[] { DESTINATION_SAMPLE_NAME, DESTINATION_TUBE_NAME };
   static final PlateType[] DESTINATION_PLATE_TYPES =
       new PlateType[] { PlateType.A, PlateType.G, PlateType.PM };
   private static final Logger logger = LoggerFactory.getLogger(TransferViewPresenter.class);
   private TransferView view;
-  private ObjectProperty<List<Sample>> samplesProperty = new ObjectProperty<>(new ArrayList<>());
-  private Map<Object, ComboBox> sourceTubeFields = new HashMap<>();
+  private List<Sample> samples = new ArrayList<>();
+  private Map<Object, ComboBox<Tube>> sourceTubeFields = new HashMap<>();
   private Map<Object, TextField> destinationTubeFields = new HashMap<>();
-  private BeanFieldGroup<Plate> destinationPlateFieldGroup = new BeanFieldGroup<>(Plate.class);
-  private BeanItemContainer<Sample> sourceTubesContainer = new BeanItemContainer<>(Sample.class);
-  private GeneratedPropertyContainer sourceTubesGeneratedContainer =
-      new GeneratedPropertyContainer(sourceTubesContainer);
-  private BeanItemContainer<DestinationTube> destinationTubesContainer =
-      new BeanItemContainer<>(DestinationTube.class);
-  private GeneratedPropertyContainer destinationTubesGeneratedContainer =
-      new GeneratedPropertyContainer(destinationTubesContainer);
+  private Map<Sample, Binder<SampleSourceTube>> sourceTubeBinders = new HashMap<>();
+  private Map<Sample, Binder<Tube>> destinationTubeBinders = new HashMap<>();
+  private Binder<Plate> destinationPlateBinder = new BeanValidationBinder<>(Plate.class);
   @Inject
   private TransferService transferService;
   @Inject
@@ -140,8 +148,8 @@ public class TransferViewPresenter {
   public void init(TransferView view) {
     logger.debug("Transfer view");
     this.view = view;
+    destinationPlateBinder.setBean(new Plate());
     prepareComponents();
-    bindFields();
     addListeners();
     updateDestinationPlateType();
   }
@@ -165,7 +173,8 @@ public class TransferViewPresenter {
     prepareSourceTubesGrid();
     view.sourcePlatesField.addStyleName(SOURCE_PLATES);
     view.sourcePlatesField.setCaption(resources.message(SOURCE_PLATES));
-    view.sourcePlatesField.setNullSelectionAllowed(false);
+    view.sourcePlatesField.setEmptySelectionAllowed(false);
+    view.sourcePlatesField.setItemCaptionGenerator(Plate::getName);
     view.sourcePlatePanel.addStyleName(SOURCE_PLATE_PANEL);
     view.sourcePlatePanel.setVisible(false);
     view.sourcePlateForm.addStyleName(SOURCE_PLATE);
@@ -181,115 +190,99 @@ public class TransferViewPresenter {
     view.destinationTabs.getTab(view.destinationPlateLayout)
         .setCaption(resources.message(DESTINATION_PLATE));
     prepareDestinationTubesGrid();
-    view.destinationPlatesTypeField.setNullSelectionAllowed(false);
-    view.destinationPlatesTypeField.setNewItemsAllowed(false);
+    view.destinationPlatesTypeField.setEmptySelectionAllowed(false);
     view.destinationPlatesTypeField.addStyleName(DESTINATION_PLATES_TYPE);
     view.destinationPlatesTypeField.setCaption(resources.message(DESTINATION_PLATES_TYPE));
-    for (PlateType type : DESTINATION_PLATE_TYPES) {
-      view.destinationPlatesTypeField.addItem(type);
-      view.destinationPlatesTypeField.setItemCaption(type, type.getLabel(locale));
-    }
-    view.destinationPlatesTypeField.setRequired(true);
-    view.destinationPlatesTypeField.setRequiredError(generalResources.message(REQUIRED));
+    view.destinationPlatesTypeField.setItems(DESTINATION_PLATE_TYPES);
+    view.destinationPlatesTypeField.setItemCaptionGenerator(type -> type.getLabel(locale));
+    destinationPlateBinder.forField(view.destinationPlatesTypeField)
+        .asRequired(generalResources.message(REQUIRED)).bind(Plate::getType, Plate::setType);
+    view.destinationPlatesTypeField.setRequiredIndicatorVisible(true);
     view.destinationPlatesField.addStyleName(DESTINATION_PLATES);
     view.destinationPlatesField.setCaption(resources.message(DESTINATION_PLATES));
-    view.destinationPlatesField.setNullSelectionAllowed(false);
-    view.destinationPlatesField.setNewItemsAllowed(true);
-    view.destinationPlatesField.setRequired(true);
-    view.destinationPlatesField.setRequiredError(generalResources.message(REQUIRED));
+    view.destinationPlatesField.setEmptySelectionAllowed(false);
+    view.destinationPlatesField.setNewItemHandler(name -> {
+      destinationPlateBinder.getBean().setName(name);
+    });
+    destinationPlateBinder.forField(view.destinationPlatesField)
+        .asRequired(generalResources.message(REQUIRED)).bind(Plate::getName, Plate::setName);
     view.destinationPlatePanel.addStyleName(DESTINATION_PLATE_PANEL);
     view.destinationPlatePanel.setVisible(false);
     view.destinationPlateForm.addStyleName(DESTINATION_PLATE);
     Plate destinationPlate = new Plate();
     destinationPlate.setType(PlateType.A);
-    destinationPlateFieldGroup.setItemDataSource(destinationPlate);
+    destinationPlateBinder.setBean(destinationPlate);
     view.saveButton.addStyleName(SAVE);
     view.saveButton.setCaption(resources.message(SAVE));
   }
 
-  @SuppressWarnings("serial")
   private void prepareSourceTubesGrid() {
     final MessageResource resources = view.getResources();
-    sourceTubesGeneratedContainer.addGeneratedProperty(TUBE,
-        new PropertyValueGenerator<ComboBox>() {
-          @Override
-          public ComboBox getValue(Item item, Object itemId, Object propertyId) {
-            Sample sample = (Sample) itemId;
-            ComboBox comboBox = prepareSourceTubeComboBox(sample);
-            return comboBox;
-          }
-
-          @Override
-          public Class<ComboBox> getType() {
-            return ComboBox.class;
-          }
-        });
     view.sourceTubesGrid.addStyleName(SOURCE_TUBES);
     view.sourceTubesGrid.addStyleName(COMPONENTS);
-    view.sourceTubesGrid.setContainerDataSource(sourceTubesGeneratedContainer);
-    view.sourceTubesGrid.setColumns(SOURCE_TUBE_COLUMNS);
-    view.sourceTubesGrid.getColumns().forEach(
-        column -> column.setHeaderCaption(resources.message((String) column.getPropertyId())));
-    view.sourceTubesGrid.getColumn(TUBE).setRenderer(new ComponentRenderer());
+    view.sourceTubesGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
+    view.sourceTubesGrid.addColumn(sample -> sourceTubeComboBox(sample), new ComponentRenderer())
+        .setId(TUBE).setCaption(resources.message(TUBE));
   }
 
-  private ComboBox prepareSourceTubeComboBox(Sample sample) {
-    final MessageResource generalResources = view.getGeneralResources();
-    ComboBox comboBox = new ComboBox();
-    comboBox.addStyleName(TUBE);
-    comboBox.setNullSelectionAllowed(false);
-    comboBox.setNewItemsAllowed(false);
-    tubeService.all(sample).forEach(tube -> {
-      comboBox.addItem(tube);
-      comboBox.setItemCaption(tube, tube.getName());
-    });
-    comboBox.setRequired(true);
-    comboBox.setRequiredError(generalResources.message(REQUIRED));
-    if (!comboBox.getItemIds().isEmpty()) {
-      comboBox.setValue(comboBox.getItemIds().iterator().next());
+  private ComboBox<Tube> sourceTubeComboBox(Sample sample) {
+    if (sourceTubeFields.containsKey(sample)) {
+      return sourceTubeFields.get(sample);
+    } else {
+      final MessageResource generalResources = view.getGeneralResources();
+      ComboBox<Tube> comboBox = new ComboBox<>();
+      comboBox.addStyleName(TUBE);
+      comboBox.setEmptySelectionAllowed(false);
+      List<Tube> tubes = tubeService.all(sample);
+      comboBox.setItems(tubes);
+      comboBox.setItemCaptionGenerator(Tube::getName);
+      comboBox.setRequiredIndicatorVisible(true);
+      Binder<SampleSourceTube> binder = new BeanValidationBinder<>(SampleSourceTube.class);
+      binder.setBean(new SampleSourceTube(tubes.isEmpty() ? null : tubes.get(0)));
+      binder.forField(comboBox).asRequired(generalResources.message(REQUIRED))
+          .bind(SampleSourceTube::getTube, SampleSourceTube::setTube);
+      sourceTubeBinders.put(sample, binder);
+      sourceTubeFields.put(sample, comboBox);
+      return comboBox;
     }
-    sourceTubeFields.put(sample, comboBox);
-    return comboBox;
   }
 
   private void prepareDestinationTubesGrid() {
     final MessageResource resources = view.getResources();
-    destinationTubesContainer.addNestedContainerBean(DESTINATION_SAMPLE);
     view.destinationTubesGrid.addStyleName(DESTINATION_TUBES);
     view.destinationTubesGrid.addStyleName(COMPONENTS);
-    view.destinationTubesGrid.setContainerDataSource(destinationTubesGeneratedContainer);
-    view.destinationTubesGrid.setColumns(DESTINATION_TUBE_COLUMNS);
-    view.destinationTubesGrid.getColumns().forEach(
-        column -> column.setHeaderCaption(resources.message((String) column.getPropertyId())));
-    view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).setRenderer(new ComponentRenderer());
+    view.destinationTubesGrid.addColumn(Sample::getName).setId(DESTINATION_SAMPLE_NAME)
+        .setCaption(resources.message(DESTINATION_SAMPLE_NAME));
+    view.destinationTubesGrid
+        .addColumn(sample -> destinationTubeNameField(sample), new ComponentRenderer())
+        .setId(DESTINATION_TUBE_NAME).setCaption(resources.message(DESTINATION_TUBE_NAME));
   }
 
-  private TextField prepareDestinationTubeNameField(Sample sample) {
-    MessageResource generalResources = view.getGeneralResources();
-    TextField textField = new TextField();
-    textField.addStyleName(DESTINATION_TUBE_NAME);
-    textField.setRequired(true);
-    textField.setRequiredError(generalResources.message(REQUIRED));
-    textField.addValidator(value -> {
-      if (tubeService.get((String) value) != null) {
-        throw new InvalidValueException(generalResources.message(ALREADY_EXISTS));
-      }
-    });
-    destinationTubeFields.put(sample, textField);
-    return textField;
-  }
-
-  private void bindFields() {
-    destinationPlateFieldGroup.bind(view.destinationPlatesTypeField, PLATE_TYPE);
-    destinationPlateFieldGroup.bind(view.destinationPlatesField, PLATE_NAME);
+  private TextField destinationTubeNameField(Sample sample) {
+    if (destinationTubeFields.containsKey(sample)) {
+      return destinationTubeFields.get(sample);
+    } else {
+      MessageResource generalResources = view.getGeneralResources();
+      TextField textField = new TextField();
+      textField.addStyleName(DESTINATION_TUBE_NAME);
+      Binder<Tube> binder = new BeanValidationBinder<>(Tube.class);
+      binder.setBean(new Tube());
+      binder.forField(textField).asRequired(generalResources.message(REQUIRED))
+          .withValidator((value, context) -> tubeService.get(value) != null
+              ? ValidationResult.error(generalResources.message(ALREADY_EXISTS))
+              : ValidationResult.ok())
+          .bind(Tube::getName, Tube::setName);
+      destinationTubeBinders.put(sample, binder);
+      destinationTubeFields.put(sample, textField);
+      return textField;
+    }
   }
 
   private void addListeners() {
     view.sourcePlatesField
-        .addValueChangeListener(e -> updateSourcePlate((Plate) view.sourcePlatesField.getValue()));
+        .addValueChangeListener(e -> updateSourcePlate(view.sourcePlatesField.getValue()));
     view.destinationPlatesTypeField.addValueChangeListener(e -> updateDestinationPlateType());
     view.destinationPlatesField.addValueChangeListener(e -> updateDestinationPlate());
-    samplesProperty.addValueChangeListener(e -> updateSamples());
     view.saveButton.addClickListener(e -> save());
   }
 
@@ -297,7 +290,6 @@ public class TransferViewPresenter {
     view.sourcePlatePanel.setVisible(plate != null);
     if (plate != null) {
       view.sourcePlatePanel.setCaption(plate.getName());
-      List<Sample> samples = samplesProperty.getValue();
       List<PlateSpot> wells =
           samples.stream().flatMap(sample -> plateSpotService.location(sample, plate).stream())
               .collect(Collectors.toList());
@@ -308,22 +300,18 @@ public class TransferViewPresenter {
   }
 
   private void updateDestinationPlateType() {
-    PlateType type = (PlateType) view.destinationPlatesTypeField.getValue();
+    PlateType type = view.destinationPlatesTypeField.getValue();
     List<Plate> plates = plateService.all(new PlateFilterBuilder().type(type).build());
-    view.destinationPlatesField.removeAllItems();
-    plates.forEach(plate -> {
-      view.destinationPlatesField.addItem(plate.getName());
-      view.destinationPlatesField.setItemCaption(plate.getName(), plate.getName());
-    });
+    view.destinationPlatesField.setItems(plates.stream().map(plate -> plate.getName()));
   }
 
   private void updateDestinationPlate() {
-    String name = (String) view.destinationPlatesField.getValue();
+    String name = view.destinationPlatesField.getValue();
     Plate plate = plateService.get(name);
     if (plate == null) {
       plate = new Plate();
       plate.setName(name);
-      plate.setType((PlateType) view.destinationPlatesTypeField.getValue());
+      plate.setType(view.destinationPlatesTypeField.getValue());
       plate.initSpots();
     }
 
@@ -333,17 +321,11 @@ public class TransferViewPresenter {
   }
 
   private void updateSamples() {
-    List<Sample> samples = samplesProperty.getValue();
-    sourceTubesContainer.removeAllItems();
-    sourceTubesContainer.addAll(samples);
+    view.sourceTubesGrid.setItems(samples);
     List<Plate> plates = plateService.all(new PlateFilterBuilder().containsAnySamples(
         samples.stream().filter(s -> s instanceof SubmissionSample).collect(Collectors.toList()))
         .build());
-    view.sourcePlatesField.removeAllItems();
-    plates.forEach(plate -> {
-      view.sourcePlatesField.addItem(plate);
-      view.sourcePlatesField.setItemCaption(plate, plate.getName());
-    });
+    view.sourcePlatesField.setItems(plates);
     if (!plates.isEmpty()) {
       view.sourcePlatesField.setValue(plates.get(0));
     }
@@ -354,10 +336,7 @@ public class TransferViewPresenter {
                 view.sourcePlatesField.setValue(p);
               });
         });
-    destinationTubesContainer.removeAllItems();
-    destinationTubesContainer.addAll(
-        samples.stream().map(s -> new DestinationTube(s, prepareDestinationTubeNameField(s)))
-            .collect(Collectors.toList()));
+    view.destinationTubesGrid.setItems(samples);
   }
 
   private boolean isTubeSource() {
@@ -371,31 +350,40 @@ public class TransferViewPresenter {
   private boolean validate() {
     logger.trace("Validate transfer");
     boolean valid = true;
-    try {
-      if (isTubeSource()) {
-        validateSourceTubes();
-      } else {
-        validateSourcePlate();
+    if (isTubeSource()) {
+      for (Sample sample : samples) {
+        valid &= validate(sourceTubeBinders.get(sample));
       }
-      if (isTubeDestination()) {
-        validateDestinationTubes();
-      } else {
-        validateDestinationPlate();
+    } else {
+      valid &= validate(() -> validateSourcePlate());
+    }
+    if (isTubeDestination()) {
+      for (Sample sample : samples) {
+        valid &= validate(destinationTubeBinders.get(sample));
       }
-    } catch (InvalidValueException e) {
+    } else {
+      valid &= validate(() -> validateDestinationPlate());
+    }
+    if (!valid) {
       final MessageResource generalResources = view.getGeneralResources();
-      logger.trace("Validation value failed with message {}", e.getMessage(), e);
+      logger.trace("Transfer validation failed");
       view.showError(generalResources.message(FIELD_NOTIFICATION));
-      valid = false;
     }
     return valid;
   }
 
-  private void validateSourceTubes() {
-    sourceTubeFields.values().forEach(t -> t.validate());
+  private boolean validate(Supplier<ValidationResult> validator) {
+    ValidationResult result = validator.get();
+    if (result.isError()) {
+      logger.trace("Validation error {}", result.getErrorMessage());
+      view.showError(result.getErrorMessage());
+      return false;
+    } else {
+      return true;
+    }
   }
 
-  private void validateSourcePlate() {
+  private ValidationResult validateSourcePlate() {
     view.sourcePlatesField.setComponentError(null);
     MessageResource resources = view.getResources();
     Collection<PlateSpot> selectedWells = view.sourcePlateFormPresenter.getSelectedSpots();
@@ -403,32 +391,32 @@ public class TransferViewPresenter {
       logger.debug("No samples to transfer");
       String message = resources.message(SOURCE_PLATE_EMPTY);
       view.sourcePlatesField.setComponentError(new UserError(message));
-      throw new InvalidValueException(message);
+      return ValidationResult.error(message);
     }
     Map<Sample, Boolean> sampleSelection =
-        samplesProperty.getValue().stream().collect(Collectors.toMap(s -> s, s -> false));
+        samples.stream().collect(Collectors.toMap(s -> s, s -> false));
     for (PlateSpot well : selectedWells) {
       if (well.getSample() == null) {
         logger.debug("A selected well {} does not have a sample", well);
         String message = resources.message(SOURCE_PLATE_EMPTY_WELL, well.getName());
         view.sourcePlatesField.setComponentError(new UserError(message));
-        throw new InvalidValueException(message);
+        return ValidationResult.error(message);
       }
       sampleSelection.put(well.getSample(), true);
     }
-    sampleSelection.entrySet().stream().filter(e -> !e.getValue()).findAny().ifPresent(e -> {
-      logger.debug("A selected well {} does not have a sample", e.getKey());
-      String message = resources.message(SOURCE_PLATE_SAMPLE_NOT_SELECTED, e.getKey().getName());
+    Optional<Map.Entry<Sample, Boolean>> emptySelectionEntry =
+        sampleSelection.entrySet().stream().filter(e -> !e.getValue()).findAny();
+    if (emptySelectionEntry.isPresent()) {
+      Sample sample = emptySelectionEntry.orElse(null).getKey();
+      logger.debug("A selected well {} does not have a sample", sample);
+      String message = resources.message(SOURCE_PLATE_SAMPLE_NOT_SELECTED, sample.getName());
       view.sourcePlatesField.setComponentError(new UserError(message));
-      throw new InvalidValueException(message);
-    });
+      return ValidationResult.error(message);
+    }
+    return ValidationResult.ok();
   }
 
-  private void validateDestinationTubes() {
-    destinationTubeFields.values().forEach(t -> t.validate());
-  }
-
-  private void validateDestinationPlate() {
+  private ValidationResult validateDestinationPlate() {
     view.destinationPlatesField.setComponentError(null);
     MessageResource resources = view.getResources();
     Plate plate = view.destinationPlateFormPresenter.getPlate();
@@ -437,17 +425,16 @@ public class TransferViewPresenter {
       logger.debug("No selection in destination plate");
       String message = resources.message(DESTINATION_PLATE_NO_SELECTION);
       view.destinationPlatesField.setComponentError(new UserError(message));
-      throw new InvalidValueException(message);
+      return ValidationResult.error(message);
     }
     int column = spot.getColumn();
     int row = spot.getRow();
     for (int i = 0; i < sources().size(); i++) {
       if (plate.spot(row, column).getSample() != null) {
         logger.debug("Not enough free wells in destination plate starting from selection");
-        String message = resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE,
-            samplesProperty.getValue().size());
+        String message = resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, samples.size());
         view.destinationPlatesField.setComponentError(new UserError(message));
-        throw new InvalidValueException(message);
+        return ValidationResult.error(message);
       }
       row++;
       if (row >= plate.getRowCount()) {
@@ -456,19 +443,20 @@ public class TransferViewPresenter {
       }
       if (column >= plate.getColumnCount()) {
         logger.debug("Not enough free wells in destination plate starting from selection");
-        String message = resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE,
-            samplesProperty.getValue().size());
+        String message = resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, samples.size());
         view.destinationPlatesField.setComponentError(new UserError(message));
-        throw new InvalidValueException(message);
+        return ValidationResult.error(message);
       }
     }
+    return ValidationResult.ok();
   }
 
   private List<SampleContainer> sources() {
     if (isTubeSource()) {
-      List<Sample> ids = sourceTubesContainer.getItemIds();
-      return ids.stream().map(sample -> (Tube) sourceTubeFields.get(sample).getValue())
-          .collect(Collectors.toList());
+      List<Tube> sources =
+          samples.stream().map(sample -> sourceTubeBinders.get(sample).getBean().getTube())
+              .collect(Collectors.toList());
+      return new ArrayList<>(sources);
     } else {
       return new ArrayList<>(view.sourcePlateFormPresenter.getSelectedSpots());
     }
@@ -476,9 +464,9 @@ public class TransferViewPresenter {
 
   private List<SampleContainer> destinations() {
     if (isTubeDestination()) {
-      List<DestinationTube> ids = destinationTubesContainer.getItemIds();
-      return ids.stream().map(dtube -> new Tube(null, dtube.getTubeName().getValue()))
-          .collect(Collectors.toList());
+      List<Tube> destinations = samples.stream()
+          .map(sample -> destinationTubeBinders.get(sample).getBean()).collect(Collectors.toList());
+      return new ArrayList<>(destinations);
     } else {
       Plate plate = view.destinationPlateFormPresenter.getPlate();
       PlateSpot spot = view.destinationPlateFormPresenter.getSelectedSpot();
@@ -521,7 +509,24 @@ public class TransferViewPresenter {
   }
 
   public void enter(String parameters) {
-    samplesProperty.setValue(view.savedSamples());
+    samples = view.savedSamples();
+    updateSamples();
+  }
+
+  public static class SampleSourceTube {
+    private Tube tube;
+
+    private SampleSourceTube(Tube tube) {
+      this.tube = tube;
+    }
+
+    public Tube getTube() {
+      return tube;
+    }
+
+    public void setTube(Tube tube) {
+      this.tube = tube;
+    }
   }
 
   public static class DestinationTube {

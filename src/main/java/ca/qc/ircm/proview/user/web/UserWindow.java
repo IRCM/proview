@@ -19,9 +19,10 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -38,15 +39,13 @@ public class UserWindow extends Window implements BaseComponent {
   public static final String WINDOW_STYLE = "user-window";
   public static final String TITLE = "title";
   private static final long serialVersionUID = 9032686080431923743L;
-  private UserForm view = new UserForm();
+  private static final Logger logger = LoggerFactory.getLogger(UserWindow.class);
   private Panel panel;
-  private User user;
   @Inject
-  private UserFormPresenter presenter;
+  private UserForm view;
 
   @PostConstruct
   protected void init() {
-    view.setPresenter(presenter);
     addStyleName(WINDOW_STYLE);
     panel = new Panel();
     setContent(panel);
@@ -60,12 +59,26 @@ public class UserWindow extends Window implements BaseComponent {
   @Override
   public void attach() {
     super.attach();
-    setCaption(getResources().message(TITLE, user.getEmail()));
-    presenter.setItemDataSource(new BeanItem<>(user));
-    presenter.addSaveListener(e -> close());
+    view.addSaveListener(e -> close());
   }
 
+  /**
+   * Sets user.
+   *
+   * @param user
+   *          user
+   */
   public void setUser(User user) {
-    this.user = user;
+    if (isAttached()) {
+      updateUser(user);
+    } else {
+      addAttachListener(e -> updateUser(user));
+    }
+  }
+
+  private void updateUser(User user) {
+    logger.debug("User window for user {}", user);
+    setCaption(getResources().message(TITLE, user != null ? user.getName() : ""));
+    view.getPresenter().setBean(user);
   }
 }

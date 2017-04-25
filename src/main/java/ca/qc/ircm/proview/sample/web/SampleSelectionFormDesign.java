@@ -21,9 +21,9 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class SampleSelectionFormDesign extends VerticalLayout {
   protected Panel samplesPanel;
-  protected Grid samplesGrid;
+  protected Grid<ca.qc.ircm.proview.sample.SubmissionSample> samplesGrid;
   protected Panel controlsPanel;
-  protected Grid controlsGrid;
+  protected Grid<ca.qc.ircm.proview.sample.Control> controlsGrid;
   protected Button selectButton;
   protected Button clearButton;
 

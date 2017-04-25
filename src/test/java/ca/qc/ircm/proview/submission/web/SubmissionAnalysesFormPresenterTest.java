@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITION_FILE;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITION_INDEX;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.NAME;
 import static org.junit.Assert.assertEquals;
@@ -29,12 +30,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Panel;
@@ -100,15 +101,16 @@ public class SubmissionAnalysesFormPresenterTest {
     return panelCaptor.getAllValues();
   }
 
-  private List<Grid> viewGrids() {
+  @SuppressWarnings("unchecked")
+  private List<Grid<Acquisition>> viewGrids() {
     return viewPanels().stream().map(panel -> (VerticalLayout) panel.getContent())
-        .map(layout -> (Grid) layout.getComponent(0)).collect(Collectors.toList());
+        .map(layout -> (Grid<Acquisition>) layout.getComponent(0)).collect(Collectors.toList());
   }
 
   @Test
   public void components() {
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     verify(msAnalysisService).all(submission);
     verify(view).removeAllComponents();
@@ -118,12 +120,12 @@ public class SubmissionAnalysesFormPresenterTest {
   @Test
   public void styles() {
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     for (Panel analysisPanel : viewPanels()) {
       assertTrue(analysisPanel.getStyleName().contains(ANALYSIS));
     }
-    for (Grid acquisitionsGrid : viewGrids()) {
+    for (Grid<Acquisition> acquisitionsGrid : viewGrids()) {
       assertTrue(acquisitionsGrid.getStyleName().contains(ACQUISITIONS));
     }
   }
@@ -131,7 +133,7 @@ public class SubmissionAnalysesFormPresenterTest {
   @Test
   public void captions() {
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
     List<Panel> panels = viewPanels();
@@ -146,15 +148,17 @@ public class SubmissionAnalysesFormPresenterTest {
   @Test
   public void grids() {
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
-    for (Grid acquisitionsGrid : viewGrids()) {
-      List<Column> columns = acquisitionsGrid.getColumns();
+    for (Grid<Acquisition> acquisitionsGrid : viewGrids()) {
+      List<Column<Acquisition, ?>> columns = acquisitionsGrid.getColumns();
 
-      assertEquals(NAME, columns.get(0).getPropertyId());
-      assertEquals(resources.message(NAME), columns.get(0).getHeaderCaption());
-      assertEquals(ACQUISITION_FILE, columns.get(1).getPropertyId());
-      assertEquals(resources.message(ACQUISITION_FILE), columns.get(1).getHeaderCaption());
+      assertEquals(NAME, columns.get(0).getId());
+      assertEquals(resources.message(NAME), columns.get(0).getCaption());
+      assertEquals(ACQUISITION_FILE, columns.get(1).getId());
+      assertEquals(resources.message(ACQUISITION_FILE), columns.get(1).getCaption());
+      assertEquals(ACQUISITION_INDEX, columns.get(2).getId());
+      assertEquals(true, columns.get(2).isHidden());
     }
   }
 }

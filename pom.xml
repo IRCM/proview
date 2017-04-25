@@ -59,25 +59,20 @@
     <eclipselink.version>2.6.4</eclipselink.version>
     <querydsl.version>4.1.3</querydsl.version>
     <shiro.version>1.3.2</shiro.version>
-    <vaadin-spring-boot.version>1.1.0</vaadin-spring-boot.version>
-    <vaadin.version>7.7.4</vaadin.version>
-    <vaadin-spring.version>1.1.0</vaadin-spring.version>
-    <vaadin-icons.version>1.0.1</vaadin-icons.version>
+    <vaadin.version>8.1.0.alpha6</vaadin.version>
     <vaadin.theme>${project.artifactId}</vaadin.theme> 
-    <loginform.version>0.6.2</loginform.version>
-    <confirmdialog.version>2.1.3</confirmdialog.version>
-    <popupbutton.version>2.6.0</popupbutton.version>
-    <componentrenderer.version>1.0.3</componentrenderer.version>
-    <plate-layout.version>0.2</plate-layout.version>
-    <easyuploads.version>7.4.10</easyuploads.version>
+    <confirmdialog.version>3.1.1</confirmdialog.version>
+    <popupbutton.version>3.0.0</popupbutton.version>
+    <plate-layout.version>0.8</plate-layout.version>
+    <easyuploads.version>8.0.0</easyuploads.version>
     <guava.version>19.0</guava.version>
     <commons-lang3.version>3.5</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
     <thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
-    <vaadin.testbench.version>4.1.0</vaadin.testbench.version>
-    <selenium.version>2.53.1</selenium.version>
+    <selenium.version>3.0.1</selenium.version>
     <greenmail.version>1.5.2</greenmail.version>
-    <testbench-tests.skip>true</testbench-tests.skip>
+    <testbench.skip>true</testbench.skip>
+    <testbench.driver>org.openqa.selenium.firefox.FirefoxDriver</testbench.driver>
     <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
     <resources-plugin.version>2.6</resources-plugin.version>
     <staticweave-maven-plugin.version>1.0.0</staticweave-maven-plugin.version>
@@ -132,25 +127,18 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-testbench</artifactId>
-      <version>${vaadin.testbench.version}</version>
+      <artifactId>vaadin-testbench-api</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-testbench-core</artifactId>
-      <version>${vaadin.testbench.version}</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>servlet-api-2.5</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-api</artifactId>
+      <version>${selenium.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-remote-driver</artifactId>
       <version>${selenium.version}</version>
       <scope>test</scope>
     </dependency>
@@ -303,15 +291,14 @@
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-spring-boot-starter</artifactId>
-      <version>${vaadin-spring-boot.version}</version>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-server</artifactId>
+      <artifactId>vaadin-compatibility-server</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-shared</artifactId>
+      <artifactId>vaadin-compatibility-shared</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
@@ -323,17 +310,11 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-client</artifactId>
+      <artifactId>vaadin-compatibility-client</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-spring</artifactId>
-      <version>${vaadin-spring.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.icons</groupId>
-      <artifactId>vaadin-icons</artifactId>
-      <version>${vaadin-icons.version}</version>
     </dependency>
     <dependency>
       <groupId>org.vaadin.addon</groupId>
@@ -344,11 +325,6 @@
       <groupId>org.vaadin.addons</groupId>
       <artifactId>popupbutton</artifactId>
       <version>${popupbutton.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>de.datenhahn.vaadin</groupId>
-      <artifactId>componentrenderer</artifactId>
-      <version>${componentrenderer.version}</version>
     </dependency>
     <dependency>
       <groupId>ca.qc.ircm</groupId>
@@ -478,41 +454,14 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <excludes>
-              <exclude>ca/qc/ircm/proview/**/integration/**/*.java</exclude>
               <exclude>ca/qc/ircm/proview/test/**/*.java</exclude>
             </excludes>
             <systemPropertyVariables>
               <slow-tests.skip>${slow-tests.skip}</slow-tests.skip>
+              <testbench.skip>${testbench.skip}</testbench.skip>
+              <testbench.driver>${testbench.driver}</testbench.driver>
             </systemPropertyVariables>
           </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${maven-failsafe-plugin.version}</version>
-          <configuration>
-            <systemPropertyVariables>
-              <testbench-tests.skip>${testbench-tests.skip}</testbench-tests.skip>
-              <slow-tests.skip>${slow-tests.skip}</slow-tests.skip>
-              <spring.devtools.restart.enabled>false</spring.devtools.restart.enabled>
-            </systemPropertyVariables>
-            <includes>
-              <include>ca/qc/ircm/proview/**/integration/**/*.java</include>
-            </includes>
-          </configuration>
-          <executions>
-            <execution>
-              <id>integration-test</id>
-              <goals>
-                <goal>integration-test</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>verify</id>
-              <goals>
-                <goal>verify</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
@@ -590,6 +539,7 @@
             <style>OBF</style>
             <strict>true</strict>
             <logLevel>INFO</logLevel>
+            <extraJvmArgs>-Xmx1G</extraJvmArgs>
           </configuration>
           <executions>
             <execution>
@@ -688,10 +638,6 @@
         <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
       </plugin>
@@ -755,7 +701,17 @@
           <id>vaadin-addons</id>
           <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
+        <repository>
+          <id>vaadin-prereleases</id>
+          <url>https://maven.vaadin.com/vaadin-prereleases</url>
+        </repository>
       </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>vaadin-prereleases</id>
+          <url>https://maven.vaadin.com/vaadin-prereleases</url>
+        </pluginRepository>
+      </pluginRepositories>
     </profile>
     <profile>
       <id>test-quick</id>
@@ -769,9 +725,26 @@
       </properties>
     </profile>
     <profile>
-      <id>test-testbench</id>
+      <id>testbench</id>
       <properties>
-        <testbench-tests.skip>false</testbench-tests.skip>
+        <testbench.skip>false</testbench.skip>
+      </properties>
+    </profile>
+    <profile>
+      <id>chrome</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
+      </properties>
+    </profile>
+    <profile>
+      <id>firefox</id>
+      <properties>
+        <testbench.driver>org.openqa.selenium.firefox.FirefoxDriver</testbench.driver>
       </properties>
     </profile>
     <profile>

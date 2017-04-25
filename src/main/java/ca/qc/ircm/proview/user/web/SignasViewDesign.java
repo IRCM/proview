@@ -21,7 +21,7 @@ import com.vaadin.ui.declarative.Design;
 public class SignasViewDesign extends VerticalLayout {
   protected VerticalLayout menuLayout;
   protected Label headerLabel;
-  protected Grid usersGrid;
+  protected Grid<ca.qc.ircm.proview.user.User> usersGrid;
 
   public SignasViewDesign() {
     Design.read(this);

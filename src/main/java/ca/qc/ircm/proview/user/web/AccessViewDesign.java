@@ -22,7 +22,7 @@ import com.vaadin.ui.declarative.Design;
 public class AccessViewDesign extends VerticalLayout {
   protected VerticalLayout menuLayout;
   protected Label headerLabel;
-  protected Grid usersGrid;
+  protected Grid<ca.qc.ircm.proview.user.User> usersGrid;
   protected Button activateButton;
   protected Button deactivateButton;
   protected Button clearButton;

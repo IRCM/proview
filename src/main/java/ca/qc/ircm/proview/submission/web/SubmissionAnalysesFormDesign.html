@@ -1,67 +1,17 @@
 <!doctype html>
 <html>
  <head>
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
-  <meta charset="UTF-8" name="vaadin-version" content="7.7.0">
- </head> 
- <body> 
-  <vaadin-vertical-layout spacing> 
-   <vaadin-panel caption="MS analysis (2016-02-19)" size-auto _id="analysisPanel"> 
-    <vaadin-vertical-layout spacing> 
-     <vaadin-grid _id="analysisGrid"> 
-      <table> 
-       <colgroup> 
-        <col property-id="Project" sortable> 
-        <col property-id="Status" sortable> 
-       </colgroup> 
-       <thead> 
-        <tr default> 
-         <th plain-text>Project</th> 
-         <th plain-text>Status</th> 
-        </tr> 
-       </thead> 
-       <tbody> 
-        <tr> 
-         <td>Customer Project 1</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr> 
-         <td>Customer Project 2</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr> 
-         <td>Customer Project 3</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr> 
-         <td>Customer Project 4</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr> 
-         <td>Customer Project 5</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr> 
-         <td>Customer Project 6</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr> 
-         <td>Customer Project 7</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr> 
-         <td>Customer Project 8</td> 
-         <td>OK</td> 
-        </tr> 
-        <tr> 
-         <td>Customer Project 9</td> 
-         <td>OK</td> 
-        </tr> 
-       </tbody> 
-      </table> 
-     </vaadin-grid> 
-    </vaadin-vertical-layout> 
-   </vaadin-panel> 
-  </vaadin-vertical-layout>  
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="8.0.2">
+ </head>
+ <body>
+  <vaadin-vertical-layout margin="false">
+   <vaadin-panel caption="MS analysis (2016-02-19)" size-auto _id="analysisPanel">
+    <vaadin-vertical-layout margin="false">
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.submission.Submission" _id="analysisGrid"></vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+  </vaadin-vertical-layout>
  </body>
 </html>

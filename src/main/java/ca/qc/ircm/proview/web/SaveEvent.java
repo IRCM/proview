@@ -22,24 +22,24 @@ import com.vaadin.ui.Component;
 /**
  * Save event.
  */
-public class SaveEvent extends Component.Event {
+public class SaveEvent<V> extends Component.Event {
   private static final long serialVersionUID = 7709868652458561869L;
-  private Object savedObject;
+  private V savedObject;
 
   public SaveEvent(Component source) {
     super(source);
   }
 
-  public SaveEvent(Component source, Object savedObject) {
+  public SaveEvent(Component source, V savedObject) {
     super(source);
     this.savedObject = savedObject;
   }
 
-  public Object getSavedObject() {
+  public V getSavedObject() {
     return savedObject;
   }
 
-  public void setSavedObject(Object savedObject) {
+  public void setSavedObject(V savedObject) {
     this.savedObject = savedObject;
   }
 }

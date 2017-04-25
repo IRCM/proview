@@ -47,8 +47,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_GRID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_TABLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILE_FILENAME_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_BUTTON_STYLE;
@@ -67,7 +67,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTIO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.NULL_ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
@@ -76,7 +75,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NA
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME_PROPERTY;
@@ -175,20 +173,16 @@ import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Container;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.converter.StringToDoubleConverter;
-import com.vaadin.data.util.converter.StringToIntegerConverter;
-import com.vaadin.server.CompositeErrorMessage;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
+import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
@@ -366,9 +360,9 @@ public class SubmissionFormPresenterTest {
     view.sampleTypeLabel = new Label();
     view.inactiveLabel = new Label();
     view.servicePanel = new Panel();
-    view.serviceOptions = new OptionGroup();
+    view.serviceOptions = new RadioButtonGroup<>();
     view.samplesPanel = new Panel();
-    view.sampleSupportOptions = new OptionGroup();
+    view.sampleSupportOptions = new RadioButtonGroup<>();
     view.solutionSolventField = new TextField();
     view.sampleCountField = new TextField();
     view.sampleNameField = new TextField();
@@ -380,12 +374,12 @@ public class SubmissionFormPresenterTest {
     view.averageMassField = new TextField();
     view.toxicityField = new TextField();
     view.lightSensitiveField = new CheckBox();
-    view.storageTemperatureOptions = new OptionGroup();
-    view.sampleContainerTypeOptions = new OptionGroup();
+    view.storageTemperatureOptions = new RadioButtonGroup<>();
+    view.sampleContainerTypeOptions = new RadioButtonGroup<>();
     view.plateNameField = new TextField();
     view.samplesLabel = new Label();
-    view.samplesTableLayout = new HorizontalLayout();
-    view.samplesTable = new Table();
+    view.samplesGridLayout = new HorizontalLayout();
+    view.samplesGrid = new Grid<>();
     view.fillSamplesButton = new Button();
     view.samplesPlateContainer = new VerticalLayout();
     int columns = PlateType.SUBMISSION.getColumnCount();
@@ -403,17 +397,17 @@ public class SubmissionFormPresenterTest {
     view.standardsPanel = new Panel();
     view.standardCountField = new TextField();
     view.standardsTableLayout = new HorizontalLayout();
-    view.standardsTable = new Table();
+    view.standardsGrid = new Grid<>();
     view.fillStandardsButton = new Button();
     view.contaminantsPanel = new Panel();
     view.contaminantCountField = new TextField();
     view.contaminantsTableLayout = new HorizontalLayout();
-    view.contaminantsTable = new Table();
+    view.contaminantsGrid = new Grid<>();
     view.fillContaminantsButton = new Button();
     view.gelPanel = new Panel();
-    view.separationField = new ComboBox();
-    view.thicknessField = new ComboBox();
-    view.colorationField = new ComboBox();
+    view.separationField = new ComboBox<>();
+    view.thicknessField = new ComboBox<>();
+    view.colorationField = new ComboBox<>();
     view.otherColorationField = new TextField();
     view.developmentTimeField = new TextField();
     view.decolorationField = new CheckBox();
@@ -421,23 +415,23 @@ public class SubmissionFormPresenterTest {
     view.proteinQuantityField = new TextField();
     view.gelImagesLayout = new HorizontalLayout();
     view.gelImagesUploader = gelImagesUploader;
-    view.gelImagesTable = new Table();
+    view.gelImagesGrid = new Grid<>();
     view.servicesPanel = new Panel();
-    view.digestionOptions = new OptionGroup();
+    view.digestionOptions = new RadioButtonGroup<>();
     view.usedProteolyticDigestionMethodField = new TextField();
     view.otherProteolyticDigestionMethodField = new TextField();
     view.otherProteolyticDigestionMethodNote = new Label();
     view.enrichmentLabel = new Label();
     view.exclusionsLabel = new Label();
-    view.injectionTypeOptions = new OptionGroup();
-    view.sourceOptions = new OptionGroup();
-    view.proteinContentOptions = new OptionGroup();
-    view.instrumentOptions = new OptionGroup();
-    view.proteinIdentificationOptions = new OptionGroup();
+    view.injectionTypeOptions = new RadioButtonGroup<>();
+    view.sourceOptions = new RadioButtonGroup<>();
+    view.proteinContentOptions = new RadioButtonGroup<>();
+    view.instrumentOptions = new RadioButtonGroup<>();
+    view.proteinIdentificationOptions = new RadioButtonGroup<>();
     view.proteinIdentificationLinkField = new TextField();
-    view.quantificationOptions = new OptionGroup();
+    view.quantificationOptions = new RadioButtonGroup<>();
     view.quantificationLabelsField = new TextArea();
-    view.highResolutionOptions = new OptionGroup();
+    view.highResolutionOptions = new RadioButtonGroup<>();
     view.solventsLayout = new VerticalLayout();
     view.acetonitrileSolventsField = new CheckBox();
     view.methanolSolventsField = new CheckBox();
@@ -450,7 +444,7 @@ public class SubmissionFormPresenterTest {
     view.filesPanel = new Panel();
     view.filesUploaderLayout = new VerticalLayout();
     view.filesUploader = filesUploader;
-    view.filesTable = new Table();
+    view.filesGrid = new Grid<>();
     view.buttonsLayout = new HorizontalLayout();
     view.submitButton = new Button();
     when(view.getLocale()).thenReturn(locale);
@@ -514,86 +508,81 @@ public class SubmissionFormPresenterTest {
     view.commentsField.setValue(comments);
   }
 
-  private void setValuesInSamplesTable() {
-    Container samplesContainer = view.samplesTable.getContainerDataSource();
-    List<?> samples = new ArrayList<>(samplesContainer.getItemIds());
-    SubmissionSample sample = (SubmissionSample) samples.get(0);
-    sampleNameField1 =
-        setValueInSamplesTable(samplesContainer, sample, sampleName1, SAMPLE_NAME_PROPERTY);
-    sampleNumberProteinField1 = setValueInSamplesTable(samplesContainer, sample,
-        String.valueOf(sampleNumberProtein1), SAMPLE_NUMBER_PROTEIN_PROPERTY);
-    sampleProteinWeightField1 = setValueInSamplesTable(samplesContainer, sample,
-        String.valueOf(proteinWeight1), PROTEIN_WEIGHT_PROPERTY);
-    sample = (SubmissionSample) samples.get(1);
-    sampleNameField2 =
-        setValueInSamplesTable(samplesContainer, sample, sampleName2, SAMPLE_NAME_PROPERTY);
-    sampleNumberProteinField2 = setValueInSamplesTable(samplesContainer, sample,
-        String.valueOf(sampleNumberProtein2), SAMPLE_NUMBER_PROTEIN_PROPERTY);
-    sampleProteinWeightField2 = setValueInSamplesTable(samplesContainer, sample,
-        String.valueOf(proteinWeight2), PROTEIN_WEIGHT_PROPERTY);
+  @SuppressWarnings("unchecked")
+  private <V> ListDataProvider<V> dataProvider(Grid<V> grid) {
+    return (ListDataProvider<V>) grid.getDataProvider();
   }
 
-  private TextField setValueInSamplesTable(Container samplesContainer, SubmissionSample sample,
-      String value, String property) {
-    TextField field = (TextField) view.samplesTable.getTableFieldFactory()
-        .createField(samplesContainer, sample, property, view.samplesTable);
-    field.setPropertyDataSource(samplesContainer.getContainerProperty(sample, property));
+  @SuppressWarnings("unchecked")
+  private <V> ListDataProvider<V> dataProvider(RadioButtonGroup<V> radios) {
+    return (ListDataProvider<V>) radios.getDataProvider();
+  }
+
+  private void setValuesInSamplesTable() {
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(view.samplesGrid).getItems());
+    SubmissionSample sample = samples.get(0);
+    sampleNameField1 = setValueInSamplesGrid(sample, sampleName1, SAMPLE_NAME_PROPERTY);
+    sampleNumberProteinField1 = setValueInSamplesGrid(sample, String.valueOf(sampleNumberProtein1),
+        SAMPLE_NUMBER_PROTEIN_PROPERTY);
+    sampleProteinWeightField1 =
+        setValueInSamplesGrid(sample, String.valueOf(proteinWeight1), PROTEIN_WEIGHT_PROPERTY);
+    sample = samples.get(1);
+    sampleNameField2 = setValueInSamplesGrid(sample, sampleName2, SAMPLE_NAME_PROPERTY);
+    sampleNumberProteinField2 = setValueInSamplesGrid(sample, String.valueOf(sampleNumberProtein2),
+        SAMPLE_NUMBER_PROTEIN_PROPERTY);
+    sampleProteinWeightField2 =
+        setValueInSamplesGrid(sample, String.valueOf(proteinWeight2), PROTEIN_WEIGHT_PROPERTY);
+  }
+
+  private TextField setValueInSamplesGrid(SubmissionSample sample, String value, String columnId) {
+    TextField field =
+        (TextField) view.samplesGrid.getColumn(columnId).getValueProvider().apply(sample);
     field.setValue(value);
     return field;
   }
 
   private void setValuesInStandardsTable() {
-    Container standardsContainer = view.standardsTable.getContainerDataSource();
-    List<?> standards = new ArrayList<>(standardsContainer.getItemIds());
-    Standard standard = (Standard) standards.get(0);
-    standardNameField1 = setValueInStandardsTable(standardsContainer, standard, standardName1,
-        STANDARD_NAME_PROPERTY);
-    standardQuantityField1 = setValueInStandardsTable(standardsContainer, standard,
-        standardQuantity1, STANDARD_QUANTITY_PROPERTY);
-    setValueInStandardsTable(standardsContainer, standard, standardComment1,
-        STANDARD_COMMENTS_PROPERTY);
-    standard = (Standard) standards.get(1);
-    standardNameField2 = setValueInStandardsTable(standardsContainer, standard, standardName2,
-        STANDARD_NAME_PROPERTY);
-    standardQuantityField2 = setValueInStandardsTable(standardsContainer, standard,
-        standardQuantity2, STANDARD_QUANTITY_PROPERTY);
-    setValueInStandardsTable(standardsContainer, standard, standardComment2,
-        STANDARD_COMMENTS_PROPERTY);
+    List<Standard> standards = new ArrayList<>(dataProvider(view.standardsGrid).getItems());
+    Standard standard = standards.get(0);
+    standardNameField1 = setValueInStandardsGrid(standard, standardName1, STANDARD_NAME_PROPERTY);
+    standardQuantityField1 =
+        setValueInStandardsGrid(standard, standardQuantity1, STANDARD_QUANTITY_PROPERTY);
+    setValueInStandardsGrid(standard, standardComment1, STANDARD_COMMENTS_PROPERTY);
+    standard = standards.get(1);
+    standardNameField2 = setValueInStandardsGrid(standard, standardName2, STANDARD_NAME_PROPERTY);
+    standardQuantityField2 =
+        setValueInStandardsGrid(standard, standardQuantity2, STANDARD_QUANTITY_PROPERTY);
+    setValueInStandardsGrid(standard, standardComment2, STANDARD_COMMENTS_PROPERTY);
   }
 
-  private TextField setValueInStandardsTable(Container standardsContainer, Standard standard,
-      String value, String property) {
-    TextField field = (TextField) view.standardsTable.getTableFieldFactory()
-        .createField(standardsContainer, standard, property, view.standardsTable);
-    field.setPropertyDataSource(standardsContainer.getContainerProperty(standard, property));
+  private TextField setValueInStandardsGrid(Standard standard, String value, String columnId) {
+    TextField field =
+        (TextField) view.standardsGrid.getColumn(columnId).getValueProvider().apply(standard);
     field.setValue(value);
     return field;
   }
 
   private void setValuesInContaminantsTable() {
-    Container contaminantsContainer = view.contaminantsTable.getContainerDataSource();
-    List<?> contaminants = new ArrayList<>(contaminantsContainer.getItemIds());
-    Contaminant contaminant = (Contaminant) contaminants.get(0);
-    contaminantNameField1 = setValueInContaminantsTable(contaminantsContainer, contaminant,
-        contaminantName1, CONTAMINANT_NAME_PROPERTY);
-    contaminantQuantityField1 = setValueInContaminantsTable(contaminantsContainer, contaminant,
-        contaminantQuantity1, CONTAMINANT_QUANTITY_PROPERTY);
-    setValueInContaminantsTable(contaminantsContainer, contaminant, contaminantComment1,
-        CONTAMINANT_COMMENTS_PROPERTY);
-    contaminant = (Contaminant) contaminants.get(1);
-    contaminantNameField2 = setValueInContaminantsTable(contaminantsContainer, contaminant,
-        contaminantName2, CONTAMINANT_NAME_PROPERTY);
-    contaminantQuantityField2 = setValueInContaminantsTable(contaminantsContainer, contaminant,
-        contaminantQuantity2, CONTAMINANT_QUANTITY_PROPERTY);
-    setValueInContaminantsTable(contaminantsContainer, contaminant, contaminantComment2,
-        CONTAMINANT_COMMENTS_PROPERTY);
+    List<Contaminant> contaminants =
+        new ArrayList<>(dataProvider(view.contaminantsGrid).getItems());
+    Contaminant contaminant = contaminants.get(0);
+    contaminantNameField1 =
+        setValueInContaminantsGrid(contaminant, contaminantName1, CONTAMINANT_NAME_PROPERTY);
+    contaminantQuantityField1 = setValueInContaminantsGrid(contaminant, contaminantQuantity1,
+        CONTAMINANT_QUANTITY_PROPERTY);
+    setValueInContaminantsGrid(contaminant, contaminantComment1, CONTAMINANT_COMMENTS_PROPERTY);
+    contaminant = contaminants.get(1);
+    contaminantNameField2 =
+        setValueInContaminantsGrid(contaminant, contaminantName2, CONTAMINANT_NAME_PROPERTY);
+    contaminantQuantityField2 = setValueInContaminantsGrid(contaminant, contaminantQuantity2,
+        CONTAMINANT_QUANTITY_PROPERTY);
+    setValueInContaminantsGrid(contaminant, contaminantComment2, CONTAMINANT_COMMENTS_PROPERTY);
   }
 
-  private TextField setValueInContaminantsTable(Container contaminantsContainer,
-      Contaminant contaminant, String value, String property) {
-    TextField field = (TextField) view.contaminantsTable.getTableFieldFactory()
-        .createField(contaminantsContainer, contaminant, property, view.contaminantsTable);
-    field.setPropertyDataSource(contaminantsContainer.getContainerProperty(contaminant, property));
+  private TextField setValueInContaminantsGrid(Contaminant contaminant, String value,
+      String columnId) {
+    TextField field =
+        (TextField) view.contaminantsGrid.getColumn(columnId).getValueProvider().apply(contaminant);
     field.setValue(value);
     return field;
   }
@@ -650,17 +639,20 @@ public class SubmissionFormPresenterTest {
   }
 
   private String errorMessage(String message) {
-    return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
+    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test
   public void samplesTableColumns() {
     presenter.init(view);
 
-    Object[] columns = view.samplesTable.getVisibleColumns();
-
-    assertEquals(1, columns.length);
-    assertEquals(SAMPLE_NAME_PROPERTY, columns[0]);
+    assertEquals(3, view.samplesGrid.getColumns().size());
+    assertEquals(SAMPLE_NAME_PROPERTY, view.samplesGrid.getColumns().get(0).getId());
+    assertFalse(view.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isHidden());
+    assertEquals(SAMPLE_NUMBER_PROTEIN_PROPERTY, view.samplesGrid.getColumns().get(1).getId());
+    assertTrue(view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isHidden());
+    assertEquals(PROTEIN_WEIGHT_PROPERTY, view.samplesGrid.getColumns().get(2).getId());
+    assertTrue(view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
   }
 
   @Test
@@ -669,46 +661,44 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
 
-    Object[] columns = view.samplesTable.getVisibleColumns();
-
-    assertEquals(3, columns.length);
-    assertEquals(SAMPLE_NAME_PROPERTY, columns[0]);
-    assertEquals(SAMPLE_NUMBER_PROTEIN_PROPERTY, columns[1]);
-    assertEquals(PROTEIN_WEIGHT_PROPERTY, columns[2]);
+    assertEquals(3, view.samplesGrid.getColumns().size());
+    assertEquals(SAMPLE_NAME_PROPERTY, view.samplesGrid.getColumns().get(0).getId());
+    assertFalse(view.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isHidden());
+    assertEquals(SAMPLE_NUMBER_PROTEIN_PROPERTY, view.samplesGrid.getColumns().get(1).getId());
+    assertFalse(view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isHidden());
+    assertEquals(PROTEIN_WEIGHT_PROPERTY, view.samplesGrid.getColumns().get(2).getId());
+    assertFalse(view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
   }
 
   @Test
   public void standardsColumns() {
     presenter.init(view);
 
-    Object[] columns = view.standardsTable.getVisibleColumns();
-
-    assertEquals(3, columns.length);
-    assertEquals(STANDARD_NAME_PROPERTY, columns[0]);
-    assertEquals(STANDARD_QUANTITY_PROPERTY, columns[1]);
-    assertEquals(STANDARD_COMMENTS_PROPERTY, columns[2]);
+    assertEquals(3, view.standardsGrid.getColumns().size());
+    assertEquals(STANDARD_NAME_PROPERTY, view.standardsGrid.getColumns().get(0).getId());
+    assertEquals(STANDARD_QUANTITY_PROPERTY, view.standardsGrid.getColumns().get(1).getId());
+    assertEquals(STANDARD_COMMENTS_PROPERTY, view.standardsGrid.getColumns().get(2).getId());
   }
 
   @Test
   public void contaminantsColumns() {
     presenter.init(view);
 
-    Object[] columns = view.contaminantsTable.getVisibleColumns();
-
-    assertEquals(3, columns.length);
-    assertEquals(CONTAMINANT_NAME_PROPERTY, columns[0]);
-    assertEquals(CONTAMINANT_QUANTITY_PROPERTY, columns[1]);
-    assertEquals(CONTAMINANT_COMMENTS_PROPERTY, columns[2]);
+    assertEquals(3, view.contaminantsGrid.getColumns().size());
+    assertEquals(CONTAMINANT_NAME_PROPERTY, view.contaminantsGrid.getColumns().get(0).getId());
+    assertEquals(CONTAMINANT_QUANTITY_PROPERTY, view.contaminantsGrid.getColumns().get(1).getId());
+    assertEquals(CONTAMINANT_COMMENTS_PROPERTY, view.contaminantsGrid.getColumns().get(2).getId());
   }
 
   @Test
   public void gelImagesColumns() {
     presenter.init(view);
 
-    Object[] columns = view.gelImagesTable.getVisibleColumns();
-
-    assertEquals(1, columns.length);
-    assertEquals(GEL_IMAGE_FILENAME_PROPERTY, columns[0]);
+    assertEquals(2, view.gelImagesGrid.getColumns().size());
+    assertEquals(GEL_IMAGE_FILENAME_PROPERTY, view.gelImagesGrid.getColumns().get(0).getId());
+    assertFalse(view.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isHidden());
+    assertEquals(REMOVE_GEL_IMAGE, view.gelImagesGrid.getColumns().get(1).getId());
+    assertTrue(view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
   }
 
   @Test
@@ -716,21 +706,22 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setEditable(true);
 
-    Object[] columns = view.gelImagesTable.getVisibleColumns();
-
-    assertEquals(2, columns.length);
-    assertEquals(GEL_IMAGE_FILENAME_PROPERTY, columns[0]);
-    assertEquals(REMOVE_GEL_IMAGE, columns[1]);
+    assertEquals(2, view.gelImagesGrid.getColumns().size());
+    assertEquals(GEL_IMAGE_FILENAME_PROPERTY, view.gelImagesGrid.getColumns().get(0).getId());
+    assertFalse(view.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isHidden());
+    assertEquals(REMOVE_GEL_IMAGE, view.gelImagesGrid.getColumns().get(1).getId());
+    assertFalse(view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
   }
 
   @Test
   public void filesColumns() {
     presenter.init(view);
 
-    Object[] columns = view.filesTable.getVisibleColumns();
-
-    assertEquals(1, columns.length);
-    assertEquals(FILE_FILENAME_PROPERTY, columns[0]);
+    assertEquals(2, view.filesGrid.getColumns().size());
+    assertEquals(FILE_FILENAME_PROPERTY, view.filesGrid.getColumns().get(0).getId());
+    assertFalse(view.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isHidden());
+    assertEquals(REMOVE_FILE, view.filesGrid.getColumns().get(1).getId());
+    assertTrue(view.filesGrid.getColumn(REMOVE_FILE).isHidden());
   }
 
   @Test
@@ -738,164 +729,110 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setEditable(true);
 
-    Object[] columns = view.filesTable.getVisibleColumns();
-
-    assertEquals(2, columns.length);
-    assertEquals(FILE_FILENAME_PROPERTY, columns[0]);
-    assertEquals(REMOVE_FILE, columns[1]);
+    assertEquals(2, view.filesGrid.getColumns().size());
+    assertEquals(FILE_FILENAME_PROPERTY, view.filesGrid.getColumns().get(0).getId());
+    assertFalse(view.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isHidden());
+    assertEquals(REMOVE_FILE, view.filesGrid.getColumns().get(1).getId());
+    assertFalse(view.filesGrid.getColumn(REMOVE_FILE).isHidden());
   }
 
   @Test
   public void requiredFields() {
     presenter.init(view);
 
-    assertTrue(view.serviceOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.serviceOptions.getRequiredError());
-    assertTrue(view.sampleSupportOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleSupportOptions.getRequiredError());
-    assertTrue(view.solutionSolventField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.solutionSolventField.getRequiredError());
-    assertTrue(view.sampleCountField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleCountField.getRequiredError());
-    assertTrue(view.sampleNameField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleNameField.getRequiredError());
-    assertTrue(view.formulaField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.formulaField.getRequiredError());
-    assertTrue(view.monoisotopicMassField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.monoisotopicMassField.getRequiredError());
-    assertFalse(view.averageMassField.isRequired());
-    assertFalse(view.toxicityField.isRequired());
-    assertFalse(view.lightSensitiveField.isRequired());
-    assertTrue(view.storageTemperatureOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.storageTemperatureOptions.getRequiredError());
-    assertTrue(view.sampleContainerTypeOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.sampleContainerTypeOptions.getRequiredError());
-    Container samplesContainer = view.samplesTable.getContainerDataSource();
-    if (samplesContainer.size() < 1) {
-      samplesContainer.addItem(new SubmissionSample());
+    assertTrue(view.serviceOptions.isRequiredIndicatorVisible());
+    assertTrue(view.sampleSupportOptions.isRequiredIndicatorVisible());
+    assertTrue(view.solutionSolventField.isRequiredIndicatorVisible());
+    assertTrue(view.sampleCountField.isRequiredIndicatorVisible());
+    assertTrue(view.sampleNameField.isRequiredIndicatorVisible());
+    assertTrue(view.formulaField.isRequiredIndicatorVisible());
+    assertTrue(view.monoisotopicMassField.isRequiredIndicatorVisible());
+    assertFalse(view.averageMassField.isRequiredIndicatorVisible());
+    assertFalse(view.toxicityField.isRequiredIndicatorVisible());
+    assertFalse(view.lightSensitiveField.isRequiredIndicatorVisible());
+    assertTrue(view.storageTemperatureOptions.isRequiredIndicatorVisible());
+    assertTrue(view.sampleContainerTypeOptions.isRequiredIndicatorVisible());
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
+    if (samplesDataProvider.getItems().size() < 1) {
+      samplesDataProvider.getItems().add(new SubmissionSample());
     }
-    assertTrue(view.plateNameField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.plateNameField.getRequiredError());
-    SubmissionSample firstSample =
-        (SubmissionSample) samplesContainer.getItemIds().iterator().next();
-    TextField sampleNameTableField = (TextField) view.samplesTable.getTableFieldFactory()
-        .createField(samplesContainer, firstSample, SAMPLE_NAME_PROPERTY, view.samplesTable);
-    assertTrue(sampleNameTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), sampleNameTableField.getRequiredError());
-    TextField sampleNumberProteinTableField =
-        (TextField) view.samplesTable.getTableFieldFactory().createField(samplesContainer,
-            firstSample, SAMPLE_NUMBER_PROTEIN_PROPERTY, view.samplesTable);
-    assertTrue(sampleNumberProteinTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        sampleNumberProteinTableField.getRequiredError());
-    TextField sampleProteinWeightTableField = (TextField) view.samplesTable.getTableFieldFactory()
-        .createField(samplesContainer, firstSample, PROTEIN_WEIGHT_PROPERTY, view.samplesTable);
-    assertTrue(sampleProteinWeightTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        sampleProteinWeightTableField.getRequiredError());
+    assertTrue(view.plateNameField.isRequiredIndicatorVisible());
+    SubmissionSample firstSample = samplesDataProvider.getItems().iterator().next();
+    TextField sampleNameTableField = (TextField) view.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY)
+        .getValueProvider().apply(firstSample);
+    assertTrue(sampleNameTableField.isRequiredIndicatorVisible());
+    TextField sampleNumberProteinTableField = (TextField) view.samplesGrid
+        .getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).getValueProvider().apply(firstSample);
+    assertTrue(sampleNumberProteinTableField.isRequiredIndicatorVisible());
+    TextField sampleProteinWeightTableField = (TextField) view.samplesGrid
+        .getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider().apply(firstSample);
+    assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
     for (TextField sampleNameField : plateSampleNameFields()) {
-      assertFalse(sampleNameField.isRequired());
+      assertFalse(sampleNameField.isRequiredIndicatorVisible());
     }
-    assertTrue(view.experienceField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.experienceField.getRequiredError());
-    assertFalse(view.experienceGoalField.isRequired());
-    assertTrue(view.taxonomyField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.taxonomyField.getRequiredError());
-    assertFalse(view.proteinNameField.isRequired());
-    assertFalse(view.proteinWeightField.isRequired());
-    assertFalse(view.postTranslationModificationField.isRequired());
-    assertTrue(view.sampleQuantityField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleQuantityField.getRequiredError());
-    assertTrue(view.sampleVolumeField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sampleVolumeField.getRequiredError());
-    assertFalse(view.standardCountField.isRequired());
-    Container standardsContainer = view.standardsTable.getContainerDataSource();
-    if (standardsContainer.size() < 1) {
-      standardsContainer.addItem(new Standard());
+    assertTrue(view.experienceField.isRequiredIndicatorVisible());
+    assertFalse(view.experienceGoalField.isRequiredIndicatorVisible());
+    assertTrue(view.taxonomyField.isRequiredIndicatorVisible());
+    assertFalse(view.proteinNameField.isRequiredIndicatorVisible());
+    assertFalse(view.proteinWeightField.isRequiredIndicatorVisible());
+    assertFalse(view.postTranslationModificationField.isRequiredIndicatorVisible());
+    assertTrue(view.sampleQuantityField.isRequiredIndicatorVisible());
+    assertTrue(view.sampleVolumeField.isRequiredIndicatorVisible());
+    assertFalse(view.standardCountField.isRequiredIndicatorVisible());
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(view.standardsGrid);
+    if (standardsDataProvider.getItems().size() < 1) {
+      standardsDataProvider.getItems().add(new Standard());
     }
-    Standard firstStandard = (Standard) standardsContainer.getItemIds().iterator().next();
-    TextField standardNameTableField =
-        (TextField) view.standardsTable.getTableFieldFactory().createField(standardsContainer,
-            firstStandard, STANDARD_NAME_PROPERTY, view.standardsTable);
-    assertTrue(standardNameTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), standardNameTableField.getRequiredError());
-    TextField standardQuantityTableField =
-        (TextField) view.standardsTable.getTableFieldFactory().createField(standardsContainer,
-            firstStandard, STANDARD_QUANTITY_PROPERTY, view.standardsTable);
-    assertTrue(standardQuantityTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), standardQuantityTableField.getRequiredError());
-    TextField standardCommentsTableField =
-        (TextField) view.standardsTable.getTableFieldFactory().createField(standardsContainer,
-            firstStandard, STANDARD_COMMENTS_PROPERTY, view.standardsTable);
-    assertFalse(standardCommentsTableField.isRequired());
-    assertFalse(view.contaminantCountField.isRequired());
-    Container contaminantsContainer = view.contaminantsTable.getContainerDataSource();
-    if (contaminantsContainer.size() < 1) {
-      contaminantsContainer.addItem(new Contaminant());
+    Standard firstStandard = standardsDataProvider.getItems().iterator().next();
+    TextField standardNameTableField = (TextField) view.standardsGrid
+        .getColumn(STANDARD_NAME_PROPERTY).getValueProvider().apply(firstStandard);
+    assertTrue(standardNameTableField.isRequiredIndicatorVisible());
+    TextField standardQuantityTableField = (TextField) view.standardsGrid
+        .getColumn(STANDARD_QUANTITY_PROPERTY).getValueProvider().apply(firstStandard);
+    assertTrue(standardQuantityTableField.isRequiredIndicatorVisible());
+    TextField standardCommentsTableField = (TextField) view.standardsGrid
+        .getColumn(STANDARD_COMMENTS_PROPERTY).getValueProvider().apply(firstStandard);
+    assertFalse(standardCommentsTableField.isRequiredIndicatorVisible());
+    assertFalse(view.contaminantCountField.isRequiredIndicatorVisible());
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(view.contaminantsGrid);
+    if (contaminantsDataProvider.getItems().size() < 1) {
+      contaminantsDataProvider.getItems().add(new Contaminant());
     }
-    Contaminant firstContaminant =
-        (Contaminant) contaminantsContainer.getItemIds().iterator().next();
-    TextField contaminantNameTableField =
-        (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
-            firstContaminant, CONTAMINANT_NAME_PROPERTY, view.contaminantsTable);
-    assertTrue(contaminantNameTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), contaminantNameTableField.getRequiredError());
-    TextField contaminantQuantityTableField =
-        (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
-            firstContaminant, CONTAMINANT_QUANTITY_PROPERTY, view.contaminantsTable);
-    assertTrue(contaminantQuantityTableField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        contaminantQuantityTableField.getRequiredError());
-    TextField contaminantCommentsTableField =
-        (TextField) view.contaminantsTable.getTableFieldFactory().createField(contaminantsContainer,
-            firstContaminant, CONTAMINANT_COMMENTS_PROPERTY, view.contaminantsTable);
-    assertFalse(contaminantCommentsTableField.isRequired());
-    assertTrue(view.separationField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.separationField.getRequiredError());
-    assertTrue(view.thicknessField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.thicknessField.getRequiredError());
-    assertFalse(view.colorationField.isRequired());
-    assertTrue(view.otherColorationField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.otherColorationField.getRequiredError());
-    assertFalse(view.developmentTimeField.isRequired());
-    assertFalse(view.decolorationField.isRequired());
-    assertFalse(view.weightMarkerQuantityField.isRequired());
-    assertFalse(view.proteinQuantityField.isRequired());
-    assertTrue(view.digestionOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.digestionOptions.getRequiredError());
-    assertTrue(view.usedProteolyticDigestionMethodField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.usedProteolyticDigestionMethodField.getRequiredError());
-    assertTrue(view.otherProteolyticDigestionMethodField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.otherProteolyticDigestionMethodField.getRequiredError());
-    assertTrue(view.injectionTypeOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.injectionTypeOptions.getRequiredError());
-    assertTrue(view.sourceOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.sourceOptions.getRequiredError());
-    assertTrue(view.proteinContentOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.proteinContentOptions.getRequiredError());
-    assertFalse(view.instrumentOptions.isRequired());
-    assertTrue(view.proteinIdentificationOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.proteinIdentificationOptions.getRequiredError());
-    assertTrue(view.proteinIdentificationLinkField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.proteinIdentificationLinkField.getRequiredError());
-    assertFalse(view.quantificationOptions.isRequired());
-    assertFalse(view.quantificationLabelsField.isRequired());
-    assertEquals(generalResources.message(REQUIRED),
-        view.quantificationLabelsField.getRequiredError());
-    assertTrue(view.highResolutionOptions.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.highResolutionOptions.getRequiredError());
-    assertFalse(view.acetonitrileSolventsField.isRequired());
-    assertFalse(view.methanolSolventsField.isRequired());
-    assertFalse(view.chclSolventsField.isRequired());
-    assertFalse(view.otherSolventsField.isRequired());
-    assertTrue(view.otherSolventField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.otherSolventField.getRequiredError());
+    Contaminant firstContaminant = contaminantsDataProvider.getItems().iterator().next();
+    TextField contaminantNameTableField = (TextField) view.contaminantsGrid
+        .getColumn(CONTAMINANT_NAME_PROPERTY).getValueProvider().apply(firstContaminant);
+    assertTrue(contaminantNameTableField.isRequiredIndicatorVisible());
+    TextField contaminantQuantityTableField = (TextField) view.contaminantsGrid
+        .getColumn(CONTAMINANT_QUANTITY_PROPERTY).getValueProvider().apply(firstContaminant);
+    assertTrue(contaminantQuantityTableField.isRequiredIndicatorVisible());
+    TextField contaminantCommentsTableField = (TextField) view.contaminantsGrid
+        .getColumn(CONTAMINANT_COMMENTS_PROPERTY).getValueProvider().apply(firstContaminant);
+    assertFalse(contaminantCommentsTableField.isRequiredIndicatorVisible());
+    assertTrue(view.separationField.isRequiredIndicatorVisible());
+    assertTrue(view.thicknessField.isRequiredIndicatorVisible());
+    assertFalse(view.colorationField.isRequiredIndicatorVisible());
+    assertTrue(view.otherColorationField.isRequiredIndicatorVisible());
+    assertFalse(view.developmentTimeField.isRequiredIndicatorVisible());
+    assertFalse(view.decolorationField.isRequiredIndicatorVisible());
+    assertFalse(view.weightMarkerQuantityField.isRequiredIndicatorVisible());
+    assertFalse(view.proteinQuantityField.isRequiredIndicatorVisible());
+    assertTrue(view.digestionOptions.isRequiredIndicatorVisible());
+    assertTrue(view.usedProteolyticDigestionMethodField.isRequiredIndicatorVisible());
+    assertTrue(view.otherProteolyticDigestionMethodField.isRequiredIndicatorVisible());
+    assertTrue(view.injectionTypeOptions.isRequiredIndicatorVisible());
+    assertTrue(view.sourceOptions.isRequiredIndicatorVisible());
+    assertTrue(view.proteinContentOptions.isRequiredIndicatorVisible());
+    assertFalse(view.instrumentOptions.isRequiredIndicatorVisible());
+    assertTrue(view.proteinIdentificationOptions.isRequiredIndicatorVisible());
+    assertTrue(view.proteinIdentificationLinkField.isRequiredIndicatorVisible());
+    assertFalse(view.quantificationOptions.isRequiredIndicatorVisible());
+    assertFalse(view.quantificationLabelsField.isRequiredIndicatorVisible());
+    assertTrue(view.highResolutionOptions.isRequiredIndicatorVisible());
+    assertFalse(view.acetonitrileSolventsField.isRequiredIndicatorVisible());
+    assertFalse(view.methanolSolventsField.isRequiredIndicatorVisible());
+    assertFalse(view.chclSolventsField.isRequiredIndicatorVisible());
+    assertFalse(view.otherSolventsField.isRequiredIndicatorVisible());
+    assertTrue(view.otherSolventField.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -903,17 +840,17 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
-    Container samplesContainer = view.samplesTable.getContainerDataSource();
-    if (samplesContainer.size() < 1) {
-      samplesContainer.addItem(new SubmissionSample());
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
+    if (samplesDataProvider.getItems().size() < 1) {
+      samplesDataProvider.getItems().add(new SubmissionSample());
     }
-    SubmissionSample firstSample =
-        (SubmissionSample) samplesContainer.getItemIds().iterator().next();
-    TextField sampleProteinWeightTableField = (TextField) view.samplesTable.getTableFieldFactory()
-        .createField(samplesContainer, firstSample, PROTEIN_WEIGHT_PROPERTY, view.samplesTable);
+    SubmissionSample firstSample = samplesDataProvider.getItems().iterator().next();
+    TextField sampleProteinWeightTableField = (TextField) view.samplesGrid
+        .getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider().apply(firstSample);
     view.serviceOptions.setValue(LC_MS_MS); // Force field update.
 
-    assertFalse(sampleProteinWeightTableField.isRequired());
+    assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
+    assertTrue(view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
   }
 
   @Test
@@ -921,84 +858,40 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
-    Container samplesContainer = view.samplesTable.getContainerDataSource();
-    if (samplesContainer.size() < 1) {
-      samplesContainer.addItem(new SubmissionSample());
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
+    if (samplesDataProvider.getItems().size() < 1) {
+      samplesDataProvider.getItems().add(new SubmissionSample());
     }
-    SubmissionSample firstSample =
-        (SubmissionSample) samplesContainer.getItemIds().iterator().next();
-    TextField sampleProteinWeightTableField = (TextField) view.samplesTable.getTableFieldFactory()
-        .createField(samplesContainer, firstSample, PROTEIN_WEIGHT_PROPERTY, view.samplesTable);
+    SubmissionSample firstSample = samplesDataProvider.getItems().iterator().next();
+    TextField sampleProteinWeightTableField = (TextField) view.samplesGrid
+        .getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider().apply(firstSample);
     view.serviceOptions.setValue(INTACT_PROTEIN); // Force field update.
 
-    assertTrue(sampleProteinWeightTableField.isRequired());
+    assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
+    assertFalse(view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
   }
 
   @Test
-  public void converters() {
+  public void service_Options() {
     presenter.init(view);
 
-    assertNotNull(view.sampleCountField.getConverter());
-    assertTrue(StringToIntegerConverter.class
-        .isAssignableFrom(view.sampleCountField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER),
-        view.sampleCountField.getConversionError());
-    assertNotNull(view.monoisotopicMassField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.monoisotopicMassField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.monoisotopicMassField.getConversionError());
-    assertNotNull(view.averageMassField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.averageMassField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.averageMassField.getConversionError());
-    Container samplesContainer = view.samplesTable.getContainerDataSource();
-    if (samplesContainer.size() < 1) {
-      samplesContainer.addItem(new SubmissionSample());
+    assertEquals(Service.availables().size(), dataProvider(view.serviceOptions).getItems().size());
+    for (Service service : Service.availables()) {
+      assertTrue(service.name(), dataProvider(view.serviceOptions).getItems().contains(service));
     }
-    SubmissionSample firstSample =
-        (SubmissionSample) samplesContainer.getItemIds().iterator().next();
-    TextField sampleNumberProteinTableField =
-        (TextField) view.samplesTable.getTableFieldFactory().createField(samplesContainer,
-            firstSample, SAMPLE_NUMBER_PROTEIN_PROPERTY, view.samplesTable);
-    assertNotNull(sampleNumberProteinTableField.getConverter());
-    assertTrue(StringToIntegerConverter.class
-        .isAssignableFrom(sampleNumberProteinTableField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER),
-        sampleNumberProteinTableField.getConversionError());
-    TextField sampleProteinWeightTableField = (TextField) view.samplesTable.getTableFieldFactory()
-        .createField(samplesContainer, firstSample, PROTEIN_WEIGHT_PROPERTY, view.samplesTable);
-    assertNotNull(sampleProteinWeightTableField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(sampleProteinWeightTableField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        sampleProteinWeightTableField.getConversionError());
-    assertNotNull(view.proteinWeightField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.proteinWeightField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.proteinWeightField.getConversionError());
-    assertNotNull(view.sampleVolumeField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.sampleVolumeField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.sampleVolumeField.getConversionError());
-    assertNotNull(view.standardCountField.getConverter());
-    assertTrue(StringToIntegerConverter.class
-        .isAssignableFrom(view.standardCountField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER),
-        view.standardCountField.getConversionError());
-    assertNotNull(view.contaminantCountField.getConverter());
-    assertTrue(StringToIntegerConverter.class
-        .isAssignableFrom(view.contaminantCountField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_INTEGER),
-        view.contaminantCountField.getConversionError());
-    assertNotNull(view.weightMarkerQuantityField.getConverter());
-    assertTrue(StringToDoubleConverter.class
-        .isAssignableFrom(view.weightMarkerQuantityField.getConverter().getClass()));
-    assertEquals(generalResources.message(INVALID_NUMBER),
-        view.weightMarkerQuantityField.getConversionError());
+  }
+
+  @Test
+  public void service_DisabledOption() {
+    Service service = Service.MALDI_MS;
+    Submission submission = new Submission();
+    submission.setService(service);
+
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertTrue(dataProvider(view.serviceOptions).getItems().contains(service));
+    assertFalse(view.serviceOptions.getItemEnabledProvider().test(service));
   }
 
   @Test
@@ -1007,7 +900,7 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
 
-    assertFalse(view.sampleSupportOptions.isItemEnabled(GEL));
+    assertFalse(view.sampleSupportOptions.getItemEnabledProvider().test(GEL));
   }
 
   @Test
@@ -1016,18 +909,7 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
 
-    assertFalse(view.sampleSupportOptions.isItemEnabled(GEL));
-  }
-
-  @Test
-  public void digestion_Options() {
-    presenter.init(view);
-
-    assertEquals(SubmissionFormPresenter.DIGESTIONS.length,
-        view.digestionOptions.getItemIds().size());
-    for (ProteolyticDigestion digestion : SubmissionFormPresenter.DIGESTIONS) {
-      assertTrue(digestion.name(), view.digestionOptions.getItemIds().contains(digestion));
-    }
+    assertFalse(view.sampleSupportOptions.getItemEnabledProvider().test(GEL));
   }
 
   @Test
@@ -1050,27 +932,63 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void source_Options() {
+    presenter.init(view);
+
+    assertEquals(MassDetectionInstrumentSource.availables().size(),
+        dataProvider(view.sourceOptions).getItems().size());
+    for (MassDetectionInstrumentSource source : MassDetectionInstrumentSource.availables()) {
+      assertTrue(source.name(), dataProvider(view.sourceOptions).getItems().contains(source));
+    }
+  }
+
+  @Test
+  public void source_DisabledOption() {
+    source = MassDetectionInstrumentSource.LDTD;
+    Submission submission = new Submission();
+    submission.setSource(source);
+
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertTrue(dataProvider(view.sourceOptions).getItems().contains(source));
+    assertFalse(view.sourceOptions.getItemEnabledProvider().test(source));
+  }
+
+  @Test
+  public void instrument_Options() {
+    presenter.init(view);
+
+    assertEquals(MassDetectionInstrument.availables().size() + 1,
+        dataProvider(view.instrumentOptions).getItems().size());
+    for (MassDetectionInstrument instrument : MassDetectionInstrument.availables()) {
+      assertTrue(instrument.name(),
+          dataProvider(view.instrumentOptions).getItems().contains(instrument));
+    }
+  }
+
+  @Test
   public void instrument_DisabledOption() {
     instrument = MassDetectionInstrument.TOF;
     Submission submission = new Submission();
     submission.setMassDetectionInstrument(instrument);
 
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
-    assertTrue(view.instrumentOptions.getItemIds().contains(instrument));
-    assertFalse(view.instrumentOptions.isItemEnabled(instrument));
+    assertTrue(dataProvider(view.instrumentOptions).getItems().contains(instrument));
+    assertFalse(view.instrumentOptions.getItemEnabledProvider().test(instrument));
   }
 
   @Test
   public void proteinIdentification_Options() {
     presenter.init(view);
 
-    assertEquals(PROTEIN_IDENTIFICATIONS.length,
-        view.proteinIdentificationOptions.getItemIds().size());
-    for (ProteinIdentification proteinIdentification : PROTEIN_IDENTIFICATIONS) {
-      assertTrue(proteinIdentification.name(),
-          view.proteinIdentificationOptions.getItemIds().contains(proteinIdentification));
+    assertEquals(ProteinIdentification.availables().size(),
+        dataProvider(view.proteinIdentificationOptions).getItems().size());
+    for (ProteinIdentification proteinIdentification : ProteinIdentification.availables()) {
+      assertTrue(proteinIdentification.name(), dataProvider(view.proteinIdentificationOptions)
+          .getItems().contains(proteinIdentification));
     }
   }
 
@@ -1081,10 +999,12 @@ public class SubmissionFormPresenterTest {
     submission.setProteinIdentification(proteinIdentification);
 
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
-    assertTrue(view.proteinIdentificationOptions.getItemIds().contains(proteinIdentification));
-    assertFalse(view.proteinIdentificationOptions.isItemEnabled(proteinIdentification));
+    assertTrue(
+        dataProvider(view.proteinIdentificationOptions).getItems().contains(proteinIdentification));
+    assertFalse(
+        view.proteinIdentificationOptions.getItemEnabledProvider().test(proteinIdentification));
   }
 
   @Test
@@ -1106,11 +1026,11 @@ public class SubmissionFormPresenterTest {
     presenter.setEditable(true);
 
     view.quantificationOptions.setValue(null);
-    assertFalse(view.quantificationLabelsField.isRequired());
+    assertFalse(view.quantificationLabelsField.isRequiredIndicatorVisible());
     view.quantificationOptions.setValue(Quantification.LABEL_FREE);
-    assertFalse(view.quantificationLabelsField.isRequired());
+    assertFalse(view.quantificationLabelsField.isRequiredIndicatorVisible());
     view.quantificationOptions.setValue(Quantification.SILAC);
-    assertTrue(view.quantificationLabelsField.isRequired());
+    assertTrue(view.quantificationLabelsField.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -1142,7 +1062,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(
         view.plateNameField.getStyleName().contains(PLATE_PROPERTY + "-" + PLATE_NAME_PROPERTY));
     assertTrue(view.samplesLabel.getStyleName().contains(SAMPLES_PROPERTY));
-    assertTrue(view.samplesTable.getStyleName().contains(SAMPLES_TABLE));
+    assertTrue(view.samplesGrid.getStyleName().contains(SAMPLES_TABLE));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_SAMPLES_PROPERTY));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_BUTTON_STYLE));
     assertTrue(view.samplesPlateLayout.getStyleName().contains(SAMPLES_PLATE));
@@ -1166,12 +1086,12 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleVolumeField.getStyleName().contains(SAMPLE_VOLUME_PROPERTY));
     assertTrue(view.standardsPanel.getStyleName().contains(STANDARDS_PANEL));
     assertTrue(view.standardCountField.getStyleName().contains(STANDARD_COUNT_PROPERTY));
-    assertTrue(view.standardsTable.getStyleName().contains(STANDARD_PROPERTY));
+    assertTrue(view.standardsGrid.getStyleName().contains(STANDARD_PROPERTY));
     assertTrue(view.fillStandardsButton.getStyleName().contains(FILL_STANDARDS_PROPERTY));
     assertTrue(view.fillStandardsButton.getStyleName().contains(FILL_BUTTON_STYLE));
     assertTrue(view.contaminantsPanel.getStyleName().contains(CONTAMINANTS_PANEL));
     assertTrue(view.contaminantCountField.getStyleName().contains(CONTAMINANT_COUNT_PROPERTY));
-    assertTrue(view.contaminantsTable.getStyleName().contains(CONTAMINANT_PROPERTY));
+    assertTrue(view.contaminantsGrid.getStyleName().contains(CONTAMINANT_PROPERTY));
     assertTrue(view.fillContaminantsButton.getStyleName().contains(FILL_CONTAMINANTS_PROPERTY));
     assertTrue(view.fillContaminantsButton.getStyleName().contains(FILL_BUTTON_STYLE));
     assertTrue(view.gelPanel.getStyleName().contains(GEL_PANEL));
@@ -1186,7 +1106,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.proteinQuantityField.getStyleName().contains(PROTEIN_QUANTITY_PROPERTY));
     assertTrue(view.gelImagesLayout.getStyleName().contains(REQUIRED));
     verify(view.gelImagesUploader).addStyleName(GEL_IMAGES_PROPERTY);
-    assertTrue(view.gelImagesTable.getStyleName().contains(GEL_IMAGES_TABLE));
+    assertTrue(view.gelImagesGrid.getStyleName().contains(GEL_IMAGES_TABLE));
     assertTrue(view.servicesPanel.getStyleName().contains(SERVICES_PANEL));
     assertTrue(view.digestionOptions.getStyleName().contains(DIGESTION_PROPERTY));
     assertTrue(
@@ -1223,7 +1143,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.commentsField.getStyleName().contains(COMMENTS_PROPERTY));
     assertTrue(view.filesPanel.getStyleName().contains(FILES_PROPERTY));
     verify(view.filesUploader).addStyleName(FILES_UPLOADER);
-    assertTrue(view.filesTable.getStyleName().contains(FILES_TABLE));
+    assertTrue(view.filesGrid.getStyleName().contains(FILES_GRID));
   }
 
   @Test
@@ -1234,14 +1154,16 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(INACTIVE_LABEL), view.inactiveLabel.getValue());
     assertEquals(resources.message(SERVICE_PROPERTY), view.servicePanel.getCaption());
     assertEquals(null, view.serviceOptions.getCaption());
-    for (Service service : SubmissionFormPresenter.SERVICES) {
-      assertEquals(service.getLabel(locale), view.serviceOptions.getItemCaption(service));
+    for (Service service : Service.availables()) {
+      assertEquals(service.getLabel(locale),
+          view.serviceOptions.getItemCaptionGenerator().apply(service));
     }
     assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
     assertEquals(resources.message(SAMPLE_SUPPORT_PROPERTY),
         view.sampleSupportOptions.getCaption());
-    for (SampleSupport support : SubmissionFormPresenter.SUPPORT) {
-      assertEquals(support.getLabel(locale), view.sampleSupportOptions.getItemCaption(support));
+    for (SampleSupport support : SampleSupport.values()) {
+      assertEquals(support.getLabel(locale),
+          view.sampleSupportOptions.getItemCaptionGenerator().apply(support));
     }
     assertEquals(resources.message(SOLUTION_SOLVENT_PROPERTY),
         view.solutionSolventField.getCaption());
@@ -1251,7 +1173,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(STRUCTURE_PROPERTY), view.structureLayout.getCaption());
     assertEquals("", view.structureButton.getCaption());
     verify(view.structureUploader).setButtonCaption(resources.message(STRUCTURE_UPLOADER));
-    verify(view.structureUploader).setImmediate(true);
+    verify(view.structureUploader).setImmediateMode(true);
     assertEquals(resources.message(MONOISOTOPIC_MASS_PROPERTY),
         view.monoisotopicMassField.getCaption());
     assertEquals(resources.message(AVERAGE_MASS_PROPERTY), view.averageMassField.getCaption());
@@ -1260,26 +1182,26 @@ public class SubmissionFormPresenterTest {
         view.lightSensitiveField.getCaption());
     assertEquals(resources.message(STORAGE_TEMPERATURE_PROPERTY),
         view.storageTemperatureOptions.getCaption());
-    for (StorageTemperature storageTemperature : SubmissionFormPresenter.STORAGE_TEMPERATURES) {
+    for (StorageTemperature storageTemperature : StorageTemperature.values()) {
       assertEquals(storageTemperature.getLabel(locale),
-          view.storageTemperatureOptions.getItemCaption(storageTemperature));
+          view.storageTemperatureOptions.getItemCaptionGenerator().apply(storageTemperature));
     }
     assertEquals(resources.message(SAMPLES_CONTAINER_TYPE_PROPERTY),
         view.sampleContainerTypeOptions.getCaption());
     for (SampleContainerType containerType : SampleContainerType.values()) {
       assertEquals(containerType.getLabel(locale),
-          view.sampleContainerTypeOptions.getItemCaption(containerType));
+          view.sampleContainerTypeOptions.getItemCaptionGenerator().apply(containerType));
     }
     assertEquals(resources.message(PLATE_PROPERTY + "." + PLATE_NAME_PROPERTY),
         view.plateNameField.getCaption());
     assertEquals(resources.message(SAMPLES_PROPERTY), view.samplesLabel.getCaption());
-    assertEquals(null, view.samplesTable.getCaption());
+    assertEquals(null, view.samplesGrid.getCaption());
     assertEquals(resources.message(SAMPLE_NAME_PROPERTY),
-        view.samplesTable.getColumnHeader(SAMPLE_NAME_PROPERTY));
+        view.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).getCaption());
     assertEquals(resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY),
-        view.samplesTable.getColumnHeader(SAMPLE_NUMBER_PROTEIN_PROPERTY));
+        view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).getCaption());
     assertEquals(resources.message(PROTEIN_WEIGHT_PROPERTY),
-        view.samplesTable.getColumnHeader(PROTEIN_WEIGHT_PROPERTY));
+        view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_SAMPLES_PROPERTY), view.fillSamplesButton.getCaption());
     assertEquals(null, view.samplesPlateLayout.getCaption());
     for (TextField sampleNameField : plateSampleNameFields()) {
@@ -1297,70 +1219,75 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(SAMPLE_QUANTITY_PROPERTY),
         view.sampleQuantityField.getCaption());
     assertEquals(resources.message(SAMPLE_QUANTITY_PROPERTY + "." + EXAMPLE),
-        view.sampleQuantityField.getInputPrompt());
+        view.sampleQuantityField.getPlaceholder());
     assertEquals(resources.message(SAMPLE_VOLUME_PROPERTY), view.sampleVolumeField.getCaption());
     assertEquals(resources.message(STANDARDS_PANEL), view.standardsPanel.getCaption());
     assertEquals(resources.message(STANDARD_COUNT_PROPERTY), view.standardCountField.getCaption());
-    assertEquals(null, view.standardsTable.getCaption());
+    assertEquals(null, view.standardsGrid.getCaption());
     assertEquals(resources.message(STANDARD_PROPERTY + "." + STANDARD_NAME_PROPERTY),
-        view.standardsTable.getColumnHeader(STANDARD_NAME_PROPERTY));
+        view.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).getCaption());
     assertEquals(resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY),
-        view.standardsTable.getColumnHeader(STANDARD_QUANTITY_PROPERTY));
+        view.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY).getCaption());
     assertEquals(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENTS_PROPERTY),
-        view.standardsTable.getColumnHeader(STANDARD_COMMENTS_PROPERTY));
+        view.standardsGrid.getColumn(STANDARD_COMMENTS_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_STANDARDS_PROPERTY), view.fillStandardsButton.getCaption());
     assertEquals(resources.message(CONTAMINANTS_PANEL), view.contaminantsPanel.getCaption());
     assertEquals(resources.message(CONTAMINANT_COUNT_PROPERTY),
         view.contaminantCountField.getCaption());
-    assertEquals(null, view.contaminantsTable.getCaption());
+    assertEquals(null, view.contaminantsGrid.getCaption());
     assertEquals(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_NAME_PROPERTY),
-        view.contaminantsTable.getColumnHeader(CONTAMINANT_NAME_PROPERTY));
+        view.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY).getCaption());
     assertEquals(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY),
-        view.contaminantsTable.getColumnHeader(CONTAMINANT_QUANTITY_PROPERTY));
+        view.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY).getCaption());
     assertEquals(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENTS_PROPERTY),
-        view.contaminantsTable.getColumnHeader(CONTAMINANT_COMMENTS_PROPERTY));
+        view.contaminantsGrid.getColumn(CONTAMINANT_COMMENTS_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_CONTAMINANTS_PROPERTY),
         view.fillContaminantsButton.getCaption());
     assertEquals(resources.message(GEL_PANEL), view.gelPanel.getCaption());
     assertEquals(resources.message(SEPARATION_PROPERTY), view.separationField.getCaption());
-    for (GelSeparation separation : SubmissionFormPresenter.SEPARATION) {
-      assertEquals(separation.getLabel(locale), view.separationField.getItemCaption(separation));
+    for (GelSeparation separation : GelSeparation.values()) {
+      assertEquals(separation.getLabel(locale),
+          view.separationField.getItemCaptionGenerator().apply(separation));
     }
     assertEquals(resources.message(THICKNESS_PROPERTY), view.thicknessField.getCaption());
-    for (GelThickness thickness : SubmissionFormPresenter.THICKNESS) {
-      assertEquals(thickness.getLabel(locale), view.thicknessField.getItemCaption(thickness));
+    for (GelThickness thickness : GelThickness.values()) {
+      assertEquals(thickness.getLabel(locale),
+          view.thicknessField.getItemCaptionGenerator().apply(thickness));
     }
     assertEquals(resources.message(COLORATION_PROPERTY), view.colorationField.getCaption());
-    assertEquals(GelColoration.getNullLabel(locale), view.colorationField.getItemCaption(NULL_ID));
-    for (GelColoration coloration : SubmissionFormPresenter.COLORATION) {
-      assertEquals(coloration.getLabel(locale), view.colorationField.getItemCaption(coloration));
+    assertEquals(GelColoration.getNullLabel(locale),
+        view.colorationField.getEmptySelectionCaption());
+    for (GelColoration coloration : GelColoration.values()) {
+      assertEquals(coloration.getLabel(locale),
+          view.colorationField.getItemCaptionGenerator().apply(coloration));
     }
     assertEquals(resources.message(OTHER_COLORATION_PROPERTY),
         view.otherColorationField.getCaption());
     assertEquals(resources.message(DEVELOPMENT_TIME_PROPERTY),
         view.developmentTimeField.getCaption());
     assertEquals(resources.message(DEVELOPMENT_TIME_PROPERTY + "." + EXAMPLE),
-        view.developmentTimeField.getInputPrompt());
+        view.developmentTimeField.getPlaceholder());
     assertEquals(resources.message(DECOLORATION_PROPERTY), view.decolorationField.getCaption());
     assertEquals(resources.message(WEIGHT_MARKER_QUANTITY_PROPERTY),
         view.weightMarkerQuantityField.getCaption());
     assertEquals(resources.message(WEIGHT_MARKER_QUANTITY_PROPERTY + "." + EXAMPLE),
-        view.weightMarkerQuantityField.getInputPrompt());
+        view.weightMarkerQuantityField.getPlaceholder());
     assertEquals(resources.message(PROTEIN_QUANTITY_PROPERTY),
         view.proteinQuantityField.getCaption());
     assertEquals(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE),
-        view.proteinQuantityField.getInputPrompt());
+        view.proteinQuantityField.getPlaceholder());
     assertEquals(resources.message(GEL_IMAGES_PROPERTY), view.gelImagesLayout.getCaption());
     verify(view.gelImagesUploader).setUploadButtonCaption(resources.message(GEL_IMAGES_UPLOADER));
-    assertEquals(null, view.gelImagesTable.getCaption());
+    assertEquals(null, view.gelImagesGrid.getCaption());
     assertEquals(resources.message(GEL_IMAGES_PROPERTY + "." + GEL_IMAGE_FILENAME_PROPERTY),
-        view.gelImagesTable.getColumnHeader(GEL_IMAGE_FILENAME_PROPERTY));
+        view.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).getCaption());
     assertEquals(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE),
-        view.gelImagesTable.getColumnHeader(REMOVE_GEL_IMAGE));
+        view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).getCaption());
     assertEquals(resources.message(SERVICES_PANEL), view.servicesPanel.getCaption());
     assertEquals(resources.message(DIGESTION_PROPERTY), view.digestionOptions.getCaption());
-    for (ProteolyticDigestion digestion : SubmissionFormPresenter.DIGESTIONS) {
-      assertEquals(digestion.getLabel(locale), view.digestionOptions.getItemCaption(digestion));
+    for (ProteolyticDigestion digestion : ProteolyticDigestion.values()) {
+      assertEquals(digestion.getLabel(locale),
+          view.digestionOptions.getItemCaptionGenerator().apply(digestion));
     }
     assertEquals(resources.message(USED_DIGESTION_PROPERTY),
         view.usedProteolyticDigestionMethodField.getCaption());
@@ -1376,49 +1303,53 @@ public class SubmissionFormPresenterTest {
         view.exclusionsLabel.getValue());
     assertEquals(resources.message(INJECTION_TYPE_PROPERTY),
         view.injectionTypeOptions.getCaption());
-    for (InjectionType injectionType : SubmissionFormPresenter.INJECTION_TYPES) {
+    for (InjectionType injectionType : InjectionType.values()) {
       assertEquals(injectionType.getLabel(locale),
-          view.injectionTypeOptions.getItemCaption(injectionType));
+          view.injectionTypeOptions.getItemCaptionGenerator().apply(injectionType));
     }
     assertEquals(resources.message(SOURCE_PROPERTY), view.sourceOptions.getCaption());
-    for (MassDetectionInstrumentSource source : SubmissionFormPresenter.SOURCES) {
-      assertEquals(source.getLabel(locale), view.sourceOptions.getItemCaption(source));
+    for (MassDetectionInstrumentSource source : MassDetectionInstrumentSource.values()) {
+      assertEquals(source.getLabel(locale),
+          view.sourceOptions.getItemCaptionGenerator().apply(source));
     }
     assertEquals(resources.message(PROTEIN_CONTENT_PROPERTY),
         view.proteinContentOptions.getCaption());
     for (ProteinContent proteinContent : ProteinContent.values()) {
       assertEquals(proteinContent.getLabel(locale),
-          view.proteinContentOptions.getItemCaption(proteinContent));
+          view.proteinContentOptions.getItemCaptionGenerator().apply(proteinContent));
     }
     assertEquals(resources.message(INSTRUMENT_PROPERTY), view.instrumentOptions.getCaption());
-    for (MassDetectionInstrument instrument : SubmissionFormPresenter.INSTRUMENTS) {
-      assertEquals(instrument.getLabel(locale), view.instrumentOptions.getItemCaption(instrument));
+    assertEquals(MassDetectionInstrument.getNullLabel(locale),
+        view.instrumentOptions.getItemCaptionGenerator().apply(null));
+    for (MassDetectionInstrument instrument : MassDetectionInstrument.availables()) {
+      assertEquals(instrument.getLabel(locale),
+          view.instrumentOptions.getItemCaptionGenerator().apply(instrument));
     }
     assertEquals(resources.message(PROTEIN_IDENTIFICATION_PROPERTY),
         view.proteinIdentificationOptions.getCaption());
-    for (ProteinIdentification proteinIdentification : PROTEIN_IDENTIFICATIONS) {
+    for (ProteinIdentification proteinIdentification : ProteinIdentification.availables()) {
       assertEquals(proteinIdentification.getLabel(locale),
-          view.proteinIdentificationOptions.getItemCaption(proteinIdentification));
+          view.proteinIdentificationOptions.getItemCaptionGenerator().apply(proteinIdentification));
     }
     assertEquals(resources.message(PROTEIN_IDENTIFICATION_LINK_PROPERTY),
         view.proteinIdentificationLinkField.getCaption());
     assertEquals(resources.message(QUANTIFICATION_PROPERTY),
         view.quantificationOptions.getCaption());
     assertEquals(Quantification.getNullLabel(locale),
-        view.quantificationOptions.getItemCaption(NULL_ID));
-    for (Quantification quantification : SubmissionFormPresenter.QUANTIFICATION) {
+        view.quantificationOptions.getItemCaptionGenerator().apply(null));
+    for (Quantification quantification : Quantification.values()) {
       assertEquals(quantification.getLabel(locale),
-          view.quantificationOptions.getItemCaption(quantification));
+          view.quantificationOptions.getItemCaptionGenerator().apply(quantification));
     }
     assertEquals(resources.message(QUANTIFICATION_LABELS_PROPERTY),
         view.quantificationLabelsField.getCaption());
     assertEquals(resources.message(QUANTIFICATION_LABELS_PROPERTY + "." + EXAMPLE),
-        view.quantificationLabelsField.getInputPrompt());
+        view.quantificationLabelsField.getPlaceholder());
     assertEquals(resources.message(HIGH_RESOLUTION_PROPERTY),
         view.highResolutionOptions.getCaption());
     for (boolean value : new boolean[] { false, true }) {
       assertEquals(resources.message(HIGH_RESOLUTION_PROPERTY + "." + value),
-          view.highResolutionOptions.getItemCaption(value));
+          view.highResolutionOptions.getItemCaptionGenerator().apply(value));
     }
     assertEquals(resources.message(SOLVENTS_PROPERTY), view.solventsLayout.getCaption());
     assertEquals(Solvent.ACETONITRILE.getLabel(locale),
@@ -1432,11 +1363,11 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, view.commentsField.getCaption());
     assertEquals(resources.message(FILES_PROPERTY), view.filesPanel.getCaption());
     verify(view.filesUploader).setUploadButtonCaption(resources.message(FILES_UPLOADER));
-    assertEquals(null, view.filesTable.getCaption());
+    assertEquals(null, view.filesGrid.getCaption());
     assertEquals(resources.message(FILES_PROPERTY + "." + FILE_FILENAME_PROPERTY),
-        view.filesTable.getColumnHeader(FILE_FILENAME_PROPERTY));
+        view.filesGrid.getColumn(FILE_FILENAME_PROPERTY).getCaption());
     assertEquals(resources.message(FILES_PROPERTY + "." + REMOVE_FILE),
-        view.filesTable.getColumnHeader(REMOVE_FILE));
+        view.filesGrid.getColumn(REMOVE_FILE).getCaption());
   }
 
   @Test
@@ -1446,9 +1377,11 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setSupport(support);
     sample.setOriginalContainer(new Tube());
+    sample.setStandards(Arrays.asList(new Standard()));
+    sample.setContaminants(Arrays.asList(new Contaminant()));
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertTrue(view.serviceOptions.isReadOnly());
     assertTrue(view.sampleSupportOptions.isReadOnly());
@@ -1463,10 +1396,13 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.storageTemperatureOptions.isReadOnly());
     assertTrue(view.sampleContainerTypeOptions.isReadOnly());
     assertTrue(view.plateNameField.isReadOnly());
-    assertFalse(view.samplesTable.isEditable());
-    for (TextField sampleNameField : plateSampleNameFields()) {
-      assertTrue(sampleNameField.isReadOnly());
-    }
+    SubmissionSample firstSample = dataProvider(view.samplesGrid).getItems().iterator().next();
+    assertTrue(((TextField) view.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).getValueProvider()
+        .apply(firstSample)).isReadOnly());
+    assertTrue(((TextField) view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY)
+        .getValueProvider().apply(firstSample)).isReadOnly());
+    assertTrue(((TextField) view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider()
+        .apply(firstSample)).isReadOnly());
     assertTrue(view.experienceField.isReadOnly());
     assertTrue(view.experienceGoalField.isReadOnly());
     assertTrue(view.taxonomyField.isReadOnly());
@@ -1476,9 +1412,21 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleQuantityField.isReadOnly());
     assertTrue(view.sampleVolumeField.isReadOnly());
     assertTrue(view.standardCountField.isReadOnly());
-    assertFalse(view.standardsTable.isEditable());
+    Standard firstStandard = dataProvider(view.standardsGrid).getItems().iterator().next();
+    assertTrue(((TextField) view.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).getValueProvider()
+        .apply(firstStandard)).isReadOnly());
+    assertTrue(((TextField) view.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY)
+        .getValueProvider().apply(firstStandard)).isReadOnly());
+    assertTrue(((TextField) view.standardsGrid.getColumn(STANDARD_COMMENTS_PROPERTY)
+        .getValueProvider().apply(firstStandard)).isReadOnly());
     assertTrue(view.contaminantCountField.isReadOnly());
-    assertFalse(view.contaminantsTable.isEditable());
+    Contaminant firstContaminant = dataProvider(view.contaminantsGrid).getItems().iterator().next();
+    assertTrue(((TextField) view.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY)
+        .getValueProvider().apply(firstContaminant)).isReadOnly());
+    assertTrue(((TextField) view.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY)
+        .getValueProvider().apply(firstContaminant)).isReadOnly());
+    assertTrue(((TextField) view.contaminantsGrid.getColumn(CONTAMINANT_COMMENTS_PROPERTY)
+        .getValueProvider().apply(firstContaminant)).isReadOnly());
     assertTrue(view.separationField.isReadOnly());
     assertTrue(view.thicknessField.isReadOnly());
     assertTrue(view.colorationField.isReadOnly());
@@ -1487,10 +1435,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.decolorationField.isReadOnly());
     assertTrue(view.weightMarkerQuantityField.isReadOnly());
     assertTrue(view.proteinQuantityField.isReadOnly());
-    Object[] gelImagesTableColumns = view.gelImagesTable.getVisibleColumns();
-    assertEquals(1, gelImagesTableColumns.length);
-    assertEquals(GEL_IMAGE_FILENAME_PROPERTY, gelImagesTableColumns[0]);
-    assertFalse(view.gelImagesTable.isEditable());
+    assertTrue(view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
     assertTrue(view.digestionOptions.isReadOnly());
     assertTrue(view.usedProteolyticDigestionMethodField.isReadOnly());
     assertTrue(view.otherProteolyticDigestionMethodField.isReadOnly());
@@ -1509,10 +1454,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherSolventsField.isReadOnly());
     assertTrue(view.otherSolventField.isReadOnly());
     assertTrue(view.commentsField.isReadOnly());
-    Object[] filesTableColumns = view.filesTable.getVisibleColumns();
-    assertEquals(1, filesTableColumns.length);
-    assertEquals(FILE_FILENAME_PROPERTY, filesTableColumns[0]);
-    assertFalse(view.filesTable.isEditable());
+    assertTrue(view.filesGrid.getColumn(REMOVE_FILE).isHidden());
   }
 
   @Test
@@ -1522,10 +1464,12 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setSupport(support);
     sample.setOriginalContainer(new Tube());
+    sample.setStandards(Arrays.asList(new Standard()));
+    sample.setContaminants(Arrays.asList(new Contaminant()));
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
     presenter.setEditable(true);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.serviceOptions.isReadOnly());
     assertFalse(view.sampleSupportOptions.isReadOnly());
@@ -1540,10 +1484,13 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.storageTemperatureOptions.isReadOnly());
     assertFalse(view.sampleContainerTypeOptions.isReadOnly());
     assertFalse(view.plateNameField.isReadOnly());
-    assertTrue(view.samplesTable.isEditable());
-    for (TextField sampleNameField : plateSampleNameFields()) {
-      assertFalse(sampleNameField.isReadOnly());
-    }
+    SubmissionSample firstSample = dataProvider(view.samplesGrid).getItems().iterator().next();
+    assertFalse(((TextField) view.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).getValueProvider()
+        .apply(firstSample)).isReadOnly());
+    assertFalse(((TextField) view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY)
+        .getValueProvider().apply(firstSample)).isReadOnly());
+    assertFalse(((TextField) view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider()
+        .apply(firstSample)).isReadOnly());
     assertFalse(view.experienceField.isReadOnly());
     assertFalse(view.experienceGoalField.isReadOnly());
     assertFalse(view.taxonomyField.isReadOnly());
@@ -1553,9 +1500,21 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleQuantityField.isReadOnly());
     assertFalse(view.sampleVolumeField.isReadOnly());
     assertFalse(view.standardCountField.isReadOnly());
-    assertTrue(view.standardsTable.isEditable());
+    Standard firstStandard = dataProvider(view.standardsGrid).getItems().iterator().next();
+    assertFalse(((TextField) view.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).getValueProvider()
+        .apply(firstStandard)).isReadOnly());
+    assertFalse(((TextField) view.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY)
+        .getValueProvider().apply(firstStandard)).isReadOnly());
+    assertFalse(((TextField) view.standardsGrid.getColumn(STANDARD_COMMENTS_PROPERTY)
+        .getValueProvider().apply(firstStandard)).isReadOnly());
     assertFalse(view.contaminantCountField.isReadOnly());
-    assertTrue(view.contaminantsTable.isEditable());
+    Contaminant firstContaminant = dataProvider(view.contaminantsGrid).getItems().iterator().next();
+    assertFalse(((TextField) view.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY)
+        .getValueProvider().apply(firstContaminant)).isReadOnly());
+    assertFalse(((TextField) view.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY)
+        .getValueProvider().apply(firstContaminant)).isReadOnly());
+    assertFalse(((TextField) view.contaminantsGrid.getColumn(CONTAMINANT_COMMENTS_PROPERTY)
+        .getValueProvider().apply(firstContaminant)).isReadOnly());
     assertFalse(view.separationField.isReadOnly());
     assertFalse(view.thicknessField.isReadOnly());
     assertFalse(view.colorationField.isReadOnly());
@@ -1564,11 +1523,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.decolorationField.isReadOnly());
     assertFalse(view.weightMarkerQuantityField.isReadOnly());
     assertFalse(view.proteinQuantityField.isReadOnly());
-    Object[] gelImagesTableColumns = view.gelImagesTable.getVisibleColumns();
-    assertEquals(2, gelImagesTableColumns.length);
-    assertEquals(GEL_IMAGE_FILENAME_PROPERTY, gelImagesTableColumns[0]);
-    assertEquals(REMOVE_GEL_IMAGE, gelImagesTableColumns[1]);
-    assertFalse(view.gelImagesTable.isEditable());
+    assertFalse(view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
     assertFalse(view.digestionOptions.isReadOnly());
     assertFalse(view.usedProteolyticDigestionMethodField.isReadOnly());
     assertFalse(view.otherProteolyticDigestionMethodField.isReadOnly());
@@ -1587,11 +1542,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isReadOnly());
     assertFalse(view.otherSolventField.isReadOnly());
     assertFalse(view.commentsField.isReadOnly());
-    Object[] filesTableColumns = view.filesTable.getVisibleColumns();
-    assertEquals(2, filesTableColumns.length);
-    assertEquals(FILE_FILENAME_PROPERTY, filesTableColumns[0]);
-    assertEquals(REMOVE_FILE, filesTableColumns[1]);
-    assertFalse(view.filesTable.isEditable());
+    assertFalse(view.filesGrid.getColumn(REMOVE_FILE).isHidden());
   }
 
   @Test
@@ -1603,7 +1554,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -1625,8 +1576,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -1639,11 +1590,11 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleVolumeField.isVisible());
     assertTrue(view.standardsPanel.isVisible());
     assertTrue(view.standardCountField.isVisible());
-    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertTrue(view.contaminantsPanel.isVisible());
     assertTrue(view.contaminantCountField.isVisible());
-    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -1656,7 +1607,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertTrue(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -1707,8 +1658,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertTrue(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -1721,11 +1672,11 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleVolumeField.isVisible());
     assertTrue(view.standardsPanel.isVisible());
     assertTrue(view.standardCountField.isVisible());
-    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.standardsGrid.isVisible());
     assertTrue(view.fillStandardsButton.isVisible());
     assertTrue(view.contaminantsPanel.isVisible());
     assertTrue(view.contaminantCountField.isVisible());
-    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.contaminantsGrid.isVisible());
     assertTrue(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -1738,7 +1689,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertTrue(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -1797,8 +1748,8 @@ public class SubmissionFormPresenterTest {
     view.sampleContainerTypeOptions.setValue(SPOT);
 
     assertTrue(view.plateNameField.isVisible());
-    assertFalse(view.samplesTableLayout.isVisible());
-    assertFalse(view.samplesTable.isVisible());
+    assertFalse(view.samplesGridLayout.isVisible());
+    assertFalse(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertTrue(view.samplesPlateContainer.isVisible());
   }
@@ -1812,7 +1763,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -1834,8 +1785,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -1848,11 +1799,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertTrue(view.standardsPanel.isVisible());
     assertTrue(view.standardCountField.isVisible());
-    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertTrue(view.contaminantsPanel.isVisible());
     assertTrue(view.contaminantCountField.isVisible());
-    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -1865,7 +1816,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertTrue(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -1916,8 +1867,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertTrue(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -1930,11 +1881,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertTrue(view.standardsPanel.isVisible());
     assertTrue(view.standardCountField.isVisible());
-    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.standardsGrid.isVisible());
     assertTrue(view.fillStandardsButton.isVisible());
     assertTrue(view.contaminantsPanel.isVisible());
     assertTrue(view.contaminantCountField.isVisible());
-    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.contaminantsGrid.isVisible());
     assertTrue(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -1947,7 +1898,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertTrue(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -1980,7 +1931,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2002,8 +1953,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -2016,11 +1967,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertFalse(view.standardsPanel.isVisible());
     assertFalse(view.standardCountField.isVisible());
-    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertFalse(view.contaminantsPanel.isVisible());
     assertFalse(view.contaminantCountField.isVisible());
-    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertTrue(view.separationField.isVisible());
     assertTrue(view.thicknessField.isVisible());
@@ -2033,7 +1984,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertTrue(view.gelImagesTable.isVisible());
+    assertTrue(view.gelImagesGrid.isVisible());
     assertTrue(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -2084,8 +2035,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertTrue(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -2098,11 +2049,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertFalse(view.standardsPanel.isVisible());
     assertFalse(view.standardCountField.isVisible());
-    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertFalse(view.contaminantsPanel.isVisible());
     assertFalse(view.contaminantCountField.isVisible());
-    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertTrue(view.separationField.isVisible());
     assertTrue(view.thicknessField.isVisible());
@@ -2115,7 +2066,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
-    assertTrue(view.gelImagesTable.isVisible());
+    assertTrue(view.gelImagesGrid.isVisible());
     assertTrue(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -2162,7 +2113,7 @@ public class SubmissionFormPresenterTest {
     submission.setStructure(new Structure());
     submission.getStructure().setFilename("structure.png");
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2184,8 +2135,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertFalse(view.samplesLabel.isVisible());
-    assertFalse(view.samplesTableLayout.isVisible());
-    assertFalse(view.samplesTable.isVisible());
+    assertFalse(view.samplesGridLayout.isVisible());
+    assertFalse(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertFalse(view.experienceField.isVisible());
@@ -2198,11 +2149,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertFalse(view.standardsPanel.isVisible());
     assertFalse(view.standardCountField.isVisible());
-    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertFalse(view.contaminantsPanel.isVisible());
     assertFalse(view.contaminantCountField.isVisible());
-    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -2215,7 +2166,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertFalse(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -2267,8 +2218,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertFalse(view.samplesLabel.isVisible());
-    assertFalse(view.samplesTableLayout.isVisible());
-    assertFalse(view.samplesTable.isVisible());
+    assertFalse(view.samplesGridLayout.isVisible());
+    assertFalse(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertFalse(view.experienceField.isVisible());
@@ -2281,11 +2232,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertFalse(view.standardsPanel.isVisible());
     assertFalse(view.standardCountField.isVisible());
-    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertFalse(view.contaminantsPanel.isVisible());
     assertFalse(view.contaminantCountField.isVisible());
-    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -2298,7 +2249,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertFalse(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -2357,7 +2308,7 @@ public class SubmissionFormPresenterTest {
     submission.setStructure(new Structure());
     submission.getStructure().setFilename("structure.png");
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2379,8 +2330,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertFalse(view.samplesLabel.isVisible());
-    assertFalse(view.samplesTableLayout.isVisible());
-    assertFalse(view.samplesTable.isVisible());
+    assertFalse(view.samplesGridLayout.isVisible());
+    assertFalse(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertFalse(view.experienceField.isVisible());
@@ -2393,11 +2344,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertFalse(view.standardsPanel.isVisible());
     assertFalse(view.standardCountField.isVisible());
-    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertFalse(view.contaminantsPanel.isVisible());
     assertFalse(view.contaminantCountField.isVisible());
-    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -2410,7 +2361,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertFalse(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -2462,8 +2413,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertFalse(view.samplesLabel.isVisible());
-    assertFalse(view.samplesTableLayout.isVisible());
-    assertFalse(view.samplesTable.isVisible());
+    assertFalse(view.samplesGridLayout.isVisible());
+    assertFalse(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertFalse(view.experienceField.isVisible());
@@ -2476,11 +2427,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertFalse(view.standardsPanel.isVisible());
     assertFalse(view.standardCountField.isVisible());
-    assertFalse(view.standardsTable.isVisible());
+    assertFalse(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertFalse(view.contaminantsPanel.isVisible());
     assertFalse(view.contaminantCountField.isVisible());
-    assertFalse(view.contaminantsTable.isVisible());
+    assertFalse(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -2493,7 +2444,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertFalse(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -2526,7 +2477,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2548,8 +2499,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -2562,11 +2513,11 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleVolumeField.isVisible());
     assertTrue(view.standardsPanel.isVisible());
     assertTrue(view.standardCountField.isVisible());
-    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertTrue(view.contaminantsPanel.isVisible());
     assertTrue(view.contaminantCountField.isVisible());
-    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -2579,7 +2530,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertFalse(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -2630,8 +2581,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertTrue(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -2644,11 +2595,11 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.sampleVolumeField.isVisible());
     assertTrue(view.standardsPanel.isVisible());
     assertTrue(view.standardCountField.isVisible());
-    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.standardsGrid.isVisible());
     assertTrue(view.fillStandardsButton.isVisible());
     assertTrue(view.contaminantsPanel.isVisible());
     assertTrue(view.contaminantCountField.isVisible());
-    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.contaminantsGrid.isVisible());
     assertTrue(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -2661,7 +2612,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertFalse(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -2694,7 +2645,7 @@ public class SubmissionFormPresenterTest {
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
-    presenter.setItemDataSource(new BeanItem<>(submission));
+    presenter.setBean(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2716,8 +2667,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertFalse(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -2730,11 +2681,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertTrue(view.standardsPanel.isVisible());
     assertTrue(view.standardCountField.isVisible());
-    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.standardsGrid.isVisible());
     assertFalse(view.fillStandardsButton.isVisible());
     assertTrue(view.contaminantsPanel.isVisible());
     assertTrue(view.contaminantCountField.isVisible());
-    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.contaminantsGrid.isVisible());
     assertFalse(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -2747,7 +2698,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertFalse(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -2798,8 +2749,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleContainerTypeOptions.isVisible());
     assertFalse(view.plateNameField.isVisible());
     assertTrue(view.samplesLabel.isVisible());
-    assertTrue(view.samplesTableLayout.isVisible());
-    assertTrue(view.samplesTable.isVisible());
+    assertTrue(view.samplesGridLayout.isVisible());
+    assertTrue(view.samplesGrid.isVisible());
     assertTrue(view.fillSamplesButton.isVisible());
     assertFalse(view.samplesPlateContainer.isVisible());
     assertTrue(view.experienceField.isVisible());
@@ -2812,11 +2763,11 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.sampleVolumeField.isVisible());
     assertTrue(view.standardsPanel.isVisible());
     assertTrue(view.standardCountField.isVisible());
-    assertTrue(view.standardsTable.isVisible());
+    assertTrue(view.standardsGrid.isVisible());
     assertTrue(view.fillStandardsButton.isVisible());
     assertTrue(view.contaminantsPanel.isVisible());
     assertTrue(view.contaminantCountField.isVisible());
-    assertTrue(view.contaminantsTable.isVisible());
+    assertTrue(view.contaminantsGrid.isVisible());
     assertTrue(view.fillContaminantsButton.isVisible());
     assertFalse(view.separationField.isVisible());
     assertFalse(view.thicknessField.isVisible());
@@ -2829,7 +2780,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.gelImagesLayout.isVisible());
     verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertFalse(view.gelImagesTable.isVisible());
+    assertFalse(view.gelImagesGrid.isVisible());
     assertFalse(view.digestionOptions.isVisible());
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(view.otherProteolyticDigestionMethodField.isVisible());
@@ -3225,27 +3176,6 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void submit_MissingSampleContainerType() throws Throwable {
-    presenter.init(view);
-    presenter.setEditable(true);
-    view.serviceOptions.setValue(LC_MS_MS);
-    view.sampleSupportOptions.setValue(support);
-    setFields();
-    view.sampleContainerTypeOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
-    uploadFiles();
-
-    view.submitButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.sampleContainerTypeOptions.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
   public void submit_MissingPlateName() throws Throwable {
     presenter.init(view);
     presenter.setEditable(true);
@@ -3253,7 +3183,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    view.plateNameField.setValue(null);
+    view.plateNameField.setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -4346,19 +4276,6 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void submit_InvalidGelSeparation() {
-    presenter.init(view);
-    presenter.setEditable(true);
-    view.serviceOptions.setValue(LC_MS_MS);
-    view.sampleSupportOptions.setValue(GEL);
-    setFields();
-
-    view.separationField.setValue("abc");
-
-    assertEquals(gelSeparation, view.separationField.getValue());
-  }
-
-  @Test
   public void submit_MissingGelThickness() throws Throwable {
     presenter.init(view);
     presenter.setEditable(true);
@@ -4377,32 +4294,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         view.thicknessField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void submit_InvalidGelThickness() {
-    presenter.init(view);
-    presenter.setEditable(true);
-    view.serviceOptions.setValue(LC_MS_MS);
-    view.sampleSupportOptions.setValue(GEL);
-    setFields();
-
-    view.thicknessField.setValue("a");
-
-    assertEquals(gelThickness, view.thicknessField.getValue());
-  }
-
-  @Test
-  public void submit_InvalidGelColoration() {
-    presenter.init(view);
-    presenter.setEditable(true);
-    view.serviceOptions.setValue(LC_MS_MS);
-    view.sampleSupportOptions.setValue(GEL);
-    setFields();
-
-    view.colorationField.setValue("a");
-
-    assertEquals(gelColoration, view.colorationField.getValue());
   }
 
   @Test
@@ -4640,7 +4531,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.proteinIdentificationOptions.setValue(ProteinIdentification.OTHER);
-    view.proteinIdentificationLinkField.setValue(null);
+    view.proteinIdentificationLinkField.setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -4662,7 +4553,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.quantificationOptions.setValue(Quantification.SILAC);
-    view.quantificationLabelsField.setValue(null);
+    view.quantificationLabelsField.setValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();

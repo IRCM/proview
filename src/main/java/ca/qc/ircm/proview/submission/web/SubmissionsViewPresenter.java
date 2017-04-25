@@ -22,40 +22,32 @@ import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
+import com.google.common.collect.Range;
+
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.SubmissionService.Report;
-import ca.qc.ircm.proview.web.converter.StringToInstantConverter;
-import ca.qc.ircm.proview.web.filter.FilterEqualsChangeListener;
-import ca.qc.ircm.proview.web.filter.FilterInstantComponent;
-import ca.qc.ircm.proview.web.filter.FilterInstantComponentPresenter;
-import ca.qc.ircm.proview.web.filter.FilterRangeChangeListener;
-import ca.qc.ircm.proview.web.filter.FilterTextChangeListener;
+import ca.qc.ircm.proview.web.SaveListener;
+import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
-import com.vaadin.data.sort.SortOrder;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.data.util.PropertyValueGenerator;
-import com.vaadin.data.util.filter.UnsupportedFilterException;
+import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid.Column;
-import com.vaadin.ui.Grid.HeaderCell;
-import com.vaadin.ui.Grid.HeaderRow;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.ItemCaptionGenerator;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import de.datenhahn.vaadin.componentrenderer.ComponentCellKeyExtension;
-import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,10 +55,9 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -93,6 +84,7 @@ public class SubmissionsViewPresenter {
   public static final String SAMPLE_NAME =
       SAMPLE + "." + submissionSample.name.getMetadata().getName();
   public static final String SAMPLE_STATUSES = "statuses";
+  public static final String SAMPLE_STATUSES_SEPARATOR = SAMPLE_STATUSES + ".separator";
   public static final String DATE =
       SUBMISSION + "." + submission.submissionDate.getMetadata().getName();
   public static final String LINKED_TO_RESULTS = "results";
@@ -101,21 +93,15 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final String CONDITION_FALSE = "condition-false";
-  private static final Object[] COLUMNS = new Object[] { EXPERIENCE, SAMPLE_COUNT, SAMPLE_NAME,
-      EXPERIENCE_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS };
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
   private SubmissionsView view;
-  private BeanItemContainer<SubmissionFirstSample> submissionsContainer =
-      new BeanItemContainer<>(SubmissionFirstSample.class);
-  private GeneratedPropertyContainer submissionsGeneratedContainer =
-      new GeneratedPropertyContainer(submissionsContainer);
-  private Object nullId = -1;
+  private SubmissionWebFilter filter;
   @Inject
   private SubmissionService submissionService;
   @Inject
   private AuthorizationService authorizationService;
   @Inject
-  private Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider;
+  private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
   @Inject
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Inject
@@ -130,13 +116,13 @@ public class SubmissionsViewPresenter {
 
   protected SubmissionsViewPresenter(SubmissionService submissionService,
       AuthorizationService authorizationService,
-      Provider<FilterInstantComponentPresenter> filterInstantComponentPresenterProvider,
+      Provider<LocalDateFilterComponent> localDateFilterComponentProvider,
       Provider<SubmissionWindow> submissionWindowProvider,
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
       Provider<SampleSelectionWindow> sampleSelectionWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
-    this.filterInstantComponentPresenterProvider = filterInstantComponentPresenterProvider;
+    this.localDateFilterComponentProvider = localDateFilterComponentProvider;
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
     this.sampleSelectionWindowProvider = sampleSelectionWindowProvider;
@@ -152,6 +138,7 @@ public class SubmissionsViewPresenter {
   public void init(SubmissionsView view) {
     logger.debug("View submissions");
     this.view = view;
+    filter = new SubmissionWebFilter(view.getLocale());
     prepareComponents();
     addListeners();
     searchSubmissions();
@@ -174,156 +161,125 @@ public class SubmissionsViewPresenter {
     view.updateStatusButton.setVisible(authorizationService.hasAdminRole());
   }
 
-  @SuppressWarnings("serial")
   private void prepareSumissionsGrid() {
-    MessageResource resources = view.getResources();
-    Locale locale = view.getLocale();
-    submissionsContainer.addNestedContainerBean(SAMPLE);
-    submissionsContainer.addNestedContainerBean(SUBMISSION);
-    submissionsGeneratedContainer.addGeneratedProperty(EXPERIENCE,
-        new PropertyValueGenerator<Button>() {
-          @Override
-          public Button getValue(Item item, Object itemId, Object propertyId) {
-            Submission submission = ((SubmissionFirstSample) itemId).submission;
-            Button button = new Button();
-            button.setCaption(submission.getExperience());
-            button.addClickListener(e -> viewSubmission(submission));
-            return button;
-          }
-
-          @Override
-          public Class<Button> getType() {
-            return Button.class;
-          }
-
-          @Override
-          public SortOrder[] getSortProperties(SortOrder order) {
-            return new SortOrder[] { order };
-          }
-
-          @Override
-          public Filter modifyFilter(Filter filter) throws UnsupportedFilterException {
-            return filter;
-          }
-        });
-    submissionsGeneratedContainer.addGeneratedProperty(LINKED_TO_RESULTS,
-        new PropertyValueGenerator<Button>() {
-          @Override
-          public Button getValue(Item item, Object itemId, Object propertyId) {
-            Submission submission = ((SubmissionFirstSample) itemId).submission;
-            boolean results = ((SubmissionFirstSample) itemId).results;
-            Button button = new Button();
-            button.setCaption(resources.message(LINKED_TO_RESULTS + "." + results));
-            if (results) {
-              button.addClickListener(e -> viewSubmissionResults(submission));
-            } else {
-              button.setStyleName(ValoTheme.BUTTON_BORDERLESS);
-              button.addStyleName(CONDITION_FALSE);
-            }
-            return button;
-          }
-
-          @Override
-          public Class<Button> getType() {
-            return Button.class;
-          }
-
-          @Override
-          public SortOrder[] getSortProperties(SortOrder order) {
-            return new SortOrder[] { order };
-          }
-
-          @Override
-          public Filter modifyFilter(Filter filter) throws UnsupportedFilterException {
-            return filter;
-          }
-        });
+    final MessageResource resources = view.getResources();
+    final Locale locale = view.getLocale();
+    final DateTimeFormatter dateFormatter =
+        DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
     view.submissionsGrid.addStyleName(SUBMISSIONS);
-    ComponentCellKeyExtension.extend(view.submissionsGrid);
-    view.submissionsGrid.setContainerDataSource(submissionsGeneratedContainer);
-    view.submissionsGrid.setColumns(COLUMNS);
-    for (Column column : view.submissionsGrid.getColumns()) {
-      column.setHeaderCaption(resources.message((String) column.getPropertyId()));
-    }
+    view.submissionsGrid.addStyleName(COMPONENTS);
+    view.submissionsGrid.setDataProvider(searchSubmissions());
+    view.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
+        .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE));
+    view.submissionsGrid.addColumn(submission -> submission.getSamples().size()).setId(SAMPLE_COUNT)
+        .setCaption(resources.message(SAMPLE_COUNT));
+    view.submissionsGrid.addColumn(submission -> submission.getSamples().get(0).getName())
+        .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME));
+    view.submissionsGrid.addColumn(Submission::getGoal).setId(EXPERIENCE_GOAL)
+        .setCaption(resources.message(EXPERIENCE_GOAL));
+    view.submissionsGrid.addColumn(submission -> statusesLabel(submission)).setId(SAMPLE_STATUSES)
+        .setCaption(resources.message(SAMPLE_STATUSES));
+    view.submissionsGrid
+        .addColumn(submission -> dateFormatter.format(submission.getSubmissionDate())).setId(DATE)
+        .setCaption(resources.message(DATE));
+    view.submissionsGrid
+        .addColumn(submission -> viewResultsButton(submission), new ComponentRenderer())
+        .setId(LINKED_TO_RESULTS).setCaption(resources.message(LINKED_TO_RESULTS));
     view.submissionsGrid.setFrozenColumnCount(1);
-    view.submissionsGrid.getColumn(EXPERIENCE).setRenderer(new ComponentRenderer());
-    view.submissionsGrid.getColumn(DATE)
-        .setConverter(new StringToInstantConverter(DateTimeFormatter.ISO_LOCAL_DATE));
-    view.submissionsGrid.getColumn(LINKED_TO_RESULTS).setRenderer(new ComponentRenderer());
     if (authorizationService.hasAdminRole()) {
       view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
     }
-    view.submissionsGrid.addStyleName(COMPONENTS);
     HeaderRow filterRow = view.submissionsGrid.appendHeaderRow();
-    for (Column column : view.submissionsGrid.getColumns()) {
-      Object propertyId = column.getPropertyId();
-      HeaderCell cell = filterRow.getCell(propertyId);
-      if (propertyId.equals(EXPERIENCE)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(SAMPLE_COUNT)) {
-        // Don't filter sample count.
-      } else if (propertyId.equals(SAMPLE_NAME)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(EXPERIENCE_GOAL)) {
-        cell.setComponent(createFilterTextField(propertyId, resources));
-      } else if (propertyId.equals(SAMPLE_STATUSES)) {
-        List<String> sampleStatusLabels = new ArrayList<>();
-        for (SampleStatus status : SampleStatus.values()) {
-          sampleStatusLabels.add(status.getLabel(locale));
-        }
-        ComboBox filter = createFilterComboBox(propertyId, resources, "", sampleStatusLabels);
-        filter.addValueChangeListener(
-            new FilterTextChangeListener(submissionsGeneratedContainer, propertyId, true, false));
-        cell.setComponent(filter);
-      } else if (propertyId.equals(DATE)) {
-        cell.setComponent(createFilterInstantComponent(propertyId));
-      } else if (propertyId.equals(LINKED_TO_RESULTS)) {
-        List<Boolean> values = Arrays.asList(new Boolean[] { true, false });
-        ComboBox filter = createFilterComboBox(propertyId, resources, nullId, values);
-        filter.addValueChangeListener(
-            new FilterEqualsChangeListener(submissionsGeneratedContainer, propertyId, nullId));
-        for (Boolean value : values) {
-          filter.setItemCaption(value, resources.message(LINKED_TO_RESULTS + "." + value));
-        }
-        cell.setComponent(filter);
-      }
-    }
+    filterRow.getCell(EXPERIENCE).setComponent(textFilter(e -> {
+      filter.setExperienceContains(e.getValue());
+      view.submissionsGrid.getDataProvider().refreshAll();
+    }));
+    filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
+      filter.setAnySampleNameContains(e.getValue());
+      view.submissionsGrid.getDataProvider().refreshAll();
+    }));
+    filterRow.getCell(EXPERIENCE_GOAL).setComponent(textFilter(e -> {
+      filter.setGoalContains(e.getValue());
+      view.submissionsGrid.getDataProvider().refreshAll();
+    }));
+    filterRow.getCell(SAMPLE_STATUSES).setComponent(comboBoxFilter(e -> {
+      filter.setAnySampleStatus(e.getValue());
+      view.submissionsGrid.getDataProvider().refreshAll();
+    }, SampleStatus.values(), status -> status.getLabel(locale)));
+    filterRow.getCell(DATE).setComponent(instantFilter(e -> {
+      filter.setDateRange(e.getSavedObject());
+      view.submissionsGrid.getDataProvider().refreshAll();
+    }));
+    filterRow.getCell(LINKED_TO_RESULTS).setComponent(comboBoxFilter(e -> {
+      filter.setResults(e.getValue());
+      view.submissionsGrid.getDataProvider().refreshAll();
+    }, new Boolean[] { true, false }, value -> resources.message(LINKED_TO_RESULTS + "." + value)));
+    view.submissionsGrid.sort(DATE, SortDirection.DESCENDING);
   }
 
-  private TextField createFilterTextField(Object propertyId, MessageResource resources) {
+  private Button viewButton(Submission submission) {
+    Button button = new Button();
+    button.addStyleName(EXPERIENCE);
+    button.setCaption(submission.getExperience());
+    button.addClickListener(e -> viewSubmission(submission));
+    return button;
+  }
+
+  private String statusesLabel(Submission submission) {
+    MessageResource resources = view.getResources();
+    Locale locale = view.getLocale();
+    return submission.getSamples().stream().map(sample -> sample.getStatus()).distinct().sorted()
+        .map(status -> status.getLabel(locale))
+        .collect(Collectors.joining(resources.message(SAMPLE_STATUSES_SEPARATOR)));
+  }
+
+  private Button viewResultsButton(Submission submission) {
+    MessageResource resources = view.getResources();
+    boolean results = submission.getSamples().stream()
+        .filter(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0).count() > 0;
+    Button button = new Button();
+    button.addStyleName(LINKED_TO_RESULTS);
+    button.setCaption(resources.message(LINKED_TO_RESULTS + "." + results));
+    if (results) {
+      button.addClickListener(e -> viewSubmissionResults(submission));
+    } else {
+      button.setStyleName(ValoTheme.BUTTON_BORDERLESS);
+      button.addStyleName(CONDITION_FALSE);
+    }
+    return button;
+  }
+
+  private TextField textFilter(ValueChangeListener<String> listener) {
+    MessageResource resources = view.getResources();
     TextField filter = new TextField();
-    filter.addTextChangeListener(
-        new FilterTextChangeListener(submissionsGeneratedContainer, propertyId, true, false));
+    filter.addValueChangeListener(listener);
     filter.setWidth("100%");
-    filter.addStyleName("tiny");
-    filter.setInputPrompt(resources.message(ALL));
+    filter.addStyleName(ValoTheme.TEXTFIELD_TINY);
+    filter.setPlaceholder(resources.message(ALL));
     return filter;
   }
 
-  private ComboBox createFilterComboBox(Object propertyId, MessageResource resources, Object nullId,
-      Collection<?> values) {
-    ComboBox filter = new ComboBox();
-    filter.setNullSelectionAllowed(false);
+  private <V> ComboBox<V> comboBoxFilter(ValueChangeListener<V> listener, V[] values,
+      ItemCaptionGenerator<V> itemCaptionGenerator) {
+    MessageResource resources = view.getResources();
+    ComboBox<V> filter = new ComboBox<>();
+    filter.setEmptySelectionAllowed(true);
     filter.setTextInputAllowed(false);
-    filter.addItem(nullId);
-    filter.setItemCaption(nullId, resources.message(ALL));
-    for (Object value : values) {
-      filter.addItem(value);
-    }
-    filter.select(nullId);
+    filter.setEmptySelectionCaption(resources.message(ALL));
+    filter.setPlaceholder(resources.message(ALL));
+    filter.setItems(values);
+    filter.setSelectedItem(null);
+    filter.addValueChangeListener(listener);
     filter.setWidth("100%");
-    filter.addStyleName("tiny");
+    filter.addStyleName(ValoTheme.COMBOBOX_TINY);
+    filter.setPlaceholder(resources.message(ALL));
     return filter;
   }
 
-  private FilterInstantComponent createFilterInstantComponent(Object propertyId) {
-    FilterInstantComponentPresenter presenter = filterInstantComponentPresenterProvider.get();
-    FilterInstantComponent filter = new FilterInstantComponent();
-    presenter.init(filter);
-    presenter.getRangeProperty().addValueChangeListener(
-        new FilterRangeChangeListener(submissionsGeneratedContainer, propertyId));
-    filter.setWidth("100%");
-    filter.addStyleName("tiny");
+  private Component instantFilter(SaveListener<Range<LocalDate>> listener) {
+    LocalDateFilterComponent filter = localDateFilterComponentProvider.get();
+    filter.addStyleName(ValoTheme.BUTTON_TINY);
+    filter.addSaveListener(listener);
     return filter;
   }
 
@@ -332,12 +288,11 @@ public class SubmissionsViewPresenter {
     view.selectSamplesButton.addClickListener(e -> selectSamples());
   }
 
-  private void searchSubmissions() {
+  private ListDataProvider<Submission> searchSubmissions() {
     Report report = submissionService.report();
-    submissionsContainer.removeAllItems();
-    report.getSubmissions().stream()
-        .forEach(s -> submissionsContainer.addItem(new SubmissionFirstSample(s, report)));
-    view.submissionsGrid.sort(DATE, SortDirection.DESCENDING);
+    ListDataProvider<Submission> dataProvider = DataProvider.ofCollection(report.getSubmissions());
+    dataProvider.setFilter(filter);
+    return dataProvider;
   }
 
   private void viewSubmission(Submission submission) {
@@ -356,106 +311,37 @@ public class SubmissionsViewPresenter {
 
   private void selectSamples() {
     SampleSelectionWindow window = sampleSelectionWindowProvider.get();
+    view.addWindow(window);
     List<Sample> samples;
-    if (!view.submissionsGrid.getSelectedRows().isEmpty()) {
-      samples = view.submissionsGrid.getSelectedRows().stream()
-          .flatMap(o -> ((SubmissionFirstSample) o).submission.getSamples().stream())
-          .collect(Collectors.toList());
+    if (!view.submissionsGrid.getSelectedItems().isEmpty()) {
+      samples = view.submissionsGrid.getSelectedItems().stream()
+          .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
     } else {
       samples = view.savedSamples();
     }
     window.setSelectedSamples(samples);
     window.center();
-    window.selectedSamplesProperty().addValueChangeListener(e -> {
-      window.close();
+    window.addSaveListener(e -> {
       MessageResource resources = view.getResources();
-      @SuppressWarnings("unchecked")
-      List<Sample> selectedSamples = (List<Sample>) e.getProperty().getValue();
+      List<Sample> selectedSamples = window.getSelectedSamples();
       view.submissionsGrid.deselectAll();
       view.saveSamples(selectedSamples);
       view.selectedSamplesLabel
           .setValue(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
       logger.debug("Selected samples {}", selectedSamples);
     });
-    view.addWindow(window);
   }
 
   private void updateStatus() {
-    if (!view.submissionsGrid.getSelectedRows().isEmpty()) {
-      List<Sample> samples = view.submissionsGrid.getSelectedRows().stream()
-          .flatMap(o -> ((SubmissionFirstSample) o).submission.getSamples().stream())
-          .collect(Collectors.toList());
+    if (!view.submissionsGrid.getSelectedItems().isEmpty()) {
+      List<Sample> samples = view.submissionsGrid.getSelectedItems().stream()
+          .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
       view.saveSamples(samples);
     }
     view.navigateTo(SampleStatusView.VIEW_NAME);
   }
 
-  public static Object[] getColumns() {
-    return COLUMNS.clone();
-  }
-
-  public class SubmissionFirstSample {
-    private Submission submission;
-    private SubmissionSample sample;
-    private String statuses;
-    private int sampleCount;
-    private boolean results;
-
-    private SubmissionFirstSample(Submission submission, Report report) {
-      this.submission = submission;
-      this.sample = submission.getSamples().get(0);
-      this.statuses = statuses(submission);
-      this.sampleCount = submission.getSamples().size();
-      this.results = report.getLinkedToResults().get(submission);
-    }
-
-    private String statuses(Submission submission) {
-      MessageResource resources = view.getResources();
-      List<SampleStatus> statuses = submission.getSamples().stream().map(s -> s.getStatus())
-          .distinct().sorted().collect(Collectors.toList());
-      String separator = resources.message(SAMPLE_STATUSES + ".separator");
-      return statuses.stream().map(s -> s.getLabel(view.getLocale()))
-          .collect(Collectors.joining(separator));
-    }
-
-    public Submission getSubmission() {
-      return submission;
-    }
-
-    public void setSubmission(Submission submission) {
-      this.submission = submission;
-    }
-
-    public SubmissionSample getSample() {
-      return sample;
-    }
-
-    public void setSample(SubmissionSample sample) {
-      this.sample = sample;
-    }
-
-    public int getSampleCount() {
-      return sampleCount;
-    }
-
-    public void setSampleCount(int sampleCount) {
-      this.sampleCount = sampleCount;
-    }
-
-    public boolean isResults() {
-      return results;
-    }
-
-    public void setResults(boolean results) {
-      this.results = results;
-    }
-
-    public String getStatuses() {
-      return statuses;
-    }
-
-    public void setStatuses(String statuses) {
-      this.statuses = statuses;
-    }
+  SubmissionWebFilter getFilter() {
+    return filter;
   }
 }

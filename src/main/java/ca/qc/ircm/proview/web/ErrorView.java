@@ -52,7 +52,6 @@ public class ErrorView extends VerticalLayout implements BaseView {
    */
   @SuppressWarnings("serial")
   public ErrorView() {
-    setSizeFull();
     setMargin(true);
     setSpacing(true);
 

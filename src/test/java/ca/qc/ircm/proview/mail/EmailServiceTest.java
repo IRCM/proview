@@ -85,7 +85,7 @@ public class EmailServiceTest {
     mailSender.setHost(originalHost);
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void textEmail() throws Throwable {
     MimeMessageHelper email = emailService.textEmail();
 
@@ -95,7 +95,7 @@ public class EmailServiceTest {
     assertEquals(templateMessage.getContent(), email.getMimeMessage().getContent());
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void htmlEmail() throws Throwable {
     MimeMessageHelper email = emailService.htmlEmail();
 
@@ -109,7 +109,7 @@ public class EmailServiceTest {
     assertNull(mimeMessageParser.getPlainContent());
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void sendEmail_Text() throws Throwable {
     String receiver = "liam.li@ircm.qc.ca";
     String subject = "test subject";
@@ -139,7 +139,7 @@ public class EmailServiceTest {
     assertEquals(content, body);
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void sendEmail_HtmlAndText() throws Throwable {
     String receiver = "liam.li@ircm.qc.ca";
     String subject = "test subject";
@@ -171,7 +171,7 @@ public class EmailServiceTest {
     assertEquals(textContent, mimeMessageParser.getPlainContent());
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void sendEmail_ErrorText() throws Throwable {
     String receiver = "liam.li@ircm.qc.ca";
     String subject = "test subject";
@@ -185,7 +185,7 @@ public class EmailServiceTest {
     emailService.send(email);
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void sendEmail_ErrorHtmlAndText() throws Throwable {
     String receiver = "liam.li@ircm.qc.ca";
     String subject = "test subject";
@@ -200,7 +200,7 @@ public class EmailServiceTest {
     emailService.send(email);
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void sendError() throws Throwable {
     Exception error = new IllegalStateException("test");
     StringWriter writer = new StringWriter();
@@ -233,7 +233,7 @@ public class EmailServiceTest {
     assertEquals(expectedBody, body);
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void sendError_NoCurrentUser() throws Throwable {
     Exception error = new IllegalStateException("test");
     StringWriter writer = new StringWriter();

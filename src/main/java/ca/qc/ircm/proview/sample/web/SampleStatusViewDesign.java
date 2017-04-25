@@ -22,7 +22,7 @@ import com.vaadin.ui.declarative.Design;
 public class SampleStatusViewDesign extends VerticalLayout {
   protected VerticalLayout menuLayout;
   protected Label headerLabel;
-  protected Grid samplesGrid;
+  protected Grid<ca.qc.ircm.proview.sample.SubmissionSample> samplesGrid;
   protected Button saveButton;
 
   public SampleStatusViewDesign() {

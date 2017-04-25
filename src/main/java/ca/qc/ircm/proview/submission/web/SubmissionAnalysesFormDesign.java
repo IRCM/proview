@@ -20,7 +20,7 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class SubmissionAnalysesFormDesign extends VerticalLayout {
   protected Panel analysisPanel;
-  protected Grid analysisGrid;
+  protected Grid<ca.qc.ircm.proview.submission.Submission> analysisGrid;
 
   public SubmissionAnalysesFormDesign() {
     Design.read(this);

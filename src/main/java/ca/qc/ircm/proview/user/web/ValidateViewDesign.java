@@ -22,7 +22,7 @@ import com.vaadin.ui.declarative.Design;
 public class ValidateViewDesign extends VerticalLayout {
   protected VerticalLayout menuLayout;
   protected Label headerLabel;
-  protected Grid usersGrid;
+  protected Grid<ca.qc.ircm.proview.user.User> usersGrid;
   protected Button validateSelectedButton;
 
   public ValidateViewDesign() {

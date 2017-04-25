@@ -17,13 +17,36 @@
 
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
+import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
+import static ca.qc.ircm.proview.submission.Service.MALDI_MS;
+import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
+import static ca.qc.ircm.proview.submission.Service.TWO_DIMENSION_LC_MS_MS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Locale;
 
 public class ServiceTest {
+  @Test
+  public void availables() {
+    assertTrue(LC_MS_MS.available);
+    assertFalse(TWO_DIMENSION_LC_MS_MS.available);
+    assertFalse(MALDI_MS.available);
+    assertTrue(SMALL_MOLECULE.available);
+    assertTrue(INTACT_PROTEIN.available);
+
+    List<Service> availables = Service.availables();
+    assertEquals(3, availables.size());
+    assertEquals(LC_MS_MS, availables.get(0));
+    assertEquals(SMALL_MOLECULE, availables.get(1));
+    assertEquals(INTACT_PROTEIN, availables.get(2));
+  }
+
   @Test
   public void getNullLabel() {
     assertEquals("Undetermined", Service.getNullLabel(Locale.ENGLISH));
@@ -34,21 +57,21 @@ public class ServiceTest {
   public void getLabel() {
     Locale locale = Locale.CANADA;
 
-    assertEquals("LC/MS/MS", Service.LC_MS_MS.getLabel(locale));
-    assertEquals("2D-LC/MS/MS (MudPit)", Service.TWO_DIMENSION_LC_MS_MS.getLabel(locale));
-    assertEquals("MALDI/MS", Service.MALDI_MS.getLabel(locale));
-    assertEquals("Small molecule", Service.SMALL_MOLECULE.getLabel(locale));
-    assertEquals("Intact protein", Service.INTACT_PROTEIN.getLabel(locale));
+    assertEquals("LC/MS/MS", LC_MS_MS.getLabel(locale));
+    assertEquals("2D-LC/MS/MS (MudPit)", TWO_DIMENSION_LC_MS_MS.getLabel(locale));
+    assertEquals("MALDI/MS", MALDI_MS.getLabel(locale));
+    assertEquals("Small molecule", SMALL_MOLECULE.getLabel(locale));
+    assertEquals("Intact protein", INTACT_PROTEIN.getLabel(locale));
   }
 
   @Test
   public void getLabel_French() {
     Locale locale = Locale.CANADA_FRENCH;
 
-    assertEquals("LC/MS/MS", Service.LC_MS_MS.getLabel(locale));
-    assertEquals("2D-LC/MS/MS (MudPit)", Service.TWO_DIMENSION_LC_MS_MS.getLabel(locale));
-    assertEquals("MALDI/MS", Service.MALDI_MS.getLabel(locale));
-    assertEquals("Petite molecule", Service.SMALL_MOLECULE.getLabel(locale));
-    assertEquals("Protéine intacte", Service.INTACT_PROTEIN.getLabel(locale));
+    assertEquals("LC/MS/MS", LC_MS_MS.getLabel(locale));
+    assertEquals("2D-LC/MS/MS (MudPit)", TWO_DIMENSION_LC_MS_MS.getLabel(locale));
+    assertEquals("MALDI/MS", MALDI_MS.getLabel(locale));
+    assertEquals("Petite molecule", SMALL_MOLECULE.getLabel(locale));
+    assertEquals("Protéine intacte", INTACT_PROTEIN.getLabel(locale));
   }
 }

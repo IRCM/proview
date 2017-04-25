@@ -22,7 +22,6 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.util.BeanItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,7 +88,7 @@ public class SubmissionViewPresenter {
         Long id = Long.valueOf(parameters);
         logger.debug("Set submission {}", id);
         Submission submission = submissionService.get(id);
-        view.submissionFormPresenter.setItemDataSource(new BeanItem<>(submission));
+        view.submissionFormPresenter.setBean(submission);
         view.submissionFormPresenter.setEditable(editable(submission));
       } catch (NumberFormatException e) {
         view.showWarning(view.getResources().message(INVALID_SUBMISSION));

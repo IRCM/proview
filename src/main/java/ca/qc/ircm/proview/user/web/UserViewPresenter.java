@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import com.vaadin.data.util.BeanItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,6 +73,7 @@ public class UserViewPresenter {
   private void prepareComponents() {
     view.setTitle(view.getResources().message(TITLE, applicationName));
     view.header.addStyleName(HEADER);
+    view.header.addStyleName("h1");
     view.header.setValue(view.getResources().message(HEADER));
   }
 
@@ -100,7 +100,7 @@ public class UserViewPresenter {
     if (user == null) {
       view.showWarning(view.getResources().message(INVALID_USER));
     } else {
-      view.userFormPresenter.setItemDataSource(new BeanItem<>(user));
+      view.userFormPresenter.setBean(user);
       view.userFormPresenter.setEditable(editable(user));
     }
   }

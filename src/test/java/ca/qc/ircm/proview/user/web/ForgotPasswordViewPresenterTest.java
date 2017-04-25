@@ -40,7 +40,6 @@ import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -105,7 +104,7 @@ public class ForgotPasswordViewPresenterTest {
   }
 
   private String errorMessage(String message) {
-    return new CompositeErrorMessage(new UserError(message)).getFormattedHtmlMessage();
+    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test
@@ -129,17 +128,9 @@ public class ForgotPasswordViewPresenterTest {
   }
 
   @Test
-  public void nullRepresentation() {
-    assertEquals("", view.passwordField.getNullRepresentation());
-    assertEquals("", view.confirmPasswordField.getNullRepresentation());
-  }
-
-  @Test
   public void required() {
-    assertTrue(view.passwordField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.passwordField.getRequiredError());
-    assertTrue(view.confirmPasswordField.isRequired());
-    assertEquals(generalResources.message(REQUIRED), view.confirmPasswordField.getRequiredError());
+    assertTrue(view.passwordField.isRequiredIndicatorVisible());
+    assertTrue(view.confirmPasswordField.isRequiredIndicatorVisible());
   }
 
   @Test

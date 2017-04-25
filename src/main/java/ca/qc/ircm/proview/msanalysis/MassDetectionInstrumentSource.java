@@ -19,13 +19,28 @@ package ca.qc.ircm.proview.msanalysis;
 
 import ca.qc.ircm.utils.MessageResource;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Source for mass spectrometer.
  */
 public enum MassDetectionInstrumentSource {
-  NSI, ESI, LDTD;
+  ESI(true), NSI(true), LDTD(false);
+
+  public final boolean available;
+
+  MassDetectionInstrumentSource(boolean available) {
+    this.available = available;
+  }
+
+  public static List<MassDetectionInstrumentSource> availables() {
+    return Stream.of(MassDetectionInstrumentSource.values()).filter(source -> source.available)
+        .collect(Collectors.toList());
+  }
+
   private static MessageResource getResources(Locale locale) {
     return new MessageResource(MassDetectionInstrumentSource.class, locale);
   }

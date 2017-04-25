@@ -26,7 +26,6 @@ import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
-import ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
@@ -37,22 +36,14 @@ import com.vaadin.testbench.elements.WindowElement;
 import java.util.Locale;
 
 public abstract class SampleStatusPageObject extends AbstractTestBenchTestCase {
+  private static final int NEW_STATUS_COLUMN = 3;
+
   protected void open() {
     openView(SampleStatusView.VIEW_NAME);
   }
 
   protected void openWithSubmissions() {
     openView(SampleStatusView.VIEW_NAME, "442,443");
-  }
-
-  private int gridColumnIndex(String property) {
-    Object[] columns = SampleStatusViewPresenter.getSamplesColumns();
-    for (int i = 0; i < columns.length; i++) {
-      if (property.equals(columns[i])) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   protected LabelElement headerLabel() {
@@ -66,7 +57,7 @@ public abstract class SampleStatusPageObject extends AbstractTestBenchTestCase {
   protected ComboBoxElement sampleStatusComboBox(int row) {
     GridElement samplesGrid = samplesGrid();
     return wrap(ComboBoxElement.class,
-        samplesGrid.getCell(row, gridColumnIndex(NEW_STATUS)).findElement(className(NEW_STATUS)));
+        samplesGrid.getCell(row, NEW_STATUS_COLUMN).findElement(className(NEW_STATUS)));
   }
 
   protected SampleStatus getSampleStatus(int row) {

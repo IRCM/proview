@@ -17,14 +17,15 @@
 
 package ca.qc.ircm.proview.laboratory.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+
 import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Item;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.BeanValidationBinder;
+import com.vaadin.data.Binder;
+import com.vaadin.data.BinderValidationStatus;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -39,8 +40,8 @@ public class LaboratoryFormPresenter {
   public static final String NAME_PROPERTY = QLaboratory.laboratory.name.getMetadata().getName();
   public static final String ORGANIZATION_PROPERTY =
       QLaboratory.laboratory.organization.getMetadata().getName();
-  private ObjectProperty<Boolean> editableProperty = new ObjectProperty<>(false);
-  private BeanFieldGroup<Laboratory> laboratoryFieldGroup = new BeanFieldGroup<>(Laboratory.class);
+  private CheckBox editableProperty = new CheckBox(null, false);
+  private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
   private LaboratoryForm view;
 
   /**
@@ -51,24 +52,20 @@ public class LaboratoryFormPresenter {
    */
   public void init(LaboratoryForm view) {
     this.view = view;
-    view.setPresenter(this);
-  }
-
-  /**
-   * Called when view gets attached.
-   */
-  public void attach() {
-    bindFields();
+    prepareComponents();
     addFieldListeners();
     updateEditable();
-    setCaptions();
-    setRequired();
   }
 
-  private void bindFields() {
-    laboratoryFieldGroup.setItemDataSource(new BeanItem<>(new Laboratory()));
-    laboratoryFieldGroup.bind(view.nameField, NAME_PROPERTY);
-    laboratoryFieldGroup.bind(view.organizationField, ORGANIZATION_PROPERTY);
+  private void prepareComponents() {
+    MessageResource resources = view.getResources();
+    MessageResource generalResources = view.getGeneralResources();
+    view.nameField.setCaption(resources.message(NAME_PROPERTY));
+    laboratoryBinder.forField(view.nameField).asRequired(generalResources.message(REQUIRED))
+        .bind(Laboratory::getName, Laboratory::setName);
+    view.organizationField.setCaption(resources.message(ORGANIZATION_PROPERTY));
+    laboratoryBinder.forField(view.organizationField).asRequired(generalResources.message(REQUIRED))
+        .bind(Laboratory::getOrganization, Laboratory::setOrganization);
   }
 
   private void addFieldListeners() {
@@ -83,36 +80,16 @@ public class LaboratoryFormPresenter {
     view.nameField.setReadOnly(!editable);
   }
 
-  private void setCaptions() {
-    MessageResource resources = view.getResources();
-    view.nameField.setCaption(resources.message(NAME_PROPERTY));
-    view.organizationField.setCaption(resources.message(ORGANIZATION_PROPERTY));
+  public BinderValidationStatus<Laboratory> validate() {
+    return laboratoryBinder.validate();
   }
 
-  private void setRequired() {
-    final MessageResource generalResources = view.getGeneralResources();
-    view.nameField.setRequired(true);
-    view.nameField
-        .setRequiredError(generalResources.message("required", view.nameField.getCaption()));
-    view.organizationField.setRequired(true);
-    view.organizationField.setRequiredError(
-        generalResources.message("required", view.organizationField.getCaption()));
+  public Laboratory getBean() {
+    return laboratoryBinder.getBean();
   }
 
-  public void commit() throws CommitException {
-    laboratoryFieldGroup.commit();
-  }
-
-  public boolean isValid() {
-    return laboratoryFieldGroup.isValid();
-  }
-
-  public Item getItemDataSource() {
-    return laboratoryFieldGroup.getItemDataSource();
-  }
-
-  public void setItemDataSource(Item item) {
-    laboratoryFieldGroup.setItemDataSource(item);
+  public void setBean(Laboratory laboratory) {
+    laboratoryBinder.setBean(laboratory);
   }
 
   public boolean isEditable() {

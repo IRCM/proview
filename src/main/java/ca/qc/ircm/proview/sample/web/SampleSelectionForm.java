@@ -17,16 +17,33 @@
 
 package ca.qc.ircm.proview.sample.web;
 
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.shared.Registration;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Sample selection form.
  */
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SampleSelectionForm extends SampleSelectionFormDesign implements BaseComponent {
   private static final long serialVersionUID = -2890553778973734044L;
+  @Inject
   private transient SampleSelectionFormPresenter presenter;
 
-  public void setPresenter(SampleSelectionFormPresenter presenter) {
+  protected SampleSelectionForm() {
+  }
+
+  protected SampleSelectionForm(SampleSelectionFormPresenter presenter) {
     this.presenter = presenter;
   }
 
@@ -34,5 +51,17 @@ public class SampleSelectionForm extends SampleSelectionFormDesign implements Ba
   public void attach() {
     super.attach();
     presenter.init(this);
+  }
+
+  public Registration addSaveListener(SaveListener<List<Sample>> listener) {
+    return addListener(SaveEvent.class, listener, SaveListener.SAVED_METHOD);
+  }
+
+  protected void fireSaveEvent(List<Sample> selectedSamples) {
+    fireEvent(new SaveEvent<>(this, selectedSamples));
+  }
+
+  public SampleSelectionFormPresenter getPresenter() {
+    return presenter;
   }
 }

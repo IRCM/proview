@@ -42,22 +42,19 @@ import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.Container;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.sort.SortOrder;
-import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
-import com.vaadin.ui.Grid.HeaderCell;
-import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
-import de.datenhahn.vaadin.componentrenderer.ComponentRenderer;
+import com.vaadin.ui.components.grid.HeaderCell;
+import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,6 +89,8 @@ public class SignasViewPresenterTest {
   private Provider<UserWindow> userWindowProvider;
   @Mock
   private UserWindow userWindow;
+  @Mock
+  private DataProvider<User, Void> usersProvider;
   @Captor
   private ArgumentCaptor<Collection<User>> usersCaptor;
   @Captor
@@ -118,131 +117,120 @@ public class SignasViewPresenterTest {
     users.add(entityManager.find(User.class, 11L));
     when(userService.all(any())).thenReturn(users);
     view.headerLabel = new Label();
-    view.usersGrid = new Grid();
+    view.usersGrid = new Grid<>();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(userWindowProvider.get()).thenReturn(userWindow);
     presenter.init(view);
   }
 
+  private <V> boolean containsInstanceOf(Collection<V> extensions, Class<? extends V> clazz) {
+    return extensions.stream().filter(extension -> clazz.isInstance(extension)).findAny()
+        .isPresent();
+  }
+
   @Test
   public void usersGridColumns() {
-    List<Column> columns = view.usersGrid.getColumns();
+    List<Column<User, ?>> columns = view.usersGrid.getColumns();
 
-    assertEquals(EMAIL, columns.get(0).getPropertyId());
-    assertEquals(NAME, columns.get(1).getPropertyId());
-    assertEquals(LABORATORY_NAME, columns.get(2).getPropertyId());
-    assertEquals(ORGANIZATION, columns.get(3).getPropertyId());
-    assertEquals(VIEW, columns.get(4).getPropertyId());
-    assertTrue(columns.get(4).getRenderer() instanceof ComponentRenderer);
-    assertEquals(SIGN_AS, columns.get(5).getPropertyId());
-    assertTrue(columns.get(5).getRenderer() instanceof ComponentRenderer);
+    assertEquals(EMAIL, columns.get(0).getId());
+    assertEquals(NAME, columns.get(1).getId());
+    assertEquals(LABORATORY_NAME, columns.get(2).getId());
+    assertEquals(ORGANIZATION, columns.get(3).getId());
+    assertEquals(VIEW, columns.get(4).getId());
+    assertTrue(containsInstanceOf(columns.get(4).getExtensions(), ComponentRenderer.class));
+    assertEquals(SIGN_AS, columns.get(5).getId());
+    assertTrue(containsInstanceOf(columns.get(5).getExtensions(), ComponentRenderer.class));
   }
 
   @Test
   public void usersGridOrder() {
-    List<SortOrder> sortOrders = view.usersGrid.getSortOrder();
+    List<GridSortOrder<User>> sortOrders = view.usersGrid.getSortOrder();
 
     assertFalse(sortOrders.isEmpty());
-    SortOrder sortOrder = sortOrders.get(0);
-    assertEquals(EMAIL, sortOrder.getPropertyId());
+    GridSortOrder<User> sortOrder = sortOrders.get(0);
+    assertEquals(EMAIL, sortOrder.getSorted().getId());
     assertEquals(SortDirection.ASCENDING, sortOrder.getDirection());
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void emailFilter() {
+    view.usersGrid.setDataProvider(usersProvider);
     HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EMAIL);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
-    GeneratedPropertyContainer container =
-        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
-    Collection<Filter> filters = container.getContainerFilters();
-    assertEquals(1, filters.size());
-    Filter filter = filters.iterator().next();
-    assertTrue(filter instanceof SimpleStringFilter);
-    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
-    assertEquals(filterValue, stringFilter.getFilterString());
-    assertEquals(EMAIL, stringFilter.getPropertyId());
+    verify(usersProvider).refreshAll();
+    UserWebFilter filter = presenter.getFilter();
+    assertEquals(filterValue, filter.getEmailContains());
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void nameFilter() {
+    view.usersGrid.setDataProvider(usersProvider);
     HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(NAME);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
-    GeneratedPropertyContainer container =
-        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
-    Collection<Filter> filters = container.getContainerFilters();
-    assertEquals(1, filters.size());
-    Filter filter = filters.iterator().next();
-    assertTrue(filter instanceof SimpleStringFilter);
-    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
-    assertEquals(filterValue, stringFilter.getFilterString());
-    assertEquals(NAME, stringFilter.getPropertyId());
+    verify(usersProvider).refreshAll();
+    UserWebFilter filter = presenter.getFilter();
+    assertEquals(filterValue, filter.getNameContains());
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void laboratoryNameFilter() {
+    view.usersGrid.setDataProvider(usersProvider);
     HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(LABORATORY_NAME);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
-    GeneratedPropertyContainer container =
-        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
-    Collection<Filter> filters = container.getContainerFilters();
-    assertEquals(1, filters.size());
-    Filter filter = filters.iterator().next();
-    assertTrue(filter instanceof SimpleStringFilter);
-    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
-    assertEquals(filterValue, stringFilter.getFilterString());
-    assertEquals(LABORATORY_NAME, stringFilter.getPropertyId());
+    verify(usersProvider).refreshAll();
+    UserWebFilter filter = presenter.getFilter();
+    assertEquals(filterValue, filter.getLaboratoryNameContains());
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void organizationFilter() {
+    view.usersGrid.setDataProvider(usersProvider);
     HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(ORGANIZATION);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
-    TextChangeListener listener =
-        (TextChangeListener) textField.getListeners(TextChangeEvent.class).iterator().next();
-    TextChangeEvent event = mock(TextChangeEvent.class);
-    when(event.getText()).thenReturn(filterValue);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
 
-    listener.textChange(event);
+    listener.valueChange(event);
 
-    GeneratedPropertyContainer container =
-        (GeneratedPropertyContainer) view.usersGrid.getContainerDataSource();
-    Collection<Filter> filters = container.getContainerFilters();
-    assertEquals(1, filters.size());
-    Filter filter = filters.iterator().next();
-    assertTrue(filter instanceof SimpleStringFilter);
-    SimpleStringFilter stringFilter = (SimpleStringFilter) filter;
-    assertEquals(filterValue, stringFilter.getFilterString());
-    assertEquals(ORGANIZATION, stringFilter.getPropertyId());
+    verify(usersProvider).refreshAll();
+    UserWebFilter filter = presenter.getFilter();
+    assertEquals(filterValue, filter.getOrganizationContains());
   }
 
   @Test
@@ -256,14 +244,19 @@ public class SignasViewPresenterTest {
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), view.headerLabel.getValue());
-    assertEquals(resources.message(EMAIL), view.usersGrid.getColumn(EMAIL).getHeaderCaption());
-    assertEquals(resources.message(NAME), view.usersGrid.getColumn(NAME).getHeaderCaption());
+    assertEquals(resources.message(EMAIL), view.usersGrid.getColumn(EMAIL).getCaption());
+    assertEquals(resources.message(NAME), view.usersGrid.getColumn(NAME).getCaption());
     assertEquals(resources.message(LABORATORY_NAME),
-        view.usersGrid.getColumn(LABORATORY_NAME).getHeaderCaption());
+        view.usersGrid.getColumn(LABORATORY_NAME).getCaption());
     assertEquals(resources.message(ORGANIZATION),
-        view.usersGrid.getColumn(ORGANIZATION).getHeaderCaption());
-    assertEquals(resources.message(VIEW), view.usersGrid.getColumn(VIEW).getHeaderCaption());
-    assertEquals(resources.message(SIGN_AS), view.usersGrid.getColumn(SIGN_AS).getHeaderCaption());
+        view.usersGrid.getColumn(ORGANIZATION).getCaption());
+    final User user = users.get(0);
+    assertEquals(resources.message(VIEW), view.usersGrid.getColumn(VIEW).getCaption());
+    Button viewButton = (Button) view.usersGrid.getColumn(VIEW).getValueProvider().apply(user);
+    assertTrue(viewButton.getStyleName().contains(VIEW));
+    assertEquals(resources.message(SIGN_AS), view.usersGrid.getColumn(SIGN_AS).getCaption());
+    Button signasButton = (Button) view.usersGrid.getColumn(SIGN_AS).getValueProvider().apply(user);
+    assertTrue(signasButton.getStyleName().contains(SIGN_AS));
   }
 
   @Test
@@ -278,8 +271,7 @@ public class SignasViewPresenterTest {
   @Test
   public void viewUser() {
     final User user = users.get(0);
-    Container.Indexed container = view.usersGrid.getContainerDataSource();
-    Button button = (Button) container.getItem(user).getItemProperty(VIEW).getValue();
+    Button button = (Button) view.usersGrid.getColumn(VIEW).getValueProvider().apply(user);
 
     button.click();
 
@@ -292,8 +284,7 @@ public class SignasViewPresenterTest {
   @Test
   public void signasUser() {
     final User user = users.get(0);
-    Container.Indexed container = view.usersGrid.getContainerDataSource();
-    Button button = (Button) container.getItem(user).getItemProperty(SIGN_AS).getValue();
+    Button button = (Button) view.usersGrid.getColumn(SIGN_AS).getValueProvider().apply(user);
 
     button.click();
 

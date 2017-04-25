@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 import org.slf4j.Logger;
@@ -43,7 +42,6 @@ public class SubmissionWindow extends Window implements BaseComponent {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionWindow.class);
   private SubmissionForm view = new SubmissionForm();
   private Panel panel;
-  private Submission submission;
   @Inject
   private SubmissionFormPresenter presenter;
 
@@ -63,12 +61,25 @@ public class SubmissionWindow extends Window implements BaseComponent {
   @Override
   public void attach() {
     super.attach();
-    logger.debug("Submission window for submission {}", submission);
-    setCaption(getResources().message(TITLE, submission.getExperience()));
-    presenter.setItemDataSource(new BeanItem<>(submission));
   }
 
+  /**
+   * Sets submission.
+   *
+   * @param submission
+   *          submission
+   */
   public void setSubmission(Submission submission) {
-    this.submission = submission;
+    if (isAttached()) {
+      updateSubmission(submission);
+    } else {
+      addAttachListener(e -> updateSubmission(submission));
+    }
+  }
+
+  private void updateSubmission(Submission submission) {
+    logger.debug("Submission window for submission {}", submission);
+    setCaption(getResources().message(TITLE, submission.getExperience()));
+    presenter.setBean(submission);
   }
 }

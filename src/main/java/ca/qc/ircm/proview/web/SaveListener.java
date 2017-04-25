@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 /**
  * Interface for listening for a {@link SaveEvent} fired by a {@link Component}.
  */
-public interface SaveListener extends Serializable {
+public interface SaveListener<V> extends Serializable {
   public static final Method SAVED_METHOD =
       ReflectTools.findMethod(SaveListener.class, "saved", SaveEvent.class);
 
@@ -37,5 +37,5 @@ public interface SaveListener extends Serializable {
    * @param event
    *          an event containing information about the save
    */
-  public void saved(SaveEvent event);
+  public void saved(SaveEvent<V> event);
 }

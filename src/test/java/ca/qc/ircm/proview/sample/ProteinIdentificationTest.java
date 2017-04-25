@@ -23,12 +23,30 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.OTHER;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.UNIPROT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Locale;
 
 public class ProteinIdentificationTest {
+  @Test
+  public void availables() {
+    assertTrue(REFSEQ.available);
+    assertTrue(UNIPROT.available);
+    assertFalse(NCBINR.available);
+    assertFalse(MSDB_ID.available);
+    assertTrue(OTHER.available);
+
+    List<ProteinIdentification> identifications = ProteinIdentification.availables();
+    assertEquals(3, identifications.size());
+    assertEquals(REFSEQ, identifications.get(0));
+    assertEquals(UNIPROT, identifications.get(1));
+    assertEquals(OTHER, identifications.get(2));
+  }
+
   @Test
   public void getNullLabel() {
     assertEquals("Undetermined", ProteinIdentification.getNullLabel(Locale.ENGLISH));

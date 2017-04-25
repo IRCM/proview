@@ -18,8 +18,9 @@
 package ca.qc.ircm.proview.sample.web;
 
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 import org.slf4j.Logger;
@@ -43,14 +44,12 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
   public static final String TITLE = "title";
   private static final long serialVersionUID = 988315877226604037L;
   private static final Logger logger = LoggerFactory.getLogger(SampleSelectionWindow.class);
-  private SampleSelectionForm view = new SampleSelectionForm();
   private Panel panel;
   @Inject
-  private SampleSelectionFormPresenter presenter;
+  private SampleSelectionForm view;
 
   @PostConstruct
   protected void init() {
-    view.setPresenter(presenter);
     addStyleName(WINDOW_STYLE);
     panel = new Panel();
     setContent(panel);
@@ -66,17 +65,28 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
     super.attach();
     logger.debug("Sample selection window");
     setCaption(getResources().message(TITLE));
+    view.addSaveListener(e -> close());
+  }
+
+  public Registration addSaveListener(SaveListener<List<Sample>> listener) {
+    return view.addSaveListener(listener);
   }
 
   public List<Sample> getSelectedSamples() {
-    return presenter.getSelectedSamples();
+    return view.getPresenter().getSelectedSamples();
   }
 
+  /**
+   * Sets selected samples.
+   *
+   * @param samples
+   *          selected samples
+   */
   public void setSelectedSamples(List<Sample> samples) {
-    presenter.setSelectedSamples(samples);
-  }
-
-  public ObjectProperty<List<Sample>> selectedSamplesProperty() {
-    return presenter.selectedSamplesProperty();
+    if (isAttached()) {
+      view.getPresenter().setSelectedSamples(samples);
+    } else {
+      addAttachListener(e -> view.getPresenter().setSelectedSamples(samples));
+    }
   }
 }

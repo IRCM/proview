@@ -27,11 +27,13 @@
 
     <inherits name="org.vaadin.hene.popupbutton.widgetset.PopupbuttonWidgetset" />
 
-    <inherits name="de.datenhahn.vaadin.componentrenderer.ComponentRendererWidgetSet" />
+    
 
     <inherits name="ca.qc.ircm.platelayout.PlateLayoutWidgetset" />
 
     
 
     <inherits name="org.vaadin.easyuploads.Widgetset" />
+
+    <inherits name="com.vaadin.v7.Vaadin7WidgetSet" />
 </module>

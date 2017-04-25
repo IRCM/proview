@@ -36,16 +36,16 @@ public class UserView extends UserViewDesign implements BaseView {
   private static final long serialVersionUID = -3508418095993360485L;
   @Inject
   private transient UserViewPresenter presenter;
-  @Inject
-  protected transient UserFormPresenter userFormPresenter;
   protected Menu menu = new Menu();
-  protected UserForm userForm = new UserForm();
+  @Inject
+  protected UserForm userForm;
+  protected transient UserFormPresenter userFormPresenter;
 
   @PostConstruct
   protected void init() {
     menuLayout.addComponent(menu);
-    userForm.setPresenter(userFormPresenter);
     userFormLayout.addComponent(userForm);
+    userFormPresenter = userForm.getPresenter();
   }
 
   @Override
