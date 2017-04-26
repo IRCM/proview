@@ -28,12 +28,12 @@ import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.MenuBarElement;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.nio.file.Path;
 import java.util.Locale;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
