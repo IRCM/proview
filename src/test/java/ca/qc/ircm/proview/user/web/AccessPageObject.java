@@ -26,8 +26,8 @@ import static ca.qc.ircm.proview.user.web.AccessViewPresenter.VIEW;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.user.web.AccessView;
 import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.LabelElement;
@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 public abstract class AccessPageObject extends AbstractTestBenchTestCase {
   @SuppressWarnings("unused")
@@ -86,8 +87,9 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
     GridElement usersGrid = usersGrid();
     Arrays.asList(emails).forEach(email -> {
       processUsersGridRow(email, row -> {
+        IntStream.range(0, SELECT_COLUMN).forEach(i -> usersGrid.getCell(row, i));
         GridCellElement checkboxCell = usersGrid.getCell(row, SELECT_COLUMN);
-        checkboxCell.click();
+        checkboxCell.$(CheckBoxElement.class).first().click();
       });
     });
   }

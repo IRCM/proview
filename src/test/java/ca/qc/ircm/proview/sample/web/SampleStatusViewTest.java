@@ -24,12 +24,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.NotificationElement;
 import org.junit.Test;
@@ -54,7 +53,7 @@ public class SampleStatusViewTest extends SampleStatusPageObject {
   @Test
   @WithSubject(anonymous = true)
   public void security_Anonymous() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();
@@ -66,7 +65,7 @@ public class SampleStatusViewTest extends SampleStatusPageObject {
   @Test
   @WithSubject(userId = 10)
   public void security_RegularUser() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();
@@ -78,7 +77,7 @@ public class SampleStatusViewTest extends SampleStatusPageObject {
   @Test
   @WithSubject(userId = 3)
   public void security_Manager() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();

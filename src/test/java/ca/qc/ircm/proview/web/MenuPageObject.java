@@ -36,7 +36,6 @@ import static org.openqa.selenium.By.className;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.SignasViewPresenter;
-import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
@@ -46,10 +45,6 @@ import org.openqa.selenium.WebElement;
 public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   private static final int EMAIL_COLUMN = 0;
   private static final int SIGN_AS_COLUMN = 5;
-
-  protected void open() {
-    openView(MainView.VIEW_NAME);
-  }
 
   private WebElement menuItemByStyle(String className) {
     return findElement(className("v-menubar-menuitem-" + className));

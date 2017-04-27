@@ -27,10 +27,7 @@ import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.user.web.SignasView;
-import ca.qc.ircm.proview.user.web.UserFormPresenter;
-import ca.qc.ircm.proview.user.web.UserWindow;
-import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.WindowElement;
 import org.junit.Test;
@@ -60,7 +57,7 @@ public class SignasViewTest extends SignasPageObject {
   @Test
   @WithSubject(anonymous = true)
   public void security_Anonymous() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();
@@ -72,7 +69,7 @@ public class SignasViewTest extends SignasPageObject {
   @Test
   @WithSubject(userId = 10L)
   public void security_RegularUser() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();
@@ -84,7 +81,7 @@ public class SignasViewTest extends SignasPageObject {
   @Test
   @WithSubject(userId = 3L)
   public void security_Manager() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();

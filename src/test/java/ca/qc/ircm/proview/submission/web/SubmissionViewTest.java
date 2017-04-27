@@ -49,7 +49,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -98,7 +98,6 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
 
   @Before
   public void beforeTest() throws Throwable {
-    System.out.println("beforeTest");
     additionalFile1 = Paths.get(getClass().getResource("/submissionfile1.txt").toURI());
   }
 
@@ -134,7 +133,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
   @Test
   @WithSubject(anonymous = true)
   public void security_Anonymous() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();
