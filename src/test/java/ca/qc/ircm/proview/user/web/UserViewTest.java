@@ -34,8 +34,7 @@ import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.web.UserView;
-import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -84,7 +83,7 @@ public class UserViewTest extends UserPageObject {
   @Test
   @WithSubject(anonymous = true)
   public void security_Anonymous() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();

@@ -37,6 +37,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.test.context.TestContext;
 
@@ -50,11 +51,14 @@ import javax.inject.Inject;
 /**
  * Sets Shiro's subject.
  */
-public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener {
+public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener
+    implements SeleniumDriverTypePredicate {
   public static final String REMEMBER_ME_COOKIE_NAME = "rememberMe";
   private static final String ANONYMOUS_VIEW = MainView.VIEW_NAME;
   private static final Logger logger = LoggerFactory.getLogger(ShiroTestExecutionListener.class);
   private ThreadState threadState;
+  @Value("localhost")
+  protected String domain;
   @Inject
   private SecurityConfiguration securityConfiguration;
 
@@ -104,7 +108,12 @@ public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener 
           (AbstractTestBenchTestCase) testContext.getTestInstance();
       WebDriver driver = testInstance.getDriver();
       testInstance.openView(ANONYMOUS_VIEW);
-      Cookie cookie = new Cookie("rememberMe", rememberCookie(userId.get()));
+      String domain = this.domain;
+      if (isPhantomjsDriver(driver)) {
+        domain = "." + domain;
+      }
+      logger.debug("Set cookie for user {} in domain {}", userId.get(), domain);
+      Cookie cookie = new Cookie("rememberMe", rememberCookie(userId.get()), domain, "/", null);
       driver.manage().addCookie(cookie);
     }
   }

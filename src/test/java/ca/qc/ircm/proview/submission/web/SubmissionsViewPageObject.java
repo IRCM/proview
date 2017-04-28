@@ -24,15 +24,13 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static org.openqa.selenium.By.className;
+import static org.openqa.selenium.By.tagName;
 
-import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
 
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
@@ -60,16 +58,14 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   protected String experienceByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
     ButtonElement button = wrap(ButtonElement.class, submissionsGrid
-        .getCell(row, gridColumnIndex(EXPERIENCE_COLUMN)).findElement(className("v-button")));
+        .getCell(row, gridColumnIndex(EXPERIENCE_COLUMN)).findElement(className(EXPERIENCE)));
     return button.getCaption();
   }
 
   protected void selectSubmissions(int... rows) {
-    Set<Integer> rowsSet =
-        IntStream.range(0, rows.length).mapToObj(i -> rows[i]).collect(Collectors.toSet());
     GridElement grid = submissionsGrid();
-    gridRows(grid).filter(r -> rowsSet.contains(r)).forEach(r -> {
-      grid.getCell(r, 0).click();
+    IntStream.range(0, rows.length).mapToObj(i -> rows[i]).forEach(r -> {
+      grid.getCell(r, 0).findElement(tagName("input")).click();
     });
   }
 

@@ -30,6 +30,9 @@ import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.MenuBarElement;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.nio.file.Path;
@@ -43,7 +46,9 @@ import java.util.stream.IntStream;
 /**
  * Additional functions for TestBenchTestCase.
  */
-public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
+public abstract class AbstractTestBenchTestCase extends TestBenchTestCase
+    implements SeleniumDriverTypePredicate {
+  private static final Logger logger = LoggerFactory.getLogger(AbstractTestBenchTestCase.class);
   @Value("http://localhost:${local.server.port}")
   protected String baseUrl;
 
@@ -94,8 +99,17 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   }
 
   protected void uploadFile(WebElement uploader, Path file) {
-    WebElement input = uploader.findElement(className("gwt-FileUpload"));
-    input.sendKeys(file.toAbsolutePath().toString());
+    logger.debug("Uploading file {} to uploader {} with class {}", file,
+        uploader.getAttribute("id"), uploader.getAttribute("class"));
+    if (isPhantomjsDriver(driver)) {
+      String selector =
+          "." + uploader.getAttribute("class").replaceAll(" ", ".") + " .gwt-FileUpload";
+      ((PhantomJSDriver) actualDriver(driver)).executePhantomJS(
+          "var page = this; page.uploadFile('" + selector + "', '" + file.toAbsolutePath() + "');");
+    } else {
+      WebElement input = uploader.findElement(className("gwt-FileUpload"));
+      input.sendKeys(file.toAbsolutePath().toString());
+    }
   }
 
   protected IntStream gridRows(GridElement grid) {

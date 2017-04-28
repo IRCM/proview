@@ -24,6 +24,9 @@ import com.vaadin.testbench.TestBenchTestCase;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -50,8 +53,8 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
   private static final String SKIP_TESTS_SYSTEM_PROPERTY = "testbench.skip";
   private static final String DRIVER_SYSTEM_PROPERTY = "testbench.driver";
   private static final String RETRIES_SYSTEM_PROPERTY = "testbench.retries";
-  private static final String DEFAULT_DRIVER = "org.openqa.selenium.firefox.FirefoxDriver";
-  private static final String CHROME_DRIVER = "org.openqa.selenium.chrome.ChromeDriver";
+  private static final String DEFAULT_DRIVER = FirefoxDriver.class.getName();
+  private static final String CHROME_DRIVER = ChromeDriver.class.getName();
   private static final Logger logger =
       LoggerFactory.getLogger(TestBenchTestExecutionListener.class);
 
@@ -125,6 +128,7 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
         // https://vaadin.com/docs/-/part/testbench/testbench-known-issues.html
         driverClass = CHROME_DRIVER;
       }
+      driverClass = PhantomJSDriver.class.getName();
     }
     try {
       return (WebDriver) Class.forName(driverClass).newInstance();

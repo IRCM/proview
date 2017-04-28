@@ -731,20 +731,21 @@
       </properties>
     </profile>
     <profile>
-      <id>chrome</id>
-      <activation>
-        <os>
-          <family>mac</family>
-        </os>
-      </activation>
+      <id>phantomjs</id>
       <properties>
-        <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
+        <testbench.driver>org.openqa.selenium.phantomjs.PhantomJSDriver</testbench.driver>
       </properties>
     </profile>
     <profile>
       <id>firefox</id>
       <properties>
-        <testbench.driver>org.openqa.selenium.firefox.FirefoxDriver</testbench.driver>
+      	<testbench.driver>org.openqa.selenium.firefox.FirefoxDriver</testbench.driver>
+      </properties>
+    </profile>
+    <profile>
+      <id>chrome</id>
+      <properties>
+      	<testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
       </properties>
     </profile>
     <profile>

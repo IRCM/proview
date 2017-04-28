@@ -116,17 +116,11 @@ import com.vaadin.testbench.elements.PanelElement;
 import com.vaadin.testbench.elements.RadioButtonGroupElement;
 import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
-import org.junit.Before;
 import org.openqa.selenium.WebElement;
 
 import java.nio.file.Path;
 
 public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase {
-  @Before
-  public void beforeSubmissionViewPageObject() {
-    System.out.println("beforeSubmissionViewPageObject");
-  }
-
   protected void open() {
     openView(SubmissionView.VIEW_NAME);
   }

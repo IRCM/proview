@@ -64,7 +64,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject(anonymous = true)
   public void fieldsExistence_Anonymous() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertFalse(optional(() -> submissionMenuItem()).isPresent());
@@ -84,7 +84,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject(userId = 10)
   public void fieldsExistence_User() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
@@ -104,7 +104,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject(userId = 3)
   public void fieldsExistence_Manager() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
@@ -125,7 +125,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject(userId = 1)
   public void fieldsExistence_Admin() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
@@ -146,6 +146,8 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject(userId = 1)
   public void fieldsExistence_Admin_SignedAs() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
     signas("christopher.anderson@ircm.qc.ca");
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
@@ -167,7 +169,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject
   public void captions() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
 
     MessageResource resources = resources(Menu.class);
     assertEquals(resources.message(HOME), homeMenuItem().getText());
@@ -212,7 +214,7 @@ public class MenuTest extends MenuPageObject {
 
   @Test
   public void home() throws Throwable {
-    openView(RegisterView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
 
     clickHome();
 
@@ -222,7 +224,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject
   public void submission() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
 
     clickSubmission();
 
@@ -232,7 +234,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject
   public void profile() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
 
     clickProfile();
 
@@ -242,10 +244,11 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject
   public void signout() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
 
     clickSignout();
 
+    Thread.sleep(50); // Wait for redirection.
     assertEquals(homeUrl(), getDriver().getCurrentUrl());
     Set<Cookie> cookies = driver.manage().getCookies();
     assertFalse(cookies.stream().filter(cookie -> cookie.getName().equals(REMEMBER_ME_COOKIE_NAME))
@@ -254,12 +257,12 @@ public class MenuTest extends MenuPageObject {
 
   @Test
   public void changeLanguage() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
     Locale currentLocale = currentLocale();
 
     clickChangeLanguage();
 
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(ContactView.VIEW_NAME), getDriver().getCurrentUrl());
     Locale newLocale = Locale.FRENCH;
     if (currentLocale == Locale.FRENCH) {
       newLocale = Locale.ENGLISH;
@@ -270,7 +273,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject
   public void validateUsers() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
 
     clickValidateUsers();
 
@@ -280,7 +283,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject
   public void access() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
 
     clickAccess();
 
@@ -290,7 +293,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject
   public void signas() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
 
     clickSignas();
 
@@ -300,7 +303,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject
   public void register() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
 
     clickRegister();
 
@@ -310,6 +313,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @WithSubject
   public void stopSignas() throws Throwable {
+    openView(ContactView.VIEW_NAME);
     signas("christopher.anderson@ircm.qc.ca");
 
     clickStopSignas();
@@ -325,7 +329,7 @@ public class MenuTest extends MenuPageObject {
 
   @Test
   public void contact() throws Throwable {
-    open();
+    openView(RegisterView.VIEW_NAME);
 
     clickContact();
 
@@ -335,7 +339,7 @@ public class MenuTest extends MenuPageObject {
   @Test
   @Ignore("not programmed yet")
   public void help() throws Throwable {
-    open();
+    openView(ContactView.VIEW_NAME);
 
     clickHelp();
 

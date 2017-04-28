@@ -28,10 +28,7 @@ import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.web.AccessView;
-import ca.qc.ircm.proview.user.web.UserFormPresenter;
-import ca.qc.ircm.proview.user.web.UserWindow;
-import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.vaadin.testbench.elements.NotificationElement;
@@ -71,7 +68,7 @@ public class AccessViewTest extends AccessPageObject {
   @Test
   @WithSubject(anonymous = true)
   public void security_Anonymous() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();
@@ -83,7 +80,7 @@ public class AccessViewTest extends AccessPageObject {
   @Test
   @WithSubject(userId = 10L)
   public void security_RegularUser() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();

@@ -32,7 +32,7 @@ import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.WindowElement;
 import org.junit.Before;
@@ -64,7 +64,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   @Test
   @WithSubject(anonymous = true)
   public void security_Anonymous() throws Throwable {
-    openView(MainView.VIEW_NAME);
+    openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();
