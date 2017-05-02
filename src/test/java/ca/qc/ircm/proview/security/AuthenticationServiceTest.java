@@ -52,6 +52,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.SaltedAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -73,6 +74,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.Instant;
 import java.util.Collections;
 
 import javax.inject.Inject;
@@ -96,6 +98,8 @@ public class AuthenticationServiceTest {
   private String realmName = "proviewRealm";
   private Subject subject;
   private PasswordVersion passwordVersion;
+  private int maximumSignAttemps = 3;
+  private long maximumSignAttempsDelay = 300000;
 
   /**
    * Before test.
@@ -108,6 +112,8 @@ public class AuthenticationServiceTest {
         .thenReturn(Collections.nCopies(1, passwordVersion));
     when(securityConfiguration.getPasswordVersion()).thenReturn(passwordVersion);
     when(securityConfiguration.realmName()).thenReturn(realmName);
+    when(securityConfiguration.maximumSignAttemps()).thenReturn(maximumSignAttemps);
+    when(securityConfiguration.maximumSignAttempsDelay()).thenReturn(maximumSignAttempsDelay);
     subject = SecurityUtils.getSubject();
   }
 
@@ -121,6 +127,10 @@ public class AuthenticationServiceTest {
     assertEquals("christian.poitras@ircm.qc.ca", token.getUsername());
     assertArrayEquals("password".toCharArray(), token.getPassword());
     assertEquals(false, token.isRememberMe());
+    User user = entityManager.find(User.class, 2L);
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
   }
 
   @Test
@@ -133,6 +143,10 @@ public class AuthenticationServiceTest {
     assertEquals("christian.poitras@ircm.qc.ca", token.getUsername());
     assertArrayEquals("password".toCharArray(), token.getPassword());
     assertEquals(true, token.isRememberMe());
+    User user = entityManager.find(User.class, 2L);
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
   }
 
   @Test
@@ -152,6 +166,74 @@ public class AuthenticationServiceTest {
     assertEquals("christian.poitras@ircm.qc.ca", token.getUsername());
     assertArrayEquals("password".toCharArray(), token.getPassword());
     assertEquals(true, token.isRememberMe());
+    User user = entityManager.find(User.class, 2L);
+    assertEquals(1, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+  }
+
+  @Test
+  public void sign_NotToManyAttempts() throws Throwable {
+    User user = entityManager.find(User.class, 2L);
+    user.setSignAttempts(maximumSignAttemps - 1);
+    Instant lastSignAttempt = Instant.now();
+    user.setLastSignAttempt(lastSignAttempt);
+
+    authenticationService.sign("christian.poitras@ircm.qc.ca", "password", true);
+
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+  }
+
+  @Test
+  public void sign_ToManyAttempts() throws Throwable {
+    User user = entityManager.find(User.class, 2L);
+    user.setSignAttempts(maximumSignAttemps);
+    Instant lastSignAttempt = Instant.now();
+    user.setLastSignAttempt(lastSignAttempt);
+
+    try {
+      authenticationService.sign("christian.poitras@ircm.qc.ca", "password", true);
+      fail("Expected ExcessiveAttemptsException");
+    } catch (ExcessiveAttemptsException e) {
+      // Ignore.
+    }
+
+    assertEquals(maximumSignAttemps, user.getSignAttempts());
+    assertEquals(lastSignAttempt, user.getLastSignAttempt());
+  }
+
+  @Test
+  public void sign_CanAttemptAgain_Success() throws Throwable {
+    User user = entityManager.find(User.class, 2L);
+    user.setSignAttempts(maximumSignAttemps);
+    user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
+
+    authenticationService.sign("christian.poitras@ircm.qc.ca", "password", true);
+
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+  }
+
+  @Test
+  public void sign_CanAttemptAgain_Fail() throws Throwable {
+    User user = entityManager.find(User.class, 2L);
+    user.setSignAttempts(maximumSignAttemps);
+    user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
+    doThrow(new AuthenticationException("test")).when(subject).login(tokenCaptor.capture());
+
+    try {
+      authenticationService.sign("christian.poitras@ircm.qc.ca", "wrong", true);
+      fail("Expected AuthenticationException");
+    } catch (AuthenticationException e) {
+      // Ignore.
+    }
+
+    assertEquals(1, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
   }
 
   @Test
@@ -326,8 +408,8 @@ public class AuthenticationServiceTest {
 
   @Test
   public void getAuthorizationInfo_3() {
-    AuthorizationInfo authorization = authenticationService
-        .getAuthorizationInfo(new SimplePrincipalCollection(3L, realmName));
+    AuthorizationInfo authorization =
+        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(3L, realmName));
 
     assertEquals(true, authorization.getRoles().contains("USER"));
     assertEquals(true, authorization.getRoles().contains("MANAGER"));
@@ -358,8 +440,8 @@ public class AuthenticationServiceTest {
 
   @Test
   public void getAuthorizationInfo_2() {
-    AuthorizationInfo authorization = authenticationService
-        .getAuthorizationInfo(new SimplePrincipalCollection(2L, realmName));
+    AuthorizationInfo authorization =
+        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(2L, realmName));
 
     assertEquals(true, authorization.getRoles().contains("USER"));
     assertEquals(true, authorization.getRoles().contains("MANAGER"));
@@ -390,8 +472,8 @@ public class AuthenticationServiceTest {
 
   @Test
   public void getAuthorizationInfo_6() {
-    AuthorizationInfo authorization = authenticationService
-        .getAuthorizationInfo(new SimplePrincipalCollection(5L, realmName));
+    AuthorizationInfo authorization =
+        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(5L, realmName));
 
     assertEquals(true, authorization.getRoles().contains("USER"));
     assertEquals(false, authorization.getRoles().contains("MANAGER"));
@@ -422,8 +504,8 @@ public class AuthenticationServiceTest {
 
   @Test
   public void getAuthorizationInfo_Invalid() {
-    AuthorizationInfo authorization = authenticationService
-        .getAuthorizationInfo(new SimplePrincipalCollection(6L, realmName));
+    AuthorizationInfo authorization =
+        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(6L, realmName));
 
     assertEquals(false, authorization.getRoles().contains("USER"));
     assertEquals(false, authorization.getRoles().contains("MANAGER"));
@@ -454,8 +536,8 @@ public class AuthenticationServiceTest {
 
   @Test
   public void getAuthorizationInfo_Inactive() {
-    AuthorizationInfo authorization = authenticationService
-        .getAuthorizationInfo(new SimplePrincipalCollection(12L, realmName));
+    AuthorizationInfo authorization =
+        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(12L, realmName));
 
     assertEquals(false, authorization.getRoles().contains("USER"));
     assertEquals(false, authorization.getRoles().contains("MANAGER"));
@@ -486,8 +568,8 @@ public class AuthenticationServiceTest {
 
   @Test
   public void getAuthorizationInfo_1() {
-    AuthorizationInfo authorization = authenticationService
-        .getAuthorizationInfo(new SimplePrincipalCollection(1L, realmName));
+    AuthorizationInfo authorization =
+        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(1L, realmName));
 
     assertEquals(true, authorization.getRoles().contains("USER"));
     assertEquals(true, authorization.getRoles().contains("MANAGER"));

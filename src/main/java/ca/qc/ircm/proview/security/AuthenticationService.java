@@ -26,6 +26,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -46,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -121,9 +123,28 @@ public class AuthenticationService {
       throw new AuthenticationException("username and password cannot be null");
     }
 
+    User user = getUser(email);
+    if (user.getSignAttempts() >= securityConfiguration.maximumSignAttemps()) {
+      if (Instant.now().isBefore(
+          user.getLastSignAttempt().plusMillis(securityConfiguration.maximumSignAttempsDelay()))) {
+        throw new ExcessiveAttemptsException("To many attemps for user " + email);
+      } else {
+        user.setSignAttempts(0);
+      }
+    }
+
     UsernamePasswordToken token = new UsernamePasswordToken(email, password);
     token.setRememberMe(rememberMe);
-    getSubject().login(token);
+    try {
+      getSubject().login(token);
+      user.setSignAttempts(0);
+    } catch (AuthenticationException e) {
+      user.setSignAttempts(user.getSignAttempts() + 1);
+      throw e;
+    } finally {
+      user.setLastSignAttempt(Instant.now());
+      entityManager.merge(user);
+    }
   }
 
   /**

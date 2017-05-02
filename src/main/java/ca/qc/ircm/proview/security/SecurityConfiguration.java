@@ -36,4 +36,8 @@ public interface SecurityConfiguration {
   public PasswordVersion getPasswordVersion();
 
   public byte[] getCipherKeyBytes();
+
+  public int maximumSignAttemps();
+
+  public long maximumSignAttempsDelay();
 }

@@ -54,6 +54,8 @@ public class SecurityConfigurationTest {
     assertEquals(realmName, securityConfiguration.realmName());
     assertEquals(SecurityConfigurationSpringBoot.AUTHORIZATION_CACHE_NAME,
         securityConfiguration.authorizationCacheName());
+    assertEquals(3, securityConfiguration.maximumSignAttemps());
+    assertEquals(300000, securityConfiguration.maximumSignAttempsDelay());
     PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
     assertEquals(1, passwordVersion.getVersion());
     assertEquals("SHA-256", passwordVersion.getAlgorithm());

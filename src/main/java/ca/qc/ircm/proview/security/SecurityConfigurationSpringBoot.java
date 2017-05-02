@@ -54,6 +54,8 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
   private static final Logger logger =
       LoggerFactory.getLogger(SecurityConfigurationSpringBoot.class);
   private String cipherKey;
+  private int maximumSignAttemps;
+  private long maximumSignAttempsDelay;
   private List<PasswordVersionSpringBoot> passwords;
   @Inject
   private Provider<AuthenticationService> authenticationServiceProvider;
@@ -162,6 +164,16 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
     }
   }
 
+  @Override
+  public int maximumSignAttemps() {
+    return maximumSignAttemps;
+  }
+
+  @Override
+  public long maximumSignAttempsDelay() {
+    return maximumSignAttempsDelay;
+  }
+
   public String getCipherKey() {
     return cipherKey;
   }
@@ -176,5 +188,21 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
 
   public void setPasswords(List<PasswordVersionSpringBoot> passwords) {
     this.passwords = passwords;
+  }
+
+  public int getMaximumSignAttemps() {
+    return maximumSignAttemps;
+  }
+
+  public void setMaximumSignAttemps(int maximumSignAttemps) {
+    this.maximumSignAttemps = maximumSignAttemps;
+  }
+
+  public long getMaximumSignAttempsDelay() {
+    return maximumSignAttempsDelay;
+  }
+
+  public void setMaximumSignAttempsDelay(long maximumSignAttempsDelay) {
+    this.maximumSignAttempsDelay = maximumSignAttempsDelay;
   }
 }

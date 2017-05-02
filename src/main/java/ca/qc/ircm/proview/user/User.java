@@ -24,6 +24,7 @@ import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.laboratory.Laboratory;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 
@@ -99,6 +100,16 @@ public class User implements Data, Named, Serializable {
    */
   @Column(name = "passwordVersion")
   private Integer passwordVersion;
+  /**
+   * Number of sign attempts since last successful sign.
+   */
+  @Column(name = "signAttempts")
+  private int signAttempts;
+  /**
+   * Last sign attempts (success or fail).
+   */
+  @Column(name = "lastSignAttempt")
+  private Instant lastSignAttempt;
   /**
    * User's prefered locale.
    */
@@ -247,5 +258,21 @@ public class User implements Data, Named, Serializable {
 
   public void setLocale(Locale locale) {
     this.locale = locale;
+  }
+
+  public int getSignAttempts() {
+    return signAttempts;
+  }
+
+  public void setSignAttempts(int signAttempts) {
+    this.signAttempts = signAttempts;
+  }
+
+  public Instant getLastSignAttempt() {
+    return lastSignAttempt;
+  }
+
+  public void setLastSignAttempt(Instant lastSignAttempt) {
+    this.lastSignAttempt = lastSignAttempt;
   }
 }
