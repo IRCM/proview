@@ -109,9 +109,9 @@ email:
 spring:
   profiles: poitrac
   datasource:
-    platform: mysql
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://zapp01:3306/proviewdev2
+    platform: mariadb
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://pro01:3306/proview_dev2
     username: poitrac_dev
     password: VRd6YoXwaUO3UCejRreA
 security:
