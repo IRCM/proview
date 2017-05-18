@@ -54,7 +54,7 @@ public class SecurityConfigurationTest {
     assertEquals(realmName, securityConfiguration.realmName());
     assertEquals(SecurityConfigurationSpringBoot.AUTHORIZATION_CACHE_NAME,
         securityConfiguration.authorizationCacheName());
-    assertEquals(3, securityConfiguration.maximumSignAttemps());
+    assertEquals(5, securityConfiguration.maximumSignAttemps());
     assertEquals(300000, securityConfiguration.maximumSignAttempsDelay());
     assertEquals(15, securityConfiguration.disableSignAttemps());
     PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
