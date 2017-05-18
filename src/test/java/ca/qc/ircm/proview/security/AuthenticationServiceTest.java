@@ -101,7 +101,7 @@ public class AuthenticationServiceTest {
   private PasswordVersion passwordVersion;
   private int maximumSignAttemps = 3;
   private long maximumSignAttempsDelay = 300000;
-  private int disableSignAttemps;
+  private int disableSignAttemps = 15;
 
   /**
    * Before test.
@@ -116,8 +116,8 @@ public class AuthenticationServiceTest {
     when(securityConfiguration.realmName()).thenReturn(realmName);
     when(securityConfiguration.maximumSignAttemps()).thenReturn(maximumSignAttemps);
     when(securityConfiguration.maximumSignAttempsDelay()).thenReturn(maximumSignAttempsDelay);
+    when(securityConfiguration.disableSignAttemps()).thenReturn(disableSignAttemps);
     subject = SecurityUtils.getSubject();
-    disableSignAttemps = securityConfiguration.disableSignAttemps();
   }
 
   @Test
