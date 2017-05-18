@@ -237,6 +237,16 @@ public class AuthenticationServiceTest {
   }
 
   @Test
+  public void sign_UsernameNotExists() throws Throwable {
+    try {
+      authenticationService.sign("a", "password", false);
+      fail("Expected AuthenticationException");
+    } catch (AuthenticationException e) {
+      // Ignore.
+    }
+  }
+
+  @Test
   public void sign_NullUsername() throws Throwable {
     try {
       authenticationService.sign(null, "password", false);

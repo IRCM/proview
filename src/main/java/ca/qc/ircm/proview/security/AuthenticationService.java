@@ -124,6 +124,9 @@ public class AuthenticationService {
     }
 
     User user = getUser(email);
+    if (user == null) {
+      throw new UnknownAccountException("username " + email + " unkown");
+    }
     if (user.getSignAttempts() >= securityConfiguration.maximumSignAttemps()) {
       if (Instant.now().isBefore(
           user.getLastSignAttempt().plusMillis(securityConfiguration.maximumSignAttempsDelay()))) {
