@@ -58,6 +58,7 @@ security:
       iterations: 1000
   maximumSignAttemps: 3
   maximumSignAttempsDelay: 300000  # 5 minutes.
+  disableSignAttemps: 15
 # Health.
   basic:
     path: /noUrlBecauseShiroSecurityIsUsedForVaadin

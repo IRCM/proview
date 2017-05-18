@@ -56,6 +56,7 @@ public class SecurityConfigurationTest {
         securityConfiguration.authorizationCacheName());
     assertEquals(3, securityConfiguration.maximumSignAttemps());
     assertEquals(300000, securityConfiguration.maximumSignAttempsDelay());
+    assertEquals(15, securityConfiguration.disableSignAttemps());
     PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
     assertEquals(1, passwordVersion.getVersion());
     assertEquals("SHA-256", passwordVersion.getAlgorithm());

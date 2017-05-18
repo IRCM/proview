@@ -56,6 +56,7 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
   private String cipherKey;
   private int maximumSignAttemps;
   private long maximumSignAttempsDelay;
+  private int disableSignAttemps;
   private List<PasswordVersionSpringBoot> passwords;
   @Inject
   private Provider<AuthenticationService> authenticationServiceProvider;
@@ -174,6 +175,11 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
     return maximumSignAttempsDelay;
   }
 
+  @Override
+  public int disableSignAttemps() {
+    return disableSignAttemps;
+  }
+
   public String getCipherKey() {
     return cipherKey;
   }
@@ -204,5 +210,13 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
 
   public void setMaximumSignAttempsDelay(long maximumSignAttempsDelay) {
     this.maximumSignAttempsDelay = maximumSignAttempsDelay;
+  }
+
+  public int getDisableSignAttemps() {
+    return disableSignAttemps;
+  }
+
+  public void setDisableSignAttemps(int disableSignAttemps) {
+    this.disableSignAttemps = disableSignAttemps;
   }
 }

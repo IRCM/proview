@@ -36,6 +36,7 @@ package ca.qc.ircm.proview.security;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -100,6 +101,7 @@ public class AuthenticationServiceTest {
   private PasswordVersion passwordVersion;
   private int maximumSignAttemps = 3;
   private long maximumSignAttempsDelay = 300000;
+  private int disableSignAttemps;
 
   /**
    * Before test.
@@ -115,6 +117,7 @@ public class AuthenticationServiceTest {
     when(securityConfiguration.maximumSignAttemps()).thenReturn(maximumSignAttemps);
     when(securityConfiguration.maximumSignAttempsDelay()).thenReturn(maximumSignAttempsDelay);
     subject = SecurityUtils.getSubject();
+    disableSignAttemps = securityConfiguration.disableSignAttemps();
   }
 
   @Test
@@ -127,10 +130,6 @@ public class AuthenticationServiceTest {
     assertEquals("christian.poitras@ircm.qc.ca", token.getUsername());
     assertArrayEquals("password".toCharArray(), token.getPassword());
     assertEquals(false, token.isRememberMe());
-    User user = entityManager.find(User.class, 2L);
-    assertEquals(0, user.getSignAttempts());
-    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
-    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
   }
 
   @Test
@@ -143,10 +142,6 @@ public class AuthenticationServiceTest {
     assertEquals("christian.poitras@ircm.qc.ca", token.getUsername());
     assertArrayEquals("password".toCharArray(), token.getPassword());
     assertEquals(true, token.isRememberMe());
-    User user = entityManager.find(User.class, 2L);
-    assertEquals(0, user.getSignAttempts());
-    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
-    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
   }
 
   @Test
@@ -166,84 +161,6 @@ public class AuthenticationServiceTest {
     assertEquals("christian.poitras@ircm.qc.ca", token.getUsername());
     assertArrayEquals("password".toCharArray(), token.getPassword());
     assertEquals(true, token.isRememberMe());
-    User user = entityManager.find(User.class, 2L);
-    assertEquals(1, user.getSignAttempts());
-    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
-    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-  }
-
-  @Test
-  public void sign_NotToManyAttempts() throws Throwable {
-    User user = entityManager.find(User.class, 2L);
-    user.setSignAttempts(maximumSignAttemps - 1);
-    Instant lastSignAttempt = Instant.now();
-    user.setLastSignAttempt(lastSignAttempt);
-
-    authenticationService.sign("christian.poitras@ircm.qc.ca", "password", true);
-
-    assertEquals(0, user.getSignAttempts());
-    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
-    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-  }
-
-  @Test
-  public void sign_ToManyAttempts() throws Throwable {
-    User user = entityManager.find(User.class, 2L);
-    user.setSignAttempts(maximumSignAttemps);
-    Instant lastSignAttempt = Instant.now();
-    user.setLastSignAttempt(lastSignAttempt);
-
-    try {
-      authenticationService.sign("christian.poitras@ircm.qc.ca", "password", true);
-      fail("Expected ExcessiveAttemptsException");
-    } catch (ExcessiveAttemptsException e) {
-      // Ignore.
-    }
-
-    assertEquals(maximumSignAttemps, user.getSignAttempts());
-    assertEquals(lastSignAttempt, user.getLastSignAttempt());
-  }
-
-  @Test
-  public void sign_CanAttemptAgain_Success() throws Throwable {
-    User user = entityManager.find(User.class, 2L);
-    user.setSignAttempts(maximumSignAttemps);
-    user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
-
-    authenticationService.sign("christian.poitras@ircm.qc.ca", "password", true);
-
-    assertEquals(0, user.getSignAttempts());
-    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
-    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-  }
-
-  @Test
-  public void sign_CanAttemptAgain_Fail() throws Throwable {
-    User user = entityManager.find(User.class, 2L);
-    user.setSignAttempts(maximumSignAttemps);
-    user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
-    doThrow(new AuthenticationException("test")).when(subject).login(tokenCaptor.capture());
-
-    try {
-      authenticationService.sign("christian.poitras@ircm.qc.ca", "wrong", true);
-      fail("Expected AuthenticationException");
-    } catch (AuthenticationException e) {
-      // Ignore.
-    }
-
-    assertEquals(1, user.getSignAttempts());
-    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
-    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-  }
-
-  @Test
-  public void sign_UsernameNotExists() throws Throwable {
-    try {
-      authenticationService.sign("a", "password", false);
-      fail("Expected AuthenticationException");
-    } catch (AuthenticationException e) {
-      // Ignore.
-    }
   }
 
   @Test
@@ -338,6 +255,10 @@ public class AuthenticationServiceTest {
         "d04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d"
             + "58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d",
         saltedAuthentication.getCredentialsSalt().toHex());
+    User user = entityManager.find(User.class, 2L);
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
   }
 
   @Test
@@ -358,6 +279,10 @@ public class AuthenticationServiceTest {
         "4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3f"
             + "c86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535",
         saltedAuthentication.getCredentialsSalt().toHex());
+    User user = entityManager.find(User.class, 3L);
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
   }
 
   @Test(expected = InvalidAccountException.class)
@@ -397,12 +322,116 @@ public class AuthenticationServiceTest {
     authenticationService.getAuthenticationInfo(token);
   }
 
-  @Test(expected = IncorrectCredentialsException.class)
+  @Test
   public void getAuthenticationInfo_InvalidPassword() throws Throwable {
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password2");
 
+    try {
+      authenticationService.getAuthenticationInfo(token);
+      fail("Expected IncorrectCredentialsException");
+    } catch (IncorrectCredentialsException e) {
+      // Success.
+    }
+
+    User user = entityManager.find(User.class, 2L);
+    assertEquals(1, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+  }
+
+  @Test
+  public void getAuthenticationInfo_NotTooManyAttempts() throws Throwable {
+    UsernamePasswordToken token =
+        new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
+    User user = entityManager.find(User.class, 2L);
+    user.setSignAttempts(maximumSignAttemps - 1);
+    Instant lastSignAttempt = Instant.now();
+    user.setLastSignAttempt(lastSignAttempt);
+
     authenticationService.getAuthenticationInfo(token);
+
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+  }
+
+  @Test
+  public void getAuthenticationInfo_TooManyAttempts() throws Throwable {
+    UsernamePasswordToken token =
+        new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
+    User user = entityManager.find(User.class, 2L);
+    user.setSignAttempts(maximumSignAttemps);
+    Instant lastSignAttempt = Instant.now();
+    user.setLastSignAttempt(lastSignAttempt);
+
+    try {
+      authenticationService.getAuthenticationInfo(token);
+      fail("Expected ExcessiveAttemptsException");
+    } catch (ExcessiveAttemptsException e) {
+      // Success.
+    }
+
+    assertEquals(maximumSignAttemps, user.getSignAttempts());
+    assertEquals(lastSignAttempt, user.getLastSignAttempt());
+  }
+
+  @Test
+  public void getAuthenticationInfo_CanAttemptAgain_Success() throws Throwable {
+    UsernamePasswordToken token =
+        new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
+    User user = entityManager.find(User.class, 2L);
+    user.setSignAttempts(maximumSignAttemps);
+    user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
+
+    authenticationService.getAuthenticationInfo(token);
+
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+  }
+
+  @Test
+  public void getAuthenticationInfo_CanAttemptAgain_Fail() throws Throwable {
+    UsernamePasswordToken token =
+        new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "wrong");
+    User user = entityManager.find(User.class, 2L);
+    user.setSignAttempts(maximumSignAttemps);
+    user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
+    doThrow(new AuthenticationException("test")).when(subject).login(tokenCaptor.capture());
+
+    try {
+      authenticationService.getAuthenticationInfo(token);
+      fail("Expected IncorrectCredentialsException");
+    } catch (IncorrectCredentialsException e) {
+      // Success.
+    }
+
+    assertEquals(maximumSignAttemps + 1, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+  }
+
+  @Test
+  public void getAuthenticationInfo_CanAttemptAgain_Disable() throws Throwable {
+    UsernamePasswordToken token =
+        new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "wrong");
+    User user = entityManager.find(User.class, 2L);
+    user.setSignAttempts(disableSignAttemps - 1);
+    user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
+    doThrow(new AuthenticationException("test")).when(subject).login(tokenCaptor.capture());
+
+    try {
+      authenticationService.getAuthenticationInfo(token);
+      fail("Expected IncorrectCredentialsException");
+    } catch (IncorrectCredentialsException e) {
+      // Success.
+    }
+
+    assertEquals(disableSignAttemps, user.getSignAttempts());
+    assertFalse(user.isActive());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
   }
 
   @Test

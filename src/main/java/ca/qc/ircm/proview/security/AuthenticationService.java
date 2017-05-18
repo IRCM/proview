@@ -123,31 +123,9 @@ public class AuthenticationService {
       throw new AuthenticationException("username and password cannot be null");
     }
 
-    User user = getUser(email);
-    if (user == null) {
-      throw new UnknownAccountException("username " + email + " unkown");
-    }
-    if (user.getSignAttempts() >= securityConfiguration.maximumSignAttemps()) {
-      if (Instant.now().isBefore(
-          user.getLastSignAttempt().plusMillis(securityConfiguration.maximumSignAttempsDelay()))) {
-        throw new ExcessiveAttemptsException("To many attemps for user " + email);
-      } else {
-        user.setSignAttempts(0);
-      }
-    }
-
     UsernamePasswordToken token = new UsernamePasswordToken(email, password);
     token.setRememberMe(rememberMe);
-    try {
-      getSubject().login(token);
-      user.setSignAttempts(0);
-    } catch (AuthenticationException e) {
-      user.setSignAttempts(user.getSignAttempts() + 1);
-      throw e;
-    } finally {
-      user.setLastSignAttempt(Instant.now());
-      entityManager.merge(user);
-    }
+    getSubject().login(token);
   }
 
   /**
@@ -217,13 +195,37 @@ public class AuthenticationService {
     if (!user.isActive()) {
       throw new DisabledAccountException("Account for user [" + username + "] is disabled");
     }
-    if (!credentialMatches(token, user)) {
-      throw new IncorrectCredentialsException("Submitted credentials for token [" + token
-          + "] did not match the expected credentials.");
+    if (!canAttempt(user)) {
+      throw new ExcessiveAttemptsException("To many attemps for user [" + username + "]");
     }
+    try {
+      if (!credentialMatches(token, user)) {
+        user.setSignAttempts(user.getSignAttempts() + 1);
+        if (user.getSignAttempts() >= securityConfiguration.disableSignAttemps()) {
+          user.setActive(false);
+        }
+        throw new IncorrectCredentialsException("Submitted credentials for token [" + token
+            + "] did not match the expected credentials.");
+      }
 
-    return new SimpleAuthenticationInfo(user.getId(), user.getHashedPassword(),
-        new SimpleByteSource(Hex.decode(user.getSalt())), realmName());
+      user.setSignAttempts(0);
+      return new SimpleAuthenticationInfo(user.getId(), user.getHashedPassword(),
+          new SimpleByteSource(Hex.decode(user.getSalt())), realmName());
+    } finally {
+      user.setLastSignAttempt(Instant.now());
+      entityManager.merge(user);
+    }
+  }
+
+  private boolean canAttempt(User user) {
+    if (user.getSignAttempts() > 0
+        && user.getSignAttempts() % securityConfiguration.maximumSignAttemps() == 0) {
+      if (Instant.now().isBefore(
+          user.getLastSignAttempt().plusMillis(securityConfiguration.maximumSignAttempsDelay()))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private boolean credentialMatches(UsernamePasswordToken token, User user) {

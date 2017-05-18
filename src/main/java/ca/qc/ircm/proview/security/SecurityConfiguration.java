@@ -40,4 +40,6 @@ public interface SecurityConfiguration {
   public int maximumSignAttemps();
 
   public long maximumSignAttempsDelay();
+
+  public int disableSignAttemps();
 }
