@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIE
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static org.openqa.selenium.By.className;
@@ -87,6 +88,10 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickSelectSamplesButton() {
     selectSamplesButton().click();
+  }
+
+  protected LabelElement selectedSamplesLabel() {
+    return wrap(LabelElement.class, findElement(className(SELECT_SAMPLES_LABEL)));
   }
 
   protected ButtonElement updateStatusButton() {

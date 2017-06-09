@@ -88,6 +88,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> header()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertFalse(optional(() -> selectSamplesButton()).isPresent());
+    assertFalse(optional(() -> selectedSamplesLabel()).isPresent());
     assertFalse(optional(() -> updateStatusButton()).isPresent());
   }
 
@@ -99,6 +100,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> header()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertTrue(optional(() -> selectSamplesButton()).isPresent());
+    assertTrue(optional(() -> selectedSamplesLabel()).isPresent());
     assertTrue(optional(() -> updateStatusButton()).isPresent());
   }
 

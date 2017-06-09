@@ -156,6 +156,7 @@ public class SubmissionsViewPresenter {
     view.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
     view.selectedSamplesLabel
         .setValue(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
+    view.selectedSamplesLabel.setVisible(authorizationService.hasAdminRole());
     view.updateStatusButton.addStyleName(UPDATE_STATUS);
     view.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     view.updateStatusButton.setVisible(authorizationService.hasAdminRole());
