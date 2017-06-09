@@ -25,11 +25,10 @@ public class MainViewDesign extends VerticalLayout {
   protected Label header;
   protected Panel signPanel;
   protected VerticalLayout signLayout;
+  protected Button registerButton;
   protected Panel forgotPasswordPanel;
   protected TextField forgotPasswordEmailField;
   protected Button forgotPasswordButton;
-  protected Panel registerPanel;
-  protected Button registerButton;
 
   public MainViewDesign() {
     Design.read(this);

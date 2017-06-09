@@ -60,7 +60,6 @@ public class MainViewTest extends MainPageObject {
     assertNotNull(forgotPasswordPanel());
     assertNotNull(forgotPasswordEmailField());
     assertNotNull(forgotPasswordButton());
-    assertNotNull(registerHeader());
     assertNotNull(registerButton());
   }
 

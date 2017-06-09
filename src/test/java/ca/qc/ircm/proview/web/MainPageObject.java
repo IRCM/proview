@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_BUTTON;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_EMAIL;
 import static ca.qc.ircm.proview.web.MainViewPresenter.HEADER;
-import static ca.qc.ircm.proview.web.MainViewPresenter.REGISTER;
 import static ca.qc.ircm.proview.web.MainViewPresenter.REGISTER_BUTTON;
 import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_BUTTON;
 import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PANEL;
@@ -30,7 +29,6 @@ import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_USERNAME;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
@@ -103,10 +101,6 @@ public abstract class MainPageObject extends AbstractTestBenchTestCase {
 
   protected void clickForgotPasswordButton() {
     forgotPasswordButton().click();
-  }
-
-  protected LabelElement registerHeader() {
-    return wrap(LabelElement.class, findElement(className(REGISTER)));
   }
 
   protected ButtonElement registerButton() {

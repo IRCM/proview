@@ -56,8 +56,7 @@ public class MainViewPresenter {
   public static final String FORGOT_PASSWORD = "forgotPassword";
   public static final String FORGOT_PASSWORD_EMAIL = "forgotPassword.email";
   public static final String FORGOT_PASSWORD_BUTTON = "forgotPassword.button";
-  public static final String REGISTER = "register";
-  public static final String REGISTER_BUTTON = "register.button";
+  public static final String REGISTER_BUTTON = "register";
   private static final Logger logger = LoggerFactory.getLogger(MainViewPresenter.class);
   private MainView view;
   private Binder<SigninInformation> signBinder = new Binder<>(SigninInformation.class);
@@ -131,8 +130,6 @@ public class MainViewPresenter {
         .bind(SigninInformation::getUsername, SigninInformation::setUsername);
     view.forgotPasswordButton.addStyleName(FORGOT_PASSWORD_BUTTON);
     view.forgotPasswordButton.setCaption(resources.message(FORGOT_PASSWORD_BUTTON));
-    view.registerPanel.addStyleName(REGISTER);
-    view.registerPanel.setCaption(resources.message(REGISTER));
     view.registerButton.addStyleName(REGISTER_BUTTON);
     view.registerButton.setCaption(resources.message(REGISTER_BUTTON));
   }

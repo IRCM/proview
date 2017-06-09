@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_BUTTON;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_EMAIL;
 import static ca.qc.ircm.proview.web.MainViewPresenter.HEADER;
-import static ca.qc.ircm.proview.web.MainViewPresenter.REGISTER;
 import static ca.qc.ircm.proview.web.MainViewPresenter.REGISTER_BUTTON;
 import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_BUTTON;
 import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PANEL;
@@ -123,7 +122,6 @@ public class MainViewPresenterTest {
     view.forgotPasswordPanel = new Panel();
     view.forgotPasswordEmailField = new TextField();
     view.forgotPasswordButton = new Button();
-    view.registerPanel = new Panel();
     view.registerButton = new Button();
     when(signForm.getUserNameField()).thenReturn(signFormUsername);
     when(signForm.getPasswordField()).thenReturn(signFormPassword);
@@ -148,7 +146,6 @@ public class MainViewPresenterTest {
     assertTrue(view.forgotPasswordPanel.getStyleName().contains(FORGOT_PASSWORD));
     assertTrue(view.forgotPasswordEmailField.getStyleName().contains(FORGOT_PASSWORD_EMAIL));
     assertTrue(view.forgotPasswordButton.getStyleName().contains(FORGOT_PASSWORD_BUTTON));
-    assertTrue(view.registerPanel.getStyleName().contains(REGISTER));
     assertTrue(view.registerButton.getStyleName().contains(REGISTER_BUTTON));
   }
 
@@ -163,7 +160,6 @@ public class MainViewPresenterTest {
     assertEquals(resources.message(FORGOT_PASSWORD_EMAIL),
         view.forgotPasswordEmailField.getCaption());
     assertEquals(resources.message(FORGOT_PASSWORD_BUTTON), view.forgotPasswordButton.getCaption());
-    assertEquals(resources.message(REGISTER), view.registerPanel.getCaption());
     assertEquals(resources.message(REGISTER_BUTTON), view.registerButton.getCaption());
   }
 
