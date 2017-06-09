@@ -64,7 +64,6 @@ public class ValidateViewPresenter {
       LABORATORY_PREFIX + QLaboratory.laboratory.name.getMetadata().getName();
   public static final String ORGANIZATION =
       LABORATORY_PREFIX + QLaboratory.laboratory.organization.getMetadata().getName();
-  public static final String VIEW = "viewUser";
   public static final String VALIDATE = "validateUser";
   public static final String VALIDATE_SELECTED_BUTTON = "validateSelected";
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewPresenter.class);
@@ -118,15 +117,14 @@ public class ValidateViewPresenter {
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
     view.usersGrid.setItems(searchUsers());
-    view.usersGrid.addColumn(User::getEmail).setId(EMAIL).setCaption(resources.message(EMAIL));
+    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
+        .setCaption(resources.message(EMAIL));
     view.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
     view.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
         .setCaption(resources.message(LABORATORY_NAME));
     view.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
         .setCaption(resources.message(ORGANIZATION));
     view.usersGrid.setFrozenColumnCount(2);
-    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(VIEW)
-        .setCaption(resources.message(VIEW));
     view.usersGrid.addColumn(user -> validateButton(user), new ComponentRenderer()).setId(VALIDATE)
         .setCaption(resources.message(VALIDATE));
     view.usersGrid.setSelectionMode(SelectionMode.MULTI);
@@ -150,10 +148,9 @@ public class ValidateViewPresenter {
   }
 
   private Button viewButton(User user) {
-    MessageResource resources = view.getResources();
     Button button = new Button();
-    button.addStyleName(VIEW);
-    button.setCaption(resources.message(VIEW));
+    button.addStyleName(EMAIL);
+    button.setCaption(user.getEmail());
     button.addClickListener(event -> viewUser(user));
     return button;
   }

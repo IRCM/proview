@@ -17,15 +17,14 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VIEW;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.user.web.ValidateView;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
@@ -42,8 +41,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   private static final Logger logger = LoggerFactory.getLogger(ValidatePageObject.class);
   private static final int SELECT_COLUMN = 0;
   private static final int EMAIL_COLUMN = 1;
-  private static final int VIEW_COLUMN = 5;
-  private static final int VALIDATE_COLUMN = 6;
+  private static final int VALIDATE_COLUMN = 5;
 
   protected void open() {
     openView(ValidateView.VIEW_NAME);
@@ -60,9 +58,10 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   private void processUsersGridRow(String email, Consumer<Integer> consumer) {
     GridElement usersGrid = usersGrid();
     processGridRows(usersGrid, row -> {
-      GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
+      ButtonElement button = wrap(ButtonElement.class,
+          usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
       try {
-        if (email.equals(emailCell.getText())) {
+        if (email.equals(button.getCaption())) {
           consumer.accept(row);
         }
       } catch (RuntimeException e) {
@@ -74,9 +73,8 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
     processUsersGridRow(email, row -> {
-      usersGrid.getCell(row, VIEW_COLUMN);
-      ButtonElement button =
-          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(VIEW)));
+      ButtonElement button = wrap(ButtonElement.class,
+          usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
       button.click();
     });
   }
@@ -85,9 +83,8 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
     logger.debug("clickValidateUser for user {}", email);
     GridElement usersGrid = usersGrid();
     processUsersGridRow(email, row -> {
-      usersGrid.getCell(row, VALIDATE_COLUMN);
-      ButtonElement button =
-          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(VALIDATE)));
+      ButtonElement button = wrap(ButtonElement.class,
+          usersGrid.getCell(row, VALIDATE_COLUMN).findElement(className(VALIDATE)));
       button.click();
     });
   }
@@ -104,12 +101,13 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
 
   protected List<String> getUserEmails() {
     GridElement usersGrid = usersGrid();
-    List<String> selectedFiles = new ArrayList<>();
+    List<String> emails = new ArrayList<>();
     processGridRows(usersGrid, row -> {
-      GridCellElement cell = usersGrid.getCell(row, EMAIL_COLUMN);
-      selectedFiles.add(cell.getText());
+      ButtonElement button = wrap(ButtonElement.class,
+          usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
+      emails.add(button.getCaption());
     });
-    return selectedFiles;
+    return emails;
   }
 
   protected ButtonElement validateSelectedButton() {
