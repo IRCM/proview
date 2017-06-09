@@ -29,7 +29,6 @@ import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ORGANIZATION;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.SELECT;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.VIEW;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -168,13 +167,12 @@ public class AccessViewPresenterTest {
     assertEquals(SELECT, columns.get(0).getId());
     assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
     assertEquals(EMAIL, columns.get(1).getId());
+    assertTrue(containsInstanceOf(columns.get(1).getExtensions(), ComponentRenderer.class));
     assertEquals(NAME, columns.get(2).getId());
     assertEquals(LABORATORY_NAME, columns.get(3).getId());
     assertEquals(ORGANIZATION, columns.get(4).getId());
     assertEquals(ACTIVE, columns.get(5).getId());
     assertTrue(containsInstanceOf(columns.get(5).getExtensions(), ComponentRenderer.class));
-    assertEquals(VIEW, columns.get(6).getId());
-    assertTrue(containsInstanceOf(columns.get(6).getExtensions(), ComponentRenderer.class));
   }
 
   @Test
@@ -343,10 +341,10 @@ public class AccessViewPresenterTest {
     assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));
     CheckBox select = (CheckBox) view.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
     assertTrue(select.getStyleName().contains(SELECT));
+    Button viewButton = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    assertTrue(viewButton.getStyleName().contains(EMAIL));
     Label active = (Label) view.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
     assertTrue(active.getStyleName().contains(ACTIVE));
-    Button viewButton = (Button) view.usersGrid.getColumn(VIEW).getValueProvider().apply(user);
-    assertTrue(viewButton.getStyleName().contains(VIEW));
     assertTrue(view.activateButton.getStyleName().contains(ACTIVATE));
     assertTrue(view.deactivateButton.getStyleName().contains(DEACTIVATE));
     assertTrue(view.clearButton.getStyleName().contains(CLEAR));
@@ -355,17 +353,30 @@ public class AccessViewPresenterTest {
   @Test
   public void captions() {
     presenter.init(view);
+    final User user = users.get(0);
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), view.headerLabel.getValue());
     assertEquals(resources.message(EMAIL), view.usersGrid.getColumn(EMAIL).getCaption());
+    Button email = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    assertEquals(user.getEmail(), email.getCaption());
     assertEquals(resources.message(NAME), view.usersGrid.getColumn(NAME).getCaption());
+    assertEquals(user.getName(), view.usersGrid.getColumn(NAME).getValueProvider().apply(user));
     assertEquals(resources.message(LABORATORY_NAME),
         view.usersGrid.getColumn(LABORATORY_NAME).getCaption());
+    assertEquals(user.getLaboratory().getName(),
+        view.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
     assertEquals(resources.message(ORGANIZATION),
         view.usersGrid.getColumn(ORGANIZATION).getCaption());
+    assertEquals(user.getLaboratory().getOrganization(),
+        view.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
     assertEquals(resources.message(ACTIVE), view.usersGrid.getColumn(ACTIVE).getCaption());
-    assertEquals(resources.message(VIEW), view.usersGrid.getColumn(VIEW).getCaption());
+    Label active = (Label) view.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
+    assertEquals(ContentMode.HTML, active.getContentMode());
+    VaadinIcons activeIcon = user.isActive() ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
+    String activeValue =
+        activeIcon.getHtml() + " " + resources.message(ACTIVE + "." + user.isActive());
+    assertEquals(activeValue, active.getValue());
     assertEquals(resources.message(ACTIVATE), view.activateButton.getCaption());
     assertEquals(resources.message(DEACTIVATE), view.deactivateButton.getCaption());
     assertEquals(resources.message(CLEAR), view.clearButton.getCaption());
@@ -451,7 +462,7 @@ public class AccessViewPresenterTest {
   public void viewUser() {
     presenter.init(view);
     final User user = users.get(0);
-    Button button = (Button) view.usersGrid.getColumn(VIEW).getValueProvider().apply(user);
+    Button button = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
 
     button.click();
 

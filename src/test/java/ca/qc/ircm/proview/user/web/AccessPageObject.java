@@ -20,9 +20,9 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVATE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.CLEAR;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.DEACTIVATE;
+import static ca.qc.ircm.proview.user.web.AccessViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.VIEW;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -45,7 +45,6 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
   private static final Logger logger = LoggerFactory.getLogger(AccessPageObject.class);
   private static final int SELECT_COLUMN = 1;
   private static final int EMAIL_COLUMN = 2;
-  private static final int VIEW_COLUMN = 7;
 
   protected void open() {
     openView(AccessView.VIEW_NAME);
@@ -76,9 +75,8 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
     processUsersGridRow(email, row -> {
-      usersGrid.getCell(row, VIEW_COLUMN);
-      ButtonElement button =
-          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(VIEW)));
+      ButtonElement button = wrap(ButtonElement.class,
+          usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
       button.click();
     });
   }
