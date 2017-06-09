@@ -26,7 +26,6 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -128,7 +127,6 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
         // https://vaadin.com/docs/-/part/testbench/testbench-known-issues.html
         driverClass = CHROME_DRIVER;
       }
-      driverClass = PhantomJSDriver.class.getName();
     }
     try {
       return (WebDriver) Class.forName(driverClass).newInstance();
