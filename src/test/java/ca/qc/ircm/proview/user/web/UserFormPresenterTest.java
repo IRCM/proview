@@ -46,6 +46,7 @@ import static ca.qc.ircm.proview.user.web.UserFormPresenter.USER;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
+import static ca.qc.ircm.proview.web.WebConstants.PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -297,24 +298,42 @@ public class UserFormPresenterTest {
   public void captions() {
     assertEquals(resources.message(USER), view.userPanel.getCaption());
     assertEquals(resources.message(EMAIL), view.emailField.getCaption());
+    assertEquals(resources.message(EMAIL + "." + PLACEHOLDER), view.emailField.getPlaceholder());
     assertEquals(resources.message(NAME), view.nameField.getCaption());
+    assertEquals(resources.message(NAME + "." + PLACEHOLDER), view.nameField.getPlaceholder());
     assertEquals(resources.message(PASSWORD), view.passwordField.getCaption());
     assertEquals(resources.message(CONFIRM_PASSWORD), view.confirmPasswordField.getCaption());
     assertEquals(resources.message(NEW_LABORATORY), view.newLaboratoryField.getCaption());
     assertEquals(resources.message(MANAGER), view.managerField.getCaption());
+    assertEquals(resources.message(MANAGER + "." + PLACEHOLDER),
+        view.managerField.getPlaceholder());
     assertEquals(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION),
         view.organizationField.getCaption());
+    assertEquals(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION + "." + PLACEHOLDER),
+        view.organizationField.getPlaceholder());
     assertEquals(resources.message(LABORATORY + "." + LABORATORY_NAME),
         view.laboratoryNameField.getCaption());
+    assertEquals(resources.message(LABORATORY + "." + LABORATORY_NAME + "." + PLACEHOLDER),
+        view.laboratoryNameField.getPlaceholder());
     assertEquals(resources.message(ADDRESS), view.addressPanel.getCaption());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_LINE),
         view.addressLineField.getCaption());
+    assertEquals(resources.message(ADDRESS + "." + ADDRESS_LINE + "." + PLACEHOLDER),
+        view.addressLineField.getPlaceholder());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_TOWN), view.townField.getCaption());
+    assertEquals(resources.message(ADDRESS + "." + ADDRESS_TOWN + "." + PLACEHOLDER),
+        view.townField.getPlaceholder());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_STATE), view.stateField.getCaption());
+    assertEquals(resources.message(ADDRESS + "." + ADDRESS_STATE + "." + PLACEHOLDER),
+        view.stateField.getPlaceholder());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_COUNTRY),
         view.countryField.getCaption());
+    assertEquals(resources.message(ADDRESS + "." + ADDRESS_COUNTRY + "." + PLACEHOLDER),
+        view.countryField.getPlaceholder());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE),
         view.postalCodeField.getCaption());
+    assertEquals(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE + "." + PLACEHOLDER),
+        view.postalCodeField.getPlaceholder());
     assertEquals(resources.message(CLEAR_ADDRESS), view.clearAddressButton.getCaption());
     assertEquals(resources.message(PHONE_NUMBERS), view.phoneNumbersPanel.getCaption());
     addFirstPhoneNumber();
@@ -322,8 +341,12 @@ public class UserFormPresenterTest {
         typeField(0).getCaption());
     assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER),
         numberField(0).getCaption());
+    assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + "." + PLACEHOLDER),
+        numberField(0).getPlaceholder());
     assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION),
         extensionField(0).getCaption());
+    assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + "." + PLACEHOLDER),
+        extensionField(0).getPlaceholder());
     assertEquals(resources.message(REMOVE_PHONE_NUMBER), removePhoneNumberButton(0).getCaption());
     assertEquals(resources.message(ADD_PHONE_NUMBER), view.addPhoneNumberButton.getCaption());
     assertEquals(resources.message(REGISTER_WARNING), view.registerWarningLabel.getValue());

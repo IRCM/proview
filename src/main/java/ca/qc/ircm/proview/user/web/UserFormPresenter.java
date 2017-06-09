@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
+import static ca.qc.ircm.proview.web.WebConstants.PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.laboratory.Laboratory;
@@ -140,6 +141,7 @@ public class UserFormPresenter implements BinderValidator {
     view.userPanel.setCaption(resources.message(USER));
     view.emailField.addStyleName(EMAIL);
     view.emailField.setCaption(resources.message(EMAIL));
+    view.emailField.setPlaceholder(resources.message(EMAIL + "." + PLACEHOLDER));
     userBinder.forField(view.emailField).asRequired(generalResources.message(REQUIRED))
         .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
         .withValidator(email -> {
@@ -149,6 +151,7 @@ public class UserFormPresenter implements BinderValidator {
         }, generalResources.message(ALREADY_EXISTS)).bind(User::getEmail, User::setEmail);
     view.nameField.addStyleName(NAME);
     view.nameField.setCaption(resources.message(NAME));
+    view.nameField.setPlaceholder(resources.message(NAME + "." + PLACEHOLDER));
     userBinder.forField(view.nameField).asRequired(generalResources.message(REQUIRED))
         .bind(User::getName, User::setName);
     view.passwordField.addStyleName(PASSWORD);
@@ -174,6 +177,7 @@ public class UserFormPresenter implements BinderValidator {
     view.newLaboratoryField.setCaption(resources.message(NEW_LABORATORY));
     view.managerField.addStyleName(MANAGER);
     view.managerField.setCaption(resources.message(MANAGER));
+    view.managerField.setPlaceholder(resources.message(MANAGER + "." + PLACEHOLDER));
     managerBinder.forField(view.managerField).asRequired(generalResources.message(REQUIRED))
         .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
         .withValidator(manager -> userService.isManager(manager),
@@ -182,10 +186,14 @@ public class UserFormPresenter implements BinderValidator {
     view.organizationField.addStyleName(LABORATORY_ORGANIZATION);
     view.organizationField
         .setCaption(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION));
+    view.organizationField.setPlaceholder(
+        resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION + "." + PLACEHOLDER));
     laboratoryBinder.forField(view.organizationField).asRequired(generalResources.message(REQUIRED))
         .bind(Laboratory::getOrganization, Laboratory::setOrganization);
     view.laboratoryNameField.addStyleName(LABORATORY + "-" + LABORATORY_NAME);
     view.laboratoryNameField.setCaption(resources.message(LABORATORY + "." + LABORATORY_NAME));
+    view.laboratoryNameField
+        .setPlaceholder(resources.message(LABORATORY + "." + LABORATORY_NAME + "." + PLACEHOLDER));
     laboratoryBinder.forField(view.laboratoryNameField)
         .asRequired(generalResources.message(REQUIRED))
         .bind(Laboratory::getName, Laboratory::setName);
@@ -193,22 +201,32 @@ public class UserFormPresenter implements BinderValidator {
     view.addressPanel.setCaption(resources.message(ADDRESS));
     view.addressLineField.addStyleName(ADDRESS_LINE);
     view.addressLineField.setCaption(resources.message(ADDRESS + "." + ADDRESS_LINE));
+    view.addressLineField
+        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_LINE + "." + PLACEHOLDER));
     addressBinder.forField(view.addressLineField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getLine, Address::setLine);
     view.townField.addStyleName(ADDRESS_TOWN);
     view.townField.setCaption(resources.message(ADDRESS + "." + ADDRESS_TOWN));
+    view.townField
+        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_TOWN + "." + PLACEHOLDER));
     addressBinder.forField(view.townField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getTown, Address::setTown);
     view.stateField.addStyleName(ADDRESS_STATE);
     view.stateField.setCaption(resources.message(ADDRESS + "." + ADDRESS_STATE));
+    view.stateField
+        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_STATE + "." + PLACEHOLDER));
     addressBinder.forField(view.stateField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getState, Address::setState);
     view.countryField.addStyleName(ADDRESS_COUNTRY);
     view.countryField.setCaption(resources.message(ADDRESS + "." + ADDRESS_COUNTRY));
+    view.countryField
+        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_COUNTRY + "." + PLACEHOLDER));
     addressBinder.forField(view.countryField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getCountry, Address::setCountry);
     view.postalCodeField.addStyleName(ADDRESS_POSTAL_CODE);
     view.postalCodeField.setCaption(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE));
+    view.postalCodeField
+        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE + "." + PLACEHOLDER));
     addressBinder.forField(view.postalCodeField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getPostalCode, Address::setPostalCode);
     view.clearAddressButton.addStyleName(CLEAR_ADDRESS);
@@ -315,6 +333,8 @@ public class UserFormPresenter implements BinderValidator {
     TextField numberField = new TextField();
     numberField.addStyleName(PHONE_NUMBER_NUMBER);
     numberField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER));
+    numberField.setPlaceholder(
+        resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + "." + PLACEHOLDER));
     phoneNumberBinder.forField(numberField).asRequired(generalResources.message(REQUIRED))
         .withValidator(new RegexpValidator(
             resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + ".invalid"), "[\\d\\-]*"))
@@ -323,6 +343,8 @@ public class UserFormPresenter implements BinderValidator {
     TextField extensionField = new TextField();
     extensionField.addStyleName(PHONE_NUMBER_EXTENSION);
     extensionField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION));
+    extensionField.setPlaceholder(
+        resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + "." + PLACEHOLDER));
     phoneNumberBinder.forField(extensionField)
         .withValidator(new RegexpValidator(
             resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + ".invalid"),
