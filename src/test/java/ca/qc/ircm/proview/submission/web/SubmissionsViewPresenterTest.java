@@ -407,7 +407,7 @@ public class SubmissionsViewPresenterTest {
 
     assertTrue(view.submissionsGrid.getSelectionModel() instanceof SelectionModel.Multi);
     assertTrue(view.selectSamplesButton.isVisible());
-    assertFalse(view.selectedSamplesLabel.isVisible());
+    assertTrue(view.selectedSamplesLabel.isVisible());
     assertTrue(view.updateStatusButton.isVisible());
   }
 
