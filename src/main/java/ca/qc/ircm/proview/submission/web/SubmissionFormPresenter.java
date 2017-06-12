@@ -82,6 +82,7 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.WebConstants;
+import ca.qc.ircm.proview.web.data.NullableListDataProvider;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -1018,11 +1019,11 @@ public class SubmissionFormPresenter implements BinderValidator {
         .bind(PROTEIN_CONTENT_PROPERTY);
     view.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
     view.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
-    view.instrumentOptions.setItems(instrumentValues());
+    view.instrumentOptions.setDataProvider(new NullableListDataProvider<>(instrumentValues()));
     view.instrumentOptions.setItemCaptionGenerator(instrument -> instrument != null
         ? instrument.getLabel(locale) : MassDetectionInstrument.getNullLabel(locale));
     view.instrumentOptions
-        .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : false);
+        .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : true);
     submissionBinder.forField(view.instrumentOptions).bind(INSTRUMENT_PROPERTY);
     view.proteinIdentificationOptions.addStyleName(PROTEIN_IDENTIFICATION_PROPERTY);
     view.proteinIdentificationOptions
@@ -1045,7 +1046,8 @@ public class SubmissionFormPresenter implements BinderValidator {
         .withNullRepresentation("").bind(PROTEIN_IDENTIFICATION_LINK_PROPERTY);
     view.quantificationOptions.addStyleName(QUANTIFICATION_PROPERTY);
     view.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
-    view.quantificationOptions.setItems(quantificationValues());
+    view.quantificationOptions
+        .setDataProvider(new NullableListDataProvider<>(quantificationValues()));
     view.quantificationOptions.setItemCaptionGenerator(quantification -> quantification != null
         ? quantification.getLabel(locale) : Quantification.getNullLabel(locale));
     submissionBinder.forField(view.quantificationOptions).bind(QUANTIFICATION_PROPERTY);
