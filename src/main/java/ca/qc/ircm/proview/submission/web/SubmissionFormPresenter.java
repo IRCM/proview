@@ -378,6 +378,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.serviceOptions.setItems(Service.availables());
     view.serviceOptions.setItemCaptionGenerator(service -> service.getLabel(locale));
     view.serviceOptions.setItemEnabledProvider(service -> service.available);
+    view.serviceOptions
+        .addValueChangeListener(e -> view.sampleSupportOptions.getDataProvider().refreshItem(GEL));
     submissionBinder.forField(view.serviceOptions).asRequired(generalResources.message(REQUIRED))
         .bind(SERVICE_PROPERTY);
     prepareSamplesComponents();
