@@ -32,6 +32,8 @@ import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
 
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
@@ -65,8 +67,11 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void selectSubmissions(int... rows) {
     GridElement grid = submissionsGrid();
-    IntStream.range(0, rows.length).mapToObj(i -> rows[i]).forEach(r -> {
-      grid.getCell(r, 0).findElement(tagName("input")).click();
+    Set<Integer> rowsSet = IntStream.of(rows).mapToObj(v -> v).collect(Collectors.toSet());
+    processGridRows(grid, row -> {
+      if (rowsSet.contains(row)) {
+        grid.getCell(row, 0).findElement(tagName("input")).click();
+      }
     });
   }
 

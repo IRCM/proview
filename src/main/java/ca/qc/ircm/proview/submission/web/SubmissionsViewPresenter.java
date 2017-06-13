@@ -229,14 +229,14 @@ public class SubmissionsViewPresenter {
   private String statusesLabel(Submission submission) {
     MessageResource resources = view.getResources();
     Locale locale = view.getLocale();
-    return submission.getSamples().stream().map(sample -> sample.getStatus()).distinct().sorted()
-        .map(status -> status.getLabel(locale))
+    return submission.getSamples().stream().map(sample -> sample.getStatus())
+        .filter(status -> status != null).distinct().sorted().map(status -> status.getLabel(locale))
         .collect(Collectors.joining(resources.message(SAMPLE_STATUSES_SEPARATOR)));
   }
 
   private Button viewResultsButton(Submission submission) {
     MessageResource resources = view.getResources();
-    boolean results = submission.getSamples().stream()
+    boolean results = submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
         .filter(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0).count() > 0;
     Button button = new Button();
     button.addStyleName(LINKED_TO_RESULTS);
