@@ -166,6 +166,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertNotNull(sampleNameField());
     assertNotNull(formulaField());
     uploadStructure(Paths.get(getClass().getResource("/structure1").toURI()));
+    Thread.sleep(300); // Wait for structure to be uploaded.
     assertNotNull(structureButton());
     assertNotNull(structureUploader());
     assertNotNull(monoisotopicMassField());
