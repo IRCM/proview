@@ -60,7 +60,8 @@
     <querydsl.version>4.1.3</querydsl.version>
     <shiro.version>1.3.2</shiro.version>
     <vaadin.version>8.1.0.beta1</vaadin.version>
-    <vaadin.theme>${project.artifactId}</vaadin.theme> 
+    <vaadin.theme>${project.artifactId}</vaadin.theme>
+    <vaadin-spreadsheet.version>2.0.1</vaadin-spreadsheet.version> 
     <confirmdialog.version>3.1.1</confirmdialog.version>
     <popupbutton.version>3.0.0</popupbutton.version>
     <plate-layout.version>0.8</plate-layout.version>
@@ -311,6 +312,11 @@
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-compatibility-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-spreadsheet</artifactId>
+      <version>${vaadin-spreadsheet.version}</version>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>

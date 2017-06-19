@@ -36,4 +36,6 @@
     <inherits name="org.vaadin.easyuploads.Widgetset" />
 
     <inherits name="com.vaadin.v7.Vaadin7WidgetSet" />
+
+    <inherits name="com.vaadin.addon.spreadsheet.Widgetset" />
 </module>

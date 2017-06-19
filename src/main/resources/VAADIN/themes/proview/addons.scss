@@ -5,8 +5,13 @@
 @import "../../../VAADIN/addons/platelayout/plate-layout.scss";
 
 
+/* Provided by vaadin-spreadsheet-2.0.1.jar */
+@import "../../../VAADIN/addons/spreadsheet/spreadsheet.scss";
+
+
 /* Import and include this mixin into your project theme to include the addon themes */
 @mixin addons {
 	@include plate-layout;
+	@include spreadsheet;
 }
 
