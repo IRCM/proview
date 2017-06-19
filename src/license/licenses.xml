@@ -22,30 +22,6 @@
   xsi:schemaLocation="http://mojo.codehaus.org/ licenses.xsd">
   <dependencies>
     <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib-nodep</artifactId>
-      <licenses>
-        <license>
-          <name>The Apache Software License, Version 2.0</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-        <license>
-          <name>New BSD License</name>
-          <url>https://opensource.org/licenses/BSD-3-Clause</url>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
-      <groupId>mx4j</groupId>
-      <artifactId>mx4j-tools</artifactId>
-      <licenses>
-        <license>
-          <name>The MX4J License, Version 1.0</name>
-          <url>http://mx4j.sourceforge.net/docs/ch01s06.html</url>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
       <groupId>net.jcip</groupId>
       <artifactId>jcip-annotations</artifactId>
       <licenses>
@@ -56,36 +32,12 @@
       </licenses>
     </dependency>
     <dependency>
-      <groupId>org.vaadin.addon</groupId>
-      <artifactId>confirmdialog</artifactId>
-      <licenses>
-        <license>
-          <name>Apache License, Version 2.0</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>popupbutton</artifactId>
       <licenses>
         <license>
           <name>Apache License, Version 2.0</name>
           <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
-      <groupId>pl.exsio</groupId>
-      <artifactId>plupload-vaadin</artifactId>
-      <licenses>
-        <license>
-          <name>Apache License, Version 2.0</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-        <license>
-          <name>The GNU General Public License, Version 2</name>
-          <url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html</url>
         </license>
       </licenses>
     </dependency>
