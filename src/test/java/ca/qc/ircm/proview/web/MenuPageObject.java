@@ -44,7 +44,7 @@ import org.openqa.selenium.WebElement;
 
 public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   private static final int EMAIL_COLUMN = 0;
-  private static final int SIGN_AS_COLUMN = 5;
+  private static final int SIGN_AS_COLUMN = 4;
 
   private WebElement menuItemByStyle(String className) {
     return findElement(className("v-menubar-menuitem-" + className));
