@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.web;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,6 +77,7 @@ public class ContactViewPresenter {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.addStyleName(HEADER);
+    view.headerLabel.addStyleName(ValoTheme.LABEL_H1);
     view.headerLabel.setValue(resources.message(HEADER));
     view.proteomicContactPanel.addStyleName(PROTEOMIC);
     view.proteomicContactPanel.setCaption(resources.message(PROTEOMIC));

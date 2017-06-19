@@ -42,6 +42,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,6 +87,7 @@ public class ContactViewPresenterTest {
   @Test
   public void styles() {
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(view.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
     assertTrue(view.proteomicContactPanel.getStyleName().contains(PROTEOMIC));
     assertTrue(view.proteomicContactNameLink.getStyleName().contains(PROTEOMIC + "-" + NAME));
     assertTrue(view.proteomicContactAddressLink.getStyleName().contains(PROTEOMIC + "-" + ADDRESS));
