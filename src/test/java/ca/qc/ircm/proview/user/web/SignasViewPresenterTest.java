@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.user.web.SignasViewPresenter.ORGANIZATION;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.VIEW;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -134,13 +133,12 @@ public class SignasViewPresenterTest {
     List<Column<User, ?>> columns = view.usersGrid.getColumns();
 
     assertEquals(EMAIL, columns.get(0).getId());
+    assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
     assertEquals(NAME, columns.get(1).getId());
     assertEquals(LABORATORY_NAME, columns.get(2).getId());
     assertEquals(ORGANIZATION, columns.get(3).getId());
-    assertEquals(VIEW, columns.get(4).getId());
+    assertEquals(SIGN_AS, columns.get(4).getId());
     assertTrue(containsInstanceOf(columns.get(4).getExtensions(), ComponentRenderer.class));
-    assertEquals(SIGN_AS, columns.get(5).getId());
-    assertTrue(containsInstanceOf(columns.get(5).getExtensions(), ComponentRenderer.class));
   }
 
   @Test
@@ -244,19 +242,20 @@ public class SignasViewPresenterTest {
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), view.headerLabel.getValue());
+    final User user = users.get(0);
     assertEquals(resources.message(EMAIL), view.usersGrid.getColumn(EMAIL).getCaption());
+    Button viewButton = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    assertTrue(viewButton.getStyleName().contains(EMAIL));
+    assertEquals(user.getEmail(), viewButton.getCaption());
     assertEquals(resources.message(NAME), view.usersGrid.getColumn(NAME).getCaption());
     assertEquals(resources.message(LABORATORY_NAME),
         view.usersGrid.getColumn(LABORATORY_NAME).getCaption());
     assertEquals(resources.message(ORGANIZATION),
         view.usersGrid.getColumn(ORGANIZATION).getCaption());
-    final User user = users.get(0);
-    assertEquals(resources.message(VIEW), view.usersGrid.getColumn(VIEW).getCaption());
-    Button viewButton = (Button) view.usersGrid.getColumn(VIEW).getValueProvider().apply(user);
-    assertTrue(viewButton.getStyleName().contains(VIEW));
     assertEquals(resources.message(SIGN_AS), view.usersGrid.getColumn(SIGN_AS).getCaption());
     Button signasButton = (Button) view.usersGrid.getColumn(SIGN_AS).getValueProvider().apply(user);
     assertTrue(signasButton.getStyleName().contains(SIGN_AS));
+    assertEquals(resources.message(SIGN_AS), signasButton.getCaption());
   }
 
   @Test
@@ -271,7 +270,7 @@ public class SignasViewPresenterTest {
   @Test
   public void viewUser() {
     final User user = users.get(0);
-    Button button = (Button) view.usersGrid.getColumn(VIEW).getValueProvider().apply(user);
+    Button button = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
 
     button.click();
 

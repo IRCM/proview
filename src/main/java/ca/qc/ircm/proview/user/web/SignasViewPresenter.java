@@ -64,7 +64,6 @@ public class SignasViewPresenter {
       LABORATORY_PREFIX + QLaboratory.laboratory.name.getMetadata().getName();
   public static final String ORGANIZATION =
       LABORATORY_PREFIX + QLaboratory.laboratory.organization.getMetadata().getName();
-  public static final String VIEW = "view";
   public static final String SIGN_AS = "signas";
   public static final String ALL = "all";
   private static final Logger logger = LoggerFactory.getLogger(SignasViewPresenter.class);
@@ -100,7 +99,7 @@ public class SignasViewPresenter {
    */
   public void init(SignasView view) {
     this.view = view;
-    logger.debug("Users access view");
+    logger.debug("Sign as user view");
     filter = new UserWebFilter(view.getLocale());
     prepareComponents();
   }
@@ -118,15 +117,14 @@ public class SignasViewPresenter {
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
     view.usersGrid.setDataProvider(searchUsers());
-    view.usersGrid.addColumn(User::getEmail).setId(EMAIL).setCaption(resources.message(EMAIL));
+    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
+        .setCaption(resources.message(EMAIL));
     view.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
     view.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
         .setCaption(resources.message(LABORATORY_NAME));
     view.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
         .setCaption(resources.message(ORGANIZATION));
     view.usersGrid.setFrozenColumnCount(2);
-    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(VIEW)
-        .setCaption(resources.message(VIEW));
     view.usersGrid.addColumn(user -> signasButton(user), new ComponentRenderer()).setId(SIGN_AS)
         .setCaption(resources.message(SIGN_AS));
     view.usersGrid.setFrozenColumnCount(2);
@@ -171,10 +169,9 @@ public class SignasViewPresenter {
   }
 
   private Button viewButton(User user) {
-    MessageResource resources = view.getResources();
     Button button = new Button();
-    button.addStyleName(VIEW);
-    button.setCaption(resources.message(VIEW));
+    button.addStyleName(EMAIL);
+    button.setCaption(user.getEmail());
     button.addClickListener(event -> viewUser(user));
     return button;
   }

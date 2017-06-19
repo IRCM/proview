@@ -17,16 +17,15 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.VIEW;
 import static ca.qc.ircm.proview.web.Menu.MANAGER;
 import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.user.web.SignasView;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
@@ -43,8 +42,7 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SignasPageObject.class);
   private static final int EMAIL_COLUMN = 0;
-  private static final int VIEW_COLUMN = 4;
-  private static final int SIGN_AS_COLUMN = 5;
+  private static final int SIGN_AS_COLUMN = 4;
 
   protected void open() {
     openView(SignasView.VIEW_NAME);
@@ -75,9 +73,9 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
     processUsersGridRow(email, row -> {
-      usersGrid.getCell(row, VIEW_COLUMN);
+      usersGrid.getCell(row, EMAIL_COLUMN);
       ButtonElement button =
-          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(VIEW)));
+          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(EMAIL)));
       button.click();
     });
   }
