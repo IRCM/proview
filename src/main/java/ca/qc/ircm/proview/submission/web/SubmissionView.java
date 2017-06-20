@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
@@ -38,7 +37,6 @@ public class SubmissionView extends SubmissionViewDesign implements BaseView {
   private transient SubmissionViewPresenter presenter;
   @Inject
   protected transient SubmissionFormPresenter submissionFormPresenter;
-  protected Menu menu = new Menu();
   protected SubmissionForm submissionForm = new SubmissionForm();
 
   /**
@@ -46,7 +44,6 @@ public class SubmissionView extends SubmissionViewDesign implements BaseView {
    */
   @PostConstruct
   public void init() {
-    menuLayout.addComponent(menu);
     submissionForm.setPresenter(submissionFormPresenter);
     submissionFormLayout.addComponent(submissionForm);
   }

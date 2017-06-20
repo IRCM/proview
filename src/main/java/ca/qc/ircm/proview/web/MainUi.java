@@ -47,6 +47,8 @@ import javax.servlet.ServletContext;
 public class MainUi extends UI {
   private static final long serialVersionUID = 5623532890650543834L;
   @Inject
+  private MainLayout layout;
+  @Inject
   private Provider<SpringNavigator> springNavigatorProvider;
   @Inject
   private SpringViewProvider viewProvider;
@@ -58,8 +60,9 @@ public class MainUi extends UI {
   public void initialize() {
     viewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
     SpringNavigator navigator = springNavigatorProvider.get();
-    navigator.init(this, this);
+    navigator.init(this, layout.content);
     getNavigator().setErrorView(ErrorView.class);
+    setContent(layout);
   }
 
   @Override

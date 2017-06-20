@@ -17,11 +17,9 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -35,12 +33,6 @@ public class ValidateView extends ValidateViewDesign implements BaseView {
   private static final long serialVersionUID = -1956061543048432065L;
   @Inject
   private transient ValidateViewPresenter presenter;
-  protected Menu menu = new Menu();
-
-  @PostConstruct
-  public void init() {
-    menuLayout.addComponent(menu);
-  }
 
   @Override
   public void attach() {

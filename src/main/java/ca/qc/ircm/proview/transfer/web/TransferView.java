@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.transfer.web;
 
 import ca.qc.ircm.proview.plate.web.PlateComponent;
 import ca.qc.ircm.proview.plate.web.PlateComponentPresenter;
-import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -39,7 +38,6 @@ public class TransferView extends TransferViewDesign implements BaseView, SavedS
   private static final long serialVersionUID = -4719228370965227442L;
   @Inject
   private TransferViewPresenter presenter;
-  protected Menu menu = new Menu();
   @Inject
   protected PlateComponent sourcePlateForm;
   @Inject
@@ -52,7 +50,6 @@ public class TransferView extends TransferViewDesign implements BaseView, SavedS
    */
   @PostConstruct
   public void init() {
-    menuLayout.addComponent(menu);
     sourcePlateForm.setWidth("100%");
     sourcePlateFormLayout.addComponent(sourcePlateForm);
     destinationPlateForm.setWidth("100%");

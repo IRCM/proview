@@ -17,12 +17,10 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -34,12 +32,6 @@ public class ForgotPasswordView extends ForgotPasswordViewDesign implements Base
   private static final long serialVersionUID = 164307263615957137L;
   @Inject
   private transient ForgotPasswordViewPresenter presenter;
-  protected Menu menu = new Menu();
-
-  @PostConstruct
-  public void init() {
-    menuLayout.addComponent(menu);
-  }
 
   @Override
   public void attach() {

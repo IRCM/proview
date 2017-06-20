@@ -3,32 +3,29 @@
  <head>
   <meta charset="UTF-8">
   <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
-  <meta name="vaadin-version" content="8.0.2">
+  <meta name="vaadin-version" content="8.0.5">
   <meta name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
   <meta name="package-mapping" content="org_tepi_filtertable:org.tepi.filtertable">
  </head>
  <body>
-  <vaadin-vertical-layout spacing="false" margin="false">
-   <vaadin-vertical-layout spacing="false" size-auto margin="false" _id="menuLayout"></vaadin-vertical-layout>
-   <vaadin-vertical-layout size-full :expand>
-    <vaadin-label style-name="h1" plain-text _id="headerLabel">
-      My submissions 
+  <vaadin-vertical-layout>
+   <vaadin-label style-name="h1" plain-text _id="headerLabel">
+     My submissions 
+   </vaadin-label>
+   <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.submission.Submission" _id="submissionsGrid"></vaadin-grid>
+   <vaadin-horizontal-layout>
+    <vaadin-button plain-text _id="selectSamplesButton">
+      Select samples 
+    </vaadin-button>
+    <vaadin-label plain-text _id="selectedSamplesLabel" :middle>
+      12 samples are selected 
     </vaadin-label>
-    <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.submission.Submission" _id="submissionsGrid"></vaadin-grid>
-    <vaadin-horizontal-layout>
-     <vaadin-button plain-text _id="selectSamplesButton">
-       Select samples 
-     </vaadin-button>
-     <vaadin-label plain-text _id="selectedSamplesLabel" :middle>
-       12 samples are selected 
-     </vaadin-label>
-    </vaadin-horizontal-layout>
-    <vaadin-horizontal-layout>
-     <vaadin-button plain-text _id="updateStatusButton">
-       Update status 
-     </vaadin-button>
-    </vaadin-horizontal-layout>
-   </vaadin-vertical-layout>
+   </vaadin-horizontal-layout>
+   <vaadin-horizontal-layout>
+    <vaadin-button plain-text _id="updateStatusButton">
+      Update status 
+    </vaadin-button>
+   </vaadin-horizontal-layout>
   </vaadin-vertical-layout>
  </body>
 </html>

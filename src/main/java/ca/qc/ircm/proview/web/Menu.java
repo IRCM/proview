@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.user.web.AccessView;
 import ca.qc.ircm.proview.user.web.RegisterView;
@@ -29,23 +28,28 @@ import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 
 import java.util.Locale;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
  * Menu.
  */
-public class Menu extends CustomComponent implements BaseComponent {
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class Menu extends CustomComponent implements BaseComponent, ViewChangeListener {
   public static final String HOME = "home";
   public static final String SUBMISSION = "submission";
   public static final String PROFILE = "profile";
@@ -81,9 +85,10 @@ public class Menu extends CustomComponent implements BaseComponent {
   private transient AuthenticationService authenticationService;
 
   /**
-   * Creates navigation menu.
+   * Initializes navigation menu.
    */
-  public Menu() {
+  @PostConstruct
+  public void init() {
     setCompositionRoot(menu);
     home = menu.addItem("Home", item -> changeView(MainView.VIEW_NAME));
     submission = menu.addItem("Submission", item -> changeView(SubmissionView.VIEW_NAME));
@@ -112,20 +117,14 @@ public class Menu extends CustomComponent implements BaseComponent {
   @Override
   public void attach() {
     super.attach();
-    injectBeans();
     prepareComponents();
     updateVisible();
   }
 
-  private void injectBeans() {
-    UI ui = getUI();
-    if (ui instanceof MainUi) {
-      WebApplicationContext context =
-          WebApplicationContextUtils.getWebApplicationContext(((MainUi) ui).getServletContext());
-      if (context != null) {
-        context.getAutowireCapableBeanFactory().autowireBean(this);
-      }
-    }
+  @Override
+  public boolean beforeViewChange(ViewChangeEvent event) {
+    updateVisible();
+    return true;
   }
 
   private void prepareComponents() {
@@ -159,31 +158,17 @@ public class Menu extends CustomComponent implements BaseComponent {
   }
 
   private void updateVisible() {
-    if (authorizationService != null) {
-      if (authorizationService.isUser()) {
-        profile.setVisible(true);
-        signout.setVisible(true);
-      }
-      if (authorizationService.hasUserRole()) {
-        submission.setVisible(true);
-      }
-      if (authorizationService.isRunAs()) {
-        manager.setVisible(true);
-        stopSignas.setVisible(true);
-      }
-      if (authorizationService.hasManagerRole()) {
-        manager.setVisible(true);
-        validateUsers.setVisible(true);
-        access.setVisible(true);
-      }
-      if (authorizationService.hasAdminRole()) {
-        manager.setVisible(true);
-        validateUsers.setVisible(true);
-        access.setVisible(true);
-        signas.setVisible(true);
-        register.setVisible(true);
-      }
-    }
+    submission.setVisible(authorizationService.hasUserRole());
+    profile.setVisible(authorizationService.isUser());
+    signout.setVisible(authorizationService.isUser());
+    manager.setVisible(authorizationService.isRunAs() || authorizationService.hasManagerRole()
+        || authorizationService.hasAdminRole());
+    validateUsers
+        .setVisible(authorizationService.hasManagerRole() || authorizationService.hasAdminRole());
+    access.setVisible(authorizationService.hasManagerRole() || authorizationService.hasAdminRole());
+    signas.setVisible(authorizationService.hasAdminRole());
+    register.setVisible(authorizationService.hasAdminRole());
+    stopSignas.setVisible(authorizationService.isRunAs());
   }
 
   private void changeView(String viewName) {
@@ -192,25 +177,18 @@ public class Menu extends CustomComponent implements BaseComponent {
   }
 
   private void stopSignas() {
-    if (authenticationService != null && authorizationService != null) {
-      logger.debug("Stop sign as user {}", authorizationService.getCurrentUser());
-      authenticationService.stopRunAs();
-      changeView(MainView.VIEW_NAME);
-    }
+    logger.debug("Stop sign as user {}", authorizationService.getCurrentUser());
+    authenticationService.stopRunAs();
+    changeView(MainView.VIEW_NAME);
   }
 
   private void signout() {
-    if (authenticationService != null) {
-      logger.debug("Signout user {}", authorizationService.getCurrentUser());
-      UI ui = getUI();
-      if (ui instanceof MainUi) {
-        String signoutUrl = ((MainUi) ui).getServletContext().getContextPath();
-        signoutUrl += SignoutFilter.SIGNOUT_URL;
-        getUI().getPage().setLocation(signoutUrl);
-      }
-    } else {
-      logger.warn("Signout called without an AuthenticationService instance");
-      changeView(AccessDeniedView.VIEW_NAME);
+    logger.debug("Signout user {}", authorizationService.getCurrentUser());
+    UI ui = getUI();
+    if (ui instanceof MainUi) {
+      String signoutUrl = ((MainUi) ui).getServletContext().getContextPath();
+      signoutUrl += SignoutFilter.SIGNOUT_URL;
+      getUI().getPage().setLocation(signoutUrl);
     }
   }
 

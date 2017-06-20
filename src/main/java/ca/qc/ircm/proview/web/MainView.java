@@ -33,7 +33,6 @@ public class MainView extends MainViewDesign implements BaseView {
   private static final long serialVersionUID = -2537732272999926530L;
   public static final String VIEW_NAME = "";
   private static final Logger logger = LoggerFactory.getLogger(MainView.class);
-  protected Menu menu = new Menu();
   protected CustomLoginForm signForm = new CustomLoginForm();
   @Inject
   private transient MainViewPresenter presenter;
@@ -42,7 +41,6 @@ public class MainView extends MainViewDesign implements BaseView {
    * Creates main view.
    */
   public MainView() {
-    menuLayout.addComponent(menu);
     signLayout.addComponent(signForm);
   }
 

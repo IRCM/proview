@@ -17,12 +17,10 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -37,12 +35,6 @@ public class SubmissionsView extends SubmissionsViewDesign
   private static final long serialVersionUID = -7912663074202035516L;
   @Inject
   private transient SubmissionsViewPresenter presenter;
-  protected Menu menu = new Menu();
-
-  @PostConstruct
-  public void init() {
-    menuLayout.addComponent(menu);
-  }
 
   @Override
   public void attach() {

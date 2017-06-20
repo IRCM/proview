@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
@@ -36,14 +35,12 @@ public class UserView extends UserViewDesign implements BaseView {
   private static final long serialVersionUID = -3508418095993360485L;
   @Inject
   private transient UserViewPresenter presenter;
-  protected Menu menu = new Menu();
   @Inject
   protected UserForm userForm;
   protected transient UserFormPresenter userFormPresenter;
 
   @PostConstruct
   protected void init() {
-    menuLayout.addComponent(menu);
     userFormLayout.addComponent(userForm);
     userFormPresenter = userForm.getPresenter();
   }

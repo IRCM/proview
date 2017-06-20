@@ -17,11 +17,9 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -35,12 +33,6 @@ public class SignasView extends SignasViewDesign implements BaseView {
   private static final long serialVersionUID = 2149245363614885816L;
   @Inject
   private transient SignasViewPresenter presenter;
-  protected Menu menu = new Menu();
-
-  @PostConstruct
-  public void init() {
-    menuLayout.addComponent(menu);
-  }
 
   @Override
   public void attach() {

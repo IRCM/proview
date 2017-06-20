@@ -115,7 +115,6 @@ public class MainViewPresenterTest {
   public void beforeTest() {
     presenter = new MainViewPresenter(authenticationService, authorizationService, userService,
         forgotPasswordService, applicationName);
-    view.menu = new Menu();
     view.header = new Label();
     view.signPanel = new Panel();
     view.signForm = signForm;

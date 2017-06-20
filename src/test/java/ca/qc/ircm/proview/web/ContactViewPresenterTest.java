@@ -69,7 +69,6 @@ public class ContactViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new ContactViewPresenter(applicationName);
-    view.menu = new Menu();
     view.headerLabel = new Label();
     view.proteomicContactPanel = new Panel();
     view.proteomicContactNameLink = new Link();

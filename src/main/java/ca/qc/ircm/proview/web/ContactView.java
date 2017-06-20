@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.web;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -30,14 +29,8 @@ import javax.inject.Inject;
 public class ContactView extends ContactViewDesign implements BaseView {
   private static final long serialVersionUID = -1067651526935267544L;
   public static final String VIEW_NAME = "contact";
-  protected Menu menu = new Menu();
   @Inject
   private transient ContactViewPresenter presenter;
-
-  @PostConstruct
-  public void init() {
-    menuLayout.addComponent(menu);
-  }
 
   @Override
   public void attach() {
