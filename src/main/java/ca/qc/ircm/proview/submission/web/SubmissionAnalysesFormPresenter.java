@@ -79,18 +79,21 @@ public class SubmissionAnalysesFormPresenter {
     return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();
   }
 
-  private void createAnalysisPanel(MsAnalysis analysis) {
+  private void createAnalysisPanel(MsAnalysis analysis, float expand) {
     final MessageResource resources = view.getResources();
     Panel panel = new Panel();
     view.addComponent(panel);
+    view.setExpandRatio(panel, expand);
     VerticalLayout layout = new VerticalLayout();
+    layout.setSizeFull();
     panel.setContent(layout);
     panel.addStyleName(ANALYSIS);
+    panel.setSizeFull();
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
     panel.setCaption(resources.message(ANALYSIS, formatter.format(date(analysis.getInsertTime()))));
     Grid<Acquisition> grid = new Grid<>();
-    grid.setWidth("100%");
     grid.addStyleName(ACQUISITIONS);
+    grid.setSizeFull();
     grid.setItems(analysis.getAcquisitions());
     grid.addColumn(acquisition -> acquisition.getSample().getName()).setId(NAME)
         .setCaption(resources.message(NAME));
@@ -117,7 +120,7 @@ public class SubmissionAnalysesFormPresenter {
     List<MsAnalysis> analyses = msAnalysisService.all(submission);
     view.removeAllComponents();
     analyses.forEach(analysis -> {
-      createAnalysisPanel(analysis);
+      createAnalysisPanel(analysis, (float) 1.0 / analyses.size());
     });
   }
 }
