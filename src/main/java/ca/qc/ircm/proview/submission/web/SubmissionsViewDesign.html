@@ -8,11 +8,11 @@
   <meta name="package-mapping" content="org_tepi_filtertable:org.tepi.filtertable">
  </head>
  <body>
-  <vaadin-vertical-layout>
+  <vaadin-vertical-layout size-full>
    <vaadin-label style-name="h1" plain-text _id="headerLabel">
      My submissions 
    </vaadin-label>
-   <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.submission.Submission" _id="submissionsGrid"></vaadin-grid>
+   <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.submission.Submission" _id="submissionsGrid" :expand></vaadin-grid>
    <vaadin-horizontal-layout>
     <vaadin-button plain-text _id="selectSamplesButton">
       Select samples 
