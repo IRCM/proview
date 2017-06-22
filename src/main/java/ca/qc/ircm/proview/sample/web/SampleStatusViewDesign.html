@@ -6,11 +6,11 @@
   <meta name="vaadin-version" content="8.0.5">
  </head>
  <body>
-  <vaadin-vertical-layout>
+  <vaadin-vertical-layout size-full>
    <vaadin-label plain-text _id="headerLabel">
      Update samples status 
    </vaadin-label>
-   <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samplesGrid"></vaadin-grid>
+   <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samplesGrid" :expand></vaadin-grid>
    <vaadin-horizontal-layout>
     <vaadin-button plain-text _id="saveButton">
       Save 
