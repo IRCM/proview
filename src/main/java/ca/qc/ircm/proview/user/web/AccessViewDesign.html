@@ -7,11 +7,11 @@
   <meta name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
  </head>
  <body>
-  <vaadin-vertical-layout>
+  <vaadin-vertical-layout size-full>
    <vaadin-label plain-text _id="headerLabel">
      User access 
    </vaadin-label>
-   <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.user.User" _id="usersGrid"></vaadin-grid>
+   <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.user.User" _id="usersGrid" :expand></vaadin-grid>
    <vaadin-horizontal-layout>
     <vaadin-button plain-text _id="activateButton">
       Activate 
