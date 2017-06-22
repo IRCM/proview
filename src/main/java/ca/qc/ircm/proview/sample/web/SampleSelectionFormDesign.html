@@ -3,14 +3,14 @@
  <head>
   <meta charset="UTF-8">
   <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
-  <meta name="vaadin-version" content="8.0.2">
+  <meta name="vaadin-version" content="8.0.5">
  </head>
  <body>
-  <vaadin-vertical-layout margin="false">
-   <vaadin-panel _id="samplesPanel">
+  <vaadin-vertical-layout size-full margin="false">
+   <vaadin-panel size-full _id="samplesPanel" :expand="2">
     <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samplesGrid"></vaadin-grid>
    </vaadin-panel>
-   <vaadin-panel _id="controlsPanel">
+   <vaadin-panel size-full _id="controlsPanel" :expand>
     <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.sample.Control" _id="controlsGrid"></vaadin-grid>
    </vaadin-panel>
    <vaadin-horizontal-layout>
