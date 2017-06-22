@@ -40,6 +40,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 
 /**
  * Treatment Plate.
@@ -69,6 +70,18 @@ public class Plate implements Data, Serializable, Named {
   @Enumerated(STRING)
   private PlateType type;
   /**
+   * Number of columns.
+   */
+  @Column(name = "columns", nullable = false)
+  @Min(1)
+  private int columnCount = 12;
+  /**
+   * Number of rows.
+   */
+  @Column(name = "rows", nullable = false)
+  @Min(1)
+  private int rowCount = 8;
+  /**
    * Time when analysis was inserted.
    */
   @Column(name = "insertTime", nullable = false)
@@ -80,40 +93,33 @@ public class Plate implements Data, Serializable, Named {
   private List<PlateSpot> spots;
 
   public Plate() {
+    this(null);
   }
 
   public Plate(Long id) {
-    this.id = id;
+    this(id, null);
   }
 
+  /**
+   * Initializes plate.
+   * 
+   * @param id
+   *          id
+   * @param name
+   *          name
+   */
   public Plate(Long id, String name) {
     this.id = id;
     this.name = name;
+    this.columnCount = 12;
+    this.rowCount = 8;
   }
 
   /**
-   * Returns number of rows for Sample matrix.
-   *
-   * @return number of rows for Sample matrix.
-   */
-  public int getRowCount() {
-    return type.rowCount;
-  }
-
-  /**
-   * Returns number of columns for Sample matrix.
-   *
-   * @return number of columns for Sample matrix.
-   */
-  public int getColumnCount() {
-    return type.columnCount;
-  }
-
-  /**
-   * Initializes spots, if type property is not null and spots property is null.
+   * Initializes spots, if spots property is null.
    */
   public void initSpots() {
-    if (type != null && spots == null) {
+    if (spots == null) {
       List<PlateSpot> spots = new ArrayList<>();
       for (int row = 0; row < getRowCount(); row++) {
         for (int column = 0; column < getColumnCount(); column++) {
@@ -271,5 +277,21 @@ public class Plate implements Data, Serializable, Named {
 
   public void setSpots(List<PlateSpot> spots) {
     this.spots = spots;
+  }
+
+  public int getColumnCount() {
+    return columnCount;
+  }
+
+  public void setColumnCount(int columnCount) {
+    this.columnCount = columnCount;
+  }
+
+  public int getRowCount() {
+    return rowCount;
+  }
+
+  public void setRowCount(int rowCount) {
+    this.rowCount = rowCount;
   }
 }

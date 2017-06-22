@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.platelayout.PlateLayout;
-import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
@@ -44,8 +43,8 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
    * Creates SubmissionForm.
    */
   public SubmissionForm() {
-    int columns = PlateType.SUBMISSION.getColumnCount();
-    int rows = PlateType.SUBMISSION.getRowCount();
+    int columns = 12;
+    int rows = 8;
     samplesPlateLayout = new PlateLayout(columns, rows);
     samplesPlateContainer.addComponent(samplesPlateLayout);
   }

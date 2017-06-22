@@ -100,9 +100,9 @@ public class PlateServiceTest {
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
     assertEquals(96, spots.size());
-    final int rowCount = plate.getType().getRowCount();
+    final int rowCount = plate.getRowCount();
     List<PlateSpot> someSpots = plate.spots(new SpotLocation(0, 1), new SpotLocation(rowCount, 1));
-    assertEquals(plate.getType().getRowCount(), someSpots.size());
+    assertEquals(plate.getRowCount(), someSpots.size());
     for (PlateSpot testSpot : someSpots) {
       assertEquals(1, testSpot.getColumn());
     }
@@ -135,9 +135,9 @@ public class PlateServiceTest {
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
     assertEquals(96, spots.size());
-    final int rowCount = plate.getType().getRowCount();
+    final int rowCount = plate.getRowCount();
     List<PlateSpot> someSpots = plate.spots(new SpotLocation(0, 1), new SpotLocation(rowCount, 1));
-    assertEquals(plate.getType().getRowCount(), someSpots.size());
+    assertEquals(plate.getRowCount(), someSpots.size());
     for (PlateSpot testSpot : someSpots) {
       assertEquals(1, testSpot.getColumn());
     }

@@ -165,6 +165,8 @@ CREATE TABLE IF NOT EXISTS plate (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,
   type varchar(50) NOT NULL,
+  columns int NOT NULL,
+  rows int NOT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY plateName (name),

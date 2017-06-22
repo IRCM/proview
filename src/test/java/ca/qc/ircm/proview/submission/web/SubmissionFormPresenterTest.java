@@ -143,7 +143,6 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -382,8 +381,8 @@ public class SubmissionFormPresenterTest {
     view.samplesGrid = new Grid<>();
     view.fillSamplesButton = new Button();
     view.samplesPlateContainer = new VerticalLayout();
-    int columns = PlateType.SUBMISSION.getColumnCount();
-    int rows = PlateType.SUBMISSION.getRowCount();
+    int columns = 12;
+    int rows = 8;
     view.samplesPlateLayout = new PlateLayout(columns, rows);
     view.experiencePanel = new Panel();
     view.experienceField = new TextField();

@@ -44,8 +44,8 @@ public class PlateComponentPresenterTest {
   private PlateComponentPresenter presenter;
   private PlateComponent view = new PlateComponent();
   private Plate plate = new Plate();
-  private int columns = PlateType.A.getColumnCount();
-  private int rows = PlateType.A.getRowCount();
+  private int columns = 12;
+  private int rows = 8;
 
   /**
    * Before test.
