@@ -123,6 +123,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -137,7 +138,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.io.ByteStreams;
 
-import ca.qc.ircm.platelayout.PlateLayout;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -172,6 +172,7 @@ import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
@@ -190,6 +191,7 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import org.apache.poi.ss.usermodel.Cell;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -381,9 +383,7 @@ public class SubmissionFormPresenterTest {
     view.samplesGrid = new Grid<>();
     view.fillSamplesButton = new Button();
     view.samplesPlateContainer = new VerticalLayout();
-    int columns = 12;
-    int rows = 8;
-    view.samplesPlateLayout = new PlateLayout(columns, rows);
+    view.samplesSpreadsheet = new Spreadsheet();
     view.experiencePanel = new Panel();
     view.experienceField = new TextField();
     view.experienceGoalField = new TextField();
@@ -465,8 +465,8 @@ public class SubmissionFormPresenterTest {
     view.plateNameField.setValue(plateName);
     view.sampleCountField.setValue(String.valueOf(sampleCount));
     setValuesInSamplesTable();
-    plateSampleNameField(0, 0).setValue(sampleName1);
-    plateSampleNameField(0, 1).setValue(sampleName2);
+    plateSampleNameCell(0, 0).setCellValue(sampleName1);
+    plateSampleNameCell(0, 1).setCellValue(sampleName2);
     view.experienceField.setValue(experience);
     view.experienceGoalField.setValue(experienceGoal);
     view.taxonomyField.setValue(taxonomy);
@@ -626,15 +626,11 @@ public class SubmissionFormPresenterTest {
     handler.handleFile(file2Path.toFile(), filesFilename2, filesMimeType2, filesContent2.length);
   }
 
-  private List<TextField> plateSampleNameFields() {
-    List<TextField> components = new ArrayList<>();
-    view.samplesPlateLayout.iterator().forEachRemaining(c -> components.add((TextField) c));
-    return components;
-  }
-
-  private TextField plateSampleNameField(int column, int row) {
-    int index = view.samplesPlateLayout.getRows() * column + row;
-    return plateSampleNameFields().get(index);
+  private Cell plateSampleNameCell(int column, int row) {
+    if (view.samplesSpreadsheet.getCell(row, column) == null) {
+      view.samplesSpreadsheet.createCell(row, column, "");
+    }
+    return view.samplesSpreadsheet.getCell(row, column);
   }
 
   private String errorMessage(String message) {
@@ -766,9 +762,6 @@ public class SubmissionFormPresenterTest {
     TextField sampleProteinWeightTableField = (TextField) view.samplesGrid
         .getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider().apply(firstSample);
     assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
-    for (TextField sampleNameField : plateSampleNameFields()) {
-      assertFalse(sampleNameField.isRequiredIndicatorVisible());
-    }
     assertTrue(view.experienceField.isRequiredIndicatorVisible());
     assertFalse(view.experienceGoalField.isRequiredIndicatorVisible());
     assertTrue(view.taxonomyField.isRequiredIndicatorVisible());
@@ -1064,15 +1057,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.samplesGrid.getStyleName().contains(SAMPLES_TABLE));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_SAMPLES_PROPERTY));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_BUTTON_STYLE));
-    assertTrue(view.samplesPlateLayout.getStyleName().contains(SAMPLES_PLATE));
-    List<TextField> sampleNameFields = plateSampleNameFields();
-    for (int column = 0; column < view.samplesPlateLayout.getColumns(); column++) {
-      for (int row = 0; row < view.samplesPlateLayout.getRows(); row++) {
-        int index = view.samplesPlateLayout.getRows() * column + row;
-        assertTrue(sampleNameFields.get(index).getStyleName()
-            .contains(SAMPLES_PLATE + "-" + column + "-" + row));
-      }
-    }
+    assertTrue(view.samplesSpreadsheet.getStyleName().contains(SAMPLES_PLATE));
     assertTrue(view.experiencePanel.getStyleName().contains(EXPERIENCE_PANEL));
     assertTrue(view.experienceField.getStyleName().contains(EXPERIENCE_PROPERTY));
     assertTrue(view.experienceGoalField.getStyleName().contains(EXPERIENCE_GOAL_PROPERTY));
@@ -1202,9 +1187,11 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(PROTEIN_WEIGHT_PROPERTY),
         view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_SAMPLES_PROPERTY), view.fillSamplesButton.getCaption());
-    assertEquals(null, view.samplesPlateLayout.getCaption());
-    for (TextField sampleNameField : plateSampleNameFields()) {
-      assertEquals(null, sampleNameField.getCaption());
+    assertEquals(null, view.samplesSpreadsheet.getCaption());
+    for (int column = 0; column < view.samplesSpreadsheet.getColumns(); column++) {
+      for (int row = 0; row < view.samplesSpreadsheet.getRows(); row++) {
+        assertEquals("", plateSampleNameCell(row, column).getStringCellValue());
+      }
     }
     assertEquals(resources.message(EXPERIENCE_PANEL), view.experiencePanel.getCaption());
     assertEquals(resources.message(EXPERIENCE_PROPERTY), view.experienceField.getCaption());
@@ -3332,7 +3319,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    plateSampleNameField(0, 0).setValue("");
+    plateSampleNameCell(0, 0).setCellValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3372,7 +3359,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    plateSampleNameField(0, 1).setValue("");
+    plateSampleNameCell(0, 1).setCellValue("");
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3412,7 +3399,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(SPOT);
-    plateSampleNameField(0, 1).setValue(sampleName1);
+    plateSampleNameCell(0, 1).setCellValue(sampleName1);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -6174,5 +6161,95 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
+  }
+
+  @Test
+  public void setBean_LcmsmsSolution() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
+  }
+
+  @Test
+  public void setBean_LcmsmsSolution_Plate() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
+  }
+
+  @Test
+  public void setBean_LcmsmsDry() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
+  }
+
+  @Test
+  public void setBean_LcmsmsDry_Plate() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
+  }
+
+  @Test
+  public void setBean_LcmsmsGel() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
+  }
+
+  @Test
+  public void setBean_LcmsmsGel_Plate() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
+  }
+
+  @Test
+  public void setBean_SmallMolecule_Solution() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
+  }
+
+  @Test
+  public void setBean_SmallMolecule_Dry() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
+  }
+
+  @Test
+  public void setBean_IntactProtein_Solution() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
+  }
+
+  @Test
+  public void setBean_IntactProtein_Dry() throws Throwable {
+    Submission submission = new Submission();
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    fail("Program test");
   }
 }

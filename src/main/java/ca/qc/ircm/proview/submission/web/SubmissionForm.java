@@ -17,10 +17,10 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import ca.qc.ircm.platelayout.PlateLayout;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.ui.Upload;
 import org.vaadin.easyuploads.MultiFileUpload;
 
@@ -33,7 +33,7 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
   protected Upload structureUploader;
   protected DefaultMultiFileUpload gelImagesUploader;
   protected DefaultMultiFileUpload filesUploader;
-  protected PlateLayout samplesPlateLayout;
+  protected Spreadsheet samplesSpreadsheet;
 
   public void setPresenter(SubmissionFormPresenter presenter) {
     this.presenter = presenter;
@@ -43,10 +43,10 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
    * Creates SubmissionForm.
    */
   public SubmissionForm() {
-    int columns = 12;
-    int rows = 8;
-    samplesPlateLayout = new PlateLayout(columns, rows);
-    samplesPlateContainer.addComponent(samplesPlateLayout);
+    samplesSpreadsheet = new Spreadsheet();
+    samplesSpreadsheet.setWidth("1024px");
+    samplesSpreadsheet.setHeight("250px");
+    samplesPlateContainer.addComponent(samplesSpreadsheet);
   }
 
   @Override

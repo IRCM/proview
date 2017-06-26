@@ -19,9 +19,20 @@ package ca.qc.ircm.proview.web.validator;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.Validator;
+import com.vaadin.data.ValueContext;
+import com.vaadin.server.CompositeErrorMessage;
+import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.UserError;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Validates binder.
@@ -38,6 +49,46 @@ public interface BinderValidator {
     BinderValidationStatus<?> status = binder.validate();
     logValidation(status);
     return status.isOk();
+  }
+
+  /**
+   * Validates values using validator and reports errors to component.
+   *
+   * @param validator
+   *          binder
+   * @param component
+   *          component where to report errors
+   * @param values
+   *          values to validate
+   * @return true if validation succeeded, false otherwise
+   */
+  public default <V> boolean validate(Validator<V> validator, AbstractComponent component,
+      Collection<V> values) {
+    Logger logger = LoggerFactory.getLogger(getClass());
+    List<String> errors = new ArrayList<>();
+    ValueContext context = new ValueContext(component);
+    for (V value : values) {
+      ValidationResult result = validator.apply(value, context);
+      if (result.isError()) {
+        logger.trace("Validation error {} for value {}", result.getErrorMessage(), value);
+        errors.add(result.getErrorMessage());
+      }
+    }
+    if (!errors.isEmpty()) {
+      List<ErrorMessage> componentErrors = new ArrayList<>();
+      if (component.getComponentError() != null) {
+        ErrorMessage previous = component.getComponentError();
+        if (previous instanceof CompositeErrorMessage) {
+          ((CompositeErrorMessage) previous).iterator()
+              .forEachRemaining(e -> componentErrors.add(e));
+        } else {
+          componentErrors.add(previous);
+        }
+      }
+      errors.stream().map(m -> new UserError(m)).forEach(e -> componentErrors.add(e));
+      component.setComponentError(new CompositeErrorMessage(componentErrors));
+    }
+    return errors.isEmpty();
   }
 
   /**
