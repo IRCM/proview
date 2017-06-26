@@ -149,6 +149,7 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleSolvent;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.Structure;
@@ -168,12 +169,18 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.addon.spreadsheet.Spreadsheet;
+import com.vaadin.data.ValueContext;
+import com.vaadin.data.converter.AbstractStringToNumberConverter;
+import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.server.SerializableFunction;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -193,6 +200,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.poi.ss.usermodel.Cell;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -207,6 +215,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -350,6 +359,9 @@ public class SubmissionFormPresenterTest {
   private TextField contaminantNameField2;
   private TextField contaminantQuantityField1;
   private TextField contaminantQuantityField2;
+  private StringToIntegerConverter integerConverter = new StringToIntegerConverter("");
+  private StringToDoubleConverter doubleConverter = new StringToDoubleConverter("");
+  private SerializableFunction<String, Exception> throwableFunction = s -> new Exception();
 
   /**
    * Before test.
@@ -517,6 +529,12 @@ public class SubmissionFormPresenterTest {
     return (ListDataProvider<V>) radios.getDataProvider();
   }
 
+  private <R extends Number> R convert(AbstractStringToNumberConverter<R> converter,
+      TextField component) throws Exception {
+    return converter.convertToModel(component.getValue(), new ValueContext(component))
+        .getOrThrow(throwableFunction);
+  }
+
   private void setValuesInSamplesTable() {
     List<SubmissionSample> samples = new ArrayList<>(dataProvider(view.samplesGrid).getItems());
     SubmissionSample sample = samples.get(0);
@@ -635,6 +653,174 @@ public class SubmissionFormPresenterTest {
 
   private String errorMessage(String message) {
     return new UserError(message).getFormattedHtmlMessage();
+  }
+
+  private Submission createSubmission() {
+    Submission submission = new Submission();
+    submission.setId(20L);
+    submission.setService(LC_MS_MS);
+    submission.setTaxonomy(taxonomy);
+    submission.setExperience(experience);
+    submission.setGoal(experienceGoal);
+    submission.setMassDetectionInstrument(instrument);
+    submission.setProteolyticDigestionMethod(digestion);
+    submission.setUsedProteolyticDigestionMethod(usedDigestion);
+    submission.setOtherProteolyticDigestionMethod(otherDigestion);
+    submission.setProteinIdentification(proteinIdentification);
+    submission.setProteinIdentificationLink(proteinIdentificationLink);
+    submission.setInjectionType(injectionType);
+    submission.setSource(source);
+    submission.setHighResolution(true);
+    submission.setMsms(true);
+    submission.setExactMsms(true);
+    submission.setMudPitFraction(null);
+    submission.setProteinContent(proteinContent);
+    submission.setProtein(proteinName);
+    submission.setPostTranslationModification(postTranslationModification);
+    submission.setSeparation(gelSeparation);
+    submission.setThickness(gelThickness);
+    submission.setColoration(gelColoration);
+    submission.setOtherColoration(otherColoration);
+    submission.setDevelopmentTime(developmentTime);
+    submission.setDecoloration(true);
+    submission.setWeightMarkerQuantity(weightMarkerQuantity);
+    submission.setProteinQuantity(proteinQuantity);
+    submission.setFormula(formula);
+    submission.setMonoisotopicMass(monoisotopicMass);
+    submission.setAverageMass(averageMass);
+    submission.setSolutionSolvent(solutionSolvent);
+    List<SampleSolvent> sampleSolvents = new ArrayList<>();
+    if (acetonitrileSolvents) {
+      sampleSolvents.add(new SampleSolvent(Solvent.ACETONITRILE));
+    }
+    if (methanolSolvents) {
+      sampleSolvents.add(new SampleSolvent(Solvent.METHANOL));
+    }
+    if (chclSolvents) {
+      sampleSolvents.add(new SampleSolvent(Solvent.CHCL3));
+    }
+    if (otherSolvents) {
+      sampleSolvents.add(new SampleSolvent(Solvent.OTHER));
+    }
+    submission.setSolvents(sampleSolvents);
+    submission.setOtherSolvent(otherSolvent);
+    submission.setToxicity(toxicity);
+    submission.setLightSensitive(true);
+    submission.setStorageTemperature(storageTemperature);
+    submission.setQuantification(quantification);
+    submission.setQuantificationLabels(quantificationLabels);
+    submission.setComments(comments);
+    submission.setSubmissionDate(Instant.now());
+    User user = entityManager.find(User.class, 3L);
+    submission.setUser(user);
+    submission.setLaboratory(user.getLaboratory());
+    List<SubmissionSample> samples = new ArrayList<>();
+    submission.setSamples(samples);
+    SubmissionSample sample = new SubmissionSample();
+    sample.setId(21L);
+    sample.setName(sampleName1);
+    sample.setSupport(support);
+    sample.setVolume(sampleVolume);
+    sample.setQuantity(sampleQuantity);
+    sample.setNumberProtein(sampleNumberProtein1);
+    sample.setMolecularWeight(proteinWeight1);
+    sample.setOriginalContainer(new Tube(21L, sampleName1));
+    List<Standard> standards = new ArrayList<>();
+    sample.setStandards(standards);
+    Standard standard = new Standard();
+    standard.setId(30L);
+    standard.setName(standardName1);
+    standard.setQuantity(standardQuantity1);
+    standard.setComments(standardComment1);
+    standards.add(standard);
+    standard = new Standard();
+    standard.setId(31L);
+    standard.setName(standardName2);
+    standard.setQuantity(standardQuantity2);
+    standard.setComments(standardComment2);
+    standards.add(standard);
+    List<Contaminant> contaminants = new ArrayList<>();
+    sample.setContaminants(contaminants);
+    Contaminant contaminant = new Contaminant();
+    contaminant.setId(30L);
+    contaminant.setName(contaminantName1);
+    contaminant.setQuantity(contaminantQuantity1);
+    contaminant.setComments(contaminantComment1);
+    contaminants.add(contaminant);
+    contaminant = new Contaminant();
+    contaminant.setId(31L);
+    contaminant.setName(contaminantName2);
+    contaminant.setQuantity(contaminantQuantity2);
+    contaminant.setComments(contaminantComment2);
+    contaminants.add(contaminant);
+    sample.setStatus(SampleStatus.TO_APPROVE);
+    sample.setSubmission(submission);
+    samples.add(sample);
+    sample = new SubmissionSample();
+    sample.setId(22L);
+    sample.setName(sampleName2);
+    sample.setSupport(support);
+    sample.setVolume(sampleVolume);
+    sample.setQuantity(sampleQuantity);
+    sample.setNumberProtein(sampleNumberProtein2);
+    sample.setMolecularWeight(proteinWeight2);
+    sample.setOriginalContainer(new Tube(22L, sampleName2));
+    standards = new ArrayList<>();
+    sample.setStandards(standards);
+    standard = new Standard();
+    standard.setId(32L);
+    standard.setName(standardName1);
+    standard.setQuantity(standardQuantity1);
+    standard.setComments(standardComment1);
+    standards.add(standard);
+    standard = new Standard();
+    standard.setId(33L);
+    standard.setName(standardName2);
+    standard.setQuantity(standardQuantity2);
+    standard.setComments(standardComment2);
+    standards.add(standard);
+    contaminants = new ArrayList<>();
+    sample.setContaminants(contaminants);
+    contaminant = new Contaminant();
+    contaminant.setId(32L);
+    contaminant.setName(contaminantName1);
+    contaminant.setQuantity(contaminantQuantity1);
+    contaminant.setComments(contaminantComment1);
+    contaminants.add(contaminant);
+    contaminant = new Contaminant();
+    contaminant.setId(33L);
+    contaminant.setName(contaminantName2);
+    contaminant.setQuantity(contaminantQuantity2);
+    contaminant.setComments(contaminantComment2);
+    contaminants.add(contaminant);
+    List<GelImage> gelImages = new ArrayList<>();
+    submission.setGelImages(gelImages);
+    GelImage gelImage = new GelImage();
+    gelImage.setFilename(gelImageFilename1);
+    gelImage.setContent(gelImageContent1);
+    gelImages.add(gelImage);
+    gelImage = new GelImage();
+    gelImage.setFilename(gelImageFilename2);
+    gelImage.setContent(gelImageContent2);
+    gelImages.add(gelImage);
+    Structure structure = new Structure();
+    structure.setFilename(structureFilename);
+    structure.setContent(structureContent);
+    submission.setStructure(structure);
+    List<SubmissionFile> files = new ArrayList<>();
+    submission.setFiles(files);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename(filesFilename1);
+    file.setContent(filesContent1);
+    files.add(file);
+    file = new SubmissionFile();
+    file.setFilename(filesFilename2);
+    file.setContent(filesContent2);
+    files.add(file);
+    sample.setStatus(SampleStatus.TO_APPROVE);
+    sample.setSubmission(submission);
+    samples.add(sample);
+    return submission;
   }
 
   @Test
@@ -6164,90 +6350,124 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void setBean_LcmsmsSolution() throws Throwable {
-    Submission submission = new Submission();
+  public void setBean_Lcmsms() throws Throwable {
     presenter.init(view);
+    Submission submission = createSubmission();
+
+    presenter.setBean(submission);
+
+    assertEquals(LC_MS_MS, view.serviceOptions.getValue());
+    assertEquals(SOLUTION, view.sampleSupportOptions.getValue());
+    assertEquals(solutionSolvent, view.solutionSolventField.getValue());
+    assertEquals(sampleName1, view.sampleNameField.getValue());
+    assertEquals(formula, view.formulaField.getValue());
+    assertEquals(monoisotopicMass, convert(doubleConverter, view.monoisotopicMassField), 0.001);
+    assertEquals(averageMass, convert(doubleConverter, view.averageMassField), 0.001);
+    assertEquals(toxicity, view.toxicityField.getValue());
+    assertEquals(lightSensitive, view.lightSensitiveField.getValue());
+    assertEquals(storageTemperature, view.storageTemperatureOptions.getValue());
+    assertEquals(sampleContainerType, view.sampleContainerTypeOptions.getValue());
+    assertEquals((Integer) sampleCount, convert(integerConverter, view.sampleCountField));
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
+    List<SubmissionSample> samples = new ArrayList<>(samplesDataProvider.getItems());
+    assertEquals(2, samples.size());
+    SubmissionSample sample = samples.get(0);
+    assertEquals(sampleName1, sample.getName());
+    assertEquals((Integer) sampleNumberProtein1, sample.getNumberProtein());
+    assertEquals(proteinWeight1, sample.getMolecularWeight(), 0.001);
+    sample = samples.get(1);
+    assertEquals(sampleName2, sample.getName());
+    assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
+    assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
+    assertEquals(experience, view.experienceField.getValue());
+    assertEquals(experienceGoal, view.experienceGoalField.getValue());
+    assertEquals(taxonomy, view.taxonomyField.getValue());
+    assertEquals(proteinName, view.proteinNameField.getValue());
+    assertEquals(proteinWeight1, convert(doubleConverter, view.proteinWeightField), 0.001);
+    assertEquals(postTranslationModification, view.postTranslationModificationField.getValue());
+    assertEquals(sampleQuantity, view.sampleQuantityField.getValue());
+    assertEquals(sampleVolume, convert(doubleConverter, view.sampleVolumeField), 0.001);
+    assertEquals((Integer) standardsCount, convert(integerConverter, view.standardCountField));
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(view.standardsGrid);
+    List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
+    assertEquals(2, standards.size());
+    Standard standard = standards.get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    standard = standards.get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals((Integer) contaminantsCount,
+        convert(integerConverter, view.contaminantCountField));
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(view.contaminantsGrid);
+    List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
+    assertEquals(2, contaminants.size());
+    Contaminant contaminant = contaminants.get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    contaminant = contaminants.get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(gelSeparation, view.separationField.getValue());
+    assertEquals(gelThickness, view.thicknessField.getValue());
+    assertEquals(gelColoration, view.colorationField.getValue());
+    assertEquals(otherColoration, view.otherColorationField.getValue());
+    assertEquals(developmentTime, view.developmentTimeField.getValue());
+    assertEquals(decoloration, view.decolorationField.getValue());
+    assertEquals(weightMarkerQuantity, convert(doubleConverter, view.weightMarkerQuantityField),
+        0.001);
+    assertEquals(proteinQuantity, view.proteinQuantityField.getValue());
+    assertEquals(digestion, view.digestionOptions.getValue());
+    assertEquals(usedDigestion, view.usedProteolyticDigestionMethodField.getValue());
+    assertEquals(otherDigestion, view.otherProteolyticDigestionMethodField.getValue());
+    assertEquals(injectionType, view.injectionTypeOptions.getValue());
+    assertEquals(source, view.sourceOptions.getValue());
+    assertEquals(proteinContent, view.proteinContentOptions.getValue());
+    assertEquals(instrument, view.instrumentOptions.getValue());
+    assertEquals(proteinIdentification, view.proteinIdentificationOptions.getValue());
+    assertEquals(proteinIdentificationLink, view.proteinIdentificationLinkField.getValue());
+    assertEquals(quantification, view.quantificationOptions.getValue());
+    assertEquals(quantificationLabels, view.quantificationLabelsField.getValue());
+    assertEquals(highResolution, view.highResolutionOptions.getValue());
+    assertEquals(acetonitrileSolvents, view.acetonitrileSolventsField.getValue());
+    assertEquals(methanolSolvents, view.methanolSolventsField.getValue());
+    assertEquals(chclSolvents, view.chclSolventsField.getValue());
+    assertEquals(otherSolvents, view.otherSolventsField.getValue());
+    assertEquals(otherSolvent, view.otherSolventField.getValue());
+    assertEquals(comments, view.commentsField.getValue());
+  }
+
+  @Test
+  @Ignore
+  public void setBean_Lcmsms_Plate() throws Throwable {
+    presenter.init(view);
+    Submission submission = createSubmission();
+
+    presenter.setBean(submission);
+
+    // TODO assertEquals(plateName, view.plateNameField.getValue());
+    // TODO plateSampleNameCell(0, 0).setCellValue(sampleName1);
+    // TODO plateSampleNameCell(0, 1).setCellValue(sampleName2);
+    fail("Program test");
+  }
+
+  @Test
+  @Ignore
+  public void setBean_SmallMolecule() throws Throwable {
+    presenter.init(view);
+    Submission submission = createSubmission();
+
     presenter.setBean(submission);
 
     fail("Program test");
   }
 
   @Test
-  public void setBean_LcmsmsSolution_Plate() throws Throwable {
-    Submission submission = new Submission();
+  @Ignore
+  public void setBean_IntactProtein() throws Throwable {
     presenter.init(view);
-    presenter.setBean(submission);
+    Submission submission = createSubmission();
 
-    fail("Program test");
-  }
-
-  @Test
-  public void setBean_LcmsmsDry() throws Throwable {
-    Submission submission = new Submission();
-    presenter.init(view);
-    presenter.setBean(submission);
-
-    fail("Program test");
-  }
-
-  @Test
-  public void setBean_LcmsmsDry_Plate() throws Throwable {
-    Submission submission = new Submission();
-    presenter.init(view);
-    presenter.setBean(submission);
-
-    fail("Program test");
-  }
-
-  @Test
-  public void setBean_LcmsmsGel() throws Throwable {
-    Submission submission = new Submission();
-    presenter.init(view);
-    presenter.setBean(submission);
-
-    fail("Program test");
-  }
-
-  @Test
-  public void setBean_LcmsmsGel_Plate() throws Throwable {
-    Submission submission = new Submission();
-    presenter.init(view);
-    presenter.setBean(submission);
-
-    fail("Program test");
-  }
-
-  @Test
-  public void setBean_SmallMolecule_Solution() throws Throwable {
-    Submission submission = new Submission();
-    presenter.init(view);
-    presenter.setBean(submission);
-
-    fail("Program test");
-  }
-
-  @Test
-  public void setBean_SmallMolecule_Dry() throws Throwable {
-    Submission submission = new Submission();
-    presenter.init(view);
-    presenter.setBean(submission);
-
-    fail("Program test");
-  }
-
-  @Test
-  public void setBean_IntactProtein_Solution() throws Throwable {
-    Submission submission = new Submission();
-    presenter.init(view);
-    presenter.setBean(submission);
-
-    fail("Program test");
-  }
-
-  @Test
-  public void setBean_IntactProtein_Dry() throws Throwable {
-    Submission submission = new Submission();
-    presenter.init(view);
     presenter.setBean(submission);
 
     fail("Program test");
