@@ -123,7 +123,6 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
-import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -141,6 +140,7 @@ import com.google.common.io.ByteStreams;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
+import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -200,7 +200,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.poi.ss.usermodel.Cell;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -6438,38 +6437,275 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  @Ignore
   public void setBean_Lcmsms_Plate() throws Throwable {
     presenter.init(view);
     Submission submission = createSubmission();
+    Plate plate = new Plate(2L, plateName);
+    plate.initSpots();
+    submission.getSamples().get(0).setOriginalContainer(plate.spot(0, 0));
+    submission.getSamples().get(1).setOriginalContainer(plate.spot(1, 0));
 
     presenter.setBean(submission);
 
-    // TODO assertEquals(plateName, view.plateNameField.getValue());
-    // TODO plateSampleNameCell(0, 0).setCellValue(sampleName1);
-    // TODO plateSampleNameCell(0, 1).setCellValue(sampleName2);
-    fail("Program test");
+    assertEquals(LC_MS_MS, view.serviceOptions.getValue());
+    assertEquals(SOLUTION, view.sampleSupportOptions.getValue());
+    assertEquals(solutionSolvent, view.solutionSolventField.getValue());
+    assertEquals(sampleName1, view.sampleNameField.getValue());
+    assertEquals(formula, view.formulaField.getValue());
+    assertEquals(monoisotopicMass, convert(doubleConverter, view.monoisotopicMassField), 0.001);
+    assertEquals(averageMass, convert(doubleConverter, view.averageMassField), 0.001);
+    assertEquals(toxicity, view.toxicityField.getValue());
+    assertEquals(lightSensitive, view.lightSensitiveField.getValue());
+    assertEquals(storageTemperature, view.storageTemperatureOptions.getValue());
+    assertEquals(SampleContainerType.SPOT, view.sampleContainerTypeOptions.getValue());
+    assertEquals((Integer) sampleCount, convert(integerConverter, view.sampleCountField));
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
+    List<SubmissionSample> samples = new ArrayList<>(samplesDataProvider.getItems());
+    assertEquals(2, samples.size());
+    SubmissionSample sample = samples.get(0);
+    assertEquals(sampleName1, sample.getName());
+    assertEquals((Integer) sampleNumberProtein1, sample.getNumberProtein());
+    assertEquals(proteinWeight1, sample.getMolecularWeight(), 0.001);
+    sample = samples.get(1);
+    assertEquals(sampleName2, sample.getName());
+    assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
+    assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
+    assertEquals(plateName, view.plateNameField.getValue());
+    assertEquals(sampleName1, plateSampleNameCell(0, 0).getStringCellValue());
+    assertEquals(sampleName2, plateSampleNameCell(0, 1).getStringCellValue());
+    assertEquals(experience, view.experienceField.getValue());
+    assertEquals(experienceGoal, view.experienceGoalField.getValue());
+    assertEquals(taxonomy, view.taxonomyField.getValue());
+    assertEquals(proteinName, view.proteinNameField.getValue());
+    assertEquals(proteinWeight1, convert(doubleConverter, view.proteinWeightField), 0.001);
+    assertEquals(postTranslationModification, view.postTranslationModificationField.getValue());
+    assertEquals(sampleQuantity, view.sampleQuantityField.getValue());
+    assertEquals(sampleVolume, convert(doubleConverter, view.sampleVolumeField), 0.001);
+    assertEquals((Integer) standardsCount, convert(integerConverter, view.standardCountField));
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(view.standardsGrid);
+    List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
+    assertEquals(2, standards.size());
+    Standard standard = standards.get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    standard = standards.get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals((Integer) contaminantsCount,
+        convert(integerConverter, view.contaminantCountField));
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(view.contaminantsGrid);
+    List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
+    assertEquals(2, contaminants.size());
+    Contaminant contaminant = contaminants.get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    contaminant = contaminants.get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(gelSeparation, view.separationField.getValue());
+    assertEquals(gelThickness, view.thicknessField.getValue());
+    assertEquals(gelColoration, view.colorationField.getValue());
+    assertEquals(otherColoration, view.otherColorationField.getValue());
+    assertEquals(developmentTime, view.developmentTimeField.getValue());
+    assertEquals(decoloration, view.decolorationField.getValue());
+    assertEquals(weightMarkerQuantity, convert(doubleConverter, view.weightMarkerQuantityField),
+        0.001);
+    assertEquals(proteinQuantity, view.proteinQuantityField.getValue());
+    assertEquals(digestion, view.digestionOptions.getValue());
+    assertEquals(usedDigestion, view.usedProteolyticDigestionMethodField.getValue());
+    assertEquals(otherDigestion, view.otherProteolyticDigestionMethodField.getValue());
+    assertEquals(injectionType, view.injectionTypeOptions.getValue());
+    assertEquals(source, view.sourceOptions.getValue());
+    assertEquals(proteinContent, view.proteinContentOptions.getValue());
+    assertEquals(instrument, view.instrumentOptions.getValue());
+    assertEquals(proteinIdentification, view.proteinIdentificationOptions.getValue());
+    assertEquals(proteinIdentificationLink, view.proteinIdentificationLinkField.getValue());
+    assertEquals(quantification, view.quantificationOptions.getValue());
+    assertEquals(quantificationLabels, view.quantificationLabelsField.getValue());
+    assertEquals(highResolution, view.highResolutionOptions.getValue());
+    assertEquals(acetonitrileSolvents, view.acetonitrileSolventsField.getValue());
+    assertEquals(methanolSolvents, view.methanolSolventsField.getValue());
+    assertEquals(chclSolvents, view.chclSolventsField.getValue());
+    assertEquals(otherSolvents, view.otherSolventsField.getValue());
+    assertEquals(otherSolvent, view.otherSolventField.getValue());
+    assertEquals(comments, view.commentsField.getValue());
   }
 
   @Test
-  @Ignore
   public void setBean_SmallMolecule() throws Throwable {
     presenter.init(view);
     Submission submission = createSubmission();
+    submission.setService(SMALL_MOLECULE);
 
     presenter.setBean(submission);
 
-    fail("Program test");
+    assertEquals(SMALL_MOLECULE, view.serviceOptions.getValue());
+    assertEquals(SOLUTION, view.sampleSupportOptions.getValue());
+    assertEquals(solutionSolvent, view.solutionSolventField.getValue());
+    assertEquals(sampleName1, view.sampleNameField.getValue());
+    assertEquals(formula, view.formulaField.getValue());
+    assertEquals(monoisotopicMass, convert(doubleConverter, view.monoisotopicMassField), 0.001);
+    assertEquals(averageMass, convert(doubleConverter, view.averageMassField), 0.001);
+    assertEquals(toxicity, view.toxicityField.getValue());
+    assertEquals(lightSensitive, view.lightSensitiveField.getValue());
+    assertEquals(storageTemperature, view.storageTemperatureOptions.getValue());
+    assertEquals(sampleContainerType, view.sampleContainerTypeOptions.getValue());
+    assertEquals((Integer) sampleCount, convert(integerConverter, view.sampleCountField));
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
+    List<SubmissionSample> samples = new ArrayList<>(samplesDataProvider.getItems());
+    assertEquals(2, samples.size());
+    SubmissionSample sample = samples.get(0);
+    assertEquals(sampleName1, sample.getName());
+    assertEquals((Integer) sampleNumberProtein1, sample.getNumberProtein());
+    assertEquals(proteinWeight1, sample.getMolecularWeight(), 0.001);
+    sample = samples.get(1);
+    assertEquals(sampleName2, sample.getName());
+    assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
+    assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
+    assertEquals(experience, view.experienceField.getValue());
+    assertEquals(experienceGoal, view.experienceGoalField.getValue());
+    assertEquals(taxonomy, view.taxonomyField.getValue());
+    assertEquals(proteinName, view.proteinNameField.getValue());
+    assertEquals(proteinWeight1, convert(doubleConverter, view.proteinWeightField), 0.001);
+    assertEquals(postTranslationModification, view.postTranslationModificationField.getValue());
+    assertEquals(sampleQuantity, view.sampleQuantityField.getValue());
+    assertEquals(sampleVolume, convert(doubleConverter, view.sampleVolumeField), 0.001);
+    assertEquals((Integer) standardsCount, convert(integerConverter, view.standardCountField));
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(view.standardsGrid);
+    List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
+    assertEquals(2, standards.size());
+    Standard standard = standards.get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    standard = standards.get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals((Integer) contaminantsCount,
+        convert(integerConverter, view.contaminantCountField));
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(view.contaminantsGrid);
+    List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
+    assertEquals(2, contaminants.size());
+    Contaminant contaminant = contaminants.get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    contaminant = contaminants.get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(gelSeparation, view.separationField.getValue());
+    assertEquals(gelThickness, view.thicknessField.getValue());
+    assertEquals(gelColoration, view.colorationField.getValue());
+    assertEquals(otherColoration, view.otherColorationField.getValue());
+    assertEquals(developmentTime, view.developmentTimeField.getValue());
+    assertEquals(decoloration, view.decolorationField.getValue());
+    assertEquals(weightMarkerQuantity, convert(doubleConverter, view.weightMarkerQuantityField),
+        0.001);
+    assertEquals(proteinQuantity, view.proteinQuantityField.getValue());
+    assertEquals(digestion, view.digestionOptions.getValue());
+    assertEquals(usedDigestion, view.usedProteolyticDigestionMethodField.getValue());
+    assertEquals(otherDigestion, view.otherProteolyticDigestionMethodField.getValue());
+    assertEquals(injectionType, view.injectionTypeOptions.getValue());
+    assertEquals(source, view.sourceOptions.getValue());
+    assertEquals(proteinContent, view.proteinContentOptions.getValue());
+    assertEquals(instrument, view.instrumentOptions.getValue());
+    assertEquals(proteinIdentification, view.proteinIdentificationOptions.getValue());
+    assertEquals(proteinIdentificationLink, view.proteinIdentificationLinkField.getValue());
+    assertEquals(quantification, view.quantificationOptions.getValue());
+    assertEquals(quantificationLabels, view.quantificationLabelsField.getValue());
+    assertEquals(highResolution, view.highResolutionOptions.getValue());
+    assertEquals(acetonitrileSolvents, view.acetonitrileSolventsField.getValue());
+    assertEquals(methanolSolvents, view.methanolSolventsField.getValue());
+    assertEquals(chclSolvents, view.chclSolventsField.getValue());
+    assertEquals(otherSolvents, view.otherSolventsField.getValue());
+    assertEquals(otherSolvent, view.otherSolventField.getValue());
+    assertEquals(comments, view.commentsField.getValue());
   }
 
   @Test
-  @Ignore
   public void setBean_IntactProtein() throws Throwable {
     presenter.init(view);
     Submission submission = createSubmission();
+    submission.setService(INTACT_PROTEIN);
 
     presenter.setBean(submission);
 
-    fail("Program test");
+    assertEquals(INTACT_PROTEIN, view.serviceOptions.getValue());
+    assertEquals(SOLUTION, view.sampleSupportOptions.getValue());
+    assertEquals(solutionSolvent, view.solutionSolventField.getValue());
+    assertEquals(sampleName1, view.sampleNameField.getValue());
+    assertEquals(formula, view.formulaField.getValue());
+    assertEquals(monoisotopicMass, convert(doubleConverter, view.monoisotopicMassField), 0.001);
+    assertEquals(averageMass, convert(doubleConverter, view.averageMassField), 0.001);
+    assertEquals(toxicity, view.toxicityField.getValue());
+    assertEquals(lightSensitive, view.lightSensitiveField.getValue());
+    assertEquals(storageTemperature, view.storageTemperatureOptions.getValue());
+    assertEquals(sampleContainerType, view.sampleContainerTypeOptions.getValue());
+    assertEquals((Integer) sampleCount, convert(integerConverter, view.sampleCountField));
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
+    List<SubmissionSample> samples = new ArrayList<>(samplesDataProvider.getItems());
+    assertEquals(2, samples.size());
+    SubmissionSample sample = samples.get(0);
+    assertEquals(sampleName1, sample.getName());
+    assertEquals((Integer) sampleNumberProtein1, sample.getNumberProtein());
+    assertEquals(proteinWeight1, sample.getMolecularWeight(), 0.001);
+    sample = samples.get(1);
+    assertEquals(sampleName2, sample.getName());
+    assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
+    assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
+    assertEquals(experience, view.experienceField.getValue());
+    assertEquals(experienceGoal, view.experienceGoalField.getValue());
+    assertEquals(taxonomy, view.taxonomyField.getValue());
+    assertEquals(proteinName, view.proteinNameField.getValue());
+    assertEquals(proteinWeight1, convert(doubleConverter, view.proteinWeightField), 0.001);
+    assertEquals(postTranslationModification, view.postTranslationModificationField.getValue());
+    assertEquals(sampleQuantity, view.sampleQuantityField.getValue());
+    assertEquals(sampleVolume, convert(doubleConverter, view.sampleVolumeField), 0.001);
+    assertEquals((Integer) standardsCount, convert(integerConverter, view.standardCountField));
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(view.standardsGrid);
+    List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
+    assertEquals(2, standards.size());
+    Standard standard = standards.get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    standard = standards.get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals((Integer) contaminantsCount,
+        convert(integerConverter, view.contaminantCountField));
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(view.contaminantsGrid);
+    List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
+    assertEquals(2, contaminants.size());
+    Contaminant contaminant = contaminants.get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    contaminant = contaminants.get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(gelSeparation, view.separationField.getValue());
+    assertEquals(gelThickness, view.thicknessField.getValue());
+    assertEquals(gelColoration, view.colorationField.getValue());
+    assertEquals(otherColoration, view.otherColorationField.getValue());
+    assertEquals(developmentTime, view.developmentTimeField.getValue());
+    assertEquals(decoloration, view.decolorationField.getValue());
+    assertEquals(weightMarkerQuantity, convert(doubleConverter, view.weightMarkerQuantityField),
+        0.001);
+    assertEquals(proteinQuantity, view.proteinQuantityField.getValue());
+    assertEquals(digestion, view.digestionOptions.getValue());
+    assertEquals(usedDigestion, view.usedProteolyticDigestionMethodField.getValue());
+    assertEquals(otherDigestion, view.otherProteolyticDigestionMethodField.getValue());
+    assertEquals(injectionType, view.injectionTypeOptions.getValue());
+    assertEquals(source, view.sourceOptions.getValue());
+    assertEquals(proteinContent, view.proteinContentOptions.getValue());
+    assertEquals(instrument, view.instrumentOptions.getValue());
+    assertEquals(proteinIdentification, view.proteinIdentificationOptions.getValue());
+    assertEquals(proteinIdentificationLink, view.proteinIdentificationLinkField.getValue());
+    assertEquals(quantification, view.quantificationOptions.getValue());
+    assertEquals(quantificationLabels, view.quantificationLabelsField.getValue());
+    assertEquals(highResolution, view.highResolutionOptions.getValue());
+    assertEquals(acetonitrileSolvents, view.acetonitrileSolventsField.getValue());
+    assertEquals(methanolSolvents, view.methanolSolventsField.getValue());
+    assertEquals(chclSolvents, view.chclSolventsField.getValue());
+    assertEquals(otherSolvents, view.otherSolventsField.getValue());
+    assertEquals(otherSolvent, view.otherSolventField.getValue());
+    assertEquals(comments, view.commentsField.getValue());
   }
 }

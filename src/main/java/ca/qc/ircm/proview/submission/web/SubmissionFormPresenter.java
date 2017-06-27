@@ -1930,7 +1930,14 @@ public class SubmissionFormPresenter implements BinderValidator {
     submissionBinder.setBean(submission);
     firstSampleBinder.setBean(firstSample);
     if (container instanceof PlateSpot) {
-      plateBinder.setBean(((PlateSpot) container).getPlate());
+      PlateSpot containerAsWell = (PlateSpot) container;
+      plateBinder.setBean(containerAsWell.getPlate());
+      view.samplesSpreadsheet.createCell(containerAsWell.getRow(), containerAsWell.getColumn(),
+          firstSample.getName());
+      samples.stream().skip(1).forEach(sample -> {
+        PlateSpot well = (PlateSpot) sample.getOriginalContainer();
+        view.samplesSpreadsheet.createCell(well.getRow(), well.getColumn(), sample.getName());
+      });
     } else {
       plateBinder.setBean(new Plate());
     }
