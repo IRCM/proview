@@ -23,7 +23,7 @@
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Samples" size-auto _id="samplesPanel">
-    <vaadin-vertical-layout size-auto>
+    <vaadin-vertical-layout>
      <vaadin-form-layout size-auto>
       <vaadin-radio-button-group caption="Sample type" data-item-type="ca.qc.ircm.proview.sample.SampleSupport" _id="sampleSupportOptions"></vaadin-radio-button-group>
       <vaadin-text-field caption="Sample solvent" null-representation="" _id="solutionSolventField"></vaadin-text-field>
@@ -46,14 +46,14 @@
       <vaadin-label caption="Samples" _id="samplesLabel"></vaadin-label>
      </vaadin-form-layout>
      <vaadin-horizontal-layout _id="samplesGridLayout">
-      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samplesGrid"></vaadin-grid>
-      <vaadin-vertical-layout size-auto margin="false">
+      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samplesGrid"></vaadin-grid>
+      <vaadin-vertical-layout margin="false">
        <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillSamplesButton">
          Fill Down 
        </vaadin-button>
       </vaadin-vertical-layout>
      </vaadin-horizontal-layout>
-     <vaadin-vertical-layout size-auto margin="false" _id="samplesPlateContainer"></vaadin-vertical-layout>
+     <vaadin-vertical-layout margin="false" _id="samplesPlateContainer"></vaadin-vertical-layout>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Experience" size-auto _id="experiencePanel">

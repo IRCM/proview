@@ -110,7 +110,6 @@ import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.GridElement;
-import com.vaadin.testbench.elements.GridLayoutElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
 import com.vaadin.testbench.elements.RadioButtonGroupElement;
@@ -252,8 +251,8 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(ButtonElement.class, findElement(className(FILL_SAMPLES_PROPERTY)));
   }
 
-  protected GridLayoutElement samplesPlate() {
-    return wrap(GridLayoutElement.class, findElement(className(SAMPLES_PLATE)));
+  protected WebElement samplesPlate() {
+    return findElement(className(SAMPLES_PLATE));
   }
 
   protected PanelElement experiencePanel() {
