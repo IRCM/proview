@@ -466,6 +466,31 @@ public class UserFormPresenterTest {
   }
 
   @Test
+  public void editable_False_ExistsManagerUser() {
+    when(authorizationService.hasManagerRole()).thenReturn(true);
+    presenter.setBean(user);
+    presenter.setEditable(false);
+
+    assertTrue(view.emailField.isReadOnly());
+    assertTrue(view.nameField.isReadOnly());
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
+    assertTrue(view.newLaboratoryField.isReadOnly());
+    assertTrue(view.managerField.isReadOnly());
+    assertTrue(view.organizationField.isReadOnly());
+    assertTrue(view.laboratoryNameField.isReadOnly());
+    assertTrue(view.addressLineField.isReadOnly());
+    assertTrue(view.townField.isReadOnly());
+    assertTrue(view.stateField.isReadOnly());
+    assertTrue(view.countryField.isReadOnly());
+    assertTrue(view.postalCodeField.isReadOnly());
+    addFirstPhoneNumber();
+    assertTrue(typeField(0).isReadOnly());
+    assertTrue(numberField(0).isReadOnly());
+    assertTrue(extensionField(0).isReadOnly());
+  }
+
+  @Test
   public void editable_False_ExistsAdminUser() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setBean(user);
@@ -557,6 +582,33 @@ public class UserFormPresenterTest {
     assertTrue(view.managerField.isReadOnly());
     assertTrue(view.organizationField.isReadOnly());
     assertTrue(view.laboratoryNameField.isReadOnly());
+    assertFalse(view.addressLineField.isReadOnly());
+    assertFalse(view.townField.isReadOnly());
+    assertFalse(view.stateField.isReadOnly());
+    assertFalse(view.countryField.isReadOnly());
+    assertFalse(view.postalCodeField.isReadOnly());
+    addFirstPhoneNumber();
+    assertFalse(typeField(0).isReadOnly());
+    assertFalse(numberField(0).isReadOnly());
+    assertFalse(extensionField(0).isReadOnly());
+  }
+
+  @Test
+  public void editable_True_ExistsManagerUser() {
+    when(authorizationService.hasManagerRole()).thenReturn(true);
+    presenter.setBean(user);
+    presenter.setEditable(true);
+
+    assertFalse(view.emailField.isReadOnly());
+    assertFalse(view.nameField.isReadOnly());
+    assertTrue(view.passwordField.isVisible());
+    assertFalse(view.passwordField.isReadOnly());
+    assertTrue(view.confirmPasswordField.isVisible());
+    assertFalse(view.confirmPasswordField.isReadOnly());
+    assertTrue(view.newLaboratoryField.isReadOnly());
+    assertTrue(view.managerField.isReadOnly());
+    assertFalse(view.organizationField.isReadOnly());
+    assertFalse(view.laboratoryNameField.isReadOnly());
     assertFalse(view.addressLineField.isReadOnly());
     assertFalse(view.townField.isReadOnly());
     assertFalse(view.stateField.isReadOnly());

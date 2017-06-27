@@ -407,6 +407,11 @@ public class UserService {
 
     entityManager.merge(user);
 
+    if (authorizationService.hasManagerRole()) {
+      authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
+      entityManager.merge(user.getLaboratory());
+    }
+
     logger.info("User {} updated", user);
   }
 

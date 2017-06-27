@@ -842,6 +842,29 @@ public class UserServiceTest {
   }
 
   @Test
+  public void update_Lab() throws Throwable {
+    when(authorizationService.hasManagerRole()).thenReturn(true);
+    User user = entityManager.find(User.class, 3L);
+    entityManager.detach(user);
+
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.getLaboratory().setName("lab test");
+    user.getLaboratory().setOrganization("organization test");
+
+    userService.update(user, null);
+
+    entityManager.flush();
+    verify(authorizationService).checkUserWritePermission(user);
+    verify(authorizationService).hasManagerRole();
+    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    user = entityManager.find(User.class, user.getId());
+    entityManager.refresh(user);
+    assertEquals(user.getId(), user.getId());
+    assertEquals("lab test", user.getLaboratory().getName());
+    assertEquals("organization test", user.getLaboratory().getOrganization());
+  }
+
+  @Test
   public void validate() throws Throwable {
     User user = entityManager.find(User.class, 7L);
     entityManager.detach(user);

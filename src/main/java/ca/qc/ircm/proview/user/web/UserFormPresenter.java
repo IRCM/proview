@@ -256,13 +256,14 @@ public class UserFormPresenter implements BinderValidator {
   private void updateEditable() {
     final boolean editable = editableProperty.getValue();
     final boolean newUser = isNewUser();
+    final boolean manager = isManager();
     final boolean admin = isAdmin();
     view.emailField.setReadOnly(!editable);
     view.nameField.setReadOnly(!editable);
     view.newLaboratoryField.setReadOnly(!editable || !newUser);
     view.managerField.setReadOnly(!editable || !newUser);
-    view.organizationField.setReadOnly(!editable || !newUser || (newUser && admin));
-    view.laboratoryNameField.setReadOnly(!editable || !newUser || (newUser && admin));
+    view.organizationField.setReadOnly(!editable || (!newUser && !manager) || (newUser && admin));
+    view.laboratoryNameField.setReadOnly(!editable || (!newUser && !manager) || (newUser && admin));
     view.addressLineField.setReadOnly(!editable);
     view.townField.setReadOnly(!editable);
     view.stateField.setReadOnly(!editable);
@@ -431,6 +432,10 @@ public class UserFormPresenter implements BinderValidator {
 
   private boolean isNewUser() {
     return userBinder.getBean().getId() == null;
+  }
+
+  private boolean isManager() {
+    return authorizationService.hasManagerRole();
   }
 
   private boolean isAdmin() {
