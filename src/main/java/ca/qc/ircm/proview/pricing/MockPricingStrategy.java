@@ -28,10 +28,10 @@ import java.time.LocalDate;
  * Pricing strategy to use for primary tests.
  */
 public class MockPricingStrategy implements PricingStrategy {
-
   /**
    * Instant to use for price computation.
    */
+  @SuppressWarnings("unused")
   private final Instant instant;
 
   protected MockPricingStrategy(Instant instant) {
