@@ -24,13 +24,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.security.PasswordVersion;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.Address;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;

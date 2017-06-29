@@ -37,7 +37,7 @@
     <class>ca.qc.ircm.proview.fractionation.FractionationDetail</class>
     <class>ca.qc.ircm.proview.history.Activity</class>
     <class>ca.qc.ircm.proview.history.UpdateActivity</class>
-    <class>ca.qc.ircm.proview.laboratory.Laboratory</class>
+    <class>ca.qc.ircm.proview.user.Laboratory</class>
     <class>ca.qc.ircm.proview.msanalysis.Acquisition</class>
     <class>ca.qc.ircm.proview.msanalysis.AcquisitionMascotFile</class>
     <class>ca.qc.ircm.proview.msanalysis.MascotFile</class>

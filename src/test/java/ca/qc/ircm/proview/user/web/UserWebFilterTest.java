@@ -20,8 +20,8 @@ package ca.qc.ircm.proview.user.web;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
 import org.junit.Test;

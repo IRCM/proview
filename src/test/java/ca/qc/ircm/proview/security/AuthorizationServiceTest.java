@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
-import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -37,6 +36,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.Address;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;

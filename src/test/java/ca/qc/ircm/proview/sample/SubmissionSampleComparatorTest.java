@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
 import org.junit.Test;

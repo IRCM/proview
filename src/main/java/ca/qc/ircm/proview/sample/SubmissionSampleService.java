@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static ca.qc.ircm.proview.laboratory.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMascotFile;
 import static ca.qc.ircm.proview.sample.QSample.sample;
@@ -31,13 +30,14 @@ import static ca.qc.ircm.proview.sample.SampleStatus.TO_DIGEST;
 import static ca.qc.ircm.proview.sample.SampleStatus.TO_ENRICH;
 import static ca.qc.ircm.proview.sample.SampleStatus.TO_RECEIVE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QUser.user;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;

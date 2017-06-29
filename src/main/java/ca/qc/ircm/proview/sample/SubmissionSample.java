@@ -20,9 +20,9 @@ package ca.qc.ircm.proview.sample;
 import static javax.persistence.EnumType.STRING;
 
 import ca.qc.ircm.proview.Named;
-import ca.qc.ircm.proview.laboratory.Laboratory;
-import ca.qc.ircm.proview.laboratory.LaboratoryData;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryData;
 import ca.qc.ircm.proview.user.User;
 
 import java.util.List;

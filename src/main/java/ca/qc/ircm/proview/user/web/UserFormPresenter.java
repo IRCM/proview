@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.laboratory.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QAddress.address;
+import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QPhoneNumber.phoneNumber;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
@@ -27,10 +27,10 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.web.WebConstants.PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
-import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;

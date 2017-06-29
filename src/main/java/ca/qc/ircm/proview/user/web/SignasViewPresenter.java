@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
-import ca.qc.ircm.proview.laboratory.QLaboratory;
 import ca.qc.ircm.proview.security.AuthenticationService;
+import ca.qc.ircm.proview.user.QLaboratory;
 import ca.qc.ircm.proview.user.QUser;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilterBuilder;

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.laboratory;
+package ca.qc.ircm.proview.user;
 
 /**
  * Data in the database.

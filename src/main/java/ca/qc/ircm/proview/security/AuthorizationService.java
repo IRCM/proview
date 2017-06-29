@@ -18,21 +18,21 @@
 package ca.qc.ircm.proview.security;
 
 import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
-import static ca.qc.ircm.proview.laboratory.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
-import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.QAcquisition;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
 import com.querydsl.jpa.impl.JPAQuery;

@@ -33,7 +33,6 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.laboratory.Laboratory;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -56,6 +55,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.Before;

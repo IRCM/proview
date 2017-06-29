@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
-import ca.qc.ircm.proview.laboratory.Laboratory;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 
 import java.time.Instant;

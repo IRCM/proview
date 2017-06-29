@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.user;
 
-import ca.qc.ircm.proview.laboratory.Laboratory;
-
 public class UserFilterBuilder implements UserFilter {
   private Laboratory laboratory;
   private boolean active;

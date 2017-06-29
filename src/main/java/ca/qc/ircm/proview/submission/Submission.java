@@ -22,8 +22,6 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
-import ca.qc.ircm.proview.laboratory.Laboratory;
-import ca.qc.ircm.proview.laboratory.LaboratoryData;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -32,6 +30,8 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryData;
 import ca.qc.ircm.proview.user.User;
 
 import java.io.Serializable;
