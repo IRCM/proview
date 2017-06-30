@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.sample.web.ControlView;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
@@ -52,6 +53,7 @@ import javax.inject.Inject;
 public class Menu extends CustomComponent implements BaseComponent, ViewChangeListener {
   public static final String HOME = "home";
   public static final String SUBMISSION = "submission";
+  public static final String CONTROL = "control";
   public static final String PROFILE = "profile";
   public static final String SIGNOUT = "signout";
   public static final String CHANGE_LANGUAGE = "changeLanguage";
@@ -68,6 +70,7 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
   private MenuBar menu = new MenuBar();
   private MenuItem home;
   private MenuItem submission;
+  private MenuItem control;
   private MenuItem profile;
   private MenuItem signout;
   private MenuItem changeLanguage;
@@ -93,6 +96,8 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
     home = menu.addItem("Home", item -> changeView(MainView.VIEW_NAME));
     submission = menu.addItem("Submission", item -> changeView(SubmissionView.VIEW_NAME));
     submission.setVisible(false);
+    control = menu.addItem("Control", item -> changeView(ControlView.VIEW_NAME));
+    control.setVisible(false);
     profile = menu.addItem("Profile", item -> changeView(UserView.VIEW_NAME));
     profile.setVisible(false);
     signout = menu.addItem("Sign out", item -> signout());
@@ -133,6 +138,8 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
     home.setText(resources.message(HOME));
     submission.setStyleName(SUBMISSION);
     submission.setText(resources.message(SUBMISSION));
+    control.setStyleName(CONTROL);
+    control.setText(resources.message(CONTROL));
     profile.setStyleName(PROFILE);
     profile.setText(resources.message(PROFILE));
     signout.setStyleName(SIGNOUT);
@@ -159,6 +166,7 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
 
   private void updateVisible() {
     submission.setVisible(authorizationService.hasUserRole());
+    control.setVisible(authorizationService.hasAdminRole());
     profile.setVisible(authorizationService.isUser());
     signout.setVisible(authorizationService.isUser());
     manager.setVisible(authorizationService.isRunAs() || authorizationService.hasManagerRole()

@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.test.config.ShiroTestExecutionListener.REMEMBER
 import static ca.qc.ircm.proview.web.Menu.ACCESS;
 import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.Menu.CONTACT;
+import static ca.qc.ircm.proview.web.Menu.CONTROL;
 import static ca.qc.ircm.proview.web.Menu.HELP;
 import static ca.qc.ircm.proview.web.Menu.HOME;
 import static ca.qc.ircm.proview.web.Menu.MANAGER;
@@ -35,6 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.sample.web.ControlView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -68,6 +70,7 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertFalse(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> controlMenuItem()).isPresent());
     assertFalse(optional(() -> profileMenuItem()).isPresent());
     assertFalse(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -88,6 +91,7 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> controlMenuItem()).isPresent());
     assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -108,6 +112,7 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> controlMenuItem()).isPresent());
     assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -129,6 +134,7 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> controlMenuItem()).isPresent());
     assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -152,6 +158,7 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> controlMenuItem()).isPresent());
     assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -175,6 +182,7 @@ public class MenuTest extends MenuPageObject {
     MessageResource resources = resources(Menu.class);
     assertEquals(resources.message(HOME), homeMenuItem().getText());
     assertEquals(resources.message(SUBMISSION), submissionMenuItem().getText());
+    assertEquals(resources.message(CONTROL), controlMenuItem().getText());
     assertEquals(resources.message(PROFILE), profileMenuItem().getText());
     assertEquals(resources.message(SIGNOUT), signoutMenuItem().getText());
     assertEquals(resources.message(CHANGE_LANGUAGE), changeLanguageMenuItem().getText());
@@ -197,6 +205,7 @@ public class MenuTest extends MenuPageObject {
     resources = resources(Menu.class);
     assertEquals(resources.message(HOME), homeMenuItem().getText());
     assertEquals(resources.message(SUBMISSION), submissionMenuItem().getText());
+    assertEquals(resources.message(CONTROL), controlMenuItem().getText());
     assertEquals(resources.message(PROFILE), profileMenuItem().getText());
     assertEquals(resources.message(SIGNOUT), signoutMenuItem().getText());
     assertEquals(resources.message(CHANGE_LANGUAGE), changeLanguageMenuItem().getText());
@@ -230,6 +239,16 @@ public class MenuTest extends MenuPageObject {
     clickSubmission();
 
     assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void control() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickControl();
+
+    assertEquals(viewUrl(ControlView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test

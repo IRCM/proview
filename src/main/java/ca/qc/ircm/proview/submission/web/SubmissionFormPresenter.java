@@ -1585,7 +1585,6 @@ public class SubmissionFormPresenter implements BinderValidator {
       final MessageResource generalResources = view.getGeneralResources();
       logger.trace("Submission field validation failed");
       view.showError(generalResources.message(FIELD_NOTIFICATION));
-      valid = false;
     }
     if (valid) {
       if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
