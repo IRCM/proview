@@ -8,13 +8,15 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
 /**
- * Add control view.
+ * Control view.
  */
 @SpringView(name = ControlView.VIEW_NAME)
 @RolesAllowed({ "USER" })
 public class ControlView extends ControlViewDesign implements BaseView {
   public static final String VIEW_NAME = "sample/control";
   private static final long serialVersionUID = 996822613187620022L;
+  @Inject
+  protected ControlForm form;
   @Inject
   private transient ControlViewPresenter presenter;
 

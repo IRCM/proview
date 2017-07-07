@@ -10,40 +10,7 @@
    <vaadin-label plain-text _id="headerLabel">
      Label 
    </vaadin-label>
-   <vaadin-panel caption="Sample" size-auto _id="samplePanel">
-    <vaadin-vertical-layout>
-     <vaadin-form-layout size-auto>
-      <vaadin-text-field caption="Name" _id="nameField"></vaadin-text-field>
-      <vaadin-combo-box caption="Support" data-item-type="ca.qc.ircm.proview.sample.SampleSupport" _id="supportField"></vaadin-combo-box>
-      <vaadin-text-field caption="Volume" _id="volumeField"></vaadin-text-field>
-      <vaadin-text-field caption="Quantity" _id="quantityField"></vaadin-text-field>
-      <vaadin-combo-box caption="Control type" data-item-type="ca.qc.ircm.proview.sample.ControlType" _id="controlTypeField"></vaadin-combo-box>
-     </vaadin-form-layout>
-    </vaadin-vertical-layout>
-   </vaadin-panel>
-   <vaadin-panel caption="Standards" size-auto _id="standardsPanel">
-    <vaadin-vertical-layout>
-     <vaadin-form-layout spacing="false" size-auto>
-      <vaadin-text-field caption="Number of standards" _id="standardCountField"></vaadin-text-field>
-     </vaadin-form-layout>
-     <vaadin-horizontal-layout _id="standardsTableLayout">
-      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.Standard" _id="standardsGrid"></vaadin-grid>
-      <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillStandardsButton">
-        Fill down 
-      </vaadin-button>
-     </vaadin-horizontal-layout>
-    </vaadin-vertical-layout>
-   </vaadin-panel>
-   <vaadin-vertical-layout _id="justificationLayout">
-    <vaadin-form-layout size-auto>
-     <vaadin-text-field caption="Justification" _id="justificationField"></vaadin-text-field>
-    </vaadin-form-layout>
-   </vaadin-vertical-layout>
-   <vaadin-horizontal-layout>
-    <vaadin-button plain-text _id="saveButton">
-      Save 
-    </vaadin-button>
-   </vaadin-horizontal-layout>
+   <vaadin-vertical-layout _id="controlFormLayout"></vaadin-vertical-layout>
   </vaadin-vertical-layout>
  </body>
 </html>
