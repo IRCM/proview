@@ -35,5 +35,5 @@
   <entry key="fillStandards">Fill down</entry>
   <entry key="justification">Justification</entry>
   <entry key="save">Save</entry>
-  <entry key="sample.invalid">Sample number is invalid</entry>
+  <entry key="saved">Control {0} saved</entry>
 </properties>

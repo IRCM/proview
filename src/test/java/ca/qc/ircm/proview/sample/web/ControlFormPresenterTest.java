@@ -21,10 +21,12 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXAMPLE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_BUTTON_STYLE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_STANDARDS;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.JUSTIFICATION;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAMPLE_PANEL;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVED;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS_PANEL;
@@ -225,6 +227,7 @@ public class ControlFormPresenterTest {
     assertTrue(standardCommentsField.getStyleName().contains(ValoTheme.TEXTFIELD_TINY));
     assertTrue(view.fillStandardsButton.getStyleName().contains(FILL_STANDARDS));
     assertTrue(view.fillStandardsButton.getStyleName().contains(FILL_BUTTON_STYLE));
+    assertTrue(view.justificationField.getStyleName().contains(JUSTIFICATION));
     assertTrue(view.saveButton.getStyleName().contains(SAVE));
   }
 
@@ -265,6 +268,7 @@ public class ControlFormPresenterTest {
         standardQuantityField.getPlaceholder());
     assertEquals(resources.message(FILL_STANDARDS), view.fillStandardsButton.getCaption());
     assertEquals(VaadinIcons.ARROW_DOWN, view.fillStandardsButton.getIcon());
+    assertEquals(resources.message(JUSTIFICATION), view.justificationField.getCaption());
     assertEquals(resources.message(SAVE), view.saveButton.getCaption());
   }
 
@@ -346,6 +350,36 @@ public class ControlFormPresenterTest {
   }
 
   @Test
+  public void editable_False_AfterStandards() {
+    presenter.init(view);
+    presenter.setEditable(true);
+
+    Standard standard = new Standard();
+    if (dataProvider(view.standardsGrid).getItems().size() < 1) {
+      dataProvider(view.standardsGrid).getItems().add(standard);
+    }
+    final TextField standardNameField =
+        (TextField) view.standardsGrid.getColumn(STANDARD_NAME).getValueProvider().apply(standard);
+    final TextField standardQuantityField = (TextField) view.standardsGrid
+        .getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
+    final TextField standardCommentsField = (TextField) view.standardsGrid
+        .getColumn(STANDARD_COMMENTS).getValueProvider().apply(standard);
+    presenter.setEditable(false);
+    assertTrue(view.nameField.isReadOnly());
+    assertTrue(view.supportField.isReadOnly());
+    assertTrue(view.quantityField.isReadOnly());
+    assertTrue(view.volumeField.isReadOnly());
+    assertTrue(view.controlTypeField.isReadOnly());
+    assertTrue(view.standardCountField.isReadOnly());
+    assertTrue(standardNameField.isReadOnly());
+    assertTrue(standardQuantityField.isReadOnly());
+    assertTrue(standardCommentsField.isReadOnly());
+    assertFalse(view.fillStandardsButton.isVisible());
+    assertFalse(view.justificationLayout.isVisible());
+    assertFalse(view.saveButton.isVisible());
+  }
+
+  @Test
   public void editable_False_Update() {
     presenter.init(view);
     Control control = entityManager.find(Control.class, 444L);
@@ -398,6 +432,35 @@ public class ControlFormPresenterTest {
     assertFalse(standardQuantityField.isReadOnly());
     TextField standardCommentsField = (TextField) view.standardsGrid.getColumn(STANDARD_COMMENTS)
         .getValueProvider().apply(standard);
+    assertFalse(standardCommentsField.isReadOnly());
+    assertTrue(view.fillStandardsButton.isVisible());
+    assertFalse(view.justificationLayout.isVisible());
+    assertTrue(view.saveButton.isVisible());
+  }
+
+  @Test
+  public void editable_True_AfterStandards() {
+    presenter.init(view);
+
+    Standard standard = new Standard();
+    if (dataProvider(view.standardsGrid).getItems().size() < 1) {
+      dataProvider(view.standardsGrid).getItems().add(standard);
+    }
+    final TextField standardNameField =
+        (TextField) view.standardsGrid.getColumn(STANDARD_NAME).getValueProvider().apply(standard);
+    final TextField standardQuantityField = (TextField) view.standardsGrid
+        .getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
+    final TextField standardCommentsField = (TextField) view.standardsGrid
+        .getColumn(STANDARD_COMMENTS).getValueProvider().apply(standard);
+    presenter.setEditable(true);
+    assertFalse(view.nameField.isReadOnly());
+    assertFalse(view.supportField.isReadOnly());
+    assertFalse(view.quantityField.isReadOnly());
+    assertFalse(view.volumeField.isReadOnly());
+    assertFalse(view.controlTypeField.isReadOnly());
+    assertFalse(view.standardCountField.isReadOnly());
+    assertFalse(standardNameField.isReadOnly());
+    assertFalse(standardQuantityField.isReadOnly());
     assertFalse(standardCommentsField.isReadOnly());
     assertTrue(view.fillStandardsButton.isVisible());
     assertFalse(view.justificationLayout.isVisible());
@@ -741,6 +804,9 @@ public class ControlFormPresenterTest {
     assertEquals(standardName2, control.getStandards().get(1).getName());
     assertEquals(standardQuantity2, control.getStandards().get(1).getQuantity());
     assertEquals(standardComment2, control.getStandards().get(1).getComments());
+    verify(view).showTrayNotification(stringCaptor.capture());
+    assertEquals(resources.message(SAVED, name), stringCaptor.getValue());
+    verify(view).fireSaveEvent(control);
   }
 
   @Test
@@ -770,6 +836,9 @@ public class ControlFormPresenterTest {
     assertEquals(standardName2, control.getStandards().get(1).getName());
     assertEquals(standardQuantity2, control.getStandards().get(1).getQuantity());
     assertEquals(standardComment2, control.getStandards().get(1).getComments());
+    verify(view).showTrayNotification(stringCaptor.capture());
+    assertEquals(resources.message(SAVED, name), stringCaptor.getValue());
+    verify(view).fireSaveEvent(control);
   }
 
   @Test

@@ -21,6 +21,8 @@ import static ca.qc.ircm.proview.web.Menu.HOME;
 import static org.openqa.selenium.By.className;
 import static org.openqa.selenium.By.tagName;
 
+import com.google.common.base.Predicate;
+
 import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -29,8 +31,10 @@ import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.MenuBarElement;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,6 +78,15 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase
     } else {
       getDriver().get(url);
     }
+  }
+
+  protected <T> void waitFor(Supplier<T> supplier) {
+    waitFor(supplier, 5);
+  }
+
+  protected <T> void waitFor(Supplier<T> supplier, long maxWaitMillis) {
+    new WebDriverWait(getDriver(), maxWaitMillis)
+        .until((Predicate<WebDriver>) driver -> optional(() -> supplier.get()).isPresent());
   }
 
   protected Locale currentLocale() {

@@ -35,5 +35,5 @@
   <entry key="fillStandards">Copier vers le bas</entry>
   <entry key="justification">Justification</entry>
   <entry key="save">Sauvegarder</entry>
-  <entry key="sample.invalid">Le numéro d''échantillon est invalide</entry>
+  <entry key="saved">Control {0} saved</entry>
 </properties>

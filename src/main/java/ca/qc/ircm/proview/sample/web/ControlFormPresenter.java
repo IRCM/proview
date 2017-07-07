@@ -70,6 +70,7 @@ public class ControlFormPresenter implements BinderValidator {
   public static final String FILL_BUTTON_STYLE = "skip-row";
   public static final String JUSTIFICATION = "justification";
   public static final String SAVE = "save";
+  public static final String SAVED = "saved";
   private static final int MAX_STANDARD_COUNT = 10;
   private static final Logger logger = LoggerFactory.getLogger(ControlFormPresenter.class);
   private ControlForm view;
@@ -295,6 +296,14 @@ public class ControlFormPresenter implements BinderValidator {
     if (!newControl()) {
       view.justificationLayout.setVisible(editable);
     }
+    standardBinders.values().forEach(binder -> {
+      binder.getBinding(STANDARD_NAME)
+          .ifPresent(binding -> binding.getField().setReadOnly(!editable));
+      binder.getBinding(STANDARD_QUANTITY)
+          .ifPresent(binding -> binding.getField().setReadOnly(!editable));
+      binder.getBinding(STANDARD_COMMENTS)
+          .ifPresent(binding -> binding.getField().setReadOnly(!editable));
+    });
   }
 
   private Validator<String> validateSampleName() {
@@ -345,6 +354,9 @@ public class ControlFormPresenter implements BinderValidator {
       } else {
         controlService.update(control, view.justificationField.getValue());
       }
+      final MessageResource resources = view.getResources();
+      view.showTrayNotification(resources.message(SAVED, control.getName()));
+      view.fireSaveEvent(control);
     }
   }
 
@@ -374,7 +386,7 @@ public class ControlFormPresenter implements BinderValidator {
 
   /**
    * Sets control in presenter.
-   * 
+   *
    * @param control
    *          control
    */

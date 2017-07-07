@@ -4,27 +4,19 @@ import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
 /**
- * Control view.
+ * Sample view.
  */
 @SpringView(name = ControlView.VIEW_NAME)
 @RolesAllowed({ "USER" })
-public class ControlView extends ControlViewDesign implements BaseView {
-  public static final String VIEW_NAME = "sample/control";
-  private static final long serialVersionUID = 996822613187620022L;
+public class SampleView extends SampleViewDesign implements BaseView {
+  public static final String VIEW_NAME = "sample";
+  private static final long serialVersionUID = -1847741580837872381L;
   @Inject
-  protected ControlForm form;
-  @Inject
-  private transient ControlViewPresenter presenter;
-
-  @PostConstruct
-  private void init() {
-    controlFormLayout.addComponent(form);
-  }
+  private SampleViewPresenter presenter;
 
   @Override
   public void attach() {

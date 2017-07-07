@@ -3,6 +3,8 @@ package ca.qc.ircm.proview.sample.web;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.themes.ValoTheme;
@@ -20,7 +22,8 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ControlViewPresenter implements BinderValidator {
+@SuppressWarnings("serial")
+public class ControlViewPresenter implements BinderValidator, SaveListener<Control> {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
   public static final String INVALID_SAMPLE = "sample.invalid";
@@ -53,6 +56,7 @@ public class ControlViewPresenter implements BinderValidator {
     logger.debug("Add control view");
     this.view = view;
     view.form.getPresenter().setEditable(authorizationService.hasAdminRole());
+    view.form.addSaveListener(this);
     final MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
     view.headerLabel.addStyleName(HEADER);
@@ -90,5 +94,11 @@ public class ControlViewPresenter implements BinderValidator {
         view.showWarning(view.getResources().message(INVALID_SAMPLE));
       }
     }
+  }
+
+  @Override
+  public void saved(SaveEvent<Control> event) {
+    Control control = event.getSavedObject();
+    view.navigateTo(ControlView.VIEW_NAME + "/" + control.getId());
   }
 }

@@ -21,21 +21,5 @@
 <properties>
   <entry key="title">Control | {0}</entry>
   <entry key="header">Control</entry>
-  <entry key="samplePanel">Control</entry>
-  <entry key="name">Name</entry>
-  <entry key="support">Support</entry>
-  <entry key="quantity">Quantity</entry>
-  <entry key="quantity.example">150 μg</entry>
-  <entry key="volume">Volume (ul)</entry>
-  <entry key="controlType">Control type</entry>
-  <entry key="standardsPanel">Standards</entry>
-  <entry key="standardCount">Number of standards</entry>
-  <entry key="standards.name">Name</entry>
-  <entry key="standards.quantity">Quantity</entry>
-  <entry key="standards.quantity.example">10 μg</entry>
-  <entry key="standards.comments">Comments</entry>
-  <entry key="fillStandards">Fill down</entry>
-  <entry key="justification">Justification</entry>
-  <entry key="save">Save</entry>
   <entry key="sample.invalid">Sample number is invalid</entry>
 </properties>

@@ -30,6 +30,8 @@ import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.SaveEvent;
+import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Label;
@@ -66,6 +68,8 @@ public class ControlViewPresenterTest {
   private ArgumentCaptor<String> stringCaptor;
   @Captor
   private ArgumentCaptor<Control> controlCaptor;
+  @Captor
+  private ArgumentCaptor<SaveListener<Control>> listenerCaptor;
   @PersistenceContext
   private EntityManager entityManager;
   @Value("${spring.application.name}")
@@ -149,5 +153,19 @@ public class ControlViewPresenterTest {
 
     verify(formPresenter).setBean(control);
     verify(formPresenter).setEditable(true);
+  }
+
+  @Test
+  public void saveEvent() {
+    presenter.init(view);
+    presenter.enter("");
+    verify(form).addSaveListener(listenerCaptor.capture());
+    SaveListener<Control> listener = listenerCaptor.getValue();
+    Control control = new Control();
+    control.setId(235L);
+
+    listener.saved(new SaveEvent<>(form, control));
+
+    verify(view).navigateTo(ControlView.VIEW_NAME + "/235");
   }
 }

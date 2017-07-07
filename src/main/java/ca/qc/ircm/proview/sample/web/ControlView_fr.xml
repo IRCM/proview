@@ -21,21 +21,5 @@
 <properties>
   <entry key="title">Contrôle | {0}</entry>
   <entry key="header">Contrôle</entry>
-  <entry key="samplePanel">Contrôle</entry>
-  <entry key="name">Nom</entry>
-  <entry key="support">Support</entry>
-  <entry key="quantity">Quantité</entry>
-  <entry key="quantity.example">150 μg</entry>
-  <entry key="volume">Volume (ul)</entry>
-  <entry key="controlType">Type de contrôle</entry>
-  <entry key="standardsPanel">Standards</entry>
-  <entry key="standardCount">Nombre de standards</entry>
-  <entry key="standards.name">Nom</entry>
-  <entry key="standards.quantity">Quantité</entry>
-  <entry key="standards.quantity.example">10 μg</entry>
-  <entry key="standards.comments">Commentaires</entry>
-  <entry key="fillStandards">Copier vers le bas</entry>
-  <entry key="justification">Justification</entry>
-  <entry key="save">Sauvegarder</entry>
   <entry key="sample.invalid">Le numéro d''échantillon est invalide</entry>
 </properties>
