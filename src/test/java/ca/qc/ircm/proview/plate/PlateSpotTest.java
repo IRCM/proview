@@ -24,8 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Locale;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class PlateSpotTest {
@@ -48,14 +46,14 @@ public class PlateSpotTest {
     plate.setColumnCount(31);
     plate.setRowCount(18279);
     plate.initSpots();
-    assertEquals("test_plate (C-4)", plate.spot(2, 3).getFullName(Locale.ENGLISH));
-    assertEquals("test_plate (Z-31)", plate.spot(25, 30).getFullName(Locale.FRENCH));
-    assertEquals("test_plate (AA-31)", plate.spot(26, 30).getFullName(Locale.FRENCH));
-    assertEquals("test_plate (AE-31)", plate.spot(30, 30).getFullName(Locale.FRENCH));
-    assertEquals("test_plate (BA-31)", plate.spot(52, 30).getFullName(Locale.FRENCH));
-    assertEquals("test_plate (ZZ-31)", plate.spot(701, 30).getFullName(Locale.FRENCH));
-    assertEquals("test_plate (AAA-31)", plate.spot(702, 30).getFullName(Locale.FRENCH));
-    assertEquals("test_plate (ZZZ-31)", plate.spot(18277, 30).getFullName(Locale.FRENCH));
-    assertEquals("test_plate (AAAA-31)", plate.spot(18278, 30).getFullName(Locale.FRENCH));
+    assertEquals("test_plate (C-4)", plate.spot(2, 3).getFullName());
+    assertEquals("test_plate (Z-31)", plate.spot(25, 30).getFullName());
+    assertEquals("test_plate (AA-31)", plate.spot(26, 30).getFullName());
+    assertEquals("test_plate (AE-31)", plate.spot(30, 30).getFullName());
+    assertEquals("test_plate (BA-31)", plate.spot(52, 30).getFullName());
+    assertEquals("test_plate (ZZ-31)", plate.spot(701, 30).getFullName());
+    assertEquals("test_plate (AAA-31)", plate.spot(702, 30).getFullName());
+    assertEquals("test_plate (ZZZ-31)", plate.spot(18277, 30).getFullName());
+    assertEquals("test_plate (AAAA-31)", plate.spot(18278, 30).getFullName());
   }
 }

@@ -24,8 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Locale;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class TubeTest {
@@ -36,7 +34,7 @@ public class TubeTest {
 
   @Test
   public void getFullName() {
-    assertEquals("test_tube", new Tube(1L, "test_tube").getFullName(Locale.ENGLISH));
-    assertEquals("test_tube", new Tube(1L, "test_tube").getFullName(Locale.FRENCH));
+    assertEquals("test_tube", new Tube(1L, "test_tube").getFullName());
+    assertEquals("test_tube", new Tube(1L, "test_tube").getFullName());
   }
 }

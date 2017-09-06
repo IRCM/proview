@@ -161,4 +161,30 @@ public class PlateTest {
     }
     assertEquals(plate.getRowCount() + 5, plate.getSampleCount());
   }
+
+  @Test
+  public void rowLabel() {
+    assertEquals("A", Plate.rowLabel(0));
+    assertEquals("Z", Plate.rowLabel(25));
+    assertEquals("AA", Plate.rowLabel(26));
+    assertEquals("AE", Plate.rowLabel(30));
+    assertEquals("BA", Plate.rowLabel(52));
+    assertEquals("ZZ", Plate.rowLabel(701));
+    assertEquals("AAA", Plate.rowLabel(702));
+    assertEquals("ZZZ", Plate.rowLabel(18277));
+    assertEquals("AAAA", Plate.rowLabel(18278));
+  }
+
+  @Test
+  public void columnLabel() {
+    assertEquals("1", Plate.columnLabel(0));
+    assertEquals("26", Plate.columnLabel(25));
+    assertEquals("27", Plate.columnLabel(26));
+    assertEquals("31", Plate.columnLabel(30));
+    assertEquals("53", Plate.columnLabel(52));
+    assertEquals("702", Plate.columnLabel(701));
+    assertEquals("703", Plate.columnLabel(702));
+    assertEquals("18278", Plate.columnLabel(18277));
+    assertEquals("18279", Plate.columnLabel(18278));
+  }
 }

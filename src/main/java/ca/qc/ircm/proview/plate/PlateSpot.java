@@ -89,21 +89,14 @@ public class PlateSpot extends SampleContainer implements Data, Named, Serializa
 
   @Override
   public String getName() {
-    StringBuilder rowName = new StringBuilder();
-    int row = this.row;
-    while (row >= 26) {
-      rowName.append((char) ('A' + row % 26));
-      row = row / 26;
-      row--;
-    }
-    rowName.append((char) ('A' + row % 26));
-    return rowName.reverse().toString() + "-" + (this.getColumn() + 1);
+    return Plate.rowLabel(row) + "-" + Plate.columnLabel(column);
   }
 
   @Override
-  public String getFullName(Locale locale) {
-    MessageResource resources = new MessageResource(PlateSpot.class, locale);
-    return resources.message("fullname", plate.getName(), getName());
+  public String getFullName() {
+    MessageResource resources = new MessageResource(PlateSpot.class, Locale.getDefault());
+    return resources.message("fullname", plate.getName(), Plate.rowLabel(row),
+        Plate.columnLabel(column));
   }
 
   @Override
