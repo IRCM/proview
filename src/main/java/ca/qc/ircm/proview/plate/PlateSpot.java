@@ -21,8 +21,10 @@ import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.utils.MessageResource;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -87,7 +89,21 @@ public class PlateSpot extends SampleContainer implements Data, Named, Serializa
 
   @Override
   public String getName() {
-    return ((char) ('A' + this.getRow())) + "-" + (this.getColumn() + 1);
+    StringBuilder rowName = new StringBuilder();
+    int row = this.row;
+    while (row >= 26) {
+      rowName.append((char) ('A' + row % 26));
+      row = row / 26;
+      row--;
+    }
+    rowName.append((char) ('A' + row % 26));
+    return rowName.reverse().toString() + "-" + (this.getColumn() + 1);
+  }
+
+  @Override
+  public String getFullName(Locale locale) {
+    MessageResource resources = new MessageResource(PlateSpot.class, locale);
+    return resources.message("fullname", plate.getName(), getName());
   }
 
   @Override

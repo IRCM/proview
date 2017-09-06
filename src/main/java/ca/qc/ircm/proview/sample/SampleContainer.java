@@ -27,6 +27,7 @@ import ca.qc.ircm.proview.treatment.TreatmentSample;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -95,6 +96,10 @@ public abstract class SampleContainer implements Data, Named, Serializable {
   @Override
   public Long getId() {
     return id;
+  }
+
+  public String getFullName(Locale locale) {
+    return getName();
   }
 
   public void setId(Long id) {
