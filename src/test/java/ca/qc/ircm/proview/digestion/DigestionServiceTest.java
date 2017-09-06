@@ -84,8 +84,8 @@ public class DigestionServiceTest {
    */
   @Before
   public void beforeTest() {
-    digestionService = new DigestionService(entityManager, queryFactory,
-        digestionActivityService, activityService, authorizationService);
+    digestionService = new DigestionService(entityManager, queryFactory, digestionActivityService,
+        activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -118,6 +118,7 @@ public class DigestionServiceTest {
     List<DigestedSample> digestedSamples = digestion.getTreatmentSamples();
     assertEquals(1, digestedSamples.size());
     DigestedSample digestedSample = digestedSamples.get(0);
+    assertEquals(digestion, digestedSample.getDigestion());
     assertEquals((Long) 444L, digestedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
     assertEquals((Long) 4L, digestedSample.getContainer().getId());

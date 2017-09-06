@@ -21,6 +21,8 @@ import ca.qc.ircm.proview.treatment.TreatmentSample;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * A sample that was digested.
@@ -28,8 +30,23 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("DIGESTION")
 public class DigestedSample extends TreatmentSample {
+  /**
+   * Digestion.
+   */
+  @ManyToOne
+  @JoinColumn(name = "treatmentId", nullable = false)
+  private Digestion digestion;
+
   @Override
   public String toString() {
     return "DigestedSample(" + getId() + ")";
+  }
+
+  public Digestion getDigestion() {
+    return digestion;
+  }
+
+  public void setDigestion(Digestion digestion) {
+    this.digestion = digestion;
   }
 }
