@@ -52,6 +52,7 @@ public class AcquisitionServiceTest {
 
     verify(authorizationService).checkRobotRole();
     assertEquals((Long) 1L, acquisition.getId());
+    assertEquals((Long) 1L, acquisition.getMsAnalysis().getId());
     assertEquals((Long) 1L, acquisition.getSample().getId());
     assertEquals((Long) 1L, acquisition.getContainer().getId());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());

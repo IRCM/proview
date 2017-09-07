@@ -51,6 +51,12 @@ public class Acquisition implements Data, Named, Serializable {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
+   * MS Analysis.
+   */
+  @ManyToOne
+  @JoinColumn(name = "msAnalysisId", nullable = false)
+  private MsAnalysis msAnalysis;
+  /**
    * Sample's container type.
    */
   @ManyToOne
@@ -105,7 +111,7 @@ public class Acquisition implements Data, Named, Serializable {
 
   /**
    * Returns acquisition LIMS.
-   * 
+   *
    * @return acquisition LIMS
    */
   public String getLims() {
@@ -212,5 +218,13 @@ public class Acquisition implements Data, Named, Serializable {
 
   public void setContainer(SampleContainer container) {
     this.container = container;
+  }
+
+  public MsAnalysis getMsAnalysis() {
+    return msAnalysis;
+  }
+
+  public void setMsAnalysis(MsAnalysis msAnalysis) {
+    this.msAnalysis = msAnalysis;
   }
 }
