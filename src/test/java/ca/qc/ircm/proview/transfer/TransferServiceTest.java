@@ -118,6 +118,7 @@ public class TransferServiceTest {
     assertEquals(1, transfer.getTreatmentSamples().size());
     SampleTransfer sampleTransfer = transfer.getTreatmentSamples().get(0);
     assertEquals((Long) 3L, sampleTransfer.getId());
+    assertEquals(transfer, sampleTransfer.getTransfer());
     assertEquals((Long) 1L, sampleTransfer.getSample().getId());
     assertEquals(SampleContainerType.TUBE, sampleTransfer.getContainer().getType());
     assertEquals((Long) 1L, sampleTransfer.getContainer().getId());

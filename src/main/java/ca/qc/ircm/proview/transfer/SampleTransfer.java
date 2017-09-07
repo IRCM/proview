@@ -33,6 +33,12 @@ import javax.persistence.ManyToOne;
 @DiscriminatorValue("TRANSFER")
 public class SampleTransfer extends TreatmentSample implements Data {
   /**
+   * Transfer.
+   */
+  @ManyToOne
+  @JoinColumn(name = "treatmentId", nullable = false)
+  private Transfer transfer;
+  /**
    * Sample's destination container.
    */
   @ManyToOne
@@ -50,5 +56,13 @@ public class SampleTransfer extends TreatmentSample implements Data {
 
   public void setDestinationContainer(SampleContainer destinationContainer) {
     this.destinationContainer = destinationContainer;
+  }
+
+  public Transfer getTransfer() {
+    return transfer;
+  }
+
+  public void setTransfer(Transfer transfer) {
+    this.transfer = transfer;
   }
 }
