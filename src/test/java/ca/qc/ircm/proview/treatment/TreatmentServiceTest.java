@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.fractionation.FractionationDetail;
+import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
@@ -98,7 +99,7 @@ public class TreatmentServiceTest {
     assertEquals(null, treatment.getDeletionJustification());
     assertEquals(true, treatment instanceof Fractionation);
     Fractionation fractionation = (Fractionation) treatment;
-    assertEquals(Fractionation.FractionationType.MUDPIT, fractionation.getFractionationType());
+    assertEquals(FractionationType.MUDPIT, fractionation.getFractionationType());
     FractionationDetail fractionationDetail = fractionation.getTreatmentSamples().get(0);
     assertEquals((Long) 2L, fractionationDetail.getId());
     assertEquals(SampleContainerType.TUBE, fractionationDetail.getContainer().getType());

@@ -115,7 +115,7 @@ public class FractionationServiceTest {
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, fractionation.getId());
     assertEquals(Treatment.Type.FRACTIONATION, fractionation.getType());
-    assertEquals(Fractionation.FractionationType.MUDPIT, fractionation.getFractionationType());
+    assertEquals(FractionationType.MUDPIT, fractionation.getFractionationType());
     assertEquals((Long) 4L, fractionation.getUser().getId());
     assertEquals(
         LocalDateTime.of(2011, 10, 19, 12, 20, 33, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -125,6 +125,7 @@ public class FractionationServiceTest {
     assertEquals(null, fractionation.getDeletionJustification());
     FractionationDetail fractionationDetail = fractionation.getTreatmentSamples().get(0);
     assertEquals((Long) 2L, fractionationDetail.getId());
+    assertEquals(fractionation, fractionationDetail.getFractionation());
     assertEquals(SampleContainerType.TUBE, fractionationDetail.getContainer().getType());
     assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, fractionationDetail.getDestinationContainer().getType());
@@ -197,7 +198,7 @@ public class FractionationServiceTest {
   @Test
   public void insert_Tube() {
     Fractionation fractionation = new Fractionation();
-    fractionation.setFractionationType(Fractionation.FractionationType.MUDPIT);
+    fractionation.setFractionationType(FractionationType.MUDPIT);
     final List<FractionationDetail> fractionationDetails = new ArrayList<>();
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     final Tube sourceTube = new Tube(1L);

@@ -84,7 +84,7 @@ public class FractionationActivityServiceTest {
     details.add(detail);
     Fractionation fractionation = new Fractionation();
     fractionation.setId(123456L);
-    fractionation.setFractionationType(Fractionation.FractionationType.MUDPIT);
+    fractionation.setFractionationType(FractionationType.MUDPIT);
     fractionation.setTreatmentSamples(details);
 
     Activity activity = fractionationActivityService.insert(fractionation);
@@ -118,7 +118,7 @@ public class FractionationActivityServiceTest {
     details.add(detail);
     Fractionation fractionation = new Fractionation();
     fractionation.setId(123456L);
-    fractionation.setFractionationType(Fractionation.FractionationType.MUDPIT);
+    fractionation.setFractionationType(FractionationType.MUDPIT);
     fractionation.setTreatmentSamples(details);
 
     Activity activity = fractionationActivityService.insert(fractionation);

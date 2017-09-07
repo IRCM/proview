@@ -33,19 +33,6 @@ import javax.persistence.Enumerated;
 @DiscriminatorValue("FRACTIONATION")
 public class Fractionation extends Treatment<FractionationDetail> {
   /**
-   * Method used to split sample into fractions.
-   */
-  public static enum FractionationType {
-    /**
-     * MudPit fraction.
-     */
-    MUDPIT, /**
-             * Split by pI.
-             */
-    PI;
-  }
-
-  /**
    * How samples where split.
    */
   @Column(name = "fractionationType", nullable = false)
