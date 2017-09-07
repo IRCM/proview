@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static org.openqa.selenium.By.className;
 import static org.openqa.selenium.By.tagName;
@@ -39,6 +40,7 @@ import java.util.stream.IntStream;
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
   private static final int EXPERIENCE_COLUMN = 0;
   private static final int LINKED_TO_RESULTS_COLUMN = 6;
+  private static final int TREATMENTS_COLUMN = 7;
 
   protected void open() {
     openView(SubmissionsView.VIEW_NAME);
@@ -85,6 +87,12 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     GridElement submissionsGrid = submissionsGrid();
     submissionsGrid.getCell(row, gridColumnIndex(LINKED_TO_RESULTS_COLUMN));
     submissionsGrid.getRow(row).findElement(className(LINKED_TO_RESULTS)).click();
+  }
+
+  protected void clickViewSubmissionTreatmentsByRow(int row) {
+    GridElement submissionsGrid = submissionsGrid();
+    submissionsGrid.getCell(row, gridColumnIndex(TREATMENTS_COLUMN));
+    submissionsGrid.getRow(row).findElement(className(TREATMENTS)).click();
   }
 
   protected ButtonElement selectSamplesButton() {

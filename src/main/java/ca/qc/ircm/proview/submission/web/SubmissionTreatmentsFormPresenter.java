@@ -27,13 +27,18 @@ import static ca.qc.ircm.proview.fractionation.QFractionationDetail.fractionatio
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.transfer.QSampleTransfer.sampleTransfer;
 
+import ca.qc.ircm.proview.digestion.DigestedSample;
 import ca.qc.ircm.proview.digestion.DigestionService;
+import ca.qc.ircm.proview.dilution.DilutedSample;
 import ca.qc.ircm.proview.dilution.DilutionService;
+import ca.qc.ircm.proview.enrichment.EnrichedSample;
 import ca.qc.ircm.proview.enrichment.EnrichmentService;
+import ca.qc.ircm.proview.fractionation.FractionationDetail;
 import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.transfer.SampleTransfer;
 import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -41,7 +46,10 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -51,7 +59,7 @@ import javax.inject.Inject;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionTreatmentsFormPresenter implements BinderValidator {
-  public static final String SAMPLES_PANEL = "samplePanel";
+  public static final String SAMPLES_PANEL = "samplesPanel";
   public static final String SAMPLES = QSubmission.submission.samples.getMetadata().getName();
   public static final String SAMPLES_NAME = submissionSample.name.getMetadata().getName();
   public static final String DIGESTIONS_PANEL = "digestionsPanel";
@@ -239,17 +247,31 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
   }
 
   private void updateSubmission() {
-    view.samples.setItems(submission.getSamples());
-    view.digestions.setItems(
-        digestionService.all(submission).stream().flatMap(d -> d.getTreatmentSamples().stream()));
-    view.enrichments.setItems(
-        enrichmentService.all(submission).stream().flatMap(d -> d.getTreatmentSamples().stream()));
-    view.dilutions.setItems(
-        dilutionService.all(submission).stream().flatMap(d -> d.getTreatmentSamples().stream()));
-    view.fractionations.setItems(fractionationService.all(submission).stream()
-        .flatMap(d -> d.getTreatmentSamples().stream()));
-    view.transfers.setItems(
-        transferService.all(submission).stream().flatMap(d -> d.getTreatmentSamples().stream()));
+    if (submission != null) {
+      view.samples.setItems(submission.getSamples());
+    } else {
+      view.samples.setItems(new ArrayList<>());
+    }
+    List<DigestedSample> digestions = digestionService.all(submission).stream()
+        .flatMap(d -> d.getTreatmentSamples().stream()).collect(Collectors.toList());
+    view.digestions.setItems(digestions);
+    view.digestionsPanel.setVisible(!digestions.isEmpty());
+    List<EnrichedSample> enrichments = enrichmentService.all(submission).stream()
+        .flatMap(d -> d.getTreatmentSamples().stream()).collect(Collectors.toList());
+    view.enrichments.setItems(enrichments);
+    view.enrichmentsPanel.setVisible(!enrichments.isEmpty());
+    List<DilutedSample> dilutions = dilutionService.all(submission).stream()
+        .flatMap(d -> d.getTreatmentSamples().stream()).collect(Collectors.toList());
+    view.dilutions.setItems(dilutions);
+    view.dilutionsPanel.setVisible(!dilutions.isEmpty());
+    List<FractionationDetail> fractionations = fractionationService.all(submission).stream()
+        .flatMap(d -> d.getTreatmentSamples().stream()).collect(Collectors.toList());
+    view.fractionations.setItems(fractionations);
+    view.fractionationsPanel.setVisible(!fractionations.isEmpty());
+    List<SampleTransfer> transfers = transferService.all(submission).stream()
+        .flatMap(d -> d.getTreatmentSamples().stream()).collect(Collectors.toList());
+    view.transfers.setItems(transfers);
+    view.transfersPanel.setVisible(!transfers.isEmpty());
   }
 
   Submission getBean() {
@@ -258,5 +280,6 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
 
   void setBean(Submission submission) {
     this.submission = submission;
+    updateSubmission();
   }
 }

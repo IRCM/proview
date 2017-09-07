@@ -19,12 +19,17 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 
 /**
  * Submission treatments form.
  */
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionTreatmentsForm extends SubmissionTreatmentsFormDesign
     implements BaseComponent {
   private static final long serialVersionUID = 6009644547823085177L;

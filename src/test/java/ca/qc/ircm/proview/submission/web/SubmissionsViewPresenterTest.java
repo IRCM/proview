@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TITLE;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
@@ -122,6 +123,8 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
   @Mock
+  private Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider;
+  @Mock
   private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
   @Mock
   private SubmissionsView view;
@@ -131,6 +134,8 @@ public class SubmissionsViewPresenterTest {
   private SubmissionWindow submissionWindow;
   @Mock
   private SubmissionAnalysesWindow submissionAnalysesWindow;
+  @Mock
+  private SubmissionTreatmentsWindow submissionTreatmentsWindow;
   @Mock
   private SampleSelectionWindow sampleSelectionWindow;
   @Mock
@@ -161,7 +166,8 @@ public class SubmissionsViewPresenterTest {
   public void beforeTest() {
     presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
         localDateFilterComponentProvider, submissionWindowProvider,
-        submissionAnalysesWindowProvider, sampleSelectionWindowProvider, applicationName);
+        submissionAnalysesWindowProvider, submissionTreatmentsWindowProvider,
+        sampleSelectionWindowProvider, applicationName);
     view.headerLabel = new Label();
     view.submissionsGrid = new Grid<>();
     view.selectSamplesButton = new Button();
@@ -184,6 +190,7 @@ public class SubmissionsViewPresenterTest {
     when(localDateFilterComponent.getPresenter()).thenReturn(localDateFilterComponentPresenter);
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
+    when(submissionTreatmentsWindowProvider.get()).thenReturn(submissionTreatmentsWindow);
     when(sampleSelectionWindowProvider.get()).thenReturn(sampleSelectionWindow);
   }
 
@@ -208,33 +215,82 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
-  public void submissionsGridColumns() {
+  public void submissionsGrid() {
     presenter.init(view);
+    final Submission submission = submissions.get(0);
 
-    List<Column<Submission, ?>> columns = view.submissionsGrid.getColumns();
+    final List<Column<Submission, ?>> columns = view.submissionsGrid.getColumns();
+    final List<GridSortOrder<Submission>> sortOrders = view.submissionsGrid.getSortOrder();
 
     assertEquals(EXPERIENCE, columns.get(0).getId());
     assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
+    assertEquals(resources.message(EXPERIENCE),
+        view.submissionsGrid.getColumn(EXPERIENCE).getCaption());
+    Button experienceButton =
+        (Button) view.submissionsGrid.getColumn(EXPERIENCE).getValueProvider().apply(submission);
+    assertTrue(experienceButton.getStyleName().contains(EXPERIENCE));
+    assertEquals(submission.getExperience(), experienceButton.getCaption());
     assertEquals(SAMPLE_COUNT, columns.get(1).getId());
+    assertEquals(resources.message(SAMPLE_COUNT),
+        view.submissionsGrid.getColumn(SAMPLE_COUNT).getCaption());
+    assertEquals(submission.getSamples().size(),
+        view.submissionsGrid.getColumn(SAMPLE_COUNT).getValueProvider().apply(submission));
     assertEquals(SAMPLE_NAME, columns.get(2).getId());
+    assertEquals(resources.message(SAMPLE_NAME),
+        view.submissionsGrid.getColumn(SAMPLE_NAME).getCaption());
+    assertEquals(submission.getSamples().get(0).getName(),
+        view.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
     assertEquals(EXPERIENCE_GOAL, columns.get(3).getId());
+    assertEquals(resources.message(EXPERIENCE_GOAL),
+        view.submissionsGrid.getColumn(EXPERIENCE_GOAL).getCaption());
+    assertEquals(submission.getGoal(),
+        view.submissionsGrid.getColumn(EXPERIENCE_GOAL).getValueProvider().apply(submission));
     assertEquals(SAMPLE_STATUSES, columns.get(4).getId());
+    assertEquals(resources.message(SAMPLE_STATUSES),
+        view.submissionsGrid.getColumn(SAMPLE_STATUSES).getCaption());
+    assertEquals(
+        submission.getSamples().stream().map(sample -> sample.getStatus()).distinct()
+            .map(status -> status.getLabel(locale))
+            .collect(Collectors.joining(resources.message(SAMPLE_STATUSES_SEPARATOR))),
+        view.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(submission));
     assertEquals(DATE, columns.get(5).getId());
+    assertEquals(resources.message(DATE), view.submissionsGrid.getColumn(DATE).getCaption());
+    final DateTimeFormatter dateFormatter =
+        DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
+    assertEquals(dateFormatter.format(submission.getSubmissionDate()),
+        view.submissionsGrid.getColumn(DATE).getValueProvider().apply(submission));
     assertEquals(LINKED_TO_RESULTS, columns.get(6).getId());
     assertTrue(containsInstanceOf(columns.get(6).getExtensions(), ComponentRenderer.class));
+    assertEquals(resources.message(LINKED_TO_RESULTS),
+        view.submissionsGrid.getColumn(LINKED_TO_RESULTS).getCaption());
+    boolean results = submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
+        .filter(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0).count() > 0;
+    Button resultsButton = (Button) view.submissionsGrid.getColumn(LINKED_TO_RESULTS)
+        .getValueProvider().apply(submission);
+    assertTrue(resultsButton.getStyleName().contains(LINKED_TO_RESULTS));
+    assertEquals(resources.message(LINKED_TO_RESULTS + "." + results), resultsButton.getCaption());
+    assertEquals(TREATMENTS, columns.get(7).getId());
+    assertTrue(containsInstanceOf(columns.get(7).getExtensions(), ComponentRenderer.class));
+    assertEquals(resources.message(TREATMENTS),
+        view.submissionsGrid.getColumn(TREATMENTS).getCaption());
+    Button treatmentsButton =
+        (Button) view.submissionsGrid.getColumn(TREATMENTS).getValueProvider().apply(submission);
+    assertTrue(treatmentsButton.getStyleName().contains(TREATMENTS));
+    assertEquals(resources.message(TREATMENTS), treatmentsButton.getCaption());
+    assertTrue(view.submissionsGrid.getColumn(TREATMENTS).isHidden());
     assertEquals(1, view.submissionsGrid.getFrozenColumnCount());
-  }
-
-  @Test
-  public void submissionsGridOrder() {
-    presenter.init(view);
-
-    List<GridSortOrder<Submission>> sortOrders = view.submissionsGrid.getSortOrder();
-
     assertFalse(sortOrders.isEmpty());
     GridSortOrder<Submission> sortOrder = sortOrders.get(0);
     assertEquals(DATE, sortOrder.getSorted().getId());
     assertEquals(SortDirection.DESCENDING, sortOrder.getDirection());
+  }
+
+  @Test
+  public void submissionsGrid_Admin() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+
+    assertFalse(view.submissionsGrid.getColumn(TREATMENTS).isHidden());
   }
 
   @Test
@@ -508,6 +564,21 @@ public class SubmissionsViewPresenterTest {
     verify(submissionAnalysesWindow).setSubmission(submission);
     verify(submissionAnalysesWindow).center();
     verify(view).addWindow(submissionAnalysesWindow);
+  }
+
+  @Test
+  public void viewSubmissionTreatments() {
+    presenter.init(view);
+    final Submission submission = submissions.get(0);
+    Button button =
+        (Button) view.submissionsGrid.getColumn(TREATMENTS).getValueProvider().apply(submission);
+
+    button.click();
+
+    verify(submissionTreatmentsWindowProvider).get();
+    verify(submissionTreatmentsWindow).setSubmission(submission);
+    verify(submissionTreatmentsWindow).center();
+    verify(view).addWindow(submissionTreatmentsWindow);
   }
 
   @Test

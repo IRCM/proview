@@ -50,6 +50,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresente
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_DESTINATION_CONTAINER;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -404,10 +405,20 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(plateDigestedSample.getComments(), view.digestions.getColumn(DIGESTION_COMMENTS)
         .getValueProvider().apply(plateDigestedSample));
 
+    assertTrue(view.digestionsPanel.isVisible());
     Collection<DigestedSample> digestedSamples = dataProvider(view.digestions).getItems();
     assertEquals(2, digestedSamples.size());
     assertTrue(digestedSamples.contains(tubeDigestedSample));
     assertTrue(digestedSamples.contains(plateDigestedSample));
+  }
+
+  @Test
+  public void digestionsGrid_Empty() {
+    when(digestionService.all(any(Submission.class))).thenReturn(Arrays.asList());
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertFalse(view.digestionsPanel.isVisible());
   }
 
   @Test
@@ -438,10 +449,20 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(plateEnrichedSample.getComments(), view.enrichments.getColumn(ENRICHMENT_COMMENTS)
         .getValueProvider().apply(plateEnrichedSample));
 
+    assertTrue(view.enrichmentsPanel.isVisible());
     Collection<EnrichedSample> enrichedSamples = dataProvider(view.enrichments).getItems();
     assertEquals(2, enrichedSamples.size());
     assertTrue(enrichedSamples.contains(tubeEnrichedSample));
     assertTrue(enrichedSamples.contains(plateEnrichedSample));
+  }
+
+  @Test
+  public void enrichmentsGrid_Empty() {
+    when(enrichmentService.all(any(Submission.class))).thenReturn(Arrays.asList());
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertFalse(view.enrichmentsPanel.isVisible());
   }
 
   @Test
@@ -486,10 +507,20 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(plateDilutedSample.getComments(),
         view.dilutions.getColumn(DILUTION_COMMENTS).getValueProvider().apply(plateDilutedSample));
 
+    assertTrue(view.dilutionsPanel.isVisible());
     Collection<DilutedSample> dilutedSamples = dataProvider(view.dilutions).getItems();
     assertEquals(2, dilutedSamples.size());
     assertTrue(dilutedSamples.contains(tubeDilutedSample));
     assertTrue(dilutedSamples.contains(plateDilutedSample));
+  }
+
+  @Test
+  public void dilutionsGrid_Empty() {
+    when(dilutionService.all(any(Submission.class))).thenReturn(Arrays.asList());
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertFalse(view.dilutionsPanel.isVisible());
   }
 
   @Test
@@ -539,11 +570,21 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(plateFractionatedSample.getComments(), view.fractionations
         .getColumn(FRACTIONATION_COMMENTS).getValueProvider().apply(plateFractionatedSample));
 
+    assertTrue(view.fractionationsPanel.isVisible());
     Collection<FractionationDetail> fractionatedSamples =
         dataProvider(view.fractionations).getItems();
     assertEquals(2, fractionatedSamples.size());
     assertTrue(fractionatedSamples.contains(tubeFractionatedSample));
     assertTrue(fractionatedSamples.contains(plateFractionatedSample));
+  }
+
+  @Test
+  public void fractionationsGrid_Empty() {
+    when(fractionationService.all(any(Submission.class))).thenReturn(Arrays.asList());
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertFalse(view.fractionationsPanel.isVisible());
   }
 
   @Test
@@ -574,10 +615,19 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(plateTransferedSample.getComments(), view.transfers.getColumn(TRANSFER_COMMENTS)
         .getValueProvider().apply(plateTransferedSample));
 
+    assertTrue(view.transfersPanel.isVisible());
     Collection<SampleTransfer> transferedSamples = dataProvider(view.transfers).getItems();
     assertEquals(2, transferedSamples.size());
     assertTrue(transferedSamples.contains(tubeTransferedSample));
     assertTrue(transferedSamples.contains(plateTransferedSample));
   }
 
+  @Test
+  public void transfersGrid_Empty() {
+    when(transferService.all(any(Submission.class))).thenReturn(Arrays.asList());
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertFalse(view.transfersPanel.isVisible());
+  }
 }

@@ -88,6 +88,7 @@ public class SubmissionsViewPresenter {
   public static final String DATE =
       SUBMISSION + "." + submission.submissionDate.getMetadata().getName();
   public static final String LINKED_TO_RESULTS = "results";
+  public static final String TREATMENTS = "treatments";
   public static final String ALL = "all";
   public static final String SELECT_SAMPLES = "selectSamples";
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
@@ -107,6 +108,8 @@ public class SubmissionsViewPresenter {
   @Inject
   private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
   @Inject
+  private Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider;
+  @Inject
   private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
@@ -119,12 +122,14 @@ public class SubmissionsViewPresenter {
       Provider<LocalDateFilterComponent> localDateFilterComponentProvider,
       Provider<SubmissionWindow> submissionWindowProvider,
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
+      Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider,
       Provider<SampleSelectionWindow> sampleSelectionWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
     this.localDateFilterComponentProvider = localDateFilterComponentProvider;
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
+    this.submissionTreatmentsWindowProvider = submissionTreatmentsWindowProvider;
     this.sampleSelectionWindowProvider = sampleSelectionWindowProvider;
     this.applicationName = applicationName;
   }
@@ -186,6 +191,10 @@ public class SubmissionsViewPresenter {
     view.submissionsGrid
         .addColumn(submission -> viewResultsButton(submission), new ComponentRenderer())
         .setId(LINKED_TO_RESULTS).setCaption(resources.message(LINKED_TO_RESULTS));
+    view.submissionsGrid
+        .addColumn(submission -> viewTreatmentsButton(submission), new ComponentRenderer())
+        .setId(TREATMENTS).setCaption(resources.message(TREATMENTS));
+    view.submissionsGrid.getColumn(TREATMENTS).setHidden(!authorizationService.hasAdminRole());
     view.submissionsGrid.setFrozenColumnCount(1);
     if (authorizationService.hasAdminRole()) {
       view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
@@ -250,6 +259,15 @@ public class SubmissionsViewPresenter {
     return button;
   }
 
+  private Button viewTreatmentsButton(Submission submission) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.addStyleName(TREATMENTS);
+    button.setCaption(resources.message(TREATMENTS));
+    button.addClickListener(e -> viewSubmissionTreatments(submission));
+    return button;
+  }
+
   private TextField textFilter(ValueChangeListener<String> listener) {
     MessageResource resources = view.getResources();
     TextField filter = new TextField();
@@ -305,6 +323,13 @@ public class SubmissionsViewPresenter {
 
   private void viewSubmissionResults(Submission submission) {
     SubmissionAnalysesWindow window = submissionAnalysesWindowProvider.get();
+    window.setSubmission(submission);
+    window.center();
+    view.addWindow(window);
+  }
+
+  private void viewSubmissionTreatments(Submission submission) {
+    SubmissionTreatmentsWindow window = submissionTreatmentsWindowProvider.get();
     window.setSubmission(submission);
     window.center();
     view.addWindow(window);

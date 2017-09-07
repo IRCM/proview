@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -134,6 +135,25 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
         .message(SubmissionAnalysesWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(ANALYSIS))).isPresent());
+  }
+
+  @Test
+  @WithSubject
+  public void viewSubmissionTreatments() throws Throwable {
+    admin = true;
+    open();
+
+    clickViewSubmissionTreatmentsByRow(2);
+
+    Thread.sleep(5000);
+    assertNotNull(findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
+    WindowElement submissionWindow =
+        wrap(WindowElement.class, findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
+    String experience = experienceByRow(2);
+    assertTrue(resources(SubmissionTreatmentsWindow.class)
+        .message(SubmissionTreatmentsWindow.TITLE, experience)
+        .contains(submissionWindow.getCaption()));
+    assertTrue(optional(() -> submissionWindow.findElement(className(SAMPLES_PANEL))).isPresent());
   }
 
   @Test

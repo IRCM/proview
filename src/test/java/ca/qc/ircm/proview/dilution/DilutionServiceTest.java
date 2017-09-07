@@ -27,6 +27,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
@@ -55,6 +56,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -89,6 +91,10 @@ public class DilutionServiceTest {
         activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
+  }
+
+  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
+    return datas.stream().filter(d -> d.getId() == id).findFirst();
   }
 
   private SampleContainer findContainer(Collection<SampleContainer> containers,
@@ -174,9 +180,12 @@ public class DilutionServiceTest {
     List<Dilution> dilutions = dilutionService.all(submission);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(1, dilutions.size());
-    Dilution dilution = dilutions.get(0);
-    assertEquals((Long) 210L, dilution.getId());
+    assertEquals(5, dilutions.size());
+    assertTrue(find(dilutions, 210).isPresent());
+    assertTrue(find(dilutions, 211).isPresent());
+    assertTrue(find(dilutions, 213).isPresent());
+    assertTrue(find(dilutions, 216).isPresent());
+    assertTrue(find(dilutions, 219).isPresent());
   }
 
   @Test
