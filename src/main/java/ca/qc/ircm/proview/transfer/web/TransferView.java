@@ -37,13 +37,13 @@ public class TransferView extends TransferViewDesign implements BaseView, SavedS
   public static final String VIEW_NAME = "transfer";
   private static final long serialVersionUID = -4719228370965227442L;
   @Inject
-  private TransferViewPresenter presenter;
+  private transient TransferViewPresenter presenter;
   @Inject
   protected PlateComponent sourcePlateForm;
   @Inject
   protected PlateComponent destinationPlateForm;
-  protected PlateComponentPresenter sourcePlateFormPresenter;
-  protected PlateComponentPresenter destinationPlateFormPresenter;
+  protected transient PlateComponentPresenter sourcePlateFormPresenter;
+  protected transient PlateComponentPresenter destinationPlateFormPresenter;
 
   /**
    * Initializes view.

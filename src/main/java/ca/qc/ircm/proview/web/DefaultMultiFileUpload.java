@@ -28,7 +28,7 @@ import java.io.File;
  */
 public class DefaultMultiFileUpload extends MultiFileUpload implements BaseComponent {
   private static final long serialVersionUID = -3962247385782398547L;
-  private MultiFileUploadFileHandler fileHandler;
+  private transient MultiFileUploadFileHandler fileHandler;
 
   @Override
   protected void handleFile(File file, String fileName, String mimeType, long length) {

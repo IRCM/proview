@@ -70,6 +70,7 @@
     <commons-lang3.version>3.5</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
     <thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
+    <findbugs.version>3.0.0</findbugs.version>
     <selenium.version>3.0.1</selenium.version>
     <greenmail.version>1.5.2</greenmail.version>
     <testbench.skip>true</testbench.skip>
@@ -364,6 +365,11 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <version>${findbugs.version}</version>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>

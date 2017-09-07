@@ -159,7 +159,8 @@ public class Plate implements Data, Serializable, Named {
         }
       }
     }
-    return null;
+    throw new IllegalArgumentException(
+        "No spot at coordinates " + Plate.rowLabel(row) + "-" + Plate.rowLabel(column));
   }
 
   /**

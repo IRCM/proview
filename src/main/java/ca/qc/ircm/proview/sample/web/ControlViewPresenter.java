@@ -22,7 +22,6 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@SuppressWarnings("serial")
 public class ControlViewPresenter implements BinderValidator, SaveListener<Control> {
   public static final String TITLE = "title";
   public static final String HEADER = "header";

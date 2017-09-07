@@ -20,13 +20,12 @@ package ca.qc.ircm.proview.web;
 import com.vaadin.ui.Component;
 import com.vaadin.util.ReflectTools;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
  * Interface for listening for a {@link SaveEvent} fired by a {@link Component}.
  */
-public interface SaveListener<V> extends Serializable {
+public interface SaveListener<V> {
   public static final Method SAVED_METHOD =
       ReflectTools.findMethod(SaveListener.class, "saved", SaveEvent.class);
 
