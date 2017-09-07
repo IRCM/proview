@@ -431,6 +431,7 @@ public class PlateComponentPresenterTest {
     presenter.init(view);
     plate = new Plate();
     plate.setType(PlateType.A);
+    plate.initSpots();
 
     presenter.setPlate(plate);
 
