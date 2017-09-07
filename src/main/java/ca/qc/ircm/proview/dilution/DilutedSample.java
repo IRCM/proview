@@ -23,6 +23,8 @@ import ca.qc.ircm.proview.treatment.TreatmentSample;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * A sample that was diluted.
@@ -30,6 +32,12 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("DILUTION")
 public class DilutedSample extends TreatmentSample implements Data {
+  /**
+   * Dilution.
+   */
+  @ManyToOne
+  @JoinColumn(name = "treatmentId", nullable = false)
+  private Dilution dilution;
   /**
    * Volume of source transfered.
    */
@@ -68,5 +76,13 @@ public class DilutedSample extends TreatmentSample implements Data {
 
   public void setSolventVolume(Double solventVolume) {
     this.solventVolume = solventVolume;
+  }
+
+  public Dilution getDilution() {
+    return dilution;
+  }
+
+  public void setDilution(Dilution dilution) {
+    this.dilution = dilution;
   }
 }

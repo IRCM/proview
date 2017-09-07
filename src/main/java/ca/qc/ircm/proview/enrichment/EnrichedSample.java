@@ -22,6 +22,8 @@ import ca.qc.ircm.proview.treatment.TreatmentSample;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * A sample that was enriched.
@@ -29,4 +31,18 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("ENRICHMENT")
 public class EnrichedSample extends TreatmentSample implements Data {
+  /**
+   * Enrichment.
+   */
+  @ManyToOne
+  @JoinColumn(name = "treatmentId", nullable = false)
+  private Enrichment enrichment;
+
+  public Enrichment getEnrichment() {
+    return enrichment;
+  }
+
+  public void setEnrichment(Enrichment enrichment) {
+    this.enrichment = enrichment;
+  }
 }

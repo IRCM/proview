@@ -35,6 +35,12 @@ import javax.validation.constraints.Size;
 @DiscriminatorValue("FRACTIONATION")
 public class FractionationDetail extends TreatmentSample implements Named {
   /**
+   * Fractionation.
+   */
+  @ManyToOne
+  @JoinColumn(name = "treatmentId", nullable = false)
+  private Fractionation fractionation;
+  /**
    * Sample's destination container.
    */
   @ManyToOne
@@ -125,5 +131,13 @@ public class FractionationDetail extends TreatmentSample implements Named {
 
   public void setDestinationContainer(SampleContainer destinationContainer) {
     this.destinationContainer = destinationContainer;
+  }
+
+  public Fractionation getFractionation() {
+    return fractionation;
+  }
+
+  public void setFractionation(Fractionation fractionation) {
+    this.fractionation = fractionation;
   }
 }

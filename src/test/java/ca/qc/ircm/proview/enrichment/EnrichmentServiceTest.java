@@ -119,6 +119,7 @@ public class EnrichmentServiceTest {
     List<EnrichedSample> enrichedSamples = enrichment.getTreatmentSamples();
     assertEquals(1, enrichedSamples.size());
     EnrichedSample enrichedSample = enrichedSamples.get(0);
+    assertEquals(enrichment, enrichedSample.getEnrichment());
     assertEquals((Long) 444L, enrichedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
     assertEquals((Long) 4L, enrichedSample.getContainer().getId());

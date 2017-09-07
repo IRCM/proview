@@ -118,6 +118,7 @@ public class DilutionServiceTest {
     List<DilutedSample> dilutedSamples = dilution.getTreatmentSamples();
     assertEquals(1, dilutedSamples.size());
     DilutedSample dilutedSample = dilutedSamples.get(0);
+    assertEquals(dilution, dilutedSample.getDilution());
     assertEquals((Long) 442L, dilutedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, dilutedSample.getContainer().getType());
     assertEquals((Long) 2L, dilutedSample.getContainer().getId());
