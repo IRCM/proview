@@ -112,7 +112,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected VerticalLayout filesUploaderLayout;
   protected Grid<ca.qc.ircm.proview.submission.SubmissionFile> filesGrid;
   protected HorizontalLayout buttonsLayout;
-  protected Button submitButton;
+  protected Button saveButton;
 
   public SubmissionFormDesign() {
     Design.read(this);

@@ -457,7 +457,7 @@ public class SubmissionFormPresenterTest {
     view.filesUploader = filesUploader;
     view.filesGrid = new Grid<>();
     view.buttonsLayout = new HorizontalLayout();
-    view.submitButton = new Button();
+    view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
@@ -3004,7 +3004,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3024,7 +3024,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3045,7 +3045,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3066,7 +3066,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3087,7 +3087,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3108,7 +3108,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3129,7 +3129,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3150,7 +3150,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3171,7 +3171,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3192,7 +3192,7 @@ public class SubmissionFormPresenterTest {
     uploadFiles();
     when(submissionSampleService.exists(any())).thenReturn(true);
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(submissionSampleService, atLeastOnce()).exists(sampleName);
     verify(view).showError(stringCaptor.capture());
@@ -3214,7 +3214,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3233,7 +3233,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(resources.message(STRUCTURE_PROPERTY + "." + REQUIRED), stringCaptor.getValue());
@@ -3252,7 +3252,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3273,7 +3273,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3294,7 +3294,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3314,7 +3314,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3335,7 +3335,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3355,7 +3355,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3377,7 +3377,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3399,7 +3399,7 @@ public class SubmissionFormPresenterTest {
     uploadFiles();
     when(plateService.nameAvailable(any())).thenReturn(false);
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(plateService, atLeastOnce()).nameAvailable(plateName);
     verify(view).showError(stringCaptor.capture());
@@ -3420,7 +3420,7 @@ public class SubmissionFormPresenterTest {
     uploadStructure();
     uploadGelImages();
     uploadFiles();
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3441,7 +3441,7 @@ public class SubmissionFormPresenterTest {
     uploadFiles();
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
     verify(view).showError(stringCaptor.capture());
@@ -3463,7 +3463,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3484,7 +3484,7 @@ public class SubmissionFormPresenterTest {
     uploadFiles();
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
     verify(view).showError(stringCaptor.capture());
@@ -3506,7 +3506,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, atLeastOnce()).showError(stringCaptor.capture());
     assertEquals(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1),
@@ -3527,7 +3527,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount),
@@ -3548,7 +3548,7 @@ public class SubmissionFormPresenterTest {
     uploadFiles();
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -3567,7 +3567,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount),
@@ -3588,7 +3588,7 @@ public class SubmissionFormPresenterTest {
     uploadFiles();
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -3607,7 +3607,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, atLeastOnce()).showError(stringCaptor.capture());
     assertEquals(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1),
@@ -3627,7 +3627,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3648,7 +3648,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3669,7 +3669,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3689,7 +3689,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3710,7 +3710,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3731,7 +3731,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3752,7 +3752,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3772,7 +3772,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3793,7 +3793,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3814,7 +3814,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3835,7 +3835,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3855,7 +3855,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3876,7 +3876,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3897,7 +3897,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3917,7 +3917,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3938,7 +3938,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3959,7 +3959,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3980,7 +3980,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4000,7 +4000,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4021,7 +4021,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4042,7 +4042,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4063,7 +4063,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4083,7 +4083,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -4101,7 +4101,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4122,7 +4122,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4143,7 +4143,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4164,7 +4164,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4185,7 +4185,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4206,7 +4206,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4227,7 +4227,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4248,7 +4248,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4269,7 +4269,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -4287,7 +4287,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4308,7 +4308,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4329,7 +4329,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4350,7 +4350,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4371,7 +4371,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4392,7 +4392,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4413,7 +4413,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4434,7 +4434,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4455,7 +4455,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4476,7 +4476,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4498,7 +4498,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4519,7 +4519,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4538,7 +4538,7 @@ public class SubmissionFormPresenterTest {
     uploadStructure();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED), stringCaptor.getValue());
@@ -4557,7 +4557,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4579,7 +4579,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4601,7 +4601,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4622,7 +4622,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4643,7 +4643,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4664,7 +4664,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4685,7 +4685,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -4703,7 +4703,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4725,7 +4725,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4747,7 +4747,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4768,7 +4768,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4792,7 +4792,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(resources.message(SOLVENTS_PROPERTY + "." + REQUIRED), stringCaptor.getValue());
@@ -4812,7 +4812,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4832,7 +4832,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -4974,7 +4974,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5130,7 +5130,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5272,7 +5272,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5415,7 +5415,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5568,7 +5568,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5684,7 +5684,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5811,7 +5811,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5925,7 +5925,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -6039,7 +6039,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -6061,7 +6061,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -6203,7 +6203,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -6345,7 +6345,7 @@ public class SubmissionFormPresenterTest {
     uploadGelImages();
     uploadFiles();
 
-    view.submitButton.click();
+    view.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());

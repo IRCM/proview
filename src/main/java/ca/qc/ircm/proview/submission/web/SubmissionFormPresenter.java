@@ -409,8 +409,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.filesGrid.addColumn(file -> removeFileButton(file), new ComponentRenderer())
         .setId(REMOVE_FILE).setCaption(resources.message(FILES_PROPERTY + "." + REMOVE_FILE));
     view.filesGrid.setDataProvider(filesDataProvider);
-    view.submitButton.addStyleName(SUBMIT_ID);
-    view.submitButton.setCaption(resources.message(SUBMIT_ID));
+    view.saveButton.addStyleName(SUBMIT_ID);
+    view.saveButton.setCaption(resources.message(SUBMIT_ID));
   }
 
   private Button downloadFileButton(SubmissionFile file) {
@@ -1151,7 +1151,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.quantificationOptions.addValueChangeListener(e -> view.quantificationLabelsField
         .setRequiredIndicatorVisible(view.quantificationOptions.getValue() == SILAC));
     view.otherSolventsField.addValueChangeListener(e -> updateVisible());
-    view.submitButton.addClickListener(e -> saveSubmission());
+    view.saveButton.addClickListener(e -> saveSubmission());
   }
 
   private void updateVisible() {
