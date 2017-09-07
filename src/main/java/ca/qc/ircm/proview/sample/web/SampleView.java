@@ -12,6 +12,7 @@ import javax.inject.Inject;
  */
 @SpringView(name = SampleView.VIEW_NAME)
 @RolesAllowed({ "USER" })
+@Deprecated
 public class SampleView extends SampleViewDesign implements BaseView {
   public static final String VIEW_NAME = "sample";
   private static final long serialVersionUID = -1847741580837872381L;

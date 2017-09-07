@@ -20,6 +20,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Deprecated
 public class SampleViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER = "header";

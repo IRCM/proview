@@ -35,6 +35,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
@@ -133,6 +134,7 @@ public class DigestionServiceTest {
   }
 
   @Test
+  @Deprecated
   public void all_Tube() {
     Sample sample = new SubmissionSample(444L);
 
@@ -145,6 +147,7 @@ public class DigestionServiceTest {
   }
 
   @Test
+  @Deprecated
   public void all_Spot() {
     Sample sample = new SubmissionSample(559L);
 
@@ -157,8 +160,28 @@ public class DigestionServiceTest {
   }
 
   @Test
+  @Deprecated
+  public void all_NullSample() {
+    List<Digestion> digestions = digestionService.all((Sample) null);
+
+    assertTrue(digestions.isEmpty());
+  }
+
+  @Test
+  public void all_Submission() {
+    Submission submission = entityManager.find(Submission.class, 147L);
+
+    List<Digestion> digestions = digestionService.all(submission);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(1, digestions.size());
+    Digestion digestion = digestions.get(0);
+    assertEquals((Long) 195L, digestion.getId());
+  }
+
+  @Test
   public void all_Null() {
-    List<Digestion> digestions = digestionService.all(null);
+    List<Digestion> digestions = digestionService.all((Submission) null);
 
     assertTrue(digestions.isEmpty());
   }

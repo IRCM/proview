@@ -1,4 +1,21 @@
-package ca.qc.ircm.proview.sample.web;
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.digestion.QDigestedSample.digestedSample;
 import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
@@ -7,8 +24,6 @@ import static ca.qc.ircm.proview.enrichment.QEnrichedSample.enrichedSample;
 import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
 import static ca.qc.ircm.proview.fractionation.QFractionation.fractionation;
 import static ca.qc.ircm.proview.fractionation.QFractionationDetail.fractionationDetail;
-import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
-import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.transfer.QSampleTransfer.sampleTransfer;
 
@@ -17,13 +32,11 @@ import ca.qc.ircm.proview.dilution.DilutionService;
 import ca.qc.ircm.proview.enrichment.EnrichmentService;
 import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.fractionation.FractionationType;
-import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
-import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.submission.QSubmission;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.transfer.TransferService;
+import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.ValueContext;
-import com.vaadin.data.converter.StringToDoubleConverter;
-import com.vaadin.data.converter.StringToIntegerConverter;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -33,25 +46,14 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 /**
- * Sample form presenter.
+ * Submission treatments form presenter.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Deprecated
-public class SampleFormPresenter {
-  public static final String SAMPLE_PANEL = "samplePanel";
-  public static final String NAME = submissionSample.name.getMetadata().getName();
-  public static final String SUPPORT = submissionSample.support.getMetadata().getName();
-  public static final String STATUS = submissionSample.status.getMetadata().getName();
-  public static final String QUANTITY = submissionSample.quantity.getMetadata().getName();
-  public static final String VOLUME = submissionSample.volume.getMetadata().getName();
-  public static final String NUMBER_PROTEINS =
-      submissionSample.numberProtein.getMetadata().getName();
-  public static final String MOLECULAR_WEIGHT =
-      submissionSample.molecularWeight.getMetadata().getName();
-  public static final String CONTAINER = "container";
-  public static final String CONTAINER_TYPE = "type";
-  public static final String CONTAINER_NAME = "name";
+public class SubmissionTreatmentsFormPresenter implements BinderValidator {
+  public static final String SAMPLES_PANEL = "samplePanel";
+  public static final String SAMPLES = QSubmission.submission.samples.getMetadata().getName();
+  public static final String SAMPLES_NAME = submissionSample.name.getMetadata().getName();
   public static final String DIGESTIONS_PANEL = "digestionsPanel";
   public static final String DIGESTIONS = "digestions";
   public static final String DIGESTION_PROTOCOL = digestion.protocol.getMetadata().getName();
@@ -89,23 +91,8 @@ public class SampleFormPresenter {
   public static final String TRANSFER_DESTINATION_CONTAINER =
       sampleTransfer.destinationContainer.getMetadata().getName();
   public static final String TRANSFER_COMMENTS = sampleTransfer.comments.getMetadata().getName();
-  public static final String MS_ANALYSES_PANEL = "msAnalysesPanel";
-  public static final String MS_ANALYSES = "msAnalyses";
-  public static final String MS_ANALYSES_MASS_DETECTION_INSTRUMENT =
-      msAnalysis.massDetectionInstrument.getMetadata().getName();
-  public static final String MS_ANALYSES_SOURCE = msAnalysis.source.getMetadata().getName();
-  public static final String MS_ANALYSES_NUMBER_OF_ACQUISITION =
-      acquisition.numberOfAcquisition.getMetadata().getName();
-  public static final String MS_ANALYSES_ACQUISITION_FILE =
-      acquisition.acquisitionFile.getMetadata().getName();
-  public static final String MS_ANALYSES_SAMPLE_LIST_NAME =
-      acquisition.sampleListName.getMetadata().getName();
-  public static final String MS_ANALYSES_CONTAINER = acquisition.container.getMetadata().getName();
-  public static final String MS_ANALYSES_COMMENTS = acquisition.comments.getMetadata().getName();
-  public static final String DATA_ANALYSES_PANEL = "dataAnalysesPanel";
-  public static final String DATA_ANALYSES = "dataAnalyses";
-  private SampleForm view;
-  private SubmissionSample sample;
+  private SubmissionTreatmentsForm view;
+  private Submission submission;
   @Inject
   private DigestionService digestionService;
   @Inject
@@ -116,59 +103,37 @@ public class SampleFormPresenter {
   private FractionationService fractionationService;
   @Inject
   private TransferService transferService;
-  @Inject
-  private MsAnalysisService msAnalysisService;
 
-  protected SampleFormPresenter() {
+  protected SubmissionTreatmentsFormPresenter() {
   }
 
-  protected SampleFormPresenter(DigestionService digestionService,
+  protected SubmissionTreatmentsFormPresenter(DigestionService digestionService,
       EnrichmentService enrichmentService, DilutionService dilutionService,
-      FractionationService fractionationService, TransferService transferService,
-      MsAnalysisService msAnalysisService) {
+      FractionationService fractionationService, TransferService transferService) {
     this.digestionService = digestionService;
     this.enrichmentService = enrichmentService;
     this.dilutionService = dilutionService;
     this.fractionationService = fractionationService;
     this.transferService = transferService;
-    this.msAnalysisService = msAnalysisService;
   }
 
   /**
-   * Initializes presenter.
+   * Called by view when view is initialized.
    *
    * @param view
    *          view
    */
-  public void init(SampleForm view) {
+  public void init(SubmissionTreatmentsForm view) {
     this.view = view;
     prepareComponents();
   }
 
   private void prepareComponents() {
-    MessageResource resources = view.getResources();
-    view.samplePanel.addStyleName(SAMPLE_PANEL);
-    view.samplePanel.setCaption(resources.message(SAMPLE_PANEL));
-    view.name.addStyleName(NAME);
-    view.name.setCaption(resources.message(NAME));
-    view.support.addStyleName(SUPPORT);
-    view.support.setCaption(resources.message(SUPPORT));
-    view.status.addStyleName(STATUS);
-    view.status.setCaption(resources.message(STATUS));
-    view.quantity.addStyleName(QUANTITY);
-    view.quantity.setCaption(resources.message(QUANTITY));
-    view.volume.addStyleName(VOLUME);
-    view.volume.setCaption(resources.message(VOLUME));
-    view.numberProteins.addStyleName(NUMBER_PROTEINS);
-    view.numberProteins.setCaption(resources.message(NUMBER_PROTEINS));
-    view.molecularWeight.addStyleName(MOLECULAR_WEIGHT);
-    view.molecularWeight.setCaption(resources.message(MOLECULAR_WEIGHT));
-    view.containerPanel.addStyleName(CONTAINER);
-    view.containerPanel.setCaption(resources.message(CONTAINER));
-    view.containerType.addStyleName(CONTAINER + "-" + CONTAINER_TYPE);
-    view.containerType.setCaption(resources.message(CONTAINER + "." + CONTAINER_TYPE));
-    view.containerName.addStyleName(CONTAINER + "-" + CONTAINER_NAME);
-    view.containerName.setCaption(resources.message(CONTAINER + "." + CONTAINER_NAME));
+    final MessageResource resources = view.getResources();
+    view.samplesPanel.addStyleName(SAMPLES_PANEL);
+    view.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
+    view.samples.addStyleName(SAMPLES);
+    prepareSamplesGrid();
     view.digestionsPanel.addStyleName(DIGESTIONS_PANEL);
     view.digestionsPanel.setCaption(resources.message(DIGESTIONS_PANEL));
     view.digestions.addStyleName(DIGESTIONS);
@@ -189,15 +154,13 @@ public class SampleFormPresenter {
     view.transfersPanel.setCaption(resources.message(TRANSFERS_PANEL));
     view.transfers.addStyleName(TRANSFERS);
     prepareTransfersGrid();
-    view.msAnalysesPanel.addStyleName(MS_ANALYSES_PANEL);
-    view.msAnalysesPanel.setCaption(resources.message(MS_ANALYSES_PANEL));
-    view.msAnalyses.addStyleName(MS_ANALYSES);
-    prepareMsAnalysesGrid();
-    view.dataAnalysesPanel.addStyleName(DATA_ANALYSES_PANEL);
-    view.dataAnalysesPanel.setCaption(resources.message(DATA_ANALYSES_PANEL));
-    view.dataAnalyses.addStyleName(DATA_ANALYSES);
-    prepareDataAnalysesGrid();
-    updateSample();
+    updateSubmission();
+  }
+
+  private void prepareSamplesGrid() {
+    MessageResource resources = view.getResources();
+    view.samples.addColumn(ts -> ts.getName()).setId(SAMPLES_NAME)
+        .setCaption(resources.message(SAMPLES + "." + SAMPLES_NAME));
   }
 
   private void prepareDigestionsGrid() {
@@ -275,78 +238,25 @@ public class SampleFormPresenter {
         .setCaption(resources.message(TRANSFERS + "." + TRANSFER_COMMENTS));
   }
 
-  private void prepareMsAnalysesGrid() {
-    MessageResource resources = view.getResources();
-    Locale locale = view.getLocale();
-    view.msAnalyses
-        .addColumn(aq -> aq.getMsAnalysis().getMassDetectionInstrument().getLabel(locale))
-        .setId(MS_ANALYSES_MASS_DETECTION_INSTRUMENT)
-        .setCaption(resources.message(MS_ANALYSES + "." + MS_ANALYSES_MASS_DETECTION_INSTRUMENT));
-    view.msAnalyses.addColumn(aq -> aq.getMsAnalysis().getSource().getLabel(locale))
-        .setId(MS_ANALYSES_SOURCE)
-        .setCaption(resources.message(MS_ANALYSES + "." + MS_ANALYSES_SOURCE));
-    view.msAnalyses.addColumn(aq -> aq.getNumberOfAcquisition())
-        .setId(MS_ANALYSES_NUMBER_OF_ACQUISITION)
-        .setCaption(resources.message(MS_ANALYSES + "." + MS_ANALYSES_NUMBER_OF_ACQUISITION));
-    view.msAnalyses.addColumn(aq -> aq.getAcquisitionFile()).setId(MS_ANALYSES_ACQUISITION_FILE)
-        .setCaption(resources.message(MS_ANALYSES + "." + MS_ANALYSES_ACQUISITION_FILE));
-    view.msAnalyses.addColumn(aq -> aq.getSampleListName()).setId(MS_ANALYSES_SAMPLE_LIST_NAME)
-        .setCaption(resources.message(MS_ANALYSES + "." + MS_ANALYSES_SAMPLE_LIST_NAME));
-    view.msAnalyses.addColumn(aq -> aq.getContainer().getFullName()).setId(MS_ANALYSES_CONTAINER)
-        .setCaption(resources.message(MS_ANALYSES + "." + MS_ANALYSES_CONTAINER));
-    view.msAnalyses.addColumn(aq -> aq.getComments()).setId(MS_ANALYSES_COMMENTS)
-        .setCaption(resources.message(MS_ANALYSES + "." + MS_ANALYSES_COMMENTS));
-  }
-
-  private void prepareDataAnalysesGrid() {
-  }
-
-  private void updateSample() {
-    if (sample != null) {
-      Locale locale = view.getLocale();
-      view.name.setValue(sample.getName());
-      view.support.setValue(sample.getSupport().getLabel(locale));
-      view.status.setValue(sample.getStatus().getLabel(locale));
-      view.quantity.setValue(sample.getQuantity());
-      view.volume.setValue(new StringToDoubleConverter("").convertToPresentation(sample.getVolume(),
-          new ValueContext(view.volume)));
-      view.numberProteins.setValue(new StringToIntegerConverter("")
-          .convertToPresentation(sample.getNumberProtein(), new ValueContext(view.numberProteins)));
-      view.molecularWeight.setValue(new StringToDoubleConverter("").convertToPresentation(
-          sample.getMolecularWeight(), new ValueContext(view.molecularWeight)));
-      view.containerType.setValue(sample.getOriginalContainer().getType().getLabel(locale));
-      view.containerName.setValue(sample.getOriginalContainer().getName());
-    } else {
-      view.name.setValue("");
-      view.support.setValue("");
-      view.status.setValue("");
-      view.quantity.setValue("");
-      view.volume.setValue("");
-      view.numberProteins.setValue("");
-      view.molecularWeight.setValue("");
-      view.containerType.setValue("");
-      view.containerName.setValue("");
-    }
+  private void updateSubmission() {
+    view.samples.setItems(submission.getSamples());
     view.digestions.setItems(
-        digestionService.all(getBean()).stream().flatMap(d -> d.getTreatmentSamples().stream()));
+        digestionService.all(submission).stream().flatMap(d -> d.getTreatmentSamples().stream()));
     view.enrichments.setItems(
-        enrichmentService.all(getBean()).stream().flatMap(d -> d.getTreatmentSamples().stream()));
+        enrichmentService.all(submission).stream().flatMap(d -> d.getTreatmentSamples().stream()));
     view.dilutions.setItems(
-        dilutionService.all(getBean()).stream().flatMap(d -> d.getTreatmentSamples().stream()));
-    view.fractionations.setItems(fractionationService.all(getBean()).stream()
+        dilutionService.all(submission).stream().flatMap(d -> d.getTreatmentSamples().stream()));
+    view.fractionations.setItems(fractionationService.all(submission).stream()
         .flatMap(d -> d.getTreatmentSamples().stream()));
     view.transfers.setItems(
-        transferService.all(getBean()).stream().flatMap(d -> d.getTreatmentSamples().stream()));
-    view.msAnalyses.setItems(
-        msAnalysisService.all(getBean()).stream().flatMap(d -> d.getAcquisitions().stream()));
+        transferService.all(submission).stream().flatMap(d -> d.getTreatmentSamples().stream()));
   }
 
-  SubmissionSample getBean() {
-    return sample;
+  Submission getBean() {
+    return submission;
   }
 
-  void setBean(SubmissionSample sample) {
-    this.sample = sample;
-    updateSample();
+  void setBean(Submission submission) {
+    this.submission = submission;
   }
 }

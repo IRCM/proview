@@ -25,6 +25,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
@@ -97,6 +98,7 @@ public class DigestionService extends BaseTreatmentService {
    *          sample
    * @return all digestions where sample was digested
    */
+  @Deprecated
   public List<Digestion> all(Sample sample) {
     if (sample == null) {
       return new ArrayList<>();
@@ -107,6 +109,27 @@ public class DigestionService extends BaseTreatmentService {
     query.from(digestion, digestedSample);
     query.where(digestedSample._super.in(digestion.treatmentSamples));
     query.where(digestedSample.sample.eq(sample));
+    query.where(digestion.deleted.eq(false));
+    return query.distinct().fetch();
+  }
+
+  /**
+   * Returns all digestions where one of the submission's samples was digested.
+   *
+   * @param submission
+   *          submission
+   * @return all digestions where one of the submission's samples was digested
+   */
+  public List<Digestion> all(Submission submission) {
+    if (submission == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Digestion> query = queryFactory.select(digestion);
+    query.from(digestion, digestedSample);
+    query.where(digestedSample._super.in(digestion.treatmentSamples));
+    query.where(digestedSample.sample.in(submission.getSamples()));
     query.where(digestion.deleted.eq(false));
     return query.distinct().fetch();
   }

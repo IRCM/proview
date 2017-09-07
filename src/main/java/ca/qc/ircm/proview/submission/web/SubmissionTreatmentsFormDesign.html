@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;proview&quot;}">
+  <meta name="vaadin-version" content="8.0.5">
+ </head>
+ <body>
+  <vaadin-vertical-layout>
+   <vaadin-panel caption="Samples" size-auto _id="samplesPanel">
+    <vaadin-vertical-layout>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samples">
+      <table>
+       <colgroup>
+        <col column-id="laboratory" sortable>
+        <col column-id="user" sortable>
+        <col column-id="type" sortable>
+        <col column-id="submission" sortable>
+        <col column-id="status" sortable>
+        <col column-id="contaminants" sortable>
+        <col column-id="numberProtein" sortable>
+        <col column-id="molecularWeight" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="laboratory">Laboratory</th>
+         <th plain-text column-ids="user">User</th>
+         <th plain-text column-ids="type">Type</th>
+         <th plain-text column-ids="submission">Submission</th>
+         <th plain-text column-ids="status">Status</th>
+         <th plain-text column-ids="contaminants">Contaminants</th>
+         <th plain-text column-ids="numberProtein">NumberProtein</th>
+         <th plain-text column-ids="molecularWeight">MolecularWeight</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Digestions" size-auto _id="digestionsPanel">
+    <vaadin-vertical-layout>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.digestion.DigestedSample" _id="digestions">
+      <table>
+       <colgroup>
+        <col column-id="digestion" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="digestion">Digestion</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Enrichments" size-auto _id="enrichmentsPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.enrichment.EnrichedSample" _id="enrichments">
+      <table>
+       <colgroup>
+        <col column-id="enrichment" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="enrichment">Enrichment</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel size-auto _id="dilutionsPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.dilution.DilutedSample" _id="dilutions">
+      <table>
+       <colgroup>
+        <col column-id="sourceVolume" sortable>
+        <col column-id="solvent" sortable>
+        <col column-id="solventVolume" sortable>
+        <col column-id="dilution" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="sourceVolume">SourceVolume</th>
+         <th plain-text column-ids="solvent">Solvent</th>
+         <th plain-text column-ids="solventVolume">SolventVolume</th>
+         <th plain-text column-ids="dilution">Dilution</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Fractionations" size-auto _id="fractionationsPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.fractionation.FractionationDetail" _id="fractionations">
+      <table>
+       <colgroup>
+        <col column-id="lims" sortable>
+        <col column-id="name" sortable>
+        <col column-id="position" sortable>
+        <col column-id="number" sortable>
+        <col column-id="piInterval" sortable>
+        <col column-id="destinationContainer" sortable>
+        <col column-id="fractionation" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="lims">Lims</th>
+         <th plain-text column-ids="name">Name</th>
+         <th plain-text column-ids="position">Position</th>
+         <th plain-text column-ids="number">Number</th>
+         <th plain-text column-ids="piInterval">PiInterval</th>
+         <th plain-text column-ids="destinationContainer">DestinationContainer</th>
+         <th plain-text column-ids="fractionation">Fractionation</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Transfers" size-auto _id="transfersPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.transfer.SampleTransfer" _id="transfers">
+      <table>
+       <colgroup>
+        <col column-id="destinationContainer" sortable>
+        <col column-id="transfer" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="destinationContainer">DestinationContainer</th>
+         <th plain-text column-ids="transfer">Transfer</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+  </vaadin-vertical-layout>
+ </body>
+</html>

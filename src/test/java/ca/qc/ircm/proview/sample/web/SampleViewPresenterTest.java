@@ -47,6 +47,7 @@ import java.util.Locale;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@Deprecated
 public class SampleViewPresenterTest {
   private SampleViewPresenter presenter;
   @Mock

@@ -25,6 +25,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
@@ -97,6 +98,7 @@ public class DilutionService extends BaseTreatmentService {
    *          sample
    * @return all dilutions where sample was diluted
    */
+  @Deprecated
   public List<Dilution> all(Sample sample) {
     if (sample == null) {
       return new ArrayList<>();
@@ -107,6 +109,27 @@ public class DilutionService extends BaseTreatmentService {
     query.from(dilution, dilutedSample);
     query.where(dilutedSample._super.in(dilution.treatmentSamples));
     query.where(dilutedSample.sample.eq(sample));
+    query.where(dilution.deleted.eq(false));
+    return query.distinct().fetch();
+  }
+
+  /**
+   * Returns all dilutions where one of submission's samples was diluted.
+   *
+   * @param submission
+   *          submission
+   * @return all dilutions where one of submission's samples was diluted
+   */
+  public List<Dilution> all(Submission submission) {
+    if (submission == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Dilution> query = queryFactory.select(dilution);
+    query.from(dilution, dilutedSample);
+    query.where(dilutedSample._super.in(dilution.treatmentSamples));
+    query.where(dilutedSample.sample.in(submission.getSamples()));
     query.where(dilution.deleted.eq(false));
     return query.distinct().fetch();
   }

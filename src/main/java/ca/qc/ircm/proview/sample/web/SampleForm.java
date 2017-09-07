@@ -13,6 +13,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Deprecated
 public class SampleForm extends SampleFormDesign implements BaseComponent {
   private static final long serialVersionUID = -8171220518398626075L;
   @Inject

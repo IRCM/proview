@@ -27,6 +27,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
@@ -35,6 +36,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
@@ -54,6 +56,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -88,6 +91,10 @@ public class EnrichmentServiceTest {
         enrichmentActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
+  }
+
+  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
+    return datas.stream().filter(d -> d.getId() == id).findFirst();
   }
 
   private SampleContainer findContainer(Collection<SampleContainer> containers,
@@ -134,6 +141,7 @@ public class EnrichmentServiceTest {
   }
 
   @Test
+  @Deprecated
   public void all_Tube() {
     Sample sample = new SubmissionSample(444L);
 
@@ -146,6 +154,7 @@ public class EnrichmentServiceTest {
   }
 
   @Test
+  @Deprecated
   public void all_Spot() {
     Sample sample = new SubmissionSample(581L);
 
@@ -158,8 +167,31 @@ public class EnrichmentServiceTest {
   }
 
   @Test
+  @Deprecated
+  public void all_NullSample() {
+    List<Enrichment> enrichments = enrichmentService.all((Sample) null);
+
+    assertEquals(0, enrichments.size());
+  }
+
+  @Test
+  public void all_Submission() {
+    Submission submission = entityManager.find(Submission.class, 150L);
+
+    List<Enrichment> enrichments = enrichmentService.all(submission);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(5, enrichments.size());
+    assertTrue(find(enrichments, 223).isPresent());
+    assertTrue(find(enrichments, 225).isPresent());
+    assertTrue(find(enrichments, 226).isPresent());
+    assertTrue(find(enrichments, 227).isPresent());
+    assertTrue(find(enrichments, 228).isPresent());
+  }
+
+  @Test
   public void all_Null() {
-    List<Enrichment> enrichments = enrichmentService.all(null);
+    List<Enrichment> enrichments = enrichmentService.all((Submission) null);
 
     assertEquals(0, enrichments.size());
   }

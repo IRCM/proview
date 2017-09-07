@@ -25,6 +25,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
@@ -97,6 +98,7 @@ public class EnrichmentService extends BaseTreatmentService {
    *          sample
    * @return all enrichments where sample was enriched
    */
+  @Deprecated
   public List<Enrichment> all(Sample sample) {
     if (sample == null) {
       return new ArrayList<>();
@@ -107,6 +109,27 @@ public class EnrichmentService extends BaseTreatmentService {
     query.from(enrichment, enrichedSample);
     query.where(enrichedSample._super.in(enrichment.treatmentSamples));
     query.where(enrichedSample.sample.eq(sample));
+    query.where(enrichment.deleted.eq(false));
+    return query.distinct().fetch();
+  }
+
+  /**
+   * Returns all enrichments where one of submission's samples was enriched.
+   *
+   * @param submission
+   *          submission
+   * @return all enrichments where one of submission's samples was enriched
+   */
+  public List<Enrichment> all(Submission submission) {
+    if (submission == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Enrichment> query = queryFactory.select(enrichment);
+    query.from(enrichment, enrichedSample);
+    query.where(enrichedSample._super.in(enrichment.treatmentSamples));
+    query.where(enrichedSample.sample.in(submission.getSamples()));
     query.where(enrichment.deleted.eq(false));
     return query.distinct().fetch();
   }

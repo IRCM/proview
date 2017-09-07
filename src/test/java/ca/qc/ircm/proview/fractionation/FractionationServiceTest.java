@@ -36,6 +36,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.DestinationUsedInTreatmentException;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -177,7 +178,8 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void all() {
+  @Deprecated
+  public void all_Sample() {
     Sample sample = new SubmissionSample(1L);
 
     List<Fractionation> fractionations = fractionationService.all(sample);
@@ -189,8 +191,28 @@ public class FractionationServiceTest {
   }
 
   @Test
+  @Deprecated
+  public void all_NullSample() {
+    List<Fractionation> fractionations = fractionationService.all((Sample) null);
+
+    assertEquals(0, fractionations.size());
+  }
+
+  @Test
+  public void all() {
+    Submission submission = entityManager.find(Submission.class, 1L);
+
+    List<Fractionation> fractionations = fractionationService.all(submission);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(2, fractionations.size());
+    assertTrue(findFractionation(fractionations, 2).isPresent());
+    assertTrue(findFractionation(fractionations, 8).isPresent());
+  }
+
+  @Test
   public void all_Null() {
-    List<Fractionation> fractionations = fractionationService.all(null);
+    List<Fractionation> fractionations = fractionationService.all((Submission) null);
 
     assertEquals(0, fractionations.size());
   }

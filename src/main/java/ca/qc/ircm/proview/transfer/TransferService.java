@@ -25,6 +25,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
@@ -98,6 +99,7 @@ public class TransferService extends BaseTreatmentService {
    *          sample
    * @return all transfers involving sample
    */
+  @Deprecated
   public List<Transfer> all(Sample sample) {
     if (sample == null) {
       return new ArrayList<>();
@@ -108,6 +110,27 @@ public class TransferService extends BaseTreatmentService {
     query.from(transfer, sampleTransfer);
     query.where(sampleTransfer._super.in(transfer.treatmentSamples));
     query.where(sampleTransfer.sample.eq(sample));
+    query.where(transfer.deleted.eq(false));
+    return query.distinct().fetch();
+  }
+
+  /**
+   * Returns all transfers involving one of submission's samples.
+   *
+   * @param submission
+   *          submission
+   * @return all transfers involving one of submission's samples
+   */
+  public List<Transfer> all(Submission submission) {
+    if (submission == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Transfer> query = queryFactory.select(transfer);
+    query.from(transfer, sampleTransfer);
+    query.where(sampleTransfer._super.in(transfer.treatmentSamples));
+    query.where(sampleTransfer.sample.in(submission.getSamples()));
     query.where(transfer.deleted.eq(false));
     return query.distinct().fetch();
   }

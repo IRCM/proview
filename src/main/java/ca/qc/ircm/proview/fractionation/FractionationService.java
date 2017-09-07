@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.transfer.DestinationUsedInTreatmentException;
 import ca.qc.ircm.proview.transfer.SampleTransfer;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
@@ -144,6 +145,7 @@ public class FractionationService extends BaseTreatmentService {
    *          sample
    * @return all fractionations involving sample
    */
+  @Deprecated
   public List<Fractionation> all(Sample sample) {
     if (sample == null) {
       return new ArrayList<>();
@@ -154,6 +156,27 @@ public class FractionationService extends BaseTreatmentService {
     query.from(fractionation, fractionationDetail);
     query.where(fractionationDetail._super.in(fractionation.treatmentSamples));
     query.where(fractionationDetail.sample.eq(sample));
+    query.where(fractionation.deleted.eq(false));
+    return query.distinct().fetch();
+  }
+
+  /**
+   * Selects all fractionations involving one of submission's samples.
+   *
+   * @param submission
+   *          submission
+   * @return all fractionations involving one of submission's samples
+   */
+  public List<Fractionation> all(Submission submission) {
+    if (submission == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Fractionation> query = queryFactory.select(fractionation);
+    query.from(fractionation, fractionationDetail);
+    query.where(fractionationDetail._super.in(fractionation.treatmentSamples));
+    query.where(fractionationDetail.sample.in(submission.getSamples()));
     query.where(fractionation.deleted.eq(false));
     return query.distinct().fetch();
   }
