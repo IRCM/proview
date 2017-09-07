@@ -112,6 +112,7 @@ import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -136,6 +137,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -535,10 +537,22 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.fillSamplesButton.addStyleName(FILL_BUTTON_STYLE);
     view.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
     view.samplesSpreadsheet.addStyleName(SAMPLES_PLATE);
-    view.samplesSpreadsheet.setMaxColumns(12);
-    view.samplesSpreadsheet.setMaxRows(8);
+    view.samplesSpreadsheet.setMaxColumns(13);
+    view.samplesSpreadsheet.setMaxRows(9);
+    IntStream.range(0, view.samplesSpreadsheet.getRows()).forEach(row -> {
+      IntStream.range(0, view.samplesSpreadsheet.getColumns()).forEach(column -> {
+        if (view.samplesSpreadsheet.getCell(row, column) == null) {
+          view.samplesSpreadsheet.createCell(row, column, "");
+        }
+      });
+    });
+    view.samplesSpreadsheet.setSelection(1, 1);
+    view.samplesSpreadsheet.getActiveSheet().getRow(0).getCell(0)
+        .setCellValue(resources.message(SAMPLES_PLATE));
     view.samplesSpreadsheet.setFunctionBarVisible(false);
     view.samplesSpreadsheet.setSheetSelectionBarVisible(false);
+    logger.debug("Sample name at plate {}-{} is {}", 0, 0,
+        view.samplesSpreadsheet.getCellValue(view.samplesSpreadsheet.getCell(1, 1)));
   }
 
   private TextField sampleNameTextField(SubmissionSample sample) {
@@ -1269,7 +1283,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.samplesSpreadsheet.setReportStyle(!editable);
     view.samplesSpreadsheet.setFunctionBarVisible(false);
     view.samplesSpreadsheet.setSheetSelectionBarVisible(false);
-    view.samplesSpreadsheet.setEnabled(editable);
+    view.samplesSpreadsheet.setRowColHeadingsVisible(false);
+    CellStyle locked = view.samplesSpreadsheet.getWorkbook().createCellStyle();
+    locked.setLocked(!editable);
+    cells(view.samplesSpreadsheet).forEach(cell -> cell.setCellStyle(locked));
     view.experienceField.setReadOnly(!editable);
     view.experienceGoalField.setReadOnly(!editable);
     view.taxonomyField.setReadOnly(!editable);
@@ -1542,8 +1559,8 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   private Stream<Cell> cells(Spreadsheet spreadsheet) {
     List<Cell> cells = new ArrayList<>();
-    for (int column = 0; column < spreadsheet.getColumns(); column++) {
-      for (int row = 0; row < spreadsheet.getRows(); row++) {
+    for (int column = 1; column < spreadsheet.getColumns(); column++) {
+      for (int row = 1; row < spreadsheet.getRows(); row++) {
         cells.add(spreadsheet.getCell(row, column));
       }
     }
@@ -1850,7 +1867,7 @@ public class SubmissionFormPresenter implements BinderValidator {
           copyStandardsFromTableToSample(sample);
           copyContaminantsFromTableToSample(sample);
         }
-        PlateSpot container = new PlateSpot(cell.getRowIndex(), cell.getColumnIndex());
+        PlateSpot container = new PlateSpot(cell.getRowIndex() - 1, cell.getColumnIndex() - 1);
         container.setPlate(plate);
         sample.setOriginalContainer(container);
         samples.add(sample);
@@ -1931,11 +1948,16 @@ public class SubmissionFormPresenter implements BinderValidator {
     if (container instanceof PlateSpot) {
       PlateSpot containerAsWell = (PlateSpot) container;
       plateBinder.setBean(containerAsWell.getPlate());
-      view.samplesSpreadsheet.createCell(containerAsWell.getRow(), containerAsWell.getColumn(),
-          firstSample.getName());
+      view.samplesSpreadsheet.createCell(containerAsWell.getRow() + 1,
+          containerAsWell.getColumn() + 1, firstSample.getName());
+      logger.debug("Sample name at plate {}-{} is {} and should be {}", containerAsWell.getRow(),
+          containerAsWell.getColumn(), firstSample.getName(),
+          view.samplesSpreadsheet.getCellValue(view.samplesSpreadsheet
+              .getCell(containerAsWell.getRow() + 1, containerAsWell.getColumn() + 1)));
       samples.stream().skip(1).forEach(sample -> {
         PlateSpot well = (PlateSpot) sample.getOriginalContainer();
-        view.samplesSpreadsheet.createCell(well.getRow(), well.getColumn(), sample.getName());
+        view.samplesSpreadsheet.createCell(well.getRow() + 1, well.getColumn() + 1,
+            sample.getName());
       });
     } else {
       plateBinder.setBean(new Plate());

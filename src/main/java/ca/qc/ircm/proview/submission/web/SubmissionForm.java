@@ -22,13 +22,19 @@ import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.ui.Upload;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vaadin.easyuploads.MultiFileUpload;
+
+import java.io.IOException;
 
 /**
  * Submission form.
  */
 public class SubmissionForm extends SubmissionFormDesign implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
+  private static final Logger logger = LoggerFactory.getLogger(SubmissionForm.class);
   private transient SubmissionFormPresenter presenter;
   protected Upload structureUploader;
   protected DefaultMultiFileUpload gelImagesUploader;
@@ -43,7 +49,13 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
    * Creates SubmissionForm.
    */
   public SubmissionForm() {
-    samplesSpreadsheet = new Spreadsheet();
+    try {
+      samplesSpreadsheet =
+          new Spreadsheet(new XSSFWorkbook(getClass().getResourceAsStream("/Plate-Template.xlsx")));
+    } catch (IOException e) {
+      logger.error("Could not load plate-template");
+      samplesSpreadsheet = new Spreadsheet();
+    }
     samplesSpreadsheet.setWidth("1024px");
     samplesSpreadsheet.setHeight("250px");
     samplesPlateContainer.addComponent(samplesSpreadsheet);
