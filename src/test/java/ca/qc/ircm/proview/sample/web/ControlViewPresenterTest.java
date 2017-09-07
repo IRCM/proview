@@ -18,10 +18,12 @@
 package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.HEADER;
+import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.INVALID_SAMPLE;
 import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -138,6 +140,7 @@ public class ControlViewPresenterTest {
     presenter.init(view);
     presenter.enter("444");
 
+    verify(controlService, atLeastOnce()).get(444L);
     verify(formPresenter).setBean(control);
     verify(formPresenter, never()).setEditable(true);
   }
@@ -151,8 +154,28 @@ public class ControlViewPresenterTest {
     presenter.init(view);
     presenter.enter("444");
 
+    verify(controlService, atLeastOnce()).get(444L);
     verify(formPresenter).setBean(control);
     verify(formPresenter).setEditable(true);
+  }
+
+  @Test
+  public void enter_InvalidNumber() {
+    presenter.init(view);
+
+    presenter.enter("a");
+
+    verify(view).showWarning(resources.message(INVALID_SAMPLE));
+  }
+
+  @Test
+  public void enter_InvalidSample() {
+    presenter.init(view);
+
+    presenter.enter("3");
+
+    verify(controlService, atLeastOnce()).get(3L);
+    verify(view).showWarning(resources.message(INVALID_SAMPLE));
   }
 
   @Test

@@ -62,6 +62,16 @@ public class NavigationComponentTest {
     verify(navigator).navigateTo(view);
   }
 
+  @Test
+  public void navigateTo_Parameters() {
+    String view = "test_view";
+
+    navigationComponent.navigateTo(view, "3");
+
+    verify(ui).getNavigator();
+    verify(navigator).navigateTo(view + "/3");
+  }
+
   @SuppressWarnings("serial")
   private class TestNavigationComponent extends CustomComponent implements NavigationComponent {
     @Override

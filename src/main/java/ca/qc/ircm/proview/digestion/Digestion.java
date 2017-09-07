@@ -19,6 +19,8 @@ package ca.qc.ircm.proview.digestion;
 
 import ca.qc.ircm.proview.treatment.Treatment;
 
+import java.util.List;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -60,5 +62,9 @@ public class Digestion extends Treatment<DigestedSample> {
 
   public void setProtocol(DigestionProtocol protocol) {
     this.protocol = protocol;
+  }
+
+  public List<DigestedSample> getDigestedSamples() {
+    return getTreatmentSamples();
   }
 }

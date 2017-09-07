@@ -102,7 +102,7 @@ public class Plate implements Data, Serializable, Named {
 
   /**
    * Initializes plate.
-   * 
+   *
    * @param id
    *          id
    * @param name
@@ -230,6 +230,35 @@ public class Plate implements Data, Serializable, Named {
       }
     }
     return count;
+  }
+
+  /**
+   * Returns row label.
+   *
+   * @param row
+   *          row
+   * @return row label
+   */
+  public static String rowLabel(int row) {
+    StringBuilder rowName = new StringBuilder();
+    while (row >= 26) {
+      rowName.append((char) ('A' + row % 26));
+      row = row / 26;
+      row--;
+    }
+    rowName.append((char) ('A' + row % 26));
+    return rowName.reverse().toString();
+  }
+
+  /**
+   * Returns column label.
+   *
+   * @param column
+   *          column
+   * @return column label
+   */
+  public static String columnLabel(int column) {
+    return Integer.toString(column + 1);
   }
 
   @Override

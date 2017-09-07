@@ -53,7 +53,7 @@ public class ControlViewPresenter implements BinderValidator, SaveListener<Contr
    *          view
    */
   public void init(ControlView view) {
-    logger.debug("Add control view");
+    logger.debug("Control view");
     this.view = view;
     view.form.getPresenter().setEditable(authorizationService.hasAdminRole());
     view.form.addSaveListener(this);

@@ -26,4 +26,8 @@ public interface NavigationComponent extends Component {
   default void navigateTo(String view) {
     getUI().getNavigator().navigateTo(view);
   }
+
+  default void navigateTo(String view, String parameters) {
+    getUI().getNavigator().navigateTo(view + "/" + parameters);
+  }
 }

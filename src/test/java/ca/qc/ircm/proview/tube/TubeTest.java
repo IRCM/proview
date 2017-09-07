@@ -15,38 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.digestion;
+package ca.qc.ircm.proview.tube;
 
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import static org.junit.Assert.assertEquals;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
- * A sample that was digested.
- */
-@Entity
-@DiscriminatorValue("DIGESTION")
-public class DigestedSample extends TreatmentSample {
-  /**
-   * Digestion.
-   */
-  @ManyToOne
-  @JoinColumn(name = "treatmentId", nullable = false)
-  private Digestion digestion;
-
-  @Override
-  public String toString() {
-    return "DigestedSample(" + getId() + ")";
+@RunWith(SpringJUnit4ClassRunner.class)
+@NonTransactionalTestAnnotations
+public class TubeTest {
+  @Test
+  public void getName() {
+    assertEquals("test_tube", new Tube(1L, "test_tube").getName());
   }
 
-  public Digestion getDigestion() {
-    return digestion;
-  }
-
-  public void setDigestion(Digestion digestion) {
-    this.digestion = digestion;
+  @Test
+  public void getFullName() {
+    assertEquals("test_tube", new Tube(1L, "test_tube").getFullName());
+    assertEquals("test_tube", new Tube(1L, "test_tube").getFullName());
   }
 }

@@ -97,6 +97,10 @@ public abstract class SampleContainer implements Data, Named, Serializable {
     return id;
   }
 
+  public String getFullName() {
+    return getName();
+  }
+
   public void setId(Long id) {
     this.id = id;
   }
