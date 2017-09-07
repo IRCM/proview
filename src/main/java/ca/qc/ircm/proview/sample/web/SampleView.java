@@ -10,13 +10,15 @@ import javax.inject.Inject;
 /**
  * Sample view.
  */
-@SpringView(name = ControlView.VIEW_NAME)
+@SpringView(name = SampleView.VIEW_NAME)
 @RolesAllowed({ "USER" })
 public class SampleView extends SampleViewDesign implements BaseView {
   public static final String VIEW_NAME = "sample";
   private static final long serialVersionUID = -1847741580837872381L;
   @Inject
-  private SampleViewPresenter presenter;
+  protected SampleForm form;
+  @Inject
+  private transient SampleViewPresenter presenter;
 
   @Override
   public void attach() {

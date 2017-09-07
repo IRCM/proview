@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="8.0.5">
+ </head>
+ <body>
+  <vaadin-vertical-layout>
+   <vaadin-panel caption="Sample" size-auto _id="samplePanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-form-layout size-auto>
+      <vaadin-label caption="Name" plain-text _id="name">
+        My sample 
+      </vaadin-label>
+      <vaadin-label caption="Support" plain-text _id="support">
+        Solution 
+      </vaadin-label>
+      <vaadin-label caption="Status" plain-text _id="status">
+        Analysed 
+      </vaadin-label>
+      <vaadin-label caption="Quantity" plain-text _id="quantity">
+        10 ug 
+      </vaadin-label>
+      <vaadin-label caption="Volume" plain-text _id="volume">
+        20 ml 
+      </vaadin-label>
+      <vaadin-label caption="Number of proteins" plain-text _id="numberProteins">
+        1 
+      </vaadin-label>
+      <vaadin-label caption="Molecular weight" plain-text _id="molecularWeight">
+        20 
+      </vaadin-label>
+     </vaadin-form-layout>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Container" size-auto _id="containerPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-form-layout size-auto>
+      <vaadin-label caption="Type" plain-text _id="containerType">
+        Tube 
+      </vaadin-label>
+      <vaadin-label caption="Name" plain-text _id="containerName">
+        My sample 
+      </vaadin-label>
+     </vaadin-form-layout>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Digestions" size-auto _id="digestionsPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.digestion.DigestedSample" _id="digestions">
+      <table>
+       <colgroup>
+        <col column-id="digestion" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="digestion">Digestion</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Enrichments" size-auto _id="enrichmentsPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.enrichment.EnrichedSample" _id="enrichments"></vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Dilutions" size-auto _id="dilutionsPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.dilution.DilutedSample" _id="dilutions">
+      <table>
+       <colgroup>
+        <col column-id="sourceVolume" sortable>
+        <col column-id="solvent" sortable>
+        <col column-id="solventVolume" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="sourceVolume">SourceVolume</th>
+         <th plain-text column-ids="solvent">Solvent</th>
+         <th plain-text column-ids="solventVolume">SolventVolume</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Fractionations" size-auto _id="fractionationsPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.fractionation.FractionationDetail" _id="fractionations">
+      <table>
+       <colgroup>
+        <col column-id="lims" sortable>
+        <col column-id="name" sortable>
+        <col column-id="position" sortable>
+        <col column-id="number" sortable>
+        <col column-id="piInterval" sortable>
+        <col column-id="destinationContainer" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="lims">Lims</th>
+         <th plain-text column-ids="name">Name</th>
+         <th plain-text column-ids="position">Position</th>
+         <th plain-text column-ids="number">Number</th>
+         <th plain-text column-ids="piInterval">PiInterval</th>
+         <th plain-text column-ids="destinationContainer">DestinationContainer</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Transfers" size-auto _id="transfersPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.transfer.SampleTransfer" _id="transfers">
+      <table>
+       <colgroup>
+        <col column-id="destinationContainer" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="destinationContainer">DestinationContainer</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="MS Analyses" size-auto _id="msAnalysesPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.msanalysis.Acquisition" _id="msAnalyses">
+      <table>
+       <colgroup>
+        <col column-id="lims" sortable>
+        <col column-id="name" sortable>
+        <col column-id="id" sortable>
+        <col column-id="numberOfAcquisition" sortable>
+        <col column-id="sample" sortable>
+        <col column-id="sampleListName" sortable>
+        <col column-id="acquisitionFile" sortable>
+        <col column-id="position" sortable>
+        <col column-id="comments" sortable>
+        <col column-id="listIndex" sortable>
+        <col column-id="container" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="lims">Lims</th>
+         <th plain-text column-ids="name">Name</th>
+         <th plain-text column-ids="id">Id</th>
+         <th plain-text column-ids="numberOfAcquisition">NumberOfAcquisition</th>
+         <th plain-text column-ids="sample">Sample</th>
+         <th plain-text column-ids="sampleListName">SampleListName</th>
+         <th plain-text column-ids="acquisitionFile">AcquisitionFile</th>
+         <th plain-text column-ids="position">Position</th>
+         <th plain-text column-ids="comments">Comments</th>
+         <th plain-text column-ids="listIndex">ListIndex</th>
+         <th plain-text column-ids="container">Container</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Data Analyses" size-auto _id="dataAnalysesPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.dataanalysis.DataAnalysis" _id="dataAnalyses">
+      <table>
+       <colgroup>
+        <col column-id="id" sortable>
+        <col column-id="sample" sortable>
+        <col column-id="protein" sortable>
+        <col column-id="peptide" sortable>
+        <col column-id="type" sortable>
+        <col column-id="maxWorkTime" sortable>
+        <col column-id="score" sortable>
+        <col column-id="workTime" sortable>
+        <col column-id="status" sortable>
+       </colgroup>
+       <thead>
+        <tr default>
+         <th plain-text column-ids="id">Id</th>
+         <th plain-text column-ids="sample">Sample</th>
+         <th plain-text column-ids="protein">Protein</th>
+         <th plain-text column-ids="peptide">Peptide</th>
+         <th plain-text column-ids="type">Type</th>
+         <th plain-text column-ids="maxWorkTime">MaxWorkTime</th>
+         <th plain-text column-ids="score">Score</th>
+         <th plain-text column-ids="workTime">WorkTime</th>
+         <th plain-text column-ids="status">Status</th>
+        </tr>
+       </thead>
+       <tbody></tbody>
+      </table>
+     </vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+  </vaadin-vertical-layout>
+ </body>
+</html>
