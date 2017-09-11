@@ -4,8 +4,8 @@ import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +20,6 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Deprecated
 public class SampleViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
@@ -51,9 +50,6 @@ public class SampleViewPresenter {
     this.view = view;
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.header.addStyleName(HEADER);
-    view.header.addStyleName(ValoTheme.LABEL_H1);
-    view.header.setValue(resources.message(HEADER));
   }
 
   private boolean valid(String parameters) {
@@ -76,18 +72,19 @@ public class SampleViewPresenter {
    *          parameters
    */
   public void enter(String parameters) {
-    if (parameters != null && !parameters.isEmpty()) {
-      if (valid(parameters)) {
-        Long id = Long.valueOf(parameters);
-        Sample sample = sampleService.get(id);
-        if (sample instanceof Control) {
-          view.navigateTo(ControlView.VIEW_NAME, String.valueOf(sample.getId()));
-        } else {
-          view.form.setBean((SubmissionSample) sample);
-        }
+    if (valid(parameters)) {
+      Long id = Long.valueOf(parameters);
+      Sample sample = sampleService.get(id);
+      if (sample instanceof Control) {
+        view.navigateTo(ControlView.VIEW_NAME, String.valueOf(sample.getId()));
+      } else if (sample instanceof SubmissionSample) {
+        view.navigateTo(SubmissionView.VIEW_NAME,
+            String.valueOf(((SubmissionSample) sample).getSubmission().getId()));
       } else {
         view.showWarning(view.getResources().message(INVALID_SAMPLE));
       }
+    } else {
+      view.showWarning(view.getResources().message(INVALID_SAMPLE));
     }
   }
 }

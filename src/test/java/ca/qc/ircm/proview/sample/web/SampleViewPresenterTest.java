@@ -17,25 +17,22 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.web.SampleViewPresenter.HEADER;
 import static ca.qc.ircm.proview.sample.web.SampleViewPresenter.INVALID_SAMPLE;
 import static ca.qc.ircm.proview.sample.web.SampleViewPresenter.TITLE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,15 +44,12 @@ import java.util.Locale;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-@Deprecated
 public class SampleViewPresenterTest {
   private SampleViewPresenter presenter;
   @Mock
   private SampleView view;
   @Mock
   private SampleService sampleService;
-  @Mock
-  private SampleForm form;
   @Mock
   private SubmissionSample sample;
   @Mock
@@ -73,20 +67,9 @@ public class SampleViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new SampleViewPresenter(sampleService, applicationName);
-    view.header = new Label();
-    view.form = form;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-  }
-
-  @Test
-  public void styles() {
-    presenter.init(view);
-    presenter.enter("");
-
-    assertTrue(view.header.getStyleName().contains(HEADER));
-    assertTrue(view.header.getStyleName().contains(ValoTheme.LABEL_H1));
   }
 
   @Test
@@ -95,7 +78,6 @@ public class SampleViewPresenterTest {
     presenter.enter("");
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), view.header.getValue());
   }
 
   @Test
@@ -104,19 +86,22 @@ public class SampleViewPresenterTest {
 
     presenter.enter("");
 
-    verify(form, never()).setBean(any());
+    verify(view).showWarning(resources.message(INVALID_SAMPLE));
   }
 
   @Test
   public void enter_SubmissionSample() {
     presenter.init(view);
-    Long sampleId = 3L;
+    final Long sampleId = 3L;
+    Long submissionId = 2L;
     when(sampleService.get(any())).thenReturn(sample);
+    when(sample.getSubmission()).thenReturn(mock(Submission.class));
+    when(sample.getSubmission().getId()).thenReturn(submissionId);
 
     presenter.enter(String.valueOf(sampleId));
 
     verify(sampleService, atLeastOnce()).get(sampleId);
-    verify(form).setBean(sample);
+    verify(view).navigateTo(SubmissionView.VIEW_NAME, String.valueOf(submissionId));
   }
 
   @Test
