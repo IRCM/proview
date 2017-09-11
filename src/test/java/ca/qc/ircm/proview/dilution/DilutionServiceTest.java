@@ -31,7 +31,6 @@ import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -140,41 +139,7 @@ public class DilutionServiceTest {
   }
 
   @Test
-  @Deprecated
-  public void all_Tube() {
-    Sample sample = new SubmissionSample(442L);
-
-    List<Dilution> dilutions = dilutionService.all(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(1, dilutions.size());
-    Dilution dilution = dilutions.get(0);
-    assertEquals((Long) 4L, dilution.getId());
-  }
-
-  @Test
-  @Deprecated
-  public void all_Spot() {
-    Sample sample = new SubmissionSample(569L);
-
-    List<Dilution> dilutions = dilutionService.all(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(1, dilutions.size());
-    Dilution dilution = dilutions.get(0);
-    assertEquals((Long) 210L, dilution.getId());
-  }
-
-  @Test
-  @Deprecated
-  public void all_NullSample() {
-    List<Dilution> dilutions = dilutionService.all((Sample) null);
-
-    assertEquals(0, dilutions.size());
-  }
-
-  @Test
-  public void all_Submission() {
+  public void all() {
     Submission submission = entityManager.find(Submission.class, 149L);
 
     List<Dilution> dilutions = dilutionService.all(submission);
@@ -190,7 +155,7 @@ public class DilutionServiceTest {
 
   @Test
   public void all_Null() {
-    List<Dilution> dilutions = dilutionService.all((Submission) null);
+    List<Dilution> dilutions = dilutionService.all(null);
 
     assertEquals(0, dilutions.size());
   }

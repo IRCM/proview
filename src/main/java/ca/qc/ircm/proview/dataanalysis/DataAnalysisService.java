@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -85,25 +84,6 @@ public class DataAnalysisService {
     authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
 
     return dataAnalysis;
-  }
-
-  /**
-   * Selects all data analyses asked for sample.
-   *
-   * @param sample
-   *          sample
-   * @return all data analyses asked for sample
-   */
-  public List<DataAnalysis> all(SubmissionSample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkSampleReadPermission(sample);
-
-    JPAQuery<DataAnalysis> query = queryFactory.select(dataAnalysis);
-    query.from(dataAnalysis);
-    query.where(dataAnalysis.sample.eq(sample));
-    return query.fetch();
   }
 
   /**
@@ -197,8 +177,8 @@ public class DataAnalysisService {
    * Changes data analysis results.
    * <p>
    * If data analysis's status is changed to
-   * {@link ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus#TO_DO}, sample's status is changed
-   * to {@link ca.qc.ircm.proview.sample.SampleStatus#DATA_ANALYSIS} .
+   * {@link ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus#TO_DO}, sample's status is changed to
+   * {@link ca.qc.ircm.proview.sample.SampleStatus#DATA_ANALYSIS} .
    * </p>
    * <p>
    * If data analysis's status is changed to

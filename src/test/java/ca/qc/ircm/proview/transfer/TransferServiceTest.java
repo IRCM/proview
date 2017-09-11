@@ -136,27 +136,6 @@ public class TransferServiceTest {
   }
 
   @Test
-  @Deprecated
-  public void all_Sample() {
-    Sample sample = new SubmissionSample(1L);
-
-    List<Transfer> transfers = transferService.all(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(2, transfers.size());
-    Transfer transfer = transfers.get(0);
-    assertEquals((Long) 3L, transfer.getId());
-  }
-
-  @Test
-  @Deprecated
-  public void all_NullSample() {
-    List<Transfer> transfers = transferService.all((Sample) null);
-
-    assertEquals(0, transfers.size());
-  }
-
-  @Test
   public void all() {
     Submission submission = entityManager.find(Submission.class, 1L);
 
@@ -170,7 +149,7 @@ public class TransferServiceTest {
 
   @Test
   public void all_Null() {
-    List<Transfer> transfers = transferService.all((Submission) null);
+    List<Transfer> transfers = transferService.all(null);
 
     assertEquals(0, transfers.size());
   }

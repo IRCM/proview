@@ -141,41 +141,7 @@ public class EnrichmentServiceTest {
   }
 
   @Test
-  @Deprecated
-  public void all_Tube() {
-    Sample sample = new SubmissionSample(444L);
-
-    List<Enrichment> enrichments = enrichmentService.all(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(1, enrichments.size());
-    Enrichment enrichment = enrichments.get(0);
-    assertEquals((Long) 7L, enrichment.getId());
-  }
-
-  @Test
-  @Deprecated
-  public void all_Spot() {
-    Sample sample = new SubmissionSample(581L);
-
-    List<Enrichment> enrichments = enrichmentService.all(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(1, enrichments.size());
-    Enrichment enrichment = enrichments.get(0);
-    assertEquals((Long) 225L, enrichment.getId());
-  }
-
-  @Test
-  @Deprecated
-  public void all_NullSample() {
-    List<Enrichment> enrichments = enrichmentService.all((Sample) null);
-
-    assertEquals(0, enrichments.size());
-  }
-
-  @Test
-  public void all_Submission() {
+  public void all() {
     Submission submission = entityManager.find(Submission.class, 150L);
 
     List<Enrichment> enrichments = enrichmentService.all(submission);
@@ -191,7 +157,7 @@ public class EnrichmentServiceTest {
 
   @Test
   public void all_Null() {
-    List<Enrichment> enrichments = enrichmentService.all((Submission) null);
+    List<Enrichment> enrichments = enrichmentService.all(null);
 
     assertEquals(0, enrichments.size());
   }

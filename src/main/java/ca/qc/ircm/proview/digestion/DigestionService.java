@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -89,28 +88,6 @@ public class DigestionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Digestion.class, id);
-  }
-
-  /**
-   * Returns all digestions where sample was digested.
-   *
-   * @param sample
-   *          sample
-   * @return all digestions where sample was digested
-   */
-  @Deprecated
-  public List<Digestion> all(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Digestion> query = queryFactory.select(digestion);
-    query.from(digestion, digestedSample);
-    query.where(digestedSample._super.in(digestion.treatmentSamples));
-    query.where(digestedSample.sample.eq(sample));
-    query.where(digestion.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   /**

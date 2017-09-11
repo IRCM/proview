@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.transfer.QTransfer.transfer;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -90,28 +89,6 @@ public class TransferService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Transfer.class, id);
-  }
-
-  /**
-   * Returns all transfers involving sample.
-   *
-   * @param sample
-   *          sample
-   * @return all transfers involving sample
-   */
-  @Deprecated
-  public List<Transfer> all(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Transfer> query = queryFactory.select(transfer);
-    query.from(transfer, sampleTransfer);
-    query.where(sampleTransfer._super.in(transfer.treatmentSamples));
-    query.where(sampleTransfer.sample.eq(sample));
-    query.where(transfer.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   /**

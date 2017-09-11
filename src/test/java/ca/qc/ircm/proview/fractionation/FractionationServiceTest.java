@@ -178,27 +178,6 @@ public class FractionationServiceTest {
   }
 
   @Test
-  @Deprecated
-  public void all_Sample() {
-    Sample sample = new SubmissionSample(1L);
-
-    List<Fractionation> fractionations = fractionationService.all(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(2, fractionations.size());
-    assertTrue(findFractionation(fractionations, 2).isPresent());
-    assertTrue(findFractionation(fractionations, 8).isPresent());
-  }
-
-  @Test
-  @Deprecated
-  public void all_NullSample() {
-    List<Fractionation> fractionations = fractionationService.all((Sample) null);
-
-    assertEquals(0, fractionations.size());
-  }
-
-  @Test
   public void all() {
     Submission submission = entityManager.find(Submission.class, 1L);
 
@@ -212,7 +191,7 @@ public class FractionationServiceTest {
 
   @Test
   public void all_Null() {
-    List<Fractionation> fractionations = fractionationService.all((Submission) null);
+    List<Fractionation> fractionations = fractionationService.all(null);
 
     assertEquals(0, fractionations.size());
   }

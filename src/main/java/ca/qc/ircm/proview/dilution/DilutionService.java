@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.dilution.QDilution.dilution;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -89,28 +88,6 @@ public class DilutionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Dilution.class, id);
-  }
-
-  /**
-   * Returns all dilutions where sample was diluted.
-   *
-   * @param sample
-   *          sample
-   * @return all dilutions where sample was diluted
-   */
-  @Deprecated
-  public List<Dilution> all(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Dilution> query = queryFactory.select(dilution);
-    query.from(dilution, dilutedSample);
-    query.where(dilutedSample._super.in(dilution.treatmentSamples));
-    query.where(dilutedSample.sample.eq(sample));
-    query.where(dilution.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   /**

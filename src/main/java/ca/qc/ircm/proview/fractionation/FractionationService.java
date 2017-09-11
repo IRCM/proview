@@ -139,28 +139,6 @@ public class FractionationService extends BaseTreatmentService {
   }
 
   /**
-   * Selects all fractionations involving sample.
-   *
-   * @param sample
-   *          sample
-   * @return all fractionations involving sample
-   */
-  @Deprecated
-  public List<Fractionation> all(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Fractionation> query = queryFactory.select(fractionation);
-    query.from(fractionation, fractionationDetail);
-    query.where(fractionationDetail._super.in(fractionation.treatmentSamples));
-    query.where(fractionationDetail.sample.eq(sample));
-    query.where(fractionation.deleted.eq(false));
-    return query.distinct().fetch();
-  }
-
-  /**
    * Selects all fractionations involving one of submission's samples.
    *
    * @param submission

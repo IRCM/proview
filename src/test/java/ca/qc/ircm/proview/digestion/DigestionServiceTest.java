@@ -30,7 +30,6 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -134,41 +133,7 @@ public class DigestionServiceTest {
   }
 
   @Test
-  @Deprecated
-  public void all_Tube() {
-    Sample sample = new SubmissionSample(444L);
-
-    List<Digestion> digestions = digestionService.all(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(1, digestions.size());
-    Digestion digestion = digestions.get(0);
-    assertEquals((Long) 6L, digestion.getId());
-  }
-
-  @Test
-  @Deprecated
-  public void all_Spot() {
-    Sample sample = new SubmissionSample(559L);
-
-    List<Digestion> digestions = digestionService.all(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(1, digestions.size());
-    Digestion digestion = digestions.get(0);
-    assertEquals((Long) 195L, digestion.getId());
-  }
-
-  @Test
-  @Deprecated
-  public void all_NullSample() {
-    List<Digestion> digestions = digestionService.all((Sample) null);
-
-    assertTrue(digestions.isEmpty());
-  }
-
-  @Test
-  public void all_Submission() {
+  public void all() {
     Submission submission = entityManager.find(Submission.class, 147L);
 
     List<Digestion> digestions = digestionService.all(submission);
@@ -181,7 +146,7 @@ public class DigestionServiceTest {
 
   @Test
   public void all_Null() {
-    List<Digestion> digestions = digestionService.all((Submission) null);
+    List<Digestion> digestions = digestionService.all(null);
 
     assertTrue(digestions.isEmpty());
   }

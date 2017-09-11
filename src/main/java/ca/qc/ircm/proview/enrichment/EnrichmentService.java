@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -89,28 +88,6 @@ public class EnrichmentService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Enrichment.class, id);
-  }
-
-  /**
-   * Returns all enrichments where sample was enriched.
-   *
-   * @param sample
-   *          sample
-   * @return all enrichments where sample was enriched
-   */
-  @Deprecated
-  public List<Enrichment> all(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Enrichment> query = queryFactory.select(enrichment);
-    query.from(enrichment, enrichedSample);
-    query.where(enrichedSample._super.in(enrichment.treatmentSamples));
-    query.where(enrichedSample.sample.eq(sample));
-    query.where(enrichment.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   /**

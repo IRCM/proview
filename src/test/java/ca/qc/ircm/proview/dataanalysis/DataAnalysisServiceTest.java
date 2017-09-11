@@ -105,33 +105,6 @@ public class DataAnalysisServiceTest {
   }
 
   @Test
-  public void all_Sample() {
-    SubmissionSample sample = new SubmissionSample(1L);
-
-    List<DataAnalysis> dataAnalyses = dataAnalysisService.all(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(1, dataAnalyses.size());
-    DataAnalysis dataAnalysis = dataAnalyses.get(0);
-    assertEquals((Long) 3L, dataAnalysis.getId());
-    assertEquals((Long) 1L, dataAnalysis.getSample().getId());
-    assertEquals("123456", dataAnalysis.getProtein());
-    assertEquals(null, dataAnalysis.getPeptide());
-    assertEquals((Double) 2.0, dataAnalysis.getMaxWorkTime());
-    assertEquals("123456: 95%", dataAnalysis.getScore());
-    assertEquals((Double) 1.75, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
-    assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
-  }
-
-  @Test
-  public void all_NullSample() {
-    List<DataAnalysis> dataAnalyses = dataAnalysisService.all((SubmissionSample) null);
-
-    assertEquals(0, dataAnalyses.size());
-  }
-
-  @Test
   public void all() {
     Submission submission = entityManager.find(Submission.class, 1L);
 
@@ -153,7 +126,7 @@ public class DataAnalysisServiceTest {
 
   @Test
   public void all_Null() {
-    List<DataAnalysis> dataAnalyses = dataAnalysisService.all((Submission) null);
+    List<DataAnalysis> dataAnalyses = dataAnalysisService.all(null);
 
     assertEquals(0, dataAnalyses.size());
   }
