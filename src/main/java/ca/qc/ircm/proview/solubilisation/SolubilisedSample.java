@@ -23,6 +23,8 @@ import ca.qc.ircm.proview.treatment.TreatmentSample;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * A dried sample that was solubilised.
@@ -30,6 +32,12 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("SOLUBILISATION")
 public class SolubilisedSample extends TreatmentSample implements Data {
+  /**
+   * Solubilisation.
+   */
+  @ManyToOne
+  @JoinColumn(name = "treatmentId", nullable = false)
+  private Solubilisation solubilisation;
   /**
    * Solvent used for solubilization.
    */
@@ -60,5 +68,13 @@ public class SolubilisedSample extends TreatmentSample implements Data {
 
   public void setSolventVolume(Double solventVolume) {
     this.solventVolume = solventVolume;
+  }
+
+  public Solubilisation getSolubilisation() {
+    return solubilisation;
+  }
+
+  public void setSolubilisation(Solubilisation solubilisation) {
+    this.solubilisation = solubilisation;
   }
 }

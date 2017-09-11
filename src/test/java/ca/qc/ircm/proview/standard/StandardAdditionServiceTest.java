@@ -27,6 +27,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
@@ -35,6 +36,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
@@ -54,6 +56,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -90,6 +93,10 @@ public class StandardAdditionServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
+  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
+    return datas.stream().filter(d -> d.getId() == id).findFirst();
+  }
+
   private SampleContainer findContainer(Collection<SampleContainer> containers,
       SampleContainerType type, long id) {
     for (SampleContainer container : containers) {
@@ -118,6 +125,7 @@ public class StandardAdditionServiceTest {
     List<AddedStandard> addedStandards = standardAddition.getTreatmentSamples();
     assertEquals(1, addedStandards.size());
     AddedStandard addedStandard = addedStandards.get(0);
+    assertEquals(standardAddition, addedStandard.getStandardAddition());
     assertEquals((Long) 444L, addedStandard.getSample().getId());
     assertEquals(SampleContainerType.TUBE, addedStandard.getContainer().getType());
     assertEquals((Long) 4L, addedStandard.getContainer().getId());
@@ -134,27 +142,18 @@ public class StandardAdditionServiceTest {
   }
 
   @Test
-  public void all_Tube() {
-    Sample sample = new SubmissionSample(444L);
+  public void all() {
+    Submission submission = entityManager.find(Submission.class, 152L);
 
-    List<StandardAddition> standardAdditions = standardAdditionService.all(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(1, standardAdditions.size());
-    StandardAddition standardAddition = standardAdditions.get(0);
-    assertEquals((Long) 5L, standardAddition.getId());
-  }
-
-  @Test
-  public void all_Spot() {
-    Sample sample = new SubmissionSample(599L);
-
-    List<StandardAddition> standardAdditions = standardAdditionService.all(sample);
+    List<StandardAddition> standardAdditions = standardAdditionService.all(submission);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(1, standardAdditions.size());
-    StandardAddition standardAddition = standardAdditions.get(0);
-    assertEquals((Long) 248L, standardAddition.getId());
+    assertEquals(5, standardAdditions.size());
+    assertTrue(find(standardAdditions, 248).isPresent());
+    assertTrue(find(standardAdditions, 249).isPresent());
+    assertTrue(find(standardAdditions, 250).isPresent());
+    assertTrue(find(standardAdditions, 251).isPresent());
+    assertTrue(find(standardAdditions, 252).isPresent());
   }
 
   @Test

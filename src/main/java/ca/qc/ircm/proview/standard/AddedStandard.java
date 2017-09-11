@@ -23,6 +23,8 @@ import ca.qc.ircm.proview.treatment.TreatmentSample;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
 /**
@@ -31,6 +33,12 @@ import javax.validation.constraints.Size;
 @Entity
 @DiscriminatorValue("STANDARD_ADDITION")
 public class AddedStandard extends TreatmentSample implements Data {
+  /**
+   * Standard addition.
+   */
+  @ManyToOne
+  @JoinColumn(name = "treatmentId", nullable = false)
+  private StandardAddition standardAddition;
   /**
    * Name of standard added.
    */
@@ -58,5 +66,13 @@ public class AddedStandard extends TreatmentSample implements Data {
 
   public void setQuantity(String quantity) {
     this.quantity = quantity;
+  }
+
+  public StandardAddition getStandardAddition() {
+    return standardAddition;
+  }
+
+  public void setStandardAddition(StandardAddition standardAddition) {
+    this.standardAddition = standardAddition;
   }
 }

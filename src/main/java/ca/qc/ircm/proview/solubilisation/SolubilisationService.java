@@ -22,9 +22,9 @@ import static ca.qc.ircm.proview.solubilisation.QSolubilisedSample.solubilisedSa
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
@@ -91,14 +91,14 @@ public class SolubilisationService extends BaseTreatmentService {
   }
 
   /**
-   * Returns solubilisations where sample was solubilized.
+   * Returns solubilisations where any of submission's sample was solubilized.
    *
-   * @param sample
-   *          sample
-   * @return solubilisations where sample was solubilized
+   * @param submission
+   *          submission
+   * @return solubilisations where any of submission's sample was solubilized
    */
-  public List<Solubilisation> all(Sample sample) {
-    if (sample == null) {
+  public List<Solubilisation> all(Submission submission) {
+    if (submission == null) {
       return new ArrayList<>();
     }
     authorizationService.checkAdminRole();
@@ -106,7 +106,7 @@ public class SolubilisationService extends BaseTreatmentService {
     JPAQuery<Solubilisation> query = queryFactory.select(solubilisation);
     query.from(solubilisation, solubilisedSample);
     query.where(solubilisedSample._super.in(solubilisation.treatmentSamples));
-    query.where(solubilisedSample.sample.eq(sample));
+    query.where(solubilisedSample.sample.in(submission.getSamples()));
     query.where(solubilisation.deleted.eq(false));
     return query.distinct().fetch();
   }

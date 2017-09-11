@@ -12,9 +12,24 @@
      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samples"></vaadin-grid>
     </vaadin-vertical-layout>
    </vaadin-panel>
+   <vaadin-panel caption="Transfers" size-auto _id="transfersPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.transfer.SampleTransfer" _id="transfers"></vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Solubilisations" size-auto _id="solubilisationsPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.solubilisation.SolubilisedSample" _id="solubilisations"></vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
    <vaadin-panel caption="Digestions" size-auto _id="digestionsPanel">
     <vaadin-vertical-layout>
      <vaadin-grid data-item-type="ca.qc.ircm.proview.digestion.DigestedSample" _id="digestions"></vaadin-grid>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Standard additions" size-auto _id="standardAdditionsPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.standard.AddedStandard" _id="standardAdditions"></vaadin-grid>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Enrichments" size-auto _id="enrichmentsPanel">
@@ -22,7 +37,7 @@
      <vaadin-grid data-item-type="ca.qc.ircm.proview.enrichment.EnrichedSample" _id="enrichments"></vaadin-grid>
     </vaadin-vertical-layout>
    </vaadin-panel>
-   <vaadin-panel size-auto _id="dilutionsPanel">
+   <vaadin-panel caption="Dilutions" size-auto _id="dilutionsPanel">
     <vaadin-vertical-layout size-auto>
      <vaadin-grid data-item-type="ca.qc.ircm.proview.dilution.DilutedSample" _id="dilutions"></vaadin-grid>
     </vaadin-vertical-layout>
@@ -30,11 +45,6 @@
    <vaadin-panel caption="Fractionations" size-auto _id="fractionationsPanel">
     <vaadin-vertical-layout size-auto>
      <vaadin-grid data-item-type="ca.qc.ircm.proview.fractionation.FractionationDetail" _id="fractionations"></vaadin-grid>
-    </vaadin-vertical-layout>
-   </vaadin-panel>
-   <vaadin-panel caption="Transfers" size-auto _id="transfersPanel">
-    <vaadin-vertical-layout size-auto>
-     <vaadin-grid data-item-type="ca.qc.ircm.proview.transfer.SampleTransfer" _id="transfers"></vaadin-grid>
     </vaadin-vertical-layout>
    </vaadin-panel>
   </vaadin-vertical-layout>

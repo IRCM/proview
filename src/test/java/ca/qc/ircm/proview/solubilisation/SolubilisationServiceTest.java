@@ -27,6 +27,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.PlateSpot;
@@ -35,6 +36,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
@@ -54,6 +56,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -90,6 +93,10 @@ public class SolubilisationServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
+  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
+    return datas.stream().filter(d -> d.getId() == id).findFirst();
+  }
+
   private SampleContainer findContainer(Collection<SampleContainer> containers,
       SampleContainerType type, long id) {
     for (SampleContainer container : containers) {
@@ -118,6 +125,7 @@ public class SolubilisationServiceTest {
     List<SolubilisedSample> solubilisedSamples = solubilisation.getTreatmentSamples();
     assertEquals(1, solubilisedSamples.size());
     SolubilisedSample solubilisedSample = solubilisedSamples.get(0);
+    assertEquals(solubilisation, solubilisedSample.getSolubilisation());
     assertEquals((Long) 1L, solubilisedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, solubilisedSample.getContainer().getType());
     assertEquals((Long) 1L, solubilisedSample.getContainer().getId());
@@ -135,9 +143,9 @@ public class SolubilisationServiceTest {
 
   @Test
   public void all_Tube() {
-    Sample sample = new SubmissionSample(1L);
+    Submission submission = entityManager.find(Submission.class, 1L);
 
-    List<Solubilisation> solubilisations = solubilisationService.all(sample);
+    List<Solubilisation> solubilisations = solubilisationService.all(submission);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(1, solubilisations.size());
@@ -147,14 +155,17 @@ public class SolubilisationServiceTest {
 
   @Test
   public void all_Spot() {
-    Sample sample = new SubmissionSample(589L);
+    Submission submission = entityManager.find(Submission.class, 151L);
 
-    List<Solubilisation> solubilisations = solubilisationService.all(sample);
+    List<Solubilisation> solubilisations = solubilisationService.all(submission);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(1, solubilisations.size());
-    Solubilisation solubilisation = solubilisations.get(0);
-    assertEquals((Long) 236L, solubilisation.getId());
+    assertEquals(5, solubilisations.size());
+    assertTrue(find(solubilisations, 236).isPresent());
+    assertTrue(find(solubilisations, 237).isPresent());
+    assertTrue(find(solubilisations, 238).isPresent());
+    assertTrue(find(solubilisations, 239).isPresent());
+    assertTrue(find(solubilisations, 240).isPresent());
   }
 
   @Test

@@ -21,16 +21,20 @@ import com.vaadin.ui.declarative.Design;
 public class SubmissionTreatmentsFormDesign extends VerticalLayout {
   protected Panel samplesPanel;
   protected Grid<ca.qc.ircm.proview.sample.SubmissionSample> samples;
+  protected Panel transfersPanel;
+  protected Grid<ca.qc.ircm.proview.transfer.SampleTransfer> transfers;
+  protected Panel solubilisationsPanel;
+  protected Grid<ca.qc.ircm.proview.solubilisation.SolubilisedSample> solubilisations;
   protected Panel digestionsPanel;
   protected Grid<ca.qc.ircm.proview.digestion.DigestedSample> digestions;
+  protected Panel standardAdditionsPanel;
+  protected Grid<ca.qc.ircm.proview.standard.AddedStandard> standardAdditions;
   protected Panel enrichmentsPanel;
   protected Grid<ca.qc.ircm.proview.enrichment.EnrichedSample> enrichments;
   protected Panel dilutionsPanel;
   protected Grid<ca.qc.ircm.proview.dilution.DilutedSample> dilutions;
   protected Panel fractionationsPanel;
   protected Grid<ca.qc.ircm.proview.fractionation.FractionationDetail> fractionations;
-  protected Panel transfersPanel;
-  protected Grid<ca.qc.ircm.proview.transfer.SampleTransfer> transfers;
 
   public SubmissionTreatmentsFormDesign() {
     Design.read(this);

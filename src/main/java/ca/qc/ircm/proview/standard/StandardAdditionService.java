@@ -22,9 +22,9 @@ import static ca.qc.ircm.proview.standard.QStandardAddition.standardAddition;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
@@ -91,14 +91,14 @@ public class StandardAdditionService extends BaseTreatmentService {
   }
 
   /**
-   * Returns all sample's standard addition.
+   * Returns all standard additions done on any of submission's samples.
    *
-   * @param sample
-   *          sample
-   * @return all sample's standard addition
+   * @param submission
+   *          submission
+   * @return all standard additions done on any of submission's samples
    */
-  public List<StandardAddition> all(Sample sample) {
-    if (sample == null) {
+  public List<StandardAddition> all(Submission submission) {
+    if (submission == null) {
       return new ArrayList<>();
     }
     authorizationService.checkAdminRole();
@@ -106,7 +106,7 @@ public class StandardAdditionService extends BaseTreatmentService {
     JPAQuery<StandardAddition> query = queryFactory.select(standardAddition);
     query.from(standardAddition, addedStandard);
     query.where(addedStandard._super.in(standardAddition.treatmentSamples));
-    query.where(addedStandard.sample.eq(sample));
+    query.where(addedStandard.sample.in(submission.getSamples()));
     query.where(standardAddition.deleted.eq(false));
     return query.distinct().fetch();
   }
