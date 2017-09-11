@@ -41,42 +41,6 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "dataanalysis")
 public class DataAnalysis implements Data, Serializable {
-  /**
-   * Type of data analysis.
-   */
-  public enum Type {
-    /**
-     * Analysis made only to confirm very probable protein presence.
-     */
-    PROTEIN,
-    /**
-     * Analysis made to confirm correctiveness of specific peptides.
-     */
-    PEPTIDE,
-    /**
-     * Analyse both protein and and peptides.
-     */
-    PROTEIN_PEPTIDE;
-  }
-
-  /**
-   * Completed status.
-   */
-  public enum Status {
-    /**
-     * Data has to be analysed.
-     */
-    TO_DO,
-    /**
-     * Data is analysed.
-     */
-    ANALYSED,
-    /**
-     * Data analysis was cancelled.
-     */
-    CANCELLED;
-  }
-
   private static final long serialVersionUID = 7855087016781621873L;
 
   /**
@@ -109,7 +73,7 @@ public class DataAnalysis implements Data, Serializable {
    */
   @Column(name = "analysisType", nullable = false)
   @Enumerated(STRING)
-  private Type type;
+  private DataAnalysisType type;
   /**
    * Maximum amount of time to work.
    */
@@ -130,7 +94,7 @@ public class DataAnalysis implements Data, Serializable {
    */
   @Column(name = "status", nullable = false)
   @Enumerated(STRING)
-  private Status status;
+  private DataAnalysisStatus status;
 
   public DataAnalysis() {
   }
@@ -177,11 +141,11 @@ public class DataAnalysis implements Data, Serializable {
     this.peptide = peptide;
   }
 
-  public Type getType() {
+  public DataAnalysisType getType() {
     return type;
   }
 
-  public void setType(Type type) {
+  public void setType(DataAnalysisType type) {
     this.type = type;
   }
 
@@ -209,11 +173,11 @@ public class DataAnalysis implements Data, Serializable {
     this.workTime = workTime;
   }
 
-  public Status getStatus() {
+  public DataAnalysisStatus getStatus() {
     return status;
   }
 
-  public void setStatus(Status status) {
+  public void setStatus(DataAnalysisStatus status) {
     this.status = status;
   }
 }

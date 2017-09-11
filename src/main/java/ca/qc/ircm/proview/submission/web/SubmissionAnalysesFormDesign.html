@@ -2,14 +2,21 @@
 <html>
  <head>
   <meta charset="UTF-8">
-  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta name="vaadin-version" content="8.0.5">
  </head>
  <body>
   <vaadin-vertical-layout size-full margin="false">
-   <vaadin-panel caption="MS analysis (2016-02-19)" size-full _id="analysisPanel" :expand>
-    <vaadin-vertical-layout size-full margin="false">
-     <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.submission.Submission" _id="analysisGrid" :expand></vaadin-grid>
+   <vaadin-vertical-layout _id="analysesLayout" :expand>
+    <vaadin-panel caption="MS analysis (2016-02-19)" size-full _id="analysisPanel">
+     <vaadin-vertical-layout size-full margin="false">
+      <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.submission.Submission" _id="analysisGrid" :expand></vaadin-grid>
+     </vaadin-vertical-layout>
+    </vaadin-panel>
+   </vaadin-vertical-layout>
+   <vaadin-panel size-auto _id="dataAnalysesPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-grid data-item-type="ca.qc.ircm.proview.dataanalysis.DataAnalysis" _id="dataAnalyses"></vaadin-grid>
     </vaadin-vertical-layout>
    </vaadin-panel>
   </vaadin-vertical-layout>

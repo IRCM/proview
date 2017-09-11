@@ -21,15 +21,24 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITION_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITION_INDEX;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSES;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSES_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSIS_TYPE;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.MAX_WORK_TIME;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.PEPTIDE;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.PROTEIN;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.SCORE;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.STATUS;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
+import ca.qc.ircm.proview.dataanalysis.DataAnalysisService;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
@@ -57,6 +66,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -71,25 +81,34 @@ public class SubmissionAnalysesFormPresenterTest {
   private SubmissionAnalysesForm view;
   @Mock
   private MsAnalysisService msAnalysisService;
+  @Mock
+  private DataAnalysisService dataAnalysisService;
   @Captor
   private ArgumentCaptor<Panel> panelCaptor;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SubmissionAnalysesForm.class, locale);
   private Submission submission;
   private List<MsAnalysis> analyses = new ArrayList<>();
+  private List<DataAnalysis> dataAnalyses = new ArrayList<>();
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionAnalysesFormPresenter(msAnalysisService);
+    presenter = new SubmissionAnalysesFormPresenter(msAnalysisService, dataAnalysisService);
+    view.analysesLayout = new VerticalLayout();
+    view.dataAnalysesPanel = new Panel();
+    view.dataAnalyses = new Grid<>();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     submission = entityManager.find(Submission.class, 1L);
     analyses.add(entityManager.find(MsAnalysis.class, 20L));
     analyses.add(entityManager.find(MsAnalysis.class, 21L));
     when(msAnalysisService.all(any(Submission.class))).thenReturn(analyses);
+    dataAnalyses.add(entityManager.find(DataAnalysis.class, 3L));
+    dataAnalyses.add(entityManager.find(DataAnalysis.class, 4L));
+    when(dataAnalysisService.all(any(Submission.class))).thenReturn(dataAnalyses);
   }
 
   private LocalDate date(Instant instant) {
@@ -97,8 +116,8 @@ public class SubmissionAnalysesFormPresenterTest {
   }
 
   private List<Panel> viewPanels() {
-    verify(view, atLeastOnce()).addComponent(panelCaptor.capture());
-    return panelCaptor.getAllValues();
+    return IntStream.range(0, view.analysesLayout.getComponentCount())
+        .mapToObj(i -> (Panel) view.analysesLayout.getComponent(i)).collect(Collectors.toList());
   }
 
   @SuppressWarnings("unchecked")
@@ -113,8 +132,7 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.setBean(submission);
 
     verify(msAnalysisService).all(submission);
-    verify(view).removeAllComponents();
-    verify(view, times(2)).addComponent(any(Panel.class));
+    assertEquals(2, view.analysesLayout.getComponentCount());
   }
 
   @Test
@@ -128,6 +146,8 @@ public class SubmissionAnalysesFormPresenterTest {
     for (Grid<Acquisition> acquisitionsGrid : viewGrids()) {
       assertTrue(acquisitionsGrid.getStyleName().contains(ACQUISITIONS));
     }
+    assertTrue(view.dataAnalysesPanel.getStyleName().contains(DATA_ANALYSES_PANEL));
+    assertTrue(view.dataAnalyses.getStyleName().contains(DATA_ANALYSES));
   }
 
   @Test
@@ -143,6 +163,7 @@ public class SubmissionAnalysesFormPresenterTest {
       assertEquals(resources.message(ANALYSIS, formatter.format(date(analysis.getInsertTime()))),
           analysisPanel.getCaption());
     }
+    assertEquals(resources.message(DATA_ANALYSES_PANEL), view.dataAnalysesPanel.getCaption());
   }
 
   @Test
@@ -160,5 +181,65 @@ public class SubmissionAnalysesFormPresenterTest {
       assertEquals(ACQUISITION_INDEX, columns.get(2).getId());
       assertEquals(true, columns.get(2).isHidden());
     }
+  }
+
+  @Test
+  public void dataAnalysesGrid() {
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    final DataAnalysis dataAnalysis1 = dataAnalyses.get(0);
+    final DataAnalysis dataAnalysis2 = dataAnalyses.get(1);
+    assertEquals(8, view.dataAnalyses.getColumns().size());
+    assertEquals(NAME, view.dataAnalyses.getColumns().get(0).getId());
+    assertEquals(resources.message(NAME), view.dataAnalyses.getColumn(NAME).getCaption());
+    assertEquals(dataAnalysis1.getSample().getName(),
+        view.dataAnalyses.getColumn(NAME).getValueProvider().apply(dataAnalysis1));
+    assertEquals(dataAnalysis2.getSample().getName(),
+        view.dataAnalyses.getColumn(NAME).getValueProvider().apply(dataAnalysis2));
+    assertEquals(PROTEIN, view.dataAnalyses.getColumns().get(1).getId());
+    assertEquals(resources.message(PROTEIN), view.dataAnalyses.getColumn(PROTEIN).getCaption());
+    assertEquals(dataAnalysis1.getProtein(),
+        view.dataAnalyses.getColumn(PROTEIN).getValueProvider().apply(dataAnalysis1));
+    assertEquals(dataAnalysis2.getProtein(),
+        view.dataAnalyses.getColumn(PROTEIN).getValueProvider().apply(dataAnalysis2));
+    assertEquals(PEPTIDE, view.dataAnalyses.getColumns().get(2).getId());
+    assertEquals(resources.message(PEPTIDE), view.dataAnalyses.getColumn(PEPTIDE).getCaption());
+    assertEquals(dataAnalysis1.getPeptide(),
+        view.dataAnalyses.getColumn(PEPTIDE).getValueProvider().apply(dataAnalysis1));
+    assertEquals(dataAnalysis2.getPeptide(),
+        view.dataAnalyses.getColumn(PEPTIDE).getValueProvider().apply(dataAnalysis2));
+    assertEquals(DATA_ANALYSIS_TYPE, view.dataAnalyses.getColumns().get(3).getId());
+    assertEquals(resources.message(DATA_ANALYSIS_TYPE),
+        view.dataAnalyses.getColumn(DATA_ANALYSIS_TYPE).getCaption());
+    assertEquals(dataAnalysis1.getType().getLabel(locale),
+        view.dataAnalyses.getColumn(DATA_ANALYSIS_TYPE).getValueProvider().apply(dataAnalysis1));
+    assertEquals(dataAnalysis2.getType().getLabel(locale),
+        view.dataAnalyses.getColumn(DATA_ANALYSIS_TYPE).getValueProvider().apply(dataAnalysis2));
+    assertEquals(MAX_WORK_TIME, view.dataAnalyses.getColumns().get(4).getId());
+    assertEquals(resources.message(MAX_WORK_TIME),
+        view.dataAnalyses.getColumn(MAX_WORK_TIME).getCaption());
+    assertEquals(dataAnalysis1.getMaxWorkTime(),
+        view.dataAnalyses.getColumn(MAX_WORK_TIME).getValueProvider().apply(dataAnalysis1));
+    assertEquals(dataAnalysis2.getMaxWorkTime(),
+        view.dataAnalyses.getColumn(MAX_WORK_TIME).getValueProvider().apply(dataAnalysis2));
+    assertEquals(SCORE, view.dataAnalyses.getColumns().get(5).getId());
+    assertEquals(resources.message(SCORE), view.dataAnalyses.getColumn(SCORE).getCaption());
+    assertEquals(dataAnalysis1.getScore(),
+        view.dataAnalyses.getColumn(SCORE).getValueProvider().apply(dataAnalysis1));
+    assertEquals(dataAnalysis2.getScore(),
+        view.dataAnalyses.getColumn(SCORE).getValueProvider().apply(dataAnalysis2));
+    assertEquals(WORK_TIME, view.dataAnalyses.getColumns().get(6).getId());
+    assertEquals(resources.message(WORK_TIME), view.dataAnalyses.getColumn(WORK_TIME).getCaption());
+    assertEquals(dataAnalysis1.getWorkTime(),
+        view.dataAnalyses.getColumn(WORK_TIME).getValueProvider().apply(dataAnalysis1));
+    assertEquals(dataAnalysis2.getWorkTime(),
+        view.dataAnalyses.getColumn(WORK_TIME).getValueProvider().apply(dataAnalysis2));
+    assertEquals(STATUS, view.dataAnalyses.getColumns().get(7).getId());
+    assertEquals(resources.message(STATUS), view.dataAnalyses.getColumn(STATUS).getCaption());
+    assertEquals(dataAnalysis1.getStatus().getLabel(locale),
+        view.dataAnalyses.getColumn(STATUS).getValueProvider().apply(dataAnalysis1));
+    assertEquals(dataAnalysis2.getStatus().getLabel(locale),
+        view.dataAnalyses.getColumn(STATUS).getValueProvider().apply(dataAnalysis2));
   }
 }

@@ -26,6 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
+import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
 import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.msanalysis.AcquisitionMascotFile;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
@@ -691,8 +692,8 @@ public class ActivityServiceTest {
     statusUpdate.setTableName("dataanalysis");
     statusUpdate.setRecordId(3L);
     statusUpdate.setColumn("status");
-    statusUpdate.setOldValue(DataAnalysis.Status.TO_DO.name());
-    statusUpdate.setNewValue(DataAnalysis.Status.ANALYSED.name());
+    statusUpdate.setOldValue(DataAnalysisStatus.TO_DO.name());
+    statusUpdate.setNewValue(DataAnalysisStatus.ANALYSED.name());
     expecteds.add(new ComparableUpdateActivity(statusUpdate));
     UpdateActivity workTimeUpdate = new UpdateActivity();
     workTimeUpdate.setActionType(ActionType.UPDATE);

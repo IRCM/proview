@@ -31,6 +31,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.Before;
@@ -92,8 +93,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.0, dataAnalysis.getMaxWorkTime());
     assertEquals("123456: 95%", dataAnalysis.getScore());
     assertEquals((Double) 1.75, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
   }
 
   @Test
@@ -104,7 +105,7 @@ public class DataAnalysisServiceTest {
   }
 
   @Test
-  public void all() {
+  public void all_Sample() {
     SubmissionSample sample = new SubmissionSample(1L);
 
     List<DataAnalysis> dataAnalyses = dataAnalysisService.all(sample);
@@ -119,13 +120,40 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.0, dataAnalysis.getMaxWorkTime());
     assertEquals("123456: 95%", dataAnalysis.getScore());
     assertEquals((Double) 1.75, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
+  }
+
+  @Test
+  public void all_NullSample() {
+    List<DataAnalysis> dataAnalyses = dataAnalysisService.all((SubmissionSample) null);
+
+    assertEquals(0, dataAnalyses.size());
+  }
+
+  @Test
+  public void all() {
+    Submission submission = entityManager.find(Submission.class, 1L);
+
+    List<DataAnalysis> dataAnalyses = dataAnalysisService.all(submission);
+
+    verify(authorizationService).checkSubmissionReadPermission(submission);
+    assertEquals(1, dataAnalyses.size());
+    DataAnalysis dataAnalysis = dataAnalyses.get(0);
+    assertEquals((Long) 3L, dataAnalysis.getId());
+    assertEquals((Long) 1L, dataAnalysis.getSample().getId());
+    assertEquals("123456", dataAnalysis.getProtein());
+    assertEquals(null, dataAnalysis.getPeptide());
+    assertEquals((Double) 2.0, dataAnalysis.getMaxWorkTime());
+    assertEquals("123456: 95%", dataAnalysis.getScore());
+    assertEquals((Double) 1.75, dataAnalysis.getWorkTime());
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
   }
 
   @Test
   public void all_Null() {
-    List<DataAnalysis> dataAnalyses = dataAnalysisService.all(null);
+    List<DataAnalysis> dataAnalyses = dataAnalysisService.all((Submission) null);
 
     assertEquals(0, dataAnalyses.size());
   }
@@ -139,8 +167,8 @@ public class DataAnalysisServiceTest {
     dataAnalysis.setProtein("85574");
     dataAnalysis.setPeptide("54, 62");
     dataAnalysis.setMaxWorkTime(2.3);
-    dataAnalysis.setType(DataAnalysis.Type.PROTEIN_PEPTIDE);
-    Collection<DataAnalysis> dataAnalyses = new LinkedList<DataAnalysis>();
+    dataAnalysis.setType(DataAnalysisType.PROTEIN_PEPTIDE);
+    Collection<DataAnalysis> dataAnalyses = new LinkedList<>();
     dataAnalyses.add(dataAnalysis);
     when(dataAnalysisActivityService.insert(any(DataAnalysis.class))).thenReturn(activity);
 
@@ -157,8 +185,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.3, dataAnalysis.getMaxWorkTime());
     assertEquals(null, dataAnalysis.getScore());
     assertEquals(null, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.TO_DO, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.TO_DO, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     verify(dataAnalysisActivityService).insert(dataAnalysisCaptor.capture());
@@ -171,8 +199,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.3, dataAnalysisLog.getMaxWorkTime());
     assertEquals(null, dataAnalysisLog.getScore());
     assertEquals(null, dataAnalysisLog.getWorkTime());
-    assertEquals(DataAnalysis.Status.TO_DO, dataAnalysisLog.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysisLog.getType());
+    assertEquals(DataAnalysisStatus.TO_DO, dataAnalysisLog.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysisLog.getType());
   }
 
   @Test
@@ -188,12 +216,12 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 4.0, dataAnalysis.getMaxWorkTime());
     assertEquals(null, dataAnalysis.getScore());
     assertEquals(null, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.TO_DO, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.TO_DO, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
     dataAnalysis.setScore("123456, 3: 85%\n12456, 4: 83%\n58774: 68%");
     dataAnalysis.setWorkTime(3.50);
-    dataAnalysis.setStatus(DataAnalysis.Status.ANALYSED);
-    Collection<DataAnalysis> dataAnalyses = new LinkedList<DataAnalysis>();
+    dataAnalysis.setStatus(DataAnalysisStatus.ANALYSED);
+    Collection<DataAnalysis> dataAnalyses = new LinkedList<>();
     dataAnalyses.add(dataAnalysis);
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -210,8 +238,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 4.0, dataAnalysis.getMaxWorkTime());
     assertEquals("123456, 3: 85%\n12456, 4: 83%\n58774: 68%", dataAnalysis.getScore());
     assertEquals((Double) 3.5, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 442L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), isNull(String.class));
@@ -224,8 +252,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 4.0, dataAnalysisLog.getMaxWorkTime());
     assertEquals("123456, 3: 85%\n12456, 4: 83%\n58774: 68%", dataAnalysisLog.getScore());
     assertEquals((Double) 3.5, dataAnalysisLog.getWorkTime());
-    assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysisLog.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysisLog.getType());
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysisLog.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysisLog.getType());
     assertEquals(SampleStatus.ANALYSED, dataAnalysisLog.getSample().getStatus());
   }
 
@@ -242,10 +270,10 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.0, dataAnalysis.getMaxWorkTime());
     assertEquals("123456: 95%", dataAnalysis.getScore());
     assertEquals((Double) 1.75, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
     dataAnalysis.setScore("123456: ~80%");
-    dataAnalysis.setStatus(DataAnalysis.Status.CANCELLED);
+    dataAnalysis.setStatus(DataAnalysisStatus.CANCELLED);
     dataAnalysis.setWorkTime(2.0);
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -262,8 +290,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.0, dataAnalysis.getMaxWorkTime());
     assertEquals("123456: ~80%", dataAnalysis.getScore());
     assertEquals((Double) 2.0, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.CANCELLED, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.CANCELLED, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), eq("unit_test"));
@@ -276,8 +304,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.0, dataAnalysisLog.getMaxWorkTime());
     assertEquals("123456: ~80%", dataAnalysisLog.getScore());
     assertEquals((Double) 2.0, dataAnalysisLog.getWorkTime());
-    assertEquals(DataAnalysis.Status.CANCELLED, dataAnalysisLog.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysisLog.getType());
+    assertEquals(DataAnalysisStatus.CANCELLED, dataAnalysisLog.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN, dataAnalysisLog.getType());
     assertEquals(SampleStatus.ANALYSED, dataAnalysisLog.getSample().getStatus());
   }
 
@@ -294,10 +322,10 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.0, dataAnalysis.getMaxWorkTime());
     assertEquals("123456: 95%", dataAnalysis.getScore());
     assertEquals((Double) 1.75, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
     dataAnalysis.setScore(null);
-    dataAnalysis.setStatus(DataAnalysis.Status.TO_DO);
+    dataAnalysis.setStatus(DataAnalysisStatus.TO_DO);
     dataAnalysis.setWorkTime(null);
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -313,8 +341,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.0, dataAnalysis.getMaxWorkTime());
     assertEquals(null, dataAnalysis.getScore());
     assertEquals(null, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.TO_DO, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.TO_DO, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), eq("unit_test"));
@@ -327,8 +355,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.0, dataAnalysisLog.getMaxWorkTime());
     assertEquals(null, dataAnalysisLog.getScore());
     assertEquals(null, dataAnalysisLog.getWorkTime());
-    assertEquals(DataAnalysis.Status.TO_DO, dataAnalysisLog.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN, dataAnalysisLog.getType());
+    assertEquals(DataAnalysisStatus.TO_DO, dataAnalysisLog.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN, dataAnalysisLog.getType());
     assertEquals(SampleStatus.DATA_ANALYSIS, dataAnalysisLog.getSample().getStatus());
   }
 
@@ -345,11 +373,11 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 4.0, dataAnalysis.getMaxWorkTime());
     assertEquals(null, dataAnalysis.getScore());
     assertEquals(null, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.TO_DO, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.TO_DO, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
     dataAnalysis.setScore("123456, 3: 85%\n12456, 4: 83%\n58774: 68%");
     dataAnalysis.setWorkTime(3.50);
-    dataAnalysis.setStatus(DataAnalysis.Status.ANALYSED);
+    dataAnalysis.setStatus(DataAnalysisStatus.ANALYSED);
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
 
@@ -364,8 +392,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 4.0, dataAnalysis.getMaxWorkTime());
     assertEquals("123456, 3: 85%\n12456, 4: 83%\n58774: 68%", dataAnalysis.getScore());
     assertEquals((Double) 3.50, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysis.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
     sample = entityManager.find(SubmissionSample.class, 442L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), eq("unit_test"));
@@ -378,8 +406,8 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 4.0, dataAnalysis.getMaxWorkTime());
     assertEquals("123456, 3: 85%\n12456, 4: 83%\n58774: 68%", dataAnalysis.getScore());
     assertEquals((Double) 3.50, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysis.Status.ANALYSED, dataAnalysisLog.getStatus());
-    assertEquals(DataAnalysis.Type.PROTEIN_PEPTIDE, dataAnalysis.getType());
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysisLog.getStatus());
+    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
     assertEquals(SampleStatus.ANALYSED, dataAnalysisLog.getSample().getStatus());
   }
 }

@@ -71,7 +71,7 @@ public class DataAnalysisActivityServiceTest {
     dataAnalysis.setSample(sample);
     dataAnalysis.setMaxWorkTime(5.0);
     dataAnalysis.setProtein("1, 2, 3");
-    dataAnalysis.setType(DataAnalysis.Type.PROTEIN);
+    dataAnalysis.setType(DataAnalysisType.PROTEIN);
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
@@ -101,7 +101,7 @@ public class DataAnalysisActivityServiceTest {
     entityManager.detach(dataAnalysis);
     entityManager.detach(dataAnalysis.getSample());
     dataAnalysis.setScore("90.0");
-    dataAnalysis.setStatus(DataAnalysis.Status.ANALYSED);
+    dataAnalysis.setStatus(DataAnalysisStatus.ANALYSED);
     dataAnalysis.setWorkTime(2.0);
     dataAnalysis.getSample().setStatus(SampleStatus.ANALYSED);
     User user = new User(1L);
@@ -140,8 +140,8 @@ public class DataAnalysisActivityServiceTest {
     statusUpdate.setTableName("dataanalysis");
     statusUpdate.setRecordId(dataAnalysis.getId());
     statusUpdate.setColumn("status");
-    statusUpdate.setOldValue(DataAnalysis.Status.TO_DO.name());
-    statusUpdate.setNewValue(DataAnalysis.Status.ANALYSED.name());
+    statusUpdate.setOldValue(DataAnalysisStatus.TO_DO.name());
+    statusUpdate.setNewValue(DataAnalysisStatus.ANALYSED.name());
     expecteds.add(statusUpdate);
     UpdateActivity workTimeUpdate = new UpdateActivity();
     workTimeUpdate.setActionType(ActionType.UPDATE);
@@ -160,7 +160,7 @@ public class DataAnalysisActivityServiceTest {
     entityManager.detach(dataAnalysis);
     entityManager.detach(dataAnalysis.getSample());
     dataAnalysis.setScore(null);
-    dataAnalysis.setStatus(DataAnalysis.Status.TO_DO);
+    dataAnalysis.setStatus(DataAnalysisStatus.TO_DO);
     dataAnalysis.setWorkTime(null);
     dataAnalysis.getSample().setStatus(SampleStatus.DATA_ANALYSIS);
     User user = new User(1L);
@@ -199,8 +199,8 @@ public class DataAnalysisActivityServiceTest {
     statusUpdate.setTableName("dataanalysis");
     statusUpdate.setRecordId(dataAnalysis.getId());
     statusUpdate.setColumn("status");
-    statusUpdate.setOldValue(DataAnalysis.Status.ANALYSED.name());
-    statusUpdate.setNewValue(DataAnalysis.Status.TO_DO.name());
+    statusUpdate.setOldValue(DataAnalysisStatus.ANALYSED.name());
+    statusUpdate.setNewValue(DataAnalysisStatus.TO_DO.name());
     expecteds.add(statusUpdate);
     UpdateActivity workTimeUpdate = new UpdateActivity();
     workTimeUpdate.setActionType(ActionType.UPDATE);

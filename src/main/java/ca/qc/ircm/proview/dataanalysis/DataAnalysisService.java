@@ -24,6 +24,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -106,6 +107,25 @@ public class DataAnalysisService {
   }
 
   /**
+   * Selects all data analyses asked for any of submission's samples.
+   *
+   * @param submission
+   *          submission
+   * @return all data analyses asked for any of submission's samples
+   */
+  public List<DataAnalysis> all(Submission submission) {
+    if (submission == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkSubmissionReadPermission(submission);
+
+    JPAQuery<DataAnalysis> query = queryFactory.select(dataAnalysis);
+    query.from(dataAnalysis);
+    query.where(dataAnalysis.sample.in(submission.getSamples()));
+    return query.fetch();
+  }
+
+  /**
    * Insert data analysis requests into database.
    * <p>
    * Sample's status is changed to {@link ca.qc.ircm.proview.sample.SampleStatus#DATA_ANALYSIS} .
@@ -122,7 +142,7 @@ public class DataAnalysisService {
       dataAnalysis.getSample().setStatus(SampleStatus.DATA_ANALYSIS);
 
       // Insert data analysis.
-      dataAnalysis.setStatus(DataAnalysis.Status.TO_DO);
+      dataAnalysis.setStatus(DataAnalysisStatus.TO_DO);
       entityManager.persist(dataAnalysis);
       entityManager.flush();
 
@@ -168,7 +188,7 @@ public class DataAnalysisService {
     JPAQuery<Long> query = queryFactory.select(dataAnalysis.id);
     query.from(dataAnalysis);
     query.where(dataAnalysis.sample.eq(dataAnalysisParam.getSample()));
-    query.where(dataAnalysis.status.eq(DataAnalysis.Status.TO_DO));
+    query.where(dataAnalysis.status.eq(DataAnalysisStatus.TO_DO));
     query.where(dataAnalysis.ne(dataAnalysisParam));
     return query.fetchCount() > 0;
   }
@@ -177,14 +197,14 @@ public class DataAnalysisService {
    * Changes data analysis results.
    * <p>
    * If data analysis's status is changed to
-   * {@link ca.qc.ircm.proview.dataanalysis.DataAnalysis.Status#TO_DO}, sample's status is changed
+   * {@link ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus#TO_DO}, sample's status is changed
    * to {@link ca.qc.ircm.proview.sample.SampleStatus#DATA_ANALYSIS} .
    * </p>
    * <p>
    * If data analysis's status is changed to
-   * {@link ca.qc.ircm.proview.dataanalysis.DataAnalysis.Status#ANALYSED} or
-   * {@link ca.qc.ircm.proview.dataanalysis.DataAnalysis.Status#CANCELLED} and sample has no more
-   * data analyses with {@link ca.qc.ircm.proview.dataanalysis.DataAnalysis.Status#TO_DO} status,
+   * {@link ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus#ANALYSED} or
+   * {@link ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus#CANCELLED} and sample has no more
+   * data analyses with {@link ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus#TO_DO} status,
    * sample's status is changed to {@link ca.qc.ircm.proview.sample.SampleStatus#ANALYSED} .
    * </p>
    *
@@ -197,7 +217,7 @@ public class DataAnalysisService {
     authorizationService.checkAdminRole();
 
     // Update sample status.
-    if (dataAnalysis.getStatus() != DataAnalysis.Status.TO_DO
+    if (dataAnalysis.getStatus() != DataAnalysisStatus.TO_DO
         && !existsTodoBySampleWithExclude(dataAnalysis)) {
       dataAnalysis.getSample().setStatus(SampleStatus.ANALYSED);
     } else {
