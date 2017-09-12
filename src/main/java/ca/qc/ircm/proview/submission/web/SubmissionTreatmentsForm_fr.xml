@@ -21,6 +21,7 @@
 <properties>
   <entry key="samplesPanel">Échantillons</entry>
   <entry key="samples.name">Nom</entry>
+  <entry key="samples.lastContainer">Dernier contenant</entry>
   <entry key="transfersPanel">Transferts</entry>
   <entry key="transfers.sample">Échantillon</entry>
   <entry key="transfers.container">Contenant</entry>

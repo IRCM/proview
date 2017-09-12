@@ -38,6 +38,7 @@ import ca.qc.ircm.proview.enrichment.EnrichmentService;
 import ca.qc.ircm.proview.fractionation.FractionationDetail;
 import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.fractionation.FractionationType;
+import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.solubilisation.SolubilisationService;
 import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
 import ca.qc.ircm.proview.standard.AddedStandard;
@@ -67,7 +68,9 @@ import javax.inject.Inject;
 public class SubmissionTreatmentsFormPresenter implements BinderValidator {
   public static final String SAMPLES_PANEL = "samplesPanel";
   public static final String SAMPLES = QSubmission.submission.samples.getMetadata().getName();
-  public static final String SAMPLES_NAME = submissionSample.name.getMetadata().getName();
+  public static final String SAMPLES_NAME =
+      SAMPLES + "." + submissionSample.name.getMetadata().getName();
+  public static final String SAMPLES_LAST_CONTAINER = SAMPLES + "." + "lastContainer";
   public static final String TRANSFERS_PANEL = "transfersPanel";
   public static final String TRANSFERS = "transfers";
   public static final String TRANSFER_SAMPLE =
@@ -152,6 +155,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
   private SubmissionTreatmentsForm view;
   private Submission submission;
   @Inject
+  private SampleContainerService sampleContainerService;
+  @Inject
   private SolubilisationService solubilisationService;
   @Inject
   private DigestionService digestionService;
@@ -169,10 +174,12 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
   protected SubmissionTreatmentsFormPresenter() {
   }
 
-  protected SubmissionTreatmentsFormPresenter(SolubilisationService solubilisationService,
-      DigestionService digestionService, EnrichmentService enrichmentService,
-      DilutionService dilutionService, StandardAdditionService standardAdditionService,
-      FractionationService fractionationService, TransferService transferService) {
+  protected SubmissionTreatmentsFormPresenter(SampleContainerService sampleContainerService,
+      SolubilisationService solubilisationService, DigestionService digestionService,
+      EnrichmentService enrichmentService, DilutionService dilutionService,
+      StandardAdditionService standardAdditionService, FractionationService fractionationService,
+      TransferService transferService) {
+    this.sampleContainerService = sampleContainerService;
     this.solubilisationService = solubilisationService;
     this.digestionService = digestionService;
     this.enrichmentService = enrichmentService;
@@ -232,8 +239,10 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
 
   private void prepareSamplesGrid() {
     MessageResource resources = view.getResources();
-    view.samples.addColumn(ts -> ts.getName()).setId(SAMPLES_NAME)
-        .setCaption(resources.message(SAMPLES + "." + SAMPLES_NAME));
+    view.samples.addColumn(sa -> sa.getName()).setId(SAMPLES_NAME)
+        .setCaption(resources.message(SAMPLES_NAME));
+    view.samples.addColumn(sa -> sampleContainerService.last(sa).getFullName())
+        .setId(SAMPLES_LAST_CONTAINER).setCaption(resources.message(SAMPLES_LAST_CONTAINER));
   }
 
   private void prepareTransfersGrid() {

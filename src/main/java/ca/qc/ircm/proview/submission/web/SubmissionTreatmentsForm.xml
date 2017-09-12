@@ -21,6 +21,7 @@
 <properties>
   <entry key="samplesPanel">Samples</entry>
   <entry key="samples.name">Name</entry>
+  <entry key="samples.lastContainer">Last container</entry>
   <entry key="transfersPanel">Transfers</entry>
   <entry key="transfers.sample">Sample</entry>
   <entry key="transfers.container">Container</entry>

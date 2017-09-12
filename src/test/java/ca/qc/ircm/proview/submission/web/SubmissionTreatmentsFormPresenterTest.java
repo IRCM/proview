@@ -46,6 +46,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresente
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.FRACTIONATION_TYPE;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.FRACTIONATION_TYPE_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SAMPLES;
+import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SAMPLES_LAST_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SAMPLES_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SOLUBILISATIONS;
@@ -92,6 +93,7 @@ import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -128,6 +130,8 @@ public class SubmissionTreatmentsFormPresenterTest {
   private SubmissionTreatmentsFormPresenter presenter;
   @Mock
   private SubmissionTreatmentsForm view;
+  @Mock
+  private SampleContainerService sampleContainerService;
   @Mock
   private SolubilisationService solubilisationService;
   @Mock
@@ -187,9 +191,9 @@ public class SubmissionTreatmentsFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionTreatmentsFormPresenter(solubilisationService, digestionService,
-        enrichmentService, dilutionService, standardAdditionService, fractionationService,
-        transferService);
+    presenter = new SubmissionTreatmentsFormPresenter(sampleContainerService, solubilisationService,
+        digestionService, enrichmentService, dilutionService, standardAdditionService,
+        fractionationService, transferService);
     view.samplesPanel = new Panel();
     view.samples = new Grid<>();
     view.solubilisationsPanel = new Panel();
@@ -406,6 +410,10 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateTransfer.setTreatmentSamples(Arrays.asList(plateTransferedSample));
     when(transferService.all(any(Submission.class)))
         .thenReturn(Arrays.asList(tubeTransfer, plateTransfer));
+    when(sampleContainerService.last(sample1))
+        .thenReturn(tubeTransferedSample.getDestinationContainer());
+    when(sampleContainerService.last(sample2))
+        .thenReturn(plateTransferedSample.getDestinationContainer());
   }
 
   @SuppressWarnings("unchecked")
@@ -457,14 +465,21 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setBean(submission);
 
-    assertEquals(1, view.samples.getColumns().size());
+    assertEquals(2, view.samples.getColumns().size());
     assertEquals(SAMPLES_NAME, view.samples.getColumns().get(0).getId());
-    assertEquals(resources.message(SAMPLES + "." + SAMPLES_NAME),
+    assertEquals(SAMPLES_LAST_CONTAINER, view.samples.getColumns().get(1).getId());
+    assertEquals(resources.message(SAMPLES_NAME),
         view.samples.getColumn(SAMPLES_NAME).getCaption());
     assertEquals(sample1.getName(),
         view.samples.getColumn(SAMPLES_NAME).getValueProvider().apply(sample1));
     assertEquals(sample2.getName(),
         view.samples.getColumn(SAMPLES_NAME).getValueProvider().apply(sample2));
+    assertEquals(resources.message(SAMPLES_LAST_CONTAINER),
+        view.samples.getColumn(SAMPLES_LAST_CONTAINER).getCaption());
+    assertEquals(tubeTransferedSample.getDestinationContainer().getFullName(),
+        view.samples.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample1));
+    assertEquals(plateTransferedSample.getDestinationContainer().getFullName(),
+        view.samples.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample2));
 
     Collection<SubmissionSample> samples = dataProvider(view.samples).getItems();
     assertEquals(2, samples.size());
