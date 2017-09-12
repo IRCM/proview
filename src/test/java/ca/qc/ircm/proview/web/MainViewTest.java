@@ -28,7 +28,6 @@ import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +76,6 @@ public class MainViewTest extends MainPageObject {
   }
 
   @Test
-  @Ignore("not programmed yet")
   public void sign_Admin() throws Throwable {
     open();
     setSignUsername("proview@ircm.qc.ca");
@@ -85,7 +83,7 @@ public class MainViewTest extends MainPageObject {
 
     clickSignButton();
 
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
