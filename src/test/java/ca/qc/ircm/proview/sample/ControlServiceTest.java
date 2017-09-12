@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -42,6 +43,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -131,6 +133,17 @@ public class ControlServiceTest {
     control.setSupport(SampleSupport.GEL);
     control.setVolume(20.0);
     control.setQuantity("12.0 μg");
+    control.setStandards(new ArrayList<>());
+    Standard standard1 = new Standard();
+    standard1.setName("std1");
+    standard1.setQuantity("1 ug");
+    standard1.setComments("com1");
+    control.getStandards().add(standard1);
+    Standard standard2 = new Standard();
+    standard2.setName("std2");
+    standard2.setQuantity("2 ug");
+    standard2.setComments("com2");
+    control.getStandards().add(standard2);
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
         .thenReturn("nc_test_000001");
     when(sampleActivityService.insertControl(any(Control.class))).thenReturn(activity);
@@ -149,14 +162,34 @@ public class ControlServiceTest {
     assertEquals(SampleSupport.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
     assertEquals("12.0 μg", testControl.getQuantity());
-    assertEquals(0, testControl.getStandards().size());
+    assertEquals(2, testControl.getStandards().size());
+    Standard standard = testControl.getStandards().get(0);
+    assertNotNull(standard.getId());
+    assertEquals("std1", standard.getName());
+    assertEquals("1 ug", standard.getQuantity());
+    assertEquals("com1", standard.getComments());
+    standard = testControl.getStandards().get(1);
+    assertNotNull(standard.getId());
+    assertEquals("std2", standard.getName());
+    assertEquals("2 ug", standard.getQuantity());
+    assertEquals("com2", standard.getComments());
     // Validate log.
     testControl = controlCaptor.getValue();
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(SampleSupport.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());
     assertEquals("12.0 μg", testControl.getQuantity());
-    assertEquals(true, testControl.getStandards() == null || testControl.getStandards().isEmpty());
+    assertEquals(2, testControl.getStandards().size());
+    standard = testControl.getStandards().get(0);
+    assertNotNull(standard.getId());
+    assertEquals("std1", standard.getName());
+    assertEquals("1 ug", standard.getQuantity());
+    assertEquals("com1", standard.getComments());
+    standard = testControl.getStandards().get(1);
+    assertNotNull(standard.getId());
+    assertEquals("std2", standard.getName());
+    assertEquals("2 ug", standard.getQuantity());
+    assertEquals("com2", standard.getComments());
   }
 
   @Test
