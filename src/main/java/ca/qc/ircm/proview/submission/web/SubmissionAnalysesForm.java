@@ -17,23 +17,35 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
 
 /**
  * Submission results form.
  */
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionAnalysesForm extends SubmissionAnalysesFormDesign implements BaseComponent {
   private static final long serialVersionUID = 3301905236780067587L;
+  @Inject
   private transient SubmissionAnalysesFormPresenter presenter;
-
-  public void setPresenter(SubmissionAnalysesFormPresenter presenter) {
-    this.presenter = presenter;
-  }
 
   @Override
   public void attach() {
     super.attach();
-    removeAllComponents();
     presenter.init(this);
+  }
+
+  public Submission getBean() {
+    return presenter.getBean();
+  }
+
+  public void setBean(Submission submission) {
+    presenter.setBean(submission);
   }
 }

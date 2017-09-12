@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 
+import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisService;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
@@ -95,6 +96,12 @@ public class SubmissionAnalysesFormPresenter {
     this.dataAnalysisService = dataAnalysisService;
   }
 
+  /**
+   * Initializes presenter.
+   *
+   * @param view
+   *          view
+   */
   public void init(SubmissionAnalysesForm view) {
     this.view = view;
     prepareComponents();
@@ -128,11 +135,10 @@ public class SubmissionAnalysesFormPresenter {
     return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();
   }
 
-  private void createAnalysisPanel(MsAnalysis analysis, float expand) {
+  private void createAnalysisPanel(MsAnalysis analysis) {
     final MessageResource resources = view.getResources();
     Panel panel = new Panel();
     view.analysesLayout.addComponent(panel);
-    view.setExpandRatio(panel, expand);
     VerticalLayout layout = new VerticalLayout();
     layout.setSizeFull();
     panel.setContent(layout);
@@ -154,23 +160,19 @@ public class SubmissionAnalysesFormPresenter {
     layout.addComponent(grid);
   }
 
-  public Submission getBean() {
+  Submission getBean() {
     return submission;
   }
 
-  /**
-   * Sets submission.
-   *
-   * @param submission
-   *          submission
-   */
-  public void setBean(Submission submission) {
+  void setBean(Submission submission) {
     this.submission = submission;
     List<MsAnalysis> analyses = msAnalysisService.all(submission);
     view.analysesLayout.removeAllComponents();
     analyses.forEach(analysis -> {
-      createAnalysisPanel(analysis, (float) 1.0 / analyses.size());
+      createAnalysisPanel(analysis);
     });
-    view.dataAnalyses.setItems(dataAnalysisService.all(submission));
+    List<DataAnalysis> dataAnalyses = dataAnalysisService.all(submission);
+    view.dataAnalyses.setItems(dataAnalyses);
+    view.dataAnalysesPanel.setVisible(!dataAnalyses.isEmpty());
   }
 }

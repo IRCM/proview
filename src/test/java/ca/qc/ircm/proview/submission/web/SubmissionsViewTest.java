@@ -145,7 +145,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
 
     clickViewSubmissionTreatmentsByRow(2);
 
-    Thread.sleep(5000);
     assertNotNull(findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));

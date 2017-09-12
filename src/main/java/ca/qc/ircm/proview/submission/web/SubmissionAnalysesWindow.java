@@ -40,14 +40,12 @@ public class SubmissionAnalysesWindow extends Window implements BaseComponent {
   public static final String TITLE = "title";
   private static final long serialVersionUID = 4789125002422549258L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionAnalysesWindow.class);
-  private SubmissionAnalysesForm view = new SubmissionAnalysesForm();
   private Panel panel;
   @Inject
-  private SubmissionAnalysesFormPresenter presenter;
+  private SubmissionAnalysesForm view;
 
   @PostConstruct
   protected void init() {
-    view.setPresenter(presenter);
     addStyleName(WINDOW_STYLE);
     panel = new Panel();
     setContent(panel);
@@ -80,6 +78,6 @@ public class SubmissionAnalysesWindow extends Window implements BaseComponent {
   private void updateSubmission(Submission submission) {
     logger.debug("Submission analyses window for submission {}", submission);
     setCaption(getResources().message(TITLE, submission.getExperience()));
-    presenter.setBean(submission);
+    view.setBean(submission);
   }
 }

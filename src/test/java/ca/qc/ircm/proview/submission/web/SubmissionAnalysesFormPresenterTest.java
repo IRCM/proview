@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -45,6 +46,7 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Panel;
@@ -63,6 +65,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -109,6 +113,11 @@ public class SubmissionAnalysesFormPresenterTest {
     dataAnalyses.add(entityManager.find(DataAnalysis.class, 3L));
     dataAnalyses.add(entityManager.find(DataAnalysis.class, 4L));
     when(dataAnalysisService.all(any(Submission.class))).thenReturn(dataAnalyses);
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T> ListDataProvider<T> dataProvider(Grid<T> grid) {
+    return (ListDataProvider<T>) grid.getDataProvider();
   }
 
   private LocalDate date(Instant instant) {
@@ -167,7 +176,7 @@ public class SubmissionAnalysesFormPresenterTest {
   }
 
   @Test
-  public void grids() {
+  public void msAnalysisGrids() {
     presenter.init(view);
     presenter.setBean(submission);
 
@@ -241,5 +250,21 @@ public class SubmissionAnalysesFormPresenterTest {
         view.dataAnalyses.getColumn(STATUS).getValueProvider().apply(dataAnalysis1));
     assertEquals(dataAnalysis2.getStatus().getLabel(locale),
         view.dataAnalyses.getColumn(STATUS).getValueProvider().apply(dataAnalysis2));
+
+    assertTrue(view.dataAnalysesPanel.isVisible());
+    Collection<DataAnalysis> dataAnalyses = dataProvider(view.dataAnalyses).getItems();
+    assertEquals(2, dataAnalyses.size());
+    assertTrue(dataAnalyses.contains(dataAnalysis1));
+    assertTrue(dataAnalyses.contains(dataAnalysis2));
+  }
+
+  @Test
+  public void dataAnalysesGrid_Empty() {
+    when(dataAnalysisService.all(any(Submission.class))).thenReturn(Collections.emptyList());
+
+    presenter.init(view);
+    presenter.setBean(submission);
+
+    assertFalse(view.dataAnalysesPanel.isVisible());
   }
 }
