@@ -27,6 +27,7 @@ import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.ControlType;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.GridSortOrderBuilder;
@@ -53,6 +54,7 @@ public class SampleSelectionFormPresenter {
   public static final String CONTROLS = "controls";
   public static final String NAME = sample.name.getMetadata().getName();
   public static final String STATUS = submissionSample.status.getMetadata().getName();
+  public static final String SAMPLES_LAST_CONTAINER = "lastContainer";
   public static final String CONTROL_TYPE = control.controlType.getMetadata().getName();
   public static final String ORIGINAL_CONTAINER = sample.originalContainer.getMetadata().getName();
   public static final String ORIGINAL_CONTAINER_NAME =
@@ -65,12 +67,16 @@ public class SampleSelectionFormPresenter {
   private SampleSelectionForm view;
   private List<Sample> selectedSamples = new ArrayList<>();
   @Inject
+  private SampleContainerService sampleContainerService;
+  @Inject
   private ControlService controlService;
 
   protected SampleSelectionFormPresenter() {
   }
 
-  protected SampleSelectionFormPresenter(ControlService controlService) {
+  protected SampleSelectionFormPresenter(SampleContainerService sampleContainerService,
+      ControlService controlService) {
+    this.sampleContainerService = sampleContainerService;
     this.controlService = controlService;
   }
 
@@ -98,6 +104,8 @@ public class SampleSelectionFormPresenter {
         .setCaption(resources.message(EXPERIENCE));
     view.samplesGrid.addColumn(sample -> sample.getStatus().getLabel(locale)).setId(STATUS)
         .setCaption(resources.message(STATUS));
+    view.samplesGrid.addColumn(sample -> sampleContainerService.last(sample).getFullName())
+        .setId(SAMPLES_LAST_CONTAINER).setCaption(resources.message(SAMPLES_LAST_CONTAINER));
     view.samplesGrid.setSelectionMode(SelectionMode.MULTI);
     view.samplesGrid.setFrozenColumnCount(1);
     view.samplesGrid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>()

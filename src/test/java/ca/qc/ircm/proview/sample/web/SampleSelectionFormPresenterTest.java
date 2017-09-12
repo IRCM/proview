@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.EXPERIE
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.ORIGINAL_CONTAINER_NAME;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES;
+import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_LAST_CONTAINER;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SELECT;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
@@ -33,11 +34,16 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.SelectionModel;
@@ -71,6 +77,8 @@ public class SampleSelectionFormPresenterTest {
   @Mock
   private SampleSelectionForm view;
   @Mock
+  private SampleContainerService sampleContainerService;
+  @Mock
   private ControlService controlService;
   @Mock
   private SaveListener<List<Sample>> saveListener;
@@ -82,16 +90,17 @@ public class SampleSelectionFormPresenterTest {
   private EntityManager entityManager;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SampleSelectionForm.class, locale);
-  private List<SubmissionSample> selectedSamples = new ArrayList<>();
-  private List<SubmissionSample> allSamples = new ArrayList<>();
-  private List<Control> controls = new ArrayList<>();
+  private List<SubmissionSample> selectedSamples;
+  private List<SubmissionSample> allSamples;
+  private List<Control> controls;
+  private List<SampleContainer> lastContainers;
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() {
-    presenter = new SampleSelectionFormPresenter(controlService);
+    presenter = new SampleSelectionFormPresenter(sampleContainerService, controlService);
     view.samplesPanel = new Panel();
     view.samplesGrid = new Grid<>();
     view.controlsPanel = new Panel();
@@ -100,11 +109,20 @@ public class SampleSelectionFormPresenterTest {
     view.selectButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    selectedSamples = new ArrayList<>();
     selectedSamples.add(entityManager.find(SubmissionSample.class, 442L));
     selectedSamples.add(entityManager.find(SubmissionSample.class, 627L));
+    PlateSpot well = new PlateSpot(1, 2);
+    well.setPlate(new Plate(10L, "test_plate"));
+    lastContainers = new ArrayList<>();
+    lastContainers.add(well);
+    lastContainers.add(new Tube(10L, "test_tube"));
+    when(sampleContainerService.last(selectedSamples.get(0))).thenReturn(lastContainers.get(0));
+    when(sampleContainerService.last(selectedSamples.get(1))).thenReturn(lastContainers.get(1));
     allSamples =
         selectedSamples.stream().flatMap(sample -> sample.getSubmission().getSamples().stream())
             .collect(Collectors.toList());
+    controls = new ArrayList<>();
     controls.add(entityManager.find(Control.class, 444L));
     controls.add(entityManager.find(Control.class, 448L));
   }
@@ -133,17 +151,6 @@ public class SampleSelectionFormPresenterTest {
     presenter.init(view);
 
     assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
-    SubmissionSample sample = selectedSamples.get(0);
-    assertEquals(resources.message(NAME), view.samplesGrid.getColumn(NAME).getCaption());
-    assertEquals(sample.getName(),
-        view.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
-    assertEquals(resources.message(EXPERIENCE),
-        view.samplesGrid.getColumn(EXPERIENCE).getCaption());
-    assertEquals(sample.getSubmission().getExperience(),
-        view.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
-    assertEquals(resources.message(STATUS), view.samplesGrid.getColumn(STATUS).getCaption());
-    assertEquals(sample.getStatus().getLabel(locale),
-        view.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
     assertEquals(resources.message(CONTROLS_PANEL), view.controlsPanel.getCaption());
     Control control = controls.get(0);
     assertEquals(resources.message(NAME), view.controlsGrid.getColumn(NAME).getCaption());
@@ -162,7 +169,7 @@ public class SampleSelectionFormPresenterTest {
   }
 
   @Test
-  public void samplesGridColumns() {
+  public void samplesGrid() {
     presenter.init(view);
 
     List<Column<SubmissionSample, ?>> columns = view.samplesGrid.getColumns();
@@ -172,6 +179,30 @@ public class SampleSelectionFormPresenterTest {
     assertEquals(EXPERIENCE, columns.get(1).getId());
     assertEquals(STATUS, columns.get(2).getId());
     assertEquals(1, view.samplesGrid.getFrozenColumnCount());
+    assertEquals(resources.message(NAME), view.samplesGrid.getColumn(NAME).getCaption());
+    assertEquals(resources.message(EXPERIENCE),
+        view.samplesGrid.getColumn(EXPERIENCE).getCaption());
+    assertEquals(resources.message(STATUS), view.samplesGrid.getColumn(STATUS).getCaption());
+    assertEquals(resources.message(SAMPLES_LAST_CONTAINER),
+        view.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getCaption());
+    SubmissionSample sample = selectedSamples.get(0);
+    assertEquals(sample.getName(),
+        view.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
+    assertEquals(sample.getSubmission().getExperience(),
+        view.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
+    assertEquals(sample.getStatus().getLabel(locale),
+        view.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
+    assertEquals(lastContainers.get(0).getFullName(),
+        view.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample));
+    sample = selectedSamples.get(1);
+    assertEquals(sample.getName(),
+        view.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
+    assertEquals(sample.getSubmission().getExperience(),
+        view.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
+    assertEquals(sample.getStatus().getLabel(locale),
+        view.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
+    assertEquals(lastContainers.get(1).getFullName(),
+        view.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample));
   }
 
   @Test
