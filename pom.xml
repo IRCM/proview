@@ -74,7 +74,7 @@
     <selenium.version>3.0.1</selenium.version>
     <greenmail.version>1.5.2</greenmail.version>
     <testbench.skip>true</testbench.skip>
-    <testbench.driver>org.openqa.selenium.firefox.FirefoxDriver</testbench.driver>
+    <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
     <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
     <resources-plugin.version>2.6</resources-plugin.version>
     <staticweave-maven-plugin.version>1.0.0</staticweave-maven-plugin.version>
