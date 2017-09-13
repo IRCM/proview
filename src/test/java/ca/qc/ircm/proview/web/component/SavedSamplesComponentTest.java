@@ -122,7 +122,7 @@ public class SavedSamplesComponentTest {
     when(session.getAttribute(any(String.class))).thenReturn(samples);
     final int size = samples.size();
     Collection<Sample> samples = component.savedSamples();
-    samples.remove(0);
+    samples.remove(samples.iterator().next());
 
     samples = component.savedSamples();
 
