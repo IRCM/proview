@@ -25,17 +25,14 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
-import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
 import ca.qc.ircm.proview.msanalysis.AcquisitionMascotFile;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.test.utils.ComparableUpdateActivity;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
@@ -51,12 +48,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -263,33 +258,6 @@ public class ActivityServiceTest {
   }
 
   @Test
-  public void allInsertActivities_Sample() throws Exception {
-    Sample sample = new SubmissionSample(442L);
-
-    List<Activity> activities = activityService.allInsertActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertFalse(activities.isEmpty());
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals(null, activity.getJustification());
-    assertEquals((Long) 32L, activity.getRecordId());
-    assertEquals("submission", activity.getTableName());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 13, 10, 36, 33).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(0, activity.getUpdates().size());
-    assertEquals((Long) 3L, activity.getUser().getId());
-  }
-
-  @Test
-  public void allInsertActivities_NullSample() throws Exception {
-    List<Activity> activities = activityService.allInsertActivities((Sample) null);
-
-    assertTrue(activities.isEmpty());
-  }
-
-  @Test
   public void allInsertActivities_Plate() throws Exception {
     Plate plate = new Plate(26L);
 
@@ -312,40 +280,6 @@ public class ActivityServiceTest {
   @Test
   public void allInsertActivities_NullPlate() throws Exception {
     List<Activity> activities = activityService.allInsertActivities((Plate) null);
-
-    assertTrue(activities.isEmpty());
-  }
-
-  @Test
-  public void allUpdateActivities() throws Exception {
-    SubmissionSample sample = new SubmissionSample(442L);
-
-    List<Activity> activities = activityService.allUpdateActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    assertFalse(activities.isEmpty());
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals(null, activity.getJustification());
-    assertEquals((Long) 4L, activity.getRecordId());
-    assertEquals("dataanalysis", activity.getTableName());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 14, 14, 24, 23).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(1, activity.getUpdates().size());
-    assertEquals((Long) 2L, activity.getUser().getId());
-    UpdateActivity updateActivity = activity.getUpdates().get(0);
-    assertEquals("sample", updateActivity.getTableName());
-    assertEquals(sample.getId(), updateActivity.getRecordId());
-    assertEquals(ActionType.UPDATE, updateActivity.getActionType());
-    assertEquals("status", updateActivity.getColumn());
-    assertEquals(SampleStatus.ANALYSED.name(), updateActivity.getOldValue());
-    assertEquals(SampleStatus.DATA_ANALYSIS.name(), updateActivity.getNewValue());
-  }
-
-  @Test
-  public void allUpdateActivities_Null() throws Exception {
-    List<Activity> activities = activityService.allUpdateActivities(null);
 
     assertTrue(activities.isEmpty());
   }
@@ -382,165 +316,6 @@ public class ActivityServiceTest {
     List<Activity> activities = activityService.allUpdateSpotActivities(null);
 
     assertTrue(activities.isEmpty());
-  }
-
-  @Test
-  public void allTreatmentActivities_Sample_Digestion() throws Exception {
-    Sample sample = new SubmissionSample(559L);
-
-    List<Activity> activities = activityService.allTreatmentActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("treatment", activity.getTableName());
-    assertEquals((Long) 195L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2014, 10, 8, 10, 42, 26).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(0, activity.getUpdates().size());
-    assertEquals((Long) 4L, activity.getUser().getId());
-  }
-
-  @Test
-  public void allTreatmentActivities_Sample_Dilution() throws Exception {
-    Sample sample = new SubmissionSample(569L);
-
-    List<Activity> activities = activityService.allTreatmentActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("treatment", activity.getTableName());
-    assertEquals((Long) 210L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2014, 10, 9, 12, 20, 50).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(0, activity.getUpdates().size());
-    assertEquals((Long) 4L, activity.getUser().getId());
-  }
-
-  @Test
-  public void allTreatmentActivities_Sample_Enrichment() throws Exception {
-    Sample sample = new SubmissionSample(579L);
-
-    List<Activity> activities = activityService.allTreatmentActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("treatment", activity.getTableName());
-    assertEquals((Long) 223L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2014, 10, 14, 14, 7, 16).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(0, activity.getUpdates().size());
-    assertEquals((Long) 4L, activity.getUser().getId());
-  }
-
-  @Test
-  public void allTreatmentActivities_Sample_Solubilisation() throws Exception {
-    Sample sample = new SubmissionSample(589L);
-
-    List<Activity> activities = activityService.allTreatmentActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("treatment", activity.getTableName());
-    assertEquals((Long) 236L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2014, 10, 15, 9, 57, 51).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(0, activity.getUpdates().size());
-    assertEquals((Long) 4L, activity.getUser().getId());
-  }
-
-  @Test
-  public void allTreatmentActivities_Sample_StandardAdition() throws Exception {
-    Sample sample = new SubmissionSample(599L);
-
-    List<Activity> activities = activityService.allTreatmentActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("treatment", activity.getTableName());
-    assertEquals((Long) 248L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2014, 10, 15, 13, 45, 42).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(0, activity.getUpdates().size());
-    assertEquals((Long) 4L, activity.getUser().getId());
-  }
-
-  @Test
-  public void allTreatmentActivities_Sample_Fractionation() throws Exception {
-    Sample sample = new SubmissionSample(628L);
-
-    List<Activity> activities = activityService.allTreatmentActivities(sample);
-
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("treatment", activity.getTableName());
-    assertEquals((Long) 300L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2014, 10, 22, 9, 55, 29).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals((Long) 4L, activity.getUser().getId());
-    assertEquals(2, activity.getUpdates().size());
-    UpdateActivity updateActivity = activity.getUpdates().get(0);
-    assertEquals("samplecontainer", updateActivity.getTableName());
-    assertEquals((Long) 1473L, updateActivity.getRecordId());
-    assertEquals(ActionType.UPDATE, updateActivity.getActionType());
-    assertEquals("sampleId", updateActivity.getColumn());
-    assertEquals(null, updateActivity.getOldValue());
-    assertEquals(sample.getId().toString(), updateActivity.getNewValue());
-    updateActivity = activity.getUpdates().get(1);
-    assertEquals("samplecontainer", updateActivity.getTableName());
-    assertEquals((Long) 1485L, updateActivity.getRecordId());
-    assertEquals(ActionType.UPDATE, updateActivity.getActionType());
-    assertEquals("sampleId", updateActivity.getColumn());
-    assertEquals(null, updateActivity.getOldValue());
-    assertEquals(sample.getId().toString(), updateActivity.getNewValue());
-  }
-
-  @Test
-  public void allTreatmentActivities_Sample_Transfer() throws Exception {
-    Sample sample = new SubmissionSample(627L);
-
-    List<Activity> activities = activityService.allTreatmentActivities(sample);
-
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("treatment", activity.getTableName());
-    assertEquals((Long) 298L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2014, 10, 22, 9, 51, 27).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(1, activity.getUpdates().size());
-    assertEquals((Long) 4L, activity.getUser().getId());
-    UpdateActivity updateActivity = activity.getUpdates().get(0);
-    assertEquals("samplecontainer", updateActivity.getTableName());
-    assertEquals((Long) 1472L, updateActivity.getRecordId());
-    assertEquals(ActionType.UPDATE, updateActivity.getActionType());
-    assertEquals("sampleId", updateActivity.getColumn());
-    assertEquals(null, updateActivity.getOldValue());
-    assertEquals(sample.getId().toString(), updateActivity.getNewValue());
-  }
-
-  @Test
-  public void allTreatmentActivities_Sample_Null() throws Exception {
-    List<Activity> activities = activityService.allTreatmentActivities((Sample) null);
-
-    assertEquals(0, activities.size());
   }
 
   @Test
@@ -596,39 +371,6 @@ public class ActivityServiceTest {
   }
 
   @Test
-  public void allMsAnalysisActivities_Sample() throws Exception {
-    Sample sample = new SubmissionSample(627L);
-
-    List<Activity> activities = activityService.allMsAnalysisActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    Activity activity = activities.get(0);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("msanalysis", activity.getTableName());
-    assertEquals((Long) 22L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2014, 10, 22, 9, 49, 9).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(1, activity.getUpdates().size());
-    assertEquals((Long) 4L, activity.getUser().getId());
-    UpdateActivity updateActivity = activity.getUpdates().get(0);
-    assertEquals("sample", updateActivity.getTableName());
-    assertEquals(sample.getId(), updateActivity.getRecordId());
-    assertEquals(ActionType.UPDATE, updateActivity.getActionType());
-    assertEquals("status", updateActivity.getColumn());
-    assertEquals(SampleStatus.TO_ANALYSE.name(), updateActivity.getOldValue());
-    assertEquals(SampleStatus.ANALYSED.name(), updateActivity.getNewValue());
-  }
-
-  @Test
-  public void allMsAnalysisActivities_Sample_Null() throws Exception {
-    List<Activity> activities = activityService.allMsAnalysisActivities((Sample) null);
-
-    assertEquals(0, activities.size());
-  }
-
-  @Test
   public void allMsAnalysisActivities_Plate() throws Exception {
     Plate plate = new Plate(115L);
 
@@ -657,151 +399,6 @@ public class ActivityServiceTest {
   @Test
   public void allMsAnalysisActivities_Plate_Null() throws Exception {
     List<Activity> activities = activityService.allMsAnalysisActivities((Plate) null);
-
-    assertEquals(0, activities.size());
-  }
-
-  @Test
-  public void allDataAnalysisActivities_Insert() throws Exception {
-    Sample sample = new SubmissionSample(442L);
-
-    List<Activity> activities = activityService.allDataAnalysisActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("dataanalysis", activity.getTableName());
-    assertEquals((Long) 4L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 14, 14, 24, 23, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(1, activity.getUpdates().size());
-    assertEquals((Long) 2L, activity.getUser().getId());
-    UpdateActivity updateActivity = activity.getUpdates().get(0);
-    assertEquals("sample", updateActivity.getTableName());
-    assertEquals(sample.getId(), updateActivity.getRecordId());
-    assertEquals(ActionType.UPDATE, updateActivity.getActionType());
-    assertEquals("status", updateActivity.getColumn());
-    assertEquals(SampleStatus.ANALYSED.name(), updateActivity.getOldValue());
-    assertEquals(SampleStatus.DATA_ANALYSIS.name(), updateActivity.getNewValue());
-  }
-
-  @Test
-  public void allDataAnalysisActivities_Update() throws Exception {
-    Sample sample = new SubmissionSample(1L);
-
-    List<Activity> activities = activityService.allDataAnalysisActivities(sample);
-
-    Activity activity = activities.get(activities.size() - 2);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("dataanalysis", activity.getTableName());
-    assertEquals((Long) 3L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 14, 14, 24, 22, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(1, activity.getUpdates().size());
-    assertEquals((Long) 2L, activity.getUser().getId());
-    UpdateActivity updateActivity = activity.getUpdates().get(0);
-    assertEquals("sample", updateActivity.getTableName());
-    assertEquals(sample.getId(), updateActivity.getRecordId());
-    assertEquals(ActionType.UPDATE, updateActivity.getActionType());
-    assertEquals("status", updateActivity.getColumn());
-    assertEquals(SampleStatus.ANALYSED.name(), updateActivity.getOldValue());
-    assertEquals(SampleStatus.DATA_ANALYSIS.name(), updateActivity.getNewValue());
-    activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("dataanalysis", activity.getTableName());
-    assertEquals((Long) 3L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 14, 14, 24, 22, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals((Long) 2L, activity.getUser().getId());
-    final Set<ComparableUpdateActivity> expecteds = new HashSet<>();
-    UpdateActivity scoreUpdate = new UpdateActivity();
-    scoreUpdate.setActionType(ActionType.UPDATE);
-    scoreUpdate.setTableName("dataanalysis");
-    scoreUpdate.setRecordId(3L);
-    scoreUpdate.setColumn("score");
-    scoreUpdate.setOldValue(null);
-    scoreUpdate.setNewValue("123456: 95%");
-    expecteds.add(new ComparableUpdateActivity(scoreUpdate));
-    UpdateActivity statusUpdate = new UpdateActivity();
-    statusUpdate.setActionType(ActionType.UPDATE);
-    statusUpdate.setTableName("dataanalysis");
-    statusUpdate.setRecordId(3L);
-    statusUpdate.setColumn("status");
-    statusUpdate.setOldValue(DataAnalysisStatus.TO_DO.name());
-    statusUpdate.setNewValue(DataAnalysisStatus.ANALYSED.name());
-    expecteds.add(new ComparableUpdateActivity(statusUpdate));
-    UpdateActivity workTimeUpdate = new UpdateActivity();
-    workTimeUpdate.setActionType(ActionType.UPDATE);
-    workTimeUpdate.setTableName("dataanalysis");
-    workTimeUpdate.setRecordId(3L);
-    workTimeUpdate.setColumn("workTime");
-    workTimeUpdate.setOldValue(null);
-    workTimeUpdate.setNewValue("1.75");
-    expecteds.add(new ComparableUpdateActivity(workTimeUpdate));
-    UpdateActivity sampleStatusUpdate = new UpdateActivity();
-    sampleStatusUpdate.setActionType(ActionType.UPDATE);
-    sampleStatusUpdate.setTableName("sample");
-    sampleStatusUpdate.setRecordId(sample.getId());
-    sampleStatusUpdate.setColumn("status");
-    sampleStatusUpdate.setOldValue(SampleStatus.DATA_ANALYSIS.name());
-    sampleStatusUpdate.setNewValue(SampleStatus.ANALYSED.name());
-    expecteds.add(new ComparableUpdateActivity(sampleStatusUpdate));
-    Set<ComparableUpdateActivity> actuals = new HashSet<>();
-    for (UpdateActivity testUpdateActivity : activity.getUpdates()) {
-      ComparableUpdateActivity comparableUpdateActivity =
-          new ComparableUpdateActivity(testUpdateActivity);
-      actuals.add(new ComparableUpdateActivity(testUpdateActivity));
-      assertTrue("Activity " + comparableUpdateActivity + " not expected",
-          expecteds.contains(new ComparableUpdateActivity(testUpdateActivity)));
-    }
-    for (ComparableUpdateActivity expected : expecteds) {
-      assertTrue("Expected to find " + expected + " in sample update activity",
-          actuals.contains(expected));
-    }
-  }
-
-  @Test
-  public void allDataAnalysisActivities_Null() throws Exception {
-    List<Activity> activities = activityService.allDataAnalysisActivities(null);
-
-    assertEquals(0, activities.size());
-  }
-
-  @Test
-  public void allMascotFileActivities() {
-    Sample sample = new SubmissionSample(442L);
-
-    List<Activity> activities = activityService.allMascotFileActivities(sample);
-
-    verify(authorizationService).checkAdminRole();
-    Activity activity = activities.get(0);
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("acquisition_to_mascotfile", activity.getTableName());
-    assertEquals((Long) 1L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 17, 11, 56, 18, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals(1, activity.getUpdates().size());
-    assertEquals((Long) 2L, activity.getUser().getId());
-    UpdateActivity updateActivity = activity.getUpdates().get(0);
-    assertEquals("acquisition_to_mascotfile", updateActivity.getTableName());
-    assertEquals((Long) 1L, updateActivity.getRecordId());
-    assertEquals(ActionType.UPDATE, updateActivity.getActionType());
-    assertEquals("comments", updateActivity.getColumn());
-    assertEquals(null, updateActivity.getOldValue());
-    assertEquals("complete report", updateActivity.getNewValue());
-  }
-
-  @Test
-  public void allMascotFileActivities_Null() throws Exception {
-    List<Activity> activities = activityService.allMascotFileActivities(null);
 
     assertEquals(0, activities.size());
   }

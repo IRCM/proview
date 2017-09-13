@@ -22,11 +22,8 @@ import static ca.qc.ircm.proview.fractionation.QFractionationDetail.fractionatio
 import static ca.qc.ircm.proview.history.QActivity.activity;
 import static ca.qc.ircm.proview.history.QUpdateActivity.updateActivity;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
-import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMascotFile;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.plate.QPlateSpot.plateSpot;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.transfer.QSampleTransfer.sampleTransfer;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
@@ -233,44 +230,6 @@ public class ActivityService {
   }
 
   /**
-   * Selects all activities of sample's insertion into database. Normally, this should only one
-   * activity.
-   *
-   * @param sample
-   *          sample
-   * @return all activities of sample's insertion into database
-   */
-  public List<Activity> allInsertActivities(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    if (sample instanceof SubmissionSample) {
-      JPAQuery<Activity> query = queryFactory.select(activity);
-      query.from(activity);
-      query.leftJoin(activity.updates, updateActivity).fetch();
-      query.from(submission);
-      query.join(submission.samples, submissionSample);
-      query.where(activity.recordId.eq(submission.id));
-      query.where(activity.tableName.eq("submission"));
-      query.where(activity.actionType.eq(ActionType.INSERT));
-      query.where(submissionSample.eq((SubmissionSample) sample));
-      query.orderBy(activity.timestamp.asc());
-      return query.distinct().fetch();
-    } else {
-      JPAQuery<Activity> query = queryFactory.select(activity);
-      query.from(activity);
-      query.leftJoin(activity.updates, updateActivity).fetch();
-      query.where(activity.tableName.eq("sample"));
-      query.where(activity.actionType.eq(ActionType.INSERT));
-      query.where(activity.recordId.eq(sample.getId()));
-      query.orderBy(activity.timestamp.asc());
-      return query.distinct().fetch();
-    }
-  }
-
-  /**
    * Selects all activities of plate's insertion in database.
    *
    * @param plate
@@ -294,39 +253,6 @@ public class ActivityService {
   }
 
   /**
-   * Selects all activities of sample's update in database.
-   *
-   * @param sample
-   *          sample
-   * @return all activities of sample's update in database
-   */
-  public List<Activity> allUpdateActivities(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    final List<Activity> activities = new ArrayList<>();
-    JPAQuery<Activity> query = queryFactory.select(activity);
-    query.from(activity);
-    query.leftJoin(activity.updates, updateActivity).fetch();
-    query.where(activity.tableName.eq("sample"));
-    query.where(activity.actionType.eq(ActionType.UPDATE));
-    query.where(activity.recordId.eq(sample.getId()));
-    activities.addAll(query.distinct().fetch());
-    query = queryFactory.select(activity);
-    query.from(activity);
-    query.join(activity.updates, updateActivity).fetch();
-    query.where(updateActivity.tableName.eq("sample"));
-    query.where(activity.tableName.in("dataanalysis", "msanalysis"));
-    query.where(updateActivity.actionType.eq(ActionType.UPDATE));
-    query.where(updateActivity.recordId.eq(sample.getId()));
-    activities.addAll(query.distinct().fetch());
-    Collections.sort(activities, new ActivityComparator(ActivityComparator.Compare.TIMESTAMP));
-    return activities;
-  }
-
-  /**
    * Selects all activities of plate's spots updates in database.
    *
    * @param plate
@@ -347,32 +273,6 @@ public class ActivityService {
     query.where(activity.tableName.eq("plate"));
     query.where(updateActivity.tableName.eq("samplecontainer"));
     query.where(plateSpot.plate.eq(plate));
-    query.orderBy(activity.timestamp.asc());
-    return query.distinct().fetch();
-  }
-
-  /**
-   * Selects treatment activities for sample.
-   *
-   * @param sample
-   *          sample
-   * @return treatment activities
-   */
-  public List<Activity> allTreatmentActivities(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Activity> query = queryFactory.select(activity);
-    query.from(activity);
-    query.leftJoin(activity.updates, updateActivity).fetch();
-    query.from(treatment);
-    query.where(activity.recordId.eq(treatment.id));
-    query.from(treatmentSample);
-    query.where(treatmentSample.in(treatment.treatmentSamples));
-    query.where(activity.tableName.eq("treatment"));
-    query.where(treatmentSample.sample.eq(sample));
     query.orderBy(activity.timestamp.asc());
     return query.distinct().fetch();
   }
@@ -435,32 +335,6 @@ public class ActivityService {
   }
 
   /**
-   * Selects MS analysis activities for sample.
-   *
-   * @param sample
-   *          sample
-   * @return MS analysis activities
-   */
-  public List<Activity> allMsAnalysisActivities(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Activity> query = queryFactory.select(activity);
-    query.from(activity);
-    query.leftJoin(activity.updates, updateActivity).fetch();
-    query.from(msAnalysis);
-    query.where(activity.recordId.eq(msAnalysis.id));
-    query.from(acquisition);
-    query.where(msAnalysis.acquisitions.contains(acquisition));
-    query.where(activity.tableName.eq("msanalysis"));
-    query.where(acquisition.sample.eq(sample));
-    query.orderBy(activity.timestamp.asc());
-    return query.distinct().fetch();
-  }
-
-  /**
    * Selects MS analysis activities for plate.
    *
    * @param plate
@@ -484,56 +358,6 @@ public class ActivityService {
     query.where(plateSpot.eq(acquisition.container));
     query.where(activity.tableName.eq("msanalysis"));
     query.where(plateSpot.plate.eq(plate));
-    query.orderBy(activity.timestamp.asc());
-    return query.distinct().fetch();
-  }
-
-  /**
-   * Selects data analysis activities for sample.
-   *
-   * @param sample
-   *          sample
-   * @return data analysis activities
-   */
-  public List<Activity> allDataAnalysisActivities(Sample sample) {
-    if (sample == null || !(sample instanceof SubmissionSample)) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Activity> query = queryFactory.select(activity);
-    query.from(activity);
-    query.leftJoin(activity.updates, updateActivity).fetch();
-    query.from(dataAnalysis);
-    query.where(activity.recordId.eq(dataAnalysis.id));
-    query.where(activity.tableName.eq("dataanalysis"));
-    query.where(dataAnalysis.sample.eq((SubmissionSample) sample));
-    query.orderBy(activity.timestamp.asc());
-    return query.distinct().fetch();
-  }
-
-  /**
-   * Selects all Mascot file histories related to sample.
-   *
-   * @param sample
-   *          sample
-   * @return all Mascot file histories related to sample
-   */
-  public List<Activity> allMascotFileActivities(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Activity> query = queryFactory.select(activity);
-    query.from(activity);
-    query.leftJoin(activity.updates, updateActivity).fetch();
-    query.from(acquisitionMascotFile);
-    query.where(activity.recordId.eq(acquisitionMascotFile.id));
-    query.from(acquisition);
-    query.where(acquisition.eq(acquisitionMascotFile.acquisition));
-    query.where(activity.tableName.eq("acquisition_to_mascotfile"));
-    query.where(acquisition.sample.eq(sample));
     query.orderBy(activity.timestamp.asc());
     return query.distinct().fetch();
   }
