@@ -79,7 +79,8 @@ address:
   country: Canada
   postalCode: H2W 1R7
 
-logging.file: ${spring.application.name}.log
+logging:
+  file: ${spring.application.name}.log
 
 ---
 spring:
