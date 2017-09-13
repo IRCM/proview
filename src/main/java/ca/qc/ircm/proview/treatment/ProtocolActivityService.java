@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.treatment;
 
+import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
-import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;

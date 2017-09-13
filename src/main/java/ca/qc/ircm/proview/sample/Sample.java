@@ -46,7 +46,7 @@ import javax.validation.constraints.Size;
  * A Sample.
  */
 @Entity
-@Table(name = "sample")
+@Table(name = Sample.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "sampleType")
 public abstract class Sample implements Data, Named, Serializable {
@@ -57,12 +57,14 @@ public abstract class Sample implements Data, Named, Serializable {
     /**
      * Submission of sample to analyse.
      */
-    SUBMISSION, /**
-                 * Control.
-                 */
+    SUBMISSION,
+    /**
+     * Control.
+     */
     CONTROL
   }
 
+  public static final String TABLE_NAME = "sample";
   private static final long serialVersionUID = -3637467720218236079L;
 
   /**

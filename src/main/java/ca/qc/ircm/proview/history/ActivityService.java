@@ -34,10 +34,10 @@ import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.dilution.DilutedSample;
 import ca.qc.ircm.proview.fractionation.FractionationDetail;
-import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.AcquisitionMascotFile;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.MsAnalysis.DeletionType;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -55,6 +55,7 @@ import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.tube.Tube;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.slf4j.Logger;
@@ -74,6 +75,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -158,16 +160,76 @@ public class ActivityService {
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
     query.leftJoin(activity.updates, updateActivity).fetch();
-    if (parameters.getActionType() != null) {
-      query.where(activity.actionType.eq(parameters.getActionType()));
+    if (parameters.actionType.isPresent()) {
+      query.where(activity.actionType.eq(parameters.actionType.get()));
     }
-    if (parameters.getTableName() != null) {
-      query.where(activity.tableName.eq(parameters.getTableName()));
+    if (parameters.tableName.isPresent()) {
+      query.where(activity.tableName.eq(parameters.tableName.get()));
     }
-    if (parameters.getRecordId() != null) {
-      query.where(activity.recordId.eq(parameters.getRecordId()));
+    if (parameters.recordId.isPresent()) {
+      query.where(activity.recordId.eq(parameters.recordId.get()));
     }
     return query.fetch();
+  }
+
+  /**
+   * Returns all activities involving submission or one of it samples.
+   *
+   * @param submission
+   *          submission
+   * @return all activities involving submission or one of it samples
+   */
+  public List<Activity> all(Submission submission) {
+    if (submission == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    final List<Activity> activities = new ArrayList<>();
+    final List<SubmissionSample> samples = submission.getSamples();
+    final List<Long> sampleIds =
+        samples.stream().map(sa -> sa.getId()).collect(Collectors.toList());
+    // Inserts / updates.
+    JPAQuery<Activity> query = queryFactory.select(activity);
+    query.from(activity);
+    query.leftJoin(activity.updates, updateActivity).fetch();
+    BooleanExpression condition =
+        activity.recordId.eq(submission.getId()).and(activity.tableName.eq(Submission.TABLE_NAME));
+    condition.or(activity.recordId.in(sampleIds).and(activity.tableName.eq(Sample.TABLE_NAME)));
+    query.where(condition);
+    activities.addAll(query.distinct().fetch());
+    // Treatments.
+    query = queryFactory.select(activity);
+    query.from(activity);
+    query.leftJoin(activity.updates, updateActivity).fetch();
+    query.from(treatment);
+    query.where(activity.recordId.eq(treatment.id));
+    query.from(treatmentSample);
+    query.where(treatmentSample.in(treatment.treatmentSamples));
+    query.where(activity.tableName.eq(Treatment.TABLE_NAME));
+    query.where(treatmentSample.sample.in(samples));
+    activities.addAll(query.distinct().fetch());
+    // MS Analyses.
+    query = queryFactory.select(activity);
+    query.from(activity);
+    query.leftJoin(activity.updates, updateActivity).fetch();
+    query.from(msAnalysis);
+    query.where(activity.recordId.eq(msAnalysis.id));
+    query.from(acquisition);
+    query.where(msAnalysis.acquisitions.contains(acquisition));
+    query.where(activity.tableName.eq(MsAnalysis.TABLE_NAME));
+    query.where(acquisition.sample.in(samples));
+    activities.addAll(query.distinct().fetch());
+    // Data analyses.
+    query = queryFactory.select(activity);
+    query.from(activity);
+    query.leftJoin(activity.updates, updateActivity).fetch();
+    query.from(dataAnalysis);
+    query.where(activity.recordId.eq(dataAnalysis.id));
+    query.where(activity.tableName.eq(DataAnalysis.TABLE_NAME));
+    query.where(dataAnalysis.sample.in(samples));
+    activities.addAll(query.distinct().fetch());
+    return activities;
   }
 
   /**
@@ -477,18 +539,18 @@ public class ActivityService {
   }
 
   /**
-   * Returns description of activity for sample history.
+   * Returns description of submission's activity.
    *
-   * @param sample
-   *          sample
    * @param activity
    *          activity
+   * @param submission
+   *          submission
    * @param locale
    *          user's locale
-   * @return description of activity for sample history
+   * @return description of submission's activity
    */
-  public String sampleDescription(Sample sample, Activity activity, Locale locale) {
-    if (sample == null || activity == null || locale == null) {
+  public String description(Activity activity, Submission submission, Locale locale) {
+    if (activity == null || submission == null || locale == null) {
       return null;
     }
     authorizationService.checkAdminRole();
@@ -502,9 +564,9 @@ public class ActivityService {
       } else if (activity.getTableName().equals("dataanalysis")) {
         return dataAnalysisDescription(bundle, activity);
       } else if (activity.getTableName().equals("treatment")) {
-        return treatmentDescription(bundle, activity, sample);
+        return treatmentDescription(bundle, activity, submission);
       } else if (activity.getTableName().equals("msanalysis")) {
-        return msAnalysisDescription(bundle, activity, sample);
+        return msAnalysisDescription(bundle, activity, submission);
       } else if (activity.getTableName().equals("acquisition_to_mascotfile")) {
         return mascotFileDescription(bundle, activity);
       } else if (statusChanged(activity)) {
@@ -524,12 +586,13 @@ public class ActivityService {
 
   private String sampleDescription(ResourceBundle bundle, Activity activity) {
     // Insertion of control.
-    if (activity.getActionType() == Activity.ActionType.INSERT) {
+    if (activity.getActionType() == ActionType.INSERT) {
       return message(bundle, "Sample.INSERT");
     }
 
     // Update of sample.
-    if (activity.getActionType() == Activity.ActionType.UPDATE) {
+    Sample sample = entityManager.find(Sample.class, activity.getRecordId());
+    if (activity.getActionType() == ActionType.UPDATE) {
       StringBuilder message = new StringBuilder();
 
       for (UpdateActivity updateActivity : activity.getUpdates()) {
@@ -546,8 +609,9 @@ public class ActivityService {
               if (updateActivity.getColumn().equals("structureFile")) {
                 message.append(message(bundle, "Sample.UPDATE.structureFile"));
               } else {
-                message.append(message(bundle, "Sample.UPDATE", updateActivity.getColumn(),
-                    updateActivity.getOldValue(), updateActivity.getNewValue()));
+                message.append(
+                    message(bundle, "Sample.UPDATE", sample.getName(), updateActivity.getColumn(),
+                        updateActivity.getOldValue(), updateActivity.getNewValue()));
               }
               break;
             case DELETE:
@@ -687,20 +751,25 @@ public class ActivityService {
             .append(message(bundle, "DataAnalysis.DataAnalysis.UPDATE", updateActivity.getColumn(),
                 updateActivity.getOldValue(), updateActivity.getNewValue()));
       } else if ("sample".equals(updateActivity.getTableName())) {
+        Sample sample = entityManager.find(Sample.class, updateActivity.getRecordId());
         message.append("\n");
-        message.append(message(bundle, "DataAnalysis.Sample.UPDATE", updateActivity.getColumn(),
-            updateActivity.getOldValue(), updateActivity.getNewValue()));
+        message.append(message(bundle, "DataAnalysis.Sample.UPDATE", sample.getName(),
+            updateActivity.getColumn(), updateActivity.getOldValue(),
+            updateActivity.getNewValue()));
       }
     }
 
     return message.toString();
   }
 
-  private String treatmentDescription(ResourceBundle bundle, Activity activity, Sample sample) {
+  private String treatmentDescription(ResourceBundle bundle, Activity activity,
+      Submission submission) {
     Treatment<?> treatment = entityManager.find(Treatment.class, activity.getRecordId());
     Collection<TreatmentSample> treatmentSamples = new ArrayList<>();
+    Set<Long> sampleIds =
+        submission.getSamples().stream().map(sa -> sa.getId()).collect(Collectors.toSet());
     for (TreatmentSample treatmentSample : treatment.getTreatmentSamples()) {
-      if (treatmentSample.getSample().equals(sample)) {
+      if (sampleIds.contains(treatmentSample.getSample().getId())) {
         treatmentSamples.add(treatmentSample);
       }
     }
@@ -740,19 +809,20 @@ public class ActivityService {
     StringBuilder message = new StringBuilder();
     String key = "Treatment." + treatment.getType();
     message.append(message(bundle, key + "." + activity.getActionType(),
-        treatment.isDeleted() ? treatment.getDeletionType().ordinal() : null));
+        treatment.isDeleted() ? treatment.getDeletionType().ordinal()
+            : DeletionType.ERRONEOUS.ordinal()));
     for (TreatmentSample treatmentSample : treatmentSamples) {
       String container = containerMessage(bundle, treatmentSample.getContainer());
       message.append("\n");
       switch (treatment.getType()) {
         case DIGESTION:
         case ENRICHMENT:
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getLims(),
+          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
               treatmentSample.getContainer().getType().ordinal(), container));
           break;
         case DILUTION: {
           DilutedSample dilutedSample = (DilutedSample) treatmentSample;
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getLims(),
+          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
               treatmentSample.getContainer().getType().ordinal(), container,
               dilutedSample.getSourceVolume(), dilutedSample.getSolvent(),
               dilutedSample.getSolventVolume()));
@@ -762,7 +832,7 @@ public class ActivityService {
           FractionationDetail fractionationDetail = (FractionationDetail) treatmentSample;
           String destinationContainer =
               containerMessage(bundle, fractionationDetail.getDestinationContainer());
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getLims(),
+          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
               fractionationDetail.getContainer().getType().ordinal(), container,
               fractionationDetail.getDestinationContainer().getType().ordinal(),
               destinationContainer, fractionationDetail.getPosition()));
@@ -770,14 +840,14 @@ public class ActivityService {
         }
         case SOLUBILISATION: {
           SolubilisedSample solubilisedSample = (SolubilisedSample) treatmentSample;
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getLims(),
+          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
               treatmentSample.getContainer().getType().ordinal(), container,
               solubilisedSample.getSolvent(), solubilisedSample.getSolventVolume()));
           break;
         }
         case STANDARD_ADDITION: {
           AddedStandard addedStandard = (AddedStandard) treatmentSample;
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getLims(),
+          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
               treatmentSample.getContainer().getType().ordinal(), container,
               addedStandard.getName(), addedStandard.getQuantity()));
           break;
@@ -786,7 +856,7 @@ public class ActivityService {
           SampleTransfer sampleTransfer = (SampleTransfer) treatmentSample;
           String destinationContainer =
               containerMessage(bundle, sampleTransfer.getDestinationContainer());
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getLims(),
+          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
               sampleTransfer.getContainer().getType().ordinal(), container,
               sampleTransfer.getDestinationContainer().getType().ordinal(), destinationContainer));
           break;
@@ -797,11 +867,14 @@ public class ActivityService {
     return message.toString();
   }
 
-  private String msAnalysisDescription(ResourceBundle bundle, Activity activity, Sample sample) {
+  private String msAnalysisDescription(ResourceBundle bundle, Activity activity,
+      Submission submission) {
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, activity.getRecordId());
     Collection<Acquisition> acquisitions = new ArrayList<>();
+    Set<Long> sampleIds =
+        submission.getSamples().stream().map(sa -> sa.getId()).collect(Collectors.toSet());
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
-      if (acquisition.getSample().equals(sample)) {
+      if (sampleIds.contains(acquisition.getSample().getId())) {
         acquisitions.add(acquisition);
       }
     }
@@ -811,9 +884,9 @@ public class ActivityService {
     for (UpdateActivity updateActivity : activity.getUpdates()) {
       if ("sample".equals(updateActivity.getTableName())) {
         Sample updateSample = entityManager.find(Sample.class, updateActivity.getRecordId());
-        if (sample.equals(updateSample)) {
+        if (sampleIds.contains(updateSample.getId())) {
           message.append("\n");
-          message.append(message(bundle, "MSAnalysis.Sample.UPDATE", sample.getLims(),
+          message.append(message(bundle, "MSAnalysis.Sample.UPDATE", updateSample.getName(),
               updateActivity.getColumn(), updateActivity.getOldValue(),
               updateActivity.getNewValue()));
         }
@@ -843,11 +916,12 @@ public class ActivityService {
     StringBuilder message = new StringBuilder();
     String key = "MSAnalysis";
     message.append(message(bundle, key + "." + activity.getActionType(),
-        msAnalysis.isDeleted() ? msAnalysis.getDeletionType().ordinal() : null));
+        msAnalysis.isDeleted() ? msAnalysis.getDeletionType().ordinal()
+            : DeletionType.ERRONEOUS.ordinal()));
     for (Acquisition acquisition : acquisitions) {
       String container = containerMessage(bundle, acquisition.getContainer());
       message.append("\n");
-      message.append(message(bundle, key + ".Acquisition", acquisition.getSample().getLims(),
+      message.append(message(bundle, key + ".Acquisition", acquisition.getSample().getName(),
           acquisition.getContainer().getType().ordinal(), container, acquisition.getPosition()));
     }
     return message.toString();
@@ -870,7 +944,7 @@ public class ActivityService {
               updateActivity.getColumn(), updateActivity.getOldValue(),
               updateActivity.getNewValue(), acquisitionMascotFile.getMascotFile().getName(),
               Date.from(acquisitionMascotFile.getMascotFile().getSearchDate()),
-              acquisitionMascotFile.getAcquisition().getLims()));
+              acquisitionMascotFile.getAcquisition().getName()));
         }
 
         mainMessage = message.toString();
@@ -959,7 +1033,7 @@ public class ActivityService {
     StringBuilder message = new StringBuilder();
 
     // We suppose we just write update.
-    if (activity.getActionType() == Activity.ActionType.UPDATE) {
+    if (activity.getActionType() == ActionType.UPDATE) {
       for (UpdateActivity updateActivity : activity.getUpdates()) {
         if (message.length() > 0) {
           message.append("\n");

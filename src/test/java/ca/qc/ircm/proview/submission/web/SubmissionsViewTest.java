@@ -157,6 +157,24 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
 
   @Test
   @WithSubject
+  public void viewSubmissionHistory() throws Throwable {
+    admin = true;
+    open();
+
+    clickViewSubmissionHistoryByRow(2);
+
+    assertNotNull(findElement(className(SubmissionHistoryWindow.WINDOW_STYLE)));
+    WindowElement submissionWindow =
+        wrap(WindowElement.class, findElement(className(SubmissionHistoryWindow.WINDOW_STYLE)));
+    String experience = experienceByRow(2);
+    assertTrue(
+        resources(SubmissionHistoryWindow.class).message(SubmissionHistoryWindow.TITLE, experience)
+            .contains(submissionWindow.getCaption()));
+    assertTrue(optional(() -> submissionWindow.findElement(className(SAMPLES_PANEL))).isPresent());
+  }
+
+  @Test
+  @WithSubject
   public void selectSamples() throws Throwable {
     admin = true;
     open();

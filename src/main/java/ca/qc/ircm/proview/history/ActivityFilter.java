@@ -17,15 +17,13 @@
 
 package ca.qc.ircm.proview.history;
 
-import ca.qc.ircm.proview.history.Activity.ActionType;
+import java.util.Optional;
 
 /**
  * Search parameters for activity searches.
  */
-public interface ActivityFilter {
-  public ActionType getActionType();
-
-  public String getTableName();
-
-  public Long getRecordId();
+public class ActivityFilter {
+  public Optional<ActionType> actionType;
+  public Optional<String> tableName;
+  public Optional<Long> recordId;
 }

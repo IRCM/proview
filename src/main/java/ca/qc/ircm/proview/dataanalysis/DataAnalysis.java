@@ -39,8 +39,9 @@ import javax.validation.constraints.Size;
  * Analysis of data.
  */
 @Entity
-@Table(name = "dataanalysis")
+@Table(name = DataAnalysis.TABLE_NAME)
 public class DataAnalysis implements Data, Serializable {
+  public static final String TABLE_NAME = "dataanalysis";
   private static final long serialVersionUID = 7855087016781621873L;
 
   /**

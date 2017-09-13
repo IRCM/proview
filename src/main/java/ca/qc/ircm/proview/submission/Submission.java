@@ -57,8 +57,9 @@ import javax.validation.constraints.Size;
  * Sample Submission of a User.
  */
 @Entity
-@Table(name = "submission")
+@Table(name = Submission.TABLE_NAME)
 public class Submission implements Data, LaboratoryData, Serializable {
+  public static final String TABLE_NAME = "submission";
   private static final long serialVersionUID = 2223809698076034086L;
 
   /**

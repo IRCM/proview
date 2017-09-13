@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.history;
 
-import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 
 public class SampleStatusUpdateActivityBuilder extends UpdateActivityBuilder {

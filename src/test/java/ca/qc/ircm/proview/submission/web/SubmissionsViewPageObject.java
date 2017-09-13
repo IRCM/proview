@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
@@ -41,6 +42,7 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   private static final int EXPERIENCE_COLUMN = 0;
   private static final int LINKED_TO_RESULTS_COLUMN = 6;
   private static final int TREATMENTS_COLUMN = 7;
+  private static final int HISTORY_COLUMN = 8;
 
   protected void open() {
     openView(SubmissionsView.VIEW_NAME);
@@ -93,6 +95,12 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     GridElement submissionsGrid = submissionsGrid();
     submissionsGrid.getCell(row, gridColumnIndex(TREATMENTS_COLUMN));
     submissionsGrid.getRow(row).findElement(className(TREATMENTS)).click();
+  }
+
+  protected void clickViewSubmissionHistoryByRow(int row) {
+    GridElement submissionsGrid = submissionsGrid();
+    submissionsGrid.getCell(row, gridColumnIndex(HISTORY_COLUMN));
+    submissionsGrid.getRow(row).findElement(className(HISTORY)).click();
   }
 
   protected ButtonElement selectSamplesButton() {

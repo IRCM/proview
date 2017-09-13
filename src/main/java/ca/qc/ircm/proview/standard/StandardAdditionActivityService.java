@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.standard;
 
+import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
-import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.history.BanSampleContainerUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.DatabaseLogUtil;
 import ca.qc.ircm.proview.history.UpdateActivity;

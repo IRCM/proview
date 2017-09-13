@@ -89,6 +89,7 @@ public class SubmissionsViewPresenter {
       SUBMISSION + "." + submission.submissionDate.getMetadata().getName();
   public static final String LINKED_TO_RESULTS = "results";
   public static final String TREATMENTS = "treatments";
+  public static final String HISTORY = "history";
   public static final String ALL = "all";
   public static final String SELECT_SAMPLES = "selectSamples";
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
@@ -110,6 +111,8 @@ public class SubmissionsViewPresenter {
   @Inject
   private Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider;
   @Inject
+  private Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider;
+  @Inject
   private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
@@ -123,6 +126,7 @@ public class SubmissionsViewPresenter {
       Provider<SubmissionWindow> submissionWindowProvider,
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
       Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider,
+      Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider,
       Provider<SampleSelectionWindow> sampleSelectionWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
@@ -130,6 +134,7 @@ public class SubmissionsViewPresenter {
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
     this.submissionTreatmentsWindowProvider = submissionTreatmentsWindowProvider;
+    this.submissionHistoryWindowProvider = submissionHistoryWindowProvider;
     this.sampleSelectionWindowProvider = sampleSelectionWindowProvider;
     this.applicationName = applicationName;
   }
@@ -194,7 +199,11 @@ public class SubmissionsViewPresenter {
     view.submissionsGrid
         .addColumn(submission -> viewTreatmentsButton(submission), new ComponentRenderer())
         .setId(TREATMENTS).setCaption(resources.message(TREATMENTS));
+    view.submissionsGrid
+        .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
+        .setId(HISTORY).setCaption(resources.message(HISTORY));
     view.submissionsGrid.getColumn(TREATMENTS).setHidden(!authorizationService.hasAdminRole());
+    view.submissionsGrid.getColumn(HISTORY).setHidden(!authorizationService.hasAdminRole());
     view.submissionsGrid.setFrozenColumnCount(1);
     if (authorizationService.hasAdminRole()) {
       view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
@@ -268,6 +277,15 @@ public class SubmissionsViewPresenter {
     return button;
   }
 
+  private Button viewHistoryButton(Submission submission) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.addStyleName(HISTORY);
+    button.setCaption(resources.message(HISTORY));
+    button.addClickListener(e -> viewSubmissionHistory(submission));
+    return button;
+  }
+
   private TextField textFilter(ValueChangeListener<String> listener) {
     MessageResource resources = view.getResources();
     TextField filter = new TextField();
@@ -330,6 +348,13 @@ public class SubmissionsViewPresenter {
 
   private void viewSubmissionTreatments(Submission submission) {
     SubmissionTreatmentsWindow window = submissionTreatmentsWindowProvider.get();
+    window.setSubmission(submission);
+    window.center();
+    view.addWindow(window);
+  }
+
+  private void viewSubmissionHistory(Submission submission) {
+    SubmissionHistoryWindow window = submissionHistoryWindowProvider.get();
     window.setSubmission(submission);
     window.center();
     view.addWindow(window);

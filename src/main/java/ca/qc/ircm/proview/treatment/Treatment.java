@@ -44,7 +44,7 @@ import javax.persistence.Table;
  * Treatment done on some samples.
  */
 @Entity
-@Table(name = "treatment")
+@Table(name = Treatment.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
 public abstract class Treatment<S extends TreatmentSample> implements Data {
@@ -69,6 +69,8 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
      */
     FAILED;
   }
+
+  public static final String TABLE_NAME = "treatment";
 
   /**
    * Database identifier.

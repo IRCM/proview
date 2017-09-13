@@ -22,6 +22,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -76,13 +77,13 @@ public class MascotFileActivityServiceTest {
     assertEquals((Long) 1L, activity.getUser().getId());
     assertEquals("acquisition_to_mascotfile", activity.getTableName());
     assertEquals((Long) 1L, activity.getRecordId());
-    assertEquals(Activity.ActionType.UPDATE, activity.getActionType());
+    assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(null, activity.getJustification());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
     UpdateActivity visibleUpdateActivity = activity.getUpdates().get(0);
     visibleUpdateActivity.setTableName("acquisition_to_mascotfile");
     visibleUpdateActivity.setRecordId(456789456L);
-    visibleUpdateActivity.setActionType(Activity.ActionType.UPDATE);
+    visibleUpdateActivity.setActionType(ActionType.UPDATE);
     visibleUpdateActivity.setColumn("visible");
     visibleUpdateActivity.setOldValue("1");
     visibleUpdateActivity.setNewValue("0");
@@ -90,7 +91,7 @@ public class MascotFileActivityServiceTest {
     UpdateActivity commentsUpdateActivity = activity.getUpdates().get(0);
     commentsUpdateActivity.setTableName("acquisition_to_mascotfile");
     commentsUpdateActivity.setRecordId(1L);
-    commentsUpdateActivity.setActionType(Activity.ActionType.UPDATE);
+    commentsUpdateActivity.setActionType(ActionType.UPDATE);
     commentsUpdateActivity.setColumn("comments");
     commentsUpdateActivity.setOldValue("complete report");
     commentsUpdateActivity.setNewValue("test_new_comments");

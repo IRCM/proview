@@ -44,24 +44,6 @@ import javax.persistence.Table;
 @Table(name = "activity")
 public class Activity implements Data {
   /**
-   * Type of action done on data.
-   */
-  public static enum ActionType {
-    /**
-     * Data was just inserted.
-     */
-    INSERT,
-    /**
-     * Data was just updated.
-     */
-    UPDATE,
-    /**
-     * Data was just deleted.
-     */
-    DELETE
-  }
-
-  /**
    * Database identifier of activity.
    */
   @Id

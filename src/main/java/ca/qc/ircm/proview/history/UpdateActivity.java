@@ -21,7 +21,6 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
-import ca.qc.ircm.proview.history.Activity.ActionType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

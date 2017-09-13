@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE_GOAL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
@@ -125,6 +126,8 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider;
   @Mock
+  private Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider;
+  @Mock
   private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
   @Mock
   private SubmissionsView view;
@@ -136,6 +139,8 @@ public class SubmissionsViewPresenterTest {
   private SubmissionAnalysesWindow submissionAnalysesWindow;
   @Mock
   private SubmissionTreatmentsWindow submissionTreatmentsWindow;
+  @Mock
+  private SubmissionHistoryWindow submissionHistoryWindow;
   @Mock
   private SampleSelectionWindow sampleSelectionWindow;
   @Mock
@@ -167,7 +172,7 @@ public class SubmissionsViewPresenterTest {
     presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
         localDateFilterComponentProvider, submissionWindowProvider,
         submissionAnalysesWindowProvider, submissionTreatmentsWindowProvider,
-        sampleSelectionWindowProvider, applicationName);
+        submissionHistoryWindowProvider, sampleSelectionWindowProvider, applicationName);
     view.headerLabel = new Label();
     view.submissionsGrid = new Grid<>();
     view.selectSamplesButton = new Button();
@@ -191,6 +196,7 @@ public class SubmissionsViewPresenterTest {
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
     when(submissionTreatmentsWindowProvider.get()).thenReturn(submissionTreatmentsWindow);
+    when(submissionHistoryWindowProvider.get()).thenReturn(submissionHistoryWindow);
     when(sampleSelectionWindowProvider.get()).thenReturn(sampleSelectionWindow);
   }
 
@@ -277,7 +283,15 @@ public class SubmissionsViewPresenterTest {
         (Button) view.submissionsGrid.getColumn(TREATMENTS).getValueProvider().apply(submission);
     assertTrue(treatmentsButton.getStyleName().contains(TREATMENTS));
     assertEquals(resources.message(TREATMENTS), treatmentsButton.getCaption());
+    assertEquals(HISTORY, columns.get(8).getId());
+    assertTrue(containsInstanceOf(columns.get(8).getExtensions(), ComponentRenderer.class));
+    assertEquals(resources.message(HISTORY), view.submissionsGrid.getColumn(HISTORY).getCaption());
+    Button historyButton =
+        (Button) view.submissionsGrid.getColumn(HISTORY).getValueProvider().apply(submission);
+    assertTrue(historyButton.getStyleName().contains(HISTORY));
+    assertEquals(resources.message(HISTORY), historyButton.getCaption());
     assertTrue(view.submissionsGrid.getColumn(TREATMENTS).isHidden());
+    assertTrue(view.submissionsGrid.getColumn(HISTORY).isHidden());
     assertEquals(1, view.submissionsGrid.getFrozenColumnCount());
     assertFalse(sortOrders.isEmpty());
     GridSortOrder<Submission> sortOrder = sortOrders.get(0);
@@ -291,6 +305,7 @@ public class SubmissionsViewPresenterTest {
     presenter.init(view);
 
     assertFalse(view.submissionsGrid.getColumn(TREATMENTS).isHidden());
+    assertFalse(view.submissionsGrid.getColumn(HISTORY).isHidden());
   }
 
   @Test
@@ -579,6 +594,21 @@ public class SubmissionsViewPresenterTest {
     verify(submissionTreatmentsWindow).setSubmission(submission);
     verify(submissionTreatmentsWindow).center();
     verify(view).addWindow(submissionTreatmentsWindow);
+  }
+
+  @Test
+  public void viewSubmissionHistory() {
+    presenter.init(view);
+    final Submission submission = submissions.get(0);
+    Button button =
+        (Button) view.submissionsGrid.getColumn(HISTORY).getValueProvider().apply(submission);
+
+    button.click();
+
+    verify(submissionHistoryWindowProvider).get();
+    verify(submissionHistoryWindow).setSubmission(submission);
+    verify(submissionHistoryWindow).center();
+    verify(view).addWindow(submissionHistoryWindow);
   }
 
   @Test

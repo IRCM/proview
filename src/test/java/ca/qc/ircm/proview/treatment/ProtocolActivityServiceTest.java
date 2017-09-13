@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.digestion.DigestionProtocol;
 import ca.qc.ircm.proview.enrichment.EnrichmentProtocol;
+import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
-import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;

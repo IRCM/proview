@@ -40,7 +40,7 @@ import javax.persistence.Table;
  * MS analysis.
  */
 @Entity
-@Table(name = "msanalysis")
+@Table(name = MsAnalysis.TABLE_NAME)
 public class MsAnalysis implements Data, Serializable {
   /**
    * Source for mass spectrometer.
@@ -64,6 +64,7 @@ public class MsAnalysis implements Data, Serializable {
     FAILED;
   }
 
+  public static final String TABLE_NAME = "msanalysis";
   private static final long serialVersionUID = 7334138327920441104L;
 
   /**

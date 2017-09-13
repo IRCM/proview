@@ -22,12 +22,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
-import ca.qc.ircm.proview.history.Activity.ActionType;
 import ca.qc.ircm.proview.msanalysis.AcquisitionMascotFile;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
@@ -41,6 +39,7 @@ import ca.qc.ircm.proview.test.utils.ComparableUpdateActivity;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +55,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -77,6 +77,8 @@ public class ActivityServiceTest {
   private JPAQueryFactory queryFactory;
   @Mock
   private AuthorizationService authorizationService;
+  private Locale locale = Locale.ENGLISH;
+  private MessageResource resources = new MessageResource(ActivityService.class, locale);
 
   @Before
   public void beforeTest() {
@@ -194,12 +196,12 @@ public class ActivityServiceTest {
 
   @Test
   public void search() throws Exception {
-    ActivityFilterBuilder parameters = new ActivityFilterBuilder();
-    parameters.actionType(ActionType.INSERT);
-    parameters.tableName("submission");
-    parameters.recordId(1L);
+    ActivityFilter parameters = new ActivityFilter();
+    parameters.actionType = Optional.of(ActionType.INSERT);
+    parameters.tableName = Optional.of("submission");
+    parameters.recordId = Optional.of(1L);
 
-    List<Activity> activities = activityService.search(parameters.build());
+    List<Activity> activities = activityService.search(parameters);
 
     verify(authorizationService).checkAdminRole();
     assertFalse(activities.isEmpty());
@@ -217,6 +219,45 @@ public class ActivityServiceTest {
   @Test
   public void search_Null() throws Exception {
     List<Activity> activities = activityService.search(null);
+
+    assertTrue(activities.isEmpty());
+  }
+
+  @Test
+  public void all_Submission() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 1L);
+
+    List<Activity> activities = activityService.all(submission);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(9, activities.size());
+    assertNotNull(find(activities, 5543));
+    assertNotNull(find(activities, 5544));
+    assertNotNull(find(activities, 5550));
+    assertNotNull(find(activities, 5552));
+    assertNotNull(find(activities, 5553));
+    assertNotNull(find(activities, 5557));
+    assertNotNull(find(activities, 5558));
+    assertNotNull(find(activities, 5569));
+    assertNotNull(find(activities, 5573));
+  }
+
+  @Test
+  public void all_Submission_147() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 147L);
+
+    List<Activity> activities = activityService.all(submission);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(3, activities.size());
+    assertNotNull(find(activities, 5634));
+    assertNotNull(find(activities, 5638));
+    assertNotNull(find(activities, 5639));
+  }
+
+  @Test
+  public void all_NullSubmission() throws Exception {
+    List<Activity> activities = activityService.all((Submission) null);
 
     assertTrue(activities.isEmpty());
   }
@@ -766,219 +807,244 @@ public class ActivityServiceTest {
   }
 
   @Test
-  public void sampleDescription_Submission_Insert() {
-    Sample sample = entityManager.find(Sample.class, 1L);
+  public void description_Submission_Insert() {
+    Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertNotNull(description);
+    assertEquals(resources.message("Submission.INSERT"), description);
   }
 
   @Test
-  public void sampleDescription_Control_Insert() {
-    Sample sample = entityManager.find(Sample.class, 444L);
-    Activity activity = entityManager.find(Activity.class, 5549L);
-
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
-
-    verify(authorizationService).checkAdminRole();
-    assertNotNull(description);
-  }
-
-  @Test
-  public void sampleDescription_Sample_Update() {
+  public void description_Sample_Update() {
+    Submission submission = entityManager.find(Submission.class, 147L);
     Sample sample = entityManager.find(Sample.class, 559L);
     Activity activity = entityManager.find(Activity.class, 5635L);
+    UpdateActivity update = activity.getUpdates().get(0);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertNotNull(description);
+    assertEquals(resources.message("Sample.UPDATE", sample.getName(), update.getColumn(),
+        update.getOldValue(), update.getNewValue()), description);
   }
 
   @Test
-  public void sampleDescription_Solubilisation_Insert() {
-    Sample sample = entityManager.find(Sample.class, 1L);
+  public void description_Solubilisation_Insert() {
+    Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5550L);
-    activity = find(activityService.allTreatmentActivities(sample), 5550L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
+    verify(authorizationService).checkAdminRole();
+    assertEquals("Solubilisation\n"
+        + "Sample FAM119A_band_01 in tube FAM119A_band_01 with 20 µl of Methanol", description);
   }
 
   @Test
-  public void sampleDescription_Dilution_Insert() {
-    Sample sample = entityManager.find(Sample.class, 442L);
+  @SuppressWarnings("checkstyle:LineLength")
+  public void description_Dilution_Insert() {
+    Submission submission = entityManager.find(Submission.class, 32L);
     Activity activity = entityManager.find(Activity.class, 5561L);
-    activity = find(activityService.allTreatmentActivities(sample), 5561L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
+    verify(authorizationService).checkAdminRole();
+    assertEquals("Dilution\n"
+        + "Sample CAP_20111013_01 in tube CAP_20111013_01 with 10 µl of sample in 20 µl of Methanol",
+        description);
   }
 
   @Test
-  public void sampleDescription_Digestion_Insert() {
-    Sample sample = entityManager.find(Sample.class, 444L);
-    Activity activity = entityManager.find(Activity.class, 5563L);
-    activity = find(activityService.allTreatmentActivities(sample), 5563L);
+  public void description_Digestion_Insert() {
+    Submission submission = entityManager.find(Submission.class, 147L);
+    Activity activity = entityManager.find(Activity.class, 5639L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
+    verify(authorizationService).checkAdminRole();
+    assertEquals("Digestion\n" + "Sample POLR2A_20141008_1 on plate G_20141008_01 (A-1)\n"
+        + "Sample POLR2A_20141008_2 on plate G_20141008_01 (B-1)", description);
   }
 
   @Test
-  public void sampleDescription_Enrichment_Insert() {
-    Sample sample = entityManager.find(Sample.class, 444L);
-    Activity activity = entityManager.find(Activity.class, 5564L);
-    activity = find(activityService.allTreatmentActivities(sample), 5564L);
+  public void description_Enrichment_Insert() {
+    Submission submission = entityManager.find(Submission.class, 150L);
+    Activity activity = entityManager.find(Activity.class, 5717L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
+    verify(authorizationService).checkAdminRole();
+    assertEquals("Enrichment\n" + "Sample POLR2A_20140914_01 on plate A_20141014_01 (A-1)\n"
+        + "Sample POLR2A_20140914_02 on plate A_20141014_01 (B-1)", description);
   }
 
   @Test
-  public void sampleDescription_StandardAddition_Insert() {
-    Sample sample = entityManager.find(Sample.class, 444L);
-    Activity activity = entityManager.find(Activity.class, 5562L);
-    activity = find(activityService.allTreatmentActivities(sample), 5562L);
+  public void description_StandardAddition_Insert() {
+    Submission submission = entityManager.find(Submission.class, 152L);
+    Activity activity = entityManager.find(Activity.class, 5796L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
+    verify(authorizationService).checkAdminRole();
+    assertEquals("Added standard\n"
+        + "Standard adh (2 μg) added to sample POLR2A_20141015_11 on plate A_20141015_01 (A-6)\n"
+        + "Standard adh (2 μg) added to sample POLR2A_20141015_12 on plate A_20141015_01 (B-6)",
+        description);
   }
 
   @Test
-  public void sampleDescription_Fractionation_Insert() {
-    Sample sample = entityManager.find(Sample.class, 1L);
+  @SuppressWarnings("checkstyle:LineLength")
+  public void description_Fractionation_Insert() {
+    Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5557L);
-    activity = find(activityService.allTreatmentActivities(sample), 5557L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
+    verify(authorizationService).checkAdminRole();
+    assertEquals("Fractionation\n"
+        + "Sample FAM119A_band_01 from tube FAM119A_band_01 to tube FAM119A_band_01_F1 - fraction 1",
+        description);
   }
 
   @Test
-  public void sampleDescription_Transfer_Insert() {
-    Sample sample = entityManager.find(Sample.class, 1L);
+  public void description_Transfer_Insert() {
+    Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5558L);
-    activity = find(activityService.allTreatmentActivities(sample), 5558L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
+    verify(authorizationService).checkAdminRole();
+    assertEquals(
+        "Transfer\n"
+            + "Sample FAM119A_band_01 from tube FAM119A_band_01 to tube FAM119A_band_01_T1",
+        description);
   }
 
   @Test
-  public void sampleDescription_MsAnalysis_Insert() {
-    Sample sample = entityManager.find(Sample.class, 1L);
+  public void description_Transfer_Delete() {
+    Submission submission = entityManager.find(Submission.class, 162L);
+    Activity activity = entityManager.find(Activity.class, 5933L);
+
+    String description = activityService.description(activity, submission, locale);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(
+        "Undone erroneous transfer\n"
+            + "Sample POLR2B_20150527_02 from tube POLR2B_20150527_02 to plate A_20141022_02 (A-3)",
+        description);
+  }
+
+  @Test
+  public void description_MsAnalysis_Insert() {
+    Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5544L);
-    activity = find(activityService.allMsAnalysisActivities(sample), 5544L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
+    verify(authorizationService).checkAdminRole();
+    assertEquals("MS analysis\n" + "Sample FAM119A_band_01 in tube FAM119A_band_01 - acquisition 1",
+        description);
   }
 
   @Test
-  public void sampleDescription_Mascot_Update() {
-    Sample sample = entityManager.find(Sample.class, 442L);
+  @SuppressWarnings("checkstyle:LineLength")
+  public void description_Mascot_Update() {
+    Submission submission = entityManager.find(Submission.class, 32L);
     Activity activity = entityManager.find(Activity.class, 5555L);
-    activity = find(activityService.allMascotFileActivities(sample), 5555L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
+    verify(authorizationService).checkAdminRole();
+    assertEquals(
+        "comments changed from null to complete report for Mascot file F006101.dat (2009-10-02) linked to acquisition CAP_20111013_01.A1",
+        description);
   }
 
   @Test
-  public void sampleDescription_DataAnalysis_Insert() {
-    Sample sample = entityManager.find(Sample.class, 1L);
+  public void description_DataAnalysis_Insert() {
+    Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5552L);
-    activity = find(activityService.allDataAnalysisActivities(sample), 5552L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
-
-    verify(authorizationService, times(2)).checkAdminRole();
-    assertNotNull(description);
-  }
-
-  @Test
-  public void sampleDescription_Failsafe() {
-    activityService = create(true);
-    Sample sample = entityManager.find(Sample.class, 444L);
-    Activity activity = entityManager.find(Activity.class, 5549L);
-    activity.setActionType(ActionType.DELETE);
-
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertNotNull(description);
+    assertEquals(
+        "Data analysis of protein requested - protein 123456, peptide null, max work time 2\n"
+            + "Sample FAM119A_band_01 status changed from ANALYSED to DATA_ANALYSIS",
+        description);
   }
 
   @Test
-  public void sampleDescription_Failsafe_Null() {
-    Sample sample = entityManager.find(Sample.class, 444L);
-    Activity activity = entityManager.find(Activity.class, 5549L);
-    activity.setActionType(ActionType.DELETE);
-
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
-
-    verify(authorizationService).checkAdminRole();
-    assertNull(description);
-  }
-
-  @Test
-  public void sampleDescription_DataAnalysis_Update() {
-    Sample sample = entityManager.find(Sample.class, 1L);
+  @SuppressWarnings("checkstyle:LineLength")
+  public void description_DataAnalysis_Update() {
+    Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5553L);
-    activity = find(activityService.allDataAnalysisActivities(sample), 5553L);
 
-    String description = activityService.sampleDescription(sample, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
 
-    verify(authorizationService, times(2)).checkAdminRole();
+    verify(authorizationService).checkAdminRole();
+    assertEquals(
+        "Updated data analysis of protein requested - protein 123456, peptide null, max work time 2\n"
+            + "Data analysis score changed from null to 123456: 95%\n"
+            + "Data analysis workTime changed from null to 1.75\n"
+            + "Data analysis status changed from TO_DO to ANALYSED\n"
+            + "Sample FAM119A_band_01 status changed from DATA_ANALYSIS to ANALYSED",
+        description);
     assertNotNull(description);
   }
 
   @Test
-  public void sampleDescription_NullSample() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5543L);
+  public void description_Failsafe() {
+    activityService = create(true);
+    Submission submission = entityManager.find(Submission.class, 1L);
+    Activity activity = entityManager.find(Activity.class, 5544L);
+    activity.setActionType(ActionType.UPDATE);
 
-    String description = activityService.sampleDescription(null, activity, Locale.CANADA);
+    String description = activityService.description(activity, submission, locale);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals("Updated msanalysis 1", description);
+  }
+
+  @Test
+  public void description_Failsafe_Null() {
+    Submission submission = entityManager.find(Submission.class, 1L);
+    Activity activity = entityManager.find(Activity.class, 5544L);
+    activity.setActionType(ActionType.UPDATE);
+
+    String description = activityService.description(activity, submission, locale);
+
+    verify(authorizationService).checkAdminRole();
+    assertNull(description);
+  }
+
+  @Test
+  public void description_NullActivity() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 1L);
+
+    String description = activityService.description(null, submission, locale);
 
     assertNull(description);
   }
 
   @Test
-  public void sampleDescription_NullActivity() throws Exception {
-    Sample sample = entityManager.find(Sample.class, 1L);
+  public void description_NullSubmission() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityService.sampleDescription(sample, null, Locale.CANADA);
+    String description = activityService.description(activity, null, locale);
 
     assertNull(description);
   }
 
   @Test
-  public void sampleDescription_NullLocale() throws Exception {
-    Sample sample = entityManager.find(Sample.class, 1L);
+  public void description_NullLocale() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityService.sampleDescription(sample, activity, null);
+    String description = activityService.description(activity, submission, null);
 
     assertNull(description);
   }
@@ -988,7 +1054,7 @@ public class ActivityServiceTest {
     Plate plate = entityManager.find(Plate.class, 26L);
     Activity activity = entityManager.find(Activity.class, 5559L);
 
-    String description = activityService.plateDescription(plate, activity, Locale.CANADA);
+    String description = activityService.plateDescription(plate, activity, locale);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(description);
@@ -999,7 +1065,7 @@ public class ActivityServiceTest {
     Plate plate = entityManager.find(Plate.class, 26L);
     Activity activity = entityManager.find(Activity.class, 5570L);
 
-    String description = activityService.plateDescription(plate, activity, Locale.CANADA);
+    String description = activityService.plateDescription(plate, activity, locale);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(description);
@@ -1009,7 +1075,7 @@ public class ActivityServiceTest {
   public void plateDescription_NullSample() throws Exception {
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityService.plateDescription(null, activity, Locale.CANADA);
+    String description = activityService.plateDescription(null, activity, locale);
 
     assertNull(description);
   }
@@ -1018,7 +1084,7 @@ public class ActivityServiceTest {
   public void plateDescription_NullActivity() throws Exception {
     Plate plate = entityManager.find(Plate.class, 26L);
 
-    String description = activityService.plateDescription(plate, null, Locale.CANADA);
+    String description = activityService.plateDescription(plate, null, locale);
 
     assertNull(description);
   }
@@ -1047,11 +1113,11 @@ public class ActivityServiceTest {
     activityService.insert(activity);
 
     entityManager.flush();
-    ActivityFilterBuilder parameters = new ActivityFilterBuilder();
-    parameters.actionType(ActionType.INSERT);
-    parameters.tableName("sample");
-    parameters.recordId(45L);
-    List<Activity> activities = activityService.search(parameters.build());
+    ActivityFilter parameters = new ActivityFilter();
+    parameters.actionType = Optional.of(ActionType.INSERT);
+    parameters.tableName = Optional.of("sample");
+    parameters.recordId = Optional.of(45L);
+    List<Activity> activities = activityService.search(parameters);
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -1101,11 +1167,11 @@ public class ActivityServiceTest {
     activityService.insert(activity);
 
     entityManager.flush();
-    ActivityFilterBuilder parameters = new ActivityFilterBuilder();
-    parameters.actionType(ActionType.INSERT);
-    parameters.tableName("sample");
-    parameters.recordId(45L);
-    List<Activity> activities = activityService.search(parameters.build());
+    ActivityFilter parameters = new ActivityFilter();
+    parameters.actionType = Optional.of(ActionType.INSERT);
+    parameters.tableName = Optional.of("sample");
+    parameters.recordId = Optional.of(45L);
+    List<Activity> activities = activityService.search(parameters);
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());

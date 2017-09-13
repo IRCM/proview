@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.history;
 
-import ca.qc.ircm.proview.history.Activity.ActionType;
-
 public class UpdateActivityBuilder {
   private String tableName;
   private Long recordId;
