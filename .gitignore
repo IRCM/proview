@@ -4,6 +4,7 @@
 /.project
 /.checkstyle
 /.designer
+/.vaadin-designer2
 /.factorypath
 /*.log
 /*.log.*
