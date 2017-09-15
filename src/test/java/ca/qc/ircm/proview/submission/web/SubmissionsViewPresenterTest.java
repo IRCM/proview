@@ -367,7 +367,8 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getExperienceContains());
+    assertTrue(filter.experienceContains.isPresent());
+    assertEquals(filterValue, filter.experienceContains.get());
   }
 
   @Test
@@ -388,7 +389,8 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getEmailContains());
+    assertTrue(filter.emailContains.isPresent());
+    assertEquals(filterValue, filter.emailContains.get());
   }
 
   @Test
@@ -409,7 +411,8 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getAnySampleNameContains());
+    assertTrue(filter.anySampleNameContains.isPresent());
+    assertEquals(filterValue, filter.anySampleNameContains.get());
   }
 
   @Test
@@ -430,7 +433,8 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getGoalContains());
+    assertTrue(filter.goalContains.isPresent());
+    assertEquals(filterValue, filter.goalContains.get());
   }
 
   @Test
@@ -447,7 +451,8 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getAnySampleStatus());
+    assertTrue(filter.anySampleStatus.isPresent());
+    assertEquals(filterValue, filter.anySampleStatus.get());
   }
 
   @Test
@@ -467,7 +472,8 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(range, filter.getDateRange());
+    assertTrue(filter.dateRange.isPresent());
+    assertEquals(range, filter.dateRange.get());
   }
 
   @Test
@@ -484,7 +490,8 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getResults());
+    assertTrue(filter.results.isPresent());
+    assertEquals(filterValue, filter.results.get());
   }
 
   @Test

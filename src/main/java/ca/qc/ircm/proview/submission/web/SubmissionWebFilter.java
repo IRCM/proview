@@ -26,20 +26,21 @@ import com.vaadin.server.SerializablePredicate;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Filters submissions.
  */
 public class SubmissionWebFilter implements SerializablePredicate<Submission> {
   private static final long serialVersionUID = -5902082214544061745L;
-  private String experienceContains;
-  private String emailContains;
-  private String anySampleNameContains;
-  private String goalContains;
-  private SampleStatus anySampleStatus;
-  private Range<LocalDate> dateRange;
-  private Boolean results;
-  private Locale locale;
+  public Optional<String> experienceContains = Optional.empty();
+  public Optional<String> emailContains = Optional.empty();
+  public Optional<String> anySampleNameContains = Optional.empty();
+  public Optional<String> goalContains = Optional.empty();
+  public Optional<SampleStatus> anySampleStatus = Optional.empty();
+  public Optional<Range<LocalDate>> dateRange = Optional.empty();
+  public Optional<Boolean> results = Optional.empty();
+  private final Locale locale;
 
   public SubmissionWebFilter(Locale locale) {
     this.locale = locale;
@@ -48,91 +49,36 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
   @Override
   public boolean test(Submission submission) {
     boolean test = true;
-    if (experienceContains != null) {
+    if (experienceContains.isPresent()) {
       test &= submission.getExperience().toLowerCase(locale)
-          .contains(experienceContains.toLowerCase(locale));
+          .contains(experienceContains.get().toLowerCase(locale));
     }
-    if (emailContains != null) {
+    if (emailContains.isPresent()) {
       test &= submission.getUser().getEmail().toLowerCase(locale)
-          .contains(emailContains.toLowerCase(locale));
+          .contains(emailContains.get().toLowerCase(locale));
     }
-    if (anySampleNameContains != null) {
+    if (anySampleNameContains.isPresent()) {
       test &= submission.getSamples().isEmpty()
           || submission.getSamples().stream().anyMatch(sample -> sample.getName()
-              .toLowerCase(locale).contains(anySampleNameContains.toLowerCase(locale)));
+              .toLowerCase(locale).contains(anySampleNameContains.get().toLowerCase(locale)));
     }
-    if (goalContains != null) {
-      test &= submission.getGoal().toLowerCase(locale).contains(goalContains.toLowerCase(locale));
+    if (goalContains.isPresent()) {
+      test &=
+          submission.getGoal().toLowerCase(locale).contains(goalContains.get().toLowerCase(locale));
     }
-    if (anySampleStatus != null) {
+    if (anySampleStatus.isPresent()) {
       test &= submission.getSamples().isEmpty() || submission.getSamples().stream()
-          .anyMatch(sample -> anySampleStatus.equals(sample.getStatus()));
+          .anyMatch(sample -> anySampleStatus.get().equals(sample.getStatus()));
     }
-    if (dateRange != null) {
-      test &= dateRange
+    if (dateRange.isPresent()) {
+      test &= dateRange.get()
           .contains(submission.getSubmissionDate().atZone(ZoneId.systemDefault()).toLocalDate());
     }
-    if (results != null) {
+    if (results.isPresent()) {
       boolean analysed = submission.getSamples().isEmpty() || submission.getSamples().stream()
           .anyMatch(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0);
-      test &= submission.getSamples().isEmpty() || results ? analysed : !analysed;
+      test &= submission.getSamples().isEmpty() || results.get() ? analysed : !analysed;
     }
     return test;
-  }
-
-  public String getExperienceContains() {
-    return experienceContains;
-  }
-
-  public void setExperienceContains(String experienceContains) {
-    this.experienceContains = experienceContains;
-  }
-
-  public String getEmailContains() {
-    return emailContains;
-  }
-
-  public void setEmailContains(String emailContains) {
-    this.emailContains = emailContains;
-  }
-
-  public String getAnySampleNameContains() {
-    return anySampleNameContains;
-  }
-
-  public void setAnySampleNameContains(String anySampleNameContains) {
-    this.anySampleNameContains = anySampleNameContains;
-  }
-
-  public String getGoalContains() {
-    return goalContains;
-  }
-
-  public void setGoalContains(String goalContains) {
-    this.goalContains = goalContains;
-  }
-
-  public SampleStatus getAnySampleStatus() {
-    return anySampleStatus;
-  }
-
-  public void setAnySampleStatus(SampleStatus anySampleStatus) {
-    this.anySampleStatus = anySampleStatus;
-  }
-
-  public Range<LocalDate> getDateRange() {
-    return dateRange;
-  }
-
-  public void setDateRange(Range<LocalDate> dateRange) {
-    this.dateRange = dateRange;
-  }
-
-  public Boolean getResults() {
-    return results;
-  }
-
-  public void setResults(Boolean results) {
-    this.results = results;
   }
 }
