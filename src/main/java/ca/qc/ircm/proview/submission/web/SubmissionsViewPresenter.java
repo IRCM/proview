@@ -202,8 +202,20 @@ public class SubmissionsViewPresenter {
     view.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
         .setId(HISTORY).setCaption(resources.message(HISTORY));
-    view.submissionsGrid.getColumn(TREATMENTS).setHidden(!authorizationService.hasAdminRole());
-    view.submissionsGrid.getColumn(HISTORY).setHidden(!authorizationService.hasAdminRole());
+    view.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
+    view.submissionsGrid.getColumn(SAMPLE_NAME).setHidable(true);
+    view.submissionsGrid.getColumn(EXPERIENCE_GOAL).setHidable(true);
+    view.submissionsGrid.getColumn(SAMPLE_STATUSES).setHidable(true);
+    view.submissionsGrid.getColumn(DATE).setHidable(true);
+    view.submissionsGrid.getColumn(LINKED_TO_RESULTS).setHidable(true);
+    if (authorizationService.hasAdminRole()) {
+      view.submissionsGrid.getColumn(TREATMENTS).setHidable(true);
+      view.submissionsGrid.getColumn(HISTORY).setHidable(true);
+    } else {
+      view.submissionsGrid.getColumn(TREATMENTS).setHidden(true);
+      view.submissionsGrid.getColumn(HISTORY).setHidden(true);
+    }
+    view.submissionsGrid.setColumnReorderingAllowed(true);
     view.submissionsGrid.setFrozenColumnCount(1);
     if (authorizationService.hasAdminRole()) {
       view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
