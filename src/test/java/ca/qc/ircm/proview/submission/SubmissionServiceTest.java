@@ -84,7 +84,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -331,15 +330,14 @@ public class SubmissionServiceTest {
   }
 
   @Test
-  public void report() throws Throwable {
+  public void all() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    SubmissionService.Report report = submissionService.report();
+    List<Submission> submissions = submissionService.all();
 
     verify(authorizationService).checkUserRole();
-    List<Submission> submissions = report.getSubmissions();
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
     assertFalse(find(submissions, 34).isPresent());
@@ -364,21 +362,17 @@ public class SubmissionServiceTest {
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());
-    Map<Submission, Boolean> linkedToResults = report.getLinkedToResults();
-    assertEquals(true, linkedToResults.get(find(submissions, 32).get()));
-    assertEquals(false, linkedToResults.get(find(submissions, 33).get()));
   }
 
   @Test
-  public void report_User() throws Throwable {
+  public void all_User() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    SubmissionService.Report report = submissionService.report();
+    List<Submission> submissions = submissionService.all();
 
     verify(authorizationService).checkUserRole();
-    List<Submission> submissions = report.getSubmissions();
     assertEquals(3, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
@@ -386,17 +380,16 @@ public class SubmissionServiceTest {
   }
 
   @Test
-  public void report_Manager() throws Throwable {
+  public void all_Manager() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    SubmissionService.Report report = submissionService.report();
+    List<Submission> submissions = submissionService.all();
 
     verify(authorizationService).checkUserRole();
-    List<Submission> submissions = report.getSubmissions();
     assertEquals(17, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
@@ -407,16 +400,15 @@ public class SubmissionServiceTest {
   }
 
   @Test
-  public void report_Admin() throws Throwable {
+  public void all_Admin() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(authorizationService.hasAdminRole()).thenReturn(true);
 
-    SubmissionService.Report report = submissionService.report();
+    List<Submission> submissions = submissionService.all();
 
     verify(authorizationService).checkUserRole();
-    List<Submission> submissions = report.getSubmissions();
     assertEquals(18, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());

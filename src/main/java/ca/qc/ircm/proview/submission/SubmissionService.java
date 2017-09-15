@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.submission;
 
-import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
-import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMascotFile;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
@@ -39,7 +37,6 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.slf4j.Logger;
@@ -50,11 +47,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -69,35 +63,6 @@ import javax.persistence.PersistenceContext;
 @org.springframework.stereotype.Service
 @Transactional
 public class SubmissionService {
-  /**
-   * Report containing submitted samples.
-   */
-  public static interface Report {
-    List<Submission> getSubmissions();
-
-    Map<Submission, Boolean> getLinkedToResults();
-  }
-
-  private static class ReportDefault implements Report {
-    private List<Submission> submissions;
-    private Map<Submission, Boolean> linkedToResults;
-
-    private ReportDefault(List<Submission> submissions, Map<Submission, Boolean> linkedToResults) {
-      this.submissions = submissions;
-      this.linkedToResults = linkedToResults;
-    }
-
-    @Override
-    public List<Submission> getSubmissions() {
-      return submissions;
-    }
-
-    @Override
-    public Map<Submission, Boolean> getLinkedToResults() {
-      return linkedToResults;
-    }
-  }
-
   private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
   @PersistenceContext
   private EntityManager entityManager;
@@ -154,46 +119,14 @@ public class SubmissionService {
   }
 
   /**
-   * Selects submission from database.
+   * Returns current user's submissions.<br>
+   * For managers, returns all submissions made a user of his laboratory<br>
+   * For administrators, returns all submissions.
    *
-   * @return submissions
+   * @return current user's submissions or more for managers / administrators
    */
-  public Report report() {
+  public List<Submission> all() {
     authorizationService.checkUserRole();
-    final List<Submission> submissions = fetchReportSubmissions();
-
-    List<Tuple> tuples;
-    if (!submissions.isEmpty()) {
-      JPAQuery<Tuple> query = queryFactory.select(submission.id, acquisitionMascotFile.count());
-      query.from(submission);
-      query.join(submission.samples, submissionSample);
-      query.join(acquisition);
-      query.join(acquisitionMascotFile);
-      query.where(submission.in(submissions));
-      query.where(acquisition.sample.eq(submissionSample._super));
-      query.where(acquisitionMascotFile.acquisition.eq(acquisition));
-      if (!authorizationService.hasAdminRole()) {
-        query.where(acquisitionMascotFile.visible.eq(true));
-      }
-      query.groupBy(submission.id);
-      tuples = query.fetch();
-    } else {
-      tuples = Collections.emptyList();
-    }
-    final Map<Submission, Boolean> linkedToResults = new HashMap<>();
-    final Map<Long, Submission> submissionsById = new HashMap<>();
-    for (Submission submission : submissions) {
-      submissionsById.put(submission.getId(), submission);
-      linkedToResults.put(submission, false);
-    }
-    for (Tuple tuple : tuples) {
-      Submission actualSubmission = submissionsById.get(tuple.get(submission.id));
-      linkedToResults.put(actualSubmission, tuple.get(acquisitionMascotFile.count()) > 0);
-    }
-    return new ReportDefault(submissions, linkedToResults);
-  }
-
-  private List<Submission> fetchReportSubmissions() {
     final User currentUser = authorizationService.getCurrentUser();
     final Laboratory currentLaboratory = currentUser.getLaboratory();
 

@@ -54,7 +54,6 @@ import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
@@ -131,8 +130,6 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private SubmissionsView view;
   @Mock
-  private Report report;
-  @Mock
   private SubmissionWindow submissionWindow;
   @Mock
   private SubmissionAnalysesWindow submissionAnalysesWindow;
@@ -177,7 +174,6 @@ public class SubmissionsViewPresenterTest {
     view.updateStatusButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    when(submissionService.report()).thenReturn(report);
     submissions = queryFactory.select(submission).from(submission).fetch();
     linkedToResults = new HashMap<>();
     for (Submission submission : submissions.subList(0, 2)) {
@@ -186,8 +182,7 @@ public class SubmissionsViewPresenterTest {
     for (Submission submission : submissions.subList(2, submissions.size())) {
       linkedToResults.put(submission, false);
     }
-    when(report.getSubmissions()).thenReturn(submissions);
-    when(report.getLinkedToResults()).thenReturn(linkedToResults);
+    when(submissionService.all()).thenReturn(submissions);
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);

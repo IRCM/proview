@@ -31,7 +31,6 @@ import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.submission.SubmissionService.Report;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
@@ -338,8 +337,8 @@ public class SubmissionsViewPresenter {
   }
 
   private ListDataProvider<Submission> searchSubmissions() {
-    Report report = submissionService.report();
-    ListDataProvider<Submission> dataProvider = DataProvider.ofCollection(report.getSubmissions());
+    List<Submission> submissions = submissionService.all();
+    ListDataProvider<Submission> dataProvider = DataProvider.ofCollection(submissions);
     dataProvider.setFilter(filter);
     return dataProvider;
   }
