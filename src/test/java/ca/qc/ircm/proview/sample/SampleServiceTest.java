@@ -21,18 +21,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -42,8 +39,6 @@ public class SampleServiceTest {
   private SampleService sampleService;
   @PersistenceContext
   private EntityManager entityManager;
-  @Inject
-  private JPAQueryFactory queryFactory;
   @Mock
   private AuthorizationService authorizationService;
 
@@ -52,7 +47,7 @@ public class SampleServiceTest {
    */
   @Before
   public void beforeTest() {
-    sampleService = new SampleService(entityManager, queryFactory, authorizationService);
+    sampleService = new SampleService(entityManager, authorizationService);
   }
 
   @Test
@@ -111,56 +106,5 @@ public class SampleServiceTest {
     Sample sample = sampleService.get(null);
 
     assertNull(sample);
-  }
-
-  @Test
-  public void linkedToResults_True() throws Throwable {
-    Sample sample = entityManager.find(Sample.class, 442L);
-    when(authorizationService.hasAdminRole()).thenReturn(false);
-
-    boolean linkedToResults = sampleService.linkedToResults(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(true, linkedToResults);
-  }
-
-  @Test
-  public void linkedToResults_False() throws Throwable {
-    Sample sample = entityManager.find(Sample.class, 447L);
-    when(authorizationService.hasAdminRole()).thenReturn(false);
-
-    boolean linkedToResults = sampleService.linkedToResults(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(false, linkedToResults);
-  }
-
-  @Test
-  public void linkedToResults_WithHidden() throws Throwable {
-    Sample sample = new SubmissionSample(445L);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-
-    boolean linkedToResults = sampleService.linkedToResults(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(true, linkedToResults);
-  }
-
-  @Test
-  public void linkedToResults_NoHidden() throws Throwable {
-    Sample sample = new SubmissionSample(445L);
-    when(authorizationService.hasAdminRole()).thenReturn(false);
-
-    boolean linkedToResults = sampleService.linkedToResults(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(false, linkedToResults);
-  }
-
-  @Test
-  public void linkedToResults_Null() throws Throwable {
-    boolean linkedToResults = sampleService.linkedToResults(null);
-
-    assertEquals(false, linkedToResults);
   }
 }

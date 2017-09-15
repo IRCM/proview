@@ -17,12 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
-import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMascotFile;
-
 import ca.qc.ircm.proview.security.AuthorizationService;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,17 +34,13 @@ public class SampleService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Inject
   private AuthorizationService authorizationService;
 
   protected SampleService() {
   }
 
-  protected SampleService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      AuthorizationService authorizationService) {
+  protected SampleService(EntityManager entityManager, AuthorizationService authorizationService) {
     this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
     this.authorizationService = authorizationService;
   }
 
@@ -68,28 +59,5 @@ public class SampleService {
     Sample sample = entityManager.find(Sample.class, id);
     authorizationService.checkSampleReadPermission(sample);
     return sample;
-  }
-
-  /**
-   * Returns true if sample is linked to some results, false otherwise.
-   *
-   * @param sample
-   *          sample
-   * @return true if sample is linked to some results, false otherwise
-   */
-  public boolean linkedToResults(Sample sample) {
-    if (sample == null) {
-      return false;
-    }
-    authorizationService.checkSampleReadPermission(sample);
-
-    JPAQuery<Long> query = queryFactory.select(acquisition.id);
-    query.from(acquisitionMascotFile);
-    query.join(acquisitionMascotFile.acquisition, acquisition);
-    query.where(acquisition.sample.eq(sample));
-    if (!authorizationService.hasAdminRole()) {
-      query.where(acquisitionMascotFile.visible.eq(true));
-    }
-    return query.fetchCount() > 0;
   }
 }
