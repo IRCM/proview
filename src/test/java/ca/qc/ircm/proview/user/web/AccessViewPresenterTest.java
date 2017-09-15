@@ -213,7 +213,8 @@ public class AccessViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getEmailContains());
+    assertTrue(filterValue, filter.emailContains.isPresent());
+    assertEquals(filterValue, filter.emailContains.get());
   }
 
   @Test
@@ -234,7 +235,8 @@ public class AccessViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getNameContains());
+    assertTrue(filter.nameContains.isPresent());
+    assertEquals(filterValue, filter.nameContains.get());
   }
 
   @Test
@@ -255,7 +257,8 @@ public class AccessViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getLaboratoryNameContains());
+    assertTrue(filter.laboratoryNameContains.isPresent());
+    assertEquals(filterValue, filter.laboratoryNameContains.get());
   }
 
   @Test
@@ -276,7 +279,8 @@ public class AccessViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getOrganizationContains());
+    assertTrue(filter.organizationContains.isPresent());
+    assertEquals(filterValue, filter.organizationContains.get());
   }
 
   @Test
@@ -293,7 +297,8 @@ public class AccessViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getActive());
+    assertTrue(filter.active.isPresent());
+    assertEquals(filterValue, filter.active.get());
   }
 
   @Test
@@ -310,7 +315,8 @@ public class AccessViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.getActive());
+    assertTrue(filter.active.isPresent());
+    assertEquals(filterValue, filter.active.get());
   }
 
   @Test
@@ -327,7 +333,7 @@ public class AccessViewPresenterTest {
 
     verify(usersProvider, times(2)).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertEquals(null, filter.getActive());
+    assertFalse(filter.active.isPresent());
   }
 
   @Test

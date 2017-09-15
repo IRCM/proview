@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
+import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
@@ -81,7 +82,7 @@ public class UserWebFilterTest {
 
   @Test
   public void emailContains() {
-    filter.setEmailContains("test");
+    filter.emailContains = Optional.of("test");
 
     assertTrue(filter.test(email("abctestabc@gmail.com")));
     assertTrue(filter.test(email("abc.test@gmail.com")));
@@ -91,7 +92,7 @@ public class UserWebFilterTest {
 
   @Test
   public void emailContains_Null() {
-    filter.setEmailContains(null);
+    filter.emailContains = Optional.empty();
 
     assertTrue(filter.test(email("abctestabc@gmail.com")));
     assertTrue(filter.test(email("abc.test@gmail.com")));
@@ -101,7 +102,7 @@ public class UserWebFilterTest {
 
   @Test
   public void nameContains() {
-    filter.setNameContains("test");
+    filter.nameContains = Optional.of("test");
 
     assertTrue(filter.test(name("Chris Test")));
     assertTrue(filter.test(name("Test Poitras")));
@@ -111,7 +112,7 @@ public class UserWebFilterTest {
 
   @Test
   public void nameContains_Null() {
-    filter.setNameContains(null);
+    filter.nameContains = Optional.empty();
 
     assertTrue(filter.test(name("Chris Test")));
     assertTrue(filter.test(name("Test Poitras")));
@@ -121,7 +122,7 @@ public class UserWebFilterTest {
 
   @Test
   public void laboratoryNameContains() {
-    filter.setLaboratoryNameContains("test");
+    filter.laboratoryNameContains = Optional.of("test");
 
     assertTrue(filter.test(laboratoryName("Translational Test")));
     assertTrue(filter.test(laboratoryName("Test Proteomics")));
@@ -131,7 +132,7 @@ public class UserWebFilterTest {
 
   @Test
   public void laboratoryNameContains_Null() {
-    filter.setLaboratoryNameContains(null);
+    filter.laboratoryNameContains = Optional.empty();
 
     assertTrue(filter.test(laboratoryName("Translational Test")));
     assertTrue(filter.test(laboratoryName("Test Proteomics")));
@@ -141,7 +142,7 @@ public class UserWebFilterTest {
 
   @Test
   public void organizationContains() {
-    filter.setOrganizationContains("test");
+    filter.organizationContains = Optional.of("test");
 
     assertTrue(filter.test(organization("Translational Test")));
     assertTrue(filter.test(organization("Test Proteomics")));
@@ -151,7 +152,7 @@ public class UserWebFilterTest {
 
   @Test
   public void organizationContains_Null() {
-    filter.setOrganizationContains(null);
+    filter.organizationContains = Optional.empty();
 
     assertTrue(filter.test(organization("Translational Test")));
     assertTrue(filter.test(organization("Test Proteomics")));
@@ -161,7 +162,7 @@ public class UserWebFilterTest {
 
   @Test
   public void active_True() {
-    filter.setActive(true);
+    filter.active = Optional.of(true);
 
     assertTrue(filter.test(active(true)));
     assertFalse(filter.test(active(false)));
@@ -169,7 +170,7 @@ public class UserWebFilterTest {
 
   @Test
   public void active_False() {
-    filter.setActive(false);
+    filter.active = Optional.of(false);
 
     assertFalse(filter.test(active(true)));
     assertTrue(filter.test(active(false)));
@@ -177,7 +178,7 @@ public class UserWebFilterTest {
 
   @Test
   public void active_Null() {
-    filter.setActive(null);
+    filter.active = Optional.empty();
 
     assertTrue(filter.test(active(true)));
     assertTrue(filter.test(active(false)));
@@ -185,8 +186,8 @@ public class UserWebFilterTest {
 
   @Test
   public void emailContainsAndActive() {
-    filter.setEmailContains("test");
-    filter.setActive(true);
+    filter.emailContains = Optional.of("test");
+    filter.active = Optional.of(true);
 
     assertTrue(filter.test(active(email("test@abc.com"), true)));
     assertFalse(filter.test(active(email("abc@abc.com"), true)));
