@@ -78,6 +78,7 @@ public class SubmissionsViewPresenter {
   public static final String SAMPLE = sample.getMetadata().getName();
   public static final String EXPERIENCE =
       SUBMISSION + "." + submission.experience.getMetadata().getName();
+  public static final String USER = SUBMISSION + "." + submission.user.getMetadata().getName();
   public static final String EXPERIENCE_GOAL =
       SUBMISSION + "." + submission.goal.getMetadata().getName();
   public static final String SAMPLE_NAME =
@@ -181,6 +182,8 @@ public class SubmissionsViewPresenter {
     view.submissionsGrid.setDataProvider(searchSubmissions());
     view.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
         .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE));
+    view.submissionsGrid.addColumn(submission -> submission.getUser().getEmail()).setId(USER)
+        .setCaption(resources.message(USER));
     view.submissionsGrid.addColumn(submission -> submission.getSamples().size()).setId(SAMPLE_COUNT)
         .setCaption(resources.message(SAMPLE_COUNT));
     view.submissionsGrid.addColumn(submission -> submission.getSamples().get(0).getName())
@@ -201,6 +204,11 @@ public class SubmissionsViewPresenter {
     view.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
         .setId(HISTORY).setCaption(resources.message(HISTORY));
+    if (authorizationService.hasManagerRole() || authorizationService.hasAdminRole()) {
+      view.submissionsGrid.getColumn(USER).setHidable(true);
+    } else {
+      view.submissionsGrid.getColumn(USER).setHidden(true);
+    }
     view.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
     view.submissionsGrid.getColumn(SAMPLE_NAME).setHidable(true);
     view.submissionsGrid.getColumn(EXPERIENCE_GOAL).setHidable(true);
@@ -222,6 +230,10 @@ public class SubmissionsViewPresenter {
     HeaderRow filterRow = view.submissionsGrid.appendHeaderRow();
     filterRow.getCell(EXPERIENCE).setComponent(textFilter(e -> {
       filter.setExperienceContains(e.getValue());
+      view.submissionsGrid.getDataProvider().refreshAll();
+    }));
+    filterRow.getCell(USER).setComponent(textFilter(e -> {
+      filter.setEmailContains(e.getValue());
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {

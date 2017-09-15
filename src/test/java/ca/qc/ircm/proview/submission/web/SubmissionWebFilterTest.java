@@ -32,6 +32,7 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,6 +64,13 @@ public class SubmissionWebFilterTest {
 
   private Submission experience(Submission submission, String experience) {
     submission.setExperience(experience);
+    submission.setSamples(Collections.emptyList());
+    return submission;
+  }
+
+  private Submission email(String email) {
+    Submission submission = new Submission();
+    submission.setUser(new User(null, email));
     submission.setSamples(Collections.emptyList());
     return submission;
   }
@@ -126,6 +134,24 @@ public class SubmissionWebFilterTest {
     assertTrue(filter.test(experience("My test")));
     assertTrue(filter.test(experience("Test")));
     assertTrue(filter.test(experience("My experience")));
+  }
+
+  @Test
+  public void emailContains() {
+    filter.setEmailContains("test");
+
+    assertTrue(filter.test(email("My test")));
+    assertTrue(filter.test(email("Test")));
+    assertFalse(filter.test(email("My experience")));
+  }
+
+  @Test
+  public void emailContains_Null() {
+    filter.setEmailContains(null);
+
+    assertTrue(filter.test(email("My test")));
+    assertTrue(filter.test(email("Test")));
+    assertTrue(filter.test(email("My experience")));
   }
 
   @Test

@@ -35,6 +35,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISS
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TITLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.USER;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -228,25 +229,32 @@ public class SubmissionsViewPresenterTest {
     assertTrue(experienceButton.getStyleName().contains(EXPERIENCE));
     assertEquals(submission.getExperience(), experienceButton.getCaption());
     assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidable());
-    assertEquals(SAMPLE_COUNT, columns.get(1).getId());
+    assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidden());
+    assertEquals(USER, columns.get(1).getId());
+    assertEquals(resources.message(USER), view.submissionsGrid.getColumn(USER).getCaption());
+    assertEquals(submission.getUser().getEmail(),
+        view.submissionsGrid.getColumn(USER).getValueProvider().apply(submission));
+    assertFalse(view.submissionsGrid.getColumn(USER).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(USER).isHidden());
+    assertEquals(SAMPLE_COUNT, columns.get(2).getId());
     assertEquals(resources.message(SAMPLE_COUNT),
         view.submissionsGrid.getColumn(SAMPLE_COUNT).getCaption());
     assertEquals(submission.getSamples().size(),
         view.submissionsGrid.getColumn(SAMPLE_COUNT).getValueProvider().apply(submission));
     assertTrue(view.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
-    assertEquals(SAMPLE_NAME, columns.get(2).getId());
+    assertEquals(SAMPLE_NAME, columns.get(3).getId());
     assertEquals(resources.message(SAMPLE_NAME),
         view.submissionsGrid.getColumn(SAMPLE_NAME).getCaption());
     assertEquals(submission.getSamples().get(0).getName(),
         view.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
     assertTrue(view.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
-    assertEquals(EXPERIENCE_GOAL, columns.get(3).getId());
+    assertEquals(EXPERIENCE_GOAL, columns.get(4).getId());
     assertEquals(resources.message(EXPERIENCE_GOAL),
         view.submissionsGrid.getColumn(EXPERIENCE_GOAL).getCaption());
     assertEquals(submission.getGoal(),
         view.submissionsGrid.getColumn(EXPERIENCE_GOAL).getValueProvider().apply(submission));
     assertTrue(view.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
-    assertEquals(SAMPLE_STATUSES, columns.get(4).getId());
+    assertEquals(SAMPLE_STATUSES, columns.get(5).getId());
     assertEquals(resources.message(SAMPLE_STATUSES),
         view.submissionsGrid.getColumn(SAMPLE_STATUSES).getCaption());
     assertEquals(
@@ -255,15 +263,15 @@ public class SubmissionsViewPresenterTest {
             .collect(Collectors.joining(resources.message(SAMPLE_STATUSES_SEPARATOR))),
         view.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(submission));
     assertTrue(view.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
-    assertEquals(DATE, columns.get(5).getId());
+    assertEquals(DATE, columns.get(6).getId());
     assertEquals(resources.message(DATE), view.submissionsGrid.getColumn(DATE).getCaption());
     final DateTimeFormatter dateFormatter =
         DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
     assertEquals(dateFormatter.format(submission.getSubmissionDate()),
         view.submissionsGrid.getColumn(DATE).getValueProvider().apply(submission));
     assertTrue(view.submissionsGrid.getColumn(DATE).isHidable());
-    assertEquals(LINKED_TO_RESULTS, columns.get(6).getId());
-    assertTrue(containsInstanceOf(columns.get(6).getExtensions(), ComponentRenderer.class));
+    assertEquals(LINKED_TO_RESULTS, columns.get(7).getId());
+    assertTrue(containsInstanceOf(columns.get(7).getExtensions(), ComponentRenderer.class));
     assertEquals(resources.message(LINKED_TO_RESULTS),
         view.submissionsGrid.getColumn(LINKED_TO_RESULTS).getCaption());
     boolean results = submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
@@ -273,8 +281,8 @@ public class SubmissionsViewPresenterTest {
     assertTrue(resultsButton.getStyleName().contains(LINKED_TO_RESULTS));
     assertEquals(resources.message(LINKED_TO_RESULTS + "." + results), resultsButton.getCaption());
     assertTrue(view.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
-    assertEquals(TREATMENTS, columns.get(7).getId());
-    assertTrue(containsInstanceOf(columns.get(7).getExtensions(), ComponentRenderer.class));
+    assertEquals(TREATMENTS, columns.get(8).getId());
+    assertTrue(containsInstanceOf(columns.get(8).getExtensions(), ComponentRenderer.class));
     assertEquals(resources.message(TREATMENTS),
         view.submissionsGrid.getColumn(TREATMENTS).getCaption());
     Button treatmentsButton =
@@ -283,14 +291,14 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(TREATMENTS), treatmentsButton.getCaption());
     assertFalse(view.submissionsGrid.getColumn(TREATMENTS).isHidable());
     assertTrue(view.submissionsGrid.getColumn(TREATMENTS).isHidden());
-    assertEquals(HISTORY, columns.get(8).getId());
-    assertTrue(containsInstanceOf(columns.get(8).getExtensions(), ComponentRenderer.class));
+    assertEquals(HISTORY, columns.get(9).getId());
+    assertTrue(containsInstanceOf(columns.get(9).getExtensions(), ComponentRenderer.class));
     assertEquals(resources.message(HISTORY), view.submissionsGrid.getColumn(HISTORY).getCaption());
     Button historyButton =
         (Button) view.submissionsGrid.getColumn(HISTORY).getValueProvider().apply(submission);
     assertTrue(historyButton.getStyleName().contains(HISTORY));
     assertEquals(resources.message(HISTORY), historyButton.getCaption());
-    assertFalse(view.submissionsGrid.getColumn(TREATMENTS).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(HISTORY).isHidable());
     assertTrue(view.submissionsGrid.getColumn(HISTORY).isHidden());
     assertEquals(1, view.submissionsGrid.getFrozenColumnCount());
     assertFalse(sortOrders.isEmpty());
@@ -300,11 +308,35 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
+  public void submissionsGrid_Manager() {
+    when(authorizationService.hasManagerRole()).thenReturn(true);
+    presenter.init(view);
+
+    assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidden());
+    assertTrue(view.submissionsGrid.getColumn(USER).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(DATE).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(TREATMENTS).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(TREATMENTS).isHidden());
+    assertFalse(view.submissionsGrid.getColumn(HISTORY).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(HISTORY).isHidden());
+  }
+
+  @Test
   public void submissionsGrid_Admin() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
 
     assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidden());
+    assertTrue(view.submissionsGrid.getColumn(USER).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(view.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(view.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
     assertTrue(view.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
@@ -336,6 +368,27 @@ public class SubmissionsViewPresenterTest {
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.getExperienceContains());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void userFilter() {
+    presenter.init(view);
+    view.submissionsGrid.setDataProvider(submissionsDataProvider);
+    HeaderRow filterRow = view.submissionsGrid.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(USER);
+    TextField textField = (TextField) cell.getComponent();
+    String filterValue = "test";
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getValue()).thenReturn(filterValue);
+
+    listener.valueChange(event);
+
+    verify(submissionsDataProvider).refreshAll();
+    SubmissionWebFilter filter = presenter.getFilter();
+    assertEquals(filterValue, filter.getEmailContains());
   }
 
   @Test
