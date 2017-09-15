@@ -26,20 +26,19 @@ import com.vaadin.server.SerializablePredicate;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Locale;
-import java.util.Optional;
 
 /**
  * Filters submissions.
  */
 public class SubmissionWebFilter implements SerializablePredicate<Submission> {
   private static final long serialVersionUID = -5902082214544061745L;
-  public Optional<String> experienceContains = Optional.empty();
-  public Optional<String> emailContains = Optional.empty();
-  public Optional<String> anySampleNameContains = Optional.empty();
-  public Optional<String> goalContains = Optional.empty();
-  public Optional<SampleStatus> anySampleStatus = Optional.empty();
-  public Optional<Range<LocalDate>> dateRange = Optional.empty();
-  public Optional<Boolean> results = Optional.empty();
+  public String experienceContains;
+  public String emailContains;
+  public String anySampleNameContains;
+  public String goalContains;
+  public SampleStatus anySampleStatus;
+  public Range<LocalDate> dateRange;
+  public Boolean results;
   private final Locale locale;
 
   public SubmissionWebFilter(Locale locale) {
@@ -49,35 +48,34 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
   @Override
   public boolean test(Submission submission) {
     boolean test = true;
-    if (experienceContains.isPresent()) {
+    if (experienceContains != null) {
       test &= submission.getExperience().toLowerCase(locale)
-          .contains(experienceContains.get().toLowerCase(locale));
+          .contains(experienceContains.toLowerCase(locale));
     }
-    if (emailContains.isPresent()) {
+    if (emailContains != null) {
       test &= submission.getUser().getEmail().toLowerCase(locale)
-          .contains(emailContains.get().toLowerCase(locale));
+          .contains(emailContains.toLowerCase(locale));
     }
-    if (anySampleNameContains.isPresent()) {
+    if (anySampleNameContains != null) {
       test &= submission.getSamples().isEmpty()
           || submission.getSamples().stream().anyMatch(sample -> sample.getName()
-              .toLowerCase(locale).contains(anySampleNameContains.get().toLowerCase(locale)));
+              .toLowerCase(locale).contains(anySampleNameContains.toLowerCase(locale)));
     }
-    if (goalContains.isPresent()) {
-      test &=
-          submission.getGoal().toLowerCase(locale).contains(goalContains.get().toLowerCase(locale));
+    if (goalContains != null) {
+      test &= submission.getGoal().toLowerCase(locale).contains(goalContains.toLowerCase(locale));
     }
-    if (anySampleStatus.isPresent()) {
+    if (anySampleStatus != null) {
       test &= submission.getSamples().isEmpty() || submission.getSamples().stream()
-          .anyMatch(sample -> anySampleStatus.get().equals(sample.getStatus()));
+          .anyMatch(sample -> anySampleStatus.equals(sample.getStatus()));
     }
-    if (dateRange.isPresent()) {
-      test &= dateRange.get()
+    if (dateRange != null) {
+      test &= dateRange
           .contains(submission.getSubmissionDate().atZone(ZoneId.systemDefault()).toLocalDate());
     }
-    if (results.isPresent()) {
+    if (results != null) {
       boolean analysed = submission.getSamples().isEmpty() || submission.getSamples().stream()
           .anyMatch(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0);
-      test &= submission.getSamples().isEmpty() || results.get() ? analysed : !analysed;
+      test &= submission.getSamples().isEmpty() || results ? analysed : !analysed;
     }
     return test;
   }

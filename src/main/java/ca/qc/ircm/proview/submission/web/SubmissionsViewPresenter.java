@@ -59,7 +59,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -230,31 +229,31 @@ public class SubmissionsViewPresenter {
     }
     HeaderRow filterRow = view.submissionsGrid.appendHeaderRow();
     filterRow.getCell(EXPERIENCE).setComponent(textFilter(e -> {
-      filter.experienceContains = Optional.ofNullable(e.getValue());
+      filter.experienceContains = e.getValue();
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(USER).setComponent(textFilter(e -> {
-      filter.emailContains = Optional.ofNullable(e.getValue());
+      filter.emailContains = e.getValue();
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
-      filter.anySampleNameContains = Optional.ofNullable(e.getValue());
+      filter.anySampleNameContains = e.getValue();
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(EXPERIENCE_GOAL).setComponent(textFilter(e -> {
-      filter.goalContains = Optional.ofNullable(e.getValue());
+      filter.goalContains = e.getValue();
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_STATUSES).setComponent(comboBoxFilter(e -> {
-      filter.anySampleStatus = Optional.ofNullable(e.getValue());
+      filter.anySampleStatus = e.getValue();
       view.submissionsGrid.getDataProvider().refreshAll();
     }, SampleStatus.values(), status -> status.getLabel(locale)));
     filterRow.getCell(DATE).setComponent(instantFilter(e -> {
-      filter.dateRange = Optional.ofNullable(e.getSavedObject());
+      filter.dateRange = e.getSavedObject();
       view.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(LINKED_TO_RESULTS).setComponent(comboBoxFilter(e -> {
-      filter.results = Optional.ofNullable(e.getValue());
+      filter.results = e.getValue();
       view.submissionsGrid.getDataProvider().refreshAll();
     }, new Boolean[] { true, false }, value -> resources.message(LINKED_TO_RESULTS + "." + value)));
     view.submissionsGrid.sort(DATE, SortDirection.DESCENDING);

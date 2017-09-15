@@ -45,7 +45,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -121,7 +120,7 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void experienceContains() {
-    filter.experienceContains = Optional.of("test");
+    filter.experienceContains = "test";
 
     assertTrue(filter.test(experience("My test")));
     assertTrue(filter.test(experience("Test")));
@@ -129,8 +128,8 @@ public class SubmissionWebFilterTest {
   }
 
   @Test
-  public void experienceContains_Empty() {
-    filter.experienceContains = Optional.empty();
+  public void experienceContains_Null() {
+    filter.experienceContains = null;
 
     assertTrue(filter.test(experience("My test")));
     assertTrue(filter.test(experience("Test")));
@@ -139,7 +138,7 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void emailContains() {
-    filter.emailContains = Optional.of("test");
+    filter.emailContains = "test";
 
     assertTrue(filter.test(email("My test")));
     assertTrue(filter.test(email("Test")));
@@ -147,8 +146,8 @@ public class SubmissionWebFilterTest {
   }
 
   @Test
-  public void emailContains_Empty() {
-    filter.emailContains = Optional.empty();
+  public void emailContains_Null() {
+    filter.emailContains = null;
 
     assertTrue(filter.test(email("My test")));
     assertTrue(filter.test(email("Test")));
@@ -157,7 +156,7 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void goalContains() {
-    filter.goalContains = Optional.of("test");
+    filter.goalContains = "test";
 
     assertTrue(filter.test(goal("My test")));
     assertTrue(filter.test(goal("Test")));
@@ -165,8 +164,8 @@ public class SubmissionWebFilterTest {
   }
 
   @Test
-  public void goalContains_Empty() {
-    filter.goalContains = Optional.empty();
+  public void goalContains_Null() {
+    filter.goalContains = null;
 
     assertTrue(filter.test(goal("My test")));
     assertTrue(filter.test(goal("Test")));
@@ -175,7 +174,7 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void anySampleNameContains() {
-    filter.anySampleNameContains = Optional.of("test");
+    filter.anySampleNameContains = "test";
 
     assertTrue(filter.test(sampleNames("abc", "sample_test")));
     assertTrue(filter.test(sampleNames("Test", "abc")));
@@ -184,8 +183,8 @@ public class SubmissionWebFilterTest {
   }
 
   @Test
-  public void anySampleNameContains_Empty() {
-    filter.anySampleNameContains = Optional.empty();
+  public void anySampleNameContains_Null() {
+    filter.anySampleNameContains = null;
 
     assertTrue(filter.test(sampleNames("abc", "sample_test")));
     assertTrue(filter.test(sampleNames("Test", "abc")));
@@ -195,7 +194,7 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void anySampleStatus() {
-    filter.anySampleStatus = Optional.of(ANALYSED);
+    filter.anySampleStatus = ANALYSED;
 
     assertTrue(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
     assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
@@ -204,8 +203,8 @@ public class SubmissionWebFilterTest {
   }
 
   @Test
-  public void anySampleStatus_Empty() {
-    filter.anySampleStatus = Optional.empty();
+  public void anySampleStatus_Null() {
+    filter.anySampleStatus = null;
 
     assertTrue(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
     assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
@@ -217,7 +216,7 @@ public class SubmissionWebFilterTest {
   public void dateRange() {
     LocalDate from = LocalDate.of(2011, 1, 2);
     LocalDate to = LocalDate.of(2011, 10, 9);
-    filter.dateRange = Optional.of(Range.closed(from, to));
+    filter.dateRange = Range.closed(from, to);
 
     assertFalse(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 9, 40)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 2, 9, 40)))));
@@ -228,8 +227,8 @@ public class SubmissionWebFilterTest {
   }
 
   @Test
-  public void dateRange_Empty() {
-    filter.dateRange = Optional.empty();
+  public void dateRange_Null() {
+    filter.dateRange = null;
 
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 9, 40)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 2, 9, 40)))));
@@ -241,7 +240,7 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void result_True() {
-    filter.results = Optional.of(true);
+    filter.results = true;
 
     assertTrue(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
     assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
@@ -251,7 +250,7 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void result_False() {
-    filter.results = Optional.of(false);
+    filter.results = false;
 
     assertFalse(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
     assertFalse(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
@@ -260,8 +259,8 @@ public class SubmissionWebFilterTest {
   }
 
   @Test
-  public void result_Empty() {
-    filter.results = Optional.empty();
+  public void result_Null() {
+    filter.results = null;
 
     assertTrue(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
     assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
@@ -271,8 +270,8 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void experienceContainsAndAnySampleNameContains() {
-    filter.experienceContains = Optional.of("test");
-    filter.anySampleNameContains = Optional.of("test");
+    filter.experienceContains = "test";
+    filter.anySampleNameContains = "test";
 
     assertTrue(filter.test(sampleNames(experience("test"), "abc", "sample_test")));
     assertFalse(filter.test(sampleNames(experience("test"), "my_sample", "abc")));
