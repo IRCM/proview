@@ -29,7 +29,6 @@ import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTE
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
@@ -229,8 +228,8 @@ public class ValidateViewPresenterTest {
     verify(userService).all(userFilterCaptor.capture());
 
     UserFilter userFilter = userFilterCaptor.getValue();
-    assertTrue(userFilter.isInvalid());
-    assertNull(userFilter.getLaboratory());
+    assertTrue(userFilter.valid.isPresent() && !userFilter.valid.get());
+    assertFalse(userFilter.laboratory.isPresent());
   }
 
   @Test
@@ -241,8 +240,9 @@ public class ValidateViewPresenterTest {
     verify(userService).all(userFilterCaptor.capture());
 
     UserFilter userFilter = userFilterCaptor.getValue();
-    assertTrue(userFilter.isInvalid());
-    assertEquals(signedUser.getLaboratory(), userFilter.getLaboratory());
+    assertTrue(userFilter.valid.isPresent() && !userFilter.valid.get());
+    assertTrue(userFilter.laboratory.isPresent());
+    assertEquals(signedUser.getLaboratory(), userFilter.laboratory.get());
   }
 
   @Test

@@ -287,8 +287,9 @@ public class UserServiceTest {
   @Test
   public void all_InvalidInLaboratory() throws Throwable {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    UserFilterBuilder parameters = new UserFilterBuilder();
-    parameters = parameters.onlyInvalid().inLaboratory(laboratory);
+    UserFilter parameters = new UserFilter();
+    parameters.valid = Optional.of(false);
+    parameters.laboratory = Optional.of(laboratory);
 
     List<User> users = userService.all(parameters);
 
@@ -299,8 +300,8 @@ public class UserServiceTest {
 
   @Test
   public void all_Invalid() throws Throwable {
-    UserFilterBuilder parameters = new UserFilterBuilder();
-    parameters = parameters.onlyInvalid();
+    UserFilter parameters = new UserFilter();
+    parameters.valid = Optional.of(false);
 
     List<User> users = userService.all(parameters);
 
@@ -313,8 +314,9 @@ public class UserServiceTest {
   @Test
   public void all_ValidInLaboratory() throws Throwable {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    UserFilterBuilder parameters = new UserFilterBuilder();
-    parameters = parameters.onlyValid().inLaboratory(laboratory);
+    UserFilter parameters = new UserFilter();
+    parameters.valid = Optional.of(true);
+    parameters.laboratory = Optional.of(laboratory);
 
     List<User> users = userService.all(parameters);
 
@@ -328,8 +330,8 @@ public class UserServiceTest {
 
   @Test
   public void all_Valid() throws Throwable {
-    UserFilterBuilder parameters = new UserFilterBuilder();
-    parameters = parameters.onlyValid();
+    UserFilter parameters = new UserFilter();
+    parameters.valid = Optional.of(true);
 
     List<User> users = userService.all(parameters);
 
@@ -351,8 +353,8 @@ public class UserServiceTest {
 
   @Test
   public void all_NonAdmin() throws Throwable {
-    UserFilterBuilder parameters = new UserFilterBuilder();
-    parameters = parameters.onlyNonAdmin();
+    UserFilter parameters = new UserFilter();
+    parameters.admin = Optional.of(false);
 
     List<User> users = userService.all(parameters);
 

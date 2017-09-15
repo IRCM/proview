@@ -23,7 +23,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.QLaboratory;
 import ca.qc.ircm.proview.user.QUser;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.UserFilterBuilder;
+import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -252,14 +253,14 @@ public class AccessViewPresenter {
   }
 
   private DataProvider<User, ?> searchUsers() {
-    UserFilterBuilder parameters = new UserFilterBuilder();
-    parameters.onlyValid();
+    UserFilter filter = new UserFilter();
+    filter.valid = Optional.of(true);
     if (!authorizationService.hasAdminRole()) {
-      parameters.inLaboratory(authorizationService.getCurrentUser().getLaboratory());
+      filter.laboratory = Optional.of(authorizationService.getCurrentUser().getLaboratory());
     }
-    List<User> users = userService.all(parameters);
+    List<User> users = userService.all(filter);
     usersProvider = DataProvider.ofCollection(users);
-    usersProvider.setFilter(filter);
+    usersProvider.setFilter(this.filter);
     return usersProvider;
   }
 

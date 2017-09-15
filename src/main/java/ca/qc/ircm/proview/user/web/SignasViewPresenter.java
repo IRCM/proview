@@ -23,7 +23,7 @@ import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.user.QLaboratory;
 import ca.qc.ircm.proview.user.QUser;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.UserFilterBuilder;
+import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
@@ -43,6 +43,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -159,12 +160,12 @@ public class SignasViewPresenter {
   }
 
   private ListDataProvider<User> searchUsers() {
-    UserFilterBuilder parameters = new UserFilterBuilder();
-    parameters.onlyNonAdmin();
-    parameters.onlyActive();
-    List<User> users = userService.all(parameters);
+    UserFilter filter = new UserFilter();
+    filter.admin = Optional.of(false);
+    filter.active = Optional.of(true);
+    List<User> users = userService.all(filter);
     usersProvider = DataProvider.ofCollection(users);
-    usersProvider.setFilter(filter);
+    usersProvider.setFilter(this.filter);
     return usersProvider;
   }
 

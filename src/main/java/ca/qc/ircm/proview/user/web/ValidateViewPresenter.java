@@ -23,7 +23,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.QLaboratory;
 import ca.qc.ircm.proview.user.QUser;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.UserFilterBuilder;
+import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.proview.web.MainView;
@@ -43,6 +43,7 @@ import org.springframework.stereotype.Controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -139,12 +140,12 @@ public class ValidateViewPresenter {
   }
 
   private List<User> searchUsers() {
-    UserFilterBuilder parameters = new UserFilterBuilder();
-    parameters = parameters.onlyInvalid();
+    UserFilter filter = new UserFilter();
+    filter.valid = Optional.of(false);
     if (!authorizationService.hasAdminRole()) {
-      parameters = parameters.inLaboratory(authorizationService.getCurrentUser().getLaboratory());
+      filter.laboratory = Optional.of(authorizationService.getCurrentUser().getLaboratory());
     }
-    return userService.all(parameters);
+    return userService.all(filter);
   }
 
   private Button viewButton(User user) {

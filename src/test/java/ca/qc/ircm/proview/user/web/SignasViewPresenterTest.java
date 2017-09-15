@@ -263,8 +263,8 @@ public class SignasViewPresenterTest {
     verify(userService).all(userFilterCaptor.capture());
 
     UserFilter userFilter = userFilterCaptor.getValue();
-    assertTrue(userFilter.isNonAdmin());
-    assertTrue(userFilter.isActive());
+    assertTrue(userFilter.admin.isPresent() && !userFilter.admin.get());
+    assertTrue(userFilter.active.isPresent() && userFilter.active.get());
   }
 
   @Test

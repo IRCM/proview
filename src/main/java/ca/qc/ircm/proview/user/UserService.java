@@ -190,31 +190,28 @@ public class UserService {
    */
   public List<User> all(UserFilter parameters) {
     if (parameters == null) {
-      parameters = new UserFilterBuilder();
+      parameters = new UserFilter();
     }
-    if (parameters.getLaboratory() == null) {
-      authorizationService.checkAdminRole();
+    if (parameters.laboratory.isPresent()) {
+      authorizationService.checkLaboratoryManagerPermission(parameters.laboratory.get());
     } else {
-      authorizationService.checkLaboratoryManagerPermission(parameters.getLaboratory());
+      authorizationService.checkAdminRole();
     }
 
     JPAQuery<User> query = new JPAQuery<>(entityManager);
     query.from(user);
     query.where(user.id.ne(ROBOT_ID));
-    if (parameters.isActive()) {
-      query.where(user.active.eq(true));
+    if (parameters.active.isPresent()) {
+      query.where(user.active.eq(parameters.active.get()));
     }
-    if (parameters.isInvalid()) {
-      query.where(user.valid.eq(false));
+    if (parameters.valid.isPresent()) {
+      query.where(user.valid.eq(parameters.valid.get()));
     }
-    if (parameters.isValid()) {
-      query.where(user.valid.eq(true));
+    if (parameters.admin.isPresent()) {
+      query.where(user.admin.eq(parameters.admin.get()));
     }
-    if (parameters.isNonAdmin()) {
-      query.where(user.admin.eq(false));
-    }
-    if (parameters.getLaboratory() != null) {
-      query.where(user.laboratory.eq(parameters.getLaboratory()));
+    if (parameters.laboratory.isPresent()) {
+      query.where(user.laboratory.eq(parameters.laboratory.get()));
     }
     return query.fetch();
   }

@@ -17,17 +17,14 @@
 
 package ca.qc.ircm.proview.user;
 
+import java.util.Optional;
+
 /**
  * Parameters to search users.
  */
-public interface UserFilter {
-  public Laboratory getLaboratory();
-
-  public boolean isActive();
-
-  public boolean isInvalid();
-
-  public boolean isValid();
-
-  public boolean isNonAdmin();
+public class UserFilter {
+  public Optional<Laboratory> laboratory = Optional.empty();
+  public Optional<Boolean> active = Optional.empty();
+  public Optional<Boolean> valid = Optional.empty();
+  public Optional<Boolean> admin = Optional.empty();
 }

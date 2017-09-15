@@ -32,7 +32,6 @@ import static ca.qc.ircm.proview.user.web.AccessViewPresenter.USERS_GRID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -390,8 +389,8 @@ public class AccessViewPresenterTest {
     verify(userService).all(userFilterCaptor.capture());
 
     UserFilter userFilter = userFilterCaptor.getValue();
-    assertTrue(userFilter.isValid());
-    assertNull(userFilter.getLaboratory());
+    assertTrue(userFilter.valid.isPresent() && userFilter.valid.get());
+    assertFalse(userFilter.laboratory.isPresent());
   }
 
   @Test
@@ -402,8 +401,9 @@ public class AccessViewPresenterTest {
     verify(userService).all(userFilterCaptor.capture());
 
     UserFilter userFilter = userFilterCaptor.getValue();
-    assertTrue(userFilter.isValid());
-    assertEquals(signedUser.getLaboratory(), userFilter.getLaboratory());
+    assertTrue(userFilter.valid.isPresent() && userFilter.valid.get());
+    assertTrue(userFilter.laboratory.isPresent());
+    assertEquals(signedUser.getLaboratory(), userFilter.laboratory.get());
   }
 
   @Test
