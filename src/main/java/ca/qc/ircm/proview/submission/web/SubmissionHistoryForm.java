@@ -16,7 +16,7 @@ import javax.inject.Inject;
 public class SubmissionHistoryForm extends SubmissionHistoryFormDesign implements BaseComponent {
   private static final long serialVersionUID = 4814629523385144606L;
   @Inject
-  private SubmissionHistoryFormPresenter presenter;
+  private transient SubmissionHistoryFormPresenter presenter;
 
   @Override
   public void attach() {
