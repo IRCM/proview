@@ -130,7 +130,7 @@ public class SubmissionWebFilterTest {
 
   @Test
   public void experienceContains_Empty() {
-    filter.experienceContains = Optional.of(null);
+    filter.experienceContains = Optional.empty();
 
     assertTrue(filter.test(experience("My test")));
     assertTrue(filter.test(experience("Test")));
