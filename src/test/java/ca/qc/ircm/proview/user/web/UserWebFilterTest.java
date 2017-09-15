@@ -91,7 +91,7 @@ public class UserWebFilterTest {
   }
 
   @Test
-  public void emailContains_Null() {
+  public void emailContains_Empty() {
     filter.emailContains = Optional.empty();
 
     assertTrue(filter.test(email("abctestabc@gmail.com")));
@@ -111,7 +111,7 @@ public class UserWebFilterTest {
   }
 
   @Test
-  public void nameContains_Null() {
+  public void nameContains_Empty() {
     filter.nameContains = Optional.empty();
 
     assertTrue(filter.test(name("Chris Test")));
@@ -131,7 +131,7 @@ public class UserWebFilterTest {
   }
 
   @Test
-  public void laboratoryNameContains_Null() {
+  public void laboratoryNameContains_Empty() {
     filter.laboratoryNameContains = Optional.empty();
 
     assertTrue(filter.test(laboratoryName("Translational Test")));
@@ -151,7 +151,7 @@ public class UserWebFilterTest {
   }
 
   @Test
-  public void organizationContains_Null() {
+  public void organizationContains_Empty() {
     filter.organizationContains = Optional.empty();
 
     assertTrue(filter.test(organization("Translational Test")));
@@ -177,7 +177,7 @@ public class UserWebFilterTest {
   }
 
   @Test
-  public void active_Null() {
+  public void active_Empty() {
     filter.active = Optional.empty();
 
     assertTrue(filter.test(active(true)));
