@@ -193,26 +193,6 @@ public class SubmissionSampleService {
   }
 
   /**
-   * Returns submitted sample having this name.
-   *
-   * @param name
-   *          sample's name
-   * @return submitted sample having this name
-   */
-  public SubmissionSample getSubmission(String name) {
-    if (name == null) {
-      return null;
-    }
-
-    JPAQuery<SubmissionSample> query = queryFactory.select(submissionSample);
-    query.from(submissionSample);
-    query.where(submissionSample.name.eq(name));
-    SubmissionSample sample = query.fetchOne();
-    authorizationService.checkSampleReadPermission(sample);
-    return sample;
-  }
-
-  /**
    * Returns true if a sample with this name is already in database, false otherwise.
    *
    * @param name

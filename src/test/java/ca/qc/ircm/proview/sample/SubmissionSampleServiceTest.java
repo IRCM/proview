@@ -139,49 +139,6 @@ public class SubmissionSampleServiceTest {
   }
 
   @Test
-  public void get_GelByName() throws Throwable {
-    SubmissionSample sample = submissionSampleService.getSubmission("FAM119A_band_01");
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals((Long) 1L, sample.getId());
-    assertEquals("FAM119A_band_01", sample.getName());
-    assertEquals(true, sample.getOriginalContainer() instanceof Tube);
-    assertEquals((Long) 1L, sample.getOriginalContainer().getId());
-    assertEquals(SampleSupport.GEL, sample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, sample.getType());
-    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
-    assertEquals(null, sample.getNumberProtein());
-    assertEquals(null, sample.getMolecularWeight());
-    assertEquals((Long) 1L, sample.getSubmission().getId());
-  }
-
-  @Test
-  public void get_ByName() throws Throwable {
-    SubmissionSample sample = submissionSampleService.getSubmission("CAP_20111013_01");
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals((Long) 442L, sample.getId());
-    assertEquals("CAP_20111013_01", sample.getName());
-    assertEquals(true, sample.getOriginalContainer() instanceof Tube);
-    assertEquals((Long) 2L, sample.getOriginalContainer().getId());
-    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, sample.getType());
-    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
-    assertEquals((Long) 32L, sample.getSubmission().getId());
-    assertEquals("1.5 μg", sample.getQuantity());
-    assertEquals((Double) 50.0, sample.getVolume());
-    assertEquals(null, sample.getNumberProtein());
-    assertEquals(null, sample.getMolecularWeight());
-  }
-
-  @Test
-  public void get_NullName() throws Throwable {
-    SubmissionSample sample = submissionSampleService.getSubmission((String) null);
-
-    assertNull(sample);
-  }
-
-  @Test
   public void exists_True() throws Throwable {
     boolean exists = submissionSampleService.exists("CAP_20111013_05");
 
