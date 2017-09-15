@@ -29,7 +29,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
-import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
@@ -82,7 +81,7 @@ public class UserWebFilterTest {
 
   @Test
   public void emailContains() {
-    filter.emailContains = Optional.of("test");
+    filter.emailContains = "test";
 
     assertTrue(filter.test(email("abctestabc@gmail.com")));
     assertTrue(filter.test(email("abc.test@gmail.com")));
@@ -91,8 +90,8 @@ public class UserWebFilterTest {
   }
 
   @Test
-  public void emailContains_Empty() {
-    filter.emailContains = Optional.empty();
+  public void emailContains_Null() {
+    filter.emailContains = null;
 
     assertTrue(filter.test(email("abctestabc@gmail.com")));
     assertTrue(filter.test(email("abc.test@gmail.com")));
@@ -102,7 +101,7 @@ public class UserWebFilterTest {
 
   @Test
   public void nameContains() {
-    filter.nameContains = Optional.of("test");
+    filter.nameContains = "test";
 
     assertTrue(filter.test(name("Chris Test")));
     assertTrue(filter.test(name("Test Poitras")));
@@ -111,8 +110,8 @@ public class UserWebFilterTest {
   }
 
   @Test
-  public void nameContains_Empty() {
-    filter.nameContains = Optional.empty();
+  public void nameContains_Null() {
+    filter.nameContains = null;
 
     assertTrue(filter.test(name("Chris Test")));
     assertTrue(filter.test(name("Test Poitras")));
@@ -122,7 +121,7 @@ public class UserWebFilterTest {
 
   @Test
   public void laboratoryNameContains() {
-    filter.laboratoryNameContains = Optional.of("test");
+    filter.laboratoryNameContains = "test";
 
     assertTrue(filter.test(laboratoryName("Translational Test")));
     assertTrue(filter.test(laboratoryName("Test Proteomics")));
@@ -131,8 +130,8 @@ public class UserWebFilterTest {
   }
 
   @Test
-  public void laboratoryNameContains_Empty() {
-    filter.laboratoryNameContains = Optional.empty();
+  public void laboratoryNameContains_Null() {
+    filter.laboratoryNameContains = null;
 
     assertTrue(filter.test(laboratoryName("Translational Test")));
     assertTrue(filter.test(laboratoryName("Test Proteomics")));
@@ -142,7 +141,7 @@ public class UserWebFilterTest {
 
   @Test
   public void organizationContains() {
-    filter.organizationContains = Optional.of("test");
+    filter.organizationContains = "test";
 
     assertTrue(filter.test(organization("Translational Test")));
     assertTrue(filter.test(organization("Test Proteomics")));
@@ -151,8 +150,8 @@ public class UserWebFilterTest {
   }
 
   @Test
-  public void organizationContains_Empty() {
-    filter.organizationContains = Optional.empty();
+  public void organizationContains_Null() {
+    filter.organizationContains = null;
 
     assertTrue(filter.test(organization("Translational Test")));
     assertTrue(filter.test(organization("Test Proteomics")));
@@ -162,7 +161,7 @@ public class UserWebFilterTest {
 
   @Test
   public void active_True() {
-    filter.active = Optional.of(true);
+    filter.active = true;
 
     assertTrue(filter.test(active(true)));
     assertFalse(filter.test(active(false)));
@@ -170,15 +169,15 @@ public class UserWebFilterTest {
 
   @Test
   public void active_False() {
-    filter.active = Optional.of(false);
+    filter.active = false;
 
     assertFalse(filter.test(active(true)));
     assertTrue(filter.test(active(false)));
   }
 
   @Test
-  public void active_Empty() {
-    filter.active = Optional.empty();
+  public void active_Null() {
+    filter.active = null;
 
     assertTrue(filter.test(active(true)));
     assertTrue(filter.test(active(false)));
@@ -186,8 +185,8 @@ public class UserWebFilterTest {
 
   @Test
   public void emailContainsAndActive() {
-    filter.emailContains = Optional.of("test");
-    filter.active = Optional.of(true);
+    filter.emailContains = "test";
+    filter.active = true;
 
     assertTrue(filter.test(active(email("test@abc.com"), true)));
     assertFalse(filter.test(active(email("abc@abc.com"), true)));

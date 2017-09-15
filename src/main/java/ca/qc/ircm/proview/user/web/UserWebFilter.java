@@ -21,18 +21,17 @@ import ca.qc.ircm.proview.user.User;
 import com.vaadin.server.SerializablePredicate;
 
 import java.util.Locale;
-import java.util.Optional;
 
 /**
  * Filters users.
  */
 public class UserWebFilter implements SerializablePredicate<User> {
   private static final long serialVersionUID = -370169011685482240L;
-  public Optional<String> emailContains = Optional.empty();
-  public Optional<String> nameContains = Optional.empty();
-  public Optional<String> laboratoryNameContains = Optional.empty();
-  public Optional<String> organizationContains = Optional.empty();
-  public Optional<Boolean> active = Optional.empty();
+  public String emailContains;
+  public String nameContains;
+  public String laboratoryNameContains;
+  public String organizationContains;
+  public Boolean active;
   private final Locale locale;
 
   public UserWebFilter(Locale locale) {
@@ -42,23 +41,22 @@ public class UserWebFilter implements SerializablePredicate<User> {
   @Override
   public boolean test(User user) {
     boolean value = true;
-    if (emailContains.isPresent()) {
-      value &=
-          user.getEmail().toLowerCase(locale).contains(emailContains.get().toLowerCase(locale));
+    if (emailContains != null) {
+      value &= user.getEmail().toLowerCase(locale).contains(emailContains.toLowerCase(locale));
     }
-    if (nameContains.isPresent()) {
-      value &= user.getName().toLowerCase(locale).contains(nameContains.get().toLowerCase(locale));
+    if (nameContains != null) {
+      value &= user.getName().toLowerCase(locale).contains(nameContains.toLowerCase(locale));
     }
-    if (laboratoryNameContains.isPresent()) {
+    if (laboratoryNameContains != null) {
       value &= user.getLaboratory().getName().toLowerCase(locale)
-          .contains(laboratoryNameContains.get().toLowerCase(locale));
+          .contains(laboratoryNameContains.toLowerCase(locale));
     }
-    if (organizationContains.isPresent()) {
+    if (organizationContains != null) {
       value &= user.getLaboratory().getOrganization().toLowerCase(locale)
-          .contains(organizationContains.get().toLowerCase(locale));
+          .contains(organizationContains.toLowerCase(locale));
     }
-    if (active.isPresent()) {
-      value &= user.isActive() == active.get();
+    if (active != null) {
+      value &= user.isActive() == active;
     }
     return value;
   }

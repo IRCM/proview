@@ -159,23 +159,23 @@ public class AccessViewPresenter {
     view.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
     HeaderRow filterRow = view.usersGrid.appendHeaderRow();
     filterRow.getCell(EMAIL).setComponent(textFilter(e -> {
-      filter.emailContains = Optional.ofNullable(e.getValue());
+      filter.emailContains = e.getValue();
       view.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(NAME).setComponent(textFilter(e -> {
-      filter.nameContains = Optional.ofNullable(e.getValue());
+      filter.nameContains = e.getValue();
       view.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(LABORATORY_NAME).setComponent(textFilter(e -> {
-      filter.laboratoryNameContains = Optional.ofNullable(e.getValue());
+      filter.laboratoryNameContains = e.getValue();
       view.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(ORGANIZATION).setComponent(textFilter(e -> {
-      filter.organizationContains = Optional.ofNullable(e.getValue());
+      filter.organizationContains = e.getValue();
       view.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(ACTIVE).setComponent(comboBoxFilter(e -> {
-      filter.active = Optional.ofNullable(e.getValue());
+      filter.active = e.getValue();
       view.usersGrid.getDataProvider().refreshAll();
     }, resources, value -> resources.message(ACTIVE + "." + value), new Boolean[] { true, false }));
   }

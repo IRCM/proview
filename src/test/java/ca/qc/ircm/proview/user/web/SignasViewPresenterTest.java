@@ -168,8 +168,7 @@ public class SignasViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertTrue(filter.emailContains.isPresent());
-    assertEquals(filterValue, filter.emailContains.get());
+    assertEquals(filterValue, filter.emailContains);
   }
 
   @Test
@@ -189,8 +188,7 @@ public class SignasViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertTrue(filter.nameContains.isPresent());
-    assertEquals(filterValue, filter.nameContains.get());
+    assertEquals(filterValue, filter.nameContains);
   }
 
   @Test
@@ -210,8 +208,7 @@ public class SignasViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertTrue(filter.laboratoryNameContains.isPresent());
-    assertEquals(filterValue, filter.laboratoryNameContains.get());
+    assertEquals(filterValue, filter.laboratoryNameContains);
   }
 
   @Test
@@ -231,8 +228,7 @@ public class SignasViewPresenterTest {
 
     verify(usersProvider).refreshAll();
     UserWebFilter filter = presenter.getFilter();
-    assertTrue(filter.organizationContains.isPresent());
-    assertEquals(filterValue, filter.organizationContains.get());
+    assertEquals(filterValue, filter.organizationContains);
   }
 
   @Test
