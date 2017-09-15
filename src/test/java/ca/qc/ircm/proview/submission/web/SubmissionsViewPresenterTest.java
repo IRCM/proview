@@ -59,7 +59,6 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
-import ca.qc.ircm.proview.web.filter.LocalDateFilterComponentPresenter;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.data.HasValue.ValueChangeEvent;
@@ -147,8 +146,6 @@ public class SubmissionsViewPresenterTest {
   private ListDataProvider<Submission> submissionsDataProvider;
   @Mock
   private LocalDateFilterComponent localDateFilterComponent;
-  @Mock
-  private LocalDateFilterComponentPresenter localDateFilterComponentPresenter;
   @Captor
   private ArgumentCaptor<Collection<Sample>> samplesCaptor;
   @Captor
@@ -192,7 +189,6 @@ public class SubmissionsViewPresenterTest {
     when(report.getSubmissions()).thenReturn(submissions);
     when(report.getLinkedToResults()).thenReturn(linkedToResults);
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
-    when(localDateFilterComponent.getPresenter()).thenReturn(localDateFilterComponentPresenter);
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
     when(submissionTreatmentsWindowProvider.get()).thenReturn(submissionTreatmentsWindow);

@@ -20,8 +20,10 @@ package ca.qc.ircm.proview.web.filter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
@@ -107,9 +109,22 @@ public class LocalDateFilterComponentTest {
   }
 
   @Test
-  public void getPresenter() {
-    LocalDateFilterComponentPresenter presenter = view.getPresenter();
+  public void getRange() {
+    Range<LocalDate> range = Range.atLeast(LocalDate.now());
+    when(presenter.getRange()).thenReturn(range);
 
-    assertEquals(this.presenter, presenter);
+    Range<LocalDate> viewRange = view.getRange();
+
+    verify(presenter).getRange();
+    assertSame(range, viewRange);
+  }
+
+  @Test
+  public void setRange() {
+    Range<LocalDate> range = Range.atLeast(LocalDate.now());
+
+    view.setRange(range);
+
+    verify(presenter).setRange(range);
   }
 }
