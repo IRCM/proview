@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class SubmissionSampleComparatorTest {
-  private List<SubmissionSample> samples = new ArrayList<SubmissionSample>();
+  private List<SubmissionSample> samples = new ArrayList<>();
 
   /**
    * Before test.
@@ -53,7 +53,6 @@ public class SubmissionSampleComparatorTest {
       SubmissionSample sample = new SubmissionSample();
       sample.setSubmission(submission);
       sample.setId(1L);
-      sample.setLims("IRCM_20111018_01");
       sample.setName("CAP_20111018_01");
       sample.setStatus(SampleStatus.TO_DIGEST);
       sample.setSupport(SampleSupport.GEL);
@@ -72,7 +71,6 @@ public class SubmissionSampleComparatorTest {
       SubmissionSample sample = new SubmissionSample();
       sample.setSubmission(submission);
       sample.setId(2L);
-      sample.setLims("MCGI_20111018_01");
       sample.setName("MLA_20111018_01");
       sample.setStatus(SampleStatus.TO_ANALYSE);
       sample.setSupport(SampleSupport.DRY);
@@ -91,7 +89,6 @@ public class SubmissionSampleComparatorTest {
       SubmissionSample sample = new SubmissionSample();
       sample.setSubmission(submission);
       sample.setId(3L);
-      sample.setLims("UDEM_20111018_01");
       sample.setName("JZA_20111018_01");
       sample.setStatus(SampleStatus.ANALYSED);
       sample.setSupport(SampleSupport.SOLUTION);
@@ -103,12 +100,12 @@ public class SubmissionSampleComparatorTest {
   public void compareByLaboratory() {
     SubmissionSampleComparator comparator =
         new SubmissionSampleComparator(SubmissionSampleService.Sort.LABORATORY, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
+    List<SubmissionSample> testSamples = new ArrayList<>(samples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
     assertEquals(samples.get(1), testSamples.get(1));
     assertEquals(samples.get(2), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
+    testSamples = new ArrayList<>(samples);
     Collections.reverse(testSamples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
@@ -120,12 +117,12 @@ public class SubmissionSampleComparatorTest {
   public void compareByUser() {
     SubmissionSampleComparator comparator =
         new SubmissionSampleComparator(SubmissionSampleService.Sort.USER, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
+    List<SubmissionSample> testSamples = new ArrayList<>(samples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
     assertEquals(samples.get(2), testSamples.get(1));
     assertEquals(samples.get(1), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
+    testSamples = new ArrayList<>(samples);
     Collections.reverse(testSamples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
@@ -137,29 +134,12 @@ public class SubmissionSampleComparatorTest {
   public void compareBySubmission() {
     SubmissionSampleComparator comparator =
         new SubmissionSampleComparator(SubmissionSampleService.Sort.SUBMISSION, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
+    List<SubmissionSample> testSamples = new ArrayList<>(samples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
     assertEquals(samples.get(1), testSamples.get(1));
     assertEquals(samples.get(2), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.reverse(testSamples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(0), testSamples.get(0));
-    assertEquals(samples.get(1), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
-  }
-
-  @Test
-  public void compareByLims() {
-    SubmissionSampleComparator comparator =
-        new SubmissionSampleComparator(SubmissionSampleService.Sort.LIMS, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
-    Collections.sort(testSamples, comparator);
-    assertEquals(samples.get(0), testSamples.get(0));
-    assertEquals(samples.get(1), testSamples.get(1));
-    assertEquals(samples.get(2), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
+    testSamples = new ArrayList<>(samples);
     Collections.reverse(testSamples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
@@ -171,12 +151,12 @@ public class SubmissionSampleComparatorTest {
   public void compareByName() {
     SubmissionSampleComparator comparator =
         new SubmissionSampleComparator(SubmissionSampleService.Sort.NAME, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
+    List<SubmissionSample> testSamples = new ArrayList<>(samples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
     assertEquals(samples.get(2), testSamples.get(1));
     assertEquals(samples.get(1), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
+    testSamples = new ArrayList<>(samples);
     Collections.reverse(testSamples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
@@ -188,12 +168,12 @@ public class SubmissionSampleComparatorTest {
   public void compareByStatus() {
     SubmissionSampleComparator comparator =
         new SubmissionSampleComparator(SubmissionSampleService.Sort.STATUS, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
+    List<SubmissionSample> testSamples = new ArrayList<>(samples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
     assertEquals(samples.get(1), testSamples.get(1));
     assertEquals(samples.get(2), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
+    testSamples = new ArrayList<>(samples);
     Collections.reverse(testSamples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(0), testSamples.get(0));
@@ -205,12 +185,12 @@ public class SubmissionSampleComparatorTest {
   public void compareBySupport() {
     SubmissionSampleComparator comparator =
         new SubmissionSampleComparator(SubmissionSampleService.Sort.SUPPORT, Locale.CANADA);
-    List<SubmissionSample> testSamples = new ArrayList<SubmissionSample>(samples);
+    List<SubmissionSample> testSamples = new ArrayList<>(samples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(1), testSamples.get(0));
     assertEquals(samples.get(2), testSamples.get(1));
     assertEquals(samples.get(0), testSamples.get(2));
-    testSamples = new ArrayList<SubmissionSample>(samples);
+    testSamples = new ArrayList<>(samples);
     Collections.reverse(testSamples);
     Collections.sort(testSamples, comparator);
     assertEquals(samples.get(1), testSamples.get(0));

@@ -4891,7 +4891,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(sampleVolume, sample.getVolume(), 0.00001);
@@ -4921,7 +4920,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(sampleVolume, sample.getVolume(), 0.00001);
@@ -5033,7 +5031,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(sampleVolume, sample.getVolume(), 0.00001);
@@ -5069,7 +5066,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(sampleVolume, sample.getVolume(), 0.00001);
@@ -5189,7 +5185,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(sampleVolume, sample.getVolume(), 0.00001);
@@ -5219,7 +5214,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(sampleVolume, sample.getVolume(), 0.00001);
@@ -5331,7 +5325,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -5361,7 +5354,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -5474,7 +5466,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -5510,7 +5501,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -5627,7 +5617,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(GEL, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -5641,7 +5630,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(sample.getContaminants() == null || sample.getContaminants().isEmpty());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(GEL, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -5743,7 +5731,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(GEL, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -5763,7 +5750,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(sample.getContaminants() == null || sample.getContaminants().isEmpty());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(GEL, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -5885,7 +5871,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(1, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -5999,7 +5984,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(1, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -6120,7 +6104,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(sampleVolume, sample.getVolume(), 0.00001);
@@ -6150,7 +6133,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(sampleVolume, sample.getVolume(), 0.00001);
@@ -6262,7 +6244,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(null, sample.getVolume());
@@ -6292,7 +6273,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantComment2, contaminant.getComments());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
-    assertEquals(null, sample.getLims());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
     assertEquals(null, sample.getVolume());

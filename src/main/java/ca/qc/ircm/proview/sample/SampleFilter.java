@@ -33,8 +33,6 @@ public interface SampleFilter {
 
   public Laboratory getLaboratory();
 
-  public String getLimsContains();
-
   public Instant getMinimalSubmissionDate();
 
   public Instant getMaximalSubmissionDate();

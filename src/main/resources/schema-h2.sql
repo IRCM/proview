@@ -190,7 +190,6 @@ CREATE TABLE IF NOT EXISTS samplecontainer (
 );
 CREATE TABLE IF NOT EXISTS sample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  lims varchar(100) DEFAULT NULL,
   name varchar(150) DEFAULT NULL,
   controlType varchar(50) DEFAULT NULL,
   support varchar(50) DEFAULT NULL,
@@ -203,7 +202,6 @@ CREATE TABLE IF NOT EXISTS sample (
   numberProtein int(11) DEFAULT NULL,
   molecularWeight double DEFAULT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY sampleLims (lims),
   CONSTRAINT sample_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT sample_ibfk_2 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE
 );

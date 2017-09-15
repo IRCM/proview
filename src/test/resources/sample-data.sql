@@ -3535,170 +3535,170 @@ INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sam
 VALUES (2278,'TUBE','POLR2B_20150527_01',NULL,NULL,NULL,638,NULL,'2015-05-27 13:33:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
 VALUES (2279,'TUBE','POLR2B_20150527_02',NULL,NULL,NULL,639,NULL,'2015-05-27 13:33:31',0);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (1,'IRC20101015_1','FAM119A_band_01',NULL,'GEL',1,'ANALYSED',1,NULL,NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (442,'IRC20111013_2','CAP_20111013_01',NULL,'SOLUTION',2,'DATA_ANALYSIS',32,'1.5 μg',50,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (443,'IRC20111013_3','CAP_20111013_05',NULL,'SOLUTION',3,'TO_APPROVE',33,NULL,NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (444,'CONTROL.1','control_01','NEGATIVE_CONTROL','GEL',4,'TO_APPROVE',NULL,NULL,NULL,'CONTROL',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (445,'IRC20111017_4','CAP_20111017_01',NULL,'SOLUTION',5,'ANALYSED',34,'1.5 μg',50,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (446,'IRC20111109_5','CAP_20111109_01',NULL,'SOLUTION',8,'DATA_ANALYSIS',35,'1.5 μg',50,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (447,'IRC20111116_6','CAP_20111116_01',NULL,'SOLUTION',9,'TO_APPROVE',36,'1.5 μg',50,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (448,'CONTROL.2','control_02','NEGATIVE_CONTROL','GEL',10,'TO_APPROVE',NULL,NULL,NULL,'CONTROL',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (559,'IRC20141008_7','POLR2A_20141008_1',NULL,'SOLUTION',11,'TO_ANALYSE',147,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (560,'IRC20141008_8','POLR2A_20141008_2',NULL,'SOLUTION',12,'TO_ANALYSE',147,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (561,'IRC20141008_9','POLR2A_20140908_01',NULL,'SOLUTION',13,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (562,'IRC20141008_10','POLR2A_20140908_02',NULL,'SOLUTION',14,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (563,'IRC20141008_11','POLR2A_20140908_03',NULL,'SOLUTION',15,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (564,'IRC20141008_12','POLR2A_20140908_04',NULL,'SOLUTION',16,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (565,'IRC20141008_13','POLR2A_20140908_05',NULL,'SOLUTION',17,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (566,'IRC20141008_14','POLR2A_20140908_06',NULL,'SOLUTION',18,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (567,'IRC20141008_15','POLR2A_20140908_07',NULL,'SOLUTION',19,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (568,'IRC20141008_16','POLR2A_20140908_08',NULL,'SOLUTION',20,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (569,'IRC20141009_17','POLR2A_20140909_01',NULL,'SOLUTION',21,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (570,'IRC20141009_18','POLR2A_20140909_02',NULL,'SOLUTION',22,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (571,'IRC20141009_19','POLR2A_20140909_03',NULL,'SOLUTION',23,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (572,'IRC20141009_20','POLR2A_20140909_04',NULL,'SOLUTION',24,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (573,'IRC20141009_21','POLR2A_20140909_05',NULL,'SOLUTION',25,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (574,'IRC20141009_22','POLR2A_20140909_06',NULL,'SOLUTION',26,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (575,'IRC20141009_23','POLR2A_20140909_07',NULL,'SOLUTION',27,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (576,'IRC20141009_24','POLR2A_20140909_08',NULL,'SOLUTION',28,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (577,'IRC20141009_25','POLR2A_20140909_09',NULL,'SOLUTION',29,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (578,'IRC20141009_26','POLR2A_20140909_10',NULL,'SOLUTION',30,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (579,'IRC20141014_27','POLR2A_20140914_01',NULL,'SOLUTION',31,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (580,'IRC20141014_28','POLR2A_20140914_02',NULL,'SOLUTION',32,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (581,'IRC20141014_29','POLR2A_20140914_03',NULL,'SOLUTION',33,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (582,'IRC20141014_30','POLR2A_20140914_04',NULL,'SOLUTION',34,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (583,'IRC20141014_31','POLR2A_20140914_05',NULL,'SOLUTION',35,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (584,'IRC20141014_32','POLR2A_20140914_06',NULL,'SOLUTION',36,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (585,'IRC20141014_33','POLR2A_20140914_07',NULL,'SOLUTION',37,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (586,'IRC20141014_34','POLR2A_20140914_08',NULL,'SOLUTION',38,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (587,'IRC20141014_35','POLR2A_20140914_09',NULL,'SOLUTION',39,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (588,'IRC20141014_36','POLR2A_20140914_10',NULL,'SOLUTION',40,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (589,'IRC20141015_37','POLR2A_20141015_01',NULL,'DRY',41,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (590,'IRC20141015_38','POLR2A_20141015_02',NULL,'DRY',42,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (591,'IRC20141015_39','POLR2A_20141015_03',NULL,'DRY',43,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (592,'IRC20141015_40','POLR2A_20141015_04',NULL,'DRY',44,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (593,'IRC20141015_41','POLR2A_20141015_05',NULL,'DRY',45,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (594,'IRC20141015_42','POLR2A_20141015_06',NULL,'DRY',46,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (595,'IRC20141015_43','POLR2A_20141015_07',NULL,'DRY',47,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (596,'IRC20141015_44','POLR2A_20141015_08',NULL,'DRY',48,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (597,'IRC20141015_45','POLR2A_20141015_09',NULL,'DRY',49,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (598,'IRC20141015_46','POLR2A_20141015_10',NULL,'DRY',50,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (599,'IRC20141015_47','POLR2A_20141015_11',NULL,'SOLUTION',51,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (600,'IRC20141015_48','POLR2A_20141015_12',NULL,'SOLUTION',52,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (601,'IRC20141015_49','POLR2A_20141015_13',NULL,'SOLUTION',53,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (602,'IRC20141015_50','POLR2A_20141015_14',NULL,'SOLUTION',54,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (603,'IRC20141015_51','POLR2A_20141015_15',NULL,'SOLUTION',55,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (604,'IRC20141015_52','POLR2A_20141015_16',NULL,'SOLUTION',56,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (605,'IRC20141015_53','POLR2A_20141015_17',NULL,'SOLUTION',57,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (606,'IRC20141015_54','POLR2A_20141015_18',NULL,'SOLUTION',58,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (607,'IRC20141015_55','POLR2A_20141015_19',NULL,'SOLUTION',59,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (608,'IRC20141015_56','POLR2A_20141015_20',NULL,'SOLUTION',60,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (609,'IRC20141015_57','POLR2A_20141015_21',NULL,'SOLUTION',61,'TO_ANALYSE',153,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (610,'IRC20141015_58','POLR2A_20141015_22',NULL,'SOLUTION',62,'ANALYSED',153,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (611,'IRC20141015_59','POLR2A_20141015_23',NULL,'SOLUTION',63,'TO_ANALYSE',153,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (612,'IRC20141015_60','POLR2A_20141015_24',NULL,'SOLUTION',64,'ANALYSED',153,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (613,'IRC20141015_61','POLR2A_20141015_31',NULL,'SOLUTION',67,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (614,'IRC20141015_62','POLR2A_20141015_32',NULL,'SOLUTION',68,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (615,'IRC20141015_63','POLR2A_20141015_33',NULL,'SOLUTION',69,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (616,'IRC20141015_64','POLR2A_20141015_34',NULL,'SOLUTION',70,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (617,'IRC20141015_65','POLR2A_20141015_35',NULL,'SOLUTION',71,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (618,'IRC20141015_66','POLR2A_20141015_36',NULL,'SOLUTION',72,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (619,'IRC20141015_67','POLR2A_20141015_37',NULL,'SOLUTION',73,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (620,'IRC20141015_68','POLR2A_20141015_38',NULL,'SOLUTION',74,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (621,'IRC20141017_69','POLR2A_20141017_01',NULL,'SOLUTION',79,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (622,'IRC20141017_70','POLR2A_20141017_02',NULL,'SOLUTION',80,'ANALYSED',155,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (623,'IRC20141017_71','POLR2A_20141017_03',NULL,'SOLUTION',81,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (624,'IRC20141017_72','POLR2A_20141017_04',NULL,'SOLUTION',82,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (625,'IRC20141017_73','POLR2A_20141017_05',NULL,'SOLUTION',83,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (626,'IRC20141017_74','POLR2A_20141017_06',NULL,'SOLUTION',84,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (627,'IRC20141022_75','POLR2A_20141022_01',NULL,'SOLUTION',85,'ANALYSED',156,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (628,'IRC20141022_76','POLR2A_20141022_02',NULL,'SOLUTION',86,'ANALYSED',156,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (629,'IRC20141022_77','POLR2A_20141022_03',NULL,'SOLUTION',87,'ANALYSED',156,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (630,'IRC20141022_78','POLR2A_20141022_04',NULL,'SOLUTION',88,'ANALYSED',156,'15 μg',20,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (638,'IRCM20150527_6eox','POLR2B_20150527_01',NULL,'DRY',2278,'TO_ANALYSE',161,NULL,NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,lims,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
-VALUES (639,'IRCM20150527_4mgz','POLR2B_20150527_02',NULL,'DRY',2279,'TO_ANALYSE',162,NULL,NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (1,'FAM119A_band_01',NULL,'GEL',1,'ANALYSED',1,NULL,NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (442,'CAP_20111013_01',NULL,'SOLUTION',2,'DATA_ANALYSIS',32,'1.5 μg',50,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (443,'CAP_20111013_05',NULL,'SOLUTION',3,'TO_APPROVE',33,NULL,NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (444,'control_01','NEGATIVE_CONTROL','GEL',4,'TO_APPROVE',NULL,NULL,NULL,'CONTROL',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (445,'CAP_20111017_01',NULL,'SOLUTION',5,'ANALYSED',34,'1.5 μg',50,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (446,'CAP_20111109_01',NULL,'SOLUTION',8,'DATA_ANALYSIS',35,'1.5 μg',50,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (447,'CAP_20111116_01',NULL,'SOLUTION',9,'TO_APPROVE',36,'1.5 μg',50,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (448,'control_02','NEGATIVE_CONTROL','GEL',10,'TO_APPROVE',NULL,NULL,NULL,'CONTROL',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (559,'POLR2A_20141008_1',NULL,'SOLUTION',11,'TO_ANALYSE',147,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (560,'POLR2A_20141008_2',NULL,'SOLUTION',12,'TO_ANALYSE',147,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (561,'POLR2A_20140908_01',NULL,'SOLUTION',13,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (562,'POLR2A_20140908_02',NULL,'SOLUTION',14,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (563,'POLR2A_20140908_03',NULL,'SOLUTION',15,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (564,'POLR2A_20140908_04',NULL,'SOLUTION',16,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (565,'POLR2A_20140908_05',NULL,'SOLUTION',17,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (566,'POLR2A_20140908_06',NULL,'SOLUTION',18,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (567,'POLR2A_20140908_07',NULL,'SOLUTION',19,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (568,'POLR2A_20140908_08',NULL,'SOLUTION',20,'TO_ANALYSE',148,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (569,'POLR2A_20140909_01',NULL,'SOLUTION',21,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (570,'POLR2A_20140909_02',NULL,'SOLUTION',22,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (571,'POLR2A_20140909_03',NULL,'SOLUTION',23,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (572,'POLR2A_20140909_04',NULL,'SOLUTION',24,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (573,'POLR2A_20140909_05',NULL,'SOLUTION',25,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (574,'POLR2A_20140909_06',NULL,'SOLUTION',26,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (575,'POLR2A_20140909_07',NULL,'SOLUTION',27,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (576,'POLR2A_20140909_08',NULL,'SOLUTION',28,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (577,'POLR2A_20140909_09',NULL,'SOLUTION',29,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (578,'POLR2A_20140909_10',NULL,'SOLUTION',30,'TO_ANALYSE',149,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (579,'POLR2A_20140914_01',NULL,'SOLUTION',31,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (580,'POLR2A_20140914_02',NULL,'SOLUTION',32,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (581,'POLR2A_20140914_03',NULL,'SOLUTION',33,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (582,'POLR2A_20140914_04',NULL,'SOLUTION',34,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (583,'POLR2A_20140914_05',NULL,'SOLUTION',35,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (584,'POLR2A_20140914_06',NULL,'SOLUTION',36,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (585,'POLR2A_20140914_07',NULL,'SOLUTION',37,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (586,'POLR2A_20140914_08',NULL,'SOLUTION',38,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (587,'POLR2A_20140914_09',NULL,'SOLUTION',39,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (588,'POLR2A_20140914_10',NULL,'SOLUTION',40,'TO_ANALYSE',150,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (589,'POLR2A_20141015_01',NULL,'DRY',41,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (590,'POLR2A_20141015_02',NULL,'DRY',42,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (591,'POLR2A_20141015_03',NULL,'DRY',43,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (592,'POLR2A_20141015_04',NULL,'DRY',44,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (593,'POLR2A_20141015_05',NULL,'DRY',45,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (594,'POLR2A_20141015_06',NULL,'DRY',46,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (595,'POLR2A_20141015_07',NULL,'DRY',47,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (596,'POLR2A_20141015_08',NULL,'DRY',48,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (597,'POLR2A_20141015_09',NULL,'DRY',49,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (598,'POLR2A_20141015_10',NULL,'DRY',50,'TO_ANALYSE',151,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (599,'POLR2A_20141015_11',NULL,'SOLUTION',51,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (600,'POLR2A_20141015_12',NULL,'SOLUTION',52,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (601,'POLR2A_20141015_13',NULL,'SOLUTION',53,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (602,'POLR2A_20141015_14',NULL,'SOLUTION',54,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (603,'POLR2A_20141015_15',NULL,'SOLUTION',55,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (604,'POLR2A_20141015_16',NULL,'SOLUTION',56,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (605,'POLR2A_20141015_17',NULL,'SOLUTION',57,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (606,'POLR2A_20141015_18',NULL,'SOLUTION',58,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (607,'POLR2A_20141015_19',NULL,'SOLUTION',59,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (608,'POLR2A_20141015_20',NULL,'SOLUTION',60,'TO_ANALYSE',152,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (609,'POLR2A_20141015_21',NULL,'SOLUTION',61,'TO_ANALYSE',153,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (610,'POLR2A_20141015_22',NULL,'SOLUTION',62,'ANALYSED',153,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (611,'POLR2A_20141015_23',NULL,'SOLUTION',63,'TO_ANALYSE',153,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (612,'POLR2A_20141015_24',NULL,'SOLUTION',64,'ANALYSED',153,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (613,'POLR2A_20141015_31',NULL,'SOLUTION',67,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (614,'POLR2A_20141015_32',NULL,'SOLUTION',68,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (615,'POLR2A_20141015_33',NULL,'SOLUTION',69,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (616,'POLR2A_20141015_34',NULL,'SOLUTION',70,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (617,'POLR2A_20141015_35',NULL,'SOLUTION',71,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (618,'POLR2A_20141015_36',NULL,'SOLUTION',72,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (619,'POLR2A_20141015_37',NULL,'SOLUTION',73,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (620,'POLR2A_20141015_38',NULL,'SOLUTION',74,'TO_ANALYSE',154,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (621,'POLR2A_20141017_01',NULL,'SOLUTION',79,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (622,'POLR2A_20141017_02',NULL,'SOLUTION',80,'ANALYSED',155,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (623,'POLR2A_20141017_03',NULL,'SOLUTION',81,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (624,'POLR2A_20141017_04',NULL,'SOLUTION',82,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (625,'POLR2A_20141017_05',NULL,'SOLUTION',83,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (626,'POLR2A_20141017_06',NULL,'SOLUTION',84,'TO_ANALYSE',155,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (627,'POLR2A_20141022_01',NULL,'SOLUTION',85,'ANALYSED',156,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (628,'POLR2A_20141022_02',NULL,'SOLUTION',86,'ANALYSED',156,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (629,'POLR2A_20141022_03',NULL,'SOLUTION',87,'ANALYSED',156,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (630,'POLR2A_20141022_04',NULL,'SOLUTION',88,'ANALYSED',156,'15 μg',20,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (638,'POLR2B_20150527_01',NULL,'DRY',2278,'TO_ANALYSE',161,NULL,NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (639,'POLR2B_20150527_02',NULL,'DRY',2279,'TO_ANALYSE',162,NULL,NULL,'SUBMISSION',NULL,NULL);
 INSERT INTO standard (id,name,quantity,sampleId,comments,deleted)
 VALUES (4,'std1','2 μg',445,NULL,0);
 INSERT INTO standard (id,name,quantity,sampleId,comments,deleted)

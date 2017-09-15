@@ -3,6 +3,6 @@
 
 Sample LIMS	Sample name	[# th:if="${containerType.name() == 'TUBE'}"]Tube[/][# th:if="${containerType.name() == 'SPOT'}"]Plate[/]
 [# th:each="sample: ${samples}"]
-[[${sample.lims}]]	[[${sample.name}]]	[# th:if="${containerType.name() == 'SPOT'}"][[${sample.originalContainer.plate.name}]][/][[${sample.originalContainer.name}]]
+[[${sample.name}]]	[# th:if="${containerType.name() == 'SPOT'}"][[${sample.originalContainer.plate.name}]][/][[${sample.originalContainer.name}]]
 [/]
 </html>

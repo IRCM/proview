@@ -99,7 +99,6 @@ public class SubmissionSampleServiceTest {
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample gelSample = sample;
     assertEquals((Long) 1L, gelSample.getId());
-    assertEquals("IRC20101015_1", gelSample.getLims());
     assertEquals("FAM119A_band_01", gelSample.getName());
     assertEquals(true, gelSample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 1L, gelSample.getOriginalContainer().getId());
@@ -119,7 +118,6 @@ public class SubmissionSampleServiceTest {
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample eluateSample = sample;
     assertEquals((Long) 442L, eluateSample.getId());
-    assertEquals("IRC20111013_2", eluateSample.getLims());
     assertEquals("CAP_20111013_01", eluateSample.getName());
     assertEquals(true, eluateSample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
@@ -146,7 +144,6 @@ public class SubmissionSampleServiceTest {
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals((Long) 1L, sample.getId());
-    assertEquals("IRC20101015_1", sample.getLims());
     assertEquals("FAM119A_band_01", sample.getName());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 1L, sample.getOriginalContainer().getId());
@@ -164,7 +161,6 @@ public class SubmissionSampleServiceTest {
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals((Long) 442L, sample.getId());
-    assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 2L, sample.getOriginalContainer().getId());
@@ -226,10 +222,9 @@ public class SubmissionSampleServiceTest {
     assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 443L)));
     assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 445L)));
     Collections.sort(samples,
-        new SubmissionSampleComparator(SubmissionSampleService.Sort.LIMS, Locale.CANADA));
+        new SubmissionSampleComparator(SubmissionSampleService.Sort.NAME, Locale.CANADA));
     SubmissionSample sample = samples.get(0);
     assertEquals((Long) 442L, sample.getId());
-    assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
@@ -237,7 +232,6 @@ public class SubmissionSampleServiceTest {
         sample.getSubmission().getSubmissionDate());
     sample = samples.get(1);
     assertEquals((Long) 443L, sample.getId());
-    assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(
@@ -371,27 +365,6 @@ public class SubmissionSampleServiceTest {
     assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 443L)));
     assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 446L)));
     assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 447L)));
-  }
-
-  @Test
-  public void report_LimsContains() throws Throwable {
-    SampleFilterBuilder filter = new SampleFilterBuilder();
-    filter.limsContains("RC20111013");
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authorizationService.getCurrentUser()).thenReturn(user);
-    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
-        .thenReturn(true);
-
-    SubmissionSampleService.Report report = submissionSampleService.report(filter.build());
-
-    verify(authorizationService).checkUserRole();
-    List<SubmissionSample> samples = report.getSamples();
-    assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 1L)));
-    assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 442L)));
-    assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 443L)));
-    assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 446L)));
-    assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 447L)));
   }
 
   @Test
@@ -724,13 +697,12 @@ public class SubmissionSampleServiceTest {
     assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 443L)));
     assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 445L)));
     Collections.sort(samples,
-        new SubmissionSampleComparator(SubmissionSampleService.Sort.LIMS, Locale.CANADA));
+        new SubmissionSampleComparator(SubmissionSampleService.Sort.NAME, Locale.CANADA));
     SubmissionSample sample = samples.get(0);
     assertEquals((Long) 442L, sample.getId());
     assertEquals((Long) 2L, sample.getLaboratory().getId());
     assertEquals("IRCM", sample.getLaboratory().getOrganization());
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
-    assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
@@ -742,7 +714,6 @@ public class SubmissionSampleServiceTest {
     assertEquals((Long) 2L, sample.getLaboratory().getId());
     assertEquals("IRCM", sample.getLaboratory().getOrganization());
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
-    assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
     assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
@@ -754,7 +725,6 @@ public class SubmissionSampleServiceTest {
     assertEquals((Long) 1L, sample.getLaboratory().getId());
     assertEquals("IRCM", sample.getLaboratory().getOrganization());
     assertEquals("christian.poitras@ircm.qc.ca", sample.getUser().getEmail());
-    assertEquals("IRC20111017_4", sample.getLims());
     assertEquals("CAP_20111017_01", sample.getName());
     assertEquals(SampleSupport.SOLUTION, sample.getSupport());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
@@ -849,23 +819,6 @@ public class SubmissionSampleServiceTest {
     assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 445L)));
     assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 446L)));
     assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 447L)));
-  }
-
-  @Test
-  public void adminReport_LimsContains() throws Throwable {
-    SampleFilterBuilder filter = new SampleFilterBuilder();
-    filter.limsContains("RC20111013");
-
-    SubmissionSampleService.Report report = submissionSampleService.adminReport(filter.build());
-
-    verify(authorizationService).checkAdminRole();
-    List<SubmissionSample> samples = report.getSamples();
-    assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 1L)));
-    assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 442L)));
-    assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 443L)));
-    assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 445L)));
-    assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 446L)));
-    assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 447L)));
   }
 
   @Test
@@ -1185,22 +1138,19 @@ public class SubmissionSampleServiceTest {
     assertEquals(true, samples.contains(entityManager.find(SubmissionSample.class, 443L)));
     assertEquals(false, samples.contains(entityManager.find(SubmissionSample.class, 445L)));
     Collections.sort(samples,
-        new SubmissionSampleComparator(SubmissionSampleService.Sort.LIMS, Locale.CANADA));
+        new SubmissionSampleComparator(SubmissionSampleService.Sort.NAME, Locale.CANADA));
     SubmissionSample sample = samples.get(0);
     assertEquals((Long) 442L, sample.getId());
-    assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("CAP_20111013_01", sample.getOriginalContainer().getName());
     sample = samples.get(1);
     assertEquals((Long) 443L, sample.getId());
-    assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
     assertEquals("benoit.coulombe@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("CAP_20111013_05", sample.getOriginalContainer().getName());
     sample = samples.get(2);
     assertEquals((Long) 446L, sample.getId());
-    assertEquals("IRC20111109_5", sample.getLims());
     assertEquals("CAP_20111109_01", sample.getName());
     assertEquals("christopher.anderson@ircm.qc.ca", sample.getUser().getEmail());
     assertEquals("CAP_20111109_01", sample.getOriginalContainer().getName());

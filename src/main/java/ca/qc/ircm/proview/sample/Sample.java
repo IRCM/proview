@@ -75,12 +75,6 @@ public abstract class Sample implements Data, Named, Serializable {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
-   * Unique identifier given by LIMS.
-   */
-  @Column(name = "lims", unique = true, nullable = false)
-  @Size(max = 100)
-  private String lims;
-  /**
    * Sample's name.
    */
   @Column(name = "name")
@@ -138,7 +132,7 @@ public abstract class Sample implements Data, Named, Serializable {
 
   @Override
   public String toString() {
-    return "Sample [id=" + id + ", lims=" + lims + ", name=" + name + "]";
+    return "Sample [id=" + id + ", name=" + name + "]";
   }
 
   @Override
@@ -148,14 +142,6 @@ public abstract class Sample implements Data, Named, Serializable {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getLims() {
-    return lims;
-  }
-
-  public void setLims(String lims) {
-    this.lims = lims;
   }
 
   @Override

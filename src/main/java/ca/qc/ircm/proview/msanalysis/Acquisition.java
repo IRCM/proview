@@ -109,23 +109,6 @@ public class Acquisition implements Data, Named, Serializable {
     this.id = id;
   }
 
-  /**
-   * Returns acquisition LIMS.
-   *
-   * @return acquisition LIMS
-   */
-  public String getLims() {
-    if (getSample() != null && getSample().getLims() != null) {
-      StringBuilder builder = new StringBuilder();
-      builder.append(getSample().getLims());
-      builder.append(".A");
-      builder.append(position);
-      return builder.toString();
-    } else {
-      return null;
-    }
-  }
-
   @Override
   public String getName() {
     if (getSample() != null && getSample().getName() != null) {

@@ -63,23 +63,6 @@ public class FractionationDetail extends TreatmentSample implements Named {
   @Size(max = 255)
   private String piInterval;
 
-  /**
-   * Returns fraction's LIMS number.
-   *
-   * @return fraction's LIMS number
-   */
-  public String getLims() {
-    if (getSample() != null && getSample().getLims() != null) {
-      StringBuilder builder = new StringBuilder();
-      builder.append(getSample().getLims());
-      builder.append(".F");
-      builder.append(position);
-      return builder.toString();
-    } else {
-      return null;
-    }
-  }
-
   @Override
   public String getName() {
     if (getSample() != null && getSample().getName() != null) {

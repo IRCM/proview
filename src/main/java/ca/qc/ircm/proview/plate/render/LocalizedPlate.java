@@ -17,23 +17,13 @@
 
 package ca.qc.ircm.proview.plate.render;
 
-import ca.qc.ircm.proview.fractionation.FractionationDetail;
-import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import ca.qc.ircm.proview.sample.Sample;
 
 /**
  * Get localized plate information for plate PDF.
  */
 public class LocalizedPlate {
-
-  private final FractionationService fractionationService;
-
-  public LocalizedPlate(FractionationService fractionationService) {
-    this.fractionationService = fractionationService;
-  }
-
   /**
    * Get header for table containing plate information.
    *
@@ -65,23 +55,7 @@ public class LocalizedPlate {
    */
   public String getSampleName(PlateSpot spot) {
     if (spot.getSample() != null) {
-      // Special case if sample if a fraction.
-      FractionationDetail detail = fractionationService.find(spot);
-      if (detail != null) {
-        if (detail.getName() != null) {
-          return detail.getName();
-        } else {
-          return detail.getLims();
-        }
-      }
-
-      // Return sample's tag.
-      Sample sample = spot.getSample();
-      if (sample.getName() != null) {
-        return sample.getName();
-      } else {
-        return sample.getLims();
-      }
+      return spot.getSample().getName();
     } else {
       return null;
     }

@@ -78,10 +78,6 @@ public class SubmissionSampleService {
      */
     SUBMISSION,
     /**
-     * Sample lims.
-     */
-    LIMS,
-    /**
      * Sample name.
      */
     NAME,
@@ -312,9 +308,6 @@ public class SubmissionSampleService {
     }
     if (filter.getLaboratory() != null) {
       query.where(laboratory.eq(filter.getLaboratory()));
-    }
-    if (filter.getLimsContains() != null) {
-      query.where(submissionSample.lims.contains(filter.getLimsContains()));
     }
     if (filter.getMinimalSubmissionDate() != null) {
       query.where(submission.submissionDate.goe(filter.getMinimalSubmissionDate()));

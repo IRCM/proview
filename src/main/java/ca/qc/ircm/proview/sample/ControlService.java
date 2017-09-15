@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.sample.QControl.control;
-import static ca.qc.ircm.proview.sample.QSample.sample;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -34,8 +33,6 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -47,9 +44,6 @@ import javax.persistence.PersistenceContext;
 @Service
 @Transactional
 public class ControlService {
-  private static final String CONTROL_BASE_LIMS = "CONTROL.";
-  private static final Pattern CONTROL_NUMBER_PATTERN =
-      Pattern.compile(Pattern.quote(CONTROL_BASE_LIMS) + "(\\d+)");
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -115,7 +109,6 @@ public class ControlService {
   public void insert(Control control) {
     authorizationService.checkAdminRole();
 
-    generateLims(control);
     entityManager.persist(control);
 
     // Insert tube.
@@ -130,40 +123,6 @@ public class ControlService {
     // Log insertion to database.
     Activity activity = sampleActivityService.insertControl(control);
     activityService.insert(activity);
-  }
-
-  private String lastLims() {
-    JPAQuery<String> query = queryFactory.select(control.lims);
-    query.from(control);
-    query.orderBy(control.id.desc());
-    query.limit(1);
-    return query.fetchOne();
-  }
-
-  private boolean limsExists(String lims) {
-    JPAQuery<Long> query = queryFactory.select(sample.id);
-    query.from(sample);
-    query.where(sample.lims.eq(lims));
-    return query.fetchCount() > 0;
-  }
-
-  private void generateLims(Control sample) {
-    String base = CONTROL_BASE_LIMS;
-    String lastLims = lastLims();
-    int lastValue;
-    if (lastLims != null) {
-      Matcher matcher = CONTROL_NUMBER_PATTERN.matcher(lastLims);
-      matcher.matches();
-      lastValue = Integer.parseInt(matcher.group(1));
-    } else {
-      lastValue = 0;
-    }
-    String lims = base + (lastValue + 1);
-    if (limsExists(lims)) {
-      lastValue++;
-      lims = base + (lastValue + 1);
-    }
-    sample.setLims(lims);
   }
 
   /**

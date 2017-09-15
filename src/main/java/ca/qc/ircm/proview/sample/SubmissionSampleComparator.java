@@ -51,9 +51,6 @@ public class SubmissionSampleComparator implements Comparator<SubmissionSample>,
         case SUBMISSION:
           return o1.getSubmission().getSubmissionDate()
               .compareTo(o2.getSubmission().getSubmissionDate());
-        case LIMS:
-          SampleLimsComparator comparator = new SampleLimsComparator(locale);
-          return comparator.compare(o1, o2);
         case NAME:
           return collator.compare(o1.getName(), o2.getName());
         case STATUS:

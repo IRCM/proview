@@ -63,7 +63,6 @@ public class SampleServiceTest {
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample gelSample = (SubmissionSample) sample;
     assertEquals((Long) 1L, gelSample.getId());
-    assertEquals("IRC20101015_1", gelSample.getLims());
     assertEquals("FAM119A_band_01", gelSample.getName());
     assertEquals((Long) 1L, gelSample.getOriginalContainer().getId());
     assertEquals(SampleSupport.GEL, gelSample.getSupport());
@@ -80,7 +79,6 @@ public class SampleServiceTest {
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample eluateSample = (SubmissionSample) sample;
     assertEquals((Long) 442L, eluateSample.getId());
-    assertEquals("IRC20111013_2", eluateSample.getLims());
     assertEquals("CAP_20111013_01", eluateSample.getName());
     assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
     assertEquals(SampleSupport.SOLUTION, eluateSample.getSupport());
@@ -99,7 +97,6 @@ public class SampleServiceTest {
     assertTrue(sample instanceof Control);
     Control control = (Control) sample;
     assertEquals((Long) 444L, control.getId());
-    assertEquals("CONTROL.1", control.getLims());
     assertEquals("control_01", control.getName());
     assertEquals((Long) 4L, control.getOriginalContainer().getId());
     assertEquals(SampleSupport.GEL, control.getSupport());

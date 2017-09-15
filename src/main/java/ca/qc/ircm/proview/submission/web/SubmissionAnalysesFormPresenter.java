@@ -56,7 +56,6 @@ public class SubmissionAnalysesFormPresenter {
   public static final String ANALYSIS = msAnalysis.getMetadata().getName();
   public static final String ACQUISITIONS = msAnalysis.acquisitions.getMetadata().getName();
   public static final String SAMPLE = acquisition.sample.getMetadata().getName();
-  public static final String LIMS = SAMPLE + "." + acquisition.sample.lims.getMetadata().getName();
   public static final String NAME = SAMPLE + "." + acquisition.sample.name.getMetadata().getName();
   public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
   public static final String ACQUISITION_INDEX = acquisition.listIndex.getMetadata().getName();

@@ -31,7 +31,6 @@ public class SampleFilterBuilder {
     private String experienceContains;
     private String laboratoryContains;
     private Laboratory laboratory;
-    private String limsContains;
     private Instant minimalSubmissionDate;
     private Instant maximalSubmissionDate;
     private String nameContains;
@@ -54,11 +53,6 @@ public class SampleFilterBuilder {
     @Override
     public Laboratory getLaboratory() {
       return laboratory;
-    }
-
-    @Override
-    public String getLimsContains() {
-      return limsContains;
     }
 
     @Override
@@ -117,11 +111,6 @@ public class SampleFilterBuilder {
 
   public SampleFilterBuilder laboratory(Laboratory laboratory) {
     parameters.laboratory = laboratory;
-    return this;
-  }
-
-  public SampleFilterBuilder limsContains(String limsContains) {
-    parameters.limsContains = limsContains;
     return this;
   }
 

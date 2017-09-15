@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QAcquisitionMascotFile.acquisitionMascotFile;
-import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
@@ -43,7 +42,6 @@ import ca.qc.ircm.proview.user.User;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -51,10 +49,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -102,7 +98,6 @@ public class SubmissionService {
     }
   }
 
-  private static final String LIMS_RANDOM_CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
   private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
   @PersistenceContext
   private EntityManager entityManager;
@@ -233,11 +228,9 @@ public class SubmissionService {
     submission.setUser(user);
     submission.setSubmissionDate(Instant.now());
     submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
-    Set<String> otherSampleLims = new HashSet<>();
     Set<String> otherTubeNames = new HashSet<>();
     Plate plate = null;
     for (SubmissionSample sample : submission.getSamples()) {
-      generateLims(sample, laboratory, otherSampleLims);
       sample.setSubmission(submission);
       sample.setStatus(SampleStatus.TO_APPROVE);
       if (sample.getOriginalContainer() == null) {
@@ -282,30 +275,6 @@ public class SubmissionService {
     // Log insertion to database.
     Activity activity = submissionActivityService.insert(submission);
     activityService.insert(activity);
-  }
-
-  private boolean existsByLims(String lims) {
-    JPAQuery<Long> query = queryFactory.select(sample.id);
-    query.from(sample);
-    query.where(sample.lims.eq(lims));
-    return query.fetchCount() > 0;
-  }
-
-  private void generateLims(SubmissionSample sample, Laboratory laboratory,
-      Set<String> otherSampleLims) {
-    String organization = laboratory.getOrganization().substring(0,
-        Math.min(4, laboratory.getOrganization().length()));
-    String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-    String random =
-        RandomStringUtils.randomNumeric(1) + RandomStringUtils.random(3, LIMS_RANDOM_CHARACTERS);
-    String lims = organization + date + "_" + random;
-    while (otherSampleLims.contains(lims) || existsByLims(lims)) {
-      random =
-          RandomStringUtils.randomNumeric(1) + RandomStringUtils.random(3, LIMS_RANDOM_CHARACTERS);
-      lims = organization + date + "_" + random;
-    }
-    otherSampleLims.add(lims);
-    sample.setLims(lims);
   }
 
   private Plate createSubmissionPlate(Submission submission) {

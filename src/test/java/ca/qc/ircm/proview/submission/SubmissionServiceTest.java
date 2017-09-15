@@ -88,7 +88,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -97,7 +96,6 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionServiceTest {
-  private static final Pattern LIMS_PATTERN = Pattern.compile("\\w{4}\\d{8}_\\d\\w{3}");
   private SubmissionService submissionService;
   @PersistenceContext
   private EntityManager entityManager;
@@ -223,7 +221,6 @@ public class SubmissionServiceTest {
     assertEquals(1, samples.size());
     SubmissionSample sample = samples.get(0);
     assertEquals((Long) 1L, sample.getId());
-    assertEquals("IRC20101015_1", sample.getLims());
     assertEquals("FAM119A_band_01", sample.getName());
     assertEquals((Long) 1L, sample.getOriginalContainer().getId());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
@@ -313,7 +310,6 @@ public class SubmissionServiceTest {
     assertEquals(1, samples.size());
     SubmissionSample sample = samples.get(0);
     assertEquals((Long) 443L, sample.getId());
-    assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
     assertEquals((Long) 3L, sample.getOriginalContainer().getId());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
@@ -354,7 +350,6 @@ public class SubmissionServiceTest {
     assertEquals("cap_goal", submission.getGoal());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals((Long) 442L, sample.getId());
-    assertEquals("IRC20111013_2", sample.getLims());
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     assertEquals(
@@ -364,7 +359,6 @@ public class SubmissionServiceTest {
     assertEquals((Long) 33L, submission.getId());
     sample = submission.getSamples().get(0);
     assertEquals((Long) 443L, sample.getId());
-    assertEquals("IRC20111013_3", sample.getLims());
     assertEquals("CAP_20111013_05", sample.getName());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(
@@ -553,8 +547,6 @@ public class SubmissionServiceTest {
     samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
-    assertNotNull(submissionSample.getLims());
-    assertEquals(true, LIMS_PATTERN.matcher(submissionSample.getLims()).matches());
     assertEquals("unit_test_gel_01", submissionSample.getName());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
     assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
@@ -715,8 +707,6 @@ public class SubmissionServiceTest {
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
-    assertNotNull(submissionSample.getLims());
-    assertEquals(true, LIMS_PATTERN.matcher(submissionSample.getLims()).matches());
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());
@@ -867,8 +857,6 @@ public class SubmissionServiceTest {
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
-    assertNotNull(submissionSample.getLims());
-    assertEquals(true, LIMS_PATTERN.matcher(submissionSample.getLims()).matches());
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());
@@ -1023,8 +1011,6 @@ public class SubmissionServiceTest {
     samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
-    assertNotNull(submissionSample.getLims());
-    assertEquals(true, LIMS_PATTERN.matcher(submissionSample.getLims()).matches());
     assertEquals("unit_test_molecule_01", submissionSample.getName());
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     Tube tube = (Tube) submissionSample.getOriginalContainer();

@@ -98,7 +98,6 @@ public class ControlServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 444L, control.getId());
-    assertEquals("CONTROL.1", control.getLims());
     assertEquals("control_01", control.getName());
     assertEquals(ControlType.NEGATIVE_CONTROL, control.getControlType());
     assertEquals(SampleSupport.GEL, control.getSupport());
@@ -157,7 +156,6 @@ public class ControlServiceTest {
     assertEquals(true, stringsCaptor.getValue().isEmpty());
     verify(activityService).insert(activity);
     Control testControl = controlService.get(control.getId());
-    assertEquals(true, testControl.getLims().toUpperCase().startsWith("CONTROL"));
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(SampleSupport.GEL, testControl.getSupport());
     assertEquals((Double) 20.0, testControl.getVolume());

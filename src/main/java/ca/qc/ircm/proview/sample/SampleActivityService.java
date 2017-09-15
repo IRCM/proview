@@ -137,8 +137,6 @@ public class SampleActivityService {
       }
     }
 
-    updateBuilders.add(new SampleUpdateActivityBuilder().column("lims")
-        .oldValue(oldSample.getLims()).newValue(newSample.getLims()));
     updateBuilders.add(new SampleUpdateActivityBuilder().column("name")
         .oldValue(oldSample.getName()).newValue(newSample.getName()));
     updateBuilders.add(new SampleUpdateActivityBuilder().column("support")
@@ -196,8 +194,7 @@ public class SampleActivityService {
       updateBuilders.add(new SampleUpdateActivityBuilder().column("status")
           .oldValue(oldSubmission.getStatus()).newValue(newSubmission.getStatus()));
       updateBuilders.add(new SampleUpdateActivityBuilder().column("numberProtein")
-          .oldValue(oldSubmission.getNumberProtein())
-          .newValue(newSubmission.getNumberProtein()));
+          .oldValue(oldSubmission.getNumberProtein()).newValue(newSubmission.getNumberProtein()));
       updateBuilders.add(new SampleUpdateActivityBuilder().column("molecularWeight")
           .oldValue(oldSubmission.getMolecularWeight())
           .newValue(newSubmission.getMolecularWeight()));

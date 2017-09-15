@@ -44,9 +44,6 @@
             <tbody>
                 <tr th:each="sample: ${samples}">
                     <td>
-                        [[${sample.lims}]]
-                    </td>
-                    <td>
                         [[${sample.name}]]
                     </td>
                     <td th:if="${containerType.name() == 'SPOT'}">
