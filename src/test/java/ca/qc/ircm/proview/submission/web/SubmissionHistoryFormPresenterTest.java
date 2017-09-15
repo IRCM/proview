@@ -37,7 +37,6 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
-import ca.qc.ircm.proview.history.ActivityFilter;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
@@ -62,8 +61,6 @@ import com.vaadin.ui.renderers.ComponentRenderer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -85,8 +82,6 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
   private ActivityService activityService;
   @Mock
   private SampleContainerService sampleContainerService;
-  @Captor
-  private ArgumentCaptor<ActivityFilter> activityFilterCaptor;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SubmissionHistoryForm.class, locale);
   private MessageResource generalResources =
