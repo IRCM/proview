@@ -69,8 +69,8 @@ public class Laboratory implements Data, Serializable {
   @ManyToMany(cascade = CascadeType.PERSIST)
   @JoinTable(
       name = "laboratorymanager",
-      joinColumns = @JoinColumn(name = "laboratoryId") ,
-      inverseJoinColumns = @JoinColumn(name = "userId") )
+      joinColumns = @JoinColumn(name = "laboratoryId"),
+      inverseJoinColumns = @JoinColumn(name = "userId"))
   private List<User> managers;
 
   public Laboratory() {
