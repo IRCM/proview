@@ -51,10 +51,16 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
   private boolean admin;
+  private boolean manager;
 
   @Override
   protected boolean isAdmin() {
     return admin;
+  }
+
+  @Override
+  protected boolean isManager() {
+    return manager;
   }
 
   @Before

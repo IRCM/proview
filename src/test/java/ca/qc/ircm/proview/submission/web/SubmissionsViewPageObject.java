@@ -39,10 +39,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
-  private static final int EXPERIENCE_COLUMN = 0;
-  private static final int LINKED_TO_RESULTS_COLUMN = 6;
-  private static final int TREATMENTS_COLUMN = 7;
-  private static final int HISTORY_COLUMN = 8;
+  private static final int EXPERIENCE_COLUMN = 1;
+  private static final int USER_COLUMN = 2;
+  private static final int LINKED_TO_RESULTS_COLUMN = 8;
+  private static final int TREATMENTS_COLUMN = 9;
+  private static final int HISTORY_COLUMN = 10;
 
   protected void open() {
     openView(SubmissionsView.VIEW_NAME);
@@ -50,8 +51,16 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected abstract boolean isAdmin();
 
+  protected abstract boolean isManager();
+
   private int gridColumnIndex(int column) {
-    return column + (isAdmin() ? 1 : 0); // +1 because of select column.
+    if (!isAdmin() && !isManager() && column >= USER_COLUMN) {
+      column--; // User column is hidden.
+    }
+    if (!isAdmin()) {
+      column--; // Select column is hidden.
+    }
+    return column;
   }
 
   protected LabelElement header() {
