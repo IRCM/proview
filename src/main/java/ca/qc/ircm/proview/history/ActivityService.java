@@ -48,7 +48,6 @@ import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
 import ca.qc.ircm.proview.standard.AddedStandard;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.transfer.SampleTransfer;
-import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.tube.Tube;
@@ -106,67 +105,6 @@ public class ActivityService {
 
   private ResourceBundle resourceBundle(Locale locale) {
     return ResourceBundle.getBundle(ActivityService.class.getName(), locale);
-  }
-
-  /**
-   * Returns object linked to activity.
-   *
-   * @param activity
-   *          activity
-   * @return object linked to activity
-   */
-  public Object getRecord(Activity activity) {
-    if (activity == null) {
-      return null;
-    }
-
-    if (activity.getTableName().equals("sample")) {
-      return entityManager.find(Sample.class, activity.getRecordId());
-    } else if (activity.getTableName().equals("plate")) {
-      return entityManager.find(Plate.class, activity.getRecordId());
-    } else if (activity.getTableName().equals("protocol")) {
-      return entityManager.find(Protocol.class, activity.getRecordId());
-    } else if (activity.getTableName().equals("submission")) {
-      return entityManager.find(Submission.class, activity.getRecordId());
-    } else if (activity.getTableName().equals("treatment")) {
-      return entityManager.find(Treatment.class, activity.getRecordId());
-    } else if (activity.getTableName().equals("msanalysis")) {
-      return entityManager.find(MsAnalysis.class, activity.getRecordId());
-    } else if (activity.getTableName().equals("dataanalysis")) {
-      return entityManager.find(DataAnalysis.class, activity.getRecordId());
-    } else if (activity.getTableName().equals("acquisition_to_mascotfile")) {
-      return entityManager.find(AcquisitionMascotFile.class, activity.getRecordId());
-    } else {
-      return null;
-    }
-  }
-
-  /**
-   * Selects all activities that matches search parameters. All parameters are optional.
-   *
-   * @param parameters
-   *          search parameters
-   * @return all activities that matches search parameters
-   */
-  public List<Activity> search(ActivityFilter parameters) {
-    if (parameters == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Activity> query = queryFactory.select(activity);
-    query.from(activity);
-    query.leftJoin(activity.updates, updateActivity).fetch();
-    if (parameters.actionType.isPresent()) {
-      query.where(activity.actionType.eq(parameters.actionType.get()));
-    }
-    if (parameters.tableName.isPresent()) {
-      query.where(activity.tableName.eq(parameters.tableName.get()));
-    }
-    if (parameters.recordId.isPresent()) {
-      query.where(activity.recordId.eq(parameters.recordId.get()));
-    }
-    return query.fetch();
   }
 
   /**
@@ -632,9 +570,8 @@ public class ActivityService {
       Treatment<?> treatment, Collection<TreatmentSample> treatmentSamples) {
     StringBuilder message = new StringBuilder();
     String key = "Treatment." + treatment.getType();
-    message.append(message(bundle, key + "." + activity.getActionType(),
-        treatment.isDeleted() ? treatment.getDeletionType().ordinal()
-            : DeletionType.ERRONEOUS.ordinal()));
+    message.append(message(bundle, key + "." + activity.getActionType(), treatment.isDeleted()
+        ? treatment.getDeletionType().ordinal() : DeletionType.ERRONEOUS.ordinal()));
     for (TreatmentSample treatmentSample : treatmentSamples) {
       String container = containerMessage(bundle, treatmentSample.getContainer());
       message.append("\n");
@@ -739,9 +676,8 @@ public class ActivityService {
       MsAnalysis msAnalysis, Collection<Acquisition> acquisitions) {
     StringBuilder message = new StringBuilder();
     String key = "MSAnalysis";
-    message.append(message(bundle, key + "." + activity.getActionType(),
-        msAnalysis.isDeleted() ? msAnalysis.getDeletionType().ordinal()
-            : DeletionType.ERRONEOUS.ordinal()));
+    message.append(message(bundle, key + "." + activity.getActionType(), msAnalysis.isDeleted()
+        ? msAnalysis.getDeletionType().ordinal() : DeletionType.ERRONEOUS.ordinal()));
     for (Acquisition acquisition : acquisitions) {
       String container = containerMessage(bundle, acquisition.getContainer());
       message.append("\n");

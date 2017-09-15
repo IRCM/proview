@@ -37,6 +37,7 @@ import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,130 +93,6 @@ public class ActivityServiceTest {
       }
     }
     return null;
-  }
-
-  @Test
-  public void getRecord_Sample() {
-    Activity activity = entityManager.find(Activity.class, 5549L);
-
-    Object record = activityService.getRecord(activity);
-
-    assertTrue(record instanceof Sample);
-    Sample sample = (Sample) record;
-    assertEquals((Long) 444L, sample.getId());
-  }
-
-  @Test
-  public void getRecord_Submission() {
-    Activity activity = entityManager.find(Activity.class, 5543L);
-
-    Object record = activityService.getRecord(activity);
-
-    assertTrue(record instanceof Submission);
-    Submission submission = (Submission) record;
-    assertEquals((Long) 1L, submission.getId());
-  }
-
-  @Test
-  public void getRecord_Plate() {
-    Activity activity = entityManager.find(Activity.class, 5714L);
-
-    Object record = activityService.getRecord(activity);
-
-    assertTrue(record instanceof Plate);
-    Plate plate = (Plate) record;
-    assertEquals((Long) 113L, plate.getId());
-  }
-
-  @Test
-  public void getRecord_Protocol() {
-    Activity activity = entityManager.find(Activity.class, 5545L);
-
-    Object record = activityService.getRecord(activity);
-
-    assertTrue(record instanceof Protocol);
-    Protocol protocol = (Protocol) record;
-    assertEquals((Long) 1L, protocol.getId());
-  }
-
-  @Test
-  public void getRecord_Treatment() {
-    Activity activity = entityManager.find(Activity.class, 5550L);
-
-    Object record = activityService.getRecord(activity);
-
-    assertTrue(record instanceof Treatment);
-    Treatment<?> treatment = (Treatment<?>) record;
-    assertEquals((Long) 1L, treatment.getId());
-  }
-
-  @Test
-  public void getRecord_MsAnalysis() {
-    Activity activity = entityManager.find(Activity.class, 5551L);
-
-    Object record = activityService.getRecord(activity);
-
-    assertTrue(record instanceof MsAnalysis);
-    MsAnalysis msAnalysis = (MsAnalysis) record;
-    assertEquals((Long) 12L, msAnalysis.getId());
-  }
-
-  @Test
-  public void getRecord_MascotFile() {
-    Activity activity = entityManager.find(Activity.class, 5567L);
-
-    Object record = activityService.getRecord(activity);
-
-    assertTrue(record instanceof AcquisitionMascotFile);
-    AcquisitionMascotFile acquisitionMascotFile = (AcquisitionMascotFile) record;
-    assertEquals((Long) 3L, acquisitionMascotFile.getId());
-  }
-
-  @Test
-  public void getRecord_DataAnalysis() {
-    Activity activity = entityManager.find(Activity.class, 5552L);
-
-    Object record = activityService.getRecord(activity);
-
-    assertTrue(record instanceof DataAnalysis);
-    DataAnalysis dataAnalysis = (DataAnalysis) record;
-    assertEquals((Long) 3L, dataAnalysis.getId());
-  }
-
-  @Test
-  public void getRecord_Null() {
-    Object record = activityService.getRecord(null);
-
-    assertNull(record);
-  }
-
-  @Test
-  public void search() throws Exception {
-    ActivityFilter parameters = new ActivityFilter();
-    parameters.actionType = Optional.of(ActionType.INSERT);
-    parameters.tableName = Optional.of("submission");
-    parameters.recordId = Optional.of(1L);
-
-    List<Activity> activities = activityService.search(parameters);
-
-    verify(authorizationService).checkAdminRole();
-    assertFalse(activities.isEmpty());
-    Activity activity = activities.get(activities.size() - 1);
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals(null, activity.getJustification());
-    assertEquals((Long) 1L, activity.getRecordId());
-    assertEquals("submission", activity.getTableName());
-    assertEquals(
-        LocalDateTime.of(2011, 6, 14, 16, 32, 8).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
-    assertEquals((Long) 3L, activity.getUser().getId());
-  }
-
-  @Test
-  public void search_Null() throws Exception {
-    List<Activity> activities = activityService.search(null);
-
-    assertTrue(activities.isEmpty());
   }
 
   @Test
@@ -449,8 +326,9 @@ public class ActivityServiceTest {
     String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals("Dilution\n"
-        + "Sample CAP_20111013_01 in tube CAP_20111013_01 with 10 µl of sample in 20 µl of Methanol",
+    assertEquals(
+        "Dilution\n"
+            + "Sample CAP_20111013_01 in tube CAP_20111013_01 with 10 µl of sample in 20 µl of Methanol",
         description);
   }
 
@@ -486,9 +364,10 @@ public class ActivityServiceTest {
     String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals("Added standard\n"
-        + "Standard adh (2 μg) added to sample POLR2A_20141015_11 on plate A_20141015_01 (A-6)\n"
-        + "Standard adh (2 μg) added to sample POLR2A_20141015_12 on plate A_20141015_01 (B-6)",
+    assertEquals(
+        "Added standard\n"
+            + "Standard adh (2 μg) added to sample POLR2A_20141015_11 on plate A_20141015_01 (A-6)\n"
+            + "Standard adh (2 μg) added to sample POLR2A_20141015_12 on plate A_20141015_01 (B-6)",
         description);
   }
 
@@ -501,8 +380,9 @@ public class ActivityServiceTest {
     String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals("Fractionation\n"
-        + "Sample FAM119A_band_01 from tube FAM119A_band_01 to tube FAM119A_band_01_F1 - fraction 1",
+    assertEquals(
+        "Fractionation\n"
+            + "Sample FAM119A_band_01 from tube FAM119A_band_01 to tube FAM119A_band_01_F1 - fraction 1",
         description);
   }
 
@@ -710,11 +590,12 @@ public class ActivityServiceTest {
     activityService.insert(activity);
 
     entityManager.flush();
-    ActivityFilter parameters = new ActivityFilter();
-    parameters.actionType = Optional.of(ActionType.INSERT);
-    parameters.tableName = Optional.of("sample");
-    parameters.recordId = Optional.of(45L);
-    List<Activity> activities = activityService.search(parameters);
+    JPAQuery<Activity> query = queryFactory.select(QActivity.activity);
+    query.from(QActivity.activity);
+    query.where(QActivity.activity.actionType.eq(ActionType.INSERT));
+    query.where(QActivity.activity.tableName.eq("sample"));
+    query.where(QActivity.activity.recordId.eq(45L));
+    List<Activity> activities = query.fetch();
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -764,11 +645,12 @@ public class ActivityServiceTest {
     activityService.insert(activity);
 
     entityManager.flush();
-    ActivityFilter parameters = new ActivityFilter();
-    parameters.actionType = Optional.of(ActionType.INSERT);
-    parameters.tableName = Optional.of("sample");
-    parameters.recordId = Optional.of(45L);
-    List<Activity> activities = activityService.search(parameters);
+    JPAQuery<Activity> query = queryFactory.select(QActivity.activity);
+    query.from(QActivity.activity);
+    query.where(QActivity.activity.actionType.eq(ActionType.INSERT));
+    query.where(QActivity.activity.tableName.eq("sample"));
+    query.where(QActivity.activity.recordId.eq(45L));
+    List<Activity> activities = query.fetch();
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
