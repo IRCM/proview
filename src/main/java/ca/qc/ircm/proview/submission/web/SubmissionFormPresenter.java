@@ -1921,6 +1921,8 @@ public class SubmissionFormPresenter implements BinderValidator {
       submission.setSource(ESI);
       submission.setProteinContent(ProteinContent.SMALL);
       submission.setProteinIdentification(REFSEQ);
+    } else {
+      submission = submissionService.get(submission.getId());
     }
     List<SubmissionSample> samples = submission.getSamples();
     if (samples == null) {
