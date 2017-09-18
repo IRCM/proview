@@ -27,6 +27,7 @@ import static ca.qc.ircm.proview.user.web.SignasViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -263,8 +264,10 @@ public class SignasViewPresenterTest {
     verify(userService).all(userFilterCaptor.capture());
 
     UserFilter userFilter = userFilterCaptor.getValue();
-    assertTrue(userFilter.admin.isPresent() && !userFilter.admin.get());
-    assertTrue(userFilter.active.isPresent() && userFilter.active.get());
+    assertFalse(userFilter.admin);
+    assertTrue(userFilter.active);
+    assertNull(userFilter.laboratory);
+    assertNull(userFilter.valid);
   }
 
   @Test

@@ -390,8 +390,10 @@ public class AccessViewPresenterTest {
     verify(userService).all(userFilterCaptor.capture());
 
     UserFilter userFilter = userFilterCaptor.getValue();
-    assertTrue(userFilter.valid.isPresent() && userFilter.valid.get());
-    assertFalse(userFilter.laboratory.isPresent());
+    assertTrue(userFilter.valid);
+    assertNull(userFilter.laboratory);
+    assertNull(userFilter.active);
+    assertNull(userFilter.admin);
   }
 
   @Test
@@ -402,9 +404,10 @@ public class AccessViewPresenterTest {
     verify(userService).all(userFilterCaptor.capture());
 
     UserFilter userFilter = userFilterCaptor.getValue();
-    assertTrue(userFilter.valid.isPresent() && userFilter.valid.get());
-    assertTrue(userFilter.laboratory.isPresent());
-    assertEquals(signedUser.getLaboratory(), userFilter.laboratory.get());
+    assertTrue(userFilter.valid);
+    assertEquals(signedUser.getLaboratory(), userFilter.laboratory);
+    assertNull(userFilter.active);
+    assertNull(userFilter.admin);
   }
 
   @Test

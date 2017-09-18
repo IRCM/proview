@@ -288,8 +288,8 @@ public class UserServiceTest {
   public void all_InvalidInLaboratory() throws Throwable {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
     UserFilter parameters = new UserFilter();
-    parameters.valid = Optional.of(false);
-    parameters.laboratory = Optional.of(laboratory);
+    parameters.valid = false;
+    parameters.laboratory = laboratory;
 
     List<User> users = userService.all(parameters);
 
@@ -301,7 +301,7 @@ public class UserServiceTest {
   @Test
   public void all_Invalid() throws Throwable {
     UserFilter parameters = new UserFilter();
-    parameters.valid = Optional.of(false);
+    parameters.valid = false;
 
     List<User> users = userService.all(parameters);
 
@@ -315,8 +315,8 @@ public class UserServiceTest {
   public void all_ValidInLaboratory() throws Throwable {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
     UserFilter parameters = new UserFilter();
-    parameters.valid = Optional.of(true);
-    parameters.laboratory = Optional.of(laboratory);
+    parameters.valid = true;
+    parameters.laboratory = laboratory;
 
     List<User> users = userService.all(parameters);
 
@@ -331,7 +331,7 @@ public class UserServiceTest {
   @Test
   public void all_Valid() throws Throwable {
     UserFilter parameters = new UserFilter();
-    parameters.valid = Optional.of(true);
+    parameters.valid = true;
 
     List<User> users = userService.all(parameters);
 
@@ -354,7 +354,7 @@ public class UserServiceTest {
   @Test
   public void all_NonAdmin() throws Throwable {
     UserFilter parameters = new UserFilter();
-    parameters.admin = Optional.of(false);
+    parameters.admin = false;
 
     List<User> users = userService.all(parameters);
 

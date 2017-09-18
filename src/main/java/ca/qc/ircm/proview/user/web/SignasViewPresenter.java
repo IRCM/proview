@@ -43,7 +43,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -161,8 +160,8 @@ public class SignasViewPresenter {
 
   private ListDataProvider<User> searchUsers() {
     UserFilter filter = new UserFilter();
-    filter.admin = Optional.of(false);
-    filter.active = Optional.of(true);
+    filter.admin = false;
+    filter.active = true;
     List<User> users = userService.all(filter);
     usersProvider = DataProvider.ofCollection(users);
     usersProvider.setFilter(this.filter);

@@ -43,7 +43,6 @@ import org.springframework.stereotype.Controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -141,9 +140,9 @@ public class ValidateViewPresenter {
 
   private List<User> searchUsers() {
     UserFilter filter = new UserFilter();
-    filter.valid = Optional.of(false);
+    filter.valid = false;
     if (!authorizationService.hasAdminRole()) {
-      filter.laboratory = Optional.of(authorizationService.getCurrentUser().getLaboratory());
+      filter.laboratory = authorizationService.getCurrentUser().getLaboratory();
     }
     return userService.all(filter);
   }
