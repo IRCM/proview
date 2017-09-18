@@ -378,3 +378,21 @@ CREATE TABLE IF NOT EXISTS activityupdate (
   PRIMARY KEY (id),
   CONSTRAINT activityupdate_ibfk_1 FOREIGN KEY (activityId) REFERENCES activity (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE TABLE IF NOT EXISTS preference (
+  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  referer varchar(255) NOT NULL,
+  name varchar(255) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (referer, name)
+);
+CREATE INDEX IF NOT EXISTS preferenceName ON preference (name);
+CREATE TABLE IF NOT EXISTS userpreference (
+  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  preferenceId bigint(20) NOT NULL,
+  userId bigint(20) NOT NULL,
+  value blob DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (preferenceId, userId),
+  CONSTRAINT userpreference_ibfk_1 FOREIGN KEY (preferenceId) REFERENCES preference (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT userpreference_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+);

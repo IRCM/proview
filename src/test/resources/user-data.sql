@@ -165,3 +165,15 @@ INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
 VALUES (9,10,CURRENT_TIMESTAMP,174407008,0);
 INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
 VALUES (10,10,CURRENT_TIMESTAMP,460559412,1);
+INSERT INTO preference (id,referer,name)
+VALUES (1,'ca.qc.ircm.proview.user.UserPreferenceServiceTest', 'preference_1');
+INSERT INTO preference (id,referer,name)
+VALUES (2,'ca.qc.ircm.proview.user.UserPreferenceServiceTest', 'preference_2');
+INSERT INTO userpreference (id,preferenceId,userId,value)
+VALUES (1,1,2,FILE_READ('${project.build.testOutputDirectory}/preference1'));
+INSERT INTO userpreference (id,preferenceId,userId,value)
+VALUES (2,2,2,FILE_READ('${project.build.testOutputDirectory}/preference2'));
+INSERT INTO userpreference (id,preferenceId,userId,value)
+VALUES (3,1,3,FILE_READ('${project.build.testOutputDirectory}/preference1'));
+INSERT INTO userpreference (id,preferenceId,userId,value)
+VALUES (4,2,3,FILE_READ('${project.build.testOutputDirectory}/preference2'));

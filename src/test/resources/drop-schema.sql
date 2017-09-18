@@ -15,6 +15,8 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+DROP TABLE userpreference IF EXISTS;
+DROP TABLE preference IF EXISTS;
 DROP TABLE activityupdate IF EXISTS;
 DROP TABLE activity IF EXISTS;
 DROP TABLE dataanalysis IF EXISTS;

@@ -71,7 +71,9 @@
     <class>ca.qc.ircm.proview.user.ForgotPassword</class>
     <class>ca.qc.ircm.proview.user.Address</class>
     <class>ca.qc.ircm.proview.user.PhoneNumber</class>
+    <class>ca.qc.ircm.proview.user.Preference</class>
     <class>ca.qc.ircm.proview.user.User</class>
+    <class>ca.qc.ircm.proview.user.UserPreference</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>
