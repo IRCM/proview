@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
@@ -40,6 +41,8 @@ import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,6 +59,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
@@ -117,6 +121,8 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private AuthorizationService authorizationService;
   @Mock
+  private UserPreferenceService userPreferenceService;
+  @Mock
   private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
   @Mock
   private Provider<SubmissionWindow> submissionWindowProvider;
@@ -165,7 +171,7 @@ public class SubmissionsViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
-        localDateFilterComponentProvider, submissionWindowProvider,
+        userPreferenceService, localDateFilterComponentProvider, submissionWindowProvider,
         submissionAnalysesWindowProvider, submissionTreatmentsWindowProvider,
         submissionHistoryWindowProvider, sampleSelectionWindowProvider, applicationName);
     view.headerLabel = new Label();
@@ -184,6 +190,7 @@ public class SubmissionsViewPresenterTest {
       linkedToResults.put(submission, false);
     }
     when(submissionService.all()).thenReturn(submissions);
+    when(userPreferenceService.get(any(), any(), any())).thenAnswer(i -> i.getArguments()[2]);
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
@@ -347,6 +354,120 @@ public class SubmissionsViewPresenterTest {
     assertFalse(view.submissionsGrid.getColumn(TREATMENTS).isHidden());
     assertTrue(view.submissionsGrid.getColumn(HISTORY).isHidable());
     assertFalse(view.submissionsGrid.getColumn(HISTORY).isHidden());
+  }
+
+  @Test
+  public void submissionsGrid_HiddenColumn() {
+    when(userPreferenceService.get(any(), eq(SAMPLE_COUNT), any())).thenReturn(true);
+    when(userPreferenceService.get(any(), eq(EXPERIENCE_GOAL), any())).thenReturn(true);
+    presenter.init(view);
+
+    assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidden());
+    assertFalse(view.submissionsGrid.getColumn(USER).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(USER).isHidden());
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_COUNT).isHidden());
+    verify(userPreferenceService).get(presenter, SAMPLE_COUNT, false);
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(SAMPLE_NAME).isHidden());
+    verify(userPreferenceService).get(presenter, SAMPLE_NAME, false);
+    assertTrue(view.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidden());
+    verify(userPreferenceService).get(presenter, EXPERIENCE_GOAL, false);
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidden());
+    verify(userPreferenceService).get(presenter, SAMPLE_STATUSES, false);
+    assertTrue(view.submissionsGrid.getColumn(DATE).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(DATE).isHidden());
+    verify(userPreferenceService).get(presenter, DATE, false);
+    assertTrue(view.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidden());
+    verify(userPreferenceService).get(presenter, LINKED_TO_RESULTS, false);
+    assertFalse(view.submissionsGrid.getColumn(TREATMENTS).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(TREATMENTS).isHidden());
+    assertFalse(view.submissionsGrid.getColumn(HISTORY).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(HISTORY).isHidden());
+  }
+
+  @Test
+  public void submissionsGrid_HiddenColumnAdmin() {
+    when(userPreferenceService.get(any(), eq(SAMPLE_COUNT), any())).thenReturn(true);
+    when(userPreferenceService.get(any(), eq(EXPERIENCE_GOAL), any())).thenReturn(true);
+    when(userPreferenceService.get(any(), eq(HISTORY), any())).thenReturn(true);
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+
+    assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(EXPERIENCE).isHidden());
+    assertTrue(view.submissionsGrid.getColumn(USER).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(USER).isHidden());
+    verify(userPreferenceService).get(presenter, USER, false);
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_COUNT).isHidden());
+    verify(userPreferenceService).get(presenter, SAMPLE_COUNT, false);
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(SAMPLE_NAME).isHidden());
+    verify(userPreferenceService).get(presenter, SAMPLE_NAME, false);
+    assertTrue(view.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidden());
+    verify(userPreferenceService).get(presenter, EXPERIENCE_GOAL, false);
+    assertTrue(view.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidden());
+    verify(userPreferenceService).get(presenter, SAMPLE_STATUSES, false);
+    assertTrue(view.submissionsGrid.getColumn(DATE).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(DATE).isHidden());
+    verify(userPreferenceService).get(presenter, DATE, false);
+    assertTrue(view.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidden());
+    verify(userPreferenceService).get(presenter, LINKED_TO_RESULTS, false);
+    assertTrue(view.submissionsGrid.getColumn(TREATMENTS).isHidable());
+    assertFalse(view.submissionsGrid.getColumn(TREATMENTS).isHidden());
+    verify(userPreferenceService).get(presenter, TREATMENTS, false);
+    assertTrue(view.submissionsGrid.getColumn(HISTORY).isHidable());
+    assertTrue(view.submissionsGrid.getColumn(HISTORY).isHidden());
+    verify(userPreferenceService).get(presenter, HISTORY, false);
+  }
+
+  @Test
+  public void submissionsGrid_HideColumn() {
+    presenter.init(view);
+    view.submissionsGrid.getColumn(SAMPLE_COUNT).setHidden(true);
+
+    verify(userPreferenceService).save(presenter, SAMPLE_COUNT, true);
+  }
+
+  @Test
+  public void submissionsGrid_ColumnOrder() {
+    String[] columnOrder = new String[] { EXPERIENCE, USER, SAMPLE_NAME, SAMPLE_COUNT,
+        EXPERIENCE_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HISTORY };
+    when(userPreferenceService.get(any(), eq(COLUMN_ORDER), any())).thenReturn(columnOrder);
+    presenter.init(view);
+
+    assertEquals(EXPERIENCE, view.submissionsGrid.getColumns().get(0).getId());
+    assertEquals(USER, view.submissionsGrid.getColumns().get(1).getId());
+    assertEquals(SAMPLE_NAME, view.submissionsGrid.getColumns().get(2).getId());
+    assertEquals(SAMPLE_COUNT, view.submissionsGrid.getColumns().get(3).getId());
+    assertEquals(EXPERIENCE_GOAL, view.submissionsGrid.getColumns().get(4).getId());
+    assertEquals(SAMPLE_STATUSES, view.submissionsGrid.getColumns().get(5).getId());
+    assertEquals(DATE, view.submissionsGrid.getColumns().get(6).getId());
+    assertEquals(LINKED_TO_RESULTS, view.submissionsGrid.getColumns().get(7).getId());
+    assertEquals(TREATMENTS, view.submissionsGrid.getColumns().get(8).getId());
+    assertEquals(HISTORY, view.submissionsGrid.getColumns().get(9).getId());
+    String[] defaultColumnOrder = new String[] { EXPERIENCE, USER, SAMPLE_COUNT, SAMPLE_NAME,
+        EXPERIENCE_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HISTORY };
+    verify(userPreferenceService).get(presenter, COLUMN_ORDER, defaultColumnOrder);
+  }
+
+  @Test
+  public void submissionsGrid_ChangeColumnOrder() {
+    presenter.init(view);
+    view.submissionsGrid.setColumnOrder(EXPERIENCE, USER, SAMPLE_NAME, SAMPLE_COUNT,
+        EXPERIENCE_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HISTORY);
+
+    String[] columnOrder =
+        view.submissionsGrid.getColumns().stream().map(col -> col.getId()).toArray(String[]::new);
+    verify(userPreferenceService).save(presenter, COLUMN_ORDER, columnOrder);
   }
 
   @Test

@@ -31,6 +31,7 @@ import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
@@ -95,6 +96,7 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final String CONDITION_FALSE = "condition-false";
+  public static final String COLUMN_ORDER = "columnOrder";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
   private SubmissionsView view;
   private SubmissionWebFilter filter;
@@ -102,6 +104,8 @@ public class SubmissionsViewPresenter {
   private SubmissionService submissionService;
   @Inject
   private AuthorizationService authorizationService;
+  @Inject
+  private UserPreferenceService userPreferenceService;
   @Inject
   private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
   @Inject
@@ -121,7 +125,7 @@ public class SubmissionsViewPresenter {
   }
 
   protected SubmissionsViewPresenter(SubmissionService submissionService,
-      AuthorizationService authorizationService,
+      AuthorizationService authorizationService, UserPreferenceService userPreferenceService,
       Provider<LocalDateFilterComponent> localDateFilterComponentProvider,
       Provider<SubmissionWindow> submissionWindowProvider,
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
@@ -130,6 +134,7 @@ public class SubmissionsViewPresenter {
       Provider<SampleSelectionWindow> sampleSelectionWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
+    this.userPreferenceService = userPreferenceService;
     this.localDateFilterComponentProvider = localDateFilterComponentProvider;
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
@@ -206,23 +211,51 @@ public class SubmissionsViewPresenter {
         .setId(HISTORY).setCaption(resources.message(HISTORY));
     if (authorizationService.hasManagerRole() || authorizationService.hasAdminRole()) {
       view.submissionsGrid.getColumn(USER).setHidable(true);
+      view.submissionsGrid.getColumn(USER).setHidden(userPreferenceService.get(this, USER, false));
     } else {
       view.submissionsGrid.getColumn(USER).setHidden(true);
     }
     view.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
+    view.submissionsGrid.getColumn(SAMPLE_COUNT)
+        .setHidden(userPreferenceService.get(this, SAMPLE_COUNT, false));
     view.submissionsGrid.getColumn(SAMPLE_NAME).setHidable(true);
+    view.submissionsGrid.getColumn(SAMPLE_NAME)
+        .setHidden(userPreferenceService.get(this, SAMPLE_NAME, false));
     view.submissionsGrid.getColumn(EXPERIENCE_GOAL).setHidable(true);
+    view.submissionsGrid.getColumn(EXPERIENCE_GOAL)
+        .setHidden(userPreferenceService.get(this, EXPERIENCE_GOAL, false));
     view.submissionsGrid.getColumn(SAMPLE_STATUSES).setHidable(true);
+    view.submissionsGrid.getColumn(SAMPLE_STATUSES)
+        .setHidden(userPreferenceService.get(this, SAMPLE_STATUSES, false));
     view.submissionsGrid.getColumn(DATE).setHidable(true);
+    view.submissionsGrid.getColumn(DATE).setHidden(userPreferenceService.get(this, DATE, false));
     view.submissionsGrid.getColumn(LINKED_TO_RESULTS).setHidable(true);
+    view.submissionsGrid.getColumn(LINKED_TO_RESULTS)
+        .setHidden(userPreferenceService.get(this, LINKED_TO_RESULTS, false));
     if (authorizationService.hasAdminRole()) {
       view.submissionsGrid.getColumn(TREATMENTS).setHidable(true);
+      view.submissionsGrid.getColumn(TREATMENTS)
+          .setHidden(userPreferenceService.get(this, TREATMENTS, false));
       view.submissionsGrid.getColumn(HISTORY).setHidable(true);
+      view.submissionsGrid.getColumn(HISTORY)
+          .setHidden(userPreferenceService.get(this, HISTORY, false));
     } else {
       view.submissionsGrid.getColumn(TREATMENTS).setHidden(true);
       view.submissionsGrid.getColumn(HISTORY).setHidden(true);
     }
+    view.submissionsGrid.addColumnVisibilityChangeListener(e -> {
+      userPreferenceService.save(SubmissionsViewPresenter.this, e.getColumn().getId(),
+          e.isHidden());
+    });
+    String[] defaultColumnOrder =
+        view.submissionsGrid.getColumns().stream().map(col -> col.getId()).toArray(String[]::new);
+    view.submissionsGrid
+        .setColumnOrder(userPreferenceService.get(this, COLUMN_ORDER, defaultColumnOrder));
     view.submissionsGrid.setColumnReorderingAllowed(true);
+    view.submissionsGrid.addColumnReorderListener(e -> {
+      userPreferenceService.save(SubmissionsViewPresenter.this, COLUMN_ORDER, view.submissionsGrid
+          .getColumns().stream().map(col -> col.getId()).toArray(String[]::new));
+    });
     view.submissionsGrid.setFrozenColumnCount(1);
     if (authorizationService.hasAdminRole()) {
       view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
