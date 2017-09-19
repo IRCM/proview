@@ -7,7 +7,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 
@@ -24,15 +24,15 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class TransferViewDesign extends VerticalLayout {
   protected Label headerLabel;
-  protected Label sourceHeaderLabel;
-  protected TabSheet sourceTabs;
+  protected Panel source;
+  protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleContainerType> sourceType;
   protected Grid<ca.qc.ircm.proview.sample.Sample> sourceTubesGrid;
   protected VerticalLayout sourcePlateLayout;
   protected ComboBox<ca.qc.ircm.proview.plate.Plate> sourcePlatesField;
   protected Panel sourcePlatePanel;
   protected VerticalLayout sourcePlateFormLayout;
-  protected Label destinationHeaderLabel;
-  protected TabSheet destinationTabs;
+  protected Panel destination;
+  protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleContainerType> destinationType;
   protected Grid<ca.qc.ircm.proview.sample.Sample> destinationTubesGrid;
   protected VerticalLayout destinationPlateLayout;
   protected ComboBox<ca.qc.ircm.proview.plate.PlateType> destinationPlatesTypeField;

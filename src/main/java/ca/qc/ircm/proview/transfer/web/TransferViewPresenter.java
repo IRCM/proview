@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.plate.PlateSpotService;
 import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.transfer.SampleTransfer;
 import ca.qc.ircm.proview.transfer.Transfer;
@@ -77,7 +78,7 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
   public static final String SOURCE = "source";
-  public static final String SOURCE_TABS = "sourceTabs";
+  public static final String SOURCE_TYPE = "sourceType";
   public static final String SOURCE_TUBES = "sourceTubes";
   public static final String SOURCE_PLATES = "sourcePlates";
   public static final String SOURCE_PLATE_PANEL = "sourcePlatePanel";
@@ -162,14 +163,11 @@ public class TransferViewPresenter implements BinderValidator {
     view.headerLabel.addStyleName(HEADER);
     view.headerLabel.addStyleName(ValoTheme.LABEL_H1);
     view.headerLabel.setValue(resources.message(HEADER));
-    view.sourceHeaderLabel.addStyleName(SOURCE);
-    view.sourceHeaderLabel.addStyleName(ValoTheme.LABEL_H2);
-    view.sourceHeaderLabel.setValue(resources.message(SOURCE));
-    view.sourceTabs.addStyleName(SOURCE_TABS);
-    view.sourceTabs.addStyleName(ValoTheme.TABSHEET_FRAMED);
-    view.sourceTabs.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
-    view.sourceTabs.getTab(view.sourceTubesGrid).setCaption(resources.message(SOURCE_TUBES));
-    view.sourceTabs.getTab(view.sourcePlateLayout).setCaption(resources.message(SOURCE_PLATE));
+    view.source.addStyleName(SOURCE);
+    view.source.setCaption(resources.message(SOURCE));
+    view.sourceType.addStyleName(SOURCE_TYPE);
+    view.sourceType.setItems(SampleContainerType.values());
+    view.sourceType.setItemCaptionGenerator(type -> type.getLabel(locale));
     prepareSourceTubesGrid();
     view.sourcePlatesField.addStyleName(SOURCE_PLATES);
     view.sourcePlatesField.setCaption(resources.message(SOURCE_PLATES));
@@ -179,16 +177,9 @@ public class TransferViewPresenter implements BinderValidator {
     view.sourcePlatePanel.setVisible(false);
     view.sourcePlateForm.addStyleName(SOURCE_PLATE);
     view.sourcePlateFormPresenter.setMultiSelect(true);
-    view.destinationHeaderLabel.addStyleName(DESTINATION);
-    view.destinationHeaderLabel.addStyleName(ValoTheme.LABEL_H2);
-    view.destinationHeaderLabel.setValue(resources.message(DESTINATION));
-    view.destinationTabs.addStyleName(DESTINATION_TABS);
-    view.destinationTabs.addStyleName(ValoTheme.TABSHEET_FRAMED);
-    view.destinationTabs.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
-    view.destinationTabs.getTab(view.destinationTubesGrid)
-        .setCaption(resources.message(DESTINATION_TUBES));
-    view.destinationTabs.getTab(view.destinationPlateLayout)
-        .setCaption(resources.message(DESTINATION_PLATE));
+    view.destination.addStyleName(DESTINATION);
+    view.destination.setCaption(resources.message(DESTINATION));
+    view.destinationType.addStyleName(DESTINATION_TABS);
     prepareDestinationTubesGrid();
     view.destinationPlatesTypeField.setEmptySelectionAllowed(false);
     view.destinationPlatesTypeField.addStyleName(DESTINATION_PLATES_TYPE);
@@ -340,11 +331,11 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private boolean isTubeSource() {
-    return view.sourceTabs.getSelectedTab() == view.sourceTubesGrid;
+    return view.sourceType.getValue() == SampleContainerType.TUBE;
   }
 
   private boolean isTubeDestination() {
-    return view.destinationTabs.getSelectedTab() == view.destinationTubesGrid;
+    return view.destinationType.getValue() == SampleContainerType.SPOT;
   }
 
   private boolean validate() {

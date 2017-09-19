@@ -2,7 +2,7 @@
 <html>
  <head>
   <meta charset="UTF-8">
-  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta name="vaadin-version" content="8.0.5">
  </head>
  <body>
@@ -10,14 +10,10 @@
    <vaadin-label plain-text _id="headerLabel">
      Sample transfer 
    </vaadin-label>
-   <vaadin-label plain-text _id="sourceHeaderLabel">
-     Source 
-   </vaadin-label>
-   <vaadin-tab-sheet size-auto _id="sourceTabs">
-    <tab caption="Tab" selected>
+   <vaadin-panel caption="Source" _id="source">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-radio-button-group data-item-type="ca.qc.ircm.proview.sample.SampleContainerType" _id="sourceType"></vaadin-radio-button-group>
      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.Sample" _id="sourceTubesGrid"></vaadin-grid>
-    </tab>
-    <tab caption="Tab">
      <vaadin-vertical-layout _id="sourcePlateLayout">
       <vaadin-form-layout size-auto>
        <vaadin-combo-box data-item-type="ca.qc.ircm.proview.plate.Plate" _id="sourcePlatesField"></vaadin-combo-box>
@@ -26,16 +22,12 @@
        <vaadin-vertical-layout spacing="false" margin="false" _id="sourcePlateFormLayout"></vaadin-vertical-layout>
       </vaadin-panel>
      </vaadin-vertical-layout>
-    </tab>
-   </vaadin-tab-sheet>
-   <vaadin-label plain-text _id="destinationHeaderLabel">
-     Destination 
-   </vaadin-label>
-   <vaadin-tab-sheet size-auto _id="destinationTabs">
-    <tab caption="Tab" selected>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Destination" _id="destination">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-radio-button-group data-item-type="ca.qc.ircm.proview.sample.SampleContainerType" _id="destinationType"></vaadin-radio-button-group>
      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.Sample" _id="destinationTubesGrid"></vaadin-grid>
-    </tab>
-    <tab caption="Tab">
      <vaadin-vertical-layout _id="destinationPlateLayout">
       <vaadin-form-layout size-auto>
        <vaadin-combo-box data-item-type="ca.qc.ircm.proview.plate.PlateType" _id="destinationPlatesTypeField"></vaadin-combo-box>
@@ -45,8 +37,8 @@
        <vaadin-vertical-layout spacing="false" margin="false" _id="destinationPlateFormLayout"></vaadin-vertical-layout>
       </vaadin-panel>
      </vaadin-vertical-layout>
-    </tab>
-   </vaadin-tab-sheet>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
    <vaadin-horizontal-layout>
     <vaadin-button plain-text _id="saveButton">
       Save 
