@@ -20,8 +20,6 @@ DROP TABLE preference IF EXISTS;
 DROP TABLE activityupdate IF EXISTS;
 DROP TABLE activity IF EXISTS;
 DROP TABLE dataanalysis IF EXISTS;
-DROP TABLE acquisition_to_mascotfile IF EXISTS;
-DROP TABLE mascotfile IF EXISTS;
 DROP TABLE acquisition IF EXISTS;
 DROP TABLE msanalysis IF EXISTS;
 DROP TABLE treatmentsample IF EXISTS;

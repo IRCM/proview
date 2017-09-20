@@ -32,7 +32,6 @@ import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.dilution.DilutedSample;
 import ca.qc.ircm.proview.fractionation.FractionationDetail;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
-import ca.qc.ircm.proview.msanalysis.AcquisitionMascotFile;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.DeletionType;
 import ca.qc.ircm.proview.plate.Plate;
@@ -64,7 +63,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -329,8 +327,6 @@ public class ActivityService {
         return treatmentDescription(bundle, activity, submission);
       } else if (activity.getTableName().equals("msanalysis")) {
         return msAnalysisDescription(bundle, activity, submission);
-      } else if (activity.getTableName().equals("acquisition_to_mascotfile")) {
-        return mascotFileDescription(bundle, activity);
       } else if (statusChanged(activity)) {
         return statusDescription(bundle, activity);
       }
@@ -687,38 +683,6 @@ public class ActivityService {
           acquisition.getContainer().getType().ordinal(), container, acquisition.getPosition()));
     }
     return message.toString();
-  }
-
-  private String mascotFileDescription(ResourceBundle bundle, Activity activity) {
-    AcquisitionMascotFile acquisitionMascotFile =
-        entityManager.find(AcquisitionMascotFile.class, activity.getRecordId());
-    String mainMessage = null;
-    switch (activity.getActionType()) {
-      case UPDATE:
-        StringBuilder message = new StringBuilder();
-
-        for (UpdateActivity updateActivity : activity.getUpdates()) {
-          if (message.length() > 0) {
-            message.append("\n");
-          }
-
-          message.append(message(bundle, "MascotFile." + activity.getActionType(),
-              updateActivity.getColumn(), updateActivity.getOldValue(),
-              updateActivity.getNewValue(), acquisitionMascotFile.getMascotFile().getName(),
-              Date.from(acquisitionMascotFile.getMascotFile().getSearchDate()),
-              acquisitionMascotFile.getAcquisition().getName()));
-        }
-
-        mainMessage = message.toString();
-        break;
-      case INSERT:
-      case DELETE:
-      default:
-        throw new AssertionError(
-            "invalid action type " + activity.getActionType() + " for transfer activity");
-    }
-
-    return mainMessage;
   }
 
   private String statusDescription(ResourceBundle bundle, Activity activity) {

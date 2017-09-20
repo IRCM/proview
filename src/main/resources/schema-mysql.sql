@@ -309,30 +309,6 @@ CREATE TABLE IF NOT EXISTS acquisition (
   FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
   FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
-CREATE TABLE IF NOT EXISTS mascotfile (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  server varchar(50) NOT NULL,
-  name varchar(50) NOT NULL,
-  searchDate datetime NOT NULL,
-  location varchar(255) NOT NULL,
-  rawFile varchar(255) NOT NULL,
-  comment varchar(255) DEFAULT NULL,
-  insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  UNIQUE KEY mascotfileunique (server,name,searchDate),
-  KEY mascotfileRawFile (rawFile)
-);
-CREATE TABLE IF NOT EXISTS acquisition_to_mascotfile (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  acquisitionId bigint(20) NOT NULL,
-  mascotFileId bigint(20) NOT NULL,
-  visible tinyint(4) NOT NULL DEFAULT '1',
-  comments varchar(255) DEFAULT NULL,
-  PRIMARY KEY (id),
-  UNIQUE KEY acquisition_to_mascotfileAcquisitionId (acquisitionId,mascotFileId),
-  FOREIGN KEY (acquisitionId) REFERENCES acquisition (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (mascotFileId) REFERENCES mascotfile (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
 CREATE TABLE IF NOT EXISTS dataanalysis (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   sampleId bigint(20) NOT NULL,

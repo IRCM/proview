@@ -40,8 +40,6 @@ VALUES (5553,2,'dataanalysis',3,'UPDATE','2011-10-14 14:24:22',NULL);
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
 VALUES (5554,2,'dataanalysis',4,'INSERT','2011-10-14 14:24:23',NULL);
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
-VALUES (5555,2,'acquisition_to_mascotfile',1,'UPDATE','2011-10-17 11:56:18',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
 VALUES (5556,2,'submission',34,'INSERT','2011-10-17 15:15:09',NULL);
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
 VALUES (5557,4,'treatment',2,'INSERT','2011-10-19 12:20:33',NULL);
@@ -63,8 +61,6 @@ INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification
 VALUES (5565,2,'msanalysis',13,'INSERT','2011-11-09 15:37:09',NULL);
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
 VALUES (5566,10,'dataanalysis',5,'INSERT','2011-11-09 15:37:09',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
-VALUES (5567,2,'acquisition_to_mascotfile',3,'UPDATE','2011-11-09 16:06:14',NULL);
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
 VALUES (5568,2,'msanalysis',14,'INSERT','2011-11-15 10:09:11',NULL);
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
@@ -678,8 +674,6 @@ VALUES (1025,5553,'sample',1,'UPDATE','status','DATA_ANALYSIS','ANALYSED');
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
 VALUES (1026,5554,'sample',442,'UPDATE','status','ANALYSED','DATA_ANALYSIS');
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
-VALUES (1027,5555,'acquisition_to_mascotfile',1,'UPDATE','comments',NULL,'complete report');
-INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
 VALUES (1028,5557,'samplecontainer',6,'INSERT',NULL,NULL,NULL);
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
 VALUES (1029,5558,'samplecontainer',7,'INSERT',NULL,NULL,NULL);
@@ -687,8 +681,6 @@ INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionCo
 VALUES (1030,5565,'sample',446,'UPDATE','status','TO_APPROVE','ANALYSED');
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
 VALUES (1031,5566,'sample',446,'UPDATE','status','ANALYSED','DATA_ANALYSIS');
-INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
-VALUES (1032,5567,'acquisition_to_mascotfile',3,'UPDATE','visible','1','0');
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
 VALUES (1033,5568,'sample',445,'UPDATE','status','TO_APPROVE','ANALYSED');
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)

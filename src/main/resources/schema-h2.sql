@@ -309,30 +309,6 @@ CREATE TABLE IF NOT EXISTS acquisition (
   CONSTRAINT acquisition_ibfk_3 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
 CREATE INDEX IF NOT EXISTS acquisitionFile ON acquisition (acquisitionFile,sampleId);
-CREATE TABLE IF NOT EXISTS mascotfile (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  server varchar(50) NOT NULL,
-  name varchar(50) NOT NULL,
-  searchDate datetime NOT NULL,
-  location varchar(255) NOT NULL,
-  rawFile varchar(255) NOT NULL,
-  comment varchar(255) DEFAULT NULL,
-  insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  UNIQUE KEY mascotfileunique (server,name,searchDate)
-);
-CREATE INDEX IF NOT EXISTS mascotfileRawFile ON mascotfile (rawFile);
-CREATE TABLE IF NOT EXISTS acquisition_to_mascotfile (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  acquisitionId bigint(20) NOT NULL,
-  mascotFileId bigint(20) NOT NULL,
-  visible tinyint(4) NOT NULL DEFAULT '1',
-  comments varchar(255) DEFAULT NULL,
-  PRIMARY KEY (id),
-  UNIQUE KEY acquisition_to_mascotfileAcquisitionId (acquisitionId,mascotFileId),
-  CONSTRAINT acquisition_to_mascotfile_ibfk_1 FOREIGN KEY (acquisitionId) REFERENCES acquisition (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT acquisition_to_mascotfile_ibfk_2 FOREIGN KEY (mascotFileId) REFERENCES mascotfile (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
 CREATE TABLE IF NOT EXISTS dataanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   sampleId bigint(20) NOT NULL,
