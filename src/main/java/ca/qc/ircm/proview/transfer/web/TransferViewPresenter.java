@@ -28,8 +28,8 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateFilterBuilder;
 import ca.qc.ircm.proview.plate.PlateService;
-import ca.qc.ircm.proview.plate.PlateSpot;
-import ca.qc.ircm.proview.plate.PlateSpotService;
+import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -122,7 +122,7 @@ public class TransferViewPresenter implements BinderValidator {
   @Inject
   private TubeService tubeService;
   @Inject
-  private PlateSpotService plateSpotService;
+  private WellService plateSpotService;
   @Inject
   private PlateService plateService;
   @Value("${spring.application.name}")
@@ -132,7 +132,7 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   protected TransferViewPresenter(TransferService transferService, TubeService tubeService,
-      PlateSpotService plateSpotService, PlateService plateService, String applicationName) {
+      WellService plateSpotService, PlateService plateService, String applicationName) {
     this.transferService = transferService;
     this.tubeService = tubeService;
     this.plateSpotService = plateSpotService;
@@ -281,7 +281,7 @@ public class TransferViewPresenter implements BinderValidator {
     view.sourcePlatePanel.setVisible(plate != null);
     if (plate != null) {
       view.sourcePlatePanel.setCaption(plate.getName());
-      List<PlateSpot> wells =
+      List<Well> wells =
           samples.stream().flatMap(sample -> plateSpotService.location(sample, plate).stream())
               .collect(Collectors.toList());
       view.sourcePlateForm.setPlate(plate);
@@ -377,7 +377,7 @@ public class TransferViewPresenter implements BinderValidator {
   private ValidationResult validateSourcePlate() {
     view.sourcePlatesField.setComponentError(null);
     MessageResource resources = view.getResources();
-    Collection<PlateSpot> selectedWells = view.sourcePlateForm.getSelectedSpots();
+    Collection<Well> selectedWells = view.sourcePlateForm.getSelectedSpots();
     if (selectedWells.isEmpty()) {
       logger.debug("No samples to transfer");
       String message = resources.message(SOURCE_PLATE_EMPTY);
@@ -386,7 +386,7 @@ public class TransferViewPresenter implements BinderValidator {
     }
     Map<Sample, Boolean> sampleSelection =
         samples.stream().collect(Collectors.toMap(s -> s, s -> false));
-    for (PlateSpot well : selectedWells) {
+    for (Well well : selectedWells) {
       if (well.getSample() == null) {
         logger.debug("A selected well {} does not have a sample", well);
         String message = resources.message(SOURCE_PLATE_EMPTY_WELL, well.getName());
@@ -411,7 +411,7 @@ public class TransferViewPresenter implements BinderValidator {
     view.destinationPlatesField.setComponentError(null);
     MessageResource resources = view.getResources();
     Plate plate = view.destinationPlateForm.getPlate();
-    PlateSpot spot = view.destinationPlateForm.getSelectedSpot();
+    Well spot = view.destinationPlateForm.getSelectedSpot();
     if (spot == null) {
       logger.debug("No selection in destination plate");
       String message = resources.message(DESTINATION_PLATE_NO_SELECTION);
@@ -460,7 +460,7 @@ public class TransferViewPresenter implements BinderValidator {
       return new ArrayList<>(destinations);
     } else {
       Plate plate = view.destinationPlateForm.getPlate();
-      PlateSpot spot = view.destinationPlateForm.getSelectedSpot();
+      Well spot = view.destinationPlateForm.getSelectedSpot();
       int column = spot.getColumn();
       int row = spot.getRow();
       List<SampleContainer> destinations = new ArrayList<>();

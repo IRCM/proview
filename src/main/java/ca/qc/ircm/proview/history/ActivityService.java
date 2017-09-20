@@ -23,7 +23,7 @@ import static ca.qc.ircm.proview.history.QActivity.activity;
 import static ca.qc.ircm.proview.history.QUpdateActivity.updateActivity;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
-import static ca.qc.ircm.proview.plate.QPlateSpot.plateSpot;
+import static ca.qc.ircm.proview.plate.QWell.well;
 import static ca.qc.ircm.proview.transfer.QSampleTransfer.sampleTransfer;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
@@ -36,7 +36,7 @@ import ca.qc.ircm.proview.msanalysis.AcquisitionMascotFile;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.DeletionType;
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -206,11 +206,11 @@ public class ActivityService {
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
     query.join(activity.updates, updateActivity).fetch();
-    query.from(plateSpot);
-    query.where(updateActivity.recordId.eq(plateSpot.id));
+    query.from(well);
+    query.where(updateActivity.recordId.eq(well.id));
     query.where(activity.tableName.eq("plate"));
     query.where(updateActivity.tableName.eq("samplecontainer"));
-    query.where(plateSpot.plate.eq(plate));
+    query.where(well.plate.eq(plate));
     query.orderBy(activity.timestamp.asc());
     return query.distinct().fetch();
   }
@@ -236,10 +236,10 @@ public class ActivityService {
     query.where(activity.recordId.eq(treatment.id));
     query.join(treatmentSample);
     query.where(treatmentSample.in(treatment.treatmentSamples));
-    query.from(plateSpot);
-    query.where(plateSpot.eq(treatmentSample.container));
+    query.from(well);
+    query.where(well.eq(treatmentSample.container));
     query.where(activity.tableName.eq("treatment"));
-    query.where(plateSpot.plate.eq(plate));
+    query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());
 
     query = queryFactory.select(activity);
@@ -249,10 +249,10 @@ public class ActivityService {
     query.where(activity.recordId.eq(treatment.id));
     query.from(fractionationDetail);
     query.where(fractionationDetail._super.in(treatment.treatmentSamples));
-    query.from(plateSpot);
-    query.where(plateSpot.eq(fractionationDetail.destinationContainer));
+    query.from(well);
+    query.where(well.eq(fractionationDetail.destinationContainer));
     query.where(activity.tableName.eq("treatment"));
-    query.where(plateSpot.plate.eq(plate));
+    query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());
 
     query = queryFactory.select(activity);
@@ -262,10 +262,10 @@ public class ActivityService {
     query.where(activity.recordId.eq(treatment.id));
     query.from(sampleTransfer);
     query.where(sampleTransfer._super.in(treatment.treatmentSamples));
-    query.from(plateSpot);
-    query.where(plateSpot.eq(sampleTransfer.destinationContainer));
+    query.from(well);
+    query.where(well.eq(sampleTransfer.destinationContainer));
     query.where(activity.tableName.eq("treatment"));
-    query.where(plateSpot.plate.eq(plate));
+    query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());
 
     Collections.sort(activities, new ActivityComparator(ActivityComparator.Compare.TIMESTAMP));
@@ -292,10 +292,10 @@ public class ActivityService {
     query.where(activity.recordId.eq(msAnalysis.id));
     query.from(acquisition);
     query.where(msAnalysis.acquisitions.contains(acquisition));
-    query.from(plateSpot);
-    query.where(plateSpot.eq(acquisition.container));
+    query.from(well);
+    query.where(well.eq(acquisition.container));
     query.where(activity.tableName.eq("msanalysis"));
-    query.where(plateSpot.plate.eq(plate));
+    query.where(well.plate.eq(plate));
     query.orderBy(activity.timestamp.asc());
     return query.distinct().fetch();
   }
@@ -456,7 +456,7 @@ public class ActivityService {
         Tube tube = (Tube) sampleContainer;
         return tube.getName();
       case SPOT:
-        PlateSpot spot = (PlateSpot) sampleContainer;
+        Well spot = (Well) sampleContainer;
         String plateName = spot.getPlate().getName();
         String spotName = spot.getName();
         return message(bundle, "PlateSpot.Location", plateName, spotName);
@@ -540,24 +540,24 @@ public class ActivityService {
 
   private String treatmentDescription(ResourceBundle bundle, Activity activity, Plate plate) {
     Set<Long> spotIds = new HashSet<>();
-    for (PlateSpot spot : plate.getSpots()) {
+    for (Well spot : plate.getSpots()) {
       spotIds.add(spot.getId());
     }
     Treatment<?> treatment = entityManager.find(Treatment.class, activity.getRecordId());
     Collection<TreatmentSample> treatmentSamples = new ArrayList<>();
     for (TreatmentSample treatmentSample : treatment.getTreatmentSamples()) {
-      if (treatmentSample.getContainer() instanceof PlateSpot
+      if (treatmentSample.getContainer() instanceof Well
           && spotIds.contains(treatmentSample.getContainer().getId())) {
         treatmentSamples.add(treatmentSample);
       } else if (treatmentSample instanceof SampleTransfer) {
         SampleTransfer sampleTransfer = (SampleTransfer) treatmentSample;
-        if (sampleTransfer.getDestinationContainer() instanceof PlateSpot
+        if (sampleTransfer.getDestinationContainer() instanceof Well
             && spotIds.contains(sampleTransfer.getDestinationContainer().getId())) {
           treatmentSamples.add(treatmentSample);
         }
       } else if (treatmentSample instanceof FractionationDetail) {
         FractionationDetail fractionationDetail = (FractionationDetail) treatmentSample;
-        if (fractionationDetail.getDestinationContainer() instanceof PlateSpot
+        if (fractionationDetail.getDestinationContainer() instanceof Well
             && spotIds.contains(fractionationDetail.getDestinationContainer().getId())) {
           treatmentSamples.add(treatmentSample);
         }
@@ -570,8 +570,9 @@ public class ActivityService {
       Treatment<?> treatment, Collection<TreatmentSample> treatmentSamples) {
     StringBuilder message = new StringBuilder();
     String key = "Treatment." + treatment.getType();
-    message.append(message(bundle, key + "." + activity.getActionType(), treatment.isDeleted()
-        ? treatment.getDeletionType().ordinal() : DeletionType.ERRONEOUS.ordinal()));
+    message.append(message(bundle, key + "." + activity.getActionType(),
+        treatment.isDeleted() ? treatment.getDeletionType().ordinal()
+            : DeletionType.ERRONEOUS.ordinal()));
     for (TreatmentSample treatmentSample : treatmentSamples) {
       String container = containerMessage(bundle, treatmentSample.getContainer());
       message.append("\n");
@@ -658,13 +659,13 @@ public class ActivityService {
 
   private String msAnalysisDescription(ResourceBundle bundle, Activity activity, Plate plate) {
     Set<Long> spotIds = new HashSet<>();
-    for (PlateSpot spot : plate.getSpots()) {
+    for (Well spot : plate.getSpots()) {
       spotIds.add(spot.getId());
     }
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, activity.getRecordId());
     Collection<Acquisition> acquisitions = new ArrayList<>();
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
-      if (acquisition.getContainer() instanceof PlateSpot
+      if (acquisition.getContainer() instanceof Well
           && spotIds.contains(acquisition.getContainer().getId())) {
         acquisitions.add(acquisition);
       }
@@ -676,8 +677,9 @@ public class ActivityService {
       MsAnalysis msAnalysis, Collection<Acquisition> acquisitions) {
     StringBuilder message = new StringBuilder();
     String key = "MSAnalysis";
-    message.append(message(bundle, key + "." + activity.getActionType(), msAnalysis.isDeleted()
-        ? msAnalysis.getDeletionType().ordinal() : DeletionType.ERRONEOUS.ordinal()));
+    message.append(message(bundle, key + "." + activity.getActionType(),
+        msAnalysis.isDeleted() ? msAnalysis.getDeletionType().ordinal()
+            : DeletionType.ERRONEOUS.ordinal()));
     for (Acquisition acquisition : acquisitions) {
       String container = containerMessage(bundle, acquisition.getContainer());
       message.append("\n");
@@ -800,7 +802,7 @@ public class ActivityService {
         }
 
         // Get spot.
-        PlateSpot spot = entityManager.find(PlateSpot.class, updateActivity.getRecordId());
+        Well spot = entityManager.find(Well.class, updateActivity.getRecordId());
 
         String mainMessage = null;
         if (updateActivity.getColumn().equals("banned")) {

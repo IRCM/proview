@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.plate.render;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +90,7 @@ public class PlateImageRenderer {
   /**
    * Plate's spots.
    */
-  private final List<PlateSpot> spots;
+  private final List<Well> spots;
   /**
    * To get specific strings to write in PDF.
    */
@@ -248,7 +248,7 @@ public class PlateImageRenderer {
     }
     // Render spots.
     for (int i = 0; i < spots.size(); i++) {
-      PlateSpot spot = spots.get(i);
+      Well spot = spots.get(i);
       renderSpot(spot, graphics, xval[spot.getColumn()], yval[spot.getRow()]);
     }
     return image;
@@ -318,7 +318,7 @@ public class PlateImageRenderer {
    * @param yval
    *          Y position of spot.
    */
-  protected void renderSpot(PlateSpot spot, Graphics2D graphics, double xval, double yval) {
+  protected void renderSpot(Well spot, Graphics2D graphics, double xval, double yval) {
     Point2D borderUpperLeft = new Point2D.Double(xval, yval);
     Point2D borderBottomRight = new Point2D.Double(xval + this.getRectangleWidth(spot.getColumn()),
         yval + this.getRectangleHeight(spot.getRow()));
@@ -356,7 +356,7 @@ public class PlateImageRenderer {
    *          Upper left location of text.
    * @return Upper left location for text to write below spot id.
    */
-  protected Point2D renderSpotName(PlateSpot spot, Graphics2D graphics, Point2D upperLeft) {
+  protected Point2D renderSpotName(Well spot, Graphics2D graphics, Point2D upperLeft) {
     // set font.
     graphics.setFont(this.getSpotIdFont());
     // Compute text location from upper left location.
@@ -384,7 +384,7 @@ public class PlateImageRenderer {
    *          Bottom right maximum location of text.
    * @return Upper left location for text to write below sample name.
    */
-  protected Point2D renderSampleName(PlateSpot spot, Graphics2D graphics, Point2D upperLeft,
+  protected Point2D renderSampleName(Well spot, Graphics2D graphics, Point2D upperLeft,
       Point2D bottomRight) {
     // Set font.
     graphics.setFont(this.getSampleFont());
@@ -472,7 +472,7 @@ public class PlateImageRenderer {
     return newUpperLeft;
   }
 
-  protected void renderBanned(PlateSpot spot, Graphics2D graphics, Point2D upperLeft,
+  protected void renderBanned(Well spot, Graphics2D graphics, Point2D upperLeft,
       Point2D bottomRight) {
     double width = bottomRight.getY() - upperLeft.getY();
     double height = bottomRight.getY() - upperLeft.getY();

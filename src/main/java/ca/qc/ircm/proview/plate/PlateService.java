@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.plate.QPlate.plate;
-import static ca.qc.ircm.proview.plate.QPlateSpot.plateSpot;
+import static ca.qc.ircm.proview.plate.QWell.well;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
 import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
@@ -126,8 +126,8 @@ public class PlateService {
       query.where(plate.type.eq(filter.type()));
     }
     if (filter.containsAnySamples() != null) {
-      query.from(plate.spots, plateSpot);
-      query.where(plateSpot.sample.in(filter.containsAnySamples()));
+      query.from(plate.spots, well);
+      query.where(well.sample.in(filter.containsAnySamples()));
     }
     return query.distinct().fetch();
   }
@@ -167,9 +167,9 @@ public class PlateService {
 
     JPAQuery<Long> query = queryFactory.select(plate.id);
     query.from(plate);
-    query.join(plate.spots, plateSpot);
+    query.join(plate.spots, well);
     query.from(submissionSample);
-    query.where(submissionSample.eq(plateSpot.sample));
+    query.where(submissionSample.eq(well.sample));
     query.where(plate.eq(plateParam));
     query.where(submissionSample.status.notIn(Arrays.asList(DATA_ANALYSIS, ANALYSED, CANCELLED)));
     return query.fetchCount() == 0;
@@ -232,11 +232,11 @@ public class PlateService {
    * @param justification
    *          justification for banning spots
    */
-  public void ban(Plate plate, SpotLocation from, SpotLocation to, String justification) {
+  public void ban(Plate plate, WellLocation from, WellLocation to, String justification) {
     authorizationService.checkAdminRole();
 
-    Collection<PlateSpot> spots = plate.spots(from, to);
-    for (PlateSpot spot : spots) {
+    Collection<Well> spots = plate.spots(from, to);
+    for (Well spot : spots) {
       spot.setBanned(true);
     }
 
@@ -244,7 +244,7 @@ public class PlateService {
     Activity activity = plateActivityService.ban(spots, justification);
     activityService.insert(activity);
 
-    for (PlateSpot spot : spots) {
+    for (Well spot : spots) {
       entityManager.merge(spot);
     }
   }
@@ -263,11 +263,11 @@ public class PlateService {
    * @param justification
    *          justification for reactivating spots
    */
-  public void activate(Plate plate, SpotLocation from, SpotLocation to, String justification) {
+  public void activate(Plate plate, WellLocation from, WellLocation to, String justification) {
     authorizationService.checkAdminRole();
 
-    Collection<PlateSpot> spots = plate.spots(from, to);
-    for (PlateSpot spot : spots) {
+    Collection<Well> spots = plate.spots(from, to);
+    for (Well spot : spots) {
       spot.setBanned(false);
     }
 
@@ -275,7 +275,7 @@ public class PlateService {
     Activity activity = plateActivityService.activate(spots, justification);
     activityService.insert(activity);
 
-    for (PlateSpot spot : spots) {
+    for (Well spot : spots) {
       entityManager.merge(spot);
     }
   }

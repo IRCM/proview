@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -113,8 +113,8 @@ public class PlateComponentPresenterTest {
 
     presenter.setMultiSelect(true);
 
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 2);
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 2);
     presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(6, references.size());
@@ -145,11 +145,11 @@ public class PlateComponentPresenterTest {
   public void getSelectedSpot_NotMulti() {
     presenter.init(view);
     Plate plate = presenter.getPlate();
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 2);
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 2);
     presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
 
-    PlateSpot spot = presenter.getSelectedSpot();
+    Well spot = presenter.getSelectedSpot();
 
     assertEquals(spot1, spot);
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
@@ -163,7 +163,7 @@ public class PlateComponentPresenterTest {
   public void getSelectedSpot_None() {
     presenter.init(view);
 
-    PlateSpot spot = presenter.getSelectedSpot();
+    Well spot = presenter.getSelectedSpot();
 
     assertNull(spot);
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
@@ -175,8 +175,8 @@ public class PlateComponentPresenterTest {
     presenter.init(view);
     presenter.setMultiSelect(true);
     Plate plate = presenter.getPlate();
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 2);
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 2);
     presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
 
     try {
@@ -192,11 +192,11 @@ public class PlateComponentPresenterTest {
     presenter.init(view);
     presenter.setMultiSelect(true);
     Plate plate = presenter.getPlate();
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 2);
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 2);
     presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
 
-    Collection<PlateSpot> spots = presenter.getSelectedSpots();
+    Collection<Well> spots = presenter.getSelectedSpots();
 
     assertEquals(6, spots.size());
     assertTrue(spots.contains(spot1));
@@ -223,11 +223,11 @@ public class PlateComponentPresenterTest {
   public void getSelectedSpots_NotMulti() {
     presenter.init(view);
     Plate plate = presenter.getPlate();
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 2);
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 2);
     presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
 
-    Collection<PlateSpot> spots = presenter.getSelectedSpots();
+    Collection<Well> spots = presenter.getSelectedSpots();
 
     assertEquals(1, spots.size());
     assertTrue(spots.contains(spot1));
@@ -244,12 +244,12 @@ public class PlateComponentPresenterTest {
     presenter.init(view);
     presenter.setMultiSelect(true);
     Plate plate = presenter.getPlate();
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 2);
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 2);
     presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
     presenter.setMultiSelect(false);
 
-    Collection<PlateSpot> spots = presenter.getSelectedSpots();
+    Collection<Well> spots = presenter.getSelectedSpots();
 
     assertEquals(0, spots.size());
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
@@ -261,15 +261,15 @@ public class PlateComponentPresenterTest {
     presenter.init(view);
     presenter.setMultiSelect(true);
     Plate plate = presenter.getPlate();
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 2);
-    List<PlateSpot> spots = new ArrayList<>();
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 2);
+    List<Well> spots = new ArrayList<>();
     spots.add(spot1);
     spots.add(spot2);
 
     presenter.setSelectedSpots(spots);
 
-    Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
+    Collection<Well> selectedSpots = presenter.getSelectedSpots();
     assertEquals(6, selectedSpots.size());
     assertTrue(selectedSpots.contains(spot1));
     assertTrue(selectedSpots.contains(plate.spot(0, 1)));
@@ -299,15 +299,15 @@ public class PlateComponentPresenterTest {
   public void setSelectedSpots_NotMulti() {
     presenter.init(view);
     Plate plate = presenter.getPlate();
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 2);
-    List<PlateSpot> spots = new ArrayList<>();
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 2);
+    List<Well> spots = new ArrayList<>();
     spots.add(spot1);
     spots.add(spot2);
 
     presenter.setSelectedSpots(spots);
 
-    Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
+    Collection<Well> selectedSpots = presenter.getSelectedSpots();
     assertEquals(1, selectedSpots.size());
     assertTrue(selectedSpots.contains(spot1));
     assertFalse(selectedSpots.contains(spot2));
@@ -333,13 +333,13 @@ public class PlateComponentPresenterTest {
     presenter.init(view);
     Plate plate = new Plate();
     plate.initSpots();
-    PlateSpot spot1 = plate.spot(0, 0);
+    Well spot1 = plate.spot(0, 0);
     spot1.setSample(new SubmissionSample(1L, "test 1"));
-    PlateSpot spot2 = plate.spot(0, 1);
+    Well spot2 = plate.spot(0, 1);
     spot2.setSample(new Control(1L, "test control 1"));
-    PlateSpot spot3 = plate.spot(0, 2);
+    Well spot3 = plate.spot(0, 2);
     spot3.setSample(new SubmissionSample(2L, "test control 2"));
-    PlateSpot spot4 = plate.spot(1, 0);
+    Well spot4 = plate.spot(1, 0);
     spot4.setSample(new SubmissionSample(4L, "test control 4"));
 
     presenter.setPlate(plate);
@@ -398,13 +398,13 @@ public class PlateComponentPresenterTest {
 
     assertFalse(presenter.isReadOnly());
     Plate plate = presenter.getPlate();
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 1);
-    List<PlateSpot> spots = new ArrayList<>();
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 1);
+    List<Well> spots = new ArrayList<>();
     spots.add(spot1);
     spots.add(spot2);
     presenter.setSelectedSpots(spots);
-    Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
+    Collection<Well> selectedSpots = presenter.getSelectedSpots();
     assertEquals(1, selectedSpots.size());
     assertTrue(selectedSpots.contains(spot1));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
@@ -434,13 +434,13 @@ public class PlateComponentPresenterTest {
 
     assertTrue(presenter.isReadOnly());
     Plate plate = presenter.getPlate();
-    PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 1);
-    List<PlateSpot> spots = new ArrayList<>();
+    Well spot1 = plate.spot(0, 0);
+    Well spot2 = plate.spot(1, 1);
+    List<Well> spots = new ArrayList<>();
     spots.add(spot1);
     spots.add(spot2);
     presenter.setSelectedSpots(spots);
-    Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
+    Collection<Well> selectedSpots = presenter.getSelectedSpots();
     assertEquals(1, selectedSpots.size());
     assertTrue(selectedSpots.contains(spot1));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();

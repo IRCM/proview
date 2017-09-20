@@ -81,11 +81,11 @@ public class PlateActivityServiceTest {
   @Test
   public void ban() {
     Plate plate = new Plate(26L);
-    List<PlateSpot> bans = new ArrayList<PlateSpot>();
-    PlateSpot spot = new PlateSpot(130L);
+    List<Well> bans = new ArrayList<Well>();
+    Well spot = new Well(130L);
     spot.setPlate(plate);
     bans.add(spot);
-    spot = new PlateSpot(131L);
+    spot = new Well(131L);
     spot.setPlate(plate);
     bans.add(spot);
 
@@ -97,7 +97,7 @@ public class PlateActivityServiceTest {
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
     Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
-    for (PlateSpot banned : bans) {
+    for (Well banned : bans) {
       UpdateActivity banActivity = new UpdateActivity();
       banActivity.setActionType(ActionType.UPDATE);
       banActivity.setTableName("samplecontainer");
@@ -114,17 +114,17 @@ public class PlateActivityServiceTest {
   public void ban_MultiplePlates() {
     final Plate plate1 = new Plate(26L);
     final Plate plate2 = new Plate(107L);
-    List<PlateSpot> bans = new ArrayList<PlateSpot>();
-    PlateSpot spot = new PlateSpot(130L);
+    List<Well> bans = new ArrayList<Well>();
+    Well spot = new Well(130L);
     spot.setPlate(plate1);
     bans.add(spot);
-    spot = new PlateSpot(131L);
+    spot = new Well(131L);
     spot.setPlate(plate1);
     bans.add(spot);
-    spot = new PlateSpot(231L);
+    spot = new Well(231L);
     spot.setPlate(plate2);
     bans.add(spot);
-    spot = new PlateSpot(232L);
+    spot = new Well(232L);
     spot.setPlate(plate2);
     bans.add(spot);
 
@@ -139,12 +139,12 @@ public class PlateActivityServiceTest {
   @Test
   public void activate() {
     Plate plate = new Plate(26L);
-    List<PlateSpot> spots = new ArrayList<PlateSpot>();
-    PlateSpot spot = new PlateSpot(199L);
+    List<Well> spots = new ArrayList<Well>();
+    Well spot = new Well(199L);
     spot.setPlate(plate);
     spot.setBanned(true);
     spots.add(spot);
-    spot = new PlateSpot(211L);
+    spot = new Well(211L);
     spot.setPlate(plate);
     spot.setBanned(true);
     spots.add(spot);
@@ -157,7 +157,7 @@ public class PlateActivityServiceTest {
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
     Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
-    for (PlateSpot activated : spots) {
+    for (Well activated : spots) {
       UpdateActivity activateActivity = new UpdateActivity();
       activateActivity.setActionType(ActionType.UPDATE);
       activateActivity.setTableName("samplecontainer");
@@ -174,20 +174,20 @@ public class PlateActivityServiceTest {
   public void activate_MultiplePlates() {
     final Plate plate1 = new Plate(26L);
     final Plate plate2 = new Plate(107L);
-    List<PlateSpot> spots = new ArrayList<PlateSpot>();
-    PlateSpot spot = new PlateSpot(199L);
+    List<Well> spots = new ArrayList<Well>();
+    Well spot = new Well(199L);
     spot.setPlate(plate1);
     spot.setBanned(true);
     spots.add(spot);
-    spot = new PlateSpot(211L);
+    spot = new Well(211L);
     spot.setPlate(plate1);
     spot.setBanned(true);
     spots.add(spot);
-    spot = new PlateSpot(307L);
+    spot = new Well(307L);
     spot.setPlate(plate2);
     spot.setBanned(true);
     spots.add(spot);
-    spot = new PlateSpot(319L);
+    spot = new Well(319L);
     spot.setPlate(plate2);
     spot.setBanned(true);
     spots.add(spot);

@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -105,7 +105,7 @@ public class TransferActivityServiceTest {
   public void logInsert_DestinationSpot() {
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
-    PlateSpot destinationSpot = new PlateSpot(130L);
+    Well destinationSpot = new Well(130L);
     destinationSpot.setSample(sample);
     SampleTransfer sampleTransfer = new SampleTransfer();
     sampleTransfer.setSample(sample);
@@ -163,7 +163,7 @@ public class TransferActivityServiceTest {
   @Test
   public void logUndoErroneous_Spot() {
     Transfer transfer = new Transfer(9L);
-    PlateSpot destinationSpot = new PlateSpot(129L);
+    Well destinationSpot = new Well(129L);
     Collection<SampleContainer> samplesRemoved = new ArrayList<SampleContainer>();
     samplesRemoved.add(destinationSpot);
 
@@ -245,7 +245,7 @@ public class TransferActivityServiceTest {
   @Test
   public void logUndoFailed_Ban_Spot() {
     Transfer transfer = new Transfer(9L);
-    PlateSpot destinationSpot = new PlateSpot(129L);
+    Well destinationSpot = new Well(129L);
     Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
     bannedContainers.add(destinationSpot);
 

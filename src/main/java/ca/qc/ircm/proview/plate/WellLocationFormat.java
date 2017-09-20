@@ -18,10 +18,10 @@
 package ca.qc.ircm.proview.plate;
 
 /**
- * Formats a {@link SpotLocation spot location} into a string of type <code>a-1</code>.
+ * Formats a {@link WellLocation spot location} into a string of type <code>a-1</code>.
  */
-public class SpotLocationFormat {
-  public String format(SpotLocation spotLocation) {
+public class WellLocationFormat {
+  public String format(WellLocation spotLocation) {
     return ((char) ('a' + spotLocation.getRow())) + "-" + (spotLocation.getColumn() + 1);
   }
 }

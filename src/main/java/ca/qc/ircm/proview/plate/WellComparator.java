@@ -23,7 +23,7 @@ import java.util.Comparator;
 /**
  * Comparator for spots.
  */
-public class PlateSpotComparator implements Comparator<PlateSpot>, Serializable {
+public class WellComparator implements Comparator<Well>, Serializable {
 
   static final long serialVersionUID = 4182686766891972608L;
 
@@ -45,10 +45,10 @@ public class PlateSpotComparator implements Comparator<PlateSpot>, Serializable 
   }
 
   /**
-   * Use {@link ca.qc.ircm.proview.plate.PlateSpotComparator.Compare#LOCATION location} comparison
+   * Use {@link ca.qc.ircm.proview.plate.WellComparator.Compare#LOCATION location} comparison
    * by default.
    */
-  public PlateSpotComparator() {
+  public WellComparator() {
     this.compare = Compare.LOCATION;
   }
 
@@ -57,11 +57,11 @@ public class PlateSpotComparator implements Comparator<PlateSpot>, Serializable 
    *
    * @param compare
    *          comparison type
-   * @see ca.qc.ircm.proview.plate.PlateSpotComparator.Compare
+   * @see ca.qc.ircm.proview.plate.WellComparator.Compare
    * @throws NullPointerException
    *           if compare is null
    */
-  public PlateSpotComparator(Compare compare) {
+  public WellComparator(Compare compare) {
     if (compare == null) {
       throw new NullPointerException("compare cannot be null");
     }
@@ -71,12 +71,12 @@ public class PlateSpotComparator implements Comparator<PlateSpot>, Serializable 
   /**
    * Comparison type.
    *
-   * @see ca.qc.ircm.proview.plate.PlateSpotComparator.Compare
+   * @see ca.qc.ircm.proview.plate.WellComparator.Compare
    */
   private final Compare compare;
 
   @Override
-  public int compare(PlateSpot o1, PlateSpot o2) {
+  public int compare(Well o1, Well o2) {
     switch (compare) {
       case LOCATION: {
         int compare = Integer.compare(o1.getRow(), o2.getRow());

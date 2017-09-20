@@ -90,7 +90,7 @@ public class Plate implements Data, Serializable, Named {
    * List of all treatments done on samples.
    */
   @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "plate")
-  private List<PlateSpot> spots;
+  private List<Well> spots;
 
   public Plate() {
     this(null);
@@ -120,10 +120,10 @@ public class Plate implements Data, Serializable, Named {
    */
   public void initSpots() {
     if (spots == null) {
-      List<PlateSpot> spots = new ArrayList<>();
+      List<Well> spots = new ArrayList<>();
       for (int row = 0; row < getRowCount(); row++) {
         for (int column = 0; column < getColumnCount(); column++) {
-          PlateSpot plateSpot = new PlateSpot(row, column);
+          Well plateSpot = new Well(row, column);
           plateSpot.setPlate(this);
           spots.add(plateSpot);
         }
@@ -142,7 +142,7 @@ public class Plate implements Data, Serializable, Named {
    * @return spot at specified location, or null if plate has not spot at this location
    */
   @Nonnull
-  public PlateSpot spot(int row, int column) {
+  public Well spot(int row, int column) {
     if (row < 0 || row >= getRowCount()) {
       throw new IllegalArgumentException("Row " + row
           + " is greater/equal then the number of rows in this plate (" + getRowCount() + ")");
@@ -153,7 +153,7 @@ public class Plate implements Data, Serializable, Named {
               + getColumnCount() + ")");
     }
     if (this.spots != null) {
-      for (PlateSpot spot : this.spots) {
+      for (Well spot : this.spots) {
         if (spot.getRow() == row && spot.getColumn() == column) {
           return spot;
         }
@@ -172,11 +172,11 @@ public class Plate implements Data, Serializable, Named {
    *          end location (inclusive)
    * @return spots from the 'from' location up to the 'to' location
    */
-  public List<PlateSpot> spots(SpotLocation from, SpotLocation to) {
-    Predicate<PlateSpot> afterOrEqualsFrom =
+  public List<Well> spots(WellLocation from, WellLocation to) {
+    Predicate<Well> afterOrEqualsFrom =
         s -> (s.getColumn() == from.getColumn() && s.getRow() >= from.getRow())
             || s.getColumn() > from.getColumn();
-    Predicate<PlateSpot> beforeOrEqualsTo =
+    Predicate<Well> beforeOrEqualsTo =
         s -> (s.getColumn() == to.getColumn() && s.getRow() <= to.getRow())
             || s.getColumn() < to.getColumn();
     return spots.stream().filter(afterOrEqualsFrom.and(beforeOrEqualsTo))
@@ -190,16 +190,16 @@ public class Plate implements Data, Serializable, Named {
    *          column
    * @return spots in column
    */
-  public List<PlateSpot> column(int index) {
-    List<PlateSpot> spots = new ArrayList<>();
+  public List<Well> column(int index) {
+    List<Well> spots = new ArrayList<>();
     if (this.spots != null) {
-      for (PlateSpot spot : this.spots) {
+      for (Well spot : this.spots) {
         if (spot.getColumn() == index) {
           spots.add(spot);
         }
       }
     }
-    Collections.sort(spots, new PlateSpotComparator(PlateSpotComparator.Compare.LOCATION));
+    Collections.sort(spots, new WellComparator(WellComparator.Compare.LOCATION));
     return spots;
   }
 
@@ -210,7 +210,7 @@ public class Plate implements Data, Serializable, Named {
    */
   public int getEmptySpotCount() {
     int count = 0;
-    for (PlateSpot spot : this.spots) {
+    for (Well spot : this.spots) {
       if (spot.getSample() == null && !spot.isBanned()) {
         count++;
       }
@@ -225,7 +225,7 @@ public class Plate implements Data, Serializable, Named {
    */
   public int getSampleCount() {
     int count = 0;
-    for (PlateSpot spot : this.spots) {
+    for (Well spot : this.spots) {
       if (spot.getSample() != null && !spot.isBanned()) {
         count++;
       }
@@ -301,11 +301,11 @@ public class Plate implements Data, Serializable, Named {
     this.insertTime = insertTime;
   }
 
-  public List<PlateSpot> getSpots() {
+  public List<Well> getSpots() {
     return spots;
   }
 
-  public void setSpots(List<PlateSpot> spots) {
+  public void setSpots(List<Well> spots) {
     this.spots = spots;
   }
 

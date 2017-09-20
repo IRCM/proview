@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class PlateTest {
-  private Optional<PlateSpot> find(List<PlateSpot> spots, int row, int column) {
+  private Optional<Well> find(List<Well> spots, int row, int column) {
     return spots.stream().filter(s -> s.getRow() == row && s.getColumn() == column).findAny();
   }
 
@@ -55,7 +55,7 @@ public class PlateTest {
 
     assertEquals(plate.getRowCount() * plate.getColumnCount(), plate.getSpots().size());
     boolean[][] spotLocations = new boolean[plate.getRowCount()][plate.getColumnCount()];
-    for (PlateSpot spot : plate.getSpots()) {
+    for (Well spot : plate.getSpots()) {
       assertEquals(plate, spot.getPlate());
       spotLocations[spot.getRow()][spot.getColumn()] = true;
     }
@@ -71,7 +71,7 @@ public class PlateTest {
     Plate plate = new Plate();
     plate.initSpots();
 
-    PlateSpot spot = plate.spot(0, 0);
+    Well spot = plate.spot(0, 0);
     assertEquals(0, spot.getRow());
     assertEquals(0, spot.getColumn());
     spot = plate.spot(0, 1);
@@ -96,23 +96,23 @@ public class PlateTest {
     Plate plate = new Plate();
     plate.initSpots();
 
-    List<PlateSpot> spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 0));
+    List<Well> spots = plate.spots(new WellLocation(0, 0), new WellLocation(0, 0));
     assertEquals(1, spots.size());
     assertTrue(find(spots, 0, 0).isPresent());
-    spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(1, 0));
+    spots = plate.spots(new WellLocation(0, 0), new WellLocation(1, 0));
     assertEquals(2, spots.size());
     assertTrue(find(spots, 0, 0).isPresent());
     assertTrue(find(spots, 1, 0).isPresent());
-    spots = plate.spots(new SpotLocation(0, 0), new SpotLocation(0, 1));
+    spots = plate.spots(new WellLocation(0, 0), new WellLocation(0, 1));
     assertEquals(plate.getRowCount() + 1, spots.size());
     for (int i = 0; i < plate.getRowCount(); i++) {
       assertTrue(find(spots, i, 0).isPresent());
     }
     assertTrue(find(spots, 0, 1).isPresent());
-    spots = plate.spots(new SpotLocation(0, 0),
-        new SpotLocation(plate.getRowCount(), plate.getColumnCount()));
+    spots = plate.spots(new WellLocation(0, 0),
+        new WellLocation(plate.getRowCount(), plate.getColumnCount()));
     assertEquals(plate.getSpots().size(), spots.size());
-    spots = plate.spots(new SpotLocation(6, 2), new SpotLocation(2, 5));
+    spots = plate.spots(new WellLocation(6, 2), new WellLocation(2, 5));
     assertEquals(21, spots.size());
     for (int i = 6; i < plate.getRowCount(); i++) {
       assertTrue(find(spots, i, 2).isPresent());
@@ -126,7 +126,7 @@ public class PlateTest {
     for (int i = 0; i < 2; i++) {
       assertTrue(find(spots, i, 5).isPresent());
     }
-    spots = plate.spots(new SpotLocation(2, 6), new SpotLocation(5, 2));
+    spots = plate.spots(new WellLocation(2, 6), new WellLocation(5, 2));
     assertEquals(0, spots.size());
   }
 

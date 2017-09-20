@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.Sample;
@@ -112,7 +112,7 @@ public class SampleSelectionFormPresenterTest {
     selectedSamples = new ArrayList<>();
     selectedSamples.add(entityManager.find(SubmissionSample.class, 442L));
     selectedSamples.add(entityManager.find(SubmissionSample.class, 627L));
-    PlateSpot well = new PlateSpot(1, 2);
+    Well well = new Well(1, 2);
     well.setPlate(new Plate(10L, "test_plate"));
     lastContainers = new ArrayList<>();
     lastContainers.add(well);

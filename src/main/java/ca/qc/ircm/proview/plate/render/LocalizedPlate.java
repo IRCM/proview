@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.plate.render;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 
 /**
  * Get localized plate information for plate PDF.
@@ -42,7 +42,7 @@ public class LocalizedPlate {
    *          Spot.
    * @return Spot information.
    */
-  public String getSpot(PlateSpot spot) {
+  public String getSpot(Well spot) {
     return spot.getName();
   }
 
@@ -53,7 +53,7 @@ public class LocalizedPlate {
    *          spot
    * @return spot's sample name
    */
-  public String getSampleName(PlateSpot spot) {
+  public String getSampleName(Well spot) {
     if (spot.getSample() != null) {
       return spot.getSample().getName();
     } else {

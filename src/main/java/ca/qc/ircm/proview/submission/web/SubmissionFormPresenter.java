@@ -55,7 +55,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -1867,7 +1867,7 @@ public class SubmissionFormPresenter implements BinderValidator {
           copyStandardsFromTableToSample(sample);
           copyContaminantsFromTableToSample(sample);
         }
-        PlateSpot container = new PlateSpot(cell.getRowIndex() - 1, cell.getColumnIndex() - 1);
+        Well container = new Well(cell.getRowIndex() - 1, cell.getColumnIndex() - 1);
         container.setPlate(plate);
         sample.setOriginalContainer(container);
         samples.add(sample);
@@ -1947,8 +1947,8 @@ public class SubmissionFormPresenter implements BinderValidator {
 
     submissionBinder.setBean(submission);
     firstSampleBinder.setBean(firstSample);
-    if (container instanceof PlateSpot) {
-      PlateSpot containerAsWell = (PlateSpot) container;
+    if (container instanceof Well) {
+      Well containerAsWell = (Well) container;
       plateBinder.setBean(containerAsWell.getPlate());
       view.samplesSpreadsheet.createCell(containerAsWell.getRow() + 1,
           containerAsWell.getColumn() + 1, firstSample.getName());
@@ -1957,7 +1957,7 @@ public class SubmissionFormPresenter implements BinderValidator {
           view.samplesSpreadsheet.getCellValue(view.samplesSpreadsheet
               .getCell(containerAsWell.getRow() + 1, containerAsWell.getColumn() + 1)));
       samples.stream().skip(1).forEach(sample -> {
-        PlateSpot well = (PlateSpot) sample.getOriginalContainer();
+        Well well = (Well) sample.getOriginalContainer();
         view.samplesSpreadsheet.createCell(well.getRow() + 1, well.getColumn() + 1,
             sample.getName());
       });

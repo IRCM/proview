@@ -26,7 +26,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -177,8 +177,8 @@ public class SubmissionService {
         if (plate == null) {
           plate = createSubmissionPlate(submission);
         }
-        PlateSpot sourceSpot = (PlateSpot) sample.getOriginalContainer();
-        PlateSpot spot = plate.spot(sourceSpot.getRow(), sourceSpot.getColumn());
+        Well sourceSpot = (Well) sample.getOriginalContainer();
+        Well spot = plate.spot(sourceSpot.getRow(), sourceSpot.getColumn());
         spot.setSample(sample);
         sample.setOriginalContainer(spot);
       }

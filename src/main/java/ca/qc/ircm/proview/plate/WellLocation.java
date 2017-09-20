@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.plate;
 /**
  * Spot location on a plate.
  */
-public class SpotLocation {
+public class WellLocation {
   /**
    * Spot's row.
    */
@@ -30,15 +30,15 @@ public class SpotLocation {
    */
   private int column;
 
-  public SpotLocation() {
+  public WellLocation() {
   }
 
-  public SpotLocation(int row, int column) {
+  public WellLocation(int row, int column) {
     this.row = row;
     this.column = column;
   }
 
-  public SpotLocation(PlateSpot spot) {
+  public WellLocation(Well spot) {
     this.row = spot.getRow();
     this.column = spot.getColumn();
   }

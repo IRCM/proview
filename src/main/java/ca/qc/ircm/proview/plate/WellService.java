@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.plate.QPlate.plate;
-import static ca.qc.ircm.proview.plate.QPlateSpot.plateSpot;
+import static ca.qc.ircm.proview.plate.QWell.well;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -39,7 +39,7 @@ import javax.persistence.PersistenceContext;
  */
 @Service
 @Transactional
-public class PlateSpotService {
+public class WellService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -47,10 +47,10 @@ public class PlateSpotService {
   @Inject
   private AuthorizationService authorizationService;
 
-  protected PlateSpotService() {
+  protected WellService() {
   }
 
-  protected PlateSpotService(EntityManager entityManager, JPAQueryFactory queryFactory,
+  protected WellService(EntityManager entityManager, JPAQueryFactory queryFactory,
       AuthorizationService authorizationService) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
@@ -64,13 +64,13 @@ public class PlateSpotService {
    *          database identifier of spot
    * @return spot
    */
-  public PlateSpot get(Long id) {
+  public Well get(Long id) {
     if (id == null) {
       return null;
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(PlateSpot.class, id);
+    return entityManager.find(Well.class, id);
   }
 
   /**
@@ -82,18 +82,18 @@ public class PlateSpotService {
    *          spot's location on plate
    * @return plateSpot on plate at specified location
    */
-  public PlateSpot get(Plate plateParam, SpotLocation location) {
+  public Well get(Plate plateParam, WellLocation location) {
     if (plateParam == null || location == null) {
       return null;
     }
     authorizationService.checkAdminRole();
 
-    JPAQuery<PlateSpot> query = queryFactory.select(plateSpot);
-    query.from(plateSpot);
-    query.join(plateSpot.plate, plate);
+    JPAQuery<Well> query = queryFactory.select(well);
+    query.from(well);
+    query.join(well.plate, plate);
     query.where(plate.eq(plateParam));
-    query.where(plateSpot.row.eq(location.getRow()));
-    query.where(plateSpot.column.eq(location.getColumn()));
+    query.where(well.row.eq(location.getRow()));
+    query.where(well.column.eq(location.getColumn()));
     return query.fetchOne();
   }
 
@@ -104,16 +104,16 @@ public class PlateSpotService {
    *          sample
    * @return most recent spot where sample was put
    */
-  public PlateSpot last(Sample sample) {
+  public Well last(Sample sample) {
     if (sample == null) {
       return null;
     }
     authorizationService.checkAdminRole();
 
-    JPAQuery<PlateSpot> query = queryFactory.select(plateSpot);
-    query.from(plateSpot);
-    query.where(plateSpot.sample.eq(sample));
-    query.orderBy(plateSpot.timestamp.desc());
+    JPAQuery<Well> query = queryFactory.select(well);
+    query.from(well);
+    query.where(well.sample.eq(sample));
+    query.orderBy(well.timestamp.desc());
     query.limit(1);
     return query.fetchOne();
   }
@@ -125,15 +125,15 @@ public class PlateSpotService {
    *          plate
    * @return all plate's spots
    */
-  public List<PlateSpot> all(Plate plate) {
+  public List<Well> all(Plate plate) {
     if (plate == null) {
       return new ArrayList<>();
     }
     authorizationService.checkAdminRole();
 
-    JPAQuery<PlateSpot> query = queryFactory.select(plateSpot);
-    query.from(plateSpot);
-    query.where(plateSpot.plate.eq(plate));
+    JPAQuery<Well> query = queryFactory.select(well);
+    query.from(well);
+    query.where(well.plate.eq(plate));
     return query.fetch();
   }
 
@@ -144,15 +144,15 @@ public class PlateSpotService {
    *          sample
    * @return all spots where sample is located
    */
-  public List<PlateSpot> all(Sample sample) {
+  public List<Well> all(Sample sample) {
     if (sample == null) {
       return new ArrayList<>();
     }
     authorizationService.checkAdminRole();
 
-    JPAQuery<PlateSpot> query = queryFactory.select(plateSpot);
-    query.from(plateSpot);
-    query.where(plateSpot.sample.eq(sample));
+    JPAQuery<Well> query = queryFactory.select(well);
+    query.from(well);
+    query.where(well.sample.eq(sample));
     return query.fetch();
   }
 
@@ -165,16 +165,16 @@ public class PlateSpotService {
    *          plate
    * @return Spots where sample is located.
    */
-  public List<PlateSpot> location(final Sample sample, final Plate plate) {
+  public List<Well> location(final Sample sample, final Plate plate) {
     if (sample == null || plate == null) {
       return new ArrayList<>();
     }
     authorizationService.checkAdminRole();
 
-    JPAQuery<PlateSpot> query = queryFactory.select(plateSpot);
-    query.from(plateSpot);
-    query.where(plateSpot.plate.eq(plate));
-    query.where(plateSpot.sample.eq(sample));
+    JPAQuery<Well> query = queryFactory.select(well);
+    query.from(well);
+    query.where(well.plate.eq(plate));
+    query.where(well.sample.eq(sample));
     return query.fetch();
   }
 }

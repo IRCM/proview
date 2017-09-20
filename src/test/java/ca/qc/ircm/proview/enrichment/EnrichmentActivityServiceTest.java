@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -124,7 +124,7 @@ public class EnrichmentActivityServiceTest {
   public void undoFailed_Ban() {
     Enrichment enrichment = new Enrichment(7L);
     Tube sourceTube = new Tube(4L);
-    PlateSpot spot = new PlateSpot(130L);
+    Well spot = new Well(130L);
     Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
     bannedContainers.add(sourceTube);
     bannedContainers.add(spot);

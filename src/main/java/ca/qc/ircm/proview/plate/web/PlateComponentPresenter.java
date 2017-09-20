@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -66,7 +66,7 @@ public class PlateComponentPresenter {
     updateReadOnly();
     view.spreadsheet.addCellValueChangeListener(e -> e.getChangedCells().stream().forEach(ref -> {
       Cell cell = view.spreadsheet.getActiveSheet().getRow(ref.getRow()).getCell(ref.getCol());
-      PlateSpot well = plate.spot(ref.getRow() - 1, ref.getCol() - 1);
+      Well well = plate.spot(ref.getRow() - 1, ref.getCol() - 1);
       if (well.getSample() == null) {
         well.setSample(new SubmissionSample());
       }
@@ -114,7 +114,7 @@ public class PlateComponentPresenter {
     forEachCell(cell -> {
       int row = cell.getRowIndex() - 1;
       int col = cell.getColumnIndex() - 1;
-      PlateSpot well = plate.spot(row, col);
+      Well well = plate.spot(row, col);
       if (well.getSample() != null) {
         cell.setCellValue(well.getSample().getName());
       }
@@ -139,7 +139,7 @@ public class PlateComponentPresenter {
    *
    * @return selected spot
    */
-  PlateSpot getSelectedSpot() {
+  Well getSelectedSpot() {
     if (multiSelect) {
       throw new IllegalStateException("getSelectedSpot cannot be called in multi select mode");
     }
@@ -156,7 +156,7 @@ public class PlateComponentPresenter {
    *
    * @return select spots
    */
-  Collection<PlateSpot> getSelectedSpots() {
+  Collection<Well> getSelectedSpots() {
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     return references.stream().map(ref -> plate.spot(ref.getRow() - 1, ref.getCol() - 1))
         .collect(Collectors.toList());
@@ -172,7 +172,7 @@ public class PlateComponentPresenter {
    * @param selectedSpots
    *          selected wells
    */
-  void setSelectedSpots(Collection<PlateSpot> selectedSpots) {
+  void setSelectedSpots(Collection<Well> selectedSpots) {
     IntSummaryStatistics rowSummary =
         selectedSpots.stream().mapToInt(spot -> spot.getRow()).summaryStatistics();
     IntSummaryStatistics columnSummary =
@@ -181,7 +181,7 @@ public class PlateComponentPresenter {
       view.spreadsheet.setSelectionRange(rowSummary.getMin() + 1, columnSummary.getMin() + 1,
           rowSummary.getMax() + 1, columnSummary.getMax() + 1);
     } else if (!selectedSpots.isEmpty()) {
-      PlateSpot well = selectedSpots.iterator().next();
+      Well well = selectedSpots.iterator().next();
       view.spreadsheet.setSelection(well.getRow() + 1, well.getColumn() + 1);
     }
   }

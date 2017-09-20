@@ -81,11 +81,11 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
       }
       case TIME_STAMP: {
         Instant min1 = o1.getSpots().get(0).getTimestamp();
-        for (PlateSpot spot : o1.getSpots()) {
+        for (Well spot : o1.getSpots()) {
           min1 = min1.isBefore(spot.getTimestamp()) ? spot.getTimestamp() : min1;
         }
         Instant min2 = o2.getSpots().get(0).getTimestamp();
-        for (PlateSpot spot : o2.getSpots()) {
+        for (Well spot : o2.getSpots()) {
           min2 = min2.isBefore(spot.getTimestamp()) ? spot.getTimestamp() : min2;
         }
         int compare = min2.compareTo(min1);

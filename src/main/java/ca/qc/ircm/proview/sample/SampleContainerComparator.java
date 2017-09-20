@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 
 import java.io.Serializable;
 import java.text.Collator;
@@ -53,8 +53,8 @@ public class SampleContainerComparator implements Comparator<SampleContainer>, S
           case TUBE:
             return 1;
           case SPOT:
-            PlateSpot spot1 = (PlateSpot) o1;
-            PlateSpot spot2 = (PlateSpot) o2;
+            Well spot1 = (Well) o1;
+            Well spot2 = (Well) o2;
             int compare = Integer.valueOf(spot1.getColumn()).compareTo(spot2.getColumn());
             compare =
                 compare == 0 ? Integer.valueOf(spot1.getRow()).compareTo(spot2.getRow()) : compare;

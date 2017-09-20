@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -207,7 +207,7 @@ public class DilutionServiceTest {
   @Test
   public void insert_Spot() {
     SubmissionSample sample = new SubmissionSample(1L);
-    PlateSpot spot = new PlateSpot(128L);
+    Well spot = new Well(128L);
     final List<DilutedSample> dilutedSamples = new ArrayList<>();
     DilutedSample dilutedSample = new DilutedSample();
     dilutedSample.setComments("unit test");
@@ -311,9 +311,9 @@ public class DilutionServiceTest {
     assertEquals(true, dilution.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
     assertEquals("fail unit test", dilution.getDeletionJustification());
-    PlateSpot spot = entityManager.find(PlateSpot.class, 608L);
+    Well spot = entityManager.find(Well.class, 608L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 620L);
+    spot = entityManager.find(Well.class, 620L);
     assertEquals(true, spot.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -345,9 +345,9 @@ public class DilutionServiceTest {
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 23L);
     assertEquals(true, tube.isBanned());
-    PlateSpot spot = entityManager.find(PlateSpot.class, 513L);
+    Well spot = entityManager.find(Well.class, 513L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 525L);
+    spot = entityManager.find(Well.class, 525L);
     assertEquals(true, spot.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -381,13 +381,13 @@ public class DilutionServiceTest {
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 25L);
     assertEquals(true, tube.isBanned());
-    PlateSpot spot = entityManager.find(PlateSpot.class, 515L);
+    Well spot = entityManager.find(Well.class, 515L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 527L);
+    spot = entityManager.find(Well.class, 527L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 539L);
+    spot = entityManager.find(Well.class, 539L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 551L);
+    spot = entityManager.find(Well.class, 551L);
     assertEquals(true, spot.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -423,17 +423,17 @@ public class DilutionServiceTest {
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 27L);
     assertEquals(true, tube.isBanned());
-    PlateSpot spot = entityManager.find(PlateSpot.class, 516L);
+    Well spot = entityManager.find(Well.class, 516L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 528L);
+    spot = entityManager.find(Well.class, 528L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 704L);
+    spot = entityManager.find(Well.class, 704L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 716L);
+    spot = entityManager.find(Well.class, 716L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 728L);
+    spot = entityManager.find(Well.class, 728L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 740L);
+    spot = entityManager.find(Well.class, 740L);
     assertEquals(true, spot.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -472,21 +472,21 @@ public class DilutionServiceTest {
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 30L);
     assertEquals(true, tube.isBanned());
-    PlateSpot spot = entityManager.find(PlateSpot.class, 517L);
+    Well spot = entityManager.find(Well.class, 517L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 529L);
+    spot = entityManager.find(Well.class, 529L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 541L);
+    spot = entityManager.find(Well.class, 541L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 553L);
+    spot = entityManager.find(Well.class, 553L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 705L);
+    spot = entityManager.find(Well.class, 705L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 717L);
+    spot = entityManager.find(Well.class, 717L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 729L);
+    spot = entityManager.find(Well.class, 729L);
     assertEquals(true, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 741L);
+    spot = entityManager.find(Well.class, 741L);
     assertEquals(true, spot.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -525,9 +525,9 @@ public class DilutionServiceTest {
     assertEquals("fail unit test", test.getDeletionJustification());
     Tube tube = entityManager.find(Tube.class, 2278L);
     assertEquals(true, tube.isBanned());
-    PlateSpot spot = entityManager.find(PlateSpot.class, 1583L);
+    Well spot = entityManager.find(Well.class, 1583L);
     assertEquals(false, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 1571L);
+    spot = entityManager.find(Well.class, 1571L);
     assertEquals(false, spot.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();

@@ -65,7 +65,7 @@ public class PlateServiceTest {
   @Mock
   private Activity activity;
   @Captor
-  private ArgumentCaptor<Collection<PlateSpot>> spotsCaptor;
+  private ArgumentCaptor<Collection<Well>> spotsCaptor;
 
   /**
    * Before test.
@@ -94,19 +94,19 @@ public class PlateServiceTest {
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
     assertEquals((Long) 26L, plate.getId());
-    final List<PlateSpot> spots = plate.getSpots();
+    final List<Well> spots = plate.getSpots();
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
     assertEquals(96, spots.size());
     final int rowCount = plate.getRowCount();
-    List<PlateSpot> someSpots = plate.spots(new SpotLocation(0, 1), new SpotLocation(rowCount, 1));
+    List<Well> someSpots = plate.spots(new WellLocation(0, 1), new WellLocation(rowCount, 1));
     assertEquals(plate.getRowCount(), someSpots.size());
-    for (PlateSpot testSpot : someSpots) {
+    for (Well testSpot : someSpots) {
       assertEquals(1, testSpot.getColumn());
     }
-    PlateSpot spot = plate.spot(2, 3);
+    Well spot = plate.spot(2, 3);
     assertEquals(2, spot.getRow());
     assertEquals(3, spot.getColumn());
     assertEquals(91, plate.getEmptySpotCount());
@@ -129,19 +129,19 @@ public class PlateServiceTest {
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
     assertEquals((Long) 26L, plate.getId());
-    final List<PlateSpot> spots = plate.getSpots();
+    final List<Well> spots = plate.getSpots();
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
     assertEquals(96, spots.size());
     final int rowCount = plate.getRowCount();
-    List<PlateSpot> someSpots = plate.spots(new SpotLocation(0, 1), new SpotLocation(rowCount, 1));
+    List<Well> someSpots = plate.spots(new WellLocation(0, 1), new WellLocation(rowCount, 1));
     assertEquals(plate.getRowCount(), someSpots.size());
-    for (PlateSpot testSpot : someSpots) {
+    for (Well testSpot : someSpots) {
       assertEquals(1, testSpot.getColumn());
     }
-    PlateSpot spot = plate.spot(2, 3);
+    Well spot = plate.spot(2, 3);
     assertEquals(2, spot.getRow());
     assertEquals(3, spot.getColumn());
     assertEquals(91, plate.getEmptySpotCount());
@@ -286,8 +286,8 @@ public class PlateServiceTest {
   public void ban_OneSpot() {
     Plate plate = entityManager.find(Plate.class, 26L);
     entityManager.detach(plate);
-    SpotLocation location = new SpotLocation(0, 0);
-    when(plateActivityService.ban(anyCollectionOf(PlateSpot.class), any(String.class)))
+    WellLocation location = new WellLocation(0, 0);
+    when(plateActivityService.ban(anyCollectionOf(Well.class), any(String.class)))
         .thenReturn(activity);
 
     plateService.ban(plate, location, location, "unit test");
@@ -296,9 +296,9 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).ban(spotsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    PlateSpot spot = entityManager.find(PlateSpot.class, 128L);
+    Well spot = entityManager.find(Well.class, 128L);
     assertEquals(true, spot.isBanned());
-    Collection<PlateSpot> loggedSpots = spotsCaptor.getValue();
+    Collection<Well> loggedSpots = spotsCaptor.getValue();
     assertEquals(1, loggedSpots.size());
     assertNotNull(find(loggedSpots, 128L));
   }
@@ -307,9 +307,9 @@ public class PlateServiceTest {
   public void ban_MultipleSpots() {
     Plate plate = entityManager.find(Plate.class, 26L);
     entityManager.detach(plate);
-    SpotLocation from = new SpotLocation(3, 3);
-    SpotLocation to = new SpotLocation(5, 4);
-    when(plateActivityService.ban(anyCollectionOf(PlateSpot.class), any(String.class)))
+    WellLocation from = new WellLocation(3, 3);
+    WellLocation to = new WellLocation(5, 4);
+    when(plateActivityService.ban(anyCollectionOf(Well.class), any(String.class)))
         .thenReturn(activity);
 
     plateService.ban(plate, from, to, "unit test");
@@ -318,12 +318,12 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).ban(spotsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    List<PlateSpot> bannedSpots = plateService.get(plate.getId()).spots(from, to);
-    for (PlateSpot bannedSpot : bannedSpots) {
-      PlateSpot spot = entityManager.find(PlateSpot.class, bannedSpot.getId());
+    List<Well> bannedSpots = plateService.get(plate.getId()).spots(from, to);
+    for (Well bannedSpot : bannedSpots) {
+      Well spot = entityManager.find(Well.class, bannedSpot.getId());
       assertEquals(true, spot.isBanned());
     }
-    Collection<PlateSpot> loggedSpots = spotsCaptor.getValue();
+    Collection<Well> loggedSpots = spotsCaptor.getValue();
     assertEquals(bannedSpots, loggedSpots);
   }
 
@@ -331,8 +331,8 @@ public class PlateServiceTest {
   public void activate_OneSpot() {
     Plate plate = entityManager.find(Plate.class, 26L);
     entityManager.detach(plate);
-    SpotLocation location = new SpotLocation(6, 11);
-    when(plateActivityService.activate(anyCollectionOf(PlateSpot.class), any(String.class)))
+    WellLocation location = new WellLocation(6, 11);
+    when(plateActivityService.activate(anyCollectionOf(Well.class), any(String.class)))
         .thenReturn(activity);
 
     plateService.activate(plate, location, location, "unit test");
@@ -341,9 +341,9 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).activate(spotsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    PlateSpot spot = entityManager.find(PlateSpot.class, 211L);
+    Well spot = entityManager.find(Well.class, 211L);
     assertEquals(false, spot.isBanned());
-    Collection<PlateSpot> loggedSpots = spotsCaptor.getValue();
+    Collection<Well> loggedSpots = spotsCaptor.getValue();
     assertEquals(1, loggedSpots.size());
     assertNotNull(find(loggedSpots, 211L));
   }
@@ -352,9 +352,9 @@ public class PlateServiceTest {
   public void activate_MultipleSpots() {
     Plate plate = entityManager.find(Plate.class, 26L);
     entityManager.detach(plate);
-    SpotLocation from = new SpotLocation(5, 11);
-    SpotLocation to = new SpotLocation(7, 11);
-    when(plateActivityService.activate(anyCollectionOf(PlateSpot.class), any(String.class)))
+    WellLocation from = new WellLocation(5, 11);
+    WellLocation to = new WellLocation(7, 11);
+    when(plateActivityService.activate(anyCollectionOf(Well.class), any(String.class)))
         .thenReturn(activity);
 
     plateService.activate(plate, from, to, "unit test");
@@ -363,13 +363,13 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).activate(spotsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    PlateSpot spot = entityManager.find(PlateSpot.class, 199L);
+    Well spot = entityManager.find(Well.class, 199L);
     assertEquals(false, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 211L);
+    spot = entityManager.find(Well.class, 211L);
     assertEquals(false, spot.isBanned());
-    spot = entityManager.find(PlateSpot.class, 223L);
+    spot = entityManager.find(Well.class, 223L);
     assertEquals(false, spot.isBanned());
-    Collection<PlateSpot> loggedSpots = spotsCaptor.getValue();
+    Collection<Well> loggedSpots = spotsCaptor.getValue();
     assertEquals(3, loggedSpots.size());
     assertNotNull(find(loggedSpots, 199L));
     assertNotNull(find(loggedSpots, 211L));

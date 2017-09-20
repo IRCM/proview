@@ -27,7 +27,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService.MsAnalysisAggregate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -177,7 +177,7 @@ public class MsAnalysisActivityServiceTest {
   public void undoFailed_Ban() {
     final MsAnalysis msAnalysis = new MsAnalysis(1L);
     Tube sourceTube = new Tube(1L);
-    PlateSpot spot = new PlateSpot(130L);
+    Well spot = new Well(130L);
     Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
     bannedContainers.add(sourceTube);
     bannedContainers.add(spot);

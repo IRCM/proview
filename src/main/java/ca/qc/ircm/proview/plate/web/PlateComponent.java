@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.ui.CustomComponent;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -83,7 +83,7 @@ public class PlateComponent extends CustomComponent {
    *
    * @return selected spot
    */
-  public PlateSpot getSelectedSpot() {
+  public Well getSelectedSpot() {
     return presenter.getSelectedSpot();
   }
 
@@ -92,7 +92,7 @@ public class PlateComponent extends CustomComponent {
    *
    * @return select spots
    */
-  public Collection<PlateSpot> getSelectedSpots() {
+  public Collection<Well> getSelectedSpots() {
     return presenter.getSelectedSpots();
   }
 
@@ -106,7 +106,7 @@ public class PlateComponent extends CustomComponent {
    * @param selectedSpots
    *          selected wells
    */
-  public void setSelectedSpots(Collection<PlateSpot> selectedSpots) {
+  public void setSelectedSpots(Collection<Well> selectedSpots) {
     presenter.setSelectedSpots(selectedSpots);
   }
 

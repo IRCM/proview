@@ -26,18 +26,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
-public class PlateSpotTest {
+public class WellTest {
   @Test
   public void getName() {
-    assertEquals("C-4", new PlateSpot(2, 3).getName());
-    assertEquals("Z-4", new PlateSpot(25, 3).getName());
-    assertEquals("AA-31", new PlateSpot(26, 30).getName());
-    assertEquals("AE-31", new PlateSpot(30, 30).getName());
-    assertEquals("BA-31", new PlateSpot(52, 30).getName());
-    assertEquals("ZZ-31", new PlateSpot(701, 30).getName());
-    assertEquals("AAA-31", new PlateSpot(702, 30).getName());
-    assertEquals("ZZZ-31", new PlateSpot(18277, 30).getName());
-    assertEquals("AAAA-31", new PlateSpot(18278, 30).getName());
+    assertEquals("C-4", new Well(2, 3).getName());
+    assertEquals("Z-4", new Well(25, 3).getName());
+    assertEquals("AA-31", new Well(26, 30).getName());
+    assertEquals("AE-31", new Well(30, 30).getName());
+    assertEquals("BA-31", new Well(52, 30).getName());
+    assertEquals("ZZ-31", new Well(701, 30).getName());
+    assertEquals("AAA-31", new Well(702, 30).getName());
+    assertEquals("ZZZ-31", new Well(18277, 30).getName());
+    assertEquals("AAAA-31", new Well(18278, 30).getName());
   }
 
   @Test

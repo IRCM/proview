@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -107,7 +107,7 @@ public class FractionationActivityServiceTest {
   public void insert_Spot() {
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
-    PlateSpot destinationSpot = new PlateSpot(130L);
+    Well destinationSpot = new Well(130L);
     destinationSpot.setSample(sample);
     FractionationDetail detail = new FractionationDetail();
     detail.setSample(sample);
@@ -168,7 +168,7 @@ public class FractionationActivityServiceTest {
   public void undoErroneous_Spot() {
     final Sample sample = new SubmissionSample(1L);
     Fractionation fractionation = new Fractionation(8L);
-    PlateSpot destinationSpot = new PlateSpot(128L);
+    Well destinationSpot = new Well(128L);
     Collection<SampleContainer> samplesRemoved = new ArrayList<SampleContainer>();
     samplesRemoved.add(destinationSpot);
 
@@ -252,7 +252,7 @@ public class FractionationActivityServiceTest {
   @Test
   public void undoFailed_Ban_Spot() {
     Fractionation fractionation = new Fractionation(8L);
-    PlateSpot destinationSpot = new PlateSpot(128L);
+    Well destinationSpot = new Well(128L);
     Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
     bannedContainers.add(destinationSpot);
 

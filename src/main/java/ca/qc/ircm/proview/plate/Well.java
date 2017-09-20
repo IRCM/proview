@@ -37,7 +37,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @DiscriminatorValue("SPOT")
-public class PlateSpot extends SampleContainer implements Data, Named, Serializable {
+public class Well extends SampleContainer implements Data, Named, Serializable {
   private static final long serialVersionUID = 212003765334493656L;
 
   /**
@@ -60,12 +60,12 @@ public class PlateSpot extends SampleContainer implements Data, Named, Serializa
   /**
    * Constructor to be used only by persistence layer.
    */
-  PlateSpot() {
+  Well() {
     this.row = 0;
     this.column = 0;
   }
 
-  public PlateSpot(Long id) {
+  public Well(Long id) {
     super(id);
   }
 
@@ -77,7 +77,7 @@ public class PlateSpot extends SampleContainer implements Data, Named, Serializa
    * @param column
    *          column where spot is located on plate
    */
-  public PlateSpot(Integer row, Integer column) {
+  public Well(Integer row, Integer column) {
     this.row = row;
     this.column = column;
   }
@@ -94,7 +94,7 @@ public class PlateSpot extends SampleContainer implements Data, Named, Serializa
 
   @Override
   public String getFullName() {
-    MessageResource resources = new MessageResource(PlateSpot.class, Locale.getDefault());
+    MessageResource resources = new MessageResource(Well.class, Locale.getDefault());
     return resources.message("fullname", plate.getName(), Plate.rowLabel(row),
         Plate.columnLabel(column));
   }

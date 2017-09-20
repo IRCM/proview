@@ -83,10 +83,10 @@ public class PlateActivityService {
     return activity;
   }
 
-  private void validateSamePlate(Collection<PlateSpot> spots) {
+  private void validateSamePlate(Collection<Well> spots) {
     if (!spots.isEmpty()) {
       long plateId = spots.iterator().next().getPlate().getId();
-      for (PlateSpot spot : spots) {
+      for (Well spot : spots) {
         if (spot.getPlate().getId() != plateId) {
           throw new IllegalArgumentException("Spots are not from the same plates");
         }
@@ -104,14 +104,14 @@ public class PlateActivityService {
    * @return activity about spots being marked as banned
    */
   @CheckReturnValue
-  public Activity ban(final Collection<PlateSpot> spots, final String justification) {
+  public Activity ban(final Collection<Well> spots, final String justification) {
     validateSamePlate(spots);
     final User user = authorizationService.getCurrentUser();
     final Plate plate = spots.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (PlateSpot spot : spots) {
-      PlateSpot oldPlateSpot = entityManager.find(PlateSpot.class, spot.getId());
+    for (Well spot : spots) {
+      Well oldPlateSpot = entityManager.find(Well.class, spot.getId());
       updateBuilders.add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldPlateSpot));
     }
 
@@ -143,15 +143,15 @@ public class PlateActivityService {
    * @return activity about spots being marked as reactivated
    */
   @CheckReturnValue
-  public Activity activate(final Collection<PlateSpot> spots, final String justification) {
+  public Activity activate(final Collection<Well> spots, final String justification) {
     validateSamePlate(spots);
     final User user = authorizationService.getCurrentUser();
     Plate plate = spots.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (PlateSpot spot : spots) {
+    for (Well spot : spots) {
       assert spot.getPlate().equals(plate);
-      PlateSpot oldPlateSpot = entityManager.find(PlateSpot.class, spot.getId());
+      Well oldPlateSpot = entityManager.find(Well.class, spot.getId());
       updateBuilders
           .add(new ActivateSampleContainerUpdateActivityBuilder().oldContainer(oldPlateSpot));
     }

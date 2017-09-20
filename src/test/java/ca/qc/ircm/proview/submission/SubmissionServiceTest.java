@@ -37,7 +37,7 @@ import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -747,7 +747,7 @@ public class SubmissionServiceTest {
     sample.setSupport(SampleSupport.SOLUTION);
     sample.setVolume(10.0);
     sample.setQuantity("2.0 μg");
-    sample.setOriginalContainer(new PlateSpot(0, 0));
+    sample.setOriginalContainer(new Well(0, 0));
     sample.setNumberProtein(10);
     sample.setMolecularWeight(120.0);
     SubmissionSample sample2 = new SubmissionSample();
@@ -755,7 +755,7 @@ public class SubmissionServiceTest {
     sample2.setSupport(SampleSupport.SOLUTION);
     sample2.setVolume(10.0);
     sample2.setQuantity("2.0 μg");
-    sample2.setOriginalContainer(new PlateSpot(1, 0));
+    sample2.setOriginalContainer(new Well(1, 0));
     sample2.setNumberProtein(10);
     sample2.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
@@ -867,7 +867,7 @@ public class SubmissionServiceTest {
     assertEquals("standard1", standard.getName());
     assertEquals("1.0 μg", standard.getQuantity());
     assertEquals("comments", standard.getComments());
-    PlateSpot spot = (PlateSpot) submissionSample.getOriginalContainer();
+    Well spot = (Well) submissionSample.getOriginalContainer();
     assertNotNull(spot);
     assertEquals(submission.getExperience(), spot.getPlate().getName());
     assertEquals(PlateType.SUBMISSION, spot.getPlate().getType());

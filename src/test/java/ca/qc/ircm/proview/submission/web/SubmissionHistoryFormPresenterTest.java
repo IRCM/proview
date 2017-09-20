@@ -39,7 +39,7 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleSupport;
@@ -92,7 +92,7 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
   private Tube tube1;
   private Tube tube2;
   private Tube last1;
-  private PlateSpot last2;
+  private Well last2;
   private Activity activity1;
   private Activity activity2;
   private String activityDescription1;
@@ -139,7 +139,7 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
     submission.setSamples(Arrays.asList(sample1, sample2));
     last1 = new Tube();
     last1.setName("sample1 last tube");
-    last2 = new PlateSpot(1, 2);
+    last2 = new Well(1, 2);
     last2.setPlate(new Plate(10L, "sample2 last plate"));
     when(sampleContainerService.last(sample1)).thenReturn(last1);
     when(sampleContainerService.last(sample2)).thenReturn(last2);

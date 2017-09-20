@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -111,7 +111,7 @@ public class PlateComponentTest {
 
   @Test
   public void getSelectedSpot() {
-    PlateSpot well = plate.spot(1, 1);
+    Well well = plate.spot(1, 1);
     when(presenter.getSelectedSpot()).thenReturn(well);
 
     assertEquals(well, view.getSelectedSpot());
@@ -121,11 +121,11 @@ public class PlateComponentTest {
 
   @Test
   public void getSelectedSpots() {
-    PlateSpot well1 = plate.spot(0, 0);
-    PlateSpot well2 = plate.spot(1, 1);
+    Well well1 = plate.spot(0, 0);
+    Well well2 = plate.spot(1, 1);
     when(presenter.getSelectedSpots()).thenReturn(Arrays.asList(well1, well2));
 
-    Collection<PlateSpot> wells = view.getSelectedSpots();
+    Collection<Well> wells = view.getSelectedSpots();
 
     assertTrue(wells.contains(well1));
     assertTrue(wells.contains(well2));
@@ -134,9 +134,9 @@ public class PlateComponentTest {
 
   @Test
   public void setSelectedSpots() {
-    PlateSpot well1 = plate.spot(0, 0);
-    PlateSpot well2 = plate.spot(1, 1);
-    List<PlateSpot> wells = Arrays.asList(well1, well2);
+    Well well1 = plate.spot(0, 0);
+    Well well2 = plate.spot(1, 1);
+    List<Well> wells = Arrays.asList(well1, well2);
 
     view.setSelectedSpots(wells);
 

@@ -142,7 +142,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
-import ca.qc.ircm.proview.plate.PlateSpot;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -5053,7 +5053,7 @@ public class SubmissionFormPresenterTest {
     assertNotNull(sample.getOriginalContainer());
     SampleContainer container = sample.getOriginalContainer();
     assertEquals(SPOT, container.getType());
-    PlateSpot spot = (PlateSpot) container;
+    Well spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(0, spot.getRow());
     assertEquals(plateName, spot.getPlate().getName());
@@ -5088,7 +5088,7 @@ public class SubmissionFormPresenterTest {
     assertNotNull(sample.getOriginalContainer());
     container = sample.getOriginalContainer();
     assertEquals(SPOT, container.getType());
-    spot = (PlateSpot) container;
+    spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(1, spot.getRow());
     assertEquals(plateName, spot.getPlate().getName());
@@ -5488,7 +5488,7 @@ public class SubmissionFormPresenterTest {
     assertNotNull(sample.getOriginalContainer());
     SampleContainer container = sample.getOriginalContainer();
     assertEquals(SPOT, container.getType());
-    PlateSpot spot = (PlateSpot) container;
+    Well spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(0, spot.getRow());
     assertEquals(plateName, spot.getPlate().getName());
@@ -5523,7 +5523,7 @@ public class SubmissionFormPresenterTest {
     assertNotNull(sample.getOriginalContainer());
     container = sample.getOriginalContainer();
     assertEquals(SPOT, container.getType());
-    spot = (PlateSpot) container;
+    spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(1, spot.getRow());
     assertEquals(plateName, spot.getPlate().getName());
@@ -5753,7 +5753,7 @@ public class SubmissionFormPresenterTest {
     assertNotNull(sample.getOriginalContainer());
     SampleContainer container = sample.getOriginalContainer();
     assertEquals(SPOT, container.getType());
-    PlateSpot spot = (PlateSpot) container;
+    Well spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(0, spot.getRow());
     assertEquals(plateName, spot.getPlate().getName());
@@ -5772,7 +5772,7 @@ public class SubmissionFormPresenterTest {
     assertNotNull(sample.getOriginalContainer());
     container = sample.getOriginalContainer();
     assertEquals(SPOT, container.getType());
-    spot = (PlateSpot) container;
+    spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(1, spot.getRow());
     assertEquals(plateName, spot.getPlate().getName());
