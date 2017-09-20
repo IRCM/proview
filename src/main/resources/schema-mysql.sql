@@ -291,15 +291,6 @@ CREATE TABLE IF NOT EXISTS msanalysis (
   deletionJustification text,
   PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS msanalysisverification (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  msAnalysisId bigint(20) DEFAULT NULL,
-  verificationType varchar(50) NOT NULL,
-  verificationName varchar(255) NOT NULL,
-  verificationValue tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (id),
-  FOREIGN KEY (msAnalysisId) REFERENCES msanalysis (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
 CREATE TABLE IF NOT EXISTS acquisition (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   msAnalysisId bigint(20) DEFAULT NULL,

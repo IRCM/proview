@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService.MsAnalysisAggregate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -44,11 +43,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -61,16 +57,13 @@ public class MsAnalysisActivityServiceTest {
   private EntityManager entityManager;
   @Mock
   private AuthorizationService authorizationService;
-  private MsAnalysisVerificationService realMsAnalysisVerificationService;
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() {
-    msAnalysisActivityService =
-        new MsAnalysisActivityService(entityManager, authorizationService);
-    realMsAnalysisVerificationService = new MsAnalysisVerificationService(true);
+    msAnalysisActivityService = new MsAnalysisActivityService(entityManager, authorizationService);
   }
 
   @Test
@@ -88,18 +81,8 @@ public class MsAnalysisActivityServiceTest {
     acquisition.setSample(sample);
     acquisition.setSampleListName("unit_test_sample_list_name");
     acquisition.setContainer(sourceTube);
-    final List<Acquisition> acquisitions = new ArrayList<Acquisition>();
+    final List<Acquisition> acquisitions = new ArrayList<>();
     acquisitions.add(acquisition);
-    final Map<VerificationType, Map<String, Boolean>> verifications =
-        new HashMap<VerificationType, Map<String, Boolean>>();
-    Map<VerificationType, Set<String>> expectedVerifications = realMsAnalysisVerificationService
-        .verifications(MassDetectionInstrument.LTQ_ORBI_TRAP, MassDetectionInstrumentSource.LDTD);
-    for (VerificationType verificationType : expectedVerifications.keySet()) {
-      verifications.put(verificationType, new HashMap<String, Boolean>());
-      for (String verification : expectedVerifications.get(verificationType)) {
-        verifications.get(verificationType).put(verification, true);
-      }
-    }
     sample.setStatus(SampleStatus.ANALYSED);
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -114,11 +97,6 @@ public class MsAnalysisActivityServiceTest {
       public List<Acquisition> getAcquisitions() {
         return acquisitions;
       }
-
-      @Override
-      public Map<VerificationType, Map<String, Boolean>> getVerifications() {
-        return verifications;
-      }
     });
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
@@ -127,7 +105,7 @@ public class MsAnalysisActivityServiceTest {
     assertEquals(msAnalysis.getId(), activity.getRecordId());
     assertEquals(null, activity.getJustification());
     assertEquals((Long) 1L, activity.getUser().getId());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity sampleStatusActivity = new UpdateActivity();
     sampleStatusActivity.setActionType(ActionType.UPDATE);
     sampleStatusActivity.setTableName("sample");
@@ -178,7 +156,7 @@ public class MsAnalysisActivityServiceTest {
     final MsAnalysis msAnalysis = new MsAnalysis(1L);
     Tube sourceTube = new Tube(1L);
     Well well = new Well(130L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     bannedContainers.add(well);
     User user = new User(1L);
@@ -193,7 +171,7 @@ public class MsAnalysisActivityServiceTest {
     assertEquals(msAnalysis.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals((Long) 1L, activity.getUser().getId());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity bannedTubeActivity = new UpdateActivity();
     bannedTubeActivity.setActionType(ActionType.UPDATE);
     bannedTubeActivity.setTableName("samplecontainer");
@@ -217,7 +195,7 @@ public class MsAnalysisActivityServiceTest {
   public void undoFailed_LongDescription() throws Throwable {
     MsAnalysis msAnalysis = new MsAnalysis(1L);
     Tube sourceTube = new Tube(1L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     String reason = "long reason having more than 255 characters "
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -227,8 +205,7 @@ public class MsAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity =
-        msAnalysisActivityService.undoFailed(msAnalysis, reason, bannedContainers);
+    Activity activity = msAnalysisActivityService.undoFailed(msAnalysis, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

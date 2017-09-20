@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.msanalysis;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.LDTD;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +33,6 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService.MsAnalysisAggregate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
@@ -61,9 +59,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -203,57 +199,6 @@ public class MsAnalysisServiceTest {
   }
 
   @Test
-  public void verifications() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 12L);
-
-    Map<VerificationType, Map<String, Boolean>> checks =
-        msAnalysisService.verifications(msAnalysis);
-
-    verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
-    assertTrue(checks.get(VerificationType.SAMPLE).get("acquisitionFile"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("nitrogenQuantity"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("calibration"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("heliumQuantity"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("plaquePositionOnAutoSampler"));
-    assertTrue(checks.get(VerificationType.SAMPLE).get("sampleVsSpot"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("lcPumpPressure"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("coolerTemperature"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("diskSpace"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("sonicatedPlaque"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("mobilePhaseQuantity"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("vacuum"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("drainingVialVolume"));
-    assertTrue(checks.get(VerificationType.INSTRUMENT).get("qcPassed"));
-    Boolean check = checks.get(VerificationType.INSTRUMENT).get("argonQuantity");
-    assertFalse(check != null && check);
-    check = checks.get(VerificationType.INSTRUMENT).get("openGaz");
-    assertFalse(check != null && check);
-    check = checks.get(VerificationType.INSTRUMENT).get("collisionEnergy");
-    assertFalse(check != null && check);
-    check = checks.get(VerificationType.INSTRUMENT).get("mcp");
-    assertFalse(check != null && check);
-    check = checks.get(VerificationType.INSTRUMENT).get("uncheckedAutoCid");
-    assertFalse(check != null && check);
-    check = checks.get(VerificationType.INSTRUMENT).get("checkedGhz");
-    assertFalse(check != null && check);
-    check = checks.get(VerificationType.INSTRUMENT).get("clMethod");
-    assertFalse(check != null && check);
-    check = checks.get(VerificationType.INSTRUMENT).get("msMethod");
-    assertFalse(check != null && check);
-    check = checks.get(VerificationType.INSTRUMENT).get("volume");
-    assertFalse(check != null && check);
-    check = checks.get(VerificationType.INSTRUMENT).get("spray");
-    assertFalse(check != null && check);
-  }
-
-  @Test
-  public void verifications_Null() {
-    Map<VerificationType, Map<String, Boolean>> checks = msAnalysisService.verifications(null);
-
-    assertEquals(0, checks.size());
-  }
-
-  @Test
   public void insert() {
     Tube tube = entityManager.find(Tube.class, 3L);
     entityManager.detach(tube);
@@ -262,25 +207,6 @@ public class MsAnalysisServiceTest {
     MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
-    Map<String, Boolean> instrumentVerifications = new HashMap<>();
-    instrumentVerifications.put("nitrogenQuantity", true);
-    instrumentVerifications.put("calibration", true);
-    instrumentVerifications.put("heliumQuantity", true);
-    instrumentVerifications.put("plaquePositionOnAutoSampler", true);
-    instrumentVerifications.put("lcPumpPressure", true);
-    instrumentVerifications.put("coolerTemperature", true);
-    instrumentVerifications.put("diskSpace", true);
-    instrumentVerifications.put("sonicatedPlaque", true);
-    instrumentVerifications.put("mobilePhaseQuantity", true);
-    instrumentVerifications.put("vacuum", true);
-    instrumentVerifications.put("drainingVialVolume", true);
-    instrumentVerifications.put("qcPassed", true);
-    Map<String, Boolean> sampleVerifications = new HashMap<>();
-    sampleVerifications.put("sampleVsSpot", true);
-    sampleVerifications.put("acquisitionFile", true);
-    Map<VerificationType, Map<String, Boolean>> verifications = new HashMap<>();
-    verifications.put(VerificationType.INSTRUMENT, instrumentVerifications);
-    verifications.put(VerificationType.SAMPLE, sampleVerifications);
     Acquisition acquisition = new Acquisition();
     acquisition.setContainer(tube);
     acquisition.setSample(tube.getSample());
@@ -293,7 +219,6 @@ public class MsAnalysisServiceTest {
     acquisitions.add(acquisition);
     final MsAnalysis finalMsAnalysis = msAnalysis;
     final List<Acquisition> finalAcquisitions = acquisitions;
-    final Map<VerificationType, Map<String, Boolean>> finalVerifications = verifications;
     MsAnalysisAggregate insertAggregate = new MsAnalysisAggregate() {
       @Override
       public MsAnalysis getMsAnalysis() {
@@ -303,11 +228,6 @@ public class MsAnalysisServiceTest {
       @Override
       public List<Acquisition> getAcquisitions() {
         return finalAcquisitions;
-      }
-
-      @Override
-      public Map<VerificationType, Map<String, Boolean>> getVerifications() {
-        return finalVerifications;
       }
     };
     when(msAnalysisActivityService.insert(any(MsAnalysisAggregate.class))).thenReturn(activity);
@@ -331,21 +251,6 @@ public class MsAnalysisServiceTest {
     assertTrue(before.isBefore(msAnalysis.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(msAnalysis.getInsertTime()));
-    verifications = msAnalysisService.verifications(msAnalysis);
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("nitrogenQuantity"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("calibration"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("heliumQuantity"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("plaquePositionOnAutoSampler"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("lcPumpPressure"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("coolerTemperature"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("diskSpace"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("sonicatedPlaque"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("mobilePhaseQuantity"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("vacuum"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("drainingVialVolume"));
-    assertTrue(verifications.get(VerificationType.INSTRUMENT).get("qcPassed"));
-    assertTrue(verifications.get(VerificationType.SAMPLE).get("sampleVsSpot"));
-    assertTrue(verifications.get(VerificationType.SAMPLE).get("acquisitionFile"));
     acquisitions = msAnalysis.getAcquisitions();
     assertEquals(1, acquisitions.size());
     acquisition = acquisitions.get(0);
@@ -370,7 +275,6 @@ public class MsAnalysisServiceTest {
     assertEquals("XL_20100614_COU_09", acquisition.getAcquisitionFile());
     assertEquals((Integer) 0, acquisition.getListIndex());
     assertEquals("unit_test_comments", acquisition.getComments());
-    assertEquals(verifications, msAnalysisAggregate.getVerifications());
   }
 
   @Test
@@ -380,25 +284,6 @@ public class MsAnalysisServiceTest {
     final MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
-    final Map<VerificationType, Map<String, Boolean>> verifications = new HashMap<>();
-    Map<String, Boolean> instrumentVerifications = new HashMap<>();
-    instrumentVerifications.put("nitrogenQuantity", true);
-    instrumentVerifications.put("calibration", true);
-    instrumentVerifications.put("heliumQuantity", true);
-    instrumentVerifications.put("plaquePositionOnAutoSampler", true);
-    instrumentVerifications.put("lcPumpPressure", true);
-    instrumentVerifications.put("coolerTemperature", true);
-    instrumentVerifications.put("diskSpace", true);
-    instrumentVerifications.put("sonicatedPlaque", true);
-    instrumentVerifications.put("mobilePhaseQuantity", true);
-    instrumentVerifications.put("vacuum", true);
-    instrumentVerifications.put("drainingVialVolume", true);
-    instrumentVerifications.put("qcPassed", true);
-    Map<String, Boolean> sampleVerifications = new HashMap<>();
-    sampleVerifications.put("sampleVsSpot", true);
-    sampleVerifications.put("acquisitionFile", true);
-    verifications.put(VerificationType.INSTRUMENT, instrumentVerifications);
-    verifications.put(VerificationType.SAMPLE, sampleVerifications);
     Tube tube1 = new Tube(3L);
     tube1.setSample(sample1);
     final List<Acquisition> acquisitions = new ArrayList<>();
@@ -432,11 +317,6 @@ public class MsAnalysisServiceTest {
       public List<Acquisition> getAcquisitions() {
         return acquisitions;
       }
-
-      @Override
-      public Map<VerificationType, Map<String, Boolean>> getVerifications() {
-        return verifications;
-      }
     };
 
     try {
@@ -460,25 +340,6 @@ public class MsAnalysisServiceTest {
     final MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
-    final Map<VerificationType, Map<String, Boolean>> verifications = new HashMap<>();
-    Map<String, Boolean> instrumentVerifications = new HashMap<>();
-    instrumentVerifications.put("nitrogenQuantity", true);
-    instrumentVerifications.put("calibration", true);
-    instrumentVerifications.put("heliumQuantity", true);
-    instrumentVerifications.put("plaquePositionOnAutoSampler", true);
-    instrumentVerifications.put("lcPumpPressure", true);
-    instrumentVerifications.put("coolerTemperature", true);
-    instrumentVerifications.put("diskSpace", true);
-    instrumentVerifications.put("sonicatedPlaque", true);
-    instrumentVerifications.put("mobilePhaseQuantity", true);
-    instrumentVerifications.put("vacuum", true);
-    instrumentVerifications.put("drainingVialVolume", true);
-    instrumentVerifications.put("qcPassed", true);
-    Map<String, Boolean> sampleVerifications = new HashMap<>();
-    sampleVerifications.put("sampleVsSpot", true);
-    sampleVerifications.put("acquisitionFile", true);
-    verifications.put(VerificationType.INSTRUMENT, instrumentVerifications);
-    verifications.put(VerificationType.SAMPLE, sampleVerifications);
     final List<Acquisition> acquisitions = new ArrayList<>();
     Acquisition acquisition = new Acquisition();
     acquisition.setContainer(tube1);
@@ -509,11 +370,6 @@ public class MsAnalysisServiceTest {
       @Override
       public List<Acquisition> getAcquisitions() {
         return acquisitions;
-      }
-
-      @Override
-      public Map<VerificationType, Map<String, Boolean>> getVerifications() {
-        return verifications;
       }
     };
     try {

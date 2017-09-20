@@ -43,13 +43,6 @@ import javax.persistence.Table;
 @Table(name = MsAnalysis.TABLE_NAME)
 public class MsAnalysis implements Data, Serializable {
   /**
-   * Source for mass spectrometer.
-   */
-  public static enum VerificationType {
-    INSTRUMENT, SAMPLE;
-  }
-
-  /**
    * Type of errors that forces Digestion to be deleted.
    */
   public static enum DeletionType {
@@ -113,12 +106,6 @@ public class MsAnalysis implements Data, Serializable {
   @OneToMany(cascade = CascadeType.PERSIST)
   @JoinColumn(name = "msAnalysisId", nullable = false)
   private List<Acquisition> acquisitions;
-  /**
-   * Description of what caused the MS analysis to be deleted.
-   */
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "msAnalysisId", nullable = false)
-  private List<MsAnalysisVerification> verifications;
 
   public MsAnalysis() {
   }
@@ -195,13 +182,5 @@ public class MsAnalysis implements Data, Serializable {
 
   public void setAcquisitions(List<Acquisition> acquisitions) {
     this.acquisitions = acquisitions;
-  }
-
-  public List<MsAnalysisVerification> getVerifications() {
-    return verifications;
-  }
-
-  public void setVerifications(List<MsAnalysisVerification> verifications) {
-    this.verifications = verifications;
   }
 }

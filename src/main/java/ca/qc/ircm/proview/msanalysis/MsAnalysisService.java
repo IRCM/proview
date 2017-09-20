@@ -23,7 +23,6 @@ import static ca.qc.ircm.proview.submission.QSubmission.submission;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.VerificationType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -72,13 +71,6 @@ public class MsAnalysisService extends BaseTreatmentService {
      * @return acquisitions done during MS analysis.
      */
     public List<Acquisition> getAcquisitions();
-
-    /**
-     * Returns checks done before MS analysis.
-     *
-     * @return checks done before MS analysis.
-     */
-    public Map<VerificationType, Map<String, Boolean>> getVerifications();
   }
 
   @PersistenceContext
@@ -185,31 +177,6 @@ public class MsAnalysisService extends BaseTreatmentService {
   }
 
   /**
-   * Selects all checks performed for MS analysis.
-   *
-   * @param msAnalysis
-   *          MS analysis
-   * @return all checks performed for MS analysis
-   */
-  public Map<VerificationType, Map<String, Boolean>> verifications(MsAnalysis msAnalysis) {
-    if (msAnalysis == null) {
-      return new HashMap<>();
-    }
-    authorizationService.checkMsAnalysisReadPermission(msAnalysis);
-
-    List<MsAnalysisVerification> rawVerifications = msAnalysis.getVerifications();
-    Map<VerificationType, Map<String, Boolean>> verifications = new HashMap<>();
-    for (MsAnalysisVerification verification : rawVerifications) {
-      VerificationType type = verification.getType();
-      if (!verifications.containsKey(type)) {
-        verifications.put(type, new HashMap<String, Boolean>());
-      }
-      verifications.get(type).put(verification.getName(), verification.isValue());
-    }
-    return verifications;
-  }
-
-  /**
    * Analyse samples by MS.
    *
    * @param msAnalysisAggregate
@@ -244,15 +211,6 @@ public class MsAnalysisService extends BaseTreatmentService {
       acquisition.setPosition(position);
       positions.put(sample, position + 1);
     }
-    List<MsAnalysisVerification> verifications = new ArrayList<>();
-    for (VerificationType type : VerificationType.values()) {
-      for (Map.Entry<String, Boolean> verificationEntry : msAnalysisAggregate.getVerifications()
-          .get(type).entrySet()) {
-        verifications.add(new MsAnalysisVerification(type, verificationEntry.getKey(),
-            verificationEntry.getValue()));
-      }
-    }
-    msAnalysis.setVerifications(verifications);
     entityManager.persist(msAnalysis);
 
     // Set status of submission samples to analysed.

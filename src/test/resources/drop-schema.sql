@@ -23,7 +23,6 @@ DROP TABLE dataanalysis IF EXISTS;
 DROP TABLE acquisition_to_mascotfile IF EXISTS;
 DROP TABLE mascotfile IF EXISTS;
 DROP TABLE acquisition IF EXISTS;
-DROP TABLE msanalysisverification IF EXISTS;
 DROP TABLE msanalysis IF EXISTS;
 DROP TABLE treatmentsample IF EXISTS;
 DROP TABLE treatment IF EXISTS;
