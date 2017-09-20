@@ -160,7 +160,7 @@ public class Plate implements Data, Serializable, Named {
       }
     }
     throw new IllegalArgumentException(
-        "No well at coordinates " + Plate.rowLabel(row) + "-" + Plate.rowLabel(column));
+        "No well at coordinates " + Plate.rowLabel(row) + "-" + Plate.columnLabel(column));
   }
 
   /**
