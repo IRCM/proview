@@ -418,20 +418,6 @@ public class ActivityServiceTest {
   }
 
   @Test
-  @SuppressWarnings("checkstyle:LineLength")
-  public void description_Mascot_Update() {
-    Submission submission = entityManager.find(Submission.class, 32L);
-    Activity activity = entityManager.find(Activity.class, 5555L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(
-        "comments changed from null to complete report for Mascot file F006101.dat (2009-10-02) linked to acquisition CAP_20111013_01.A1",
-        description);
-  }
-
-  @Test
   public void description_DataAnalysis_Insert() {
     Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5552L);
