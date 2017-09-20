@@ -26,8 +26,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.PlateType;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
@@ -113,13 +113,13 @@ public class PlateComponentPresenterTest {
 
     presenter.setMultiSelect(true);
 
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 2);
-    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 2);
+    presenter.setSelectedWells(Arrays.asList(well1, well2));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(6, references.size());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well1.getRow() && ref.getCol() - 1 == well1.getColumn())
         .findAny().isPresent());
     assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 0 && ref.getCol() - 1 == 1)
         .findAny().isPresent());
@@ -130,57 +130,57 @@ public class PlateComponentPresenterTest {
     assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 1 && ref.getCol() - 1 == 1)
         .findAny().isPresent());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot2.getRow() && ref.getCol() - 1 == spot2.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well2.getRow() && ref.getCol() - 1 == well2.getColumn())
         .findAny().isPresent());
-    assertEquals(6, presenter.getSelectedSpots().size());
-    assertTrue(presenter.getSelectedSpots().contains(spot1));
-    assertTrue(presenter.getSelectedSpots().contains(plate.spot(0, 1)));
-    assertTrue(presenter.getSelectedSpots().contains(plate.spot(0, 2)));
-    assertTrue(presenter.getSelectedSpots().contains(plate.spot(1, 0)));
-    assertTrue(presenter.getSelectedSpots().contains(plate.spot(1, 1)));
-    assertTrue(presenter.getSelectedSpots().contains(spot2));
+    assertEquals(6, presenter.getSelectedWells().size());
+    assertTrue(presenter.getSelectedWells().contains(well1));
+    assertTrue(presenter.getSelectedWells().contains(plate.well(0, 1)));
+    assertTrue(presenter.getSelectedWells().contains(plate.well(0, 2)));
+    assertTrue(presenter.getSelectedWells().contains(plate.well(1, 0)));
+    assertTrue(presenter.getSelectedWells().contains(plate.well(1, 1)));
+    assertTrue(presenter.getSelectedWells().contains(well2));
   }
 
   @Test
-  public void getSelectedSpot_NotMulti() {
+  public void getSelectedWell_NotMulti() {
     presenter.init(view);
     Plate plate = presenter.getPlate();
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 2);
-    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 2);
+    presenter.setSelectedWells(Arrays.asList(well1, well2));
 
-    Well spot = presenter.getSelectedSpot();
+    Well well = presenter.getSelectedWell();
 
-    assertEquals(spot1, spot);
+    assertEquals(well1, well);
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(1, references.size());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well1.getRow() && ref.getCol() - 1 == well1.getColumn())
         .findAny().isPresent());
   }
 
   @Test
-  public void getSelectedSpot_None() {
+  public void getSelectedWell_None() {
     presenter.init(view);
 
-    Well spot = presenter.getSelectedSpot();
+    Well well = presenter.getSelectedWell();
 
-    assertNull(spot);
+    assertNull(well);
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(0, references.size());
   }
 
   @Test
-  public void getSelectedSpot_Multi() {
+  public void getSelectedWell_Multi() {
     presenter.init(view);
     presenter.setMultiSelect(true);
     Plate plate = presenter.getPlate();
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 2);
-    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 2);
+    presenter.setSelectedWells(Arrays.asList(well1, well2));
 
     try {
-      presenter.getSelectedSpot();
+      presenter.getSelectedWell();
       fail("Expected IllegalStateException");
     } catch (IllegalStateException e) {
       // Success.
@@ -188,23 +188,23 @@ public class PlateComponentPresenterTest {
   }
 
   @Test
-  public void getSelectedSpots_Multi() {
+  public void getSelectedWells_Multi() {
     presenter.init(view);
     presenter.setMultiSelect(true);
     Plate plate = presenter.getPlate();
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 2);
-    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 2);
+    presenter.setSelectedWells(Arrays.asList(well1, well2));
 
-    Collection<Well> spots = presenter.getSelectedSpots();
+    Collection<Well> wells = presenter.getSelectedWells();
 
-    assertEquals(6, spots.size());
-    assertTrue(spots.contains(spot1));
-    assertTrue(spots.contains(spot2));
+    assertEquals(6, wells.size());
+    assertTrue(wells.contains(well1));
+    assertTrue(wells.contains(well2));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(6, references.size());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well1.getRow() && ref.getCol() - 1 == well1.getColumn())
         .findAny().isPresent());
     assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 0 && ref.getCol() - 1 == 1)
         .findAny().isPresent());
@@ -215,72 +215,72 @@ public class PlateComponentPresenterTest {
     assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 1 && ref.getCol() - 1 == 1)
         .findAny().isPresent());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot2.getRow() && ref.getCol() - 1 == spot2.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well2.getRow() && ref.getCol() - 1 == well2.getColumn())
         .findAny().isPresent());
   }
 
   @Test
-  public void getSelectedSpots_NotMulti() {
+  public void getSelectedWells_NotMulti() {
     presenter.init(view);
     Plate plate = presenter.getPlate();
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 2);
-    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 2);
+    presenter.setSelectedWells(Arrays.asList(well1, well2));
 
-    Collection<Well> spots = presenter.getSelectedSpots();
+    Collection<Well> wells = presenter.getSelectedWells();
 
-    assertEquals(1, spots.size());
-    assertTrue(spots.contains(spot1));
-    assertFalse(spots.contains(spot2));
+    assertEquals(1, wells.size());
+    assertTrue(wells.contains(well1));
+    assertFalse(wells.contains(well2));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(1, references.size());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well1.getRow() && ref.getCol() - 1 == well1.getColumn())
         .findAny().isPresent());
   }
 
   @Test
-  public void getSelectedSpots_MultiThanNotMulti() {
+  public void getSelectedWells_MultiThanNotMulti() {
     presenter.init(view);
     presenter.setMultiSelect(true);
     Plate plate = presenter.getPlate();
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 2);
-    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 2);
+    presenter.setSelectedWells(Arrays.asList(well1, well2));
     presenter.setMultiSelect(false);
 
-    Collection<Well> spots = presenter.getSelectedSpots();
+    Collection<Well> wells = presenter.getSelectedWells();
 
-    assertEquals(0, spots.size());
+    assertEquals(0, wells.size());
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(0, references.size());
   }
 
   @Test
-  public void setSelectedSpots_Multi() {
+  public void setSelectedWells_Multi() {
     presenter.init(view);
     presenter.setMultiSelect(true);
     Plate plate = presenter.getPlate();
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 2);
-    List<Well> spots = new ArrayList<>();
-    spots.add(spot1);
-    spots.add(spot2);
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 2);
+    List<Well> wells = new ArrayList<>();
+    wells.add(well1);
+    wells.add(well2);
 
-    presenter.setSelectedSpots(spots);
+    presenter.setSelectedWells(wells);
 
-    Collection<Well> selectedSpots = presenter.getSelectedSpots();
-    assertEquals(6, selectedSpots.size());
-    assertTrue(selectedSpots.contains(spot1));
-    assertTrue(selectedSpots.contains(plate.spot(0, 1)));
-    assertTrue(selectedSpots.contains(plate.spot(0, 2)));
-    assertTrue(selectedSpots.contains(plate.spot(1, 0)));
-    assertTrue(selectedSpots.contains(plate.spot(1, 1)));
-    assertTrue(selectedSpots.contains(spot2));
+    Collection<Well> selectedWells = presenter.getSelectedWells();
+    assertEquals(6, selectedWells.size());
+    assertTrue(selectedWells.contains(well1));
+    assertTrue(selectedWells.contains(plate.well(0, 1)));
+    assertTrue(selectedWells.contains(plate.well(0, 2)));
+    assertTrue(selectedWells.contains(plate.well(1, 0)));
+    assertTrue(selectedWells.contains(plate.well(1, 1)));
+    assertTrue(selectedWells.contains(well2));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(6, references.size());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well1.getRow() && ref.getCol() - 1 == well1.getColumn())
         .findAny().isPresent());
     assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 0 && ref.getCol() - 1 == 1)
         .findAny().isPresent());
@@ -291,30 +291,30 @@ public class PlateComponentPresenterTest {
     assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 1 && ref.getCol() - 1 == 1)
         .findAny().isPresent());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot2.getRow() && ref.getCol() - 1 == spot2.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well2.getRow() && ref.getCol() - 1 == well2.getColumn())
         .findAny().isPresent());
   }
 
   @Test
-  public void setSelectedSpots_NotMulti() {
+  public void setSelectedWells_NotMulti() {
     presenter.init(view);
     Plate plate = presenter.getPlate();
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 2);
-    List<Well> spots = new ArrayList<>();
-    spots.add(spot1);
-    spots.add(spot2);
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 2);
+    List<Well> wells = new ArrayList<>();
+    wells.add(well1);
+    wells.add(well2);
 
-    presenter.setSelectedSpots(spots);
+    presenter.setSelectedWells(wells);
 
-    Collection<Well> selectedSpots = presenter.getSelectedSpots();
-    assertEquals(1, selectedSpots.size());
-    assertTrue(selectedSpots.contains(spot1));
-    assertFalse(selectedSpots.contains(spot2));
+    Collection<Well> selectedWells = presenter.getSelectedWells();
+    assertEquals(1, selectedWells.size());
+    assertTrue(selectedWells.contains(well1));
+    assertFalse(selectedWells.contains(well2));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(1, references.size());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well1.getRow() && ref.getCol() - 1 == well1.getColumn())
         .findAny().isPresent());
   }
 
@@ -322,7 +322,7 @@ public class PlateComponentPresenterTest {
   public void getPlate() {
     presenter.init(view);
     Plate plate = new Plate();
-    plate.initSpots();
+    plate.initWells();
     presenter.setPlate(plate);
 
     assertSame(plate, presenter.getPlate());
@@ -332,28 +332,28 @@ public class PlateComponentPresenterTest {
   public void setPlate() {
     presenter.init(view);
     Plate plate = new Plate();
-    plate.initSpots();
-    Well spot1 = plate.spot(0, 0);
-    spot1.setSample(new SubmissionSample(1L, "test 1"));
-    Well spot2 = plate.spot(0, 1);
-    spot2.setSample(new Control(1L, "test control 1"));
-    Well spot3 = plate.spot(0, 2);
-    spot3.setSample(new SubmissionSample(2L, "test control 2"));
-    Well spot4 = plate.spot(1, 0);
-    spot4.setSample(new SubmissionSample(4L, "test control 4"));
+    plate.initWells();
+    Well well1 = plate.well(0, 0);
+    well1.setSample(new SubmissionSample(1L, "test 1"));
+    Well well2 = plate.well(0, 1);
+    well2.setSample(new Control(1L, "test control 1"));
+    Well well3 = plate.well(0, 2);
+    well3.setSample(new SubmissionSample(2L, "test control 2"));
+    Well well4 = plate.well(1, 0);
+    well4.setSample(new SubmissionSample(4L, "test control 4"));
 
     presenter.setPlate(plate);
 
     assertSame(plate, presenter.getPlate());
     Sheet sheet = view.spreadsheet.getActiveSheet();
-    assertEquals(spot1.getSample().getName(), view.spreadsheet
-        .getCellValue(sheet.getRow(spot1.getRow() + 1).getCell(spot1.getColumn() + 1)));
-    assertEquals(spot2.getSample().getName(), view.spreadsheet
-        .getCellValue(sheet.getRow(spot2.getRow() + 1).getCell(spot2.getColumn() + 1)));
-    assertEquals(spot3.getSample().getName(), view.spreadsheet
-        .getCellValue(sheet.getRow(spot3.getRow() + 1).getCell(spot3.getColumn() + 1)));
-    assertEquals(spot4.getSample().getName(), view.spreadsheet
-        .getCellValue(sheet.getRow(spot4.getRow() + 1).getCell(spot4.getColumn() + 1)));
+    assertEquals(well1.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)));
+    assertEquals(well2.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(well2.getRow() + 1).getCell(well2.getColumn() + 1)));
+    assertEquals(well3.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(well3.getRow() + 1).getCell(well3.getColumn() + 1)));
+    assertEquals(well4.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(well4.getRow() + 1).getCell(well4.getColumn() + 1)));
   }
 
   @Test
@@ -362,7 +362,7 @@ public class PlateComponentPresenterTest {
     Plate plate = new Plate();
     plate.setRowCount(13);
     plate.setColumnCount(15);
-    plate.initSpots();
+    plate.initWells();
 
     presenter.setPlate(plate);
 
@@ -376,7 +376,7 @@ public class PlateComponentPresenterTest {
     presenter.init(view);
     Plate plate = new Plate();
     plate.setType(PlateType.A);
-    plate.initSpots();
+    plate.initWells();
 
     presenter.setPlate(plate);
 
@@ -398,19 +398,19 @@ public class PlateComponentPresenterTest {
 
     assertFalse(presenter.isReadOnly());
     Plate plate = presenter.getPlate();
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 1);
-    List<Well> spots = new ArrayList<>();
-    spots.add(spot1);
-    spots.add(spot2);
-    presenter.setSelectedSpots(spots);
-    Collection<Well> selectedSpots = presenter.getSelectedSpots();
-    assertEquals(1, selectedSpots.size());
-    assertTrue(selectedSpots.contains(spot1));
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 1);
+    List<Well> wells = new ArrayList<>();
+    wells.add(well1);
+    wells.add(well2);
+    presenter.setSelectedWells(wells);
+    Collection<Well> selectedWells = presenter.getSelectedWells();
+    assertEquals(1, selectedWells.size());
+    assertTrue(selectedWells.contains(well1));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(1, references.size());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well1.getRow() && ref.getCol() - 1 == well1.getColumn())
         .findAny().isPresent());
     assertFalse(view.spreadsheet.isFunctionBarVisible());
     assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
@@ -434,19 +434,19 @@ public class PlateComponentPresenterTest {
 
     assertTrue(presenter.isReadOnly());
     Plate plate = presenter.getPlate();
-    Well spot1 = plate.spot(0, 0);
-    Well spot2 = plate.spot(1, 1);
-    List<Well> spots = new ArrayList<>();
-    spots.add(spot1);
-    spots.add(spot2);
-    presenter.setSelectedSpots(spots);
-    Collection<Well> selectedSpots = presenter.getSelectedSpots();
-    assertEquals(1, selectedSpots.size());
-    assertTrue(selectedSpots.contains(spot1));
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 1);
+    List<Well> wells = new ArrayList<>();
+    wells.add(well1);
+    wells.add(well2);
+    presenter.setSelectedWells(wells);
+    Collection<Well> selectedWells = presenter.getSelectedWells();
+    assertEquals(1, selectedWells.size());
+    assertTrue(selectedWells.contains(well1));
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
     assertEquals(1, references.size());
     assertTrue(references.stream()
-        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .filter(ref -> ref.getRow() - 1 == well1.getRow() && ref.getCol() - 1 == well1.getColumn())
         .findAny().isPresent());
     assertFalse(view.spreadsheet.isFunctionBarVisible());
     assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
@@ -476,11 +476,11 @@ public class PlateComponentPresenterTest {
     CellValueChangeEvent event = new CellValueChangeEvent(view.spreadsheet,
         new HashSet<>(Arrays.asList(new CellReference(1, 1), new CellReference(1, 2))));
     listeners.stream().forEach(lis -> lis.onCellValueChange(event));
-    assertNotNull(presenter.getPlate().spot(0, 0).getSample());
-    assertTrue(presenter.getPlate().spot(0, 0).getSample() instanceof SubmissionSample);
-    assertEquals("test 1", presenter.getPlate().spot(0, 0).getSample().getName());
-    assertNotNull(presenter.getPlate().spot(0, 1).getSample());
-    assertTrue(presenter.getPlate().spot(0, 1).getSample() instanceof SubmissionSample);
-    assertEquals("test 2", presenter.getPlate().spot(0, 1).getSample().getName());
+    assertNotNull(presenter.getPlate().well(0, 0).getSample());
+    assertTrue(presenter.getPlate().well(0, 0).getSample() instanceof SubmissionSample);
+    assertEquals("test 1", presenter.getPlate().well(0, 0).getSample().getName());
+    assertNotNull(presenter.getPlate().well(0, 1).getSample());
+    assertTrue(presenter.getPlate().well(0, 1).getSample() instanceof SubmissionSample);
+    assertEquals("test 2", presenter.getPlate().well(0, 1).getSample().getName());
   }
 }

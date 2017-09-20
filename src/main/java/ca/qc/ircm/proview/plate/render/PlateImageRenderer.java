@@ -54,9 +54,9 @@ public class PlateImageRenderer {
    * Width of a separation line between rectangles.
    */
   protected static final int LINE_WIDTH = 2;
-  protected static final String BANNED_BACKGROUND_RESOURCE = "/banned_spot_background.png";
+  protected static final String BANNED_BACKGROUND_RESOURCE = "/banned_well_background.png";
   /**
-   * Width of a lines shown to indicate that spot is banned.
+   * Width of a lines shown to indicate that well is banned.
    */
   protected static final int BANNED_WIDTH = 10;
   /**
@@ -69,17 +69,17 @@ public class PlateImageRenderer {
    * Creates an image renderer for plate.
    *
    * @param plate
-   *          Plate to render with it's spots.
+   *          plate to render with it's wells
    * @param info
-   *          Used to get localised plate information.
+   *          used to get localised plate information
    */
   public PlateImageRenderer(Plate plate, LocalizedPlate info) {
     this.plate = plate;
-    this.spots = plate.getSpots();
+    this.wells = plate.getWells();
     this.info = info;
     this.headerFont = new Font("SansSerif", Font.BOLD, 18);
-    this.spotIdFont = new Font("SansSerif", Font.PLAIN, 9);
-    this.spotFont = new Font("SansSerif", Font.PLAIN, 10);
+    this.wellIdFont = new Font("SansSerif", Font.PLAIN, 9);
+    this.wellFont = new Font("SansSerif", Font.PLAIN, 10);
     this.graphics = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED).createGraphics();
   }
 
@@ -88,9 +88,9 @@ public class PlateImageRenderer {
    */
   private final Plate plate;
   /**
-   * Plate's spots.
+   * Plate's wells.
    */
-  private final List<Well> spots;
+  private final List<Well> wells;
   /**
    * To get specific strings to write in PDF.
    */
@@ -100,13 +100,13 @@ public class PlateImageRenderer {
    */
   private final Font headerFont;
   /**
-   * Font to be used for spot id.
+   * Font to be used for well id.
    */
-  private final Font spotIdFont;
+  private final Font wellIdFont;
   /**
-   * Font to be used for spot content.
+   * Font to be used for well content.
    */
-  private final Font spotFont;
+  private final Font wellFont;
   /**
    * Font render context to be used.
    */
@@ -122,12 +122,12 @@ public class PlateImageRenderer {
   }
 
   /**
-   * Returns font to use for spot id.
+   * Returns font to use for well id.
    *
-   * @return Font to use for spot id.
+   * @return font to use for well id
    */
-  protected Font getSpotIdFont() {
-    return spotIdFont;
+  protected Font getWellIdFont() {
+    return wellIdFont;
   }
 
   /**
@@ -136,7 +136,7 @@ public class PlateImageRenderer {
    * @return Font to use for sample.
    */
   protected Font getSampleFont() {
-    return spotFont;
+    return wellFont;
   }
 
   /**
@@ -150,20 +150,20 @@ public class PlateImageRenderer {
     double headerWidth =
         this.getHeaderFont().getStringBounds(info.getHeader(plate), graphics.getFontRenderContext())
             .getWidth() + 2 * padding;
-    double spotWidth = 0;
+    double wellWidth = 0;
     for (int column = 0; column < plate.getColumnCount(); column++) {
-      spotWidth += this.getRectangleWidth(column) - LINE_WIDTH;
+      wellWidth += this.getRectangleWidth(column) - LINE_WIDTH;
     }
-    spotWidth += LINE_WIDTH;
-    return width + Math.max(headerWidth, spotWidth);
+    wellWidth += LINE_WIDTH;
+    return width + Math.max(headerWidth, wellWidth);
   }
 
   /**
-   * Width of rectangles for spots on this column.
+   * Width of rectangles for wells on this column.
    *
    * @param column
    *          Column index.
-   * @return Width of rectangles for spots on this column.
+   * @return Width of rectangles for wells on this column.
    */
   protected double getRectangleWidth(int column) {
     double width = REC_WIDTH;
@@ -200,7 +200,7 @@ public class PlateImageRenderer {
   }
 
   /**
-   * Total height of image containing spot.
+   * Total height of image containing well.
    *
    * @param row
    *          Row index.
@@ -211,8 +211,8 @@ public class PlateImageRenderer {
     int padding = LINE_WIDTH + REC_PADDING;
     height += 2 * padding;
 
-    // Spot id height
-    height += graphics.getFontMetrics(this.getSpotIdFont()).getHeight();
+    // Well id height
+    height += graphics.getFontMetrics(this.getWellIdFont()).getHeight();
 
     // Sample tag height.
     height += graphics.getFontMetrics(this.getSampleFont()).getHeight() * SAMPLE_TAG_MAX_LINES;
@@ -235,7 +235,7 @@ public class PlateImageRenderer {
     graphics.clearRect(0, 0, image.getWidth(), image.getHeight());
     // Render header.
     renderHeader(graphics, 0, 0);
-    // Compute graphical location of all spots.
+    // Compute graphical location of all wells.
     double[] xval = new double[plate.getColumnCount()];
     xval[0] = 0;
     for (int i = 1; i < plate.getColumnCount(); i++) {
@@ -246,10 +246,10 @@ public class PlateImageRenderer {
     for (int i = 1; i < plate.getRowCount(); i++) {
       yval[i] = yval[i - 1] + this.getRectangleHeight(i - 1) - LINE_WIDTH;
     }
-    // Render spots.
-    for (int i = 0; i < spots.size(); i++) {
-      Well spot = spots.get(i);
-      renderSpot(spot, graphics, xval[spot.getColumn()], yval[spot.getRow()]);
+    // Render wells.
+    for (int i = 0; i < wells.size(); i++) {
+      Well well = wells.get(i);
+      renderWell(well, graphics, xval[well.getColumn()], yval[well.getRow()]);
     }
     return image;
   }
@@ -307,75 +307,75 @@ public class PlateImageRenderer {
   }
 
   /**
-   * Render spot.
+   * Render well.
    *
-   * @param spot
-   *          Spot to render.
+   * @param well
+   *          well to render
    * @param graphics
-   *          Graphic where to write spot.
+   *          graphic where to write well
    * @param xval
-   *          X position of spot.
+   *          X position of well
    * @param yval
-   *          Y position of spot.
+   *          Y position of well
    */
-  protected void renderSpot(Well spot, Graphics2D graphics, double xval, double yval) {
+  protected void renderWell(Well well, Graphics2D graphics, double xval, double yval) {
     Point2D borderUpperLeft = new Point2D.Double(xval, yval);
-    Point2D borderBottomRight = new Point2D.Double(xval + this.getRectangleWidth(spot.getColumn()),
-        yval + this.getRectangleHeight(spot.getRow()));
-    if (spot.isBanned()) {
-      renderBanned(spot, graphics, borderUpperLeft, borderBottomRight);
+    Point2D borderBottomRight = new Point2D.Double(xval + this.getRectangleWidth(well.getColumn()),
+        yval + this.getRectangleHeight(well.getRow()));
+    if (well.isBanned()) {
+      renderBanned(well, graphics, borderUpperLeft, borderBottomRight);
     }
 
     // Total padding in cell.
     int padding = LINE_WIDTH + REC_PADDING;
 
-    // Spot information location.
+    // Well information location.
     Point2D upperLeft = new Point2D.Double(xval + padding, yval + padding);
     Point2D bottomRight =
-        new Point2D.Double(xval + this.getRectangleWidth(spot.getColumn()) - padding,
-            yval + this.getRectangleHeight(spot.getRow()) - padding);
+        new Point2D.Double(xval + this.getRectangleWidth(well.getColumn()) - padding,
+            yval + this.getRectangleHeight(well.getRow()) - padding);
 
-    // Draw borders around spot.
+    // Draw borders around well.
     renderBorder(graphics, borderUpperLeft, borderBottomRight);
 
-    // Draw spot content.
-    upperLeft = renderSpotName(spot, graphics, upperLeft);
-    if (spot.getSample() != null) {
-      renderSampleName(spot, graphics, upperLeft, bottomRight);
+    // Draw well content.
+    upperLeft = renderWellName(well, graphics, upperLeft);
+    if (well.getSample() != null) {
+      renderSampleName(well, graphics, upperLeft, bottomRight);
     }
   }
 
   /**
-   * Write spot id in graphic.
+   * Write well id in graphic.
    *
-   * @param spot
-   *          Spot to write.
+   * @param well
+   *          well to write
    * @param graphics
-   *          Graphic where to write spot id.
+   *          graphic where to write well id
    * @param upperLeft
-   *          Upper left location of text.
-   * @return Upper left location for text to write below spot id.
+   *          upper left location of text
+   * @return upper left location for text to write below well id
    */
-  protected Point2D renderSpotName(Well spot, Graphics2D graphics, Point2D upperLeft) {
+  protected Point2D renderWellName(Well well, Graphics2D graphics, Point2D upperLeft) {
     // set font.
-    graphics.setFont(this.getSpotIdFont());
+    graphics.setFont(this.getWellIdFont());
     // Compute text location from upper left location.
-    Point2D spotIdLocation = new Point2D.Double(upperLeft.getX(),
+    Point2D wellIdLocation = new Point2D.Double(upperLeft.getX(),
         upperLeft.getY() + graphics.getFontMetrics().getAscent());
-    String spotId = info.getSpot(spot);
-    graphics.drawString(spotId, (float) spotIdLocation.getX(), (float) spotIdLocation.getY());
+    String wellId = info.getWell(well);
+    graphics.drawString(wellId, (float) wellIdLocation.getX(), (float) wellIdLocation.getY());
 
-    // Upper left location for text following spot id.
+    // Upper left location for text following well id.
     Point2D newUpperLeft = new Point2D.Double(upperLeft.getX(),
         upperLeft.getY() + graphics.getFontMetrics().getHeight());
     return newUpperLeft;
   }
 
   /**
-   * Write spot's sample name in graphic.
+   * Write well's sample name in graphic.
    *
-   * @param spot
-   *          spot
+   * @param well
+   *          well
    * @param graphics
    *          Graphic where to write sample name.
    * @param upperLeft
@@ -384,7 +384,7 @@ public class PlateImageRenderer {
    *          Bottom right maximum location of text.
    * @return Upper left location for text to write below sample name.
    */
-  protected Point2D renderSampleName(Well spot, Graphics2D graphics, Point2D upperLeft,
+  protected Point2D renderSampleName(Well well, Graphics2D graphics, Point2D upperLeft,
       Point2D bottomRight) {
     // Set font.
     graphics.setFont(this.getSampleFont());
@@ -400,7 +400,7 @@ public class PlateImageRenderer {
     int lineCount = 0;
 
     // Write sample name.
-    String sampleName = info.getSampleName(spot);
+    String sampleName = info.getSampleName(well);
     if (sampleName == null) {
       sampleName = "";
     }
@@ -466,13 +466,13 @@ public class PlateImageRenderer {
       lineCount = 1;
     }
 
-    // Upper left location for text following spot name.
+    // Upper left location for text following well name.
     Point2D newUpperLeft = new Point2D.Double(upperLeft.getX(),
         upperLeft.getY() + lineCount * graphics.getFontMetrics().getHeight());
     return newUpperLeft;
   }
 
-  protected void renderBanned(Well spot, Graphics2D graphics, Point2D upperLeft,
+  protected void renderBanned(Well well, Graphics2D graphics, Point2D upperLeft,
       Point2D bottomRight) {
     double width = bottomRight.getY() - upperLeft.getY();
     double height = bottomRight.getY() - upperLeft.getY();

@@ -18,15 +18,15 @@
 package ca.qc.ircm.proview.plate;
 
 /**
- * Spot location on a plate.
+ * Well location on a plate.
  */
 public class WellLocation {
   /**
-   * Spot's row.
+   * Well's row.
    */
   private int row;
   /**
-   * Spot's column.
+   * Well's column.
    */
   private int column;
 
@@ -38,9 +38,9 @@ public class WellLocation {
     this.column = column;
   }
 
-  public WellLocation(Well spot) {
-    this.row = spot.getRow();
-    this.column = spot.getColumn();
+  public WellLocation(Well well) {
+    this.row = well.getRow();
+    this.column = well.getColumn();
   }
 
   @Override

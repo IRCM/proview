@@ -53,11 +53,11 @@ public class SampleContainerComparator implements Comparator<SampleContainer>, S
           case TUBE:
             return 1;
           case WELL:
-            Well spot1 = (Well) o1;
-            Well spot2 = (Well) o2;
-            int compare = Integer.valueOf(spot1.getColumn()).compareTo(spot2.getColumn());
+            Well well1 = (Well) o1;
+            Well well2 = (Well) o2;
+            int compare = Integer.valueOf(well1.getColumn()).compareTo(well2.getColumn());
             compare =
-                compare == 0 ? Integer.valueOf(spot1.getRow()).compareTo(spot2.getRow()) : compare;
+                compare == 0 ? Integer.valueOf(well1.getRow()).compareTo(well2.getRow()) : compare;
             return compare;
           default:
         }

@@ -177,10 +177,10 @@ public class SubmissionService {
         if (plate == null) {
           plate = createSubmissionPlate(submission);
         }
-        Well sourceSpot = (Well) sample.getOriginalContainer();
-        Well spot = plate.spot(sourceSpot.getRow(), sourceSpot.getColumn());
-        spot.setSample(sample);
-        sample.setOriginalContainer(spot);
+        Well sourceWell = (Well) sample.getOriginalContainer();
+        Well well = plate.well(sourceWell.getRow(), sourceWell.getColumn());
+        well.setSample(sample);
+        sample.setOriginalContainer(well);
       }
     }
 
@@ -215,8 +215,8 @@ public class SubmissionService {
     plate.setType(PlateType.SUBMISSION);
     plate.setName(submission.getExperience());
     plate.setInsertTime(Instant.now());
-    plate.initSpots();
-    plate.getSpots().forEach(spot -> spot.setTimestamp(Instant.now()));
+    plate.initWells();
+    plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
     return plate;
   }
 

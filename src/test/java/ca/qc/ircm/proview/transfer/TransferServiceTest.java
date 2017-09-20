@@ -202,16 +202,16 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void insert_TubeToSpot() {
+  public void insert_TubeToWell() {
     final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
-    Well destinationSpot = new Well(134L);
-    destinationSpot.setSample(sample);
+    Well destinationWell = new Well(134L);
+    destinationWell.setSample(sample);
     SampleTransfer sampleTransfer = new SampleTransfer();
     sampleTransfer.setSample(sample);
     sampleTransfer.setContainer(sourceTube);
-    sampleTransfer.setDestinationContainer(destinationSpot);
+    sampleTransfer.setDestinationContainer(destinationWell);
     sampleTransfers.add(sampleTransfer);
     Transfer transfer = new Transfer();
     transfer.setTreatmentSamples(sampleTransfers);
@@ -245,16 +245,16 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void insert_SpotToTube() {
+  public void insert_WellToTube() {
     final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
-    final Well sourceSpot = new Well(128L);
+    final Well sourceWell = new Well(128L);
     Tube destinationTube = new Tube();
     destinationTube.setSample(sample);
     destinationTube.setName("unit_test_tube_" + sample.getName());
     SampleTransfer sampleTransfer = new SampleTransfer();
     sampleTransfer.setSample(sample);
-    sampleTransfer.setContainer(sourceSpot);
+    sampleTransfer.setContainer(sourceWell);
     sampleTransfer.setDestinationContainer(destinationTube);
     sampleTransfers.add(sampleTransfer);
     Transfer transfer = new Transfer();
@@ -290,16 +290,16 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void insert_SpotToSpot() {
+  public void insert_WellToWell() {
     final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
-    Well sourceSpot = new Well(128L);
-    Well destinationSpot = new Well(134L);
-    destinationSpot.setSample(sample);
+    Well sourceWell = new Well(128L);
+    Well destinationWell = new Well(134L);
+    destinationWell.setSample(sample);
     SampleTransfer sampleTransfer = new SampleTransfer();
     sampleTransfer.setSample(sample);
-    sampleTransfer.setContainer(sourceSpot);
-    sampleTransfer.setDestinationContainer(destinationSpot);
+    sampleTransfer.setContainer(sourceWell);
+    sampleTransfer.setDestinationContainer(destinationWell);
     sampleTransfers.add(sampleTransfer);
     Transfer transfer = new Transfer();
     transfer.setTreatmentSamples(sampleTransfers);
@@ -362,7 +362,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void undoErroneous_SpotDestination() throws Throwable {
+  public void undoErroneous_WellDestination() throws Throwable {
     Transfer transfer = entityManager.find(Transfer.class, 253L);
     entityManager.detach(transfer);
     when(transferActivityService.undoErroneous(any(Transfer.class), any(String.class),
@@ -384,11 +384,11 @@ public class TransferServiceTest {
     assertEquals((Long) 601L, sourceTube.getSample().getId());
     sourceTube = entityManager.find(Tube.class, 54L);
     assertEquals((Long) 602L, sourceTube.getSample().getId());
-    Well destinationSpot = entityManager.find(Well.class, 998L);
-    assertNull(destinationSpot.getSample());
-    destinationSpot = entityManager.find(Well.class, 1010L);
-    assertNull(destinationSpot.getSample());
-    assertNull(destinationSpot.getTreatmentSample());
+    Well destinationWell = entityManager.find(Well.class, 998L);
+    assertNull(destinationWell.getSample());
+    destinationWell = entityManager.find(Well.class, 1010L);
+    assertNull(destinationWell.getSample());
+    assertNull(destinationWell.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(2, samplesRemoved.size());
     assertNotNull(findContainer(samplesRemoved, SampleContainerType.WELL, 998L));
@@ -426,7 +426,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void undoErroneous_UsedContainer_SpotDestination_Enrichment() throws Throwable {
+  public void undoErroneous_UsedContainer_WellDestination_Enrichment() throws Throwable {
     Transfer transfer = entityManager.find(Transfer.class, 261L);
     entityManager.detach(transfer);
 
@@ -441,7 +441,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void undoErroneous_UsedContainer_SpotDestination_MsAnalysis() throws Throwable {
+  public void undoErroneous_UsedContainer_WellDestination_MsAnalysis() throws Throwable {
     Transfer transfer = entityManager.find(Transfer.class, 262L);
     entityManager.detach(transfer);
 
@@ -481,7 +481,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void undoFailed_NoBan_SpotDestination() {
+  public void undoFailed_NoBan_WellDestination() {
     Transfer transfer = entityManager.find(Transfer.class, 253L);
     entityManager.detach(transfer);
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
@@ -499,10 +499,10 @@ public class TransferServiceTest {
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
     assertEquals("fail unit test", transfer.getDeletionJustification());
-    Well destinationSpot = entityManager.find(Well.class, 998L);
-    assertEquals(false, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1010L);
-    assertEquals(false, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 998L);
+    assertEquals(false, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1010L);
+    assertEquals(false, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
   }
@@ -534,7 +534,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination() {
+  public void undoFailed_Ban_WellDestination() {
     Transfer transfer = entityManager.find(Transfer.class, 253L);
     entityManager.detach(transfer);
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
@@ -552,10 +552,10 @@ public class TransferServiceTest {
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
     assertEquals("fail unit test", transfer.getDeletionJustification());
-    Well destinationSpot = entityManager.find(Well.class, 998L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1010L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 998L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1010L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
     assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 998L));
@@ -585,8 +585,8 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 75L);
     assertEquals(true, destinationTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1208L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1208L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 67L));
@@ -595,7 +595,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination_Transfer() {
+  public void undoFailed_Ban_WellDestination_Transfer() {
     Transfer transfer = entityManager.find(Transfer.class, 269L);
     entityManager.detach(transfer);
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
@@ -615,10 +615,10 @@ public class TransferServiceTest {
     assertEquals("fail unit test", transfer.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 68L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1184L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1160L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1184L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1160L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 68L));
@@ -649,10 +649,10 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 76L);
     assertEquals(true, destinationTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1188L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1200L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1188L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1200L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(3, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 69L));
@@ -662,7 +662,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination_Fractionation() {
+  public void undoFailed_Ban_WellDestination_Fractionation() {
     Transfer transfer = entityManager.find(Transfer.class, 270L);
     entityManager.detach(transfer);
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
@@ -682,12 +682,12 @@ public class TransferServiceTest {
     assertEquals("fail unit test", transfer.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 70L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1185L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1161L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1173L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1185L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1161L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1173L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(3, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 70L));
@@ -719,12 +719,12 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 77L);
     assertEquals(true, destinationTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1189L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1163L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1175L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1189L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1163L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1175L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 71L));
@@ -735,7 +735,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination_Transfer_Fractionation() {
+  public void undoFailed_Ban_WellDestination_Transfer_Fractionation() {
     Transfer transfer = entityManager.find(Transfer.class, 271L);
     entityManager.detach(transfer);
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
@@ -755,14 +755,14 @@ public class TransferServiceTest {
     assertEquals("fail unit test", transfer.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 72L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1186L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1162L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1190L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1202L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1186L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1162L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1190L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1202L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 72L));
@@ -795,14 +795,14 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 78L);
     assertEquals(true, destinationTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1191L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1203L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1165L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1177L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1191L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1203L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1165L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1177L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(5, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 73L));
@@ -814,7 +814,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination_Fractionation_Transfer() {
+  public void undoFailed_Ban_WellDestination_Fractionation_Transfer() {
     Transfer transfer = entityManager.find(Transfer.class, 272L);
     entityManager.detach(transfer);
     when(transferActivityService.undoFailed(any(Transfer.class), any(String.class),
@@ -833,14 +833,14 @@ public class TransferServiceTest {
     assertEquals("fail unit test", test.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 74L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1164L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1176L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1192L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1204L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1164L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1176L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1192L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1204L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(5, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 74L));

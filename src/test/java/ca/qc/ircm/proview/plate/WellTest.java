@@ -45,15 +45,15 @@ public class WellTest {
     Plate plate = new Plate(1L, "test_plate");
     plate.setColumnCount(31);
     plate.setRowCount(18279);
-    plate.initSpots();
-    assertEquals("test_plate (C-4)", plate.spot(2, 3).getFullName());
-    assertEquals("test_plate (Z-31)", plate.spot(25, 30).getFullName());
-    assertEquals("test_plate (AA-31)", plate.spot(26, 30).getFullName());
-    assertEquals("test_plate (AE-31)", plate.spot(30, 30).getFullName());
-    assertEquals("test_plate (BA-31)", plate.spot(52, 30).getFullName());
-    assertEquals("test_plate (ZZ-31)", plate.spot(701, 30).getFullName());
-    assertEquals("test_plate (AAA-31)", plate.spot(702, 30).getFullName());
-    assertEquals("test_plate (ZZZ-31)", plate.spot(18277, 30).getFullName());
-    assertEquals("test_plate (AAAA-31)", plate.spot(18278, 30).getFullName());
+    plate.initWells();
+    assertEquals("test_plate (C-4)", plate.well(2, 3).getFullName());
+    assertEquals("test_plate (Z-31)", plate.well(25, 30).getFullName());
+    assertEquals("test_plate (AA-31)", plate.well(26, 30).getFullName());
+    assertEquals("test_plate (AE-31)", plate.well(30, 30).getFullName());
+    assertEquals("test_plate (BA-31)", plate.well(52, 30).getFullName());
+    assertEquals("test_plate (ZZ-31)", plate.well(701, 30).getFullName());
+    assertEquals("test_plate (AAA-31)", plate.well(702, 30).getFullName());
+    assertEquals("test_plate (ZZZ-31)", plate.well(18277, 30).getFullName());
+    assertEquals("test_plate (AAAA-31)", plate.well(18278, 30).getFullName());
   }
 }

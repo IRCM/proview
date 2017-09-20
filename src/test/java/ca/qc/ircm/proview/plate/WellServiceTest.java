@@ -45,7 +45,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class WellServiceTest {
-  private WellService plateSpotService;
+  private WellService wellService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -55,13 +55,13 @@ public class WellServiceTest {
 
   @Before
   public void beforeTest() {
-    plateSpotService = new WellService(entityManager, queryFactory, authorizationService);
+    wellService = new WellService(entityManager, queryFactory, authorizationService);
   }
 
-  private Well find(Collection<Well> spots, long id) {
-    for (Well spot : spots) {
-      if (spot.getId() == id) {
-        return spot;
+  private Well find(Collection<Well> wells, long id) {
+    for (Well well : wells) {
+      if (well.getId() == id) {
+        return well;
       }
     }
     return null;
@@ -69,26 +69,26 @@ public class WellServiceTest {
 
   @Test
   public void get() throws Exception {
-    Well spot = plateSpotService.get(129L);
+    Well well = wellService.get(129L);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals((Long) 129L, spot.getId());
-    assertEquals((Long) 26L, spot.getPlate().getId());
-    assertEquals((Long) 1L, spot.getSample().getId());
-    assertEquals((Long) 9L, spot.getTreatmentSample().getId());
+    assertEquals((Long) 129L, well.getId());
+    assertEquals((Long) 26L, well.getPlate().getId());
+    assertEquals((Long) 1L, well.getSample().getId());
+    assertEquals((Long) 9L, well.getTreatmentSample().getId());
     assertEquals(
         LocalDateTime.of(2011, 11, 16, 15, 7, 34).atZone(ZoneId.systemDefault()).toInstant(),
-        spot.getTimestamp());
-    assertEquals(false, spot.isBanned());
-    assertEquals(0, spot.getRow());
-    assertEquals(1, spot.getColumn());
+        well.getTimestamp());
+    assertEquals(false, well.isBanned());
+    assertEquals(0, well.getRow());
+    assertEquals(1, well.getColumn());
   }
 
   @Test
   public void get_Null() throws Exception {
-    Well spot = plateSpotService.get(null);
+    Well well = wellService.get(null);
 
-    assertNull(spot);
+    assertNull(well);
   }
 
   @Test
@@ -96,94 +96,94 @@ public class WellServiceTest {
     Plate plate = new Plate(26L);
     WellLocation location = new WellLocation(2, 3);
 
-    Well spot = plateSpotService.get(plate, location);
+    Well well = wellService.get(plate, location);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals((Long) 155L, spot.getId());
-    assertEquals((Long) 26L, spot.getPlate().getId());
-    assertEquals(null, spot.getSample());
-    assertEquals(null, spot.getTreatmentSample());
+    assertEquals((Long) 155L, well.getId());
+    assertEquals((Long) 26L, well.getPlate().getId());
+    assertEquals(null, well.getSample());
+    assertEquals(null, well.getTreatmentSample());
     assertEquals(
         LocalDateTime.of(2011, 11, 8, 13, 33, 21).atZone(ZoneId.systemDefault()).toInstant(),
-        spot.getTimestamp());
-    assertEquals(false, spot.isBanned());
-    assertEquals(2, spot.getRow());
-    assertEquals(3, spot.getColumn());
+        well.getTimestamp());
+    assertEquals(false, well.isBanned());
+    assertEquals(2, well.getRow());
+    assertEquals(3, well.getColumn());
   }
 
   @Test
   public void get_LocationNullPlate() throws Exception {
     WellLocation location = new WellLocation(2, 3);
 
-    Well spot = plateSpotService.get(null, location);
+    Well well = wellService.get(null, location);
 
-    assertNull(spot);
+    assertNull(well);
   }
 
   @Test
   public void get_LocationNullLocation() throws Exception {
     Plate plate = new Plate(26L);
 
-    Well spot = plateSpotService.get(plate, null);
+    Well well = wellService.get(plate, null);
 
-    assertNull(spot);
+    assertNull(well);
   }
 
   @Test
   public void last() throws Exception {
     Sample sample = new SubmissionSample(1L);
 
-    Well spot = plateSpotService.last(sample);
+    Well well = wellService.last(sample);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals((Long) 129L, spot.getId());
+    assertEquals((Long) 129L, well.getId());
   }
 
   @Test
   public void last_Null() throws Exception {
-    Well spot = plateSpotService.last(null);
+    Well well = wellService.last(null);
 
-    assertNull(spot);
+    assertNull(well);
   }
 
   @Test
   public void all_Plate() throws Exception {
     Plate plate = new Plate(26L);
 
-    List<Well> spots = plateSpotService.all(plate);
+    List<Well> wells = wellService.all(plate);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(96, spots.size());
+    assertEquals(96, wells.size());
     for (long i = 128; i <= 223; i++) {
-      assertNotNull(find(spots, i));
+      assertNotNull(find(wells, i));
     }
   }
 
   @Test
   public void all_NullPlate() throws Exception {
-    List<Well> spots = plateSpotService.all((Plate) null);
+    List<Well> wells = wellService.all((Plate) null);
 
-    assertEquals(0, spots.size());
+    assertEquals(0, wells.size());
   }
 
   @Test
   public void all_Sample() throws Exception {
     Sample sample = new SubmissionSample(629L);
 
-    List<Well> spots = plateSpotService.all(sample);
+    List<Well> wells = wellService.all(sample);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(3, spots.size());
-    assertNotNull(find(spots, 1474));
-    assertNotNull(find(spots, 1568));
-    assertNotNull(find(spots, 1580));
+    assertEquals(3, wells.size());
+    assertNotNull(find(wells, 1474));
+    assertNotNull(find(wells, 1568));
+    assertNotNull(find(wells, 1580));
   }
 
   @Test
   public void all_NullSample() throws Exception {
-    List<Well> spots = plateSpotService.all((Sample) null);
+    List<Well> wells = wellService.all((Sample) null);
 
-    assertEquals(0, spots.size());
+    assertEquals(0, wells.size());
   }
 
   @Test
@@ -191,29 +191,29 @@ public class WellServiceTest {
     Plate plate = new Plate(108L);
     Sample sample = new SubmissionSample(564L);
 
-    List<Well> spots = plateSpotService.location(sample, plate);
+    List<Well> wells = wellService.location(sample, plate);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(2, spots.size());
-    assertNotNull(find(spots, 322L));
-    assertNotNull(find(spots, 334L));
+    assertEquals(2, wells.size());
+    assertNotNull(find(wells, 322L));
+    assertNotNull(find(wells, 334L));
   }
 
   @Test
   public void location_NullSample() throws Exception {
     Plate plate = new Plate(108L);
 
-    List<Well> spots = plateSpotService.location(null, plate);
+    List<Well> wells = wellService.location(null, plate);
 
-    assertEquals(0, spots.size());
+    assertEquals(0, wells.size());
   }
 
   @Test
   public void location_NullPlate() throws Exception {
     Sample sample = new SubmissionSample(564L);
 
-    List<Well> spots = plateSpotService.location(sample, null);
+    List<Well> wells = wellService.location(sample, null);
 
-    assertEquals(0, spots.size());
+    assertEquals(0, wells.size());
   }
 }

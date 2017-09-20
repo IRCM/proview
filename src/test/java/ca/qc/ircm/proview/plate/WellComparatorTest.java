@@ -28,197 +28,197 @@ import java.time.ZoneId;
 public class WellComparatorTest {
   @Test
   public void compare_Location_Row() {
-    Well spot1 = new Well(1, 1);
-    Well spot2 = new Well(2, 1);
+    Well well1 = new Well(1, 1);
+    Well well2 = new Well(2, 1);
     WellComparator comparator = new WellComparator(Compare.LOCATION);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare < 0);
   }
 
   @Test
   public void compare_Location_Row_Reverse() {
-    Well spot1 = new Well(2, 1);
-    Well spot2 = new Well(1, 1);
+    Well well1 = new Well(2, 1);
+    Well well2 = new Well(1, 1);
     WellComparator comparator = new WellComparator(Compare.LOCATION);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare > 0);
   }
 
   @Test
   public void compare_Location_Column() {
-    Well spot1 = new Well(1, 1);
-    Well spot2 = new Well(1, 2);
+    Well well1 = new Well(1, 1);
+    Well well2 = new Well(1, 2);
     WellComparator comparator = new WellComparator(Compare.LOCATION);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare < 0);
   }
 
   @Test
   public void compare_Location_Column_Reverse() {
-    Well spot1 = new Well(1, 2);
-    Well spot2 = new Well(1, 1);
+    Well well1 = new Well(1, 2);
+    Well well2 = new Well(1, 1);
     WellComparator comparator = new WellComparator(Compare.LOCATION);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare > 0);
   }
 
   @Test
   public void compare_Location_RowColumn() {
-    Well spot1 = new Well(1, 2);
-    Well spot2 = new Well(2, 1);
+    Well well1 = new Well(1, 2);
+    Well well2 = new Well(2, 1);
     WellComparator comparator = new WellComparator(Compare.LOCATION);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare < 0);
   }
 
   @Test
   public void compare_Location_RowColumn_Reverse() {
-    Well spot1 = new Well(2, 1);
-    Well spot2 = new Well(1, 2);
+    Well well1 = new Well(2, 1);
+    Well well2 = new Well(1, 2);
     WellComparator comparator = new WellComparator(Compare.LOCATION);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare > 0);
   }
 
   @Test
   public void compare_Location_Same() {
-    Well spot1 = new Well(1, 1);
-    Well spot2 = new Well(1, 1);
+    Well well1 = new Well(1, 1);
+    Well well2 = new Well(1, 1);
     WellComparator comparator = new WellComparator(Compare.LOCATION);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare == 0);
   }
 
   @Test
   public void compare_Timestamp() {
-    Well spot1 = new Well(1, 1);
-    Well spot2 = new Well(2, 1);
-    spot1.setTimestamp(
+    Well well1 = new Well(1, 1);
+    Well well2 = new Well(2, 1);
+    well1.setTimestamp(
         LocalDateTime.now().minusMinutes(1).atZone(ZoneId.systemDefault()).toInstant());
-    spot2.setTimestamp(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+    well2.setTimestamp(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
     WellComparator comparator = new WellComparator(Compare.TIME_STAMP);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare < 0);
   }
 
   @Test
   public void compare_Timestamp_Reverse() {
-    Well spot1 = new Well(2, 1);
-    Well spot2 = new Well(1, 1);
-    spot1.setTimestamp(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-    spot2.setTimestamp(
+    Well well1 = new Well(2, 1);
+    Well well2 = new Well(1, 1);
+    well1.setTimestamp(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+    well2.setTimestamp(
         LocalDateTime.now().minusMinutes(1).atZone(ZoneId.systemDefault()).toInstant());
     WellComparator comparator = new WellComparator(Compare.TIME_STAMP);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare > 0);
   }
 
   @Test
   public void compare_Timestamp_Same() {
-    Well spot1 = new Well(1, 1);
-    Well spot2 = new Well(1, 1);
-    spot1.setTimestamp(
+    Well well1 = new Well(1, 1);
+    Well well2 = new Well(1, 1);
+    well1.setTimestamp(
         LocalDateTime.of(2015, 5, 20, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-    spot2.setTimestamp(
+    well2.setTimestamp(
         LocalDateTime.of(2015, 5, 20, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
     WellComparator comparator = new WellComparator(Compare.TIME_STAMP);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare == 0);
   }
 
   @Test
   public void compare_SampleAssign_Row() {
-    Well spot1 = new Well(1, 1);
-    Well spot2 = new Well(2, 1);
+    Well well1 = new Well(1, 1);
+    Well well2 = new Well(2, 1);
     WellComparator comparator = new WellComparator(Compare.SAMPLE_ASSIGN);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare < 0);
   }
 
   @Test
   public void compare_SampleAssign_Row_Reverse() {
-    Well spot1 = new Well(2, 1);
-    Well spot2 = new Well(1, 1);
+    Well well1 = new Well(2, 1);
+    Well well2 = new Well(1, 1);
     WellComparator comparator = new WellComparator(Compare.SAMPLE_ASSIGN);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare > 0);
   }
 
   @Test
   public void compare_SampleAssign_Column() {
-    Well spot1 = new Well(1, 1);
-    Well spot2 = new Well(2, 1);
+    Well well1 = new Well(1, 1);
+    Well well2 = new Well(2, 1);
     WellComparator comparator = new WellComparator(Compare.SAMPLE_ASSIGN);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare < 0);
   }
 
   @Test
   public void compare_SampleAssign_Column_Reverse() {
-    Well spot1 = new Well(2, 1);
-    Well spot2 = new Well(1, 1);
+    Well well1 = new Well(2, 1);
+    Well well2 = new Well(1, 1);
     WellComparator comparator = new WellComparator(Compare.SAMPLE_ASSIGN);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare > 0);
   }
 
   @Test
   public void compare_SampleAssign_RowColumn() {
-    Well spot1 = new Well(1, 2);
-    Well spot2 = new Well(2, 1);
+    Well well1 = new Well(1, 2);
+    Well well2 = new Well(2, 1);
     WellComparator comparator = new WellComparator(Compare.SAMPLE_ASSIGN);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare > 0);
   }
 
   @Test
   public void compare_SampleAssign_RowColumn_Reverse() {
-    Well spot1 = new Well(2, 1);
-    Well spot2 = new Well(1, 2);
+    Well well1 = new Well(2, 1);
+    Well well2 = new Well(1, 2);
     WellComparator comparator = new WellComparator(Compare.SAMPLE_ASSIGN);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare < 0);
   }
 
   @Test
   public void compare_SampleAssign_Same() {
-    Well spot1 = new Well(1, 1);
-    Well spot2 = new Well(1, 1);
+    Well well1 = new Well(1, 1);
+    Well well2 = new Well(1, 1);
     WellComparator comparator = new WellComparator(Compare.SAMPLE_ASSIGN);
 
-    int compare = comparator.compare(spot1, spot2);
+    int compare = comparator.compare(well1, well2);
 
     assertTrue(compare == 0);
   }

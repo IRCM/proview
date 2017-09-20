@@ -126,7 +126,7 @@ public class PlateService {
       query.where(plate.type.eq(filter.type()));
     }
     if (filter.containsAnySamples() != null) {
-      query.from(plate.spots, well);
+      query.from(plate.wells, well);
       query.where(well.sample.in(filter.containsAnySamples()));
     }
     return query.distinct().fetch();
@@ -167,7 +167,7 @@ public class PlateService {
 
     JPAQuery<Long> query = queryFactory.select(plate.id);
     query.from(plate);
-    query.join(plate.spots, well);
+    query.join(plate.wells, well);
     query.from(submissionSample);
     query.where(submissionSample.eq(well.sample));
     query.where(plate.eq(plateParam));
@@ -195,7 +195,7 @@ public class PlateService {
   }
 
   /**
-   * Insert plate and it's spots into database.
+   * Insert plate and it's wells into database.
    *
    * @param plate
    *          plate to insert
@@ -204,7 +204,7 @@ public class PlateService {
     authorizationService.checkAdminRole();
 
     plate.setInsertTime(Instant.now());
-    initPlateSpotList(plate);
+    initWellList(plate);
     entityManager.persist(plate);
 
     entityManager.flush();
@@ -213,70 +213,70 @@ public class PlateService {
     activityService.insert(activity);
   }
 
-  private void initPlateSpotList(Plate plate) {
-    plate.initSpots();
-    plate.getSpots().forEach(spot -> spot.setTimestamp(Instant.now()));
+  private void initWellList(Plate plate) {
+    plate.initWells();
+    plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
   }
 
   /**
-   * Bans multiple spots to prevent them from being used. Spots that will be banned are spots that
-   * are located from <code>from parameter</code> up to <code>to parameter</code>. If a spot was
-   * already banned, no change is made to that spot.
+   * Bans multiple wells to prevent them from being used. Wells that will be banned are wells that
+   * are located from <code>from parameter</code> up to <code>to parameter</code>. If a well was
+   * already banned, no change is made to that well.
    *
    * @param plate
-   *          plate were spots are located
+   *          plate were wells are located
    * @param from
-   *          first spot to ban
+   *          first well to ban
    * @param to
-   *          last spot to ban
+   *          last well to ban
    * @param justification
-   *          justification for banning spots
+   *          justification for banning wells
    */
   public void ban(Plate plate, WellLocation from, WellLocation to, String justification) {
     authorizationService.checkAdminRole();
 
-    Collection<Well> spots = plate.spots(from, to);
-    for (Well spot : spots) {
-      spot.setBanned(true);
+    Collection<Well> wells = plate.wells(from, to);
+    for (Well well : wells) {
+      well.setBanned(true);
     }
 
     // Log change.
-    Activity activity = plateActivityService.ban(spots, justification);
+    Activity activity = plateActivityService.ban(wells, justification);
     activityService.insert(activity);
 
-    for (Well spot : spots) {
-      entityManager.merge(spot);
+    for (Well well : wells) {
+      entityManager.merge(well);
     }
   }
 
   /**
-   * Reactivates multiple spots that were banned. Spots that will be reactivated are spots that are
-   * located from <code>from parameter</code> up to <code>to parameter</code>. If a spot was not
-   * banned, no change is made to that spot.
+   * Reactivates multiple wells that were banned. Wells that will be reactivated are wells that are
+   * located from <code>from parameter</code> up to <code>to parameter</code>. If a well was not
+   * banned, no change is made to that well.
    *
    * @param plate
-   *          plate were spots are located
+   *          plate were wells are located
    * @param from
-   *          first spot to reactivate
+   *          first well to reactivate
    * @param to
-   *          last spot to reactivate
+   *          last well to reactivate
    * @param justification
-   *          justification for reactivating spots
+   *          justification for reactivating wells
    */
   public void activate(Plate plate, WellLocation from, WellLocation to, String justification) {
     authorizationService.checkAdminRole();
 
-    Collection<Well> spots = plate.spots(from, to);
-    for (Well spot : spots) {
-      spot.setBanned(false);
+    Collection<Well> wells = plate.wells(from, to);
+    for (Well well : wells) {
+      well.setBanned(false);
     }
 
     // Log change.
-    Activity activity = plateActivityService.activate(spots, justification);
+    Activity activity = plateActivityService.activate(wells, justification);
     activityService.insert(activity);
 
-    for (Well spot : spots) {
-      entityManager.merge(spot);
+    for (Well well : wells) {
+      entityManager.merge(well);
     }
   }
 }

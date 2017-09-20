@@ -27,7 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 /**
- * Transfer of a single sample from one spot to another.
+ * Transfer of a single sample from one well to another.
  */
 @Entity
 @DiscriminatorValue("TRANSFER")

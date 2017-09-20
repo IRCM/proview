@@ -191,13 +191,13 @@ public class ActivityService {
   }
 
   /**
-   * Selects all activities of plate's spots updates in database.
+   * Selects all activities of plate's wells updates in database.
    *
    * @param plate
    *          plate
-   * @return all activities of plate's spots updates in database
+   * @return all activities of plate's wells updates in database
    */
-  public List<Activity> allUpdateSpotActivities(Plate plate) {
+  public List<Activity> allUpdateWellActivities(Plate plate) {
     if (plate == null) {
       return new ArrayList<>();
     }
@@ -456,10 +456,10 @@ public class ActivityService {
         Tube tube = (Tube) sampleContainer;
         return tube.getName();
       case WELL:
-        Well spot = (Well) sampleContainer;
-        String plateName = spot.getPlate().getName();
-        String spotName = spot.getName();
-        return message(bundle, "PlateSpot.Location", plateName, spotName);
+        Well well = (Well) sampleContainer;
+        String plateName = well.getPlate().getName();
+        String wellName = well.getName();
+        return message(bundle, "Well.Location", plateName, wellName);
       default:
         throw new AssertionError(
             "SampleContainer type " + sampleContainer.getType() + " not coverred in switch case");
@@ -539,26 +539,26 @@ public class ActivityService {
   }
 
   private String treatmentDescription(ResourceBundle bundle, Activity activity, Plate plate) {
-    Set<Long> spotIds = new HashSet<>();
-    for (Well spot : plate.getSpots()) {
-      spotIds.add(spot.getId());
+    Set<Long> wellIds = new HashSet<>();
+    for (Well well : plate.getWells()) {
+      wellIds.add(well.getId());
     }
     Treatment<?> treatment = entityManager.find(Treatment.class, activity.getRecordId());
     Collection<TreatmentSample> treatmentSamples = new ArrayList<>();
     for (TreatmentSample treatmentSample : treatment.getTreatmentSamples()) {
       if (treatmentSample.getContainer() instanceof Well
-          && spotIds.contains(treatmentSample.getContainer().getId())) {
+          && wellIds.contains(treatmentSample.getContainer().getId())) {
         treatmentSamples.add(treatmentSample);
       } else if (treatmentSample instanceof SampleTransfer) {
         SampleTransfer sampleTransfer = (SampleTransfer) treatmentSample;
         if (sampleTransfer.getDestinationContainer() instanceof Well
-            && spotIds.contains(sampleTransfer.getDestinationContainer().getId())) {
+            && wellIds.contains(sampleTransfer.getDestinationContainer().getId())) {
           treatmentSamples.add(treatmentSample);
         }
       } else if (treatmentSample instanceof FractionationDetail) {
         FractionationDetail fractionationDetail = (FractionationDetail) treatmentSample;
         if (fractionationDetail.getDestinationContainer() instanceof Well
-            && spotIds.contains(fractionationDetail.getDestinationContainer().getId())) {
+            && wellIds.contains(fractionationDetail.getDestinationContainer().getId())) {
           treatmentSamples.add(treatmentSample);
         }
       }
@@ -658,15 +658,15 @@ public class ActivityService {
   }
 
   private String msAnalysisDescription(ResourceBundle bundle, Activity activity, Plate plate) {
-    Set<Long> spotIds = new HashSet<>();
-    for (Well spot : plate.getSpots()) {
-      spotIds.add(spot.getId());
+    Set<Long> wellIds = new HashSet<>();
+    for (Well well : plate.getWells()) {
+      wellIds.add(well.getId());
     }
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, activity.getRecordId());
     Collection<Acquisition> acquisitions = new ArrayList<>();
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
       if (acquisition.getContainer() instanceof Well
-          && spotIds.contains(acquisition.getContainer().getId())) {
+          && wellIds.contains(acquisition.getContainer().getId())) {
         acquisitions.add(acquisition);
       }
     }
@@ -801,12 +801,12 @@ public class ActivityService {
           message.append("\n");
         }
 
-        // Get spot.
-        Well spot = entityManager.find(Well.class, updateActivity.getRecordId());
+        // Get well.
+        Well well = entityManager.find(Well.class, updateActivity.getRecordId());
 
         String mainMessage = null;
         if (updateActivity.getColumn().equals("banned")) {
-          mainMessage = message(bundle, "PlateSpot.Banned.UPDATE", spot.getName(),
+          mainMessage = message(bundle, "Well.Banned.UPDATE", well.getName(),
               Integer.parseInt(updateActivity.getNewValue()));
         } else {
           throw new AssertionError(

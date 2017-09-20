@@ -65,7 +65,7 @@ public class PlateServiceTest {
   @Mock
   private Activity activity;
   @Captor
-  private ArgumentCaptor<Collection<Well>> spotsCaptor;
+  private ArgumentCaptor<Collection<Well>> wellsCaptor;
 
   /**
    * Before test.
@@ -94,22 +94,22 @@ public class PlateServiceTest {
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
     assertEquals((Long) 26L, plate.getId());
-    final List<Well> spots = plate.getSpots();
+    final List<Well> wells = plate.getWells();
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
-    assertEquals(96, spots.size());
+    assertEquals(96, wells.size());
     final int rowCount = plate.getRowCount();
-    List<Well> someSpots = plate.spots(new WellLocation(0, 1), new WellLocation(rowCount, 1));
-    assertEquals(plate.getRowCount(), someSpots.size());
-    for (Well testSpot : someSpots) {
-      assertEquals(1, testSpot.getColumn());
+    List<Well> someWells = plate.wells(new WellLocation(0, 1), new WellLocation(rowCount, 1));
+    assertEquals(plate.getRowCount(), someWells.size());
+    for (Well testWell : someWells) {
+      assertEquals(1, testWell.getColumn());
     }
-    Well spot = plate.spot(2, 3);
-    assertEquals(2, spot.getRow());
-    assertEquals(3, spot.getColumn());
-    assertEquals(91, plate.getEmptySpotCount());
+    Well well = plate.well(2, 3);
+    assertEquals(2, well.getRow());
+    assertEquals(3, well.getColumn());
+    assertEquals(91, plate.getEmptyWellCount());
     assertEquals(2, plate.getSampleCount());
   }
 
@@ -129,22 +129,22 @@ public class PlateServiceTest {
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
     assertEquals((Long) 26L, plate.getId());
-    final List<Well> spots = plate.getSpots();
+    final List<Well> wells = plate.getWells();
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
     assertEquals(PlateType.A, plate.getType());
-    assertEquals(96, spots.size());
+    assertEquals(96, wells.size());
     final int rowCount = plate.getRowCount();
-    List<Well> someSpots = plate.spots(new WellLocation(0, 1), new WellLocation(rowCount, 1));
-    assertEquals(plate.getRowCount(), someSpots.size());
-    for (Well testSpot : someSpots) {
-      assertEquals(1, testSpot.getColumn());
+    List<Well> someWells = plate.wells(new WellLocation(0, 1), new WellLocation(rowCount, 1));
+    assertEquals(plate.getRowCount(), someWells.size());
+    for (Well testWell : someWells) {
+      assertEquals(1, testWell.getColumn());
     }
-    Well spot = plate.spot(2, 3);
-    assertEquals(2, spot.getRow());
-    assertEquals(3, spot.getColumn());
-    assertEquals(91, plate.getEmptySpotCount());
+    Well well = plate.well(2, 3);
+    assertEquals(2, well.getRow());
+    assertEquals(3, well.getColumn());
+    assertEquals(91, plate.getEmptyWellCount());
     assertEquals(2, plate.getSampleCount());
   }
 
@@ -283,7 +283,7 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void ban_OneSpot() {
+  public void ban_OneWell() {
     Plate plate = entityManager.find(Plate.class, 26L);
     entityManager.detach(plate);
     WellLocation location = new WellLocation(0, 0);
@@ -294,17 +294,17 @@ public class PlateServiceTest {
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(plateActivityService).ban(spotsCaptor.capture(), eq("unit test"));
+    verify(plateActivityService).ban(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    Well spot = entityManager.find(Well.class, 128L);
-    assertEquals(true, spot.isBanned());
-    Collection<Well> loggedSpots = spotsCaptor.getValue();
-    assertEquals(1, loggedSpots.size());
-    assertNotNull(find(loggedSpots, 128L));
+    Well well = entityManager.find(Well.class, 128L);
+    assertEquals(true, well.isBanned());
+    Collection<Well> loggedWells = wellsCaptor.getValue();
+    assertEquals(1, loggedWells.size());
+    assertNotNull(find(loggedWells, 128L));
   }
 
   @Test
-  public void ban_MultipleSpots() {
+  public void ban_MultipleWells() {
     Plate plate = entityManager.find(Plate.class, 26L);
     entityManager.detach(plate);
     WellLocation from = new WellLocation(3, 3);
@@ -316,19 +316,19 @@ public class PlateServiceTest {
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(plateActivityService).ban(spotsCaptor.capture(), eq("unit test"));
+    verify(plateActivityService).ban(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    List<Well> bannedSpots = plateService.get(plate.getId()).spots(from, to);
-    for (Well bannedSpot : bannedSpots) {
-      Well spot = entityManager.find(Well.class, bannedSpot.getId());
-      assertEquals(true, spot.isBanned());
+    List<Well> bannedWells = plateService.get(plate.getId()).wells(from, to);
+    for (Well bannedWell : bannedWells) {
+      Well well = entityManager.find(Well.class, bannedWell.getId());
+      assertEquals(true, well.isBanned());
     }
-    Collection<Well> loggedSpots = spotsCaptor.getValue();
-    assertEquals(bannedSpots, loggedSpots);
+    Collection<Well> loggedWells = wellsCaptor.getValue();
+    assertEquals(bannedWells, loggedWells);
   }
 
   @Test
-  public void activate_OneSpot() {
+  public void activate_OneWell() {
     Plate plate = entityManager.find(Plate.class, 26L);
     entityManager.detach(plate);
     WellLocation location = new WellLocation(6, 11);
@@ -339,17 +339,17 @@ public class PlateServiceTest {
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(plateActivityService).activate(spotsCaptor.capture(), eq("unit test"));
+    verify(plateActivityService).activate(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    Well spot = entityManager.find(Well.class, 211L);
-    assertEquals(false, spot.isBanned());
-    Collection<Well> loggedSpots = spotsCaptor.getValue();
-    assertEquals(1, loggedSpots.size());
-    assertNotNull(find(loggedSpots, 211L));
+    Well well = entityManager.find(Well.class, 211L);
+    assertEquals(false, well.isBanned());
+    Collection<Well> loggedWells = wellsCaptor.getValue();
+    assertEquals(1, loggedWells.size());
+    assertNotNull(find(loggedWells, 211L));
   }
 
   @Test
-  public void activate_MultipleSpots() {
+  public void activate_MultipleWells() {
     Plate plate = entityManager.find(Plate.class, 26L);
     entityManager.detach(plate);
     WellLocation from = new WellLocation(5, 11);
@@ -361,18 +361,18 @@ public class PlateServiceTest {
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(plateActivityService).activate(spotsCaptor.capture(), eq("unit test"));
+    verify(plateActivityService).activate(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    Well spot = entityManager.find(Well.class, 199L);
-    assertEquals(false, spot.isBanned());
-    spot = entityManager.find(Well.class, 211L);
-    assertEquals(false, spot.isBanned());
-    spot = entityManager.find(Well.class, 223L);
-    assertEquals(false, spot.isBanned());
-    Collection<Well> loggedSpots = spotsCaptor.getValue();
-    assertEquals(3, loggedSpots.size());
-    assertNotNull(find(loggedSpots, 199L));
-    assertNotNull(find(loggedSpots, 211L));
-    assertNotNull(find(loggedSpots, 223L));
+    Well well = entityManager.find(Well.class, 199L);
+    assertEquals(false, well.isBanned());
+    well = entityManager.find(Well.class, 211L);
+    assertEquals(false, well.isBanned());
+    well = entityManager.find(Well.class, 223L);
+    assertEquals(false, well.isBanned());
+    Collection<Well> loggedWells = wellsCaptor.getValue();
+    assertEquals(3, loggedWells.size());
+    assertNotNull(find(loggedWells, 199L));
+    assertNotNull(find(loggedWells, 211L));
+    assertNotNull(find(loggedWells, 223L));
   }
 }

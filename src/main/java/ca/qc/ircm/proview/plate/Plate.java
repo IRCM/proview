@@ -90,7 +90,7 @@ public class Plate implements Data, Serializable, Named {
    * List of all treatments done on samples.
    */
   @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "plate")
-  private List<Well> spots;
+  private List<Well> wells;
 
   public Plate() {
     this(null);
@@ -116,33 +116,33 @@ public class Plate implements Data, Serializable, Named {
   }
 
   /**
-   * Initializes spots, if spots property is null.
+   * Initializes wells, if wells property is null.
    */
-  public void initSpots() {
-    if (spots == null) {
-      List<Well> spots = new ArrayList<>();
+  public void initWells() {
+    if (wells == null) {
+      List<Well> wells = new ArrayList<>();
       for (int row = 0; row < getRowCount(); row++) {
         for (int column = 0; column < getColumnCount(); column++) {
-          Well plateSpot = new Well(row, column);
-          plateSpot.setPlate(this);
-          spots.add(plateSpot);
+          Well well = new Well(row, column);
+          well.setPlate(this);
+          wells.add(well);
         }
       }
-      setSpots(spots);
+      setWells(wells);
     }
   }
 
   /**
-   * Returns spot at specified location.
+   * Returns well at specified location.
    *
    * @param row
    *          row
    * @param column
    *          column
-   * @return spot at specified location, or null if plate has not spot at this location
+   * @return well at specified location, or null if plate has not well at this location
    */
   @Nonnull
-  public Well spot(int row, int column) {
+  public Well well(int row, int column) {
     if (row < 0 || row >= getRowCount()) {
       throw new IllegalArgumentException("Row " + row
           + " is greater/equal then the number of rows in this plate (" + getRowCount() + ")");
@@ -152,66 +152,66 @@ public class Plate implements Data, Serializable, Named {
           "Column " + column + " is greater/equal then the number of columns in this plate ("
               + getColumnCount() + ")");
     }
-    if (this.spots != null) {
-      for (Well spot : this.spots) {
-        if (spot.getRow() == row && spot.getColumn() == column) {
-          return spot;
+    if (this.wells != null) {
+      for (Well well : this.wells) {
+        if (well.getRow() == row && well.getColumn() == column) {
+          return well;
         }
       }
     }
     throw new IllegalArgumentException(
-        "No spot at coordinates " + Plate.rowLabel(row) + "-" + Plate.rowLabel(column));
+        "No well at coordinates " + Plate.rowLabel(row) + "-" + Plate.rowLabel(column));
   }
 
   /**
-   * Returns spots from the 'from' location up to the 'to' location.
+   * Returns wells from the 'from' location up to the 'to' location.
    *
    * @param from
    *          starting location
    * @param to
    *          end location (inclusive)
-   * @return spots from the 'from' location up to the 'to' location
+   * @return wells from the 'from' location up to the 'to' location
    */
-  public List<Well> spots(WellLocation from, WellLocation to) {
+  public List<Well> wells(WellLocation from, WellLocation to) {
     Predicate<Well> afterOrEqualsFrom =
         s -> (s.getColumn() == from.getColumn() && s.getRow() >= from.getRow())
             || s.getColumn() > from.getColumn();
     Predicate<Well> beforeOrEqualsTo =
         s -> (s.getColumn() == to.getColumn() && s.getRow() <= to.getRow())
             || s.getColumn() < to.getColumn();
-    return spots.stream().filter(afterOrEqualsFrom.and(beforeOrEqualsTo))
+    return wells.stream().filter(afterOrEqualsFrom.and(beforeOrEqualsTo))
         .collect(Collectors.toList());
   }
 
   /**
-   * Returns spots in column.
+   * Returns wells in column.
    *
    * @param index
    *          column
-   * @return spots in column
+   * @return wells in column
    */
   public List<Well> column(int index) {
-    List<Well> spots = new ArrayList<>();
-    if (this.spots != null) {
-      for (Well spot : this.spots) {
-        if (spot.getColumn() == index) {
-          spots.add(spot);
+    List<Well> wells = new ArrayList<>();
+    if (this.wells != null) {
+      for (Well well : this.wells) {
+        if (well.getColumn() == index) {
+          wells.add(well);
         }
       }
     }
-    Collections.sort(spots, new WellComparator(WellComparator.Compare.LOCATION));
-    return spots;
+    Collections.sort(wells, new WellComparator(WellComparator.Compare.LOCATION));
+    return wells;
   }
 
   /**
-   * Returns number of empty spots on plate.
+   * Returns number of empty wells on plate.
    *
-   * @return number of empty spots on plate
+   * @return number of empty wells on plate
    */
-  public int getEmptySpotCount() {
+  public int getEmptyWellCount() {
     int count = 0;
-    for (Well spot : this.spots) {
-      if (spot.getSample() == null && !spot.isBanned()) {
+    for (Well well : this.wells) {
+      if (well.getSample() == null && !well.isBanned()) {
         count++;
       }
     }
@@ -219,14 +219,14 @@ public class Plate implements Data, Serializable, Named {
   }
 
   /**
-   * Returns number of spots containing a sample on plate.
+   * Returns number of wells containing a sample on plate.
    *
-   * @return number of spots containing a sample on plate
+   * @return number of wells containing a sample on plate
    */
   public int getSampleCount() {
     int count = 0;
-    for (Well spot : this.spots) {
-      if (spot.getSample() != null && !spot.isBanned()) {
+    for (Well well : this.wells) {
+      if (well.getSample() != null && !well.isBanned()) {
         count++;
       }
     }
@@ -301,12 +301,12 @@ public class Plate implements Data, Serializable, Named {
     this.insertTime = insertTime;
   }
 
-  public List<Well> getSpots() {
-    return spots;
+  public List<Well> getWells() {
+    return wells;
   }
 
-  public void setSpots(List<Well> spots) {
-    this.spots = spots;
+  public void setWells(List<Well> wells) {
+    this.wells = wells;
   }
 
   public int getColumnCount() {

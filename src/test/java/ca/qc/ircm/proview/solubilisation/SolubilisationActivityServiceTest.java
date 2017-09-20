@@ -126,10 +126,10 @@ public class SolubilisationActivityServiceTest {
   public void undoFailed_Ban() {
     Solubilisation solubilisation = new Solubilisation(1L);
     Tube sourceTube = new Tube(1L);
-    Well spot = new Well(130L);
+    Well well = new Well(130L);
     Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
     bannedContainers.add(sourceTube);
-    bannedContainers.add(spot);
+    bannedContainers.add(well);
 
     Activity activity =
         solubilisationActivityService.undoFailed(solubilisation, "unit_test", bannedContainers);
@@ -148,14 +148,14 @@ public class SolubilisationActivityServiceTest {
     bannedTubeActivity.setOldValue("0");
     bannedTubeActivity.setNewValue("1");
     expecteds.add(bannedTubeActivity);
-    UpdateActivity bannedSpotActivity = new UpdateActivity();
-    bannedSpotActivity.setActionType(ActionType.UPDATE);
-    bannedSpotActivity.setTableName("samplecontainer");
-    bannedSpotActivity.setRecordId(spot.getId());
-    bannedSpotActivity.setColumn("banned");
-    bannedSpotActivity.setOldValue("0");
-    bannedSpotActivity.setNewValue("1");
-    expecteds.add(bannedSpotActivity);
+    UpdateActivity bannedWellActivity = new UpdateActivity();
+    bannedWellActivity.setActionType(ActionType.UPDATE);
+    bannedWellActivity.setTableName("samplecontainer");
+    bannedWellActivity.setRecordId(well.getId());
+    bannedWellActivity.setColumn("banned");
+    bannedWellActivity.setOldValue("0");
+    bannedWellActivity.setNewValue("1");
+    expecteds.add(bannedWellActivity);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
 

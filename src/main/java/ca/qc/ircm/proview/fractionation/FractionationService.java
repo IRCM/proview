@@ -159,7 +159,7 @@ public class FractionationService extends BaseTreatmentService {
     return query.distinct().fetch();
   }
 
-  private void validateSpotDestination(Fractionation fractionation) {
+  private void validateWellDestination(Fractionation fractionation) {
     for (FractionationDetail detail : fractionation.getTreatmentSamples()) {
       if (detail.getDestinationContainer() instanceof Tube) {
         throw new IllegalArgumentException("Fractions cannot be placed in tubes");
@@ -176,12 +176,12 @@ public class FractionationService extends BaseTreatmentService {
   public void insert(Fractionation fractionation) {
     authorizationService.checkAdminRole();
     User user = authorizationService.getCurrentUser();
-    validateSpotDestination(fractionation);
+    validateWellDestination(fractionation);
 
     fractionation.setInsertTime(Instant.now());
     fractionation.setUser(user);
 
-    // Reassign samples inside spots.
+    // Reassign samples inside wells.
     for (FractionationDetail detail : fractionation.getTreatmentSamples()) {
       detail.getDestinationContainer().setSample(detail.getSample());
       detail.getDestinationContainer().setTreatmentSample(detail);

@@ -33,7 +33,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 /**
- * A Plate spot.
+ * A plate well.
  */
 @Entity
 @DiscriminatorValue("WELL")
@@ -41,18 +41,18 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
   private static final long serialVersionUID = 212003765334493656L;
 
   /**
-   * Plate where this PlateSpot is located.
+   * Plate where this well is located.
    */
   @ManyToOne
   @JoinColumn(name = "plateId", nullable = false)
   private Plate plate;
   /**
-   * Row where spot is located on plate.
+   * Row where well is located on plate.
    */
   @Column(name = "locationRow", updatable = false, nullable = false)
   private int row;
   /**
-   * Column where spot is located on plate.
+   * Column where well is located on plate.
    */
   @Column(name = "locationColumn", updatable = false, nullable = false)
   private int column;
@@ -70,12 +70,12 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
   }
 
   /**
-   * Creates a new PlateSpot.
+   * Creates a new well.
    *
    * @param row
-   *          row where spot is located on plate
+   *          row where well is located on plate
    * @param column
-   *          column where spot is located on plate
+   *          column where well is located on plate
    */
   public Well(Integer row, Integer column) {
     this.row = row;
@@ -84,7 +84,7 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
 
   @Override
   public String toString() {
-    return "PlateSpot [row=" + row + ", column=" + column + ", getId()=" + getId() + "]";
+    return "Well [row=" + row + ", column=" + column + ", getId()=" + getId() + "]";
   }
 
   @Override

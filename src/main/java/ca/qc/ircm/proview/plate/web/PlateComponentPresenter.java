@@ -61,12 +61,12 @@ public class PlateComponentPresenter {
     view.spreadsheet.setSheetSelectionBarVisible(false);
     view.spreadsheet.setRowColHeadingsVisible(false);
     plate = new Plate();
-    plate.initSpots();
+    plate.initWells();
     updatePlate();
     updateReadOnly();
     view.spreadsheet.addCellValueChangeListener(e -> e.getChangedCells().stream().forEach(ref -> {
       Cell cell = view.spreadsheet.getActiveSheet().getRow(ref.getRow()).getCell(ref.getCol());
-      Well well = plate.spot(ref.getRow() - 1, ref.getCol() - 1);
+      Well well = plate.well(ref.getRow() - 1, ref.getCol() - 1);
       if (well.getSample() == null) {
         well.setSample(new SubmissionSample());
       }
@@ -75,7 +75,7 @@ public class PlateComponentPresenter {
   }
 
   private void updateSelectionMode() {
-    if (!multiSelect && getSelectedSpots().size() > 1) {
+    if (!multiSelect && getSelectedWells().size() > 1) {
       deselectAllWells();
     }
   }
@@ -114,7 +114,7 @@ public class PlateComponentPresenter {
     forEachCell(cell -> {
       int row = cell.getRowIndex() - 1;
       int col = cell.getColumnIndex() - 1;
-      Well well = plate.spot(row, col);
+      Well well = plate.well(row, col);
       if (well.getSample() != null) {
         cell.setCellValue(well.getSample().getName());
       }
@@ -135,30 +135,30 @@ public class PlateComponentPresenter {
   }
 
   /**
-   * Returns selected spot.
+   * Returns selected well.
    *
-   * @return selected spot
+   * @return selected well
    */
-  Well getSelectedSpot() {
+  Well getSelectedWell() {
     if (multiSelect) {
-      throw new IllegalStateException("getSelectedSpot cannot be called in multi select mode");
+      throw new IllegalStateException("getSelectedWell cannot be called in multi select mode");
     }
     CellReference reference = view.spreadsheet.getSelectedCellReference();
     if (reference == null) {
       return null;
     } else {
-      return plate.spot(reference.getRow() - 1, reference.getCol() - 1);
+      return plate.well(reference.getRow() - 1, reference.getCol() - 1);
     }
   }
 
   /**
-   * Returns select spots.
+   * Returns select wells.
    *
-   * @return select spots
+   * @return select wells
    */
-  Collection<Well> getSelectedSpots() {
+  Collection<Well> getSelectedWells() {
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
-    return references.stream().map(ref -> plate.spot(ref.getRow() - 1, ref.getCol() - 1))
+    return references.stream().map(ref -> plate.well(ref.getRow() - 1, ref.getCol() - 1))
         .collect(Collectors.toList());
   }
 
@@ -169,19 +169,19 @@ public class PlateComponentPresenter {
    * all wells.
    * </p>
    *
-   * @param selectedSpots
+   * @param selectedWells
    *          selected wells
    */
-  void setSelectedSpots(Collection<Well> selectedSpots) {
+  void setSelectedWells(Collection<Well> selectedWells) {
     IntSummaryStatistics rowSummary =
-        selectedSpots.stream().mapToInt(spot -> spot.getRow()).summaryStatistics();
+        selectedWells.stream().mapToInt(well -> well.getRow()).summaryStatistics();
     IntSummaryStatistics columnSummary =
-        selectedSpots.stream().mapToInt(spot -> spot.getColumn()).summaryStatistics();
+        selectedWells.stream().mapToInt(well -> well.getColumn()).summaryStatistics();
     if (multiSelect) {
       view.spreadsheet.setSelectionRange(rowSummary.getMin() + 1, columnSummary.getMin() + 1,
           rowSummary.getMax() + 1, columnSummary.getMax() + 1);
-    } else if (!selectedSpots.isEmpty()) {
-      Well well = selectedSpots.iterator().next();
+    } else if (!selectedWells.isEmpty()) {
+      Well well = selectedWells.iterator().next();
       view.spreadsheet.setSelection(well.getRow() + 1, well.getColumn() + 1);
     }
   }

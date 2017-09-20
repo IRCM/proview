@@ -35,7 +35,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- * Services for plate's spots.
+ * Services for plate's wells.
  */
 @Service
 @Transactional
@@ -58,11 +58,11 @@ public class WellService {
   }
 
   /**
-   * Selects spot from database.
+   * Selects well from database.
    *
    * @param id
-   *          database identifier of spot
-   * @return spot
+   *          database identifier of well
+   * @return well
    */
   public Well get(Long id) {
     if (id == null) {
@@ -74,13 +74,13 @@ public class WellService {
   }
 
   /**
-   * Returns PlateSpot on plate at specified location.
+   * Returns well on plate at specified location.
    *
    * @param plateParam
-   *          spot's plate
+   *          well's plate
    * @param location
-   *          spot's location on plate
-   * @return plateSpot on plate at specified location
+   *          well's location on plate
+   * @return well on plate at specified location
    */
   public Well get(Plate plateParam, WellLocation location) {
     if (plateParam == null || location == null) {
@@ -98,11 +98,11 @@ public class WellService {
   }
 
   /**
-   * Selects most recent spot where sample was put.
+   * Selects most recent well where sample was put.
    *
    * @param sample
    *          sample
-   * @return most recent spot where sample was put
+   * @return most recent well where sample was put
    */
   public Well last(Sample sample) {
     if (sample == null) {
@@ -119,11 +119,11 @@ public class WellService {
   }
 
   /**
-   * Selects all plate's spots.
+   * Selects all plate's wells.
    *
    * @param plate
    *          plate
-   * @return all plate's spots
+   * @return all plate's wells
    */
   public List<Well> all(Plate plate) {
     if (plate == null) {
@@ -138,11 +138,11 @@ public class WellService {
   }
 
   /**
-   * Selects all spots where sample is located.
+   * Selects all wells where sample is located.
    *
    * @param sample
    *          sample
-   * @return all spots where sample is located
+   * @return all wells where sample is located
    */
   public List<Well> all(Sample sample) {
     if (sample == null) {
@@ -157,13 +157,13 @@ public class WellService {
   }
 
   /**
-   * Returns spots where sample is located on plate.
+   * Returns wells where sample is located on plate.
    *
    * @param sample
    *          sample
    * @param plate
    *          plate
-   * @return Spots where sample is located.
+   * @return wells where sample is located
    */
   public List<Well> location(final Sample sample, final Plate plate) {
     if (sample == null || plate == null) {

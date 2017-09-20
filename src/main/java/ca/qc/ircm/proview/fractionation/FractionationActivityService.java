@@ -72,7 +72,7 @@ public class FractionationActivityService {
   public Activity insert(final Fractionation fractionation) {
     final User user = authorizationService.getCurrentUser();
 
-    // Update of spot's sample.
+    // Update of well's sample.
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     for (FractionationDetail detail : fractionation.getTreatmentSamples()) {
       updateBuilders.add(new AddSampleToSampleContainerUpdateActivityBuilder()

@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * Comparator for spots.
+ * Comparator for wells.
  */
 public class WellComparator implements Comparator<Well>, Serializable {
 
@@ -34,19 +34,21 @@ public class WellComparator implements Comparator<Well>, Serializable {
     /**
      * Compare by location on plate.
      */
-    LOCATION, /**
-               * Compare by modification time.
-               */
-    TIME_STAMP, /**
-                 * Sort spots to allow auto assignment of samples to spot. Spot are sorted by column
-                 * first then by row.
-                 */
+    LOCATION,
+    /**
+     * Compare by modification time.
+     */
+    TIME_STAMP,
+    /**
+     * Sort wells to allow auto assignment of samples to well. Well are sorted by column first then
+     * by row.
+     */
     SAMPLE_ASSIGN;
   }
 
   /**
-   * Use {@link ca.qc.ircm.proview.plate.WellComparator.Compare#LOCATION location} comparison
-   * by default.
+   * Use {@link ca.qc.ircm.proview.plate.WellComparator.Compare#LOCATION location} comparison by
+   * default.
    */
   public WellComparator() {
     this.compare = Compare.LOCATION;

@@ -36,26 +36,26 @@ public class LocalizedPlate {
   }
 
   /**
-   * Get spot information.
+   * Get well information.
    *
-   * @param spot
-   *          Spot.
-   * @return Spot information.
+   * @param well
+   *          well
+   * @return well information
    */
-  public String getSpot(Well spot) {
-    return spot.getName();
+  public String getWell(Well well) {
+    return well.getName();
   }
 
   /**
-   * Get spot's sample name.
+   * Get well's sample name.
    *
-   * @param spot
-   *          spot
-   * @return spot's sample name
+   * @param well
+   *          well
+   * @return well's sample name
    */
-  public String getSampleName(Well spot) {
-    if (spot.getSample() != null) {
-      return spot.getSample().getName();
+  public String getSampleName(Well well) {
+    if (well.getSample() != null) {
+      return well.getSample().getName();
     } else {
       return null;
     }

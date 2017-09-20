@@ -82,12 +82,12 @@ public class PlateActivityServiceTest {
   public void ban() {
     Plate plate = new Plate(26L);
     List<Well> bans = new ArrayList<Well>();
-    Well spot = new Well(130L);
-    spot.setPlate(plate);
-    bans.add(spot);
-    spot = new Well(131L);
-    spot.setPlate(plate);
-    bans.add(spot);
+    Well well = new Well(130L);
+    well.setPlate(plate);
+    bans.add(well);
+    well = new Well(131L);
+    well.setPlate(plate);
+    bans.add(well);
 
     Activity activity = plateActivityService.ban(bans, "unit_test");
 
@@ -115,18 +115,18 @@ public class PlateActivityServiceTest {
     final Plate plate1 = new Plate(26L);
     final Plate plate2 = new Plate(107L);
     List<Well> bans = new ArrayList<Well>();
-    Well spot = new Well(130L);
-    spot.setPlate(plate1);
-    bans.add(spot);
-    spot = new Well(131L);
-    spot.setPlate(plate1);
-    bans.add(spot);
-    spot = new Well(231L);
-    spot.setPlate(plate2);
-    bans.add(spot);
-    spot = new Well(232L);
-    spot.setPlate(plate2);
-    bans.add(spot);
+    Well well = new Well(130L);
+    well.setPlate(plate1);
+    bans.add(well);
+    well = new Well(131L);
+    well.setPlate(plate1);
+    bans.add(well);
+    well = new Well(231L);
+    well.setPlate(plate2);
+    bans.add(well);
+    well = new Well(232L);
+    well.setPlate(plate2);
+    bans.add(well);
 
     try {
       plateActivityService.ban(bans, "unit_test");
@@ -139,17 +139,17 @@ public class PlateActivityServiceTest {
   @Test
   public void activate() {
     Plate plate = new Plate(26L);
-    List<Well> spots = new ArrayList<Well>();
-    Well spot = new Well(199L);
-    spot.setPlate(plate);
-    spot.setBanned(true);
-    spots.add(spot);
-    spot = new Well(211L);
-    spot.setPlate(plate);
-    spot.setBanned(true);
-    spots.add(spot);
+    List<Well> wells = new ArrayList<Well>();
+    Well well = new Well(199L);
+    well.setPlate(plate);
+    well.setBanned(true);
+    wells.add(well);
+    well = new Well(211L);
+    well.setPlate(plate);
+    well.setBanned(true);
+    wells.add(well);
 
-    Activity activity = plateActivityService.activate(spots, "unit_test");
+    Activity activity = plateActivityService.activate(wells, "unit_test");
 
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("plate", activity.getTableName());
@@ -157,7 +157,7 @@ public class PlateActivityServiceTest {
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
     Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
-    for (Well activated : spots) {
+    for (Well activated : wells) {
       UpdateActivity activateActivity = new UpdateActivity();
       activateActivity.setActionType(ActionType.UPDATE);
       activateActivity.setTableName("samplecontainer");
@@ -174,26 +174,26 @@ public class PlateActivityServiceTest {
   public void activate_MultiplePlates() {
     final Plate plate1 = new Plate(26L);
     final Plate plate2 = new Plate(107L);
-    List<Well> spots = new ArrayList<Well>();
-    Well spot = new Well(199L);
-    spot.setPlate(plate1);
-    spot.setBanned(true);
-    spots.add(spot);
-    spot = new Well(211L);
-    spot.setPlate(plate1);
-    spot.setBanned(true);
-    spots.add(spot);
-    spot = new Well(307L);
-    spot.setPlate(plate2);
-    spot.setBanned(true);
-    spots.add(spot);
-    spot = new Well(319L);
-    spot.setPlate(plate2);
-    spot.setBanned(true);
-    spots.add(spot);
+    List<Well> wells = new ArrayList<Well>();
+    Well well = new Well(199L);
+    well.setPlate(plate1);
+    well.setBanned(true);
+    wells.add(well);
+    well = new Well(211L);
+    well.setPlate(plate1);
+    well.setBanned(true);
+    wells.add(well);
+    well = new Well(307L);
+    well.setPlate(plate2);
+    well.setBanned(true);
+    wells.add(well);
+    well = new Well(319L);
+    well.setPlate(plate2);
+    well.setBanned(true);
+    wells.add(well);
 
     try {
-      plateActivityService.activate(spots, "unit_test");
+      plateActivityService.activate(wells, "unit_test");
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Ignore.

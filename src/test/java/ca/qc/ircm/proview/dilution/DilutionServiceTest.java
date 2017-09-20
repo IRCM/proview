@@ -205,14 +205,14 @@ public class DilutionServiceTest {
   }
 
   @Test
-  public void insert_Spot() {
+  public void insert_Well() {
     SubmissionSample sample = new SubmissionSample(1L);
-    Well spot = new Well(128L);
+    Well well = new Well(128L);
     final List<DilutedSample> dilutedSamples = new ArrayList<>();
     DilutedSample dilutedSample = new DilutedSample();
     dilutedSample.setComments("unit test");
     dilutedSample.setSample(sample);
-    dilutedSample.setContainer(spot);
+    dilutedSample.setContainer(well);
     dilutedSample.setSourceVolume(10.0);
     dilutedSample.setSolvent("Methanol");
     dilutedSample.setSolventVolume(20.0);
@@ -311,10 +311,10 @@ public class DilutionServiceTest {
     assertEquals(true, dilution.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
     assertEquals("fail unit test", dilution.getDeletionJustification());
-    Well spot = entityManager.find(Well.class, 608L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 620L);
-    assertEquals(true, spot.isBanned());
+    Well well = entityManager.find(Well.class, 608L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 620L);
+    assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
@@ -345,10 +345,10 @@ public class DilutionServiceTest {
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 23L);
     assertEquals(true, tube.isBanned());
-    Well spot = entityManager.find(Well.class, 513L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 525L);
-    assertEquals(true, spot.isBanned());
+    Well well = entityManager.find(Well.class, 513L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 525L);
+    assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
@@ -381,14 +381,14 @@ public class DilutionServiceTest {
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 25L);
     assertEquals(true, tube.isBanned());
-    Well spot = entityManager.find(Well.class, 515L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 527L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 539L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 551L);
-    assertEquals(true, spot.isBanned());
+    Well well = entityManager.find(Well.class, 515L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 527L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 539L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 551L);
+    assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
@@ -423,18 +423,18 @@ public class DilutionServiceTest {
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 27L);
     assertEquals(true, tube.isBanned());
-    Well spot = entityManager.find(Well.class, 516L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 528L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 704L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 716L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 728L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 740L);
-    assertEquals(true, spot.isBanned());
+    Well well = entityManager.find(Well.class, 516L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 528L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 704L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 716L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 728L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 740L);
+    assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
@@ -472,22 +472,22 @@ public class DilutionServiceTest {
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 30L);
     assertEquals(true, tube.isBanned());
-    Well spot = entityManager.find(Well.class, 517L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 529L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 541L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 553L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 705L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 717L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 729L);
-    assertEquals(true, spot.isBanned());
-    spot = entityManager.find(Well.class, 741L);
-    assertEquals(true, spot.isBanned());
+    Well well = entityManager.find(Well.class, 517L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 529L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 541L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 553L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 705L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 717L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 729L);
+    assertEquals(true, well.isBanned());
+    well = entityManager.find(Well.class, 741L);
+    assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
@@ -525,10 +525,10 @@ public class DilutionServiceTest {
     assertEquals("fail unit test", test.getDeletionJustification());
     Tube tube = entityManager.find(Tube.class, 2278L);
     assertEquals(true, tube.isBanned());
-    Well spot = entityManager.find(Well.class, 1583L);
-    assertEquals(false, spot.isBanned());
-    spot = entityManager.find(Well.class, 1571L);
-    assertEquals(false, spot.isBanned());
+    Well well = entityManager.find(Well.class, 1583L);
+    assertEquals(false, well.isBanned());
+    well = entityManager.find(Well.class, 1571L);
+    assertEquals(false, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(1, bannedContainers.size());

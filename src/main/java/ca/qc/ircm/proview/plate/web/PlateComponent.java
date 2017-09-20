@@ -79,21 +79,21 @@ public class PlateComponent extends CustomComponent {
   }
 
   /**
-   * Returns selected spot.
+   * Returns selected well.
    *
-   * @return selected spot
+   * @return selected well
    */
-  public Well getSelectedSpot() {
-    return presenter.getSelectedSpot();
+  public Well getSelectedWell() {
+    return presenter.getSelectedWell();
   }
 
   /**
-   * Returns select spots.
+   * Returns select wells.
    *
-   * @return select spots
+   * @return select wells
    */
-  public Collection<Well> getSelectedSpots() {
-    return presenter.getSelectedSpots();
+  public Collection<Well> getSelectedWells() {
+    return presenter.getSelectedWells();
   }
 
   /**
@@ -103,11 +103,11 @@ public class PlateComponent extends CustomComponent {
    * all wells.
    * </p>
    *
-   * @param selectedSpots
+   * @param selectedWells
    *          selected wells
    */
-  public void setSelectedSpots(Collection<Well> selectedSpots) {
-    presenter.setSelectedSpots(selectedSpots);
+  public void setSelectedWells(Collection<Well> selectedWells) {
+    presenter.setSelectedWells(selectedWells);
   }
 
   public Plate getPlate() {

@@ -61,8 +61,7 @@ public class TransferActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    transferActivityService =
-        new TransferActivityService(entityManager, authorizationService);
+    transferActivityService = new TransferActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -79,7 +78,7 @@ public class TransferActivityServiceTest {
     sampleTransfer.setSample(sample);
     sampleTransfer.setContainer(sourceTube);
     sampleTransfer.setDestinationContainer(destinationTube);
-    List<SampleTransfer> sampleTransfers = new ArrayList<SampleTransfer>();
+    List<SampleTransfer> sampleTransfers = new ArrayList<>();
     sampleTransfers.add(sampleTransfer);
     Transfer transfer = new Transfer();
     transfer.setId(123456L);
@@ -92,7 +91,7 @@ public class TransferActivityServiceTest {
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals(null, activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity insertTubeActivity = new UpdateActivity();
     insertTubeActivity.setActionType(ActionType.INSERT);
     insertTubeActivity.setTableName("samplecontainer");
@@ -102,16 +101,16 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logInsert_DestinationSpot() {
+  public void logInsert_DestinationWell() {
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
-    Well destinationSpot = new Well(130L);
-    destinationSpot.setSample(sample);
+    Well destinationWell = new Well(130L);
+    destinationWell.setSample(sample);
     SampleTransfer sampleTransfer = new SampleTransfer();
     sampleTransfer.setSample(sample);
     sampleTransfer.setContainer(sourceTube);
-    sampleTransfer.setDestinationContainer(destinationSpot);
-    List<SampleTransfer> sampleTransfers = new ArrayList<SampleTransfer>();
+    sampleTransfer.setDestinationContainer(destinationWell);
+    List<SampleTransfer> sampleTransfers = new ArrayList<>();
     sampleTransfers.add(sampleTransfer);
     Transfer transfer = new Transfer();
     transfer.setId(123456L);
@@ -124,15 +123,15 @@ public class TransferActivityServiceTest {
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals(null, activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
-    UpdateActivity updateSpotActivity = new UpdateActivity();
-    updateSpotActivity.setActionType(ActionType.UPDATE);
-    updateSpotActivity.setTableName("samplecontainer");
-    updateSpotActivity.setRecordId(destinationSpot.getId());
-    updateSpotActivity.setColumn("sampleId");
-    updateSpotActivity.setOldValue(null);
-    updateSpotActivity.setNewValue(sample.getId().toString());
-    expecteds.add(updateSpotActivity);
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity updateWellActivity = new UpdateActivity();
+    updateWellActivity.setActionType(ActionType.UPDATE);
+    updateWellActivity.setTableName("samplecontainer");
+    updateWellActivity.setRecordId(destinationWell.getId());
+    updateWellActivity.setColumn("sampleId");
+    updateWellActivity.setOldValue(null);
+    updateWellActivity.setNewValue(sample.getId().toString());
+    expecteds.add(updateWellActivity);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
 
@@ -140,7 +139,7 @@ public class TransferActivityServiceTest {
   public void logUndoErroneous_Tube() {
     Transfer transfer = new Transfer(3L);
     Tube destinationTube = new Tube(7L);
-    Collection<SampleContainer> samplesRemoved = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> samplesRemoved = new ArrayList<>();
     samplesRemoved.add(destinationTube);
 
     Activity activity =
@@ -151,7 +150,7 @@ public class TransferActivityServiceTest {
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity deleteTubeActivity = new UpdateActivity();
     deleteTubeActivity.setActionType(ActionType.DELETE);
     deleteTubeActivity.setTableName("samplecontainer");
@@ -161,11 +160,11 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoErroneous_Spot() {
+  public void logUndoErroneous_Well() {
     Transfer transfer = new Transfer(9L);
-    Well destinationSpot = new Well(129L);
-    Collection<SampleContainer> samplesRemoved = new ArrayList<SampleContainer>();
-    samplesRemoved.add(destinationSpot);
+    Well destinationWell = new Well(129L);
+    Collection<SampleContainer> samplesRemoved = new ArrayList<>();
+    samplesRemoved.add(destinationWell);
 
     Activity activity =
         transferActivityService.undoErroneous(transfer, "unit_test", samplesRemoved);
@@ -175,15 +174,15 @@ public class TransferActivityServiceTest {
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
-    UpdateActivity updateSpotActivity = new UpdateActivity();
-    updateSpotActivity.setActionType(ActionType.UPDATE);
-    updateSpotActivity.setTableName("samplecontainer");
-    updateSpotActivity.setRecordId(destinationSpot.getId());
-    updateSpotActivity.setColumn("sampleId");
-    updateSpotActivity.setOldValue("1");
-    updateSpotActivity.setNewValue(null);
-    expecteds.add(updateSpotActivity);
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity updateWellActivity = new UpdateActivity();
+    updateWellActivity.setActionType(ActionType.UPDATE);
+    updateWellActivity.setTableName("samplecontainer");
+    updateWellActivity.setRecordId(destinationWell.getId());
+    updateWellActivity.setColumn("sampleId");
+    updateWellActivity.setOldValue("1");
+    updateWellActivity.setNewValue(null);
+    expecteds.add(updateWellActivity);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
 
@@ -202,7 +201,7 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoFailed_NoBan_Spot() {
+  public void logUndoFailed_NoBan_Well() {
     Transfer transfer = new Transfer(9L);
 
     Activity activity = transferActivityService.undoFailed(transfer, "unit_test", null);
@@ -219,18 +218,17 @@ public class TransferActivityServiceTest {
   public void logUndoFailed_Ban_Tube() {
     Transfer transfer = new Transfer(3L);
     Tube destinationTube = new Tube(7L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationTube);
 
-    Activity activity =
-        transferActivityService.undoFailed(transfer, "unit_test", bannedContainers);
+    Activity activity = transferActivityService.undoFailed(transfer, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateTubeActivity = new UpdateActivity();
     updateTubeActivity.setActionType(ActionType.UPDATE);
     updateTubeActivity.setTableName("samplecontainer");
@@ -243,29 +241,28 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoFailed_Ban_Spot() {
+  public void logUndoFailed_Ban_Well() {
     Transfer transfer = new Transfer(9L);
-    Well destinationSpot = new Well(129L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
-    bannedContainers.add(destinationSpot);
+    Well destinationWell = new Well(129L);
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
+    bannedContainers.add(destinationWell);
 
-    Activity activity =
-        transferActivityService.undoFailed(transfer, "unit_test", bannedContainers);
+    Activity activity = transferActivityService.undoFailed(transfer, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
-    UpdateActivity updateSpotActivity = new UpdateActivity();
-    updateSpotActivity.setActionType(ActionType.UPDATE);
-    updateSpotActivity.setTableName("samplecontainer");
-    updateSpotActivity.setRecordId(destinationSpot.getId());
-    updateSpotActivity.setColumn("banned");
-    updateSpotActivity.setOldValue("0");
-    updateSpotActivity.setNewValue("1");
-    expecteds.add(updateSpotActivity);
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity updateWellActivity = new UpdateActivity();
+    updateWellActivity.setActionType(ActionType.UPDATE);
+    updateWellActivity.setTableName("samplecontainer");
+    updateWellActivity.setRecordId(destinationWell.getId());
+    updateWellActivity.setColumn("banned");
+    updateWellActivity.setOldValue("0");
+    updateWellActivity.setNewValue("1");
+    expecteds.add(updateWellActivity);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
 
@@ -273,7 +270,7 @@ public class TransferActivityServiceTest {
   public void logUndoFailed_LongDescription() throws Throwable {
     Transfer transfer = new Transfer(9L);
     Tube sourceTube = new Tube(1L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     String reason = "long reason having more than 255 characters "
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"

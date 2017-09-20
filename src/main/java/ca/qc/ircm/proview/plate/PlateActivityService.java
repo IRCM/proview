@@ -83,36 +83,36 @@ public class PlateActivityService {
     return activity;
   }
 
-  private void validateSamePlate(Collection<Well> spots) {
-    if (!spots.isEmpty()) {
-      long plateId = spots.iterator().next().getPlate().getId();
-      for (Well spot : spots) {
-        if (spot.getPlate().getId() != plateId) {
-          throw new IllegalArgumentException("Spots are not from the same plates");
+  private void validateSamePlate(Collection<Well> wells) {
+    if (!wells.isEmpty()) {
+      long plateId = wells.iterator().next().getPlate().getId();
+      for (Well well : wells) {
+        if (well.getPlate().getId() != plateId) {
+          throw new IllegalArgumentException("Wells are not from the same plates");
         }
       }
     }
   }
 
   /**
-   * Creates an activity about spots being marked as banned.
+   * Creates an activity about wells being marked as banned.
    *
-   * @param spots
-   *          spots that were banned
+   * @param wells
+   *          wells that were banned
    * @param justification
-   *          justification for banning spots
-   * @return activity about spots being marked as banned
+   *          justification for banning wells
+   * @return activity about wells being marked as banned
    */
   @CheckReturnValue
-  public Activity ban(final Collection<Well> spots, final String justification) {
-    validateSamePlate(spots);
+  public Activity ban(final Collection<Well> wells, final String justification) {
+    validateSamePlate(wells);
     final User user = authorizationService.getCurrentUser();
-    final Plate plate = spots.iterator().next().getPlate();
+    final Plate plate = wells.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (Well spot : spots) {
-      Well oldPlateSpot = entityManager.find(Well.class, spot.getId());
-      updateBuilders.add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldPlateSpot));
+    for (Well well : wells) {
+      Well oldWell = entityManager.find(Well.class, well.getId());
+      updateBuilders.add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 
     // Keep updates that did not change.
@@ -134,26 +134,25 @@ public class PlateActivityService {
   }
 
   /**
-   * Creates an activity about spots being marked as reactivated.
+   * Creates an activity about wells being marked as reactivated.
    *
-   * @param spots
-   *          spots that were reactivated
+   * @param wells
+   *          wells that were reactivated
    * @param justification
-   *          justification for reactivating spots
-   * @return activity about spots being marked as reactivated
+   *          justification for reactivating wells
+   * @return activity about wells being marked as reactivated
    */
   @CheckReturnValue
-  public Activity activate(final Collection<Well> spots, final String justification) {
-    validateSamePlate(spots);
+  public Activity activate(final Collection<Well> wells, final String justification) {
+    validateSamePlate(wells);
     final User user = authorizationService.getCurrentUser();
-    Plate plate = spots.iterator().next().getPlate();
+    Plate plate = wells.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (Well spot : spots) {
-      assert spot.getPlate().equals(plate);
-      Well oldPlateSpot = entityManager.find(Well.class, spot.getId());
-      updateBuilders
-          .add(new ActivateSampleContainerUpdateActivityBuilder().oldContainer(oldPlateSpot));
+    for (Well well : wells) {
+      assert well.getPlate().equals(plate);
+      Well oldWell = entityManager.find(Well.class, well.getId());
+      updateBuilders.add(new ActivateSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 
     // Keep updates that did not change.

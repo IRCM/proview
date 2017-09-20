@@ -222,24 +222,24 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void insert_Spot() {
+  public void insert_Well() {
     final List<FractionationDetail> fractionationDetails = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     final Tube sourceTube = new Tube(1L);
-    Well destinationSpot1 = new Well(134L);
-    Well destinationSpot2 = new Well(135L);
-    destinationSpot1.setSample(sample);
-    destinationSpot2.setSample(sample);
+    Well destinationWell1 = new Well(134L);
+    Well destinationWell2 = new Well(135L);
+    destinationWell1.setSample(sample);
+    destinationWell2.setSample(sample);
     FractionationDetail fractionationDetail = new FractionationDetail();
     fractionationDetail.setSample(sample);
     fractionationDetail.setContainer(sourceTube);
-    fractionationDetail.setDestinationContainer(destinationSpot1);
+    fractionationDetail.setDestinationContainer(destinationWell1);
     fractionationDetail.setNumber(1);
     fractionationDetails.add(fractionationDetail);
     fractionationDetail = new FractionationDetail();
     fractionationDetail.setSample(sample);
     fractionationDetail.setContainer(sourceTube);
-    fractionationDetail.setDestinationContainer(destinationSpot2);
+    fractionationDetail.setDestinationContainer(destinationWell2);
     fractionationDetail.setNumber(2);
     fractionationDetails.add(fractionationDetail);
     Fractionation fractionation = new Fractionation();
@@ -288,7 +288,7 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoErroneous_SpotDestination() throws Throwable {
+  public void undoErroneous_WellDestination() throws Throwable {
     Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
     entityManager.detach(fractionation);
     when(fractionationActivityService.undoErroneous(any(Fractionation.class), any(String.class),
@@ -308,16 +308,16 @@ public class FractionationServiceTest {
     assertEquals("undo unit test", fractionation.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 1L);
     assertEquals((Long) 1L, sourceTube.getSample().getId());
-    Well destinationSpot = entityManager.find(Well.class, 128L);
-    assertNull(destinationSpot.getSample());
-    assertNull(destinationSpot.getTreatmentSample());
+    Well destinationWell = entityManager.find(Well.class, 128L);
+    assertNull(destinationWell.getSample());
+    assertNull(destinationWell.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(1, samplesRemoved.size());
     assertNotNull(findContainer(samplesRemoved, SampleContainerType.WELL, 128L));
   }
 
   @Test
-  public void undoErroneous_UsedContainer_SpotDestination_Enrichment() throws Throwable {
+  public void undoErroneous_UsedContainer_WellDestination_Enrichment() throws Throwable {
     Fractionation fractionation = entityManager.find(Fractionation.class, 285L);
     entityManager.detach(fractionation);
 
@@ -333,7 +333,7 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoErroneous_UsedContainer_SpotDestination_MsAnalysis() throws Throwable {
+  public void undoErroneous_UsedContainer_WellDestination_MsAnalysis() throws Throwable {
     Fractionation fractionation = entityManager.find(Fractionation.class, 286L);
     entityManager.detach(fractionation);
 
@@ -349,7 +349,7 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoFailed_NoBan_Spot() {
+  public void undoFailed_NoBan_Well() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
     entityManager.detach(fractionation);
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
@@ -372,7 +372,7 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination() {
+  public void undoFailed_Ban_WellDestination() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
     entityManager.detach(fractionation);
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
@@ -392,8 +392,8 @@ public class FractionationServiceTest {
     assertEquals("fail unit test", test.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 1L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 128L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 128L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(1, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 1L));
@@ -401,7 +401,7 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination_Transfer() {
+  public void undoFailed_Ban_WellDestination_Transfer() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 288L);
     entityManager.detach(fractionation);
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
@@ -421,14 +421,14 @@ public class FractionationServiceTest {
     assertEquals("fail unit test", fractionation.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 81L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1282L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1294L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1376L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1388L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1282L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1294L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1376L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1388L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 81L));
@@ -439,7 +439,7 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination_Fractionation() {
+  public void undoFailed_Ban_WellDestination_Fractionation() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 289L);
     entityManager.detach(fractionation);
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
@@ -458,18 +458,18 @@ public class FractionationServiceTest {
     assertEquals("fail unit test", fractionation.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 82L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1283L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1295L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1378L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1390L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1402L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1414L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1283L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1295L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1378L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1390L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1402L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1414L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 82L));
@@ -482,7 +482,7 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination_Transfer_Fractionation() {
+  public void undoFailed_Ban_WellDestination_Transfer_Fractionation() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 290L);
     entityManager.detach(fractionation);
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
@@ -501,22 +501,22 @@ public class FractionationServiceTest {
     assertEquals("fail unit test", fractionation.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 83L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1284L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1296L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1377L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1389L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1328L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1340L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1352L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1364L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1284L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1296L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1377L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1389L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1328L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1340L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1352L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1364L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 83L));
@@ -531,7 +531,7 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_SpotDestination_Fractionation_Transfer() {
+  public void undoFailed_Ban_WellDestination_Fractionation_Transfer() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 291L);
     entityManager.detach(fractionation);
     when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
@@ -550,26 +550,26 @@ public class FractionationServiceTest {
     assertEquals("fail unit test", test.getDeletionJustification());
     Tube sourceTube = entityManager.find(Tube.class, 84L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationSpot = entityManager.find(Well.class, 1285L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1297L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1379L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1391L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1403L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1415L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1329L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1341L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1353L);
-    assertEquals(true, destinationSpot.isBanned());
-    destinationSpot = entityManager.find(Well.class, 1365L);
-    assertEquals(true, destinationSpot.isBanned());
+    Well destinationWell = entityManager.find(Well.class, 1285L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1297L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1379L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1391L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1403L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1415L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1329L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1341L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1353L);
+    assertEquals(true, destinationWell.isBanned());
+    destinationWell = entityManager.find(Well.class, 1365L);
+    assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 84L));

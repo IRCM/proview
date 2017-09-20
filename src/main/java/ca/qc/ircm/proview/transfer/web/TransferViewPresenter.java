@@ -122,7 +122,7 @@ public class TransferViewPresenter implements BinderValidator {
   @Inject
   private TubeService tubeService;
   @Inject
-  private WellService plateSpotService;
+  private WellService wellService;
   @Inject
   private PlateService plateService;
   @Value("${spring.application.name}")
@@ -132,10 +132,10 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   protected TransferViewPresenter(TransferService transferService, TubeService tubeService,
-      WellService plateSpotService, PlateService plateService, String applicationName) {
+      WellService wellService, PlateService plateService, String applicationName) {
     this.transferService = transferService;
     this.tubeService = tubeService;
-    this.plateSpotService = plateSpotService;
+    this.wellService = wellService;
     this.plateService = plateService;
     this.applicationName = applicationName;
   }
@@ -282,10 +282,10 @@ public class TransferViewPresenter implements BinderValidator {
     if (plate != null) {
       view.sourcePlatePanel.setCaption(plate.getName());
       List<Well> wells =
-          samples.stream().flatMap(sample -> plateSpotService.location(sample, plate).stream())
+          samples.stream().flatMap(sample -> wellService.location(sample, plate).stream())
               .collect(Collectors.toList());
       view.sourcePlateForm.setPlate(plate);
-      view.sourcePlateForm.setSelectedSpots(wells.stream()
+      view.sourcePlateForm.setSelectedWells(wells.stream()
           .filter(w -> w.getPlate().getId().equals(plate.getId())).collect(Collectors.toList()));
     }
   }
@@ -303,7 +303,7 @@ public class TransferViewPresenter implements BinderValidator {
       plate = new Plate();
       plate.setName(name);
       plate.setType(view.destinationPlatesTypeField.getValue());
-      plate.initSpots();
+      plate.initWells();
     }
 
     view.destinationPlatePanel.setVisible(plate != null);
@@ -320,7 +320,7 @@ public class TransferViewPresenter implements BinderValidator {
     if (!plates.isEmpty()) {
       view.sourcePlatesField.setValue(plates.get(0));
     }
-    samples.stream().map(s -> plateSpotService.last(s)).filter(well -> well != null).findFirst()
+    samples.stream().map(s -> wellService.last(s)).filter(well -> well != null).findFirst()
         .ifPresent(w -> {
           plates.stream().filter(p -> p.getId().equals(w.getPlate().getId())).findAny()
               .ifPresent(p -> {
@@ -377,7 +377,7 @@ public class TransferViewPresenter implements BinderValidator {
   private ValidationResult validateSourcePlate() {
     view.sourcePlatesField.setComponentError(null);
     MessageResource resources = view.getResources();
-    Collection<Well> selectedWells = view.sourcePlateForm.getSelectedSpots();
+    Collection<Well> selectedWells = view.sourcePlateForm.getSelectedWells();
     if (selectedWells.isEmpty()) {
       logger.debug("No samples to transfer");
       String message = resources.message(SOURCE_PLATE_EMPTY);
@@ -411,17 +411,17 @@ public class TransferViewPresenter implements BinderValidator {
     view.destinationPlatesField.setComponentError(null);
     MessageResource resources = view.getResources();
     Plate plate = view.destinationPlateForm.getPlate();
-    Well spot = view.destinationPlateForm.getSelectedSpot();
-    if (spot == null) {
+    Well well = view.destinationPlateForm.getSelectedWell();
+    if (well == null) {
       logger.debug("No selection in destination plate");
       String message = resources.message(DESTINATION_PLATE_NO_SELECTION);
       view.destinationPlatesField.setComponentError(new UserError(message));
       return ValidationResult.error(message);
     }
-    int column = spot.getColumn();
-    int row = spot.getRow();
+    int column = well.getColumn();
+    int row = well.getRow();
     for (int i = 0; i < sources().size(); i++) {
-      if (plate.spot(row, column).getSample() != null) {
+      if (plate.well(row, column).getSample() != null) {
         logger.debug("Not enough free wells in destination plate starting from selection");
         String message = resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, samples.size());
         view.destinationPlatesField.setComponentError(new UserError(message));
@@ -449,7 +449,7 @@ public class TransferViewPresenter implements BinderValidator {
               .collect(Collectors.toList());
       return new ArrayList<>(sources);
     } else {
-      return new ArrayList<>(view.sourcePlateForm.getSelectedSpots());
+      return new ArrayList<>(view.sourcePlateForm.getSelectedWells());
     }
   }
 
@@ -460,12 +460,12 @@ public class TransferViewPresenter implements BinderValidator {
       return new ArrayList<>(destinations);
     } else {
       Plate plate = view.destinationPlateForm.getPlate();
-      Well spot = view.destinationPlateForm.getSelectedSpot();
-      int column = spot.getColumn();
-      int row = spot.getRow();
+      Well well = view.destinationPlateForm.getSelectedWell();
+      int column = well.getColumn();
+      int row = well.getRow();
       List<SampleContainer> destinations = new ArrayList<>();
       for (int i = 0; i < sources().size(); i++) {
-        destinations.add(plate.spot(row, column));
+        destinations.add(plate.well(row, column));
         row++;
         if (row >= plate.getRowCount()) {
           row = 0;

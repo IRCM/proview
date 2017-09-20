@@ -156,10 +156,10 @@ public class ActivityServiceTest {
   }
 
   @Test
-  public void allUpdateSpotActivities() throws Exception {
+  public void allUpdateWellActivities() throws Exception {
     Plate plate = new Plate(26L);
 
-    List<Activity> activities = activityService.allUpdateSpotActivities(plate);
+    List<Activity> activities = activityService.allUpdateWellActivities(plate);
 
     verify(authorizationService).checkAdminRole();
     // Ban.
@@ -167,7 +167,7 @@ public class ActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
-    assertEquals("problem with spots", activity.getJustification());
+    assertEquals("problem with wells", activity.getJustification());
     assertEquals(
         LocalDateTime.of(2011, 11, 16, 13, 53, 16, 0).atZone(ZoneId.systemDefault()).toInstant(),
         activity.getTimestamp());
@@ -183,8 +183,8 @@ public class ActivityServiceTest {
   }
 
   @Test
-  public void allUpdateSpotActivities_Null() throws Exception {
-    List<Activity> activities = activityService.allUpdateSpotActivities(null);
+  public void allUpdateWellActivities_Null() throws Exception {
+    List<Activity> activities = activityService.allUpdateWellActivities(null);
 
     assertTrue(activities.isEmpty());
   }
@@ -320,9 +320,8 @@ public class ActivityServiceTest {
     String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(
-        "Dilution\n"
-            + "Sample CAP_20111013_01 in tube CAP_20111013_01 with 10 µl of sample in 20 µl of Methanol",
+    assertEquals("Dilution\n"
+        + "Sample CAP_20111013_01 in tube CAP_20111013_01 with 10 µl of sample in 20 µl of Methanol",
         description);
   }
 
@@ -358,10 +357,9 @@ public class ActivityServiceTest {
     String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(
-        "Added standard\n"
-            + "Standard adh (2 μg) added to sample POLR2A_20141015_11 on plate A_20141015_01 (A-6)\n"
-            + "Standard adh (2 μg) added to sample POLR2A_20141015_12 on plate A_20141015_01 (B-6)",
+    assertEquals("Added standard\n"
+        + "Standard adh (2 μg) added to sample POLR2A_20141015_11 on plate A_20141015_01 (A-6)\n"
+        + "Standard adh (2 μg) added to sample POLR2A_20141015_12 on plate A_20141015_01 (B-6)",
         description);
   }
 
@@ -374,9 +372,8 @@ public class ActivityServiceTest {
     String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(
-        "Fractionation\n"
-            + "Sample FAM119A_band_01 from tube FAM119A_band_01 to tube FAM119A_band_01_F1 - fraction 1",
+    assertEquals("Fractionation\n"
+        + "Sample FAM119A_band_01 from tube FAM119A_band_01 to tube FAM119A_band_01_F1 - fraction 1",
         description);
   }
 

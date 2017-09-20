@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class PlateTest {
-  private Optional<Well> find(List<Well> spots, int row, int column) {
-    return spots.stream().filter(s -> s.getRow() == row && s.getColumn() == column).findAny();
+  private Optional<Well> find(List<Well> wells, int row, int column) {
+    return wells.stream().filter(s -> s.getRow() == row && s.getColumn() == column).findAny();
   }
 
   @Test
@@ -48,116 +48,116 @@ public class PlateTest {
   }
 
   @Test
-  public void initSpots() {
+  public void initWells() {
     Plate plate = new Plate();
 
-    plate.initSpots();
+    plate.initWells();
 
-    assertEquals(plate.getRowCount() * plate.getColumnCount(), plate.getSpots().size());
-    boolean[][] spotLocations = new boolean[plate.getRowCount()][plate.getColumnCount()];
-    for (Well spot : plate.getSpots()) {
-      assertEquals(plate, spot.getPlate());
-      spotLocations[spot.getRow()][spot.getColumn()] = true;
+    assertEquals(plate.getRowCount() * plate.getColumnCount(), plate.getWells().size());
+    boolean[][] wellLocations = new boolean[plate.getRowCount()][plate.getColumnCount()];
+    for (Well well : plate.getWells()) {
+      assertEquals(plate, well.getPlate());
+      wellLocations[well.getRow()][well.getColumn()] = true;
     }
-    for (int row = 0; row < spotLocations.length; row++) {
-      for (int column = 0; column < spotLocations[row].length; column++) {
-        assertTrue(spotLocations[row][column]);
+    for (int row = 0; row < wellLocations.length; row++) {
+      for (int column = 0; column < wellLocations[row].length; column++) {
+        assertTrue(wellLocations[row][column]);
       }
     }
   }
 
   @Test
-  public void spot() {
+  public void well() {
     Plate plate = new Plate();
-    plate.initSpots();
+    plate.initWells();
 
-    Well spot = plate.spot(0, 0);
-    assertEquals(0, spot.getRow());
-    assertEquals(0, spot.getColumn());
-    spot = plate.spot(0, 1);
-    assertEquals(0, spot.getRow());
-    assertEquals(1, spot.getColumn());
-    spot = plate.spot(1, 0);
-    assertEquals(1, spot.getRow());
-    assertEquals(0, spot.getColumn());
-    spot = plate.spot(plate.getRowCount() - 1, plate.getColumnCount() - 1);
-    assertEquals(plate.getRowCount() - 1, spot.getRow());
-    assertEquals(plate.getColumnCount() - 1, spot.getColumn());
-    spot = plate.spot(plate.getRowCount() - 1, plate.getColumnCount() - 2);
-    assertEquals(plate.getRowCount() - 1, spot.getRow());
-    assertEquals(plate.getColumnCount() - 2, spot.getColumn());
-    spot = plate.spot(plate.getRowCount() - 2, plate.getColumnCount() - 1);
-    assertEquals(plate.getRowCount() - 2, spot.getRow());
-    assertEquals(plate.getColumnCount() - 1, spot.getColumn());
+    Well well = plate.well(0, 0);
+    assertEquals(0, well.getRow());
+    assertEquals(0, well.getColumn());
+    well = plate.well(0, 1);
+    assertEquals(0, well.getRow());
+    assertEquals(1, well.getColumn());
+    well = plate.well(1, 0);
+    assertEquals(1, well.getRow());
+    assertEquals(0, well.getColumn());
+    well = plate.well(plate.getRowCount() - 1, plate.getColumnCount() - 1);
+    assertEquals(plate.getRowCount() - 1, well.getRow());
+    assertEquals(plate.getColumnCount() - 1, well.getColumn());
+    well = plate.well(plate.getRowCount() - 1, plate.getColumnCount() - 2);
+    assertEquals(plate.getRowCount() - 1, well.getRow());
+    assertEquals(plate.getColumnCount() - 2, well.getColumn());
+    well = plate.well(plate.getRowCount() - 2, plate.getColumnCount() - 1);
+    assertEquals(plate.getRowCount() - 2, well.getRow());
+    assertEquals(plate.getColumnCount() - 1, well.getColumn());
   }
 
   @Test
-  public void spots() {
+  public void wells() {
     Plate plate = new Plate();
-    plate.initSpots();
+    plate.initWells();
 
-    List<Well> spots = plate.spots(new WellLocation(0, 0), new WellLocation(0, 0));
-    assertEquals(1, spots.size());
-    assertTrue(find(spots, 0, 0).isPresent());
-    spots = plate.spots(new WellLocation(0, 0), new WellLocation(1, 0));
-    assertEquals(2, spots.size());
-    assertTrue(find(spots, 0, 0).isPresent());
-    assertTrue(find(spots, 1, 0).isPresent());
-    spots = plate.spots(new WellLocation(0, 0), new WellLocation(0, 1));
-    assertEquals(plate.getRowCount() + 1, spots.size());
+    List<Well> wells = plate.wells(new WellLocation(0, 0), new WellLocation(0, 0));
+    assertEquals(1, wells.size());
+    assertTrue(find(wells, 0, 0).isPresent());
+    wells = plate.wells(new WellLocation(0, 0), new WellLocation(1, 0));
+    assertEquals(2, wells.size());
+    assertTrue(find(wells, 0, 0).isPresent());
+    assertTrue(find(wells, 1, 0).isPresent());
+    wells = plate.wells(new WellLocation(0, 0), new WellLocation(0, 1));
+    assertEquals(plate.getRowCount() + 1, wells.size());
     for (int i = 0; i < plate.getRowCount(); i++) {
-      assertTrue(find(spots, i, 0).isPresent());
+      assertTrue(find(wells, i, 0).isPresent());
     }
-    assertTrue(find(spots, 0, 1).isPresent());
-    spots = plate.spots(new WellLocation(0, 0),
+    assertTrue(find(wells, 0, 1).isPresent());
+    wells = plate.wells(new WellLocation(0, 0),
         new WellLocation(plate.getRowCount(), plate.getColumnCount()));
-    assertEquals(plate.getSpots().size(), spots.size());
-    spots = plate.spots(new WellLocation(6, 2), new WellLocation(2, 5));
-    assertEquals(21, spots.size());
+    assertEquals(plate.getWells().size(), wells.size());
+    wells = plate.wells(new WellLocation(6, 2), new WellLocation(2, 5));
+    assertEquals(21, wells.size());
     for (int i = 6; i < plate.getRowCount(); i++) {
-      assertTrue(find(spots, i, 2).isPresent());
+      assertTrue(find(wells, i, 2).isPresent());
     }
     for (int i = 0; i < plate.getRowCount(); i++) {
-      assertTrue(find(spots, i, 3).isPresent());
+      assertTrue(find(wells, i, 3).isPresent());
     }
     for (int i = 0; i < plate.getRowCount(); i++) {
-      assertTrue(find(spots, i, 4).isPresent());
+      assertTrue(find(wells, i, 4).isPresent());
     }
     for (int i = 0; i < 2; i++) {
-      assertTrue(find(spots, i, 5).isPresent());
+      assertTrue(find(wells, i, 5).isPresent());
     }
-    spots = plate.spots(new WellLocation(2, 6), new WellLocation(5, 2));
-    assertEquals(0, spots.size());
+    wells = plate.wells(new WellLocation(2, 6), new WellLocation(5, 2));
+    assertEquals(0, wells.size());
   }
 
   @Test
-  public void getEmptySpotCount() {
+  public void getEmptyWellCount() {
     Plate plate = new Plate();
-    plate.initSpots();
+    plate.initWells();
 
-    assertEquals(plate.getRowCount() * plate.getColumnCount(), plate.getEmptySpotCount());
+    assertEquals(plate.getRowCount() * plate.getColumnCount(), plate.getEmptyWellCount());
     for (int i = 0; i < plate.getRowCount(); i++) {
-      find(plate.getSpots(), i, 3).orElse(null).setSample(new SubmissionSample());
+      find(plate.getWells(), i, 3).orElse(null).setSample(new SubmissionSample());
     }
-    assertEquals(plate.getRowCount() * (plate.getColumnCount() - 1), plate.getEmptySpotCount());
+    assertEquals(plate.getRowCount() * (plate.getColumnCount() - 1), plate.getEmptyWellCount());
     for (int i = 0; i < 5; i++) {
-      find(plate.getSpots(), i, 0).orElse(null).setSample(new SubmissionSample());
+      find(plate.getWells(), i, 0).orElse(null).setSample(new SubmissionSample());
     }
-    assertEquals(plate.getRowCount() * (plate.getColumnCount() - 1) - 5, plate.getEmptySpotCount());
+    assertEquals(plate.getRowCount() * (plate.getColumnCount() - 1) - 5, plate.getEmptyWellCount());
   }
 
   @Test
   public void getSampleCount() {
     Plate plate = new Plate();
-    plate.initSpots();
+    plate.initWells();
 
     assertEquals(0, plate.getSampleCount());
     for (int i = 0; i < plate.getRowCount(); i++) {
-      find(plate.getSpots(), i, 3).orElse(null).setSample(new SubmissionSample());
+      find(plate.getWells(), i, 3).orElse(null).setSample(new SubmissionSample());
     }
     assertEquals(plate.getRowCount(), plate.getSampleCount());
     for (int i = 0; i < 5; i++) {
-      find(plate.getSpots(), i, 0).orElse(null).setSample(new SubmissionSample());
+      find(plate.getWells(), i, 0).orElse(null).setSample(new SubmissionSample());
     }
     assertEquals(plate.getRowCount() + 5, plate.getSampleCount());
   }

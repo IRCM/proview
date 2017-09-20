@@ -68,12 +68,12 @@ public abstract class SampleContainer implements Data, Named, Serializable {
   @JoinColumn(name = "treatmentSampleId")
   private TreatmentSample treatmentSample;
   /**
-   * Timestamp of this PlateSpot. This property should not be set.
+   * Timestamp of this container. This property should not be set.
    */
   @Column(name = "time", nullable = false)
   private Instant timestamp;
   /**
-   * True if spot cannot receive a sample.
+   * True if container cannot receive a sample.
    */
   @Column(name = "banned", nullable = false)
   private boolean banned;

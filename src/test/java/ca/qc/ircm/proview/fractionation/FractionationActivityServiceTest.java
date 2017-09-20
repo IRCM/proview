@@ -80,7 +80,7 @@ public class FractionationActivityServiceTest {
     detail.setContainer(sourceTube);
     detail.setDestinationContainer(destinationTube);
     detail.setNumber(1);
-    List<FractionationDetail> details = new ArrayList<FractionationDetail>();
+    List<FractionationDetail> details = new ArrayList<>();
     details.add(detail);
     Fractionation fractionation = new Fractionation();
     fractionation.setId(123456L);
@@ -94,7 +94,7 @@ public class FractionationActivityServiceTest {
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals(null, activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity tubeSampleActivity = new UpdateActivity();
     tubeSampleActivity.setActionType(ActionType.INSERT);
     tubeSampleActivity.setTableName("samplecontainer");
@@ -104,17 +104,17 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void insert_Spot() {
+  public void insert_Well() {
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
-    Well destinationSpot = new Well(130L);
-    destinationSpot.setSample(sample);
+    Well destinationWell = new Well(130L);
+    destinationWell.setSample(sample);
     FractionationDetail detail = new FractionationDetail();
     detail.setSample(sample);
     detail.setContainer(sourceTube);
-    detail.setDestinationContainer(destinationSpot);
+    detail.setDestinationContainer(destinationWell);
     detail.setNumber(1);
-    List<FractionationDetail> details = new ArrayList<FractionationDetail>();
+    List<FractionationDetail> details = new ArrayList<>();
     details.add(detail);
     Fractionation fractionation = new Fractionation();
     fractionation.setId(123456L);
@@ -128,15 +128,15 @@ public class FractionationActivityServiceTest {
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals(null, activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
-    UpdateActivity spotSampleActivity = new UpdateActivity();
-    spotSampleActivity.setActionType(ActionType.UPDATE);
-    spotSampleActivity.setTableName("samplecontainer");
-    spotSampleActivity.setRecordId(destinationSpot.getId());
-    spotSampleActivity.setColumn("sampleId");
-    spotSampleActivity.setOldValue(null);
-    spotSampleActivity.setNewValue(sample.getId().toString());
-    expecteds.add(spotSampleActivity);
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity wellSampleActivity = new UpdateActivity();
+    wellSampleActivity.setActionType(ActionType.UPDATE);
+    wellSampleActivity.setTableName("samplecontainer");
+    wellSampleActivity.setRecordId(destinationWell.getId());
+    wellSampleActivity.setColumn("sampleId");
+    wellSampleActivity.setOldValue(null);
+    wellSampleActivity.setNewValue(sample.getId().toString());
+    expecteds.add(wellSampleActivity);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
 
@@ -144,7 +144,7 @@ public class FractionationActivityServiceTest {
   public void undoErroneous_Tube() {
     Fractionation fractionation = new Fractionation(2L);
     Tube destinationTube = new Tube(6L);
-    Collection<SampleContainer> samplesRemoved = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> samplesRemoved = new ArrayList<>();
     samplesRemoved.add(destinationTube);
 
     Activity activity =
@@ -155,7 +155,7 @@ public class FractionationActivityServiceTest {
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity deleteTubeActivity = new UpdateActivity();
     deleteTubeActivity.setActionType(ActionType.DELETE);
     deleteTubeActivity.setTableName("samplecontainer");
@@ -165,12 +165,12 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoErroneous_Spot() {
+  public void undoErroneous_Well() {
     final Sample sample = new SubmissionSample(1L);
     Fractionation fractionation = new Fractionation(8L);
-    Well destinationSpot = new Well(128L);
-    Collection<SampleContainer> samplesRemoved = new ArrayList<SampleContainer>();
-    samplesRemoved.add(destinationSpot);
+    Well destinationWell = new Well(128L);
+    Collection<SampleContainer> samplesRemoved = new ArrayList<>();
+    samplesRemoved.add(destinationWell);
 
     Activity activity =
         fractionationActivityService.undoErroneous(fractionation, "unit_test", samplesRemoved);
@@ -180,15 +180,15 @@ public class FractionationActivityServiceTest {
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
-    UpdateActivity updateSpotActivity = new UpdateActivity();
-    updateSpotActivity.setActionType(ActionType.UPDATE);
-    updateSpotActivity.setTableName("samplecontainer");
-    updateSpotActivity.setRecordId(destinationSpot.getId());
-    updateSpotActivity.setColumn("sampleId");
-    updateSpotActivity.setOldValue(sample.getId().toString());
-    updateSpotActivity.setNewValue(null);
-    expecteds.add(updateSpotActivity);
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity updateWellActivity = new UpdateActivity();
+    updateWellActivity.setActionType(ActionType.UPDATE);
+    updateWellActivity.setTableName("samplecontainer");
+    updateWellActivity.setRecordId(destinationWell.getId());
+    updateWellActivity.setColumn("sampleId");
+    updateWellActivity.setOldValue(sample.getId().toString());
+    updateWellActivity.setNewValue(null);
+    expecteds.add(updateWellActivity);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
 
@@ -196,8 +196,7 @@ public class FractionationActivityServiceTest {
   public void undoFailed_NoBan_Tube() {
     Fractionation fractionation = new Fractionation(2L);
 
-    Activity activity =
-        fractionationActivityService.undoFailed(fractionation, "unit_test", null);
+    Activity activity = fractionationActivityService.undoFailed(fractionation, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -208,11 +207,10 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoFailed_NoBan_Spot() {
+  public void undoFailed_NoBan_Well() {
     Fractionation fractionation = new Fractionation(8L);
 
-    Activity activity =
-        fractionationActivityService.undoFailed(fractionation, "unit_test", null);
+    Activity activity = fractionationActivityService.undoFailed(fractionation, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -226,7 +224,7 @@ public class FractionationActivityServiceTest {
   public void undoFailed_Ban_Tube() {
     Fractionation fractionation = new Fractionation(2L);
     Tube destinationTube = new Tube(6L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationTube);
 
     Activity activity =
@@ -237,7 +235,7 @@ public class FractionationActivityServiceTest {
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateTubeActivity = new UpdateActivity();
     updateTubeActivity.setActionType(ActionType.UPDATE);
     updateTubeActivity.setTableName("samplecontainer");
@@ -250,11 +248,11 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Spot() {
+  public void undoFailed_Ban_Well() {
     Fractionation fractionation = new Fractionation(8L);
-    Well destinationSpot = new Well(128L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
-    bannedContainers.add(destinationSpot);
+    Well destinationWell = new Well(128L);
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
+    bannedContainers.add(destinationWell);
 
     Activity activity =
         fractionationActivityService.undoFailed(fractionation, "unit_test", bannedContainers);
@@ -264,15 +262,15 @@ public class FractionationActivityServiceTest {
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getJustification());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
-    UpdateActivity updateSpotActivity = new UpdateActivity();
-    updateSpotActivity.setActionType(ActionType.UPDATE);
-    updateSpotActivity.setTableName("samplecontainer");
-    updateSpotActivity.setRecordId(destinationSpot.getId());
-    updateSpotActivity.setColumn("banned");
-    updateSpotActivity.setOldValue("0");
-    updateSpotActivity.setNewValue("1");
-    expecteds.add(updateSpotActivity);
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity updateWellActivity = new UpdateActivity();
+    updateWellActivity.setActionType(ActionType.UPDATE);
+    updateWellActivity.setTableName("samplecontainer");
+    updateWellActivity.setRecordId(destinationWell.getId());
+    updateWellActivity.setColumn("banned");
+    updateWellActivity.setOldValue("0");
+    updateWellActivity.setNewValue("1");
+    expecteds.add(updateWellActivity);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
 
@@ -280,7 +278,7 @@ public class FractionationActivityServiceTest {
   public void undoFailed_LongDescription() throws Throwable {
     Fractionation fractionation = new Fractionation(2L);
     Tube sourceTube = new Tube(1L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     String reason = "long reason having more than 255 characters "
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"

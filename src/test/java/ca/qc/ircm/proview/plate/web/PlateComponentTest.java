@@ -55,7 +55,7 @@ public class PlateComponentTest {
   public void beforeTest() throws Throwable {
     view = new PlateComponent(presenter);
     plate = new Plate();
-    plate.initSpots();
+    plate.initWells();
   }
 
   @Test
@@ -110,37 +110,37 @@ public class PlateComponentTest {
   }
 
   @Test
-  public void getSelectedSpot() {
-    Well well = plate.spot(1, 1);
-    when(presenter.getSelectedSpot()).thenReturn(well);
+  public void getSelectedWell() {
+    Well well = plate.well(1, 1);
+    when(presenter.getSelectedWell()).thenReturn(well);
 
-    assertEquals(well, view.getSelectedSpot());
+    assertEquals(well, view.getSelectedWell());
 
-    verify(presenter).getSelectedSpot();
+    verify(presenter).getSelectedWell();
   }
 
   @Test
-  public void getSelectedSpots() {
-    Well well1 = plate.spot(0, 0);
-    Well well2 = plate.spot(1, 1);
-    when(presenter.getSelectedSpots()).thenReturn(Arrays.asList(well1, well2));
+  public void getSelectedWells() {
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 1);
+    when(presenter.getSelectedWells()).thenReturn(Arrays.asList(well1, well2));
 
-    Collection<Well> wells = view.getSelectedSpots();
+    Collection<Well> wells = view.getSelectedWells();
 
     assertTrue(wells.contains(well1));
     assertTrue(wells.contains(well2));
-    verify(presenter).getSelectedSpots();
+    verify(presenter).getSelectedWells();
   }
 
   @Test
-  public void setSelectedSpots() {
-    Well well1 = plate.spot(0, 0);
-    Well well2 = plate.spot(1, 1);
+  public void setSelectedWells() {
+    Well well1 = plate.well(0, 0);
+    Well well2 = plate.well(1, 1);
     List<Well> wells = Arrays.asList(well1, well2);
 
-    view.setSelectedSpots(wells);
+    view.setSelectedWells(wells);
 
-    verify(presenter).setSelectedSpots(wells);
+    verify(presenter).setSelectedWells(wells);
   }
 
   @Test

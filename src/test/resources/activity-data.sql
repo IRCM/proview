@@ -70,7 +70,7 @@ VALUES (5568,2,'msanalysis',14,'INSERT','2011-11-15 10:09:11',NULL);
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
 VALUES (5569,2,'treatment',8,'INSERT','2011-11-16 13:31:13',NULL);
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
-VALUES (5570,2,'plate',26,'UPDATE','2011-11-16 13:53:16','problem with spots');
+VALUES (5570,2,'plate',26,'UPDATE','2011-11-16 13:53:16','problem with wells');
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
 VALUES (5571,10,'submission',36,'INSERT','2011-11-16 14:29:32',NULL);
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
