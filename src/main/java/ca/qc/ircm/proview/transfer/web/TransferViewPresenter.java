@@ -176,7 +176,7 @@ public class TransferViewPresenter implements BinderValidator {
     view.sourcePlatePanel.addStyleName(SOURCE_PLATE_PANEL);
     view.sourcePlatePanel.setVisible(false);
     view.sourcePlateForm.addStyleName(SOURCE_PLATE);
-    view.sourcePlateFormPresenter.setMultiSelect(true);
+    view.sourcePlateForm.setMultiSelect(true);
     view.destination.addStyleName(DESTINATION);
     view.destination.setCaption(resources.message(DESTINATION));
     view.destinationType.addStyleName(DESTINATION_TABS);
@@ -284,8 +284,8 @@ public class TransferViewPresenter implements BinderValidator {
       List<PlateSpot> wells =
           samples.stream().flatMap(sample -> plateSpotService.location(sample, plate).stream())
               .collect(Collectors.toList());
-      view.sourcePlateFormPresenter.setPlate(plate);
-      view.sourcePlateFormPresenter.setSelectedSpots(wells.stream()
+      view.sourcePlateForm.setPlate(plate);
+      view.sourcePlateForm.setSelectedSpots(wells.stream()
           .filter(w -> w.getPlate().getId().equals(plate.getId())).collect(Collectors.toList()));
     }
   }
@@ -308,7 +308,7 @@ public class TransferViewPresenter implements BinderValidator {
 
     view.destinationPlatePanel.setVisible(plate != null);
     view.destinationPlatePanel.setCaption(plate.getName());
-    view.destinationPlateFormPresenter.setPlate(plate);
+    view.destinationPlateForm.setPlate(plate);
   }
 
   private void updateSamples() {
@@ -377,7 +377,7 @@ public class TransferViewPresenter implements BinderValidator {
   private ValidationResult validateSourcePlate() {
     view.sourcePlatesField.setComponentError(null);
     MessageResource resources = view.getResources();
-    Collection<PlateSpot> selectedWells = view.sourcePlateFormPresenter.getSelectedSpots();
+    Collection<PlateSpot> selectedWells = view.sourcePlateForm.getSelectedSpots();
     if (selectedWells.isEmpty()) {
       logger.debug("No samples to transfer");
       String message = resources.message(SOURCE_PLATE_EMPTY);
@@ -410,8 +410,8 @@ public class TransferViewPresenter implements BinderValidator {
   private ValidationResult validateDestinationPlate() {
     view.destinationPlatesField.setComponentError(null);
     MessageResource resources = view.getResources();
-    Plate plate = view.destinationPlateFormPresenter.getPlate();
-    PlateSpot spot = view.destinationPlateFormPresenter.getSelectedSpot();
+    Plate plate = view.destinationPlateForm.getPlate();
+    PlateSpot spot = view.destinationPlateForm.getSelectedSpot();
     if (spot == null) {
       logger.debug("No selection in destination plate");
       String message = resources.message(DESTINATION_PLATE_NO_SELECTION);
@@ -449,7 +449,7 @@ public class TransferViewPresenter implements BinderValidator {
               .collect(Collectors.toList());
       return new ArrayList<>(sources);
     } else {
-      return new ArrayList<>(view.sourcePlateFormPresenter.getSelectedSpots());
+      return new ArrayList<>(view.sourcePlateForm.getSelectedSpots());
     }
   }
 
@@ -459,8 +459,8 @@ public class TransferViewPresenter implements BinderValidator {
           .map(sample -> destinationTubeBinders.get(sample).getBean()).collect(Collectors.toList());
       return new ArrayList<>(destinations);
     } else {
-      Plate plate = view.destinationPlateFormPresenter.getPlate();
-      PlateSpot spot = view.destinationPlateFormPresenter.getSelectedSpot();
+      Plate plate = view.destinationPlateForm.getPlate();
+      PlateSpot spot = view.destinationPlateForm.getSelectedSpot();
       int column = spot.getColumn();
       int row = spot.getRow();
       List<SampleContainer> destinations = new ArrayList<>();

@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.plate.web;
 
-import static ca.qc.ircm.proview.plate.web.PlateComponentPresenter.SELECTED_STYLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -28,220 +28,74 @@ import static org.junit.Assert.fail;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
 import ca.qc.ircm.proview.plate.PlateType;
+import ca.qc.ircm.proview.sample.Control;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import com.vaadin.addon.spreadsheet.Spreadsheet;
+import com.vaadin.addon.spreadsheet.Spreadsheet.CellValueChangeEvent;
+import com.vaadin.addon.spreadsheet.Spreadsheet.CellValueChangeListener;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellReference;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class PlateComponentPresenterTest {
   private PlateComponentPresenter presenter;
-  private PlateComponent view = new PlateComponent();
-  private Plate plate = new Plate();
-  private int columns = 12;
-  private int rows = 8;
+  @Mock
+  private PlateComponent view;
 
   /**
    * Before test.
    */
   @Before
-  public void beforeTest() {
-    initPlate();
+  public void beforeTest() throws Throwable {
     presenter = new PlateComponentPresenter();
-  }
-
-  private void initPlate() {
-    plate.setType(PlateType.A);
-    plate.initSpots();
+    view.spreadsheet = new Spreadsheet(getClass().getResourceAsStream("/Plate-Template.xlsx"));
   }
 
   @Test
-  public void selectWell() {
+  public void spreadsheet() {
     presenter.init(view);
-    presenter.setPlate(plate);
-    PlateSpot spot = plate.spot(0, 0);
 
-    presenter.selectWell(spot);
-
-    assertTrue(view.plateLayout.getWellStyleName(spot.getColumn(), spot.getRow())
-        .contains(SELECTED_STYLE));
-    assertEquals(1, presenter.getSelectedSpots().size());
-    assertTrue(presenter.getSelectedSpots().contains(spot));
-  }
-
-  @Test
-  public void deselectWell() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    PlateSpot spot = plate.spot(0, 0);
-    presenter.selectWell(spot);
-
-    presenter.deselectWell(spot);
-
-    assertFalse(view.plateLayout.getWellStyleName(spot.getColumn(), spot.getRow())
-        .contains(SELECTED_STYLE));
-    assertEquals(0, presenter.getSelectedSpots().size());
-  }
-
-  @Test
-  public void deselectAllWells() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    presenter.setMultiSelect(true);
-    PlateSpot spot1 = plate.spot(0, 0);
-    presenter.selectWell(spot1);
-    PlateSpot spot2 = plate.spot(1, 1);
-    presenter.selectWell(spot2);
-
-    presenter.deselectAllWells();
-
-    assertFalse(view.plateLayout.getWellStyleName(spot1.getColumn(), spot1.getRow())
-        .contains(SELECTED_STYLE));
-    assertFalse(view.plateLayout.getWellStyleName(spot2.getColumn(), spot2.getRow())
-        .contains(SELECTED_STYLE));
-    assertEquals(0, presenter.getSelectedSpots().size());
-  }
-
-  @Test
-  public void selectColumn_Multi() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    presenter.setMultiSelect(true);
-    int column = 0;
-
-    presenter.selectColumn(column);
-
-    for (int row = 0; row < rows; row++) {
-      assertTrue(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
+    assertFalse(view.spreadsheet.isFunctionBarVisible());
+    assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
+    assertFalse(view.spreadsheet.isRowColHeadingsVisible());
+    Plate plate = presenter.getPlate();
+    assertEquals(plate.getRowCount() + 1, view.spreadsheet.getRows());
+    assertEquals(plate.getColumnCount() + 1, view.spreadsheet.getColumns());
+    Sheet sheet = view.spreadsheet.getActiveSheet();
+    for (int rowIndex = 0; rowIndex < plate.getRowCount() + 1; rowIndex++) {
+      Row row = sheet.getRow(rowIndex);
+      for (int column = 0; column < plate.getColumnCount() + 1; column++) {
+        Cell cell = row.getCell(column);
+        CellStyle style = cell.getCellStyle();
+        assertEquals(rowIndex + "-" + column, rowIndex == 0 || column == 0, style.getLocked());
+        if (rowIndex > 0 && column > 0) {
+          assertEquals("", view.spreadsheet.getCellValue(cell));
+        }
+      }
     }
-    assertEquals(rows, presenter.getSelectedSpots().size());
-    for (int row = 0; row < rows; row++) {
-      assertTrue(presenter.getSelectedSpots().contains(plate.spot(row, column)));
-    }
-  }
-
-  @Test
-  public void selectColumn_NotMulti() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    int column = 0;
-
-    presenter.selectColumn(column);
-
-    for (int row = 0; row < rows; row++) {
-      assertFalse(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
-    }
-    assertEquals(0, presenter.getSelectedSpots().size());
-  }
-
-  @Test
-  public void deselectColumn_Multi() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    presenter.setMultiSelect(true);
-    int column = 0;
-    presenter.selectWell(plate.spot(0, column));
-
-    presenter.deselectColumn(column);
-
-    for (int row = 0; row < rows; row++) {
-      assertFalse(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
-    }
-    assertEquals(0, presenter.getSelectedSpots().size());
-  }
-
-  @Test
-  public void deselectColumn_NotMulti() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    int column = 0;
-    presenter.selectWell(plate.spot(0, column));
-
-    presenter.deselectColumn(column);
-
-    assertTrue(view.plateLayout.getWellStyleName(column, 0).contains(SELECTED_STYLE));
-    for (int row = 1; row < rows; row++) {
-      assertFalse(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
-    }
-    assertEquals(1, presenter.getSelectedSpots().size());
-    assertTrue(presenter.getSelectedSpots().contains(plate.spot(0, column)));
-  }
-
-  @Test
-  public void selectRow_Multi() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    presenter.setMultiSelect(true);
-    int row = 0;
-
-    presenter.selectRow(row);
-
-    for (int column = 0; column < columns; column++) {
-      assertTrue(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
-    }
-    assertEquals(columns, presenter.getSelectedSpots().size());
-    for (int column = 0; column < columns; column++) {
-      assertTrue(presenter.getSelectedSpots().contains(plate.spot(row, column)));
-    }
-  }
-
-  @Test
-  public void selectRow_NotMulti() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    int row = 0;
-
-    presenter.selectRow(row);
-
-    for (int column = 0; column < columns; column++) {
-      assertFalse(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
-    }
-    assertEquals(0, presenter.getSelectedSpots().size());
-  }
-
-  @Test
-  public void deselectRow_Multi() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    presenter.setMultiSelect(true);
-    int row = 0;
-    presenter.selectWell(plate.spot(row, 0));
-
-    presenter.deselectRow(row);
-
-    for (int column = 0; column < columns; column++) {
-      assertFalse(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
-    }
-    assertEquals(0, presenter.getSelectedSpots().size());
-  }
-
-  @Test
-  public void deselectRow_NotNulti() {
-    presenter.init(view);
-    presenter.setPlate(plate);
-    int row = 0;
-    presenter.selectWell(plate.spot(row, 0));
-
-    presenter.deselectRow(row);
-
-    assertTrue(view.plateLayout.getWellStyleName(0, row).contains(SELECTED_STYLE));
-    for (int column = 1; column < columns; column++) {
-      assertFalse(view.plateLayout.getWellStyleName(column, row).contains(SELECTED_STYLE));
-    }
-    assertEquals(1, presenter.getSelectedSpots().size());
-    assertTrue(presenter.getSelectedSpots().contains(plate.spot(row, 0)));
   }
 
   @Test
   public void isMultiSelect() {
     presenter.init(view);
-    presenter.setPlate(plate);
 
     assertFalse(presenter.isMultiSelect());
 
@@ -255,56 +109,75 @@ public class PlateComponentPresenterTest {
   @Test
   public void setMultiSelect() {
     presenter.init(view);
-    presenter.setPlate(plate);
+    Plate plate = presenter.getPlate();
 
     presenter.setMultiSelect(true);
 
     PlateSpot spot1 = plate.spot(0, 0);
-    presenter.selectWell(spot1);
-    PlateSpot spot2 = plate.spot(1, 1);
-    presenter.selectWell(spot2);
-    assertTrue(view.plateLayout.getWellStyleName(spot1.getColumn(), spot1.getRow())
-        .contains(SELECTED_STYLE));
-    assertTrue(view.plateLayout.getWellStyleName(spot2.getColumn(), spot2.getRow())
-        .contains(SELECTED_STYLE));
-    assertEquals(2, presenter.getSelectedSpots().size());
+    PlateSpot spot2 = plate.spot(1, 2);
+    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(6, references.size());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 0 && ref.getCol() - 1 == 1)
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 0 && ref.getCol() - 1 == 2)
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 1 && ref.getCol() - 1 == 0)
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 1 && ref.getCol() - 1 == 1)
+        .findAny().isPresent());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot2.getRow() && ref.getCol() - 1 == spot2.getColumn())
+        .findAny().isPresent());
+    assertEquals(6, presenter.getSelectedSpots().size());
     assertTrue(presenter.getSelectedSpots().contains(spot1));
+    assertTrue(presenter.getSelectedSpots().contains(plate.spot(0, 1)));
+    assertTrue(presenter.getSelectedSpots().contains(plate.spot(0, 2)));
+    assertTrue(presenter.getSelectedSpots().contains(plate.spot(1, 0)));
+    assertTrue(presenter.getSelectedSpots().contains(plate.spot(1, 1)));
     assertTrue(presenter.getSelectedSpots().contains(spot2));
   }
 
   @Test
   public void getSelectedSpot_NotMulti() {
     presenter.init(view);
-    presenter.setPlate(plate);
+    Plate plate = presenter.getPlate();
     PlateSpot spot1 = plate.spot(0, 0);
-    presenter.selectWell(spot1);
-    PlateSpot spot2 = plate.spot(1, 1);
-    presenter.selectWell(spot2);
+    PlateSpot spot2 = plate.spot(1, 2);
+    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
 
     PlateSpot spot = presenter.getSelectedSpot();
 
-    assertEquals(spot2, spot);
+    assertEquals(spot1, spot);
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(1, references.size());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .findAny().isPresent());
   }
 
   @Test
   public void getSelectedSpot_None() {
     presenter.init(view);
-    presenter.setPlate(plate);
 
     PlateSpot spot = presenter.getSelectedSpot();
 
     assertNull(spot);
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(0, references.size());
   }
 
   @Test
   public void getSelectedSpot_Multi() {
     presenter.init(view);
-    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
+    Plate plate = presenter.getPlate();
     PlateSpot spot1 = plate.spot(0, 0);
-    presenter.selectWell(spot1);
-    PlateSpot spot2 = plate.spot(1, 1);
-    presenter.selectWell(spot2);
+    PlateSpot spot2 = plate.spot(1, 2);
+    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
 
     try {
       presenter.getSelectedSpot();
@@ -317,59 +190,79 @@ public class PlateComponentPresenterTest {
   @Test
   public void getSelectedSpots_Multi() {
     presenter.init(view);
-    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
+    Plate plate = presenter.getPlate();
     PlateSpot spot1 = plate.spot(0, 0);
-    presenter.selectWell(spot1);
-    PlateSpot spot2 = plate.spot(1, 1);
-    presenter.selectWell(spot2);
+    PlateSpot spot2 = plate.spot(1, 2);
+    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
 
     Collection<PlateSpot> spots = presenter.getSelectedSpots();
 
-    assertEquals(2, spots.size());
+    assertEquals(6, spots.size());
     assertTrue(spots.contains(spot1));
     assertTrue(spots.contains(spot2));
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(6, references.size());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 0 && ref.getCol() - 1 == 1)
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 0 && ref.getCol() - 1 == 2)
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 1 && ref.getCol() - 1 == 0)
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 1 && ref.getCol() - 1 == 1)
+        .findAny().isPresent());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot2.getRow() && ref.getCol() - 1 == spot2.getColumn())
+        .findAny().isPresent());
   }
 
   @Test
   public void getSelectedSpots_NotMulti() {
     presenter.init(view);
-    presenter.setPlate(plate);
+    Plate plate = presenter.getPlate();
     PlateSpot spot1 = plate.spot(0, 0);
-    presenter.selectWell(spot1);
-    PlateSpot spot2 = plate.spot(1, 1);
-    presenter.selectWell(spot2);
+    PlateSpot spot2 = plate.spot(1, 2);
+    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
 
     Collection<PlateSpot> spots = presenter.getSelectedSpots();
 
     assertEquals(1, spots.size());
-    assertFalse(spots.contains(spot1));
-    assertTrue(spots.contains(spot2));
+    assertTrue(spots.contains(spot1));
+    assertFalse(spots.contains(spot2));
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(1, references.size());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .findAny().isPresent());
   }
 
   @Test
   public void getSelectedSpots_MultiThanNotMulti() {
     presenter.init(view);
-    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
+    Plate plate = presenter.getPlate();
     PlateSpot spot1 = plate.spot(0, 0);
-    presenter.selectWell(spot1);
-    PlateSpot spot2 = plate.spot(1, 1);
-    presenter.selectWell(spot2);
+    PlateSpot spot2 = plate.spot(1, 2);
+    presenter.setSelectedSpots(Arrays.asList(spot1, spot2));
     presenter.setMultiSelect(false);
 
     Collection<PlateSpot> spots = presenter.getSelectedSpots();
 
     assertEquals(0, spots.size());
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(0, references.size());
   }
 
   @Test
   public void setSelectedSpots_Multi() {
     presenter.init(view);
-    presenter.setPlate(plate);
     presenter.setMultiSelect(true);
+    Plate plate = presenter.getPlate();
     PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 1);
+    PlateSpot spot2 = plate.spot(1, 2);
     List<PlateSpot> spots = new ArrayList<>();
     spots.add(spot1);
     spots.add(spot2);
@@ -377,21 +270,37 @@ public class PlateComponentPresenterTest {
     presenter.setSelectedSpots(spots);
 
     Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
-    assertEquals(2, selectedSpots.size());
+    assertEquals(6, selectedSpots.size());
     assertTrue(selectedSpots.contains(spot1));
+    assertTrue(selectedSpots.contains(plate.spot(0, 1)));
+    assertTrue(selectedSpots.contains(plate.spot(0, 2)));
+    assertTrue(selectedSpots.contains(plate.spot(1, 0)));
+    assertTrue(selectedSpots.contains(plate.spot(1, 1)));
     assertTrue(selectedSpots.contains(spot2));
-    assertTrue(view.plateLayout.getWellStyleName(spot1.getColumn(), spot1.getRow())
-        .contains(SELECTED_STYLE));
-    assertTrue(view.plateLayout.getWellStyleName(spot2.getColumn(), spot2.getRow())
-        .contains(SELECTED_STYLE));
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(6, references.size());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 0 && ref.getCol() - 1 == 1)
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 0 && ref.getCol() - 1 == 2)
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 1 && ref.getCol() - 1 == 0)
+        .findAny().isPresent());
+    assertTrue(references.stream().filter(ref -> ref.getRow() - 1 == 1 && ref.getCol() - 1 == 1)
+        .findAny().isPresent());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot2.getRow() && ref.getCol() - 1 == spot2.getColumn())
+        .findAny().isPresent());
   }
 
   @Test
   public void setSelectedSpots_NotMulti() {
     presenter.init(view);
-    presenter.setPlate(plate);
+    Plate plate = presenter.getPlate();
     PlateSpot spot1 = plate.spot(0, 0);
-    PlateSpot spot2 = plate.spot(1, 1);
+    PlateSpot spot2 = plate.spot(1, 2);
     List<PlateSpot> spots = new ArrayList<>();
     spots.add(spot1);
     spots.add(spot2);
@@ -400,17 +309,20 @@ public class PlateComponentPresenterTest {
 
     Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
     assertEquals(1, selectedSpots.size());
-    assertFalse(selectedSpots.contains(spot1));
-    assertTrue(selectedSpots.contains(spot2));
-    assertFalse(view.plateLayout.getWellStyleName(spot1.getColumn(), spot1.getRow())
-        .contains(SELECTED_STYLE));
-    assertTrue(view.plateLayout.getWellStyleName(spot2.getColumn(), spot2.getRow())
-        .contains(SELECTED_STYLE));
+    assertTrue(selectedSpots.contains(spot1));
+    assertFalse(selectedSpots.contains(spot2));
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(1, references.size());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .findAny().isPresent());
   }
 
   @Test
   public void getPlate() {
     presenter.init(view);
+    Plate plate = new Plate();
+    plate.initSpots();
     presenter.setPlate(plate);
 
     assertSame(plate, presenter.getPlate());
@@ -419,17 +331,50 @@ public class PlateComponentPresenterTest {
   @Test
   public void setPlate() {
     presenter.init(view);
-    initPlate();
+    Plate plate = new Plate();
+    plate.initSpots();
+    PlateSpot spot1 = plate.spot(0, 0);
+    spot1.setSample(new SubmissionSample(1L, "test 1"));
+    PlateSpot spot2 = plate.spot(0, 1);
+    spot2.setSample(new Control(1L, "test control 1"));
+    PlateSpot spot3 = plate.spot(0, 2);
+    spot3.setSample(new SubmissionSample(2L, "test control 2"));
+    PlateSpot spot4 = plate.spot(1, 0);
+    spot4.setSample(new SubmissionSample(4L, "test control 4"));
 
     presenter.setPlate(plate);
 
     assertSame(plate, presenter.getPlate());
+    Sheet sheet = view.spreadsheet.getActiveSheet();
+    assertEquals(spot1.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(spot1.getRow() + 1).getCell(spot1.getColumn() + 1)));
+    assertEquals(spot2.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(spot2.getRow() + 1).getCell(spot2.getColumn() + 1)));
+    assertEquals(spot3.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(spot3.getRow() + 1).getCell(spot3.getColumn() + 1)));
+    assertEquals(spot4.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(spot4.getRow() + 1).getCell(spot4.getColumn() + 1)));
+  }
+
+  @Test
+  public void setPlate_DifferentSize() {
+    presenter.init(view);
+    Plate plate = new Plate();
+    plate.setRowCount(13);
+    plate.setColumnCount(15);
+    plate.initSpots();
+
+    presenter.setPlate(plate);
+
+    assertSame(plate, presenter.getPlate());
+    assertEquals(14, view.spreadsheet.getRows());
+    assertEquals(16, view.spreadsheet.getColumns());
   }
 
   @Test
   public void setPlate_NoWells() {
     presenter.init(view);
-    plate = new Plate();
+    Plate plate = new Plate();
     plate.setType(PlateType.A);
     plate.initSpots();
 
@@ -441,19 +386,18 @@ public class PlateComponentPresenterTest {
   @Test
   public void isReadOnly() {
     presenter.init(view);
-    presenter.setPlate(plate);
 
     assertFalse(presenter.isReadOnly());
   }
 
   @Test
-  public void setReadOnly_True() {
+  public void setReadOnly_False() {
     presenter.init(view);
-    presenter.setPlate(plate);
 
-    presenter.setReadOnly(true);
+    presenter.setReadOnly(false);
 
-    assertTrue(presenter.isReadOnly());
+    assertFalse(presenter.isReadOnly());
+    Plate plate = presenter.getPlate();
     PlateSpot spot1 = plate.spot(0, 0);
     PlateSpot spot2 = plate.spot(1, 1);
     List<PlateSpot> spots = new ArrayList<>();
@@ -461,6 +405,82 @@ public class PlateComponentPresenterTest {
     spots.add(spot2);
     presenter.setSelectedSpots(spots);
     Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
-    assertEquals(0, selectedSpots.size());
+    assertEquals(1, selectedSpots.size());
+    assertTrue(selectedSpots.contains(spot1));
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(1, references.size());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .findAny().isPresent());
+    assertFalse(view.spreadsheet.isFunctionBarVisible());
+    assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
+    assertFalse(view.spreadsheet.isRowColHeadingsVisible());
+    Sheet sheet = view.spreadsheet.getActiveSheet();
+    for (int rowIndex = 0; rowIndex < plate.getRowCount() + 1; rowIndex++) {
+      Row row = sheet.getRow(rowIndex);
+      for (int column = 0; column < plate.getColumnCount() + 1; column++) {
+        Cell cell = row.getCell(column, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        CellStyle style = cell.getCellStyle();
+        assertEquals(rowIndex + "-" + column, rowIndex == 0 || column == 0, style.getLocked());
+      }
+    }
+  }
+
+  @Test
+  public void setReadOnly_True() {
+    presenter.init(view);
+
+    presenter.setReadOnly(true);
+
+    assertTrue(presenter.isReadOnly());
+    Plate plate = presenter.getPlate();
+    PlateSpot spot1 = plate.spot(0, 0);
+    PlateSpot spot2 = plate.spot(1, 1);
+    List<PlateSpot> spots = new ArrayList<>();
+    spots.add(spot1);
+    spots.add(spot2);
+    presenter.setSelectedSpots(spots);
+    Collection<PlateSpot> selectedSpots = presenter.getSelectedSpots();
+    assertEquals(1, selectedSpots.size());
+    assertTrue(selectedSpots.contains(spot1));
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    assertEquals(1, references.size());
+    assertTrue(references.stream()
+        .filter(ref -> ref.getRow() - 1 == spot1.getRow() && ref.getCol() - 1 == spot1.getColumn())
+        .findAny().isPresent());
+    assertFalse(view.spreadsheet.isFunctionBarVisible());
+    assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
+    assertFalse(view.spreadsheet.isRowColHeadingsVisible());
+    Sheet sheet = view.spreadsheet.getActiveSheet();
+    for (int rowIndex = 0; rowIndex < plate.getRowCount() + 1; rowIndex++) {
+      Row row = sheet.getRow(rowIndex);
+      for (int column = 0; column < plate.getColumnCount() + 1; column++) {
+        Cell cell = row.getCell(column, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        CellStyle style = cell.getCellStyle();
+        assertTrue(style.getLocked());
+      }
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void updateCell() {
+    presenter.init(view);
+
+    Sheet sheet = view.spreadsheet.getActiveSheet();
+    sheet.getRow(1).getCell(1).setCellValue("test 1");
+    sheet.getRow(1).getCell(2).setCellValue("test 2");
+    Collection<CellValueChangeListener> listeners =
+        (Collection<CellValueChangeListener>) view.spreadsheet
+            .getListeners(CellValueChangeEvent.class);
+    CellValueChangeEvent event = new CellValueChangeEvent(view.spreadsheet,
+        new HashSet<>(Arrays.asList(new CellReference(1, 1), new CellReference(1, 2))));
+    listeners.stream().forEach(lis -> lis.onCellValueChange(event));
+    assertNotNull(presenter.getPlate().spot(0, 0).getSample());
+    assertTrue(presenter.getPlate().spot(0, 0).getSample() instanceof SubmissionSample);
+    assertEquals("test 1", presenter.getPlate().spot(0, 0).getSample().getName());
+    assertNotNull(presenter.getPlate().spot(0, 1).getSample());
+    assertTrue(presenter.getPlate().spot(0, 1).getSample() instanceof SubmissionSample);
+    assertEquals("test 2", presenter.getPlate().spot(0, 1).getSample().getName());
   }
 }

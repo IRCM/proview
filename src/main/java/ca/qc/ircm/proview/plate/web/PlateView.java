@@ -17,14 +17,10 @@
 
 package ca.qc.ircm.proview.plate.web;
 
-import ca.qc.ircm.platelayout.PlateLayout;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Label;
-
-import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -38,7 +34,6 @@ import javax.inject.Inject;
 public class PlateView extends PlateViewDesign implements BaseView {
   public static final String VIEW_NAME = "plate";
   private static final long serialVersionUID = -7006664525905554582L;
-  private PlateLayout plateLayout = new PlateLayout(12, 8);
   @Inject
   private PlateComponent plateComponent;
   @Inject
@@ -49,9 +44,6 @@ public class PlateView extends PlateViewDesign implements BaseView {
    */
   @PostConstruct
   public void init() {
-    plateLayoutContainer.addComponent(plateLayout);
-    IntStream.range(0, 12).forEach(i -> IntStream.range(0, 8)
-        .forEach(j -> plateLayout.addComponent(new Label("Sample name"), i, j)));
     plateComponentPanel.setContent(plateComponent);
   }
 
@@ -59,8 +51,8 @@ public class PlateView extends PlateViewDesign implements BaseView {
   public void attach() {
     super.attach();
     Plate plate = plateService.get(1L);
-    plateComponent.getPresenter().setPlate(plate);
-    plateComponent.getPresenter().setMultiSelect(true);
+    plateComponent.setPlate(plate);
+    plateComponent.setMultiSelect(true);
     plateComponentPanel.setCaption(plate.getName());
   }
 }

@@ -19,17 +19,21 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateSpot;
-import com.vaadin.ui.Label;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellReference;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.IntSummaryStatistics;
 import java.util.Set;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -44,7 +48,6 @@ public class PlateComponentPresenter {
   private boolean multiSelect = false;
   private boolean readOnly = false;
   private Plate plate;
-  private Set<PlateSpot> selectedSpots = new HashSet<>();
 
   /**
    * Initializes presenter.
@@ -54,7 +57,21 @@ public class PlateComponentPresenter {
    */
   public void init(PlateComponent view) {
     this.view = view;
-    addListeners();
+    view.spreadsheet.setFunctionBarVisible(false);
+    view.spreadsheet.setSheetSelectionBarVisible(false);
+    view.spreadsheet.setRowColHeadingsVisible(false);
+    plate = new Plate();
+    plate.initSpots();
+    updatePlate();
+    updateReadOnly();
+    view.spreadsheet.addCellValueChangeListener(e -> e.getChangedCells().stream().forEach(ref -> {
+      Cell cell = view.spreadsheet.getActiveSheet().getRow(ref.getRow()).getCell(ref.getCol());
+      PlateSpot well = plate.spot(ref.getRow() - 1, ref.getCol() - 1);
+      if (well.getSample() == null) {
+        well.setSample(new SubmissionSample());
+      }
+      well.getSample().setName(view.spreadsheet.getCellValue(cell));
+    }));
   }
 
   private void updateSelectionMode() {
@@ -65,231 +82,111 @@ public class PlateComponentPresenter {
 
   private void updatePlate() {
     clearPlate();
-    view.plateLayout.setColumns(plate.getColumnCount());
-    view.plateLayout.setRows(plate.getRowCount());
+    view.spreadsheet.setMaxColumns(plate.getColumnCount() + 1);
+    view.spreadsheet.setMaxRows(plate.getRowCount() + 1);
     setWellsContent();
   }
 
-  private void forEachSpot(BiConsumer<Integer, Integer> consumer) {
-    IntStream.range(0, view.plateLayout.getColumns())
-        .forEach(column -> IntStream.range(0, view.plateLayout.getRows()).forEach(row -> {
-          consumer.accept(column, row);
-        }));
+  private void updateReadOnly() {
+    CellStyle locked = view.spreadsheet.getWorkbook().createCellStyle();
+    locked.setLocked(readOnly);
+    forEachCell(cell -> cell.setCellStyle(locked));
   }
 
-  private IntStream columnsStream() {
-    return IntStream.range(0, view.plateLayout.getColumns());
+  private void forEachCell(Consumer<Cell> consumer) {
+    Sheet sheet = view.spreadsheet.getActiveSheet();
+    IntStream.range(1, view.spreadsheet.getRows()).mapToObj(rowIndex -> {
+      Row row = sheet.getRow(rowIndex);
+      if (row == null) {
+        sheet.createRow(rowIndex);
+      }
+      return row;
+    }).forEach(row -> IntStream.range(1, view.spreadsheet.getColumns()).forEach(col -> {
+      consumer.accept(row.getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK));
+    }));
   }
 
   private void clearPlate() {
-    view.plateLayout.removeAllComponents();
+    forEachCell(cell -> cell.setCellValue(""));
   }
 
   private void setWellsContent() {
-    forEachSpot((column, row) -> {
-      PlateSpot well = plate.spot(row, column);
-      Label sampleName = new Label();
-      if (well != null && well.getSample() != null) {
-        sampleName.setValue(well.getSample().getName());
+    forEachCell(cell -> {
+      int row = cell.getRowIndex() - 1;
+      int col = cell.getColumnIndex() - 1;
+      PlateSpot well = plate.spot(row, col);
+      if (well.getSample() != null) {
+        cell.setCellValue(well.getSample().getName());
       }
-      view.plateLayout.addComponent(sampleName, column, row);
     });
   }
 
-  private void addListeners() {
-    view.plateLayout.addWellClickListener(e -> toggleWell(e.getColumn(), e.getRow()));
-    view.plateLayout.addColumnHeaderClickListener(e -> toggleColumn(e.getColumn()));
-    view.plateLayout.addRowHeaderClickListener(e -> toggleRow(e.getRow()));
+  private void deselectAllWells() {
+    view.spreadsheet.getCellSelectionManager().clear();
   }
 
-  private void toggleColumn(int column) {
-    if (multiSelect) {
-      List<PlateSpot> spots = plate.column(column);
-      if (!selectedSpots.containsAll(spots)) {
-        selectColumn(column);
-      } else {
-        deselectColumn(column);
-      }
-    }
-  }
-
-  private List<PlateSpot> plateRow(int row) {
-    return columnsStream().mapToObj(column -> plate.spot(row, column)).collect(Collectors.toList());
-  }
-
-  private void toggleRow(int row) {
-    if (multiSelect) {
-      List<PlateSpot> spots = plateRow(row);
-      if (!selectedSpots.containsAll(spots)) {
-        selectRow(row);
-      } else {
-        deselectRow(row);
-      }
-    }
-  }
-
-  private void toggleWell(int column, int row) {
-    toggleWell(plate.spot(row, column));
-  }
-
-  private void toggleWell(PlateSpot spot) {
-    if (!selectedSpots.contains(spot)) {
-      selectWell(spot);
-    } else {
-      deselectWell(spot);
-    }
-  }
-
-  /**
-   * Select a well.
-   *
-   * @param spot
-   *          spot associated with well
-   */
-  public void selectWell(PlateSpot spot) {
-    if (readOnly) {
-      return;
-    }
-
-    if (!multiSelect) {
-      deselectAllWells();
-    }
-    selectedSpots.add(spot);
-    view.plateLayout.addWellStyleName(spot.getColumn(), spot.getRow(), SELECTED_STYLE);
-  }
-
-  /**
-   * Deselect a well.
-   *
-   * @param spot
-   *          spot associated with well
-   */
-  public void deselectWell(PlateSpot spot) {
-    if (readOnly) {
-      return;
-    }
-
-    selectedSpots.remove(spot);
-    view.plateLayout.removeWellStyleName(spot.getColumn(), spot.getRow(), SELECTED_STYLE);
-  }
-
-  /**
-   * Deselect all wells.
-   */
-  public void deselectAllWells() {
-    new ArrayList<>(selectedSpots).forEach(spot -> deselectWell(spot));
-  }
-
-  /**
-   * Select all wells in column.
-   * <p>
-   * <strong>Does nothing unless multi-select is enabled</strong>
-   * </p>
-   *
-   * @param column
-   *          column
-   */
-  public void selectColumn(int column) {
-    if (multiSelect) {
-      List<PlateSpot> spots = plate.column(column);
-      spots.forEach(spot -> selectWell(spot));
-    }
-  }
-
-  /**
-   * Deselect all wells in column.
-   * <p>
-   * <strong>Does nothing unless multi-select is enabled</strong>
-   * </p>
-   *
-   * @param column
-   *          column
-   */
-  public void deselectColumn(int column) {
-    if (multiSelect) {
-      List<PlateSpot> spots = plate.column(column);
-      spots.forEach(spot -> deselectWell(spot));
-    }
-  }
-
-  /**
-   * Select all wells in row.
-   * <p>
-   * <strong>Does nothing unless multi-select is enabled</strong>
-   * </p>
-   *
-   * @param row
-   *          row
-   */
-  public void selectRow(int row) {
-    if (multiSelect) {
-      List<PlateSpot> spots = plateRow(row);
-      spots.forEach(spot -> selectWell(spot));
-    }
-  }
-
-  /**
-   * Deselect all wells in row.
-   * <p>
-   * <strong>Does nothing unless multi-select is enabled</strong>
-   * </p>
-   *
-   * @param row
-   *          row
-   */
-  public void deselectRow(int row) {
-    if (multiSelect) {
-      List<PlateSpot> spots = plateRow(row);
-      spots.forEach(spot -> deselectWell(spot));
-    }
-  }
-
-  public boolean isMultiSelect() {
+  boolean isMultiSelect() {
     return multiSelect;
   }
 
-  public void setMultiSelect(boolean multiSelect) {
+  void setMultiSelect(boolean multiSelect) {
     this.multiSelect = multiSelect;
     updateSelectionMode();
   }
 
   /**
-   * Returns select spot in single selection mode or null if no selection was made.
+   * Returns selected spot.
    *
-   * @return select spot in single selection mode or null if no selection was made
-   * @throws IllegalStateException
-   *           multi selection mode is active with more than one selection
+   * @return selected spot
    */
-  public PlateSpot getSelectedSpot() {
-    if (selectedSpots.size() == 0) {
-      return null;
-    } else if (selectedSpots.size() == 1) {
-      return selectedSpots.iterator().next();
-    } else {
-      throw new IllegalStateException("getSelectedSpot in multi select mode");
+  PlateSpot getSelectedSpot() {
+    if (multiSelect) {
+      throw new IllegalStateException("getSelectedSpot cannot be called in multi select mode");
     }
-  }
-
-  public Collection<PlateSpot> getSelectedSpots() {
-    return new ArrayList<>(selectedSpots);
+    CellReference reference = view.spreadsheet.getSelectedCellReference();
+    if (reference == null) {
+      return null;
+    } else {
+      return plate.spot(reference.getRow() - 1, reference.getCol() - 1);
+    }
   }
 
   /**
-   * Set selected spots.
+   * Returns select spots.
    *
-   * @param selectedSpots
-   *          selected spots
+   * @return select spots
    */
-  public void setSelectedSpots(Collection<PlateSpot> selectedSpots) {
-    if (readOnly) {
-      return;
-    }
-
-    new ArrayList<>(this.selectedSpots).forEach(spot -> deselectWell(spot));
-    selectedSpots.forEach(spot -> selectWell(spot));
+  Collection<PlateSpot> getSelectedSpots() {
+    Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
+    return references.stream().map(ref -> plate.spot(ref.getRow() - 1, ref.getCol() - 1))
+        .collect(Collectors.toList());
   }
 
-  public Plate getPlate() {
+  /**
+   * Set selected wells.
+   * <p>
+   * Since only ranges can be selected, all wells in range from min / max row to min / max column of
+   * all wells.
+   * </p>
+   *
+   * @param selectedSpots
+   *          selected wells
+   */
+  void setSelectedSpots(Collection<PlateSpot> selectedSpots) {
+    IntSummaryStatistics rowSummary =
+        selectedSpots.stream().mapToInt(spot -> spot.getRow()).summaryStatistics();
+    IntSummaryStatistics columnSummary =
+        selectedSpots.stream().mapToInt(spot -> spot.getColumn()).summaryStatistics();
+    if (multiSelect) {
+      view.spreadsheet.setSelectionRange(rowSummary.getMin() + 1, columnSummary.getMin() + 1,
+          rowSummary.getMax() + 1, columnSummary.getMax() + 1);
+    } else if (!selectedSpots.isEmpty()) {
+      PlateSpot well = selectedSpots.iterator().next();
+      view.spreadsheet.setSelection(well.getRow() + 1, well.getColumn() + 1);
+    }
+  }
+
+  Plate getPlate() {
     return plate;
   }
 
@@ -299,7 +196,7 @@ public class PlateComponentPresenter {
    * @param plate
    *          plate, cannot be null
    */
-  public void setPlate(Plate plate) {
+  void setPlate(Plate plate) {
     if (plate == null) {
       throw new NullPointerException("plate cannot be null");
     }
@@ -307,11 +204,12 @@ public class PlateComponentPresenter {
     updatePlate();
   }
 
-  public boolean isReadOnly() {
+  boolean isReadOnly() {
     return readOnly;
   }
 
-  public void setReadOnly(boolean readOnly) {
+  void setReadOnly(boolean readOnly) {
     this.readOnly = readOnly;
+    updateReadOnly();
   }
 }

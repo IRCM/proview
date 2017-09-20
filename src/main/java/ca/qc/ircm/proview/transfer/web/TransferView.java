@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.transfer.web;
 
 import ca.qc.ircm.proview.plate.web.PlateComponent;
-import ca.qc.ircm.proview.plate.web.PlateComponentPresenter;
 import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -42,8 +41,6 @@ public class TransferView extends TransferViewDesign implements BaseView, SavedS
   protected PlateComponent sourcePlateForm;
   @Inject
   protected PlateComponent destinationPlateForm;
-  protected transient PlateComponentPresenter sourcePlateFormPresenter;
-  protected transient PlateComponentPresenter destinationPlateFormPresenter;
 
   /**
    * Initializes view.
@@ -54,8 +51,6 @@ public class TransferView extends TransferViewDesign implements BaseView, SavedS
     sourcePlateFormLayout.addComponent(sourcePlateForm);
     destinationPlateForm.setWidth("100%");
     destinationPlateFormLayout.addComponent(destinationPlateForm);
-    sourcePlateFormPresenter = sourcePlateForm.getPresenter();
-    destinationPlateFormPresenter = destinationPlateForm.getPresenter();
   }
 
   @Override

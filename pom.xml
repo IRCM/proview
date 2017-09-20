@@ -64,7 +64,6 @@
     <vaadin-spreadsheet.version>2.0.1</vaadin-spreadsheet.version> 
     <confirmdialog.version>3.2.0</confirmdialog.version>
     <popupbutton.version>3.0.0</popupbutton.version>
-    <plate-layout.version>0.8</plate-layout.version>
     <easyuploads.version>8.0.0</easyuploads.version>
     <guava.version>19.0</guava.version>
     <commons-lang3.version>3.5</commons-lang3.version>
@@ -331,11 +330,6 @@
       <groupId>org.vaadin.addons</groupId>
       <artifactId>popupbutton</artifactId>
       <version>${popupbutton.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>ca.qc.ircm</groupId>
-      <artifactId>plate-layout</artifactId>
-      <version>${plate-layout.version}</version>
     </dependency>
 		<dependency>
 			<groupId>org.vaadin.addon</groupId>
