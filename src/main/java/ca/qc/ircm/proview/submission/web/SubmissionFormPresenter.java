@@ -551,8 +551,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setCellValue(resources.message(SAMPLES_PLATE));
     view.samplesSpreadsheet.setFunctionBarVisible(false);
     view.samplesSpreadsheet.setSheetSelectionBarVisible(false);
-    logger.debug("Sample name at plate {}-{} is {}", 0, 0,
-        view.samplesSpreadsheet.getCellValue(view.samplesSpreadsheet.getCell(1, 1)));
   }
 
   private TextField sampleNameTextField(SubmissionSample sample) {
@@ -1024,8 +1022,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
     view.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
     view.instrumentOptions.setDataProvider(new NullableListDataProvider<>(instrumentValues()));
-    view.instrumentOptions.setItemCaptionGenerator(instrument -> instrument != null
-        ? instrument.getLabel(locale) : MassDetectionInstrument.getNullLabel(locale));
+    view.instrumentOptions
+        .setItemCaptionGenerator(instrument -> instrument != null ? instrument.getLabel(locale)
+            : MassDetectionInstrument.getNullLabel(locale));
     view.instrumentOptions
         .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : true);
     submissionBinder.forField(view.instrumentOptions).bind(INSTRUMENT_PROPERTY);
@@ -1052,8 +1051,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
     view.quantificationOptions
         .setDataProvider(new NullableListDataProvider<>(quantificationValues()));
-    view.quantificationOptions.setItemCaptionGenerator(quantification -> quantification != null
-        ? quantification.getLabel(locale) : Quantification.getNullLabel(locale));
+    view.quantificationOptions.setItemCaptionGenerator(
+        quantification -> quantification != null ? quantification.getLabel(locale)
+            : Quantification.getNullLabel(locale));
     submissionBinder.forField(view.quantificationOptions).bind(QUANTIFICATION_PROPERTY);
     view.quantificationLabelsField.addStyleName(QUANTIFICATION_LABELS_PROPERTY);
     view.quantificationLabelsField.setCaption(resources.message(QUANTIFICATION_LABELS_PROPERTY));
