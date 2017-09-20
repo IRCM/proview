@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.plate.web;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.utils.MessageResource;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -43,7 +44,7 @@ import java.util.stream.IntStream;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PlateComponentPresenter {
-  public static final String SELECTED_STYLE = "selected";
+  public static final String PLATE = "plate";
   private PlateComponent view;
   private boolean multiSelect = false;
   private boolean readOnly = false;
@@ -57,9 +58,12 @@ public class PlateComponentPresenter {
    */
   public void init(PlateComponent view) {
     this.view = view;
+    view.addStyleName(PLATE);
+    final MessageResource resources = view.getResources();
     view.spreadsheet.setFunctionBarVisible(false);
     view.spreadsheet.setSheetSelectionBarVisible(false);
     view.spreadsheet.setRowColHeadingsVisible(false);
+    view.spreadsheet.getActiveSheet().getRow(0).getCell(0).setCellValue(resources.message(PLATE));
     plate = new Plate();
     plate.initWells();
     updatePlate();

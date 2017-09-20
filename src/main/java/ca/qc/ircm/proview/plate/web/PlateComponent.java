@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.ui.CustomComponent;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -38,7 +39,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PlateComponent extends CustomComponent {
+public class PlateComponent extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = -5886354033312877270L;
   private static final Logger logger = LoggerFactory.getLogger(PlateComponent.class);
   @Inject

@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.plate.web;
 
+import static ca.qc.ircm.proview.plate.web.PlateComponentPresenter.PLATE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -24,6 +25,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateType;
@@ -31,6 +34,8 @@ import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.web.WebConstants;
+import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.addon.spreadsheet.Spreadsheet.CellValueChangeEvent;
 import com.vaadin.addon.spreadsheet.Spreadsheet.CellValueChangeListener;
@@ -51,6 +56,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,6 +65,10 @@ public class PlateComponentPresenterTest {
   private PlateComponentPresenter presenter;
   @Mock
   private PlateComponent view;
+  private Locale locale = Locale.FRENCH;
+  private MessageResource resources = new MessageResource(PlateComponent.class, locale);
+  private MessageResource generalResources =
+      new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
 
   /**
    * Before test.
@@ -67,6 +77,16 @@ public class PlateComponentPresenterTest {
   public void beforeTest() throws Throwable {
     presenter = new PlateComponentPresenter();
     view.spreadsheet = new Spreadsheet(getClass().getResourceAsStream("/Plate-Template.xlsx"));
+    when(view.getLocale()).thenReturn(locale);
+    when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
+  }
+
+  @Test
+  public void styles() {
+    presenter.init(view);
+
+    verify(view).addStyleName(PLATE);
   }
 
   @Test
@@ -80,6 +100,8 @@ public class PlateComponentPresenterTest {
     assertEquals(plate.getRowCount() + 1, view.spreadsheet.getRows());
     assertEquals(plate.getColumnCount() + 1, view.spreadsheet.getColumns());
     Sheet sheet = view.spreadsheet.getActiveSheet();
+    assertEquals(resources.message(PLATE),
+        view.spreadsheet.getCellValue(sheet.getRow(0).getCell(0)));
     for (int rowIndex = 0; rowIndex < plate.getRowCount() + 1; rowIndex++) {
       Row row = sheet.getRow(rowIndex);
       for (int column = 0; column < plate.getColumnCount() + 1; column++) {
