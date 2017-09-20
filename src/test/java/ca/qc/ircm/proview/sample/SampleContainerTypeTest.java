@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static ca.qc.ircm.proview.sample.SampleContainerType.SPOT;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
+import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -39,8 +39,8 @@ public class SampleContainerTypeTest {
   }
 
   @Test
-  public void getLabel_Spot() {
-    assertEquals("Plate", SPOT.getLabel(Locale.ENGLISH));
-    assertEquals("Plaque", SPOT.getLabel(Locale.FRENCH));
+  public void getLabel_Well() {
+    assertEquals("Plate", WELL.getLabel(Locale.ENGLISH));
+    assertEquals("Plaque", WELL.getLabel(Locale.FRENCH));
   }
 }

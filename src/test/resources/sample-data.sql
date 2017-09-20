@@ -268,3269 +268,3269 @@ VALUES (87,'TUBE','POLR2A_20141022_03',NULL,NULL,NULL,629,NULL,'2014-10-22 09:47
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
 VALUES (88,'TUBE','POLR2A_20141022_04',NULL,NULL,NULL,630,NULL,'2014-10-22 09:47:04',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (128,'SPOT',NULL,26,0,0,1,8,'2011-11-16 13:31:12',0);
+VALUES (128,'WELL',NULL,26,0,0,1,8,'2011-11-16 13:31:12',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (129,'SPOT',NULL,26,1,0,1,9,'2011-11-16 15:07:34',0);
+VALUES (129,'WELL',NULL,26,1,0,1,9,'2011-11-16 15:07:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (130,'SPOT',NULL,26,2,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (130,'WELL',NULL,26,2,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (131,'SPOT',NULL,26,3,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (131,'WELL',NULL,26,3,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (132,'SPOT',NULL,26,4,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (132,'WELL',NULL,26,4,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (133,'SPOT',NULL,26,5,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (133,'WELL',NULL,26,5,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (134,'SPOT',NULL,26,6,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (134,'WELL',NULL,26,6,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (135,'SPOT',NULL,26,7,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (135,'WELL',NULL,26,7,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (136,'SPOT',NULL,26,8,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (136,'WELL',NULL,26,8,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (137,'SPOT',NULL,26,9,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (137,'WELL',NULL,26,9,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (138,'SPOT',NULL,26,10,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (138,'WELL',NULL,26,10,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (139,'SPOT',NULL,26,11,0,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (139,'WELL',NULL,26,11,0,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (140,'SPOT',NULL,26,0,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (140,'WELL',NULL,26,0,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (141,'SPOT',NULL,26,1,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (141,'WELL',NULL,26,1,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (142,'SPOT',NULL,26,2,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (142,'WELL',NULL,26,2,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (143,'SPOT',NULL,26,3,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (143,'WELL',NULL,26,3,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (144,'SPOT',NULL,26,4,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (144,'WELL',NULL,26,4,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (145,'SPOT',NULL,26,5,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (145,'WELL',NULL,26,5,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (146,'SPOT',NULL,26,6,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (146,'WELL',NULL,26,6,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (147,'SPOT',NULL,26,7,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (147,'WELL',NULL,26,7,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (148,'SPOT',NULL,26,8,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (148,'WELL',NULL,26,8,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (149,'SPOT',NULL,26,9,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (149,'WELL',NULL,26,9,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (150,'SPOT',NULL,26,10,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (150,'WELL',NULL,26,10,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (151,'SPOT',NULL,26,11,1,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (151,'WELL',NULL,26,11,1,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (152,'SPOT',NULL,26,0,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (152,'WELL',NULL,26,0,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (153,'SPOT',NULL,26,1,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (153,'WELL',NULL,26,1,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (154,'SPOT',NULL,26,2,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (154,'WELL',NULL,26,2,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (155,'SPOT',NULL,26,3,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (155,'WELL',NULL,26,3,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (156,'SPOT',NULL,26,4,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (156,'WELL',NULL,26,4,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (157,'SPOT',NULL,26,5,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (157,'WELL',NULL,26,5,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (158,'SPOT',NULL,26,6,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (158,'WELL',NULL,26,6,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (159,'SPOT',NULL,26,7,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (159,'WELL',NULL,26,7,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (160,'SPOT',NULL,26,8,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (160,'WELL',NULL,26,8,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (161,'SPOT',NULL,26,9,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (161,'WELL',NULL,26,9,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (162,'SPOT',NULL,26,10,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (162,'WELL',NULL,26,10,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (163,'SPOT',NULL,26,11,2,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (163,'WELL',NULL,26,11,2,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (164,'SPOT',NULL,26,0,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (164,'WELL',NULL,26,0,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (165,'SPOT',NULL,26,1,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (165,'WELL',NULL,26,1,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (166,'SPOT',NULL,26,2,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (166,'WELL',NULL,26,2,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (167,'SPOT',NULL,26,3,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (167,'WELL',NULL,26,3,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (168,'SPOT',NULL,26,4,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (168,'WELL',NULL,26,4,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (169,'SPOT',NULL,26,5,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (169,'WELL',NULL,26,5,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (170,'SPOT',NULL,26,6,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (170,'WELL',NULL,26,6,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (171,'SPOT',NULL,26,7,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (171,'WELL',NULL,26,7,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (172,'SPOT',NULL,26,8,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (172,'WELL',NULL,26,8,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (173,'SPOT',NULL,26,9,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (173,'WELL',NULL,26,9,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (174,'SPOT',NULL,26,10,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (174,'WELL',NULL,26,10,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (175,'SPOT',NULL,26,11,3,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (175,'WELL',NULL,26,11,3,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (176,'SPOT',NULL,26,0,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (176,'WELL',NULL,26,0,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (177,'SPOT',NULL,26,1,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (177,'WELL',NULL,26,1,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (178,'SPOT',NULL,26,2,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (178,'WELL',NULL,26,2,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (179,'SPOT',NULL,26,3,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (179,'WELL',NULL,26,3,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (180,'SPOT',NULL,26,4,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (180,'WELL',NULL,26,4,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (181,'SPOT',NULL,26,5,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (181,'WELL',NULL,26,5,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (182,'SPOT',NULL,26,6,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (182,'WELL',NULL,26,6,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (183,'SPOT',NULL,26,7,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (183,'WELL',NULL,26,7,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (184,'SPOT',NULL,26,8,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (184,'WELL',NULL,26,8,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (185,'SPOT',NULL,26,9,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (185,'WELL',NULL,26,9,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (186,'SPOT',NULL,26,10,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (186,'WELL',NULL,26,10,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (187,'SPOT',NULL,26,11,4,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (187,'WELL',NULL,26,11,4,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (188,'SPOT',NULL,26,0,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (188,'WELL',NULL,26,0,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (189,'SPOT',NULL,26,1,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (189,'WELL',NULL,26,1,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (190,'SPOT',NULL,26,2,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (190,'WELL',NULL,26,2,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (191,'SPOT',NULL,26,3,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (191,'WELL',NULL,26,3,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (192,'SPOT',NULL,26,4,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (192,'WELL',NULL,26,4,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (193,'SPOT',NULL,26,5,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (193,'WELL',NULL,26,5,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (194,'SPOT',NULL,26,6,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (194,'WELL',NULL,26,6,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (195,'SPOT',NULL,26,7,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (195,'WELL',NULL,26,7,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (196,'SPOT',NULL,26,8,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (196,'WELL',NULL,26,8,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (197,'SPOT',NULL,26,9,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (197,'WELL',NULL,26,9,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (198,'SPOT',NULL,26,10,5,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (198,'WELL',NULL,26,10,5,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (199,'SPOT',NULL,26,11,5,NULL,NULL,'2011-11-08 13:33:21',1);
+VALUES (199,'WELL',NULL,26,11,5,NULL,NULL,'2011-11-08 13:33:21',1);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (200,'SPOT',NULL,26,0,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (200,'WELL',NULL,26,0,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (201,'SPOT',NULL,26,1,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (201,'WELL',NULL,26,1,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (202,'SPOT',NULL,26,2,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (202,'WELL',NULL,26,2,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (203,'SPOT',NULL,26,3,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (203,'WELL',NULL,26,3,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (204,'SPOT',NULL,26,4,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (204,'WELL',NULL,26,4,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (205,'SPOT',NULL,26,5,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (205,'WELL',NULL,26,5,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (206,'SPOT',NULL,26,6,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (206,'WELL',NULL,26,6,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (207,'SPOT',NULL,26,7,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (207,'WELL',NULL,26,7,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (208,'SPOT',NULL,26,8,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (208,'WELL',NULL,26,8,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (209,'SPOT',NULL,26,9,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (209,'WELL',NULL,26,9,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (210,'SPOT',NULL,26,10,6,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (210,'WELL',NULL,26,10,6,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (211,'SPOT',NULL,26,11,6,NULL,NULL,'2011-11-08 13:33:21',1);
+VALUES (211,'WELL',NULL,26,11,6,NULL,NULL,'2011-11-08 13:33:21',1);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (212,'SPOT',NULL,26,0,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (212,'WELL',NULL,26,0,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (213,'SPOT',NULL,26,1,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (213,'WELL',NULL,26,1,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (214,'SPOT',NULL,26,2,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (214,'WELL',NULL,26,2,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (215,'SPOT',NULL,26,3,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (215,'WELL',NULL,26,3,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (216,'SPOT',NULL,26,4,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (216,'WELL',NULL,26,4,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (217,'SPOT',NULL,26,5,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (217,'WELL',NULL,26,5,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (218,'SPOT',NULL,26,6,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (218,'WELL',NULL,26,6,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (219,'SPOT',NULL,26,7,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (219,'WELL',NULL,26,7,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (220,'SPOT',NULL,26,8,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (220,'WELL',NULL,26,8,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (221,'SPOT',NULL,26,9,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (221,'WELL',NULL,26,9,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (222,'SPOT',NULL,26,10,7,NULL,NULL,'2011-11-08 13:33:21',0);
+VALUES (222,'WELL',NULL,26,10,7,NULL,NULL,'2011-11-08 13:33:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (223,'SPOT',NULL,26,11,7,NULL,NULL,'2011-11-08 13:33:21',1);
+VALUES (223,'WELL',NULL,26,11,7,NULL,NULL,'2011-11-08 13:33:21',1);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (224,'SPOT',NULL,107,0,0,559,194,'2014-10-08 10:41:52',0);
+VALUES (224,'WELL',NULL,107,0,0,559,194,'2014-10-08 10:41:52',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (225,'SPOT',NULL,107,1,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (225,'WELL',NULL,107,1,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (226,'SPOT',NULL,107,2,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (226,'WELL',NULL,107,2,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (227,'SPOT',NULL,107,3,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (227,'WELL',NULL,107,3,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (228,'SPOT',NULL,107,4,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (228,'WELL',NULL,107,4,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (229,'SPOT',NULL,107,5,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (229,'WELL',NULL,107,5,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (230,'SPOT',NULL,107,6,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (230,'WELL',NULL,107,6,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (231,'SPOT',NULL,107,7,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (231,'WELL',NULL,107,7,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (232,'SPOT',NULL,107,8,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (232,'WELL',NULL,107,8,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (233,'SPOT',NULL,107,9,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (233,'WELL',NULL,107,9,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (234,'SPOT',NULL,107,10,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (234,'WELL',NULL,107,10,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (235,'SPOT',NULL,107,11,0,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (235,'WELL',NULL,107,11,0,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (236,'SPOT',NULL,107,0,1,560,195,'2014-10-08 10:41:52',0);
+VALUES (236,'WELL',NULL,107,0,1,560,195,'2014-10-08 10:41:52',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (237,'SPOT',NULL,107,1,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (237,'WELL',NULL,107,1,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (238,'SPOT',NULL,107,2,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (238,'WELL',NULL,107,2,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (239,'SPOT',NULL,107,3,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (239,'WELL',NULL,107,3,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (240,'SPOT',NULL,107,4,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (240,'WELL',NULL,107,4,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (241,'SPOT',NULL,107,5,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (241,'WELL',NULL,107,5,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (242,'SPOT',NULL,107,6,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (242,'WELL',NULL,107,6,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (243,'SPOT',NULL,107,7,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (243,'WELL',NULL,107,7,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (244,'SPOT',NULL,107,8,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (244,'WELL',NULL,107,8,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (245,'SPOT',NULL,107,9,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (245,'WELL',NULL,107,9,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (246,'SPOT',NULL,107,10,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (246,'WELL',NULL,107,10,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (247,'SPOT',NULL,107,11,1,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (247,'WELL',NULL,107,11,1,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (248,'SPOT',NULL,107,0,2,444,193,'2014-10-08 10:41:52',0);
+VALUES (248,'WELL',NULL,107,0,2,444,193,'2014-10-08 10:41:52',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (249,'SPOT',NULL,107,1,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (249,'WELL',NULL,107,1,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (250,'SPOT',NULL,107,2,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (250,'WELL',NULL,107,2,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (251,'SPOT',NULL,107,3,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (251,'WELL',NULL,107,3,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (252,'SPOT',NULL,107,4,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (252,'WELL',NULL,107,4,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (253,'SPOT',NULL,107,5,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (253,'WELL',NULL,107,5,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (254,'SPOT',NULL,107,6,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (254,'WELL',NULL,107,6,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (255,'SPOT',NULL,107,7,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (255,'WELL',NULL,107,7,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (256,'SPOT',NULL,107,8,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (256,'WELL',NULL,107,8,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (257,'SPOT',NULL,107,9,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (257,'WELL',NULL,107,9,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (258,'SPOT',NULL,107,10,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (258,'WELL',NULL,107,10,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (259,'SPOT',NULL,107,11,2,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (259,'WELL',NULL,107,11,2,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (260,'SPOT',NULL,107,0,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (260,'WELL',NULL,107,0,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (261,'SPOT',NULL,107,1,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (261,'WELL',NULL,107,1,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (262,'SPOT',NULL,107,2,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (262,'WELL',NULL,107,2,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (263,'SPOT',NULL,107,3,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (263,'WELL',NULL,107,3,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (264,'SPOT',NULL,107,4,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (264,'WELL',NULL,107,4,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (265,'SPOT',NULL,107,5,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (265,'WELL',NULL,107,5,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (266,'SPOT',NULL,107,6,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (266,'WELL',NULL,107,6,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (267,'SPOT',NULL,107,7,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (267,'WELL',NULL,107,7,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (268,'SPOT',NULL,107,8,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (268,'WELL',NULL,107,8,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (269,'SPOT',NULL,107,9,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (269,'WELL',NULL,107,9,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (270,'SPOT',NULL,107,10,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (270,'WELL',NULL,107,10,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (271,'SPOT',NULL,107,11,3,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (271,'WELL',NULL,107,11,3,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (272,'SPOT',NULL,107,0,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (272,'WELL',NULL,107,0,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (273,'SPOT',NULL,107,1,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (273,'WELL',NULL,107,1,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (274,'SPOT',NULL,107,2,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (274,'WELL',NULL,107,2,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (275,'SPOT',NULL,107,3,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (275,'WELL',NULL,107,3,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (276,'SPOT',NULL,107,4,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (276,'WELL',NULL,107,4,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (277,'SPOT',NULL,107,5,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (277,'WELL',NULL,107,5,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (278,'SPOT',NULL,107,6,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (278,'WELL',NULL,107,6,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (279,'SPOT',NULL,107,7,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (279,'WELL',NULL,107,7,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (280,'SPOT',NULL,107,8,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (280,'WELL',NULL,107,8,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (281,'SPOT',NULL,107,9,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (281,'WELL',NULL,107,9,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (282,'SPOT',NULL,107,10,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (282,'WELL',NULL,107,10,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (283,'SPOT',NULL,107,11,4,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (283,'WELL',NULL,107,11,4,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (284,'SPOT',NULL,107,0,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (284,'WELL',NULL,107,0,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (285,'SPOT',NULL,107,1,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (285,'WELL',NULL,107,1,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (286,'SPOT',NULL,107,2,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (286,'WELL',NULL,107,2,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (287,'SPOT',NULL,107,3,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (287,'WELL',NULL,107,3,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (288,'SPOT',NULL,107,4,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (288,'WELL',NULL,107,4,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (289,'SPOT',NULL,107,5,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (289,'WELL',NULL,107,5,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (290,'SPOT',NULL,107,6,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (290,'WELL',NULL,107,6,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (291,'SPOT',NULL,107,7,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (291,'WELL',NULL,107,7,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (292,'SPOT',NULL,107,8,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (292,'WELL',NULL,107,8,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (293,'SPOT',NULL,107,9,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (293,'WELL',NULL,107,9,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (294,'SPOT',NULL,107,10,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (294,'WELL',NULL,107,10,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (295,'SPOT',NULL,107,11,5,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (295,'WELL',NULL,107,11,5,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (296,'SPOT',NULL,107,0,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (296,'WELL',NULL,107,0,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (297,'SPOT',NULL,107,1,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (297,'WELL',NULL,107,1,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (298,'SPOT',NULL,107,2,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (298,'WELL',NULL,107,2,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (299,'SPOT',NULL,107,3,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (299,'WELL',NULL,107,3,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (300,'SPOT',NULL,107,4,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (300,'WELL',NULL,107,4,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (301,'SPOT',NULL,107,5,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (301,'WELL',NULL,107,5,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (302,'SPOT',NULL,107,6,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (302,'WELL',NULL,107,6,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (303,'SPOT',NULL,107,7,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (303,'WELL',NULL,107,7,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (304,'SPOT',NULL,107,8,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (304,'WELL',NULL,107,8,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (305,'SPOT',NULL,107,9,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (305,'WELL',NULL,107,9,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (306,'SPOT',NULL,107,10,6,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (306,'WELL',NULL,107,10,6,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (307,'SPOT',NULL,107,11,6,NULL,NULL,'2014-10-08 10:41:39',1);
+VALUES (307,'WELL',NULL,107,11,6,NULL,NULL,'2014-10-08 10:41:39',1);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (308,'SPOT',NULL,107,0,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (308,'WELL',NULL,107,0,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (309,'SPOT',NULL,107,1,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (309,'WELL',NULL,107,1,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (310,'SPOT',NULL,107,2,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (310,'WELL',NULL,107,2,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (311,'SPOT',NULL,107,3,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (311,'WELL',NULL,107,3,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (312,'SPOT',NULL,107,4,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (312,'WELL',NULL,107,4,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (313,'SPOT',NULL,107,5,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (313,'WELL',NULL,107,5,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (314,'SPOT',NULL,107,6,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (314,'WELL',NULL,107,6,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (315,'SPOT',NULL,107,7,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (315,'WELL',NULL,107,7,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (316,'SPOT',NULL,107,8,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (316,'WELL',NULL,107,8,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (317,'SPOT',NULL,107,9,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (317,'WELL',NULL,107,9,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (318,'SPOT',NULL,107,10,7,NULL,NULL,'2014-10-08 10:41:39',0);
+VALUES (318,'WELL',NULL,107,10,7,NULL,NULL,'2014-10-08 10:41:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (319,'SPOT',NULL,107,11,7,NULL,NULL,'2014-10-08 10:41:39',1);
+VALUES (319,'WELL',NULL,107,11,7,NULL,NULL,'2014-10-08 10:41:39',1);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (320,'SPOT',NULL,108,0,0,561,226,'2014-10-08 11:43:31',0);
+VALUES (320,'WELL',NULL,108,0,0,561,226,'2014-10-08 11:43:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (321,'SPOT',NULL,108,1,0,565,208,'2014-10-08 11:19:10',0);
+VALUES (321,'WELL',NULL,108,1,0,565,208,'2014-10-08 11:19:10',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (322,'SPOT',NULL,108,2,0,564,228,'2014-10-08 11:44:38',0);
+VALUES (322,'WELL',NULL,108,2,0,564,228,'2014-10-08 11:44:38',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (323,'SPOT',NULL,108,3,0,567,214,'2014-10-08 11:23:05',0);
+VALUES (323,'WELL',NULL,108,3,0,567,214,'2014-10-08 11:23:05',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (324,'SPOT',NULL,108,4,0,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (324,'WELL',NULL,108,4,0,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (325,'SPOT',NULL,108,5,0,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (325,'WELL',NULL,108,5,0,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (326,'SPOT',NULL,108,6,0,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (326,'WELL',NULL,108,6,0,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (327,'SPOT',NULL,108,7,0,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (327,'WELL',NULL,108,7,0,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (328,'SPOT',NULL,108,8,0,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (328,'WELL',NULL,108,8,0,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (329,'SPOT',NULL,108,9,0,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (329,'WELL',NULL,108,9,0,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (330,'SPOT',NULL,108,10,0,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (330,'WELL',NULL,108,10,0,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (331,'SPOT',NULL,108,11,0,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (331,'WELL',NULL,108,11,0,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (332,'SPOT',NULL,108,0,1,562,227,'2014-10-08 11:43:31',0);
+VALUES (332,'WELL',NULL,108,0,1,562,227,'2014-10-08 11:43:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (333,'SPOT',NULL,108,1,1,566,209,'2014-10-08 11:19:10',0);
+VALUES (333,'WELL',NULL,108,1,1,566,209,'2014-10-08 11:19:10',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (334,'SPOT',NULL,108,2,1,564,229,'2014-10-08 11:44:38',0);
+VALUES (334,'WELL',NULL,108,2,1,564,229,'2014-10-08 11:44:38',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (335,'SPOT',NULL,108,3,1,567,215,'2014-10-08 11:23:05',0);
+VALUES (335,'WELL',NULL,108,3,1,567,215,'2014-10-08 11:23:05',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (336,'SPOT',NULL,108,4,1,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (336,'WELL',NULL,108,4,1,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (337,'SPOT',NULL,108,5,1,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (337,'WELL',NULL,108,5,1,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (338,'SPOT',NULL,108,6,1,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (338,'WELL',NULL,108,6,1,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (339,'SPOT',NULL,108,7,1,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (339,'WELL',NULL,108,7,1,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (340,'SPOT',NULL,108,8,1,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (340,'WELL',NULL,108,8,1,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (341,'SPOT',NULL,108,9,1,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (341,'WELL',NULL,108,9,1,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (342,'SPOT',NULL,108,10,1,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (342,'WELL',NULL,108,10,1,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (343,'SPOT',NULL,108,11,1,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (343,'WELL',NULL,108,11,1,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (344,'SPOT',NULL,108,0,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (344,'WELL',NULL,108,0,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (345,'SPOT',NULL,108,1,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (345,'WELL',NULL,108,1,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (346,'SPOT',NULL,108,2,2,563,230,'2014-10-08 11:44:38',0);
+VALUES (346,'WELL',NULL,108,2,2,563,230,'2014-10-08 11:44:38',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (347,'SPOT',NULL,108,3,2,568,216,'2014-10-08 11:23:05',0);
+VALUES (347,'WELL',NULL,108,3,2,568,216,'2014-10-08 11:23:05',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (348,'SPOT',NULL,108,4,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (348,'WELL',NULL,108,4,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (349,'SPOT',NULL,108,5,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (349,'WELL',NULL,108,5,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (350,'SPOT',NULL,108,6,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (350,'WELL',NULL,108,6,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (351,'SPOT',NULL,108,7,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (351,'WELL',NULL,108,7,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (352,'SPOT',NULL,108,8,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (352,'WELL',NULL,108,8,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (353,'SPOT',NULL,108,9,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (353,'WELL',NULL,108,9,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (354,'SPOT',NULL,108,10,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (354,'WELL',NULL,108,10,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (355,'SPOT',NULL,108,11,2,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (355,'WELL',NULL,108,11,2,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (356,'SPOT',NULL,108,0,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (356,'WELL',NULL,108,0,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (357,'SPOT',NULL,108,1,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (357,'WELL',NULL,108,1,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (358,'SPOT',NULL,108,2,3,563,231,'2014-10-08 11:44:38',0);
+VALUES (358,'WELL',NULL,108,2,3,563,231,'2014-10-08 11:44:38',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (359,'SPOT',NULL,108,3,3,568,217,'2014-10-08 11:23:05',0);
+VALUES (359,'WELL',NULL,108,3,3,568,217,'2014-10-08 11:23:05',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (360,'SPOT',NULL,108,4,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (360,'WELL',NULL,108,4,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (361,'SPOT',NULL,108,5,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (361,'WELL',NULL,108,5,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (362,'SPOT',NULL,108,6,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (362,'WELL',NULL,108,6,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (363,'SPOT',NULL,108,7,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (363,'WELL',NULL,108,7,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (364,'SPOT',NULL,108,8,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (364,'WELL',NULL,108,8,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (365,'SPOT',NULL,108,9,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (365,'WELL',NULL,108,9,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (366,'SPOT',NULL,108,10,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (366,'WELL',NULL,108,10,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (367,'SPOT',NULL,108,11,3,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (367,'WELL',NULL,108,11,3,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (368,'SPOT',NULL,108,0,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (368,'WELL',NULL,108,0,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (369,'SPOT',NULL,108,1,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (369,'WELL',NULL,108,1,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (370,'SPOT',NULL,108,2,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (370,'WELL',NULL,108,2,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (371,'SPOT',NULL,108,3,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (371,'WELL',NULL,108,3,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (372,'SPOT',NULL,108,4,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (372,'WELL',NULL,108,4,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (373,'SPOT',NULL,108,5,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (373,'WELL',NULL,108,5,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (374,'SPOT',NULL,108,6,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (374,'WELL',NULL,108,6,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (375,'SPOT',NULL,108,7,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (375,'WELL',NULL,108,7,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (376,'SPOT',NULL,108,8,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (376,'WELL',NULL,108,8,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (377,'SPOT',NULL,108,9,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (377,'WELL',NULL,108,9,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (378,'SPOT',NULL,108,10,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (378,'WELL',NULL,108,10,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (379,'SPOT',NULL,108,11,4,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (379,'WELL',NULL,108,11,4,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (380,'SPOT',NULL,108,0,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (380,'WELL',NULL,108,0,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (381,'SPOT',NULL,108,1,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (381,'WELL',NULL,108,1,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (382,'SPOT',NULL,108,2,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (382,'WELL',NULL,108,2,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (383,'SPOT',NULL,108,3,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (383,'WELL',NULL,108,3,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (384,'SPOT',NULL,108,4,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (384,'WELL',NULL,108,4,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (385,'SPOT',NULL,108,5,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (385,'WELL',NULL,108,5,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (386,'SPOT',NULL,108,6,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (386,'WELL',NULL,108,6,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (387,'SPOT',NULL,108,7,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (387,'WELL',NULL,108,7,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (388,'SPOT',NULL,108,8,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (388,'WELL',NULL,108,8,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (389,'SPOT',NULL,108,9,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (389,'WELL',NULL,108,9,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (390,'SPOT',NULL,108,10,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (390,'WELL',NULL,108,10,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (391,'SPOT',NULL,108,11,5,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (391,'WELL',NULL,108,11,5,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (392,'SPOT',NULL,108,0,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (392,'WELL',NULL,108,0,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (393,'SPOT',NULL,108,1,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (393,'WELL',NULL,108,1,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (394,'SPOT',NULL,108,2,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (394,'WELL',NULL,108,2,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (395,'SPOT',NULL,108,3,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (395,'WELL',NULL,108,3,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (396,'SPOT',NULL,108,4,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (396,'WELL',NULL,108,4,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (397,'SPOT',NULL,108,5,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (397,'WELL',NULL,108,5,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (398,'SPOT',NULL,108,6,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (398,'WELL',NULL,108,6,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (399,'SPOT',NULL,108,7,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (399,'WELL',NULL,108,7,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (400,'SPOT',NULL,108,8,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (400,'WELL',NULL,108,8,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (401,'SPOT',NULL,108,9,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (401,'WELL',NULL,108,9,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (402,'SPOT',NULL,108,10,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (402,'WELL',NULL,108,10,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (403,'SPOT',NULL,108,11,6,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (403,'WELL',NULL,108,11,6,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (404,'SPOT',NULL,108,0,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (404,'WELL',NULL,108,0,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (405,'SPOT',NULL,108,1,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (405,'WELL',NULL,108,1,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (406,'SPOT',NULL,108,2,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (406,'WELL',NULL,108,2,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (407,'SPOT',NULL,108,3,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (407,'WELL',NULL,108,3,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (408,'SPOT',NULL,108,4,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (408,'WELL',NULL,108,4,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (409,'SPOT',NULL,108,5,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (409,'WELL',NULL,108,5,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (410,'SPOT',NULL,108,6,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (410,'WELL',NULL,108,6,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (411,'SPOT',NULL,108,7,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (411,'WELL',NULL,108,7,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (412,'SPOT',NULL,108,8,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (412,'WELL',NULL,108,8,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (413,'SPOT',NULL,108,9,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (413,'WELL',NULL,108,9,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (414,'SPOT',NULL,108,10,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (414,'WELL',NULL,108,10,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (415,'SPOT',NULL,108,11,7,NULL,NULL,'2014-10-08 11:18:03',0);
+VALUES (415,'WELL',NULL,108,11,7,NULL,NULL,'2014-10-08 11:18:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (416,'SPOT',NULL,109,0,0,565,218,'2014-10-08 11:25:39',0);
+VALUES (416,'WELL',NULL,109,0,0,565,218,'2014-10-08 11:25:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (417,'SPOT',NULL,109,1,0,567,222,'2014-10-08 11:26:32',0);
+VALUES (417,'WELL',NULL,109,1,0,567,222,'2014-10-08 11:26:32',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (418,'SPOT',NULL,109,2,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (418,'WELL',NULL,109,2,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (419,'SPOT',NULL,109,3,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (419,'WELL',NULL,109,3,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (420,'SPOT',NULL,109,4,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (420,'WELL',NULL,109,4,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (421,'SPOT',NULL,109,5,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (421,'WELL',NULL,109,5,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (422,'SPOT',NULL,109,6,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (422,'WELL',NULL,109,6,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (423,'SPOT',NULL,109,7,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (423,'WELL',NULL,109,7,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (424,'SPOT',NULL,109,8,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (424,'WELL',NULL,109,8,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (425,'SPOT',NULL,109,9,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (425,'WELL',NULL,109,9,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (426,'SPOT',NULL,109,10,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (426,'WELL',NULL,109,10,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (427,'SPOT',NULL,109,11,0,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (427,'WELL',NULL,109,11,0,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (428,'SPOT',NULL,109,0,1,565,219,'2014-10-08 11:25:39',0);
+VALUES (428,'WELL',NULL,109,0,1,565,219,'2014-10-08 11:25:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (429,'SPOT',NULL,109,1,1,567,223,'2014-10-08 11:26:32',0);
+VALUES (429,'WELL',NULL,109,1,1,567,223,'2014-10-08 11:26:32',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (430,'SPOT',NULL,109,2,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (430,'WELL',NULL,109,2,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (431,'SPOT',NULL,109,3,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (431,'WELL',NULL,109,3,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (432,'SPOT',NULL,109,4,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (432,'WELL',NULL,109,4,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (433,'SPOT',NULL,109,5,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (433,'WELL',NULL,109,5,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (434,'SPOT',NULL,109,6,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (434,'WELL',NULL,109,6,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (435,'SPOT',NULL,109,7,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (435,'WELL',NULL,109,7,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (436,'SPOT',NULL,109,8,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (436,'WELL',NULL,109,8,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (437,'SPOT',NULL,109,9,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (437,'WELL',NULL,109,9,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (438,'SPOT',NULL,109,10,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (438,'WELL',NULL,109,10,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (439,'SPOT',NULL,109,11,1,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (439,'WELL',NULL,109,11,1,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (440,'SPOT',NULL,109,0,2,566,220,'2014-10-08 11:25:39',0);
+VALUES (440,'WELL',NULL,109,0,2,566,220,'2014-10-08 11:25:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (441,'SPOT',NULL,109,1,2,568,224,'2014-10-08 11:26:32',0);
+VALUES (441,'WELL',NULL,109,1,2,568,224,'2014-10-08 11:26:32',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (442,'SPOT',NULL,109,2,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (442,'WELL',NULL,109,2,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (443,'SPOT',NULL,109,3,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (443,'WELL',NULL,109,3,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (444,'SPOT',NULL,109,4,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (444,'WELL',NULL,109,4,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (445,'SPOT',NULL,109,5,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (445,'WELL',NULL,109,5,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (446,'SPOT',NULL,109,6,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (446,'WELL',NULL,109,6,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (447,'SPOT',NULL,109,7,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (447,'WELL',NULL,109,7,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (448,'SPOT',NULL,109,8,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (448,'WELL',NULL,109,8,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (449,'SPOT',NULL,109,9,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (449,'WELL',NULL,109,9,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (450,'SPOT',NULL,109,10,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (450,'WELL',NULL,109,10,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (451,'SPOT',NULL,109,11,2,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (451,'WELL',NULL,109,11,2,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (452,'SPOT',NULL,109,0,3,566,221,'2014-10-08 11:25:39',0);
+VALUES (452,'WELL',NULL,109,0,3,566,221,'2014-10-08 11:25:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (453,'SPOT',NULL,109,1,3,568,225,'2014-10-08 11:26:32',0);
+VALUES (453,'WELL',NULL,109,1,3,568,225,'2014-10-08 11:26:32',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (454,'SPOT',NULL,109,2,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (454,'WELL',NULL,109,2,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (455,'SPOT',NULL,109,3,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (455,'WELL',NULL,109,3,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (456,'SPOT',NULL,109,4,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (456,'WELL',NULL,109,4,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (457,'SPOT',NULL,109,5,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (457,'WELL',NULL,109,5,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (458,'SPOT',NULL,109,6,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (458,'WELL',NULL,109,6,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (459,'SPOT',NULL,109,7,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (459,'WELL',NULL,109,7,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (460,'SPOT',NULL,109,8,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (460,'WELL',NULL,109,8,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (461,'SPOT',NULL,109,9,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (461,'WELL',NULL,109,9,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (462,'SPOT',NULL,109,10,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (462,'WELL',NULL,109,10,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (463,'SPOT',NULL,109,11,3,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (463,'WELL',NULL,109,11,3,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (464,'SPOT',NULL,109,0,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (464,'WELL',NULL,109,0,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (465,'SPOT',NULL,109,1,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (465,'WELL',NULL,109,1,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (466,'SPOT',NULL,109,2,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (466,'WELL',NULL,109,2,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (467,'SPOT',NULL,109,3,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (467,'WELL',NULL,109,3,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (468,'SPOT',NULL,109,4,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (468,'WELL',NULL,109,4,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (469,'SPOT',NULL,109,5,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (469,'WELL',NULL,109,5,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (470,'SPOT',NULL,109,6,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (470,'WELL',NULL,109,6,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (471,'SPOT',NULL,109,7,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (471,'WELL',NULL,109,7,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (472,'SPOT',NULL,109,8,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (472,'WELL',NULL,109,8,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (473,'SPOT',NULL,109,9,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (473,'WELL',NULL,109,9,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (474,'SPOT',NULL,109,10,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (474,'WELL',NULL,109,10,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (475,'SPOT',NULL,109,11,4,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (475,'WELL',NULL,109,11,4,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (476,'SPOT',NULL,109,0,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (476,'WELL',NULL,109,0,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (477,'SPOT',NULL,109,1,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (477,'WELL',NULL,109,1,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (478,'SPOT',NULL,109,2,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (478,'WELL',NULL,109,2,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (479,'SPOT',NULL,109,3,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (479,'WELL',NULL,109,3,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (480,'SPOT',NULL,109,4,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (480,'WELL',NULL,109,4,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (481,'SPOT',NULL,109,5,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (481,'WELL',NULL,109,5,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (482,'SPOT',NULL,109,6,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (482,'WELL',NULL,109,6,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (483,'SPOT',NULL,109,7,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (483,'WELL',NULL,109,7,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (484,'SPOT',NULL,109,8,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (484,'WELL',NULL,109,8,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (485,'SPOT',NULL,109,9,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (485,'WELL',NULL,109,9,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (486,'SPOT',NULL,109,10,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (486,'WELL',NULL,109,10,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (487,'SPOT',NULL,109,11,5,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (487,'WELL',NULL,109,11,5,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (488,'SPOT',NULL,109,0,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (488,'WELL',NULL,109,0,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (489,'SPOT',NULL,109,1,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (489,'WELL',NULL,109,1,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (490,'SPOT',NULL,109,2,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (490,'WELL',NULL,109,2,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (491,'SPOT',NULL,109,3,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (491,'WELL',NULL,109,3,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (492,'SPOT',NULL,109,4,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (492,'WELL',NULL,109,4,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (493,'SPOT',NULL,109,5,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (493,'WELL',NULL,109,5,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (494,'SPOT',NULL,109,6,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (494,'WELL',NULL,109,6,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (495,'SPOT',NULL,109,7,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (495,'WELL',NULL,109,7,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (496,'SPOT',NULL,109,8,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (496,'WELL',NULL,109,8,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (497,'SPOT',NULL,109,9,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (497,'WELL',NULL,109,9,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (498,'SPOT',NULL,109,10,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (498,'WELL',NULL,109,10,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (499,'SPOT',NULL,109,11,6,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (499,'WELL',NULL,109,11,6,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (500,'SPOT',NULL,109,0,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (500,'WELL',NULL,109,0,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (501,'SPOT',NULL,109,1,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (501,'WELL',NULL,109,1,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (502,'SPOT',NULL,109,2,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (502,'WELL',NULL,109,2,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (503,'SPOT',NULL,109,3,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (503,'WELL',NULL,109,3,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (504,'SPOT',NULL,109,4,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (504,'WELL',NULL,109,4,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (505,'SPOT',NULL,109,5,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (505,'WELL',NULL,109,5,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (506,'SPOT',NULL,109,6,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (506,'WELL',NULL,109,6,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (507,'SPOT',NULL,109,7,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (507,'WELL',NULL,109,7,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (508,'SPOT',NULL,109,8,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (508,'WELL',NULL,109,8,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (509,'SPOT',NULL,109,9,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (509,'WELL',NULL,109,9,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (510,'SPOT',NULL,109,10,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (510,'WELL',NULL,109,10,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (511,'SPOT',NULL,109,11,7,NULL,NULL,'2014-10-08 11:24:47',0);
+VALUES (511,'WELL',NULL,109,11,7,NULL,NULL,'2014-10-08 11:24:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (512,'SPOT',NULL,110,0,0,569,NULL,'2014-10-09 12:19:42',0);
+VALUES (512,'WELL',NULL,110,0,0,569,NULL,'2014-10-09 12:19:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (513,'SPOT',NULL,110,1,0,571,240,'2014-10-09 12:22:08',0);
+VALUES (513,'WELL',NULL,110,1,0,571,240,'2014-10-09 12:22:08',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (514,'SPOT',NULL,110,2,0,569,NULL,'2014-10-09 13:11:11',0);
+VALUES (514,'WELL',NULL,110,2,0,569,NULL,'2014-10-09 13:11:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (515,'SPOT',NULL,110,3,0,574,248,'2014-10-09 13:17:15',0);
+VALUES (515,'WELL',NULL,110,3,0,574,248,'2014-10-09 13:17:15',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (516,'SPOT',NULL,110,4,0,575,254,'2014-10-09 13:28:42',0);
+VALUES (516,'WELL',NULL,110,4,0,575,254,'2014-10-09 13:28:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (517,'SPOT',NULL,110,5,0,577,262,'2014-10-09 13:31:02',0);
+VALUES (517,'WELL',NULL,110,5,0,577,262,'2014-10-09 13:31:02',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (518,'SPOT',NULL,110,6,0,NULL,NULL,'2014-10-09 12:19:34',0);
+VALUES (518,'WELL',NULL,110,6,0,NULL,NULL,'2014-10-09 12:19:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (519,'SPOT',NULL,110,7,0,NULL,NULL,'2014-10-09 12:19:34',0);
+VALUES (519,'WELL',NULL,110,7,0,NULL,NULL,'2014-10-09 12:19:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (520,'SPOT',NULL,110,8,0,NULL,NULL,'2014-10-09 12:19:34',0);
+VALUES (520,'WELL',NULL,110,8,0,NULL,NULL,'2014-10-09 12:19:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (521,'SPOT',NULL,110,9,0,NULL,NULL,'2014-10-09 12:19:34',0);
+VALUES (521,'WELL',NULL,110,9,0,NULL,NULL,'2014-10-09 12:19:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (522,'SPOT',NULL,110,10,0,NULL,NULL,'2014-10-09 12:19:34',0);
+VALUES (522,'WELL',NULL,110,10,0,NULL,NULL,'2014-10-09 12:19:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (523,'SPOT',NULL,110,11,0,NULL,NULL,'2014-10-09 12:19:34',0);
+VALUES (523,'WELL',NULL,110,11,0,NULL,NULL,'2014-10-09 12:19:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (524,'SPOT',NULL,110,0,1,570,NULL,'2014-10-09 12:19:42',0);
+VALUES (524,'WELL',NULL,110,0,1,570,NULL,'2014-10-09 12:19:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (525,'SPOT',NULL,110,1,1,572,241,'2014-10-09 12:22:08',0);
+VALUES (525,'WELL',NULL,110,1,1,572,241,'2014-10-09 12:22:08',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (526,'SPOT',NULL,110,2,1,569,NULL,'2014-10-09 13:11:12',0);
+VALUES (526,'WELL',NULL,110,2,1,569,NULL,'2014-10-09 13:11:12',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (527,'SPOT',NULL,110,3,1,574,249,'2014-10-09 13:17:15',0);
+VALUES (527,'WELL',NULL,110,3,1,574,249,'2014-10-09 13:17:15',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (528,'SPOT',NULL,110,4,1,576,255,'2014-10-09 13:28:42',0);
+VALUES (528,'WELL',NULL,110,4,1,576,255,'2014-10-09 13:28:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (529,'SPOT',NULL,110,5,1,577,263,'2014-10-09 13:31:02',0);
+VALUES (529,'WELL',NULL,110,5,1,577,263,'2014-10-09 13:31:02',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (530,'SPOT',NULL,110,6,1,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (530,'WELL',NULL,110,6,1,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (531,'SPOT',NULL,110,7,1,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (531,'WELL',NULL,110,7,1,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (532,'SPOT',NULL,110,8,1,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (532,'WELL',NULL,110,8,1,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (533,'SPOT',NULL,110,9,1,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (533,'WELL',NULL,110,9,1,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (534,'SPOT',NULL,110,10,1,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (534,'WELL',NULL,110,10,1,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (535,'SPOT',NULL,110,11,1,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (535,'WELL',NULL,110,11,1,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (536,'SPOT',NULL,110,0,2,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (536,'WELL',NULL,110,0,2,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (537,'SPOT',NULL,110,1,2,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (537,'WELL',NULL,110,1,2,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (538,'SPOT',NULL,110,2,2,570,NULL,'2014-10-09 13:11:12',0);
+VALUES (538,'WELL',NULL,110,2,2,570,NULL,'2014-10-09 13:11:12',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (539,'SPOT',NULL,110,3,2,573,250,'2014-10-09 13:17:15',0);
+VALUES (539,'WELL',NULL,110,3,2,573,250,'2014-10-09 13:17:15',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (540,'SPOT',NULL,110,4,2,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (540,'WELL',NULL,110,4,2,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (541,'SPOT',NULL,110,5,2,578,264,'2014-10-09 13:31:02',0);
+VALUES (541,'WELL',NULL,110,5,2,578,264,'2014-10-09 13:31:02',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (542,'SPOT',NULL,110,6,2,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (542,'WELL',NULL,110,6,2,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (543,'SPOT',NULL,110,7,2,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (543,'WELL',NULL,110,7,2,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (544,'SPOT',NULL,110,8,2,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (544,'WELL',NULL,110,8,2,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (545,'SPOT',NULL,110,9,2,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (545,'WELL',NULL,110,9,2,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (546,'SPOT',NULL,110,10,2,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (546,'WELL',NULL,110,10,2,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (547,'SPOT',NULL,110,11,2,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (547,'WELL',NULL,110,11,2,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (548,'SPOT',NULL,110,0,3,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (548,'WELL',NULL,110,0,3,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (549,'SPOT',NULL,110,1,3,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (549,'WELL',NULL,110,1,3,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (550,'SPOT',NULL,110,2,3,570,NULL,'2014-10-09 13:11:12',0);
+VALUES (550,'WELL',NULL,110,2,3,570,NULL,'2014-10-09 13:11:12',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (551,'SPOT',NULL,110,3,3,573,251,'2014-10-09 13:17:15',0);
+VALUES (551,'WELL',NULL,110,3,3,573,251,'2014-10-09 13:17:15',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (552,'SPOT',NULL,110,4,3,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (552,'WELL',NULL,110,4,3,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (553,'SPOT',NULL,110,5,3,578,265,'2014-10-09 13:31:02',0);
+VALUES (553,'WELL',NULL,110,5,3,578,265,'2014-10-09 13:31:02',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (554,'SPOT',NULL,110,6,3,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (554,'WELL',NULL,110,6,3,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (555,'SPOT',NULL,110,7,3,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (555,'WELL',NULL,110,7,3,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (556,'SPOT',NULL,110,8,3,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (556,'WELL',NULL,110,8,3,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (557,'SPOT',NULL,110,9,3,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (557,'WELL',NULL,110,9,3,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (558,'SPOT',NULL,110,10,3,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (558,'WELL',NULL,110,10,3,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (559,'SPOT',NULL,110,11,3,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (559,'WELL',NULL,110,11,3,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (560,'SPOT',NULL,110,0,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (560,'WELL',NULL,110,0,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (561,'SPOT',NULL,110,1,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (561,'WELL',NULL,110,1,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (562,'SPOT',NULL,110,2,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (562,'WELL',NULL,110,2,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (563,'SPOT',NULL,110,3,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (563,'WELL',NULL,110,3,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (564,'SPOT',NULL,110,4,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (564,'WELL',NULL,110,4,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (565,'SPOT',NULL,110,5,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (565,'WELL',NULL,110,5,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (566,'SPOT',NULL,110,6,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (566,'WELL',NULL,110,6,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (567,'SPOT',NULL,110,7,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (567,'WELL',NULL,110,7,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (568,'SPOT',NULL,110,8,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (568,'WELL',NULL,110,8,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (569,'SPOT',NULL,110,9,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (569,'WELL',NULL,110,9,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (570,'SPOT',NULL,110,10,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (570,'WELL',NULL,110,10,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (571,'SPOT',NULL,110,11,4,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (571,'WELL',NULL,110,11,4,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (572,'SPOT',NULL,110,0,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (572,'WELL',NULL,110,0,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (573,'SPOT',NULL,110,1,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (573,'WELL',NULL,110,1,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (574,'SPOT',NULL,110,2,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (574,'WELL',NULL,110,2,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (575,'SPOT',NULL,110,3,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (575,'WELL',NULL,110,3,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (576,'SPOT',NULL,110,4,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (576,'WELL',NULL,110,4,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (577,'SPOT',NULL,110,5,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (577,'WELL',NULL,110,5,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (578,'SPOT',NULL,110,6,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (578,'WELL',NULL,110,6,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (579,'SPOT',NULL,110,7,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (579,'WELL',NULL,110,7,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (580,'SPOT',NULL,110,8,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (580,'WELL',NULL,110,8,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (581,'SPOT',NULL,110,9,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (581,'WELL',NULL,110,9,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (582,'SPOT',NULL,110,10,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (582,'WELL',NULL,110,10,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (583,'SPOT',NULL,110,11,5,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (583,'WELL',NULL,110,11,5,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (584,'SPOT',NULL,110,0,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (584,'WELL',NULL,110,0,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (585,'SPOT',NULL,110,1,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (585,'WELL',NULL,110,1,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (586,'SPOT',NULL,110,2,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (586,'WELL',NULL,110,2,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (587,'SPOT',NULL,110,3,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (587,'WELL',NULL,110,3,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (588,'SPOT',NULL,110,4,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (588,'WELL',NULL,110,4,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (589,'SPOT',NULL,110,5,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (589,'WELL',NULL,110,5,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (590,'SPOT',NULL,110,6,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (590,'WELL',NULL,110,6,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (591,'SPOT',NULL,110,7,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (591,'WELL',NULL,110,7,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (592,'SPOT',NULL,110,8,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (592,'WELL',NULL,110,8,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (593,'SPOT',NULL,110,9,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (593,'WELL',NULL,110,9,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (594,'SPOT',NULL,110,10,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (594,'WELL',NULL,110,10,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (595,'SPOT',NULL,110,11,6,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (595,'WELL',NULL,110,11,6,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (596,'SPOT',NULL,110,0,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (596,'WELL',NULL,110,0,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (597,'SPOT',NULL,110,1,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (597,'WELL',NULL,110,1,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (598,'SPOT',NULL,110,2,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (598,'WELL',NULL,110,2,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (599,'SPOT',NULL,110,3,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (599,'WELL',NULL,110,3,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (600,'SPOT',NULL,110,4,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (600,'WELL',NULL,110,4,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (601,'SPOT',NULL,110,5,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (601,'WELL',NULL,110,5,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (602,'SPOT',NULL,110,6,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (602,'WELL',NULL,110,6,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (603,'SPOT',NULL,110,7,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (603,'WELL',NULL,110,7,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (604,'SPOT',NULL,110,8,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (604,'WELL',NULL,110,8,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (605,'SPOT',NULL,110,9,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (605,'WELL',NULL,110,9,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (606,'SPOT',NULL,110,10,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (606,'WELL',NULL,110,10,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (607,'SPOT',NULL,110,11,7,NULL,NULL,'2014-10-09 12:19:35',0);
+VALUES (607,'WELL',NULL,110,11,7,NULL,NULL,'2014-10-09 12:19:35',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (608,'SPOT',NULL,111,0,0,569,234,'2014-10-09 12:20:31',0);
+VALUES (608,'WELL',NULL,111,0,0,569,234,'2014-10-09 12:20:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (609,'SPOT',NULL,111,1,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (609,'WELL',NULL,111,1,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (610,'SPOT',NULL,111,2,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (610,'WELL',NULL,111,2,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (611,'SPOT',NULL,111,3,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (611,'WELL',NULL,111,3,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (612,'SPOT',NULL,111,4,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (612,'WELL',NULL,111,4,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (613,'SPOT',NULL,111,5,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (613,'WELL',NULL,111,5,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (614,'SPOT',NULL,111,6,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (614,'WELL',NULL,111,6,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (615,'SPOT',NULL,111,7,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (615,'WELL',NULL,111,7,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (616,'SPOT',NULL,111,8,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (616,'WELL',NULL,111,8,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (617,'SPOT',NULL,111,9,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (617,'WELL',NULL,111,9,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (618,'SPOT',NULL,111,10,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (618,'WELL',NULL,111,10,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (619,'SPOT',NULL,111,11,0,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (619,'WELL',NULL,111,11,0,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (620,'SPOT',NULL,111,0,1,570,235,'2014-10-09 12:20:31',0);
+VALUES (620,'WELL',NULL,111,0,1,570,235,'2014-10-09 12:20:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (621,'SPOT',NULL,111,1,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (621,'WELL',NULL,111,1,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (622,'SPOT',NULL,111,2,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (622,'WELL',NULL,111,2,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (623,'SPOT',NULL,111,3,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (623,'WELL',NULL,111,3,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (624,'SPOT',NULL,111,4,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (624,'WELL',NULL,111,4,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (625,'SPOT',NULL,111,5,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (625,'WELL',NULL,111,5,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (626,'SPOT',NULL,111,6,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (626,'WELL',NULL,111,6,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (627,'SPOT',NULL,111,7,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (627,'WELL',NULL,111,7,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (628,'SPOT',NULL,111,8,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (628,'WELL',NULL,111,8,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (629,'SPOT',NULL,111,9,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (629,'WELL',NULL,111,9,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (630,'SPOT',NULL,111,10,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (630,'WELL',NULL,111,10,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (631,'SPOT',NULL,111,11,1,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (631,'WELL',NULL,111,11,1,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (632,'SPOT',NULL,111,0,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (632,'WELL',NULL,111,0,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (633,'SPOT',NULL,111,1,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (633,'WELL',NULL,111,1,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (634,'SPOT',NULL,111,2,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (634,'WELL',NULL,111,2,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (635,'SPOT',NULL,111,3,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (635,'WELL',NULL,111,3,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (636,'SPOT',NULL,111,4,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (636,'WELL',NULL,111,4,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (637,'SPOT',NULL,111,5,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (637,'WELL',NULL,111,5,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (638,'SPOT',NULL,111,6,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (638,'WELL',NULL,111,6,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (639,'SPOT',NULL,111,7,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (639,'WELL',NULL,111,7,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (640,'SPOT',NULL,111,8,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (640,'WELL',NULL,111,8,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (641,'SPOT',NULL,111,9,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (641,'WELL',NULL,111,9,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (642,'SPOT',NULL,111,10,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (642,'WELL',NULL,111,10,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (643,'SPOT',NULL,111,11,2,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (643,'WELL',NULL,111,11,2,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (644,'SPOT',NULL,111,0,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (644,'WELL',NULL,111,0,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (645,'SPOT',NULL,111,1,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (645,'WELL',NULL,111,1,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (646,'SPOT',NULL,111,2,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (646,'WELL',NULL,111,2,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (647,'SPOT',NULL,111,3,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (647,'WELL',NULL,111,3,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (648,'SPOT',NULL,111,4,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (648,'WELL',NULL,111,4,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (649,'SPOT',NULL,111,5,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (649,'WELL',NULL,111,5,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (650,'SPOT',NULL,111,6,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (650,'WELL',NULL,111,6,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (651,'SPOT',NULL,111,7,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (651,'WELL',NULL,111,7,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (652,'SPOT',NULL,111,8,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (652,'WELL',NULL,111,8,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (653,'SPOT',NULL,111,9,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (653,'WELL',NULL,111,9,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (654,'SPOT',NULL,111,10,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (654,'WELL',NULL,111,10,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (655,'SPOT',NULL,111,11,3,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (655,'WELL',NULL,111,11,3,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (656,'SPOT',NULL,111,0,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (656,'WELL',NULL,111,0,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (657,'SPOT',NULL,111,1,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (657,'WELL',NULL,111,1,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (658,'SPOT',NULL,111,2,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (658,'WELL',NULL,111,2,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (659,'SPOT',NULL,111,3,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (659,'WELL',NULL,111,3,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (660,'SPOT',NULL,111,4,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (660,'WELL',NULL,111,4,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (661,'SPOT',NULL,111,5,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (661,'WELL',NULL,111,5,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (662,'SPOT',NULL,111,6,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (662,'WELL',NULL,111,6,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (663,'SPOT',NULL,111,7,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (663,'WELL',NULL,111,7,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (664,'SPOT',NULL,111,8,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (664,'WELL',NULL,111,8,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (665,'SPOT',NULL,111,9,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (665,'WELL',NULL,111,9,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (666,'SPOT',NULL,111,10,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (666,'WELL',NULL,111,10,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (667,'SPOT',NULL,111,11,4,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (667,'WELL',NULL,111,11,4,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (668,'SPOT',NULL,111,0,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (668,'WELL',NULL,111,0,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (669,'SPOT',NULL,111,1,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (669,'WELL',NULL,111,1,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (670,'SPOT',NULL,111,2,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (670,'WELL',NULL,111,2,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (671,'SPOT',NULL,111,3,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (671,'WELL',NULL,111,3,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (672,'SPOT',NULL,111,4,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (672,'WELL',NULL,111,4,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (673,'SPOT',NULL,111,5,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (673,'WELL',NULL,111,5,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (674,'SPOT',NULL,111,6,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (674,'WELL',NULL,111,6,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (675,'SPOT',NULL,111,7,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (675,'WELL',NULL,111,7,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (676,'SPOT',NULL,111,8,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (676,'WELL',NULL,111,8,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (677,'SPOT',NULL,111,9,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (677,'WELL',NULL,111,9,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (678,'SPOT',NULL,111,10,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (678,'WELL',NULL,111,10,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (679,'SPOT',NULL,111,11,5,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (679,'WELL',NULL,111,11,5,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (680,'SPOT',NULL,111,0,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (680,'WELL',NULL,111,0,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (681,'SPOT',NULL,111,1,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (681,'WELL',NULL,111,1,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (682,'SPOT',NULL,111,2,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (682,'WELL',NULL,111,2,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (683,'SPOT',NULL,111,3,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (683,'WELL',NULL,111,3,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (684,'SPOT',NULL,111,4,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (684,'WELL',NULL,111,4,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (685,'SPOT',NULL,111,5,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (685,'WELL',NULL,111,5,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (686,'SPOT',NULL,111,6,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (686,'WELL',NULL,111,6,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (687,'SPOT',NULL,111,7,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (687,'WELL',NULL,111,7,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (688,'SPOT',NULL,111,8,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (688,'WELL',NULL,111,8,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (689,'SPOT',NULL,111,9,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (689,'WELL',NULL,111,9,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (690,'SPOT',NULL,111,10,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (690,'WELL',NULL,111,10,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (691,'SPOT',NULL,111,11,6,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (691,'WELL',NULL,111,11,6,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (692,'SPOT',NULL,111,0,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (692,'WELL',NULL,111,0,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (693,'SPOT',NULL,111,1,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (693,'WELL',NULL,111,1,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (694,'SPOT',NULL,111,2,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (694,'WELL',NULL,111,2,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (695,'SPOT',NULL,111,3,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (695,'WELL',NULL,111,3,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (696,'SPOT',NULL,111,4,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (696,'WELL',NULL,111,4,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (697,'SPOT',NULL,111,5,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (697,'WELL',NULL,111,5,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (698,'SPOT',NULL,111,6,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (698,'WELL',NULL,111,6,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (699,'SPOT',NULL,111,7,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (699,'WELL',NULL,111,7,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (700,'SPOT',NULL,111,8,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (700,'WELL',NULL,111,8,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (701,'SPOT',NULL,111,9,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (701,'WELL',NULL,111,9,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (702,'SPOT',NULL,111,10,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (702,'WELL',NULL,111,10,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (703,'SPOT',NULL,111,11,7,NULL,NULL,'2014-10-09 12:20:19',0);
+VALUES (703,'WELL',NULL,111,11,7,NULL,NULL,'2014-10-09 12:20:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (704,'SPOT',NULL,112,0,0,575,256,'2014-10-09 13:29:59',0);
+VALUES (704,'WELL',NULL,112,0,0,575,256,'2014-10-09 13:29:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (705,'SPOT',NULL,112,1,0,577,266,'2014-10-09 13:31:32',0);
+VALUES (705,'WELL',NULL,112,1,0,577,266,'2014-10-09 13:31:32',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (706,'SPOT',NULL,112,2,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (706,'WELL',NULL,112,2,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (707,'SPOT',NULL,112,3,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (707,'WELL',NULL,112,3,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (708,'SPOT',NULL,112,4,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (708,'WELL',NULL,112,4,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (709,'SPOT',NULL,112,5,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (709,'WELL',NULL,112,5,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (710,'SPOT',NULL,112,6,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (710,'WELL',NULL,112,6,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (711,'SPOT',NULL,112,7,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (711,'WELL',NULL,112,7,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (712,'SPOT',NULL,112,8,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (712,'WELL',NULL,112,8,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (713,'SPOT',NULL,112,9,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (713,'WELL',NULL,112,9,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (714,'SPOT',NULL,112,10,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (714,'WELL',NULL,112,10,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (715,'SPOT',NULL,112,11,0,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (715,'WELL',NULL,112,11,0,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (716,'SPOT',NULL,112,0,1,575,257,'2014-10-09 13:29:59',0);
+VALUES (716,'WELL',NULL,112,0,1,575,257,'2014-10-09 13:29:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (717,'SPOT',NULL,112,1,1,577,267,'2014-10-09 13:31:32',0);
+VALUES (717,'WELL',NULL,112,1,1,577,267,'2014-10-09 13:31:32',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (718,'SPOT',NULL,112,2,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (718,'WELL',NULL,112,2,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (719,'SPOT',NULL,112,3,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (719,'WELL',NULL,112,3,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (720,'SPOT',NULL,112,4,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (720,'WELL',NULL,112,4,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (721,'SPOT',NULL,112,5,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (721,'WELL',NULL,112,5,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (722,'SPOT',NULL,112,6,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (722,'WELL',NULL,112,6,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (723,'SPOT',NULL,112,7,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (723,'WELL',NULL,112,7,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (724,'SPOT',NULL,112,8,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (724,'WELL',NULL,112,8,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (725,'SPOT',NULL,112,9,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (725,'WELL',NULL,112,9,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (726,'SPOT',NULL,112,10,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (726,'WELL',NULL,112,10,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (727,'SPOT',NULL,112,11,1,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (727,'WELL',NULL,112,11,1,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (728,'SPOT',NULL,112,0,2,576,258,'2014-10-09 13:29:59',0);
+VALUES (728,'WELL',NULL,112,0,2,576,258,'2014-10-09 13:29:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (729,'SPOT',NULL,112,1,2,578,268,'2014-10-09 13:31:32',0);
+VALUES (729,'WELL',NULL,112,1,2,578,268,'2014-10-09 13:31:32',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (730,'SPOT',NULL,112,2,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (730,'WELL',NULL,112,2,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (731,'SPOT',NULL,112,3,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (731,'WELL',NULL,112,3,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (732,'SPOT',NULL,112,4,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (732,'WELL',NULL,112,4,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (733,'SPOT',NULL,112,5,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (733,'WELL',NULL,112,5,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (734,'SPOT',NULL,112,6,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (734,'WELL',NULL,112,6,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (735,'SPOT',NULL,112,7,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (735,'WELL',NULL,112,7,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (736,'SPOT',NULL,112,8,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (736,'WELL',NULL,112,8,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (737,'SPOT',NULL,112,9,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (737,'WELL',NULL,112,9,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (738,'SPOT',NULL,112,10,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (738,'WELL',NULL,112,10,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (739,'SPOT',NULL,112,11,2,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (739,'WELL',NULL,112,11,2,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (740,'SPOT',NULL,112,0,3,576,259,'2014-10-09 13:29:59',0);
+VALUES (740,'WELL',NULL,112,0,3,576,259,'2014-10-09 13:29:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (741,'SPOT',NULL,112,1,3,578,269,'2014-10-09 13:31:32',0);
+VALUES (741,'WELL',NULL,112,1,3,578,269,'2014-10-09 13:31:32',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (742,'SPOT',NULL,112,2,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (742,'WELL',NULL,112,2,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (743,'SPOT',NULL,112,3,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (743,'WELL',NULL,112,3,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (744,'SPOT',NULL,112,4,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (744,'WELL',NULL,112,4,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (745,'SPOT',NULL,112,5,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (745,'WELL',NULL,112,5,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (746,'SPOT',NULL,112,6,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (746,'WELL',NULL,112,6,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (747,'SPOT',NULL,112,7,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (747,'WELL',NULL,112,7,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (748,'SPOT',NULL,112,8,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (748,'WELL',NULL,112,8,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (749,'SPOT',NULL,112,9,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (749,'WELL',NULL,112,9,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (750,'SPOT',NULL,112,10,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (750,'WELL',NULL,112,10,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (751,'SPOT',NULL,112,11,3,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (751,'WELL',NULL,112,11,3,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (752,'SPOT',NULL,112,0,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (752,'WELL',NULL,112,0,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (753,'SPOT',NULL,112,1,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (753,'WELL',NULL,112,1,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (754,'SPOT',NULL,112,2,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (754,'WELL',NULL,112,2,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (755,'SPOT',NULL,112,3,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (755,'WELL',NULL,112,3,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (756,'SPOT',NULL,112,4,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (756,'WELL',NULL,112,4,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (757,'SPOT',NULL,112,5,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (757,'WELL',NULL,112,5,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (758,'SPOT',NULL,112,6,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (758,'WELL',NULL,112,6,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (759,'SPOT',NULL,112,7,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (759,'WELL',NULL,112,7,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (760,'SPOT',NULL,112,8,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (760,'WELL',NULL,112,8,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (761,'SPOT',NULL,112,9,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (761,'WELL',NULL,112,9,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (762,'SPOT',NULL,112,10,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (762,'WELL',NULL,112,10,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (763,'SPOT',NULL,112,11,4,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (763,'WELL',NULL,112,11,4,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (764,'SPOT',NULL,112,0,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (764,'WELL',NULL,112,0,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (765,'SPOT',NULL,112,1,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (765,'WELL',NULL,112,1,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (766,'SPOT',NULL,112,2,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (766,'WELL',NULL,112,2,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (767,'SPOT',NULL,112,3,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (767,'WELL',NULL,112,3,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (768,'SPOT',NULL,112,4,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (768,'WELL',NULL,112,4,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (769,'SPOT',NULL,112,5,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (769,'WELL',NULL,112,5,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (770,'SPOT',NULL,112,6,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (770,'WELL',NULL,112,6,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (771,'SPOT',NULL,112,7,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (771,'WELL',NULL,112,7,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (772,'SPOT',NULL,112,8,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (772,'WELL',NULL,112,8,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (773,'SPOT',NULL,112,9,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (773,'WELL',NULL,112,9,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (774,'SPOT',NULL,112,10,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (774,'WELL',NULL,112,10,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (775,'SPOT',NULL,112,11,5,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (775,'WELL',NULL,112,11,5,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (776,'SPOT',NULL,112,0,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (776,'WELL',NULL,112,0,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (777,'SPOT',NULL,112,1,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (777,'WELL',NULL,112,1,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (778,'SPOT',NULL,112,2,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (778,'WELL',NULL,112,2,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (779,'SPOT',NULL,112,3,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (779,'WELL',NULL,112,3,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (780,'SPOT',NULL,112,4,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (780,'WELL',NULL,112,4,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (781,'SPOT',NULL,112,5,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (781,'WELL',NULL,112,5,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (782,'SPOT',NULL,112,6,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (782,'WELL',NULL,112,6,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (783,'SPOT',NULL,112,7,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (783,'WELL',NULL,112,7,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (784,'SPOT',NULL,112,8,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (784,'WELL',NULL,112,8,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (785,'SPOT',NULL,112,9,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (785,'WELL',NULL,112,9,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (786,'SPOT',NULL,112,10,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (786,'WELL',NULL,112,10,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (787,'SPOT',NULL,112,11,6,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (787,'WELL',NULL,112,11,6,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (788,'SPOT',NULL,112,0,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (788,'WELL',NULL,112,0,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (789,'SPOT',NULL,112,1,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (789,'WELL',NULL,112,1,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (790,'SPOT',NULL,112,2,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (790,'WELL',NULL,112,2,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (791,'SPOT',NULL,112,3,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (791,'WELL',NULL,112,3,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (792,'SPOT',NULL,112,4,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (792,'WELL',NULL,112,4,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (793,'SPOT',NULL,112,5,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (793,'WELL',NULL,112,5,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (794,'SPOT',NULL,112,6,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (794,'WELL',NULL,112,6,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (795,'SPOT',NULL,112,7,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (795,'WELL',NULL,112,7,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (796,'SPOT',NULL,112,8,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (796,'WELL',NULL,112,8,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (797,'SPOT',NULL,112,9,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (797,'WELL',NULL,112,9,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (798,'SPOT',NULL,112,10,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (798,'WELL',NULL,112,10,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (799,'SPOT',NULL,112,11,7,NULL,NULL,'2014-10-09 13:29:26',0);
+VALUES (799,'WELL',NULL,112,11,7,NULL,NULL,'2014-10-09 13:29:26',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (800,'SPOT',NULL,113,0,0,579,270,'2014-10-14 14:06:54',0);
+VALUES (800,'WELL',NULL,113,0,0,579,270,'2014-10-14 14:06:54',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (801,'SPOT',NULL,113,1,0,581,274,'2014-10-14 14:08:31',0);
+VALUES (801,'WELL',NULL,113,1,0,581,274,'2014-10-14 14:08:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (802,'SPOT',NULL,113,2,0,587,302,'2014-10-14 14:15:33',0);
+VALUES (802,'WELL',NULL,113,2,0,587,302,'2014-10-14 14:15:33',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (803,'SPOT',NULL,113,3,0,585,306,'2014-10-14 14:16:47',0);
+VALUES (803,'WELL',NULL,113,3,0,585,306,'2014-10-14 14:16:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (804,'SPOT',NULL,113,4,0,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (804,'WELL',NULL,113,4,0,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (805,'SPOT',NULL,113,5,0,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (805,'WELL',NULL,113,5,0,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (806,'SPOT',NULL,113,6,0,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (806,'WELL',NULL,113,6,0,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (807,'SPOT',NULL,113,7,0,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (807,'WELL',NULL,113,7,0,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (808,'SPOT',NULL,113,8,0,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (808,'WELL',NULL,113,8,0,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (809,'SPOT',NULL,113,9,0,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (809,'WELL',NULL,113,9,0,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (810,'SPOT',NULL,113,10,0,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (810,'WELL',NULL,113,10,0,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (811,'SPOT',NULL,113,11,0,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (811,'WELL',NULL,113,11,0,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (812,'SPOT',NULL,113,0,1,580,271,'2014-10-14 14:06:54',0);
+VALUES (812,'WELL',NULL,113,0,1,580,271,'2014-10-14 14:06:54',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (813,'SPOT',NULL,113,1,1,582,275,'2014-10-14 14:08:31',0);
+VALUES (813,'WELL',NULL,113,1,1,582,275,'2014-10-14 14:08:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (814,'SPOT',NULL,113,2,1,587,303,'2014-10-14 14:15:33',0);
+VALUES (814,'WELL',NULL,113,2,1,587,303,'2014-10-14 14:15:33',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (815,'SPOT',NULL,113,3,1,585,307,'2014-10-14 14:16:47',0);
+VALUES (815,'WELL',NULL,113,3,1,585,307,'2014-10-14 14:16:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (816,'SPOT',NULL,113,4,1,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (816,'WELL',NULL,113,4,1,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (817,'SPOT',NULL,113,5,1,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (817,'WELL',NULL,113,5,1,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (818,'SPOT',NULL,113,6,1,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (818,'WELL',NULL,113,6,1,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (819,'SPOT',NULL,113,7,1,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (819,'WELL',NULL,113,7,1,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (820,'SPOT',NULL,113,8,1,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (820,'WELL',NULL,113,8,1,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (821,'SPOT',NULL,113,9,1,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (821,'WELL',NULL,113,9,1,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (822,'SPOT',NULL,113,10,1,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (822,'WELL',NULL,113,10,1,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (823,'SPOT',NULL,113,11,1,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (823,'WELL',NULL,113,11,1,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (824,'SPOT',NULL,113,0,2,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (824,'WELL',NULL,113,0,2,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (825,'SPOT',NULL,113,1,2,583,276,'2014-10-14 14:08:31',0);
+VALUES (825,'WELL',NULL,113,1,2,583,276,'2014-10-14 14:08:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (826,'SPOT',NULL,113,2,2,588,304,'2014-10-14 14:15:33',0);
+VALUES (826,'WELL',NULL,113,2,2,588,304,'2014-10-14 14:15:33',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (827,'SPOT',NULL,113,3,2,586,308,'2014-10-14 14:16:47',0);
+VALUES (827,'WELL',NULL,113,3,2,586,308,'2014-10-14 14:16:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (828,'SPOT',NULL,113,4,2,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (828,'WELL',NULL,113,4,2,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (829,'SPOT',NULL,113,5,2,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (829,'WELL',NULL,113,5,2,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (830,'SPOT',NULL,113,6,2,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (830,'WELL',NULL,113,6,2,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (831,'SPOT',NULL,113,7,2,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (831,'WELL',NULL,113,7,2,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (832,'SPOT',NULL,113,8,2,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (832,'WELL',NULL,113,8,2,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (833,'SPOT',NULL,113,9,2,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (833,'WELL',NULL,113,9,2,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (834,'SPOT',NULL,113,10,2,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (834,'WELL',NULL,113,10,2,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (835,'SPOT',NULL,113,11,2,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (835,'WELL',NULL,113,11,2,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (836,'SPOT',NULL,113,0,3,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (836,'WELL',NULL,113,0,3,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (837,'SPOT',NULL,113,1,3,584,277,'2014-10-14 14:08:31',0);
+VALUES (837,'WELL',NULL,113,1,3,584,277,'2014-10-14 14:08:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (838,'SPOT',NULL,113,2,3,588,305,'2014-10-14 14:15:33',0);
+VALUES (838,'WELL',NULL,113,2,3,588,305,'2014-10-14 14:15:33',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (839,'SPOT',NULL,113,3,3,586,309,'2014-10-14 14:16:47',0);
+VALUES (839,'WELL',NULL,113,3,3,586,309,'2014-10-14 14:16:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (840,'SPOT',NULL,113,4,3,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (840,'WELL',NULL,113,4,3,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (841,'SPOT',NULL,113,5,3,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (841,'WELL',NULL,113,5,3,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (842,'SPOT',NULL,113,6,3,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (842,'WELL',NULL,113,6,3,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (843,'SPOT',NULL,113,7,3,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (843,'WELL',NULL,113,7,3,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (844,'SPOT',NULL,113,8,3,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (844,'WELL',NULL,113,8,3,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (845,'SPOT',NULL,113,9,3,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (845,'WELL',NULL,113,9,3,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (846,'SPOT',NULL,113,10,3,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (846,'WELL',NULL,113,10,3,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (847,'SPOT',NULL,113,11,3,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (847,'WELL',NULL,113,11,3,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (848,'SPOT',NULL,113,0,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (848,'WELL',NULL,113,0,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (849,'SPOT',NULL,113,1,4,585,278,'2014-10-14 14:08:31',0);
+VALUES (849,'WELL',NULL,113,1,4,585,278,'2014-10-14 14:08:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (850,'SPOT',NULL,113,2,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (850,'WELL',NULL,113,2,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (851,'SPOT',NULL,113,3,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (851,'WELL',NULL,113,3,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (852,'SPOT',NULL,113,4,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (852,'WELL',NULL,113,4,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (853,'SPOT',NULL,113,5,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (853,'WELL',NULL,113,5,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (854,'SPOT',NULL,113,6,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (854,'WELL',NULL,113,6,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (855,'SPOT',NULL,113,7,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (855,'WELL',NULL,113,7,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (856,'SPOT',NULL,113,8,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (856,'WELL',NULL,113,8,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (857,'SPOT',NULL,113,9,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (857,'WELL',NULL,113,9,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (858,'SPOT',NULL,113,10,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (858,'WELL',NULL,113,10,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (859,'SPOT',NULL,113,11,4,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (859,'WELL',NULL,113,11,4,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (860,'SPOT',NULL,113,0,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (860,'WELL',NULL,113,0,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (861,'SPOT',NULL,113,1,5,586,279,'2014-10-14 14:08:31',0);
+VALUES (861,'WELL',NULL,113,1,5,586,279,'2014-10-14 14:08:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (862,'SPOT',NULL,113,2,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (862,'WELL',NULL,113,2,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (863,'SPOT',NULL,113,3,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (863,'WELL',NULL,113,3,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (864,'SPOT',NULL,113,4,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (864,'WELL',NULL,113,4,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (865,'SPOT',NULL,113,5,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (865,'WELL',NULL,113,5,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (866,'SPOT',NULL,113,6,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (866,'WELL',NULL,113,6,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (867,'SPOT',NULL,113,7,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (867,'WELL',NULL,113,7,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (868,'SPOT',NULL,113,8,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (868,'WELL',NULL,113,8,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (869,'SPOT',NULL,113,9,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (869,'WELL',NULL,113,9,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (870,'SPOT',NULL,113,10,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (870,'WELL',NULL,113,10,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (871,'SPOT',NULL,113,11,5,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (871,'WELL',NULL,113,11,5,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (872,'SPOT',NULL,113,0,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (872,'WELL',NULL,113,0,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (873,'SPOT',NULL,113,1,6,587,280,'2014-10-14 14:08:31',0);
+VALUES (873,'WELL',NULL,113,1,6,587,280,'2014-10-14 14:08:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (874,'SPOT',NULL,113,2,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (874,'WELL',NULL,113,2,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (875,'SPOT',NULL,113,3,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (875,'WELL',NULL,113,3,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (876,'SPOT',NULL,113,4,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (876,'WELL',NULL,113,4,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (877,'SPOT',NULL,113,5,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (877,'WELL',NULL,113,5,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (878,'SPOT',NULL,113,6,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (878,'WELL',NULL,113,6,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (879,'SPOT',NULL,113,7,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (879,'WELL',NULL,113,7,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (880,'SPOT',NULL,113,8,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (880,'WELL',NULL,113,8,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (881,'SPOT',NULL,113,9,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (881,'WELL',NULL,113,9,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (882,'SPOT',NULL,113,10,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (882,'WELL',NULL,113,10,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (883,'SPOT',NULL,113,11,6,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (883,'WELL',NULL,113,11,6,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (884,'SPOT',NULL,113,0,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (884,'WELL',NULL,113,0,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (885,'SPOT',NULL,113,1,7,588,281,'2014-10-14 14:08:31',0);
+VALUES (885,'WELL',NULL,113,1,7,588,281,'2014-10-14 14:08:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (886,'SPOT',NULL,113,2,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (886,'WELL',NULL,113,2,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (887,'SPOT',NULL,113,3,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (887,'WELL',NULL,113,3,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (888,'SPOT',NULL,113,4,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (888,'WELL',NULL,113,4,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (889,'SPOT',NULL,113,5,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (889,'WELL',NULL,113,5,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (890,'SPOT',NULL,113,6,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (890,'WELL',NULL,113,6,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (891,'SPOT',NULL,113,7,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (891,'WELL',NULL,113,7,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (892,'SPOT',NULL,113,8,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (892,'WELL',NULL,113,8,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (893,'SPOT',NULL,113,9,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (893,'WELL',NULL,113,9,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (894,'SPOT',NULL,113,10,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (894,'WELL',NULL,113,10,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (895,'SPOT',NULL,113,11,7,NULL,NULL,'2014-10-14 14:06:42',0);
+VALUES (895,'WELL',NULL,113,11,7,NULL,NULL,'2014-10-14 14:06:42',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (896,'SPOT',NULL,114,0,0,581,290,'2014-10-14 14:10:03',0);
+VALUES (896,'WELL',NULL,114,0,0,581,290,'2014-10-14 14:10:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (897,'SPOT',NULL,114,1,0,583,294,'2014-10-14 14:11:50',0);
+VALUES (897,'WELL',NULL,114,1,0,583,294,'2014-10-14 14:11:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (898,'SPOT',NULL,114,2,0,585,292,'2014-10-14 14:10:23',0);
+VALUES (898,'WELL',NULL,114,2,0,585,292,'2014-10-14 14:10:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (899,'SPOT',NULL,114,3,0,587,298,'2014-10-14 14:13:51',0);
+VALUES (899,'WELL',NULL,114,3,0,587,298,'2014-10-14 14:13:51',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (900,'SPOT',NULL,114,4,0,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (900,'WELL',NULL,114,4,0,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (901,'SPOT',NULL,114,5,0,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (901,'WELL',NULL,114,5,0,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (902,'SPOT',NULL,114,6,0,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (902,'WELL',NULL,114,6,0,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (903,'SPOT',NULL,114,7,0,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (903,'WELL',NULL,114,7,0,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (904,'SPOT',NULL,114,8,0,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (904,'WELL',NULL,114,8,0,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (905,'SPOT',NULL,114,9,0,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (905,'WELL',NULL,114,9,0,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (906,'SPOT',NULL,114,10,0,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (906,'WELL',NULL,114,10,0,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (907,'SPOT',NULL,114,11,0,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (907,'WELL',NULL,114,11,0,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (908,'SPOT',NULL,114,0,1,582,291,'2014-10-14 14:10:03',0);
+VALUES (908,'WELL',NULL,114,0,1,582,291,'2014-10-14 14:10:03',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (909,'SPOT',NULL,114,1,1,583,295,'2014-10-14 14:11:50',0);
+VALUES (909,'WELL',NULL,114,1,1,583,295,'2014-10-14 14:11:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (910,'SPOT',NULL,114,2,1,586,293,'2014-10-14 14:10:23',0);
+VALUES (910,'WELL',NULL,114,2,1,586,293,'2014-10-14 14:10:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (911,'SPOT',NULL,114,3,1,587,299,'2014-10-14 14:13:51',0);
+VALUES (911,'WELL',NULL,114,3,1,587,299,'2014-10-14 14:13:51',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (912,'SPOT',NULL,114,4,1,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (912,'WELL',NULL,114,4,1,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (913,'SPOT',NULL,114,5,1,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (913,'WELL',NULL,114,5,1,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (914,'SPOT',NULL,114,6,1,NULL,NULL,'2014-10-14 14:06:46',0);
+VALUES (914,'WELL',NULL,114,6,1,NULL,NULL,'2014-10-14 14:06:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (915,'SPOT',NULL,114,7,1,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (915,'WELL',NULL,114,7,1,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (916,'SPOT',NULL,114,8,1,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (916,'WELL',NULL,114,8,1,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (917,'SPOT',NULL,114,9,1,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (917,'WELL',NULL,114,9,1,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (918,'SPOT',NULL,114,10,1,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (918,'WELL',NULL,114,10,1,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (919,'SPOT',NULL,114,11,1,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (919,'WELL',NULL,114,11,1,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (920,'SPOT',NULL,114,0,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (920,'WELL',NULL,114,0,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (921,'SPOT',NULL,114,1,2,584,296,'2014-10-14 14:11:50',0);
+VALUES (921,'WELL',NULL,114,1,2,584,296,'2014-10-14 14:11:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (922,'SPOT',NULL,114,2,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (922,'WELL',NULL,114,2,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (923,'SPOT',NULL,114,3,2,588,300,'2014-10-14 14:13:51',0);
+VALUES (923,'WELL',NULL,114,3,2,588,300,'2014-10-14 14:13:51',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (924,'SPOT',NULL,114,4,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (924,'WELL',NULL,114,4,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (925,'SPOT',NULL,114,5,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (925,'WELL',NULL,114,5,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (926,'SPOT',NULL,114,6,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (926,'WELL',NULL,114,6,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (927,'SPOT',NULL,114,7,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (927,'WELL',NULL,114,7,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (928,'SPOT',NULL,114,8,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (928,'WELL',NULL,114,8,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (929,'SPOT',NULL,114,9,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (929,'WELL',NULL,114,9,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (930,'SPOT',NULL,114,10,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (930,'WELL',NULL,114,10,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (931,'SPOT',NULL,114,11,2,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (931,'WELL',NULL,114,11,2,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (932,'SPOT',NULL,114,0,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (932,'WELL',NULL,114,0,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (933,'SPOT',NULL,114,1,3,584,297,'2014-10-14 14:11:50',0);
+VALUES (933,'WELL',NULL,114,1,3,584,297,'2014-10-14 14:11:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (934,'SPOT',NULL,114,2,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (934,'WELL',NULL,114,2,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (935,'SPOT',NULL,114,3,3,588,301,'2014-10-14 14:13:51',0);
+VALUES (935,'WELL',NULL,114,3,3,588,301,'2014-10-14 14:13:51',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (936,'SPOT',NULL,114,4,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (936,'WELL',NULL,114,4,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (937,'SPOT',NULL,114,5,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (937,'WELL',NULL,114,5,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (938,'SPOT',NULL,114,6,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (938,'WELL',NULL,114,6,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (939,'SPOT',NULL,114,7,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (939,'WELL',NULL,114,7,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (940,'SPOT',NULL,114,8,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (940,'WELL',NULL,114,8,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (941,'SPOT',NULL,114,9,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (941,'WELL',NULL,114,9,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (942,'SPOT',NULL,114,10,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (942,'WELL',NULL,114,10,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (943,'SPOT',NULL,114,11,3,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (943,'WELL',NULL,114,11,3,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (944,'SPOT',NULL,114,0,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (944,'WELL',NULL,114,0,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (945,'SPOT',NULL,114,1,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (945,'WELL',NULL,114,1,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (946,'SPOT',NULL,114,2,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (946,'WELL',NULL,114,2,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (947,'SPOT',NULL,114,3,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (947,'WELL',NULL,114,3,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (948,'SPOT',NULL,114,4,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (948,'WELL',NULL,114,4,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (949,'SPOT',NULL,114,5,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (949,'WELL',NULL,114,5,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (950,'SPOT',NULL,114,6,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (950,'WELL',NULL,114,6,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (951,'SPOT',NULL,114,7,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (951,'WELL',NULL,114,7,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (952,'SPOT',NULL,114,8,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (952,'WELL',NULL,114,8,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (953,'SPOT',NULL,114,9,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (953,'WELL',NULL,114,9,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (954,'SPOT',NULL,114,10,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (954,'WELL',NULL,114,10,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (955,'SPOT',NULL,114,11,4,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (955,'WELL',NULL,114,11,4,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (956,'SPOT',NULL,114,0,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (956,'WELL',NULL,114,0,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (957,'SPOT',NULL,114,1,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (957,'WELL',NULL,114,1,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (958,'SPOT',NULL,114,2,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (958,'WELL',NULL,114,2,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (959,'SPOT',NULL,114,3,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (959,'WELL',NULL,114,3,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (960,'SPOT',NULL,114,4,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (960,'WELL',NULL,114,4,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (961,'SPOT',NULL,114,5,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (961,'WELL',NULL,114,5,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (962,'SPOT',NULL,114,6,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (962,'WELL',NULL,114,6,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (963,'SPOT',NULL,114,7,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (963,'WELL',NULL,114,7,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (964,'SPOT',NULL,114,8,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (964,'WELL',NULL,114,8,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (965,'SPOT',NULL,114,9,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (965,'WELL',NULL,114,9,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (966,'SPOT',NULL,114,10,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (966,'WELL',NULL,114,10,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (967,'SPOT',NULL,114,11,5,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (967,'WELL',NULL,114,11,5,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (968,'SPOT',NULL,114,0,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (968,'WELL',NULL,114,0,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (969,'SPOT',NULL,114,1,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (969,'WELL',NULL,114,1,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (970,'SPOT',NULL,114,2,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (970,'WELL',NULL,114,2,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (971,'SPOT',NULL,114,3,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (971,'WELL',NULL,114,3,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (972,'SPOT',NULL,114,4,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (972,'WELL',NULL,114,4,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (973,'SPOT',NULL,114,5,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (973,'WELL',NULL,114,5,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (974,'SPOT',NULL,114,6,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (974,'WELL',NULL,114,6,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (975,'SPOT',NULL,114,7,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (975,'WELL',NULL,114,7,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (976,'SPOT',NULL,114,8,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (976,'WELL',NULL,114,8,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (977,'SPOT',NULL,114,9,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (977,'WELL',NULL,114,9,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (978,'SPOT',NULL,114,10,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (978,'WELL',NULL,114,10,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (979,'SPOT',NULL,114,11,6,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (979,'WELL',NULL,114,11,6,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (980,'SPOT',NULL,114,0,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (980,'WELL',NULL,114,0,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (981,'SPOT',NULL,114,1,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (981,'WELL',NULL,114,1,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (982,'SPOT',NULL,114,2,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (982,'WELL',NULL,114,2,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (983,'SPOT',NULL,114,3,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (983,'WELL',NULL,114,3,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (984,'SPOT',NULL,114,4,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (984,'WELL',NULL,114,4,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (985,'SPOT',NULL,114,5,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (985,'WELL',NULL,114,5,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (986,'SPOT',NULL,114,6,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (986,'WELL',NULL,114,6,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (987,'SPOT',NULL,114,7,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (987,'WELL',NULL,114,7,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (988,'SPOT',NULL,114,8,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (988,'WELL',NULL,114,8,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (989,'SPOT',NULL,114,9,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (989,'WELL',NULL,114,9,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (990,'SPOT',NULL,114,10,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (990,'WELL',NULL,114,10,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (991,'SPOT',NULL,114,11,7,NULL,NULL,'2014-10-14 14:06:47',0);
+VALUES (991,'WELL',NULL,114,11,7,NULL,NULL,'2014-10-14 14:06:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (992,'SPOT',NULL,115,0,0,589,310,'2014-10-15 09:57:34',0);
+VALUES (992,'WELL',NULL,115,0,0,589,310,'2014-10-15 09:57:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (993,'SPOT',NULL,115,1,0,591,322,'2014-10-15 10:31:23',0);
+VALUES (993,'WELL',NULL,115,1,0,591,322,'2014-10-15 10:31:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (994,'SPOT',NULL,115,2,0,593,326,'2014-10-15 10:33:55',0);
+VALUES (994,'WELL',NULL,115,2,0,593,326,'2014-10-15 10:33:55',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (995,'SPOT',NULL,115,3,0,595,324,'2014-10-15 10:31:47',0);
+VALUES (995,'WELL',NULL,115,3,0,595,324,'2014-10-15 10:31:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (996,'SPOT',NULL,115,4,0,597,330,'2014-10-15 10:34:39',0);
+VALUES (996,'WELL',NULL,115,4,0,597,330,'2014-10-15 10:34:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (997,'SPOT',NULL,115,5,0,599,342,'2014-10-15 13:44:44',0);
+VALUES (997,'WELL',NULL,115,5,0,599,342,'2014-10-15 13:44:44',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (998,'SPOT',NULL,115,6,0,601,354,'2014-10-15 13:48:08',0);
+VALUES (998,'WELL',NULL,115,6,0,601,354,'2014-10-15 13:48:08',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (999,'SPOT',NULL,115,7,0,603,358,'2014-10-15 13:49:57',0);
+VALUES (999,'WELL',NULL,115,7,0,603,358,'2014-10-15 13:49:57',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1000,'SPOT',NULL,115,8,0,605,356,'2014-10-15 13:48:37',0);
+VALUES (1000,'WELL',NULL,115,8,0,605,356,'2014-10-15 13:48:37',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1001,'SPOT',NULL,115,9,0,608,362,'2014-10-15 13:50:43',0);
+VALUES (1001,'WELL',NULL,115,9,0,608,362,'2014-10-15 13:50:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1002,'SPOT',NULL,115,10,0,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1002,'WELL',NULL,115,10,0,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1003,'SPOT',NULL,115,11,0,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1003,'WELL',NULL,115,11,0,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1004,'SPOT',NULL,115,0,1,590,311,'2014-10-15 09:57:34',0);
+VALUES (1004,'WELL',NULL,115,0,1,590,311,'2014-10-15 09:57:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1005,'SPOT',NULL,115,1,1,592,323,'2014-10-15 10:31:23',0);
+VALUES (1005,'WELL',NULL,115,1,1,592,323,'2014-10-15 10:31:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1006,'SPOT',NULL,115,2,1,593,327,'2014-10-15 10:33:55',0);
+VALUES (1006,'WELL',NULL,115,2,1,593,327,'2014-10-15 10:33:55',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1007,'SPOT',NULL,115,3,1,596,325,'2014-10-15 10:31:47',0);
+VALUES (1007,'WELL',NULL,115,3,1,596,325,'2014-10-15 10:31:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1008,'SPOT',NULL,115,4,1,597,331,'2014-10-15 10:34:39',0);
+VALUES (1008,'WELL',NULL,115,4,1,597,331,'2014-10-15 10:34:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1009,'SPOT',NULL,115,5,1,600,343,'2014-10-15 13:44:44',0);
+VALUES (1009,'WELL',NULL,115,5,1,600,343,'2014-10-15 13:44:44',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1010,'SPOT',NULL,115,6,1,602,355,'2014-10-15 13:48:08',0);
+VALUES (1010,'WELL',NULL,115,6,1,602,355,'2014-10-15 13:48:08',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1011,'SPOT',NULL,115,7,1,603,359,'2014-10-15 13:49:57',0);
+VALUES (1011,'WELL',NULL,115,7,1,603,359,'2014-10-15 13:49:57',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1012,'SPOT',NULL,115,8,1,606,357,'2014-10-15 13:48:37',0);
+VALUES (1012,'WELL',NULL,115,8,1,606,357,'2014-10-15 13:48:37',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1013,'SPOT',NULL,115,9,1,608,363,'2014-10-15 13:50:43',0);
+VALUES (1013,'WELL',NULL,115,9,1,608,363,'2014-10-15 13:50:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1014,'SPOT',NULL,115,10,1,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1014,'WELL',NULL,115,10,1,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1015,'SPOT',NULL,115,11,1,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1015,'WELL',NULL,115,11,1,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1016,'SPOT',NULL,115,0,2,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1016,'WELL',NULL,115,0,2,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1017,'SPOT',NULL,115,1,2,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1017,'WELL',NULL,115,1,2,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1018,'SPOT',NULL,115,2,2,594,328,'2014-10-15 10:33:55',0);
+VALUES (1018,'WELL',NULL,115,2,2,594,328,'2014-10-15 10:33:55',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1019,'SPOT',NULL,115,3,2,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1019,'WELL',NULL,115,3,2,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1020,'SPOT',NULL,115,4,2,598,332,'2014-10-15 10:34:39',0);
+VALUES (1020,'WELL',NULL,115,4,2,598,332,'2014-10-15 10:34:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1021,'SPOT',NULL,115,5,2,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1021,'WELL',NULL,115,5,2,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1022,'SPOT',NULL,115,6,2,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1022,'WELL',NULL,115,6,2,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1023,'SPOT',NULL,115,7,2,604,360,'2014-10-15 13:49:57',0);
+VALUES (1023,'WELL',NULL,115,7,2,604,360,'2014-10-15 13:49:57',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1024,'SPOT',NULL,115,8,2,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1024,'WELL',NULL,115,8,2,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1025,'SPOT',NULL,115,9,2,607,364,'2014-10-15 13:50:43',0);
+VALUES (1025,'WELL',NULL,115,9,2,607,364,'2014-10-15 13:50:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1026,'SPOT',NULL,115,10,2,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1026,'WELL',NULL,115,10,2,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1027,'SPOT',NULL,115,11,2,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1027,'WELL',NULL,115,11,2,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1028,'SPOT',NULL,115,0,3,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1028,'WELL',NULL,115,0,3,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1029,'SPOT',NULL,115,1,3,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1029,'WELL',NULL,115,1,3,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1030,'SPOT',NULL,115,2,3,594,329,'2014-10-15 10:33:55',0);
+VALUES (1030,'WELL',NULL,115,2,3,594,329,'2014-10-15 10:33:55',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1031,'SPOT',NULL,115,3,3,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1031,'WELL',NULL,115,3,3,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1032,'SPOT',NULL,115,4,3,598,333,'2014-10-15 10:34:39',0);
+VALUES (1032,'WELL',NULL,115,4,3,598,333,'2014-10-15 10:34:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1033,'SPOT',NULL,115,5,3,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1033,'WELL',NULL,115,5,3,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1034,'SPOT',NULL,115,6,3,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1034,'WELL',NULL,115,6,3,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1035,'SPOT',NULL,115,7,3,604,361,'2014-10-15 13:49:57',0);
+VALUES (1035,'WELL',NULL,115,7,3,604,361,'2014-10-15 13:49:57',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1036,'SPOT',NULL,115,8,3,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1036,'WELL',NULL,115,8,3,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1037,'SPOT',NULL,115,9,3,607,365,'2014-10-15 13:50:43',0);
+VALUES (1037,'WELL',NULL,115,9,3,607,365,'2014-10-15 13:50:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1038,'SPOT',NULL,115,10,3,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1038,'WELL',NULL,115,10,3,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1039,'SPOT',NULL,115,11,3,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1039,'WELL',NULL,115,11,3,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1040,'SPOT',NULL,115,0,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1040,'WELL',NULL,115,0,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1041,'SPOT',NULL,115,1,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1041,'WELL',NULL,115,1,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1042,'SPOT',NULL,115,2,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1042,'WELL',NULL,115,2,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1043,'SPOT',NULL,115,3,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1043,'WELL',NULL,115,3,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1044,'SPOT',NULL,115,4,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1044,'WELL',NULL,115,4,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1045,'SPOT',NULL,115,5,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1045,'WELL',NULL,115,5,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1046,'SPOT',NULL,115,6,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1046,'WELL',NULL,115,6,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1047,'SPOT',NULL,115,7,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1047,'WELL',NULL,115,7,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1048,'SPOT',NULL,115,8,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1048,'WELL',NULL,115,8,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1049,'SPOT',NULL,115,9,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1049,'WELL',NULL,115,9,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1050,'SPOT',NULL,115,10,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1050,'WELL',NULL,115,10,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1051,'SPOT',NULL,115,11,4,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1051,'WELL',NULL,115,11,4,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1052,'SPOT',NULL,115,0,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1052,'WELL',NULL,115,0,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1053,'SPOT',NULL,115,1,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1053,'WELL',NULL,115,1,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1054,'SPOT',NULL,115,2,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1054,'WELL',NULL,115,2,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1055,'SPOT',NULL,115,3,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1055,'WELL',NULL,115,3,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1056,'SPOT',NULL,115,4,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1056,'WELL',NULL,115,4,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1057,'SPOT',NULL,115,5,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1057,'WELL',NULL,115,5,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1058,'SPOT',NULL,115,6,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1058,'WELL',NULL,115,6,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1059,'SPOT',NULL,115,7,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1059,'WELL',NULL,115,7,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1060,'SPOT',NULL,115,8,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1060,'WELL',NULL,115,8,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1061,'SPOT',NULL,115,9,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1061,'WELL',NULL,115,9,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1062,'SPOT',NULL,115,10,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1062,'WELL',NULL,115,10,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1063,'SPOT',NULL,115,11,5,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1063,'WELL',NULL,115,11,5,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1064,'SPOT',NULL,115,0,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1064,'WELL',NULL,115,0,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1065,'SPOT',NULL,115,1,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1065,'WELL',NULL,115,1,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1066,'SPOT',NULL,115,2,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1066,'WELL',NULL,115,2,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1067,'SPOT',NULL,115,3,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1067,'WELL',NULL,115,3,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1068,'SPOT',NULL,115,4,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1068,'WELL',NULL,115,4,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1069,'SPOT',NULL,115,5,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1069,'WELL',NULL,115,5,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1070,'SPOT',NULL,115,6,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1070,'WELL',NULL,115,6,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1071,'SPOT',NULL,115,7,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1071,'WELL',NULL,115,7,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1072,'SPOT',NULL,115,8,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1072,'WELL',NULL,115,8,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1073,'SPOT',NULL,115,9,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1073,'WELL',NULL,115,9,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1074,'SPOT',NULL,115,10,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1074,'WELL',NULL,115,10,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1075,'SPOT',NULL,115,11,6,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1075,'WELL',NULL,115,11,6,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1076,'SPOT',NULL,115,0,7,611,376,'2014-10-15 15:45:51',0);
+VALUES (1076,'WELL',NULL,115,0,7,611,376,'2014-10-15 15:45:51',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1077,'SPOT',NULL,115,1,7,612,377,'2014-10-15 15:46:11',0);
+VALUES (1077,'WELL',NULL,115,1,7,612,377,'2014-10-15 15:46:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1078,'SPOT',NULL,115,2,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1078,'WELL',NULL,115,2,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1079,'SPOT',NULL,115,3,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1079,'WELL',NULL,115,3,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1080,'SPOT',NULL,115,4,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1080,'WELL',NULL,115,4,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1081,'SPOT',NULL,115,5,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1081,'WELL',NULL,115,5,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1082,'SPOT',NULL,115,6,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1082,'WELL',NULL,115,6,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1083,'SPOT',NULL,115,7,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1083,'WELL',NULL,115,7,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1084,'SPOT',NULL,115,8,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1084,'WELL',NULL,115,8,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1085,'SPOT',NULL,115,9,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1085,'WELL',NULL,115,9,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1086,'SPOT',NULL,115,10,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1086,'WELL',NULL,115,10,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1087,'SPOT',NULL,115,11,7,NULL,NULL,'2014-10-15 09:57:17',0);
+VALUES (1087,'WELL',NULL,115,11,7,NULL,NULL,'2014-10-15 09:57:17',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1088,'SPOT',NULL,116,0,0,595,334,'2014-10-15 10:35:27',0);
+VALUES (1088,'WELL',NULL,116,0,0,595,334,'2014-10-15 10:35:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1089,'SPOT',NULL,116,1,0,597,338,'2014-10-15 10:35:59',0);
+VALUES (1089,'WELL',NULL,116,1,0,597,338,'2014-10-15 10:35:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1090,'SPOT',NULL,116,2,0,605,366,'2014-10-15 13:51:30',0);
+VALUES (1090,'WELL',NULL,116,2,0,605,366,'2014-10-15 13:51:30',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1091,'SPOT',NULL,116,3,0,608,370,'2014-10-15 13:52:13',0);
+VALUES (1091,'WELL',NULL,116,3,0,608,370,'2014-10-15 13:52:13',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1092,'SPOT',NULL,116,4,0,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1092,'WELL',NULL,116,4,0,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1093,'SPOT',NULL,116,5,0,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1093,'WELL',NULL,116,5,0,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1094,'SPOT',NULL,116,6,0,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1094,'WELL',NULL,116,6,0,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1095,'SPOT',NULL,116,7,0,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1095,'WELL',NULL,116,7,0,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1096,'SPOT',NULL,116,8,0,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1096,'WELL',NULL,116,8,0,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1097,'SPOT',NULL,116,9,0,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1097,'WELL',NULL,116,9,0,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1098,'SPOT',NULL,116,10,0,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1098,'WELL',NULL,116,10,0,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1099,'SPOT',NULL,116,11,0,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1099,'WELL',NULL,116,11,0,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1100,'SPOT',NULL,116,0,1,595,335,'2014-10-15 10:35:27',0);
+VALUES (1100,'WELL',NULL,116,0,1,595,335,'2014-10-15 10:35:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1101,'SPOT',NULL,116,1,1,597,339,'2014-10-15 10:35:59',0);
+VALUES (1101,'WELL',NULL,116,1,1,597,339,'2014-10-15 10:35:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1102,'SPOT',NULL,116,2,1,605,367,'2014-10-15 13:51:30',0);
+VALUES (1102,'WELL',NULL,116,2,1,605,367,'2014-10-15 13:51:30',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1103,'SPOT',NULL,116,3,1,608,371,'2014-10-15 13:52:13',0);
+VALUES (1103,'WELL',NULL,116,3,1,608,371,'2014-10-15 13:52:13',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1104,'SPOT',NULL,116,4,1,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1104,'WELL',NULL,116,4,1,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1105,'SPOT',NULL,116,5,1,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1105,'WELL',NULL,116,5,1,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1106,'SPOT',NULL,116,6,1,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1106,'WELL',NULL,116,6,1,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1107,'SPOT',NULL,116,7,1,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1107,'WELL',NULL,116,7,1,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1108,'SPOT',NULL,116,8,1,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1108,'WELL',NULL,116,8,1,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1109,'SPOT',NULL,116,9,1,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1109,'WELL',NULL,116,9,1,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1110,'SPOT',NULL,116,10,1,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1110,'WELL',NULL,116,10,1,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1111,'SPOT',NULL,116,11,1,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1111,'WELL',NULL,116,11,1,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1112,'SPOT',NULL,116,0,2,596,336,'2014-10-15 10:35:27',0);
+VALUES (1112,'WELL',NULL,116,0,2,596,336,'2014-10-15 10:35:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1113,'SPOT',NULL,116,1,2,598,340,'2014-10-15 10:35:59',0);
+VALUES (1113,'WELL',NULL,116,1,2,598,340,'2014-10-15 10:35:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1114,'SPOT',NULL,116,2,2,606,368,'2014-10-15 13:51:30',0);
+VALUES (1114,'WELL',NULL,116,2,2,606,368,'2014-10-15 13:51:30',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1115,'SPOT',NULL,116,3,2,607,372,'2014-10-15 13:52:13',0);
+VALUES (1115,'WELL',NULL,116,3,2,607,372,'2014-10-15 13:52:13',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1116,'SPOT',NULL,116,4,2,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1116,'WELL',NULL,116,4,2,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1117,'SPOT',NULL,116,5,2,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1117,'WELL',NULL,116,5,2,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1118,'SPOT',NULL,116,6,2,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1118,'WELL',NULL,116,6,2,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1119,'SPOT',NULL,116,7,2,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1119,'WELL',NULL,116,7,2,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1120,'SPOT',NULL,116,8,2,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1120,'WELL',NULL,116,8,2,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1121,'SPOT',NULL,116,9,2,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1121,'WELL',NULL,116,9,2,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1122,'SPOT',NULL,116,10,2,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1122,'WELL',NULL,116,10,2,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1123,'SPOT',NULL,116,11,2,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1123,'WELL',NULL,116,11,2,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1124,'SPOT',NULL,116,0,3,596,337,'2014-10-15 10:35:27',0);
+VALUES (1124,'WELL',NULL,116,0,3,596,337,'2014-10-15 10:35:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1125,'SPOT',NULL,116,1,3,598,341,'2014-10-15 10:35:59',0);
+VALUES (1125,'WELL',NULL,116,1,3,598,341,'2014-10-15 10:35:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1126,'SPOT',NULL,116,2,3,606,369,'2014-10-15 13:51:30',0);
+VALUES (1126,'WELL',NULL,116,2,3,606,369,'2014-10-15 13:51:30',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1127,'SPOT',NULL,116,3,3,607,373,'2014-10-15 13:52:13',0);
+VALUES (1127,'WELL',NULL,116,3,3,607,373,'2014-10-15 13:52:13',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1128,'SPOT',NULL,116,4,3,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1128,'WELL',NULL,116,4,3,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1129,'SPOT',NULL,116,5,3,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1129,'WELL',NULL,116,5,3,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1130,'SPOT',NULL,116,6,3,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1130,'WELL',NULL,116,6,3,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1131,'SPOT',NULL,116,7,3,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1131,'WELL',NULL,116,7,3,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1132,'SPOT',NULL,116,8,3,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1132,'WELL',NULL,116,8,3,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1133,'SPOT',NULL,116,9,3,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1133,'WELL',NULL,116,9,3,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1134,'SPOT',NULL,116,10,3,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1134,'WELL',NULL,116,10,3,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1135,'SPOT',NULL,116,11,3,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1135,'WELL',NULL,116,11,3,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1136,'SPOT',NULL,116,0,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1136,'WELL',NULL,116,0,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1137,'SPOT',NULL,116,1,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1137,'WELL',NULL,116,1,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1138,'SPOT',NULL,116,2,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1138,'WELL',NULL,116,2,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1139,'SPOT',NULL,116,3,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1139,'WELL',NULL,116,3,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1140,'SPOT',NULL,116,4,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1140,'WELL',NULL,116,4,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1141,'SPOT',NULL,116,5,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1141,'WELL',NULL,116,5,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1142,'SPOT',NULL,116,6,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1142,'WELL',NULL,116,6,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1143,'SPOT',NULL,116,7,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1143,'WELL',NULL,116,7,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1144,'SPOT',NULL,116,8,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1144,'WELL',NULL,116,8,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1145,'SPOT',NULL,116,9,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1145,'WELL',NULL,116,9,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1146,'SPOT',NULL,116,10,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1146,'WELL',NULL,116,10,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1147,'SPOT',NULL,116,11,4,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1147,'WELL',NULL,116,11,4,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1148,'SPOT',NULL,116,0,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1148,'WELL',NULL,116,0,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1149,'SPOT',NULL,116,1,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1149,'WELL',NULL,116,1,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1150,'SPOT',NULL,116,2,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1150,'WELL',NULL,116,2,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1151,'SPOT',NULL,116,3,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1151,'WELL',NULL,116,3,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1152,'SPOT',NULL,116,4,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1152,'WELL',NULL,116,4,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1153,'SPOT',NULL,116,5,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1153,'WELL',NULL,116,5,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1154,'SPOT',NULL,116,6,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1154,'WELL',NULL,116,6,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1155,'SPOT',NULL,116,7,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1155,'WELL',NULL,116,7,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1156,'SPOT',NULL,116,8,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1156,'WELL',NULL,116,8,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1157,'SPOT',NULL,116,9,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1157,'WELL',NULL,116,9,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1158,'SPOT',NULL,116,10,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1158,'WELL',NULL,116,10,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1159,'SPOT',NULL,116,11,5,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1159,'WELL',NULL,116,11,5,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1160,'SPOT',NULL,116,0,6,614,389,'2014-10-15 16:05:47',0);
+VALUES (1160,'WELL',NULL,116,0,6,614,389,'2014-10-15 16:05:47',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1161,'SPOT',NULL,116,1,6,616,392,'2014-10-15 16:07:34',0);
+VALUES (1161,'WELL',NULL,116,1,6,616,392,'2014-10-15 16:07:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1162,'SPOT',NULL,116,2,6,618,395,'2014-10-15 16:28:12',0);
+VALUES (1162,'WELL',NULL,116,2,6,618,395,'2014-10-15 16:28:12',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1163,'SPOT',NULL,116,3,6,617,396,'2014-10-15 16:29:06',0);
+VALUES (1163,'WELL',NULL,116,3,6,617,396,'2014-10-15 16:29:06',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1164,'SPOT',NULL,116,4,6,620,402,'2014-10-15 16:31:56',0);
+VALUES (1164,'WELL',NULL,116,4,6,620,402,'2014-10-15 16:31:56',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1165,'SPOT',NULL,116,5,6,619,404,'2014-10-15 16:33:25',0);
+VALUES (1165,'WELL',NULL,116,5,6,619,404,'2014-10-15 16:33:25',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1166,'SPOT',NULL,116,6,6,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1166,'WELL',NULL,116,6,6,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1167,'SPOT',NULL,116,7,6,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1167,'WELL',NULL,116,7,6,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1168,'SPOT',NULL,116,8,6,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1168,'WELL',NULL,116,8,6,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1169,'SPOT',NULL,116,9,6,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1169,'WELL',NULL,116,9,6,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1170,'SPOT',NULL,116,10,6,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1170,'WELL',NULL,116,10,6,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1171,'SPOT',NULL,116,11,6,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1171,'WELL',NULL,116,11,6,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1172,'SPOT',NULL,116,0,7,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1172,'WELL',NULL,116,0,7,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1173,'SPOT',NULL,116,1,7,616,393,'2014-10-15 16:07:34',0);
+VALUES (1173,'WELL',NULL,116,1,7,616,393,'2014-10-15 16:07:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1174,'SPOT',NULL,116,2,7,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1174,'WELL',NULL,116,2,7,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1175,'SPOT',NULL,116,3,7,617,397,'2014-10-15 16:29:06',0);
+VALUES (1175,'WELL',NULL,116,3,7,617,397,'2014-10-15 16:29:06',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1176,'SPOT',NULL,116,4,7,620,403,'2014-10-15 16:31:56',0);
+VALUES (1176,'WELL',NULL,116,4,7,620,403,'2014-10-15 16:31:56',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1177,'SPOT',NULL,116,5,7,619,405,'2014-10-15 16:33:25',0);
+VALUES (1177,'WELL',NULL,116,5,7,619,405,'2014-10-15 16:33:25',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1178,'SPOT',NULL,116,6,7,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1178,'WELL',NULL,116,6,7,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1179,'SPOT',NULL,116,7,7,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1179,'WELL',NULL,116,7,7,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1180,'SPOT',NULL,116,8,7,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1180,'WELL',NULL,116,8,7,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1181,'SPOT',NULL,116,9,7,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1181,'WELL',NULL,116,9,7,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1182,'SPOT',NULL,116,10,7,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1182,'WELL',NULL,116,10,7,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1183,'SPOT',NULL,116,11,7,NULL,NULL,'2014-10-15 09:57:20',0);
+VALUES (1183,'WELL',NULL,116,11,7,NULL,NULL,'2014-10-15 09:57:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1184,'SPOT',NULL,117,0,0,614,384,'2014-10-15 16:03:46',0);
+VALUES (1184,'WELL',NULL,117,0,0,614,384,'2014-10-15 16:03:46',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1185,'SPOT',NULL,117,1,0,616,385,'2014-10-15 16:04:11',0);
+VALUES (1185,'WELL',NULL,117,1,0,616,385,'2014-10-15 16:04:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1186,'SPOT',NULL,117,2,0,618,386,'2014-10-15 16:04:27',0);
+VALUES (1186,'WELL',NULL,117,2,0,618,386,'2014-10-15 16:04:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1187,'SPOT',NULL,117,3,0,620,387,'2014-10-15 16:04:41',0);
+VALUES (1187,'WELL',NULL,117,3,0,620,387,'2014-10-15 16:04:41',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1188,'SPOT',NULL,117,4,0,615,390,'2014-10-15 16:06:40',0);
+VALUES (1188,'WELL',NULL,117,4,0,615,390,'2014-10-15 16:06:40',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1189,'SPOT',NULL,117,5,0,617,394,'2014-10-15 16:27:51',0);
+VALUES (1189,'WELL',NULL,117,5,0,617,394,'2014-10-15 16:27:51',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1190,'SPOT',NULL,117,6,0,618,398,'2014-10-15 16:30:08',0);
+VALUES (1190,'WELL',NULL,117,6,0,618,398,'2014-10-15 16:30:08',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1191,'SPOT',NULL,117,7,0,619,400,'2014-10-15 16:30:43',0);
+VALUES (1191,'WELL',NULL,117,7,0,619,400,'2014-10-15 16:30:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1192,'SPOT',NULL,117,8,0,620,406,'2014-10-15 16:34:07',0);
+VALUES (1192,'WELL',NULL,117,8,0,620,406,'2014-10-15 16:34:07',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1193,'SPOT',NULL,117,9,0,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1193,'WELL',NULL,117,9,0,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1194,'SPOT',NULL,117,10,0,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1194,'WELL',NULL,117,10,0,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1195,'SPOT',NULL,117,11,0,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1195,'WELL',NULL,117,11,0,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1196,'SPOT',NULL,117,0,1,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1196,'WELL',NULL,117,0,1,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1197,'SPOT',NULL,117,1,1,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1197,'WELL',NULL,117,1,1,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1198,'SPOT',NULL,117,2,1,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1198,'WELL',NULL,117,2,1,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1199,'SPOT',NULL,117,3,1,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1199,'WELL',NULL,117,3,1,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1200,'SPOT',NULL,117,4,1,615,391,'2014-10-15 16:06:40',0);
+VALUES (1200,'WELL',NULL,117,4,1,615,391,'2014-10-15 16:06:40',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1201,'SPOT',NULL,117,5,1,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1201,'WELL',NULL,117,5,1,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1202,'SPOT',NULL,117,6,1,618,399,'2014-10-15 16:30:08',0);
+VALUES (1202,'WELL',NULL,117,6,1,618,399,'2014-10-15 16:30:08',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1203,'SPOT',NULL,117,7,1,619,401,'2014-10-15 16:30:43',0);
+VALUES (1203,'WELL',NULL,117,7,1,619,401,'2014-10-15 16:30:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1204,'SPOT',NULL,117,8,1,620,407,'2014-10-15 16:34:07',0);
+VALUES (1204,'WELL',NULL,117,8,1,620,407,'2014-10-15 16:34:07',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1205,'SPOT',NULL,117,9,1,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1205,'WELL',NULL,117,9,1,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1206,'SPOT',NULL,117,10,1,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1206,'WELL',NULL,117,10,1,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1207,'SPOT',NULL,117,11,1,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1207,'WELL',NULL,117,11,1,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1208,'SPOT',NULL,117,0,2,613,388,'2014-10-15 16:05:18',0);
+VALUES (1208,'WELL',NULL,117,0,2,613,388,'2014-10-15 16:05:18',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1209,'SPOT',NULL,117,1,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1209,'WELL',NULL,117,1,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1210,'SPOT',NULL,117,2,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1210,'WELL',NULL,117,2,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1211,'SPOT',NULL,117,3,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1211,'WELL',NULL,117,3,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1212,'SPOT',NULL,117,4,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1212,'WELL',NULL,117,4,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1213,'SPOT',NULL,117,5,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1213,'WELL',NULL,117,5,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1214,'SPOT',NULL,117,6,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1214,'WELL',NULL,117,6,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1215,'SPOT',NULL,117,7,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1215,'WELL',NULL,117,7,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1216,'SPOT',NULL,117,8,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1216,'WELL',NULL,117,8,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1217,'SPOT',NULL,117,9,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1217,'WELL',NULL,117,9,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1218,'SPOT',NULL,117,10,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1218,'WELL',NULL,117,10,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1219,'SPOT',NULL,117,11,2,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1219,'WELL',NULL,117,11,2,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1220,'SPOT',NULL,117,0,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1220,'WELL',NULL,117,0,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1221,'SPOT',NULL,117,1,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1221,'WELL',NULL,117,1,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1222,'SPOT',NULL,117,2,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1222,'WELL',NULL,117,2,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1223,'SPOT',NULL,117,3,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1223,'WELL',NULL,117,3,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1224,'SPOT',NULL,117,4,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1224,'WELL',NULL,117,4,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1225,'SPOT',NULL,117,5,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1225,'WELL',NULL,117,5,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1226,'SPOT',NULL,117,6,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1226,'WELL',NULL,117,6,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1227,'SPOT',NULL,117,7,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1227,'WELL',NULL,117,7,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1228,'SPOT',NULL,117,8,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1228,'WELL',NULL,117,8,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1229,'SPOT',NULL,117,9,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1229,'WELL',NULL,117,9,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1230,'SPOT',NULL,117,10,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1230,'WELL',NULL,117,10,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1231,'SPOT',NULL,117,11,3,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1231,'WELL',NULL,117,11,3,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1232,'SPOT',NULL,117,0,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1232,'WELL',NULL,117,0,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1233,'SPOT',NULL,117,1,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1233,'WELL',NULL,117,1,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1234,'SPOT',NULL,117,2,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1234,'WELL',NULL,117,2,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1235,'SPOT',NULL,117,3,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1235,'WELL',NULL,117,3,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1236,'SPOT',NULL,117,4,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1236,'WELL',NULL,117,4,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1237,'SPOT',NULL,117,5,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1237,'WELL',NULL,117,5,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1238,'SPOT',NULL,117,6,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1238,'WELL',NULL,117,6,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1239,'SPOT',NULL,117,7,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1239,'WELL',NULL,117,7,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1240,'SPOT',NULL,117,8,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1240,'WELL',NULL,117,8,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1241,'SPOT',NULL,117,9,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1241,'WELL',NULL,117,9,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1242,'SPOT',NULL,117,10,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1242,'WELL',NULL,117,10,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1243,'SPOT',NULL,117,11,4,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1243,'WELL',NULL,117,11,4,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1244,'SPOT',NULL,117,0,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1244,'WELL',NULL,117,0,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1245,'SPOT',NULL,117,1,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1245,'WELL',NULL,117,1,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1246,'SPOT',NULL,117,2,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1246,'WELL',NULL,117,2,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1247,'SPOT',NULL,117,3,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1247,'WELL',NULL,117,3,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1248,'SPOT',NULL,117,4,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1248,'WELL',NULL,117,4,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1249,'SPOT',NULL,117,5,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1249,'WELL',NULL,117,5,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1250,'SPOT',NULL,117,6,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1250,'WELL',NULL,117,6,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1251,'SPOT',NULL,117,7,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1251,'WELL',NULL,117,7,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1252,'SPOT',NULL,117,8,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1252,'WELL',NULL,117,8,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1253,'SPOT',NULL,117,9,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1253,'WELL',NULL,117,9,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1254,'SPOT',NULL,117,10,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1254,'WELL',NULL,117,10,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1255,'SPOT',NULL,117,11,5,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1255,'WELL',NULL,117,11,5,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1256,'SPOT',NULL,117,0,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1256,'WELL',NULL,117,0,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1257,'SPOT',NULL,117,1,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1257,'WELL',NULL,117,1,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1258,'SPOT',NULL,117,2,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1258,'WELL',NULL,117,2,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1259,'SPOT',NULL,117,3,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1259,'WELL',NULL,117,3,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1260,'SPOT',NULL,117,4,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1260,'WELL',NULL,117,4,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1261,'SPOT',NULL,117,5,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1261,'WELL',NULL,117,5,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1262,'SPOT',NULL,117,6,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1262,'WELL',NULL,117,6,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1263,'SPOT',NULL,117,7,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1263,'WELL',NULL,117,7,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1264,'SPOT',NULL,117,8,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1264,'WELL',NULL,117,8,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1265,'SPOT',NULL,117,9,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1265,'WELL',NULL,117,9,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1266,'SPOT',NULL,117,10,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1266,'WELL',NULL,117,10,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1267,'SPOT',NULL,117,11,6,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1267,'WELL',NULL,117,11,6,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1268,'SPOT',NULL,117,0,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1268,'WELL',NULL,117,0,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1269,'SPOT',NULL,117,1,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1269,'WELL',NULL,117,1,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1270,'SPOT',NULL,117,2,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1270,'WELL',NULL,117,2,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1271,'SPOT',NULL,117,3,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1271,'WELL',NULL,117,3,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1272,'SPOT',NULL,117,4,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1272,'WELL',NULL,117,4,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1273,'SPOT',NULL,117,5,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1273,'WELL',NULL,117,5,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1274,'SPOT',NULL,117,6,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1274,'WELL',NULL,117,6,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1275,'SPOT',NULL,117,7,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1275,'WELL',NULL,117,7,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1276,'SPOT',NULL,117,8,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1276,'WELL',NULL,117,8,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1277,'SPOT',NULL,117,9,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1277,'WELL',NULL,117,9,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1278,'SPOT',NULL,117,10,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1278,'WELL',NULL,117,10,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1279,'SPOT',NULL,117,11,7,NULL,NULL,'2014-10-15 16:03:39',0);
+VALUES (1279,'WELL',NULL,117,11,7,NULL,NULL,'2014-10-15 16:03:39',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1280,'SPOT',NULL,118,0,0,621,408,'2014-10-17 11:32:50',0);
+VALUES (1280,'WELL',NULL,118,0,0,621,408,'2014-10-17 11:32:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1281,'SPOT',NULL,118,1,0,622,410,'2014-10-17 11:33:20',0);
+VALUES (1281,'WELL',NULL,118,1,0,622,410,'2014-10-17 11:33:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1282,'SPOT',NULL,118,2,0,623,414,'2014-10-17 11:47:57',0);
+VALUES (1282,'WELL',NULL,118,2,0,623,414,'2014-10-17 11:47:57',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1283,'SPOT',NULL,118,3,0,624,416,'2014-10-17 11:48:28',0);
+VALUES (1283,'WELL',NULL,118,3,0,624,416,'2014-10-17 11:48:28',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1284,'SPOT',NULL,118,4,0,625,418,'2014-10-17 11:48:51',0);
+VALUES (1284,'WELL',NULL,118,4,0,625,418,'2014-10-17 11:48:51',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1285,'SPOT',NULL,118,5,0,626,420,'2014-10-17 11:49:14',0);
+VALUES (1285,'WELL',NULL,118,5,0,626,420,'2014-10-17 11:49:14',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1286,'SPOT',NULL,118,6,0,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1286,'WELL',NULL,118,6,0,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1287,'SPOT',NULL,118,7,0,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1287,'WELL',NULL,118,7,0,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1288,'SPOT',NULL,118,8,0,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1288,'WELL',NULL,118,8,0,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1289,'SPOT',NULL,118,9,0,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1289,'WELL',NULL,118,9,0,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1290,'SPOT',NULL,118,10,0,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1290,'WELL',NULL,118,10,0,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1291,'SPOT',NULL,118,11,0,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1291,'WELL',NULL,118,11,0,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1292,'SPOT',NULL,118,0,1,621,409,'2014-10-17 11:32:50',0);
+VALUES (1292,'WELL',NULL,118,0,1,621,409,'2014-10-17 11:32:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1293,'SPOT',NULL,118,1,1,622,411,'2014-10-17 11:33:20',0);
+VALUES (1293,'WELL',NULL,118,1,1,622,411,'2014-10-17 11:33:20',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1294,'SPOT',NULL,118,2,1,623,415,'2014-10-17 11:47:57',0);
+VALUES (1294,'WELL',NULL,118,2,1,623,415,'2014-10-17 11:47:57',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1295,'SPOT',NULL,118,3,1,624,417,'2014-10-17 11:48:28',0);
+VALUES (1295,'WELL',NULL,118,3,1,624,417,'2014-10-17 11:48:28',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1296,'SPOT',NULL,118,4,1,625,419,'2014-10-17 11:48:51',0);
+VALUES (1296,'WELL',NULL,118,4,1,625,419,'2014-10-17 11:48:51',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1297,'SPOT',NULL,118,5,1,626,421,'2014-10-17 11:49:14',0);
+VALUES (1297,'WELL',NULL,118,5,1,626,421,'2014-10-17 11:49:14',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1298,'SPOT',NULL,118,6,1,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1298,'WELL',NULL,118,6,1,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1299,'SPOT',NULL,118,7,1,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1299,'WELL',NULL,118,7,1,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1300,'SPOT',NULL,118,8,1,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1300,'WELL',NULL,118,8,1,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1301,'SPOT',NULL,118,9,1,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1301,'WELL',NULL,118,9,1,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1302,'SPOT',NULL,118,10,1,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1302,'WELL',NULL,118,10,1,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1303,'SPOT',NULL,118,11,1,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1303,'WELL',NULL,118,11,1,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1304,'SPOT',NULL,118,0,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1304,'WELL',NULL,118,0,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1305,'SPOT',NULL,118,1,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1305,'WELL',NULL,118,1,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1306,'SPOT',NULL,118,2,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1306,'WELL',NULL,118,2,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1307,'SPOT',NULL,118,3,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1307,'WELL',NULL,118,3,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1308,'SPOT',NULL,118,4,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1308,'WELL',NULL,118,4,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1309,'SPOT',NULL,118,5,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1309,'WELL',NULL,118,5,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1310,'SPOT',NULL,118,6,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1310,'WELL',NULL,118,6,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1311,'SPOT',NULL,118,7,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1311,'WELL',NULL,118,7,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1312,'SPOT',NULL,118,8,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1312,'WELL',NULL,118,8,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1313,'SPOT',NULL,118,9,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1313,'WELL',NULL,118,9,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1314,'SPOT',NULL,118,10,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1314,'WELL',NULL,118,10,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1315,'SPOT',NULL,118,11,2,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1315,'WELL',NULL,118,11,2,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1316,'SPOT',NULL,118,0,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1316,'WELL',NULL,118,0,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1317,'SPOT',NULL,118,1,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1317,'WELL',NULL,118,1,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1318,'SPOT',NULL,118,2,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1318,'WELL',NULL,118,2,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1319,'SPOT',NULL,118,3,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1319,'WELL',NULL,118,3,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1320,'SPOT',NULL,118,4,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1320,'WELL',NULL,118,4,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1321,'SPOT',NULL,118,5,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1321,'WELL',NULL,118,5,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1322,'SPOT',NULL,118,6,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1322,'WELL',NULL,118,6,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1323,'SPOT',NULL,118,7,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1323,'WELL',NULL,118,7,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1324,'SPOT',NULL,118,8,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1324,'WELL',NULL,118,8,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1325,'SPOT',NULL,118,9,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1325,'WELL',NULL,118,9,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1326,'SPOT',NULL,118,10,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1326,'WELL',NULL,118,10,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1327,'SPOT',NULL,118,11,3,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1327,'WELL',NULL,118,11,3,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1328,'SPOT',NULL,118,0,4,625,434,'2014-10-17 11:53:43',0);
+VALUES (1328,'WELL',NULL,118,0,4,625,434,'2014-10-17 11:53:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1329,'SPOT',NULL,118,1,4,626,438,'2014-10-17 11:54:22',0);
+VALUES (1329,'WELL',NULL,118,1,4,626,438,'2014-10-17 11:54:22',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1330,'SPOT',NULL,118,2,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1330,'WELL',NULL,118,2,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1331,'SPOT',NULL,118,3,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1331,'WELL',NULL,118,3,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1332,'SPOT',NULL,118,4,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1332,'WELL',NULL,118,4,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1333,'SPOT',NULL,118,5,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1333,'WELL',NULL,118,5,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1334,'SPOT',NULL,118,6,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1334,'WELL',NULL,118,6,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1335,'SPOT',NULL,118,7,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1335,'WELL',NULL,118,7,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1336,'SPOT',NULL,118,8,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1336,'WELL',NULL,118,8,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1337,'SPOT',NULL,118,9,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1337,'WELL',NULL,118,9,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1338,'SPOT',NULL,118,10,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1338,'WELL',NULL,118,10,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1339,'SPOT',NULL,118,11,4,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1339,'WELL',NULL,118,11,4,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1340,'SPOT',NULL,118,0,5,625,435,'2014-10-17 11:53:43',0);
+VALUES (1340,'WELL',NULL,118,0,5,625,435,'2014-10-17 11:53:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1341,'SPOT',NULL,118,1,5,626,439,'2014-10-17 11:54:22',0);
+VALUES (1341,'WELL',NULL,118,1,5,626,439,'2014-10-17 11:54:22',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1342,'SPOT',NULL,118,2,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1342,'WELL',NULL,118,2,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1343,'SPOT',NULL,118,3,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1343,'WELL',NULL,118,3,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1344,'SPOT',NULL,118,4,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1344,'WELL',NULL,118,4,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1345,'SPOT',NULL,118,5,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1345,'WELL',NULL,118,5,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1346,'SPOT',NULL,118,6,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1346,'WELL',NULL,118,6,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1347,'SPOT',NULL,118,7,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1347,'WELL',NULL,118,7,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1348,'SPOT',NULL,118,8,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1348,'WELL',NULL,118,8,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1349,'SPOT',NULL,118,9,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1349,'WELL',NULL,118,9,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1350,'SPOT',NULL,118,10,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1350,'WELL',NULL,118,10,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1351,'SPOT',NULL,118,11,5,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1351,'WELL',NULL,118,11,5,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1352,'SPOT',NULL,118,0,6,625,436,'2014-10-17 11:53:43',0);
+VALUES (1352,'WELL',NULL,118,0,6,625,436,'2014-10-17 11:53:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1353,'SPOT',NULL,118,1,6,626,440,'2014-10-17 11:54:22',0);
+VALUES (1353,'WELL',NULL,118,1,6,626,440,'2014-10-17 11:54:22',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1354,'SPOT',NULL,118,2,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1354,'WELL',NULL,118,2,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1355,'SPOT',NULL,118,3,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1355,'WELL',NULL,118,3,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1356,'SPOT',NULL,118,4,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1356,'WELL',NULL,118,4,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1357,'SPOT',NULL,118,5,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1357,'WELL',NULL,118,5,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1358,'SPOT',NULL,118,6,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1358,'WELL',NULL,118,6,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1359,'SPOT',NULL,118,7,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1359,'WELL',NULL,118,7,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1360,'SPOT',NULL,118,8,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1360,'WELL',NULL,118,8,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1361,'SPOT',NULL,118,9,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1361,'WELL',NULL,118,9,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1362,'SPOT',NULL,118,10,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1362,'WELL',NULL,118,10,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1363,'SPOT',NULL,118,11,6,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1363,'WELL',NULL,118,11,6,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1364,'SPOT',NULL,118,0,7,625,437,'2014-10-17 11:53:43',0);
+VALUES (1364,'WELL',NULL,118,0,7,625,437,'2014-10-17 11:53:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1365,'SPOT',NULL,118,1,7,626,441,'2014-10-17 11:54:22',0);
+VALUES (1365,'WELL',NULL,118,1,7,626,441,'2014-10-17 11:54:22',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1366,'SPOT',NULL,118,2,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1366,'WELL',NULL,118,2,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1367,'SPOT',NULL,118,3,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1367,'WELL',NULL,118,3,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1368,'SPOT',NULL,118,4,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1368,'WELL',NULL,118,4,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1369,'SPOT',NULL,118,5,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1369,'WELL',NULL,118,5,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1370,'SPOT',NULL,118,6,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1370,'WELL',NULL,118,6,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1371,'SPOT',NULL,118,7,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1371,'WELL',NULL,118,7,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1372,'SPOT',NULL,118,8,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1372,'WELL',NULL,118,8,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1373,'SPOT',NULL,118,9,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1373,'WELL',NULL,118,9,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1374,'SPOT',NULL,118,10,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1374,'WELL',NULL,118,10,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1375,'SPOT',NULL,118,11,7,NULL,NULL,'2014-10-17 11:32:34',0);
+VALUES (1375,'WELL',NULL,118,11,7,NULL,NULL,'2014-10-17 11:32:34',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1376,'SPOT',NULL,119,0,0,623,422,'2014-10-17 11:50:19',0);
+VALUES (1376,'WELL',NULL,119,0,0,623,422,'2014-10-17 11:50:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1377,'SPOT',NULL,119,1,0,625,424,'2014-10-17 11:51:01',0);
+VALUES (1377,'WELL',NULL,119,1,0,625,424,'2014-10-17 11:51:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1378,'SPOT',NULL,119,2,0,624,426,'2014-10-17 11:51:50',0);
+VALUES (1378,'WELL',NULL,119,2,0,624,426,'2014-10-17 11:51:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1379,'SPOT',NULL,119,3,0,626,430,'2014-10-17 11:52:40',0);
+VALUES (1379,'WELL',NULL,119,3,0,626,430,'2014-10-17 11:52:40',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1380,'SPOT',NULL,119,4,0,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1380,'WELL',NULL,119,4,0,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1381,'SPOT',NULL,119,5,0,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1381,'WELL',NULL,119,5,0,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1382,'SPOT',NULL,119,6,0,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1382,'WELL',NULL,119,6,0,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1383,'SPOT',NULL,119,7,0,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1383,'WELL',NULL,119,7,0,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1384,'SPOT',NULL,119,8,0,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1384,'WELL',NULL,119,8,0,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1385,'SPOT',NULL,119,9,0,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1385,'WELL',NULL,119,9,0,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1386,'SPOT',NULL,119,10,0,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1386,'WELL',NULL,119,10,0,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1387,'SPOT',NULL,119,11,0,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1387,'WELL',NULL,119,11,0,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1388,'SPOT',NULL,119,0,1,623,423,'2014-10-17 11:50:19',0);
+VALUES (1388,'WELL',NULL,119,0,1,623,423,'2014-10-17 11:50:19',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1389,'SPOT',NULL,119,1,1,625,425,'2014-10-17 11:51:01',0);
+VALUES (1389,'WELL',NULL,119,1,1,625,425,'2014-10-17 11:51:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1390,'SPOT',NULL,119,2,1,624,427,'2014-10-17 11:51:50',0);
+VALUES (1390,'WELL',NULL,119,2,1,624,427,'2014-10-17 11:51:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1391,'SPOT',NULL,119,3,1,626,431,'2014-10-17 11:52:40',0);
+VALUES (1391,'WELL',NULL,119,3,1,626,431,'2014-10-17 11:52:40',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1392,'SPOT',NULL,119,4,1,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1392,'WELL',NULL,119,4,1,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1393,'SPOT',NULL,119,5,1,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1393,'WELL',NULL,119,5,1,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1394,'SPOT',NULL,119,6,1,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1394,'WELL',NULL,119,6,1,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1395,'SPOT',NULL,119,7,1,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1395,'WELL',NULL,119,7,1,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1396,'SPOT',NULL,119,8,1,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1396,'WELL',NULL,119,8,1,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1397,'SPOT',NULL,119,9,1,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1397,'WELL',NULL,119,9,1,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1398,'SPOT',NULL,119,10,1,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1398,'WELL',NULL,119,10,1,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1399,'SPOT',NULL,119,11,1,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1399,'WELL',NULL,119,11,1,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1400,'SPOT',NULL,119,0,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1400,'WELL',NULL,119,0,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1401,'SPOT',NULL,119,1,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1401,'WELL',NULL,119,1,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1402,'SPOT',NULL,119,2,2,624,428,'2014-10-17 11:51:50',0);
+VALUES (1402,'WELL',NULL,119,2,2,624,428,'2014-10-17 11:51:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1403,'SPOT',NULL,119,3,2,626,432,'2014-10-17 11:52:40',0);
+VALUES (1403,'WELL',NULL,119,3,2,626,432,'2014-10-17 11:52:40',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1404,'SPOT',NULL,119,4,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1404,'WELL',NULL,119,4,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1405,'SPOT',NULL,119,5,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1405,'WELL',NULL,119,5,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1406,'SPOT',NULL,119,6,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1406,'WELL',NULL,119,6,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1407,'SPOT',NULL,119,7,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1407,'WELL',NULL,119,7,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1408,'SPOT',NULL,119,8,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1408,'WELL',NULL,119,8,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1409,'SPOT',NULL,119,9,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1409,'WELL',NULL,119,9,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1410,'SPOT',NULL,119,10,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1410,'WELL',NULL,119,10,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1411,'SPOT',NULL,119,11,2,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1411,'WELL',NULL,119,11,2,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1412,'SPOT',NULL,119,0,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1412,'WELL',NULL,119,0,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1413,'SPOT',NULL,119,1,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1413,'WELL',NULL,119,1,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1414,'SPOT',NULL,119,2,3,624,429,'2014-10-17 11:51:50',0);
+VALUES (1414,'WELL',NULL,119,2,3,624,429,'2014-10-17 11:51:50',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1415,'SPOT',NULL,119,3,3,626,433,'2014-10-17 11:52:40',0);
+VALUES (1415,'WELL',NULL,119,3,3,626,433,'2014-10-17 11:52:40',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1416,'SPOT',NULL,119,4,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1416,'WELL',NULL,119,4,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1417,'SPOT',NULL,119,5,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1417,'WELL',NULL,119,5,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1418,'SPOT',NULL,119,6,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1418,'WELL',NULL,119,6,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1419,'SPOT',NULL,119,7,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1419,'WELL',NULL,119,7,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1420,'SPOT',NULL,119,8,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1420,'WELL',NULL,119,8,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1421,'SPOT',NULL,119,9,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1421,'WELL',NULL,119,9,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1422,'SPOT',NULL,119,10,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1422,'WELL',NULL,119,10,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1423,'SPOT',NULL,119,11,3,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1423,'WELL',NULL,119,11,3,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1424,'SPOT',NULL,119,0,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1424,'WELL',NULL,119,0,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1425,'SPOT',NULL,119,1,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1425,'WELL',NULL,119,1,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1426,'SPOT',NULL,119,2,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1426,'WELL',NULL,119,2,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1427,'SPOT',NULL,119,3,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1427,'WELL',NULL,119,3,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1428,'SPOT',NULL,119,4,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1428,'WELL',NULL,119,4,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1429,'SPOT',NULL,119,5,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1429,'WELL',NULL,119,5,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1430,'SPOT',NULL,119,6,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1430,'WELL',NULL,119,6,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1431,'SPOT',NULL,119,7,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1431,'WELL',NULL,119,7,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1432,'SPOT',NULL,119,8,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1432,'WELL',NULL,119,8,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1433,'SPOT',NULL,119,9,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1433,'WELL',NULL,119,9,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1434,'SPOT',NULL,119,10,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1434,'WELL',NULL,119,10,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1435,'SPOT',NULL,119,11,4,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1435,'WELL',NULL,119,11,4,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1436,'SPOT',NULL,119,0,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1436,'WELL',NULL,119,0,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1437,'SPOT',NULL,119,1,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1437,'WELL',NULL,119,1,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1438,'SPOT',NULL,119,2,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1438,'WELL',NULL,119,2,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1439,'SPOT',NULL,119,3,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1439,'WELL',NULL,119,3,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1440,'SPOT',NULL,119,4,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1440,'WELL',NULL,119,4,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1441,'SPOT',NULL,119,5,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1441,'WELL',NULL,119,5,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1442,'SPOT',NULL,119,6,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1442,'WELL',NULL,119,6,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1443,'SPOT',NULL,119,7,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1443,'WELL',NULL,119,7,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1444,'SPOT',NULL,119,8,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1444,'WELL',NULL,119,8,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1445,'SPOT',NULL,119,9,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1445,'WELL',NULL,119,9,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1446,'SPOT',NULL,119,10,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1446,'WELL',NULL,119,10,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1447,'SPOT',NULL,119,11,5,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1447,'WELL',NULL,119,11,5,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1448,'SPOT',NULL,119,0,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1448,'WELL',NULL,119,0,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1449,'SPOT',NULL,119,1,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1449,'WELL',NULL,119,1,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1450,'SPOT',NULL,119,2,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1450,'WELL',NULL,119,2,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1451,'SPOT',NULL,119,3,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1451,'WELL',NULL,119,3,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1452,'SPOT',NULL,119,4,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1452,'WELL',NULL,119,4,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1453,'SPOT',NULL,119,5,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1453,'WELL',NULL,119,5,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1454,'SPOT',NULL,119,6,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1454,'WELL',NULL,119,6,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1455,'SPOT',NULL,119,7,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1455,'WELL',NULL,119,7,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1456,'SPOT',NULL,119,8,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1456,'WELL',NULL,119,8,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1457,'SPOT',NULL,119,9,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1457,'WELL',NULL,119,9,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1458,'SPOT',NULL,119,10,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1458,'WELL',NULL,119,10,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1459,'SPOT',NULL,119,11,6,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1459,'WELL',NULL,119,11,6,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1460,'SPOT',NULL,119,0,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1460,'WELL',NULL,119,0,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1461,'SPOT',NULL,119,1,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1461,'WELL',NULL,119,1,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1462,'SPOT',NULL,119,2,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1462,'WELL',NULL,119,2,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1463,'SPOT',NULL,119,3,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1463,'WELL',NULL,119,3,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1464,'SPOT',NULL,119,4,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1464,'WELL',NULL,119,4,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1465,'SPOT',NULL,119,5,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1465,'WELL',NULL,119,5,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1466,'SPOT',NULL,119,6,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1466,'WELL',NULL,119,6,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1467,'SPOT',NULL,119,7,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1467,'WELL',NULL,119,7,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1468,'SPOT',NULL,119,8,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1468,'WELL',NULL,119,8,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1469,'SPOT',NULL,119,9,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1469,'WELL',NULL,119,9,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1470,'SPOT',NULL,119,10,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1470,'WELL',NULL,119,10,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1471,'SPOT',NULL,119,11,7,NULL,NULL,'2014-10-17 11:50:01',0);
+VALUES (1471,'WELL',NULL,119,11,7,NULL,NULL,'2014-10-17 11:50:01',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1472,'SPOT',NULL,120,0,0,627,442,'2014-10-22 09:51:27',0);
+VALUES (1472,'WELL',NULL,120,0,0,627,442,'2014-10-22 09:51:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1473,'SPOT',NULL,120,1,0,628,444,'2014-10-22 09:55:29',0);
+VALUES (1473,'WELL',NULL,120,1,0,628,444,'2014-10-22 09:55:29',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1474,'SPOT',NULL,120,2,0,629,443,'2014-10-22 09:51:43',0);
+VALUES (1474,'WELL',NULL,120,2,0,629,443,'2014-10-22 09:51:43',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1475,'SPOT',NULL,120,3,0,630,446,'2014-10-22 09:55:59',0);
+VALUES (1475,'WELL',NULL,120,3,0,630,446,'2014-10-22 09:55:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1476,'SPOT',NULL,120,4,0,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1476,'WELL',NULL,120,4,0,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1477,'SPOT',NULL,120,5,0,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1477,'WELL',NULL,120,5,0,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1478,'SPOT',NULL,120,6,0,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1478,'WELL',NULL,120,6,0,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1479,'SPOT',NULL,120,7,0,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1479,'WELL',NULL,120,7,0,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1480,'SPOT',NULL,120,8,0,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1480,'WELL',NULL,120,8,0,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1481,'SPOT',NULL,120,9,0,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1481,'WELL',NULL,120,9,0,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1482,'SPOT',NULL,120,10,0,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1482,'WELL',NULL,120,10,0,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1483,'SPOT',NULL,120,11,0,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1483,'WELL',NULL,120,11,0,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1484,'SPOT',NULL,120,0,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1484,'WELL',NULL,120,0,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1485,'SPOT',NULL,120,1,1,628,445,'2014-10-22 09:55:29',0);
+VALUES (1485,'WELL',NULL,120,1,1,628,445,'2014-10-22 09:55:29',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1486,'SPOT',NULL,120,2,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1486,'WELL',NULL,120,2,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1487,'SPOT',NULL,120,3,1,630,447,'2014-10-22 09:55:59',0);
+VALUES (1487,'WELL',NULL,120,3,1,630,447,'2014-10-22 09:55:59',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1488,'SPOT',NULL,120,4,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1488,'WELL',NULL,120,4,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1489,'SPOT',NULL,120,5,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1489,'WELL',NULL,120,5,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1490,'SPOT',NULL,120,6,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1490,'WELL',NULL,120,6,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1491,'SPOT',NULL,120,7,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1491,'WELL',NULL,120,7,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1492,'SPOT',NULL,120,8,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1492,'WELL',NULL,120,8,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1493,'SPOT',NULL,120,9,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1493,'WELL',NULL,120,9,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1494,'SPOT',NULL,120,10,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1494,'WELL',NULL,120,10,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1495,'SPOT',NULL,120,11,1,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1495,'WELL',NULL,120,11,1,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1496,'SPOT',NULL,120,0,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1496,'WELL',NULL,120,0,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1497,'SPOT',NULL,120,1,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1497,'WELL',NULL,120,1,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1498,'SPOT',NULL,120,2,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1498,'WELL',NULL,120,2,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1499,'SPOT',NULL,120,3,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1499,'WELL',NULL,120,3,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1500,'SPOT',NULL,120,4,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1500,'WELL',NULL,120,4,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1501,'SPOT',NULL,120,5,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1501,'WELL',NULL,120,5,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1502,'SPOT',NULL,120,6,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1502,'WELL',NULL,120,6,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1503,'SPOT',NULL,120,7,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1503,'WELL',NULL,120,7,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1504,'SPOT',NULL,120,8,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1504,'WELL',NULL,120,8,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1505,'SPOT',NULL,120,9,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1505,'WELL',NULL,120,9,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1506,'SPOT',NULL,120,10,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1506,'WELL',NULL,120,10,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1507,'SPOT',NULL,120,11,2,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1507,'WELL',NULL,120,11,2,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1508,'SPOT',NULL,120,0,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1508,'WELL',NULL,120,0,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1509,'SPOT',NULL,120,1,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1509,'WELL',NULL,120,1,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1510,'SPOT',NULL,120,2,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1510,'WELL',NULL,120,2,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1511,'SPOT',NULL,120,3,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1511,'WELL',NULL,120,3,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1512,'SPOT',NULL,120,4,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1512,'WELL',NULL,120,4,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1513,'SPOT',NULL,120,5,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1513,'WELL',NULL,120,5,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1514,'SPOT',NULL,120,6,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1514,'WELL',NULL,120,6,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1515,'SPOT',NULL,120,7,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1515,'WELL',NULL,120,7,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1516,'SPOT',NULL,120,8,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1516,'WELL',NULL,120,8,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1517,'SPOT',NULL,120,9,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1517,'WELL',NULL,120,9,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1518,'SPOT',NULL,120,10,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1518,'WELL',NULL,120,10,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1519,'SPOT',NULL,120,11,3,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1519,'WELL',NULL,120,11,3,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1520,'SPOT',NULL,120,0,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1520,'WELL',NULL,120,0,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1521,'SPOT',NULL,120,1,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1521,'WELL',NULL,120,1,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1522,'SPOT',NULL,120,2,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1522,'WELL',NULL,120,2,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1523,'SPOT',NULL,120,3,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1523,'WELL',NULL,120,3,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1524,'SPOT',NULL,120,4,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1524,'WELL',NULL,120,4,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1525,'SPOT',NULL,120,5,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1525,'WELL',NULL,120,5,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1526,'SPOT',NULL,120,6,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1526,'WELL',NULL,120,6,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1527,'SPOT',NULL,120,7,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1527,'WELL',NULL,120,7,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1528,'SPOT',NULL,120,8,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1528,'WELL',NULL,120,8,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1529,'SPOT',NULL,120,9,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1529,'WELL',NULL,120,9,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1530,'SPOT',NULL,120,10,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1530,'WELL',NULL,120,10,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1531,'SPOT',NULL,120,11,4,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1531,'WELL',NULL,120,11,4,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1532,'SPOT',NULL,120,0,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1532,'WELL',NULL,120,0,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1533,'SPOT',NULL,120,1,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1533,'WELL',NULL,120,1,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1534,'SPOT',NULL,120,2,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1534,'WELL',NULL,120,2,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1535,'SPOT',NULL,120,3,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1535,'WELL',NULL,120,3,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1536,'SPOT',NULL,120,4,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1536,'WELL',NULL,120,4,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1537,'SPOT',NULL,120,5,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1537,'WELL',NULL,120,5,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1538,'SPOT',NULL,120,6,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1538,'WELL',NULL,120,6,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1539,'SPOT',NULL,120,7,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1539,'WELL',NULL,120,7,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1540,'SPOT',NULL,120,8,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1540,'WELL',NULL,120,8,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1541,'SPOT',NULL,120,9,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1541,'WELL',NULL,120,9,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1542,'SPOT',NULL,120,10,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1542,'WELL',NULL,120,10,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1543,'SPOT',NULL,120,11,5,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1543,'WELL',NULL,120,11,5,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1544,'SPOT',NULL,120,0,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1544,'WELL',NULL,120,0,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1545,'SPOT',NULL,120,1,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1545,'WELL',NULL,120,1,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1546,'SPOT',NULL,120,2,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1546,'WELL',NULL,120,2,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1547,'SPOT',NULL,120,3,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1547,'WELL',NULL,120,3,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1548,'SPOT',NULL,120,4,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1548,'WELL',NULL,120,4,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1549,'SPOT',NULL,120,5,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1549,'WELL',NULL,120,5,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1550,'SPOT',NULL,120,6,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1550,'WELL',NULL,120,6,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1551,'SPOT',NULL,120,7,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1551,'WELL',NULL,120,7,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1552,'SPOT',NULL,120,8,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1552,'WELL',NULL,120,8,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1553,'SPOT',NULL,120,9,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1553,'WELL',NULL,120,9,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1554,'SPOT',NULL,120,10,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1554,'WELL',NULL,120,10,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1555,'SPOT',NULL,120,11,6,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1555,'WELL',NULL,120,11,6,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1556,'SPOT',NULL,120,0,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1556,'WELL',NULL,120,0,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1557,'SPOT',NULL,120,1,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1557,'WELL',NULL,120,1,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1558,'SPOT',NULL,120,2,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1558,'WELL',NULL,120,2,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1559,'SPOT',NULL,120,3,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1559,'WELL',NULL,120,3,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1560,'SPOT',NULL,120,4,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1560,'WELL',NULL,120,4,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1561,'SPOT',NULL,120,5,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1561,'WELL',NULL,120,5,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1562,'SPOT',NULL,120,6,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1562,'WELL',NULL,120,6,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1563,'SPOT',NULL,120,7,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1563,'WELL',NULL,120,7,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1564,'SPOT',NULL,120,8,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1564,'WELL',NULL,120,8,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1565,'SPOT',NULL,120,9,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1565,'WELL',NULL,120,9,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1566,'SPOT',NULL,120,10,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1566,'WELL',NULL,120,10,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1567,'SPOT',NULL,120,11,7,NULL,NULL,'2014-10-22 09:51:11',0);
+VALUES (1567,'WELL',NULL,120,11,7,NULL,NULL,'2014-10-22 09:51:11',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1568,'SPOT',NULL,121,0,0,629,448,'2014-10-22 09:56:54',0);
+VALUES (1568,'WELL',NULL,121,0,0,629,448,'2014-10-22 09:56:54',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1569,'SPOT',NULL,121,1,0,630,450,'2014-10-22 09:57:18',0);
+VALUES (1569,'WELL',NULL,121,1,0,630,450,'2014-10-22 09:57:18',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1570,'SPOT',NULL,121,2,0,NULL,NULL,'2015-05-27 13:47:51',0);
+VALUES (1570,'WELL',NULL,121,2,0,NULL,NULL,'2015-05-27 13:47:51',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1571,'SPOT',NULL,121,3,0,NULL,NULL,'2015-05-27 14:06:27',0);
+VALUES (1571,'WELL',NULL,121,3,0,NULL,NULL,'2015-05-27 14:06:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1572,'SPOT',NULL,121,4,0,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1572,'WELL',NULL,121,4,0,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1573,'SPOT',NULL,121,5,0,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1573,'WELL',NULL,121,5,0,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1574,'SPOT',NULL,121,6,0,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1574,'WELL',NULL,121,6,0,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1575,'SPOT',NULL,121,7,0,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1575,'WELL',NULL,121,7,0,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1576,'SPOT',NULL,121,8,0,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1576,'WELL',NULL,121,8,0,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1577,'SPOT',NULL,121,9,0,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1577,'WELL',NULL,121,9,0,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1578,'SPOT',NULL,121,10,0,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1578,'WELL',NULL,121,10,0,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1579,'SPOT',NULL,121,11,0,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1579,'WELL',NULL,121,11,0,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1580,'SPOT',NULL,121,0,1,629,449,'2014-10-22 09:56:54',0);
+VALUES (1580,'WELL',NULL,121,0,1,629,449,'2014-10-22 09:56:54',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1581,'SPOT',NULL,121,1,1,630,451,'2014-10-22 09:57:18',0);
+VALUES (1581,'WELL',NULL,121,1,1,630,451,'2014-10-22 09:57:18',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1582,'SPOT',NULL,121,2,1,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1582,'WELL',NULL,121,2,1,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1583,'SPOT',NULL,121,3,1,NULL,NULL,'2015-05-27 14:06:27',0);
+VALUES (1583,'WELL',NULL,121,3,1,NULL,NULL,'2015-05-27 14:06:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1584,'SPOT',NULL,121,4,1,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1584,'WELL',NULL,121,4,1,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1585,'SPOT',NULL,121,5,1,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1585,'WELL',NULL,121,5,1,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1586,'SPOT',NULL,121,6,1,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1586,'WELL',NULL,121,6,1,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1587,'SPOT',NULL,121,7,1,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1587,'WELL',NULL,121,7,1,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1588,'SPOT',NULL,121,8,1,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1588,'WELL',NULL,121,8,1,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1589,'SPOT',NULL,121,9,1,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1589,'WELL',NULL,121,9,1,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1590,'SPOT',NULL,121,10,1,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1590,'WELL',NULL,121,10,1,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1591,'SPOT',NULL,121,11,1,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1591,'WELL',NULL,121,11,1,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1592,'SPOT',NULL,121,0,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1592,'WELL',NULL,121,0,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1593,'SPOT',NULL,121,1,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1593,'WELL',NULL,121,1,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1594,'SPOT',NULL,121,2,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1594,'WELL',NULL,121,2,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1595,'SPOT',NULL,121,3,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1595,'WELL',NULL,121,3,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1596,'SPOT',NULL,121,4,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1596,'WELL',NULL,121,4,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1597,'SPOT',NULL,121,5,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1597,'WELL',NULL,121,5,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1598,'SPOT',NULL,121,6,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1598,'WELL',NULL,121,6,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1599,'SPOT',NULL,121,7,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1599,'WELL',NULL,121,7,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1600,'SPOT',NULL,121,8,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1600,'WELL',NULL,121,8,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1601,'SPOT',NULL,121,9,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1601,'WELL',NULL,121,9,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1602,'SPOT',NULL,121,10,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1602,'WELL',NULL,121,10,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1603,'SPOT',NULL,121,11,2,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1603,'WELL',NULL,121,11,2,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1604,'SPOT',NULL,121,0,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1604,'WELL',NULL,121,0,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1605,'SPOT',NULL,121,1,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1605,'WELL',NULL,121,1,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1606,'SPOT',NULL,121,2,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1606,'WELL',NULL,121,2,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1607,'SPOT',NULL,121,3,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1607,'WELL',NULL,121,3,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1608,'SPOT',NULL,121,4,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1608,'WELL',NULL,121,4,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1609,'SPOT',NULL,121,5,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1609,'WELL',NULL,121,5,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1610,'SPOT',NULL,121,6,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1610,'WELL',NULL,121,6,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1611,'SPOT',NULL,121,7,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1611,'WELL',NULL,121,7,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1612,'SPOT',NULL,121,8,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1612,'WELL',NULL,121,8,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1613,'SPOT',NULL,121,9,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1613,'WELL',NULL,121,9,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1614,'SPOT',NULL,121,10,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1614,'WELL',NULL,121,10,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1615,'SPOT',NULL,121,11,3,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1615,'WELL',NULL,121,11,3,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1616,'SPOT',NULL,121,0,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1616,'WELL',NULL,121,0,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1617,'SPOT',NULL,121,1,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1617,'WELL',NULL,121,1,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1618,'SPOT',NULL,121,2,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1618,'WELL',NULL,121,2,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1619,'SPOT',NULL,121,3,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1619,'WELL',NULL,121,3,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1620,'SPOT',NULL,121,4,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1620,'WELL',NULL,121,4,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1621,'SPOT',NULL,121,5,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1621,'WELL',NULL,121,5,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1622,'SPOT',NULL,121,6,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1622,'WELL',NULL,121,6,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1623,'SPOT',NULL,121,7,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1623,'WELL',NULL,121,7,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1624,'SPOT',NULL,121,8,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1624,'WELL',NULL,121,8,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1625,'SPOT',NULL,121,9,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1625,'WELL',NULL,121,9,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1626,'SPOT',NULL,121,10,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1626,'WELL',NULL,121,10,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1627,'SPOT',NULL,121,11,4,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1627,'WELL',NULL,121,11,4,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1628,'SPOT',NULL,121,0,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1628,'WELL',NULL,121,0,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1629,'SPOT',NULL,121,1,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1629,'WELL',NULL,121,1,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1630,'SPOT',NULL,121,2,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1630,'WELL',NULL,121,2,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1631,'SPOT',NULL,121,3,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1631,'WELL',NULL,121,3,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1632,'SPOT',NULL,121,4,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1632,'WELL',NULL,121,4,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1633,'SPOT',NULL,121,5,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1633,'WELL',NULL,121,5,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1634,'SPOT',NULL,121,6,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1634,'WELL',NULL,121,6,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1635,'SPOT',NULL,121,7,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1635,'WELL',NULL,121,7,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1636,'SPOT',NULL,121,8,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1636,'WELL',NULL,121,8,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1637,'SPOT',NULL,121,9,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1637,'WELL',NULL,121,9,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1638,'SPOT',NULL,121,10,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1638,'WELL',NULL,121,10,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1639,'SPOT',NULL,121,11,5,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1639,'WELL',NULL,121,11,5,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1640,'SPOT',NULL,121,0,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1640,'WELL',NULL,121,0,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1641,'SPOT',NULL,121,1,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1641,'WELL',NULL,121,1,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1642,'SPOT',NULL,121,2,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1642,'WELL',NULL,121,2,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1643,'SPOT',NULL,121,3,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1643,'WELL',NULL,121,3,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1644,'SPOT',NULL,121,4,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1644,'WELL',NULL,121,4,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1645,'SPOT',NULL,121,5,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1645,'WELL',NULL,121,5,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1646,'SPOT',NULL,121,6,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1646,'WELL',NULL,121,6,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1647,'SPOT',NULL,121,7,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1647,'WELL',NULL,121,7,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1648,'SPOT',NULL,121,8,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1648,'WELL',NULL,121,8,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1649,'SPOT',NULL,121,9,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1649,'WELL',NULL,121,9,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1650,'SPOT',NULL,121,10,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1650,'WELL',NULL,121,10,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1651,'SPOT',NULL,121,11,6,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1651,'WELL',NULL,121,11,6,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1652,'SPOT',NULL,121,0,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1652,'WELL',NULL,121,0,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1653,'SPOT',NULL,121,1,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1653,'WELL',NULL,121,1,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1654,'SPOT',NULL,121,2,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1654,'WELL',NULL,121,2,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1655,'SPOT',NULL,121,3,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1655,'WELL',NULL,121,3,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1656,'SPOT',NULL,121,4,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1656,'WELL',NULL,121,4,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1657,'SPOT',NULL,121,5,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1657,'WELL',NULL,121,5,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1658,'SPOT',NULL,121,6,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1658,'WELL',NULL,121,6,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1659,'SPOT',NULL,121,7,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1659,'WELL',NULL,121,7,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1660,'SPOT',NULL,121,8,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1660,'WELL',NULL,121,8,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1661,'SPOT',NULL,121,9,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1661,'WELL',NULL,121,9,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1662,'SPOT',NULL,121,10,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1662,'WELL',NULL,121,10,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1663,'SPOT',NULL,121,11,7,NULL,NULL,'2014-10-22 09:56:23',0);
+VALUES (1663,'WELL',NULL,121,11,7,NULL,NULL,'2014-10-22 09:56:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1664,'SPOT',NULL,122,0,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1664,'WELL',NULL,122,0,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1665,'SPOT',NULL,122,1,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1665,'WELL',NULL,122,1,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1666,'SPOT',NULL,122,2,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1666,'WELL',NULL,122,2,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1667,'SPOT',NULL,122,3,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1667,'WELL',NULL,122,3,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1668,'SPOT',NULL,122,4,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1668,'WELL',NULL,122,4,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1669,'SPOT',NULL,122,5,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1669,'WELL',NULL,122,5,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1670,'SPOT',NULL,122,6,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1670,'WELL',NULL,122,6,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1671,'SPOT',NULL,122,7,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1671,'WELL',NULL,122,7,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1672,'SPOT',NULL,122,8,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1672,'WELL',NULL,122,8,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1673,'SPOT',NULL,122,9,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1673,'WELL',NULL,122,9,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1674,'SPOT',NULL,122,10,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1674,'WELL',NULL,122,10,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1675,'SPOT',NULL,122,11,0,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1675,'WELL',NULL,122,11,0,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1676,'SPOT',NULL,122,0,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1676,'WELL',NULL,122,0,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1677,'SPOT',NULL,122,1,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1677,'WELL',NULL,122,1,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1678,'SPOT',NULL,122,2,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1678,'WELL',NULL,122,2,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1679,'SPOT',NULL,122,3,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1679,'WELL',NULL,122,3,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1680,'SPOT',NULL,122,4,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1680,'WELL',NULL,122,4,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1681,'SPOT',NULL,122,5,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1681,'WELL',NULL,122,5,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1682,'SPOT',NULL,122,6,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1682,'WELL',NULL,122,6,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1683,'SPOT',NULL,122,7,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1683,'WELL',NULL,122,7,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1684,'SPOT',NULL,122,8,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1684,'WELL',NULL,122,8,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1685,'SPOT',NULL,122,9,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1685,'WELL',NULL,122,9,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1686,'SPOT',NULL,122,10,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1686,'WELL',NULL,122,10,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1687,'SPOT',NULL,122,11,1,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1687,'WELL',NULL,122,11,1,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1688,'SPOT',NULL,122,0,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1688,'WELL',NULL,122,0,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1689,'SPOT',NULL,122,1,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1689,'WELL',NULL,122,1,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1690,'SPOT',NULL,122,2,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1690,'WELL',NULL,122,2,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1691,'SPOT',NULL,122,3,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1691,'WELL',NULL,122,3,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1692,'SPOT',NULL,122,4,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1692,'WELL',NULL,122,4,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1693,'SPOT',NULL,122,5,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1693,'WELL',NULL,122,5,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1694,'SPOT',NULL,122,6,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1694,'WELL',NULL,122,6,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1695,'SPOT',NULL,122,7,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1695,'WELL',NULL,122,7,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1696,'SPOT',NULL,122,8,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1696,'WELL',NULL,122,8,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1697,'SPOT',NULL,122,9,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1697,'WELL',NULL,122,9,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1698,'SPOT',NULL,122,10,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1698,'WELL',NULL,122,10,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1699,'SPOT',NULL,122,11,2,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1699,'WELL',NULL,122,11,2,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1700,'SPOT',NULL,122,0,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1700,'WELL',NULL,122,0,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1701,'SPOT',NULL,122,1,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1701,'WELL',NULL,122,1,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1702,'SPOT',NULL,122,2,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1702,'WELL',NULL,122,2,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1703,'SPOT',NULL,122,3,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1703,'WELL',NULL,122,3,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1704,'SPOT',NULL,122,4,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1704,'WELL',NULL,122,4,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1705,'SPOT',NULL,122,5,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1705,'WELL',NULL,122,5,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1706,'SPOT',NULL,122,6,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1706,'WELL',NULL,122,6,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1707,'SPOT',NULL,122,7,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1707,'WELL',NULL,122,7,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1708,'SPOT',NULL,122,8,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1708,'WELL',NULL,122,8,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1709,'SPOT',NULL,122,9,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1709,'WELL',NULL,122,9,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1710,'SPOT',NULL,122,10,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1710,'WELL',NULL,122,10,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1711,'SPOT',NULL,122,11,3,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1711,'WELL',NULL,122,11,3,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1712,'SPOT',NULL,122,0,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1712,'WELL',NULL,122,0,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1713,'SPOT',NULL,122,1,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1713,'WELL',NULL,122,1,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1714,'SPOT',NULL,122,2,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1714,'WELL',NULL,122,2,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1715,'SPOT',NULL,122,3,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1715,'WELL',NULL,122,3,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1716,'SPOT',NULL,122,4,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1716,'WELL',NULL,122,4,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1717,'SPOT',NULL,122,5,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1717,'WELL',NULL,122,5,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1718,'SPOT',NULL,122,6,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1718,'WELL',NULL,122,6,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1719,'SPOT',NULL,122,7,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1719,'WELL',NULL,122,7,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1720,'SPOT',NULL,122,8,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1720,'WELL',NULL,122,8,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1721,'SPOT',NULL,122,9,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1721,'WELL',NULL,122,9,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1722,'SPOT',NULL,122,10,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1722,'WELL',NULL,122,10,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1723,'SPOT',NULL,122,11,4,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1723,'WELL',NULL,122,11,4,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1724,'SPOT',NULL,122,0,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1724,'WELL',NULL,122,0,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1725,'SPOT',NULL,122,1,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1725,'WELL',NULL,122,1,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1726,'SPOT',NULL,122,2,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1726,'WELL',NULL,122,2,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1727,'SPOT',NULL,122,3,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1727,'WELL',NULL,122,3,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1728,'SPOT',NULL,122,4,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1728,'WELL',NULL,122,4,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1729,'SPOT',NULL,122,5,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1729,'WELL',NULL,122,5,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1730,'SPOT',NULL,122,6,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1730,'WELL',NULL,122,6,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1731,'SPOT',NULL,122,7,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1731,'WELL',NULL,122,7,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1732,'SPOT',NULL,122,8,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1732,'WELL',NULL,122,8,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1733,'SPOT',NULL,122,9,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1733,'WELL',NULL,122,9,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1734,'SPOT',NULL,122,10,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1734,'WELL',NULL,122,10,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1735,'SPOT',NULL,122,11,5,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1735,'WELL',NULL,122,11,5,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1736,'SPOT',NULL,122,0,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1736,'WELL',NULL,122,0,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1737,'SPOT',NULL,122,1,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1737,'WELL',NULL,122,1,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1738,'SPOT',NULL,122,2,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1738,'WELL',NULL,122,2,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1739,'SPOT',NULL,122,3,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1739,'WELL',NULL,122,3,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1740,'SPOT',NULL,122,4,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1740,'WELL',NULL,122,4,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1741,'SPOT',NULL,122,5,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1741,'WELL',NULL,122,5,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1742,'SPOT',NULL,122,6,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1742,'WELL',NULL,122,6,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1743,'SPOT',NULL,122,7,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1743,'WELL',NULL,122,7,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1744,'SPOT',NULL,122,8,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1744,'WELL',NULL,122,8,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1745,'SPOT',NULL,122,9,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1745,'WELL',NULL,122,9,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1746,'SPOT',NULL,122,10,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1746,'WELL',NULL,122,10,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1747,'SPOT',NULL,122,11,6,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1747,'WELL',NULL,122,11,6,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1748,'SPOT',NULL,122,0,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1748,'WELL',NULL,122,0,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1749,'SPOT',NULL,122,1,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1749,'WELL',NULL,122,1,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1750,'SPOT',NULL,122,2,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1750,'WELL',NULL,122,2,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1751,'SPOT',NULL,122,3,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1751,'WELL',NULL,122,3,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1752,'SPOT',NULL,122,4,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1752,'WELL',NULL,122,4,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1753,'SPOT',NULL,122,5,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1753,'WELL',NULL,122,5,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1754,'SPOT',NULL,122,6,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1754,'WELL',NULL,122,6,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1755,'SPOT',NULL,122,7,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1755,'WELL',NULL,122,7,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1756,'SPOT',NULL,122,8,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1756,'WELL',NULL,122,8,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1757,'SPOT',NULL,122,9,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1757,'WELL',NULL,122,9,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1758,'SPOT',NULL,122,10,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1758,'WELL',NULL,122,10,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
-VALUES (1759,'SPOT',NULL,122,11,7,NULL,NULL,'2014-10-24 14:30:21',0);
+VALUES (1759,'WELL',NULL,122,11,7,NULL,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
 VALUES (2278,'TUBE','POLR2B_20150527_01',NULL,NULL,NULL,638,NULL,'2015-05-27 13:33:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)

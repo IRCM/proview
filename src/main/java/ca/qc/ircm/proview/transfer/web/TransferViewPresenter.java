@@ -335,7 +335,7 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private boolean isTubeDestination() {
-    return view.destinationType.getValue() == SampleContainerType.SPOT;
+    return view.destinationType.getValue() == SampleContainerType.WELL;
   }
 
   private boolean validate() {

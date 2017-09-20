@@ -98,7 +98,7 @@ public class SampleContainerServiceTest {
     assertEquals((Long) 129L, container.getId());
     assertEquals((Long) 1L, container.getSample().getId());
     assertEquals((Long) 9L, container.getTreatmentSample().getId());
-    assertEquals(SampleContainerType.SPOT, container.getType());
+    assertEquals(SampleContainerType.WELL, container.getType());
     assertEquals(
         LocalDateTime.of(2011, 11, 16, 15, 7, 34, 0).atZone(ZoneId.systemDefault()).toInstant(),
         container.getTimestamp());

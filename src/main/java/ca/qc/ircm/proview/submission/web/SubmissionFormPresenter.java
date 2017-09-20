@@ -25,7 +25,7 @@ import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
 import static ca.qc.ircm.proview.sample.QContaminant.contaminant;
 import static ca.qc.ircm.proview.sample.QStandard.standard;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.sample.SampleContainerType.SPOT;
+import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.sample.SampleSupport.DRY;
 import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
 import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
@@ -1177,22 +1177,22 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.sampleCountField.setVisible(service != SMALL_MOLECULE);
     view.sampleContainerTypeOptions.setVisible(service == LC_MS_MS);
     view.plateNameField
-        .setVisible(service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == SPOT);
+        .setVisible(service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == WELL);
     view.samplesLabel.setVisible(service != SMALL_MOLECULE);
     view.samplesGridLayout.setVisible(service == INTACT_PROTEIN
-        || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT));
+        || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != WELL));
     view.samplesGrid.setVisible(service == INTACT_PROTEIN
-        || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT));
+        || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != WELL));
     view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).setHidden(service != INTACT_PROTEIN);
     view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).setHidden(service != INTACT_PROTEIN);
     view.samplesGrid.setWidth((float) view.samplesGrid.getColumns().stream()
         .filter(column -> !column.isHidden()).mapToDouble(column -> column.getWidth()).sum(),
         Unit.PIXELS);
     view.fillSamplesButton.setVisible((service == INTACT_PROTEIN
-        || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != SPOT))
+        || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != WELL))
         && editable);
     view.samplesPlateContainer
-        .setVisible(service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == SPOT);
+        .setVisible(service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == WELL);
     view.experiencePanel.setVisible(service != SMALL_MOLECULE);
     view.experienceField.setVisible(service != SMALL_MOLECULE);
     view.experienceGoalField.setVisible(service != SMALL_MOLECULE);
@@ -1576,7 +1576,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     SubmissionSample sample = firstSampleBinder.getBean();
     if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
       valid &= validate(sampleCountBinder);
-      if (view.sampleContainerTypeOptions.getValue() != SPOT) {
+      if (view.sampleContainerTypeOptions.getValue() != WELL) {
         for (SubmissionSample samp : samplesDataProvider.getItems()) {
           valid &= validate(sampleBinders.get(samp));
         }
@@ -1632,7 +1632,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   private ValidationResult validateSampleNames() {
     MessageResource resources = view.getResources();
     Set<String> names = new HashSet<>();
-    if (view.sampleContainerTypeOptions.getValue() != SPOT) {
+    if (view.sampleContainerTypeOptions.getValue() != WELL) {
       for (SubmissionSample sample : samplesDataProvider.getItems()) {
         if (!names.add(sample.getName())) {
           return ValidationResult
@@ -1822,7 +1822,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private void copySamplesToSubmission(Submission submission) {
-    if (submission.getService() == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == SPOT) {
+    if (submission.getService() == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == WELL) {
       submission.setSamples(samplesFromPlate(submission));
     } else {
       submission.setSamples(samplesFromTable(submission));

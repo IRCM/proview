@@ -43,16 +43,16 @@ public class SampleContainerComparator implements Comparator<SampleContainer>, S
         switch (o2.getType()) {
           case TUBE:
             return collator.compare(o1.getName(), o2.getName());
-          case SPOT:
+          case WELL:
             return -1;
           default:
         }
         break;
-      case SPOT:
+      case WELL:
         switch (o2.getType()) {
           case TUBE:
             return 1;
-          case SPOT:
+          case WELL:
             Well spot1 = (Well) o1;
             Well spot2 = (Well) o2;
             int compare = Integer.valueOf(spot1.getColumn()).compareTo(spot2.getColumn());

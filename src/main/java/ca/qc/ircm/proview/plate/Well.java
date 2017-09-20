@@ -36,7 +36,7 @@ import javax.persistence.ManyToOne;
  * A Plate spot.
  */
 @Entity
-@DiscriminatorValue("SPOT")
+@DiscriminatorValue("WELL")
 public class Well extends SampleContainer implements Data, Named, Serializable {
   private static final long serialVersionUID = 212003765334493656L;
 
@@ -101,7 +101,7 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
 
   @Override
   public SampleContainerType getType() {
-    return SampleContainerType.SPOT;
+    return SampleContainerType.WELL;
   }
 
   public Plate getPlate() {

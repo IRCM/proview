@@ -25,7 +25,7 @@ import java.util.Locale;
  * Type of {@link SampleContainer}.
  */
 public enum SampleContainerType {
-  TUBE, SPOT;
+  TUBE, WELL;
 
   private static MessageResource getResources(Locale locale) {
     return new MessageResource(SampleContainerType.class, locale);

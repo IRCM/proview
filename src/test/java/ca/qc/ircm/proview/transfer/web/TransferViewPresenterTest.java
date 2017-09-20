@@ -62,10 +62,10 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
-import ca.qc.ircm.proview.plate.Well;
-import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.plate.PlateType;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.WellLocation;
+import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.plate.web.PlateComponent;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -276,8 +276,8 @@ public class TransferViewPresenterTest {
     assertEquals(resources.message(SOURCE), view.source.getCaption());
     assertEquals(SampleContainerType.TUBE.getLabel(locale),
         view.sourceType.getItemCaptionGenerator().apply(SampleContainerType.TUBE));
-    assertEquals(SampleContainerType.SPOT.getLabel(locale),
-        view.sourceType.getItemCaptionGenerator().apply(SampleContainerType.SPOT));
+    assertEquals(SampleContainerType.WELL.getLabel(locale),
+        view.sourceType.getItemCaptionGenerator().apply(SampleContainerType.WELL));
     assertEquals(resources.message(NAME), view.sourceTubesGrid.getColumn(NAME).getCaption());
     assertEquals(resources.message(TUBE), view.sourceTubesGrid.getColumn(TUBE).getCaption());
     assertEquals(resources.message(SOURCE_PLATES), view.sourcePlatesField.getCaption());
@@ -483,7 +483,7 @@ public class TransferViewPresenterTest {
   public void save_NoSourceWells() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.SPOT);
+    view.sourceType.setValue(SampleContainerType.WELL);
     for (Sample sample : samples) {
       view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     }
@@ -503,7 +503,7 @@ public class TransferViewPresenterTest {
   public void save_SourcePlateSelectedWellEmpty() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.SPOT);
+    view.sourceType.setValue(SampleContainerType.WELL);
     for (Sample sample : samples) {
       view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     }
@@ -527,7 +527,7 @@ public class TransferViewPresenterTest {
   public void save_SourcePlateMissingOneSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.SPOT);
+    view.sourceType.setValue(SampleContainerType.WELL);
     for (Sample sample : samples) {
       view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     }
@@ -600,7 +600,7 @@ public class TransferViewPresenterTest {
     samples.forEach(sample -> {
       view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     });
-    view.destinationType.setValue(SampleContainerType.SPOT);
+    view.destinationType.setValue(SampleContainerType.WELL);
     view.destinationPlatesField.setValue("test");
 
     view.saveButton.click();
@@ -615,7 +615,7 @@ public class TransferViewPresenterTest {
   public void save_DestinationPlateNotEnoughFreeSpace_Overflow() {
     presenter.init(view);
     presenter.enter("");
-    view.destinationType.setValue(SampleContainerType.SPOT);
+    view.destinationType.setValue(SampleContainerType.WELL);
     samples.forEach(sample -> {
       view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     });
@@ -640,7 +640,7 @@ public class TransferViewPresenterTest {
   public void save_DestinationPlateNotEnoughFreeSpace_WellHasSample() {
     presenter.init(view);
     presenter.enter("");
-    view.destinationType.setValue(SampleContainerType.SPOT);
+    view.destinationType.setValue(SampleContainerType.WELL);
     samples.forEach(sample -> {
       view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     });
@@ -712,7 +712,7 @@ public class TransferViewPresenterTest {
           (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
       sources.put(sample, comboBox.getValue());
     });
-    view.destinationType.setValue(SampleContainerType.SPOT);
+    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initSpots();
@@ -753,7 +753,7 @@ public class TransferViewPresenterTest {
           (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
       sources.put(sample, comboBox.getValue());
     });
-    view.destinationType.setValue(SampleContainerType.SPOT);
+    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateForm.getPlate()).thenReturn(plate);
@@ -785,7 +785,7 @@ public class TransferViewPresenterTest {
   public void save_PlateToTube() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.SPOT);
+    view.sourceType.setValue(SampleContainerType.WELL);
     Plate sourcePlate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedSpots()).thenReturn(
         sourcePlate.spots(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
@@ -819,11 +819,11 @@ public class TransferViewPresenterTest {
   public void save_PlateToNewPlate() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.SPOT);
+    view.sourceType.setValue(SampleContainerType.WELL);
     Plate sourcePlate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedSpots()).thenReturn(
         sourcePlate.spots(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
-    view.destinationType.setValue(SampleContainerType.SPOT);
+    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initSpots();
@@ -857,11 +857,11 @@ public class TransferViewPresenterTest {
   public void save_PlateToExistingPlate() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.SPOT);
+    view.sourceType.setValue(SampleContainerType.WELL);
     Plate sourcePlate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedSpots()).thenReturn(
         sourcePlate.spots(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
-    view.destinationType.setValue(SampleContainerType.SPOT);
+    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateForm.getPlate()).thenReturn(plate);
@@ -894,7 +894,7 @@ public class TransferViewPresenterTest {
   public void save_PlateToTube_MultipleWellPerSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.SPOT);
+    view.sourceType.setValue(SampleContainerType.WELL);
     Plate sourcePlate = sourcePlates.get(1);
     List<Well> sourceWells = this.sourceWells.values().stream()
         .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
@@ -935,12 +935,12 @@ public class TransferViewPresenterTest {
   public void save_PlateToNewPlate_MultipleWellPerSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.SPOT);
+    view.sourceType.setValue(SampleContainerType.WELL);
     Plate sourcePlate = sourcePlates.get(1);
     List<Well> sourceWells = this.sourceWells.values().stream()
         .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
     when(view.sourcePlateForm.getSelectedSpots()).thenReturn(sourceWells);
-    view.destinationType.setValue(SampleContainerType.SPOT);
+    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initSpots();
@@ -983,12 +983,12 @@ public class TransferViewPresenterTest {
   public void save_PlateToExistingPlate_MultipleWellPerSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.SPOT);
+    view.sourceType.setValue(SampleContainerType.WELL);
     Plate sourcePlate = sourcePlates.get(1);
     List<Well> sourceWells = this.sourceWells.values().stream()
         .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
     when(view.sourcePlateForm.getSelectedSpots()).thenReturn(sourceWells);
-    view.destinationType.setValue(SampleContainerType.SPOT);
+    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
     view.destinationPlatesField.setValue(plate.getName());
     when(view.destinationPlateForm.getPlate()).thenReturn(plate);

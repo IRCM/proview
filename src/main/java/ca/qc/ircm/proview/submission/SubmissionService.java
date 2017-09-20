@@ -173,7 +173,7 @@ public class SubmissionService {
         tube.setTimestamp(Instant.now());
         otherTubeNames.add(tube.getName());
         sample.setOriginalContainer(tube);
-      } else if (sample.getOriginalContainer().getType() == SampleContainerType.SPOT) {
+      } else if (sample.getOriginalContainer().getType() == SampleContainerType.WELL) {
         if (plate == null) {
           plate = createSubmissionPlate(submission);
         }

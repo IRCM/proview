@@ -267,7 +267,7 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, fractionationDetail.getSample().getId());
     assertEquals(SampleContainerType.TUBE, fractionationDetail.getContainer().getType());
     assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
-    assertEquals(SampleContainerType.SPOT, fractionationDetail.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.WELL, fractionationDetail.getDestinationContainer().getType());
     assertEquals((Long) 134L, fractionationDetail.getDestinationContainer().getId());
     assertEquals(fractionationDetail.getId(),
         fractionationDetail.getDestinationContainer().getTreatmentSample().getId());
@@ -277,7 +277,7 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, fractionationDetail.getSample().getId());
     assertEquals(SampleContainerType.TUBE, fractionationDetail.getContainer().getType());
     assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
-    assertEquals(SampleContainerType.SPOT, fractionationDetail.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.WELL, fractionationDetail.getDestinationContainer().getType());
     assertEquals((Long) 135L, fractionationDetail.getDestinationContainer().getId());
     assertEquals(fractionationDetail.getId(),
         fractionationDetail.getDestinationContainer().getTreatmentSample().getId());
@@ -313,7 +313,7 @@ public class FractionationServiceTest {
     assertNull(destinationSpot.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(1, samplesRemoved.size());
-    assertNotNull(findContainer(samplesRemoved, SampleContainerType.SPOT, 128L));
+    assertNotNull(findContainer(samplesRemoved, SampleContainerType.WELL, 128L));
   }
 
   @Test
@@ -326,8 +326,8 @@ public class FractionationServiceTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(2, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainerType.SPOT, 1280L));
-      assertNotNull(findContainer(e.containers, SampleContainerType.SPOT, 1292L));
+      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1280L));
+      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1292L));
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -342,8 +342,8 @@ public class FractionationServiceTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(2, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainerType.SPOT, 1281L));
-      assertNotNull(findContainer(e.containers, SampleContainerType.SPOT, 1293L));
+      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1281L));
+      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1293L));
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -397,7 +397,7 @@ public class FractionationServiceTest {
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(1, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 1L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 128L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 128L));
   }
 
   @Test
@@ -432,10 +432,10 @@ public class FractionationServiceTest {
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 81L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1282L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1294L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1376L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1388L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1282L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1294L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1376L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1388L));
   }
 
   @Test
@@ -473,12 +473,12 @@ public class FractionationServiceTest {
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 82L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1283L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1295L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1378L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1390L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1402L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1414L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1283L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1295L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1378L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1390L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1402L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1414L));
   }
 
   @Test
@@ -520,14 +520,14 @@ public class FractionationServiceTest {
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 83L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1284L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1296L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1377L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1389L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1328L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1340L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1352L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1364L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1284L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1296L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1377L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1389L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1328L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1340L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1352L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1364L));
   }
 
   @Test
@@ -573,15 +573,15 @@ public class FractionationServiceTest {
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
     assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 84L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1285L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1297L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1379L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1391L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1403L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1415L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1329L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1341L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1353L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1365L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1285L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1297L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1379L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1391L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1403L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1415L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1329L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1341L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1353L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1365L));
   }
 }

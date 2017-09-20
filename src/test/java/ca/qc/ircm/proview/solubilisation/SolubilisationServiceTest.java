@@ -253,7 +253,7 @@ public class SolubilisationServiceTest {
     solubilisedSample = solubilisation.getTreatmentSamples().get(0);
     assertEquals("unit test", solubilisedSample.getComments());
     assertEquals((Long) 1L, solubilisedSample.getSample().getId());
-    assertEquals(SampleContainerType.SPOT, solubilisedSample.getContainer().getType());
+    assertEquals(SampleContainerType.WELL, solubilisedSample.getContainer().getType());
     assertEquals((Long) 128L, solubilisedSample.getContainer().getId());
     assertEquals("Methanol", solubilisedSample.getSolvent());
     assertEquals((Double) 20.0, solubilisedSample.getSolventVolume());
@@ -327,8 +327,8 @@ public class SolubilisationServiceTest {
     assertEquals(true, spot.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 992L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1004L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 992L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1004L));
   }
 
   @Test
@@ -362,8 +362,8 @@ public class SolubilisationServiceTest {
     assertEquals(4, bannedContainers.size());
     assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 44L));
     assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 43L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 993L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1005L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 993L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1005L));
   }
 
   @Test
@@ -401,10 +401,10 @@ public class SolubilisationServiceTest {
     assertEquals(6, bannedContainers.size());
     assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 45L));
     assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 46L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 994L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1006L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1018L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1030L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 994L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1006L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1018L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1030L));
   }
 
   @Test
@@ -446,12 +446,12 @@ public class SolubilisationServiceTest {
     assertEquals(8, bannedContainers.size());
     assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 47L));
     assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 48L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 995L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1007L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1088L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1100L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1112L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1124L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 995L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1007L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1088L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1100L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1112L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1124L));
   }
 
   @Test
@@ -497,13 +497,13 @@ public class SolubilisationServiceTest {
     assertEquals(10, bannedContainers.size());
     assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 49L));
     assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 50L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 996L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1008L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1020L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1032L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1089L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1101L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1113L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.SPOT, 1125L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 996L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1008L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1020L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1032L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1089L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1101L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1113L));
+    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1125L));
   }
 }

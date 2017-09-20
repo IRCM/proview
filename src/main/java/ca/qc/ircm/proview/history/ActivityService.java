@@ -455,7 +455,7 @@ public class ActivityService {
       case TUBE:
         Tube tube = (Tube) sampleContainer;
         return tube.getName();
-      case SPOT:
+      case WELL:
         Well spot = (Well) sampleContainer;
         String plateName = spot.getPlate().getName();
         String spotName = spot.getName();

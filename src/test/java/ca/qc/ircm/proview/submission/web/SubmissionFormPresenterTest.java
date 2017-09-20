@@ -21,7 +21,7 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.UNIPROT;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
-import static ca.qc.ircm.proview.sample.SampleContainerType.SPOT;
+import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.sample.SampleSupport.DRY;
 import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
 import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
@@ -1941,7 +1941,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
 
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
 
     assertTrue(view.plateNameField.isVisible());
     assertFalse(view.samplesGridLayout.isVisible());
@@ -3384,7 +3384,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     view.plateNameField.setValue("");
     uploadStructure();
     uploadGelImages();
@@ -3406,7 +3406,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3534,7 +3534,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     plateSampleNameCell(1, 1).setCellValue("");
     uploadStructure();
     uploadGelImages();
@@ -3555,7 +3555,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3574,7 +3574,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     plateSampleNameCell(1, 2).setCellValue("");
     uploadStructure();
     uploadGelImages();
@@ -3595,7 +3595,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3614,7 +3614,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     plateSampleNameCell(1, 2).setCellValue(sampleName1);
     uploadStructure();
     uploadGelImages();
@@ -4980,7 +4980,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -5052,7 +5052,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
     assertNotNull(sample.getOriginalContainer());
     SampleContainer container = sample.getOriginalContainer();
-    assertEquals(SPOT, container.getType());
+    assertEquals(WELL, container.getType());
     Well spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(0, spot.getRow());
@@ -5087,7 +5087,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
     assertNotNull(sample.getOriginalContainer());
     container = sample.getOriginalContainer();
-    assertEquals(SPOT, container.getType());
+    assertEquals(WELL, container.getType());
     spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(1, spot.getRow());
@@ -5415,7 +5415,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -5487,7 +5487,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
     assertNotNull(sample.getOriginalContainer());
     SampleContainer container = sample.getOriginalContainer();
-    assertEquals(SPOT, container.getType());
+    assertEquals(WELL, container.getType());
     Well spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(0, spot.getRow());
@@ -5522,7 +5522,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
     assertNotNull(sample.getOriginalContainer());
     container = sample.getOriginalContainer();
-    assertEquals(SPOT, container.getType());
+    assertEquals(WELL, container.getType());
     spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(1, spot.getRow());
@@ -5680,7 +5680,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -5752,7 +5752,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
     assertNotNull(sample.getOriginalContainer());
     SampleContainer container = sample.getOriginalContainer();
-    assertEquals(SPOT, container.getType());
+    assertEquals(WELL, container.getType());
     Well spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(0, spot.getRow());
@@ -5771,7 +5771,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
     assertNotNull(sample.getOriginalContainer());
     container = sample.getOriginalContainer();
-    assertEquals(SPOT, container.getType());
+    assertEquals(WELL, container.getType());
     spot = (Well) container;
     assertEquals(0, spot.getColumn());
     assertEquals(1, spot.getRow());
@@ -6031,7 +6031,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -6333,7 +6333,7 @@ public class SubmissionFormPresenterTest {
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
-    view.sampleContainerTypeOptions.setValue(SPOT);
+    view.sampleContainerTypeOptions.setValue(WELL);
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -6470,7 +6470,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(toxicity, view.toxicityField.getValue());
     assertEquals(lightSensitive, view.lightSensitiveField.getValue());
     assertEquals(storageTemperature, view.storageTemperatureOptions.getValue());
-    assertEquals(SampleContainerType.SPOT, view.sampleContainerTypeOptions.getValue());
+    assertEquals(SampleContainerType.WELL, view.sampleContainerTypeOptions.getValue());
     assertEquals((Integer) sampleCount, convert(integerConverter, view.sampleCountField));
     ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
     List<SubmissionSample> samples = new ArrayList<>(samplesDataProvider.getItems());
