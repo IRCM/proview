@@ -64,6 +64,7 @@ public class PlateComponentPresenter {
     view.spreadsheet.setFunctionBarVisible(false);
     view.spreadsheet.setSheetSelectionBarVisible(false);
     view.spreadsheet.getActiveSheet().getRow(0).getCell(0).setCellValue(resources.message(PLATE));
+    view.spreadsheet.setSelection(1, 1);
     plate = new Plate();
     plate.initWells();
     updatePlate();

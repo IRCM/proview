@@ -118,6 +118,8 @@ public class PlateComponentPresenterTest {
         }
       }
     }
+    assertEquals(1, view.spreadsheet.getSelectedCellReference().getCol());
+    assertEquals(1, view.spreadsheet.getSelectedCellReference().getRow());
   }
 
   @Test
@@ -189,6 +191,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void getSelectedWell_None() {
     presenter.init(view);
+    view.spreadsheet.getCellSelectionManager().clear();
 
     Well well = presenter.getSelectedWell();
 
