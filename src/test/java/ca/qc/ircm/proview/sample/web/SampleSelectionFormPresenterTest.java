@@ -146,7 +146,7 @@ public class SampleSelectionFormPresenterTest {
 
   @Test
   public void captions() {
-    presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
+    presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
 
@@ -220,7 +220,7 @@ public class SampleSelectionFormPresenterTest {
 
   @Test
   public void defaultSamples() {
-    presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
+    presenter.setItems(new ArrayList<>(selectedSamples));
     presenter.init(view);
 
     ListDataProvider<SubmissionSample> dataProvider = gridDataProvider(view.samplesGrid);
@@ -250,7 +250,7 @@ public class SampleSelectionFormPresenterTest {
 
   @Test
   public void select_Samples() {
-    presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
+    presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
     allSamples.forEach(sample -> view.samplesGrid.select(sample));
@@ -263,7 +263,7 @@ public class SampleSelectionFormPresenterTest {
 
   @Test
   public void select_Controls() {
-    presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
+    presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
     view.samplesGrid.deselectAll();
@@ -277,7 +277,7 @@ public class SampleSelectionFormPresenterTest {
 
   @Test
   public void select_SamplesAndControls() {
-    presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
+    presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
     view.controlsGrid.select(controls.get(0));
@@ -293,7 +293,7 @@ public class SampleSelectionFormPresenterTest {
 
   @Test
   public void select_None() {
-    presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
+    presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
     view.samplesGrid.deselectAll();
@@ -306,7 +306,7 @@ public class SampleSelectionFormPresenterTest {
 
   @Test
   public void clear() {
-    presenter.setSelectedSamples(new ArrayList<>(selectedSamples));
+    presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
     view.controlsGrid.select(controls.get(0));

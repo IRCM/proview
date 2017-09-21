@@ -803,13 +803,13 @@ public class SubmissionsViewPresenterTest {
     final Submission submission2 = find(submissions, 156L).orElse(null);
     view.submissionsGrid.select(submission1);
     view.submissionsGrid.select(submission2);
-    when(sampleSelectionWindow.getSelectedSamples())
+    when(sampleSelectionWindow.getItems())
         .thenReturn(new ArrayList<Sample>(submission2.getSamples()));
 
     view.selectSamplesButton.click();
 
     verify(sampleSelectionWindowProvider).get();
-    verify(sampleSelectionWindow).setSelectedSamples(samplesListCaptor.capture());
+    verify(sampleSelectionWindow).setItems(samplesListCaptor.capture());
     verify(sampleSelectionWindow).addSaveListener(samplesSaveListenerCaptor.capture());
     List<Sample> samples = samplesListCaptor.getValue();
     assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
@@ -817,7 +817,7 @@ public class SubmissionsViewPresenterTest {
     assertTrue(samples.containsAll(submission2.getSamples()));
     verify(view).addWindow(sampleSelectionWindow);
     samplesSaveListenerCaptor.getValue().saved(mock(SaveEvent.class));
-    verify(sampleSelectionWindow).getSelectedSamples();
+    verify(sampleSelectionWindow).getItems();
     verify(view).saveSamples(samplesCaptor.capture());
     Collection<Sample> savedSamples = samplesCaptor.getValue();
     assertEquals(submission2.getSamples().size(), savedSamples.size());

@@ -61,7 +61,11 @@ public class SampleSelectionForm extends SampleSelectionFormDesign implements Ba
     fireEvent(new SaveEvent<>(this, selectedSamples));
   }
 
-  public SampleSelectionFormPresenter getPresenter() {
-    return presenter;
+  public List<Sample> getItems() {
+    return presenter.getItems();
+  }
+
+  public void setItems(List<Sample> samples) {
+    presenter.setItems(samples);
   }
 }

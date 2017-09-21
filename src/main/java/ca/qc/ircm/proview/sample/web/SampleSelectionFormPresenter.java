@@ -163,17 +163,11 @@ public class SampleSelectionFormPresenter {
     view.fireSaveEvent(selectedSamples);
   }
 
-  public List<Sample> getSelectedSamples() {
+  List<Sample> getItems() {
     return selectedSamples;
   }
 
-  /**
-   * Sets selected samples.
-   *
-   * @param samples
-   *          selected samples
-   */
-  public void setSelectedSamples(List<Sample> samples) {
+  void setItems(List<Sample> samples) {
     selectedSamples = new ArrayList<>(samples);
     if (view != null) {
       updateSamples();

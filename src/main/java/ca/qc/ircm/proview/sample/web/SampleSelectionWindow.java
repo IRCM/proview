@@ -72,8 +72,8 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
     return view.addSaveListener(listener);
   }
 
-  public List<Sample> getSelectedSamples() {
-    return view.getPresenter().getSelectedSamples();
+  public List<Sample> getItems() {
+    return view.getItems();
   }
 
   /**
@@ -82,11 +82,11 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
    * @param samples
    *          selected samples
    */
-  public void setSelectedSamples(List<Sample> samples) {
+  public void setItems(List<Sample> samples) {
     if (isAttached()) {
-      view.getPresenter().setSelectedSamples(samples);
+      view.setItems(samples);
     } else {
-      addAttachListener(e -> view.getPresenter().setSelectedSamples(samples));
+      addAttachListener(e -> view.setItems(samples));
     }
   }
 }

@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.sample.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
@@ -47,6 +48,8 @@ public class SampleSelectionFormTest {
   private SampleSelectionFormPresenter presenter;
   @Mock
   private SaveListener<List<Sample>> saveListener;
+  @Mock
+  private List<Sample> selectedSamples;
   @Captor
   private ArgumentCaptor<SaveEvent<List<Sample>>> saveEventCaptor;
 
@@ -82,9 +85,18 @@ public class SampleSelectionFormTest {
   }
 
   @Test
-  public void getPresenter() {
-    SampleSelectionFormPresenter presenter = view.getPresenter();
+  public void getItems() {
+    when(presenter.getItems()).thenReturn(selectedSamples);
 
-    assertEquals(this.presenter, presenter);
+    assertEquals(selectedSamples, view.getItems());
+
+    verify(presenter).getItems();
+  }
+
+  @Test
+  public void setItems() {
+    view.setItems(selectedSamples);
+
+    verify(presenter).setItems(selectedSamples);
   }
 }
