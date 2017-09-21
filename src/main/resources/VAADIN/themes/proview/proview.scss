@@ -72,11 +72,6 @@
     margin-bottom: 0.5em;
   }
   
-  // Makes label appear as captions in form layout.
-  .v-label-formcaption {
-    font-weight: normal;
-  }
-  
   // Required mark for panels, layouts and buttons.
   .v-panel-caption-required::after {
     content: " *";
@@ -98,7 +93,7 @@
   .v-button-skip-row {
     margin-top: 43px;
   }
-  // Fake labels when button condition if false in a table / grid.
+  // Fake labels when button condition is false in a table / grid.
   .v-button-condition-false {
     cursor:default;
   }

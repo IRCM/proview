@@ -284,7 +284,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final int NULL_ID = -1;
   public static final String EXAMPLE = "example";
   public static final String FILL_BUTTON_STYLE = "skip-row";
-  public static final String FORM_CAPTION_STYLE = "formcaption";
   public static final String HIDE_REQUIRED_STYLE = "hide-required";
   private static final int MAX_SAMPLE_COUNT = 200;
   private static final int MAX_STANDARD_COUNT = 10;
@@ -1091,7 +1090,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         .withValidator(requiredTextIfVisible(view.otherSolventField)).withNullRepresentation("")
         .bind(OTHER_SOLVENT_PROPERTY);
     view.otherSolventNoteLabel.addStyleName(OTHER_SOLVENT_NOTE);
-    view.otherSolventNoteLabel.addStyleName(FORM_CAPTION_STYLE);
     view.otherSolventNoteLabel.setValue(resources.message(OTHER_SOLVENT_NOTE));
   }
 
