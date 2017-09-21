@@ -59,7 +59,21 @@ public class ControlForm extends ControlFormDesign implements BaseComponent {
     fireEvent(new SaveEvent<>(this, control));
   }
 
-  public ControlFormPresenter getPresenter() {
-    return presenter;
+  public Control getValue() {
+    return presenter.getValue();
+  }
+
+  public void setValue(Control control) {
+    presenter.setValue(control);
+  }
+
+  @Override
+  public boolean isReadOnly() {
+    return presenter.isReadOnly();
+  }
+
+  @Override
+  public void setReadOnly(boolean readOnly) {
+    presenter.setReadOnly(readOnly);
   }
 }

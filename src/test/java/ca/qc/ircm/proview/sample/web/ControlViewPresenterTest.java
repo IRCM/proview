@@ -61,8 +61,6 @@ public class ControlViewPresenterTest {
   @Mock
   private ControlForm form;
   @Mock
-  private ControlFormPresenter formPresenter;
-  @Mock
   private ControlService controlService;
   @Mock
   private AuthorizationService authorizationService;
@@ -89,7 +87,6 @@ public class ControlViewPresenterTest {
     presenter = new ControlViewPresenter(controlService, authorizationService, applicationName);
     view.headerLabel = new Label();
     view.form = form;
-    when(form.getPresenter()).thenReturn(formPresenter);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
@@ -114,39 +111,39 @@ public class ControlViewPresenterTest {
   }
 
   @Test
-  public void enter_Empty() {
+  public void enter_Empty_ReadOnly() {
     presenter.init(view);
     presenter.enter("");
 
-    verify(formPresenter, never()).setBean(any());
-    verify(formPresenter, never()).setEditable(true);
+    verify(form, never()).setValue(any());
+    verify(form).setReadOnly(true);
   }
 
   @Test
-  public void enter_Empty_Editable() {
+  public void enter_Empty() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.enter("");
 
-    verify(formPresenter, never()).setBean(any());
-    verify(formPresenter).setEditable(true);
+    verify(form, never()).setValue(any());
+    verify(form).setReadOnly(false);
+  }
+
+  @Test
+  public void enter_Control_ReadOnly() {
+    final Control control = entityManager.find(Control.class, 444L);
+    when(controlService.get(444L)).thenReturn(control);
+
+    presenter.init(view);
+    presenter.enter("444");
+
+    verify(controlService, atLeastOnce()).get(444L);
+    verify(form).setValue(control);
+    verify(form).setReadOnly(true);
   }
 
   @Test
   public void enter_Control() {
-    final Control control = entityManager.find(Control.class, 444L);
-    when(controlService.get(444L)).thenReturn(control);
-
-    presenter.init(view);
-    presenter.enter("444");
-
-    verify(controlService, atLeastOnce()).get(444L);
-    verify(formPresenter).setBean(control);
-    verify(formPresenter, never()).setEditable(true);
-  }
-
-  @Test
-  public void enter_Control_Editable() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     final Control control = entityManager.find(Control.class, 444L);
     when(controlService.get(444L)).thenReturn(control);
@@ -155,8 +152,8 @@ public class ControlViewPresenterTest {
     presenter.enter("444");
 
     verify(controlService, atLeastOnce()).get(444L);
-    verify(formPresenter).setBean(control);
-    verify(formPresenter).setEditable(true);
+    verify(form).setValue(control);
+    verify(form).setReadOnly(false);
   }
 
   @Test

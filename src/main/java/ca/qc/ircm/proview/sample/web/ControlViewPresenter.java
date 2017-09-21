@@ -71,7 +71,7 @@ public class ControlViewPresenter implements BinderValidator, SaveListener<Contr
   public void init(ControlView view) {
     logger.debug("Control view");
     this.view = view;
-    view.form.getPresenter().setEditable(authorizationService.hasAdminRole());
+    view.form.setReadOnly(!authorizationService.hasAdminRole());
     view.form.addSaveListener(this);
     final MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
@@ -105,7 +105,7 @@ public class ControlViewPresenter implements BinderValidator, SaveListener<Contr
       if (validateParameters(parameters)) {
         Long id = Long.valueOf(parameters);
         control = controlService.get(id);
-        view.form.getPresenter().setBean(control);
+        view.form.setValue(control);
       } else {
         view.showWarning(view.getResources().message(INVALID_SAMPLE));
       }

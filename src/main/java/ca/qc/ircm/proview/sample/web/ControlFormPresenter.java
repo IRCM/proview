@@ -91,7 +91,7 @@ public class ControlFormPresenter implements BinderValidator {
   private static final int MAX_STANDARD_COUNT = 10;
   private static final Logger logger = LoggerFactory.getLogger(ControlFormPresenter.class);
   private ControlForm view;
-  private boolean editable = false;
+  private boolean readOnly = false;
   private Binder<Control> sampleBinder = new BeanValidationBinder<>(Control.class);
   private Binder<ItemCount> standardCountBinder = new Binder<>(ItemCount.class);
   private ListDataProvider<Standard> standardsDataProvider =
@@ -131,7 +131,7 @@ public class ControlFormPresenter implements BinderValidator {
     view.saveButton.addStyleName(SAVE);
     view.saveButton.setCaption(resources.message(SAVE));
     view.saveButton.addClickListener(e -> save());
-    updateEditable();
+    updateReadOnly();
   }
 
   private void prepareSamplesComponents() {
@@ -213,7 +213,7 @@ public class ControlFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(STANDARD + "." + STANDARD_NAME);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
           .withNullRepresentation("").bind(STANDARD_NAME);
       standardBinders.put(standard, binder);
@@ -236,7 +236,7 @@ public class ControlFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(STANDARD + "." + STANDARD_QUANTITY);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       field.setPlaceholder(resources.message(STANDARD + "." + STANDARD_QUANTITY + "." + EXAMPLE));
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
           .withNullRepresentation("").bind(STANDARD_QUANTITY);
@@ -258,7 +258,7 @@ public class ControlFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(STANDARD + "." + STANDARD_COMMENTS);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       binder.forField(field).withNullRepresentation("").bind(STANDARD_COMMENTS);
       standardBinders.put(standard, binder);
       standardCommentsFields.put(standard, field);
@@ -301,25 +301,25 @@ public class ControlFormPresenter implements BinderValidator {
     standardsDataProvider.refreshAll();
   }
 
-  private void updateEditable() {
-    view.nameField.setReadOnly(!editable);
-    view.quantityField.setReadOnly(!editable);
-    view.volumeField.setReadOnly(!editable);
-    view.supportField.setReadOnly(!editable);
-    view.controlTypeField.setReadOnly(!editable);
-    view.standardCountField.setReadOnly(!editable);
-    view.fillStandardsButton.setVisible(editable);
-    view.saveButton.setVisible(editable);
+  private void updateReadOnly() {
+    view.nameField.setReadOnly(readOnly);
+    view.quantityField.setReadOnly(readOnly);
+    view.volumeField.setReadOnly(readOnly);
+    view.supportField.setReadOnly(readOnly);
+    view.controlTypeField.setReadOnly(readOnly);
+    view.standardCountField.setReadOnly(readOnly);
+    view.fillStandardsButton.setVisible(!readOnly);
+    view.saveButton.setVisible(!readOnly);
     if (!newControl()) {
-      view.justificationLayout.setVisible(editable);
+      view.justificationLayout.setVisible(!readOnly);
     }
     standardBinders.values().forEach(binder -> {
       binder.getBinding(STANDARD_NAME)
-          .ifPresent(binding -> binding.getField().setReadOnly(!editable));
+          .ifPresent(binding -> binding.getField().setReadOnly(readOnly));
       binder.getBinding(STANDARD_QUANTITY)
-          .ifPresent(binding -> binding.getField().setReadOnly(!editable));
+          .ifPresent(binding -> binding.getField().setReadOnly(readOnly));
       binder.getBinding(STANDARD_COMMENTS)
-          .ifPresent(binding -> binding.getField().setReadOnly(!editable));
+          .ifPresent(binding -> binding.getField().setReadOnly(readOnly));
     });
   }
 
@@ -388,26 +388,20 @@ public class ControlFormPresenter implements BinderValidator {
     }
   }
 
-  public boolean isEditable() {
-    return editable;
+  boolean isReadOnly() {
+    return readOnly;
   }
 
-  public void setEditable(boolean editable) {
-    this.editable = editable;
-    updateEditable();
+  void setReadOnly(boolean readOnly) {
+    this.readOnly = readOnly;
+    updateReadOnly();
   }
 
-  public Control getBean() {
+  Control getValue() {
     return sampleBinder.getBean();
   }
 
-  /**
-   * Sets control in presenter.
-   *
-   * @param control
-   *          control
-   */
-  public void setBean(Control control) {
+  void setValue(Control control) {
     if (control == null) {
       control = new Control();
       control.setSupport(SampleSupport.SOLUTION);
@@ -419,7 +413,7 @@ public class ControlFormPresenter implements BinderValidator {
     standardsDataProvider.getItems().addAll(control.getStandards());
     standardsDataProvider.refreshAll();
     sampleBinder.setBean(control);
-    updateEditable();
+    updateReadOnly();
   }
 
   private static class ItemCount {

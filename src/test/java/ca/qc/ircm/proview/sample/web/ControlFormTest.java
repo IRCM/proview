@@ -18,8 +18,11 @@
 package ca.qc.ircm.proview.sample.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -76,9 +79,50 @@ public class ControlFormTest {
   }
 
   @Test
-  public void getPresenter() {
-    ControlFormPresenter presenter = view.getPresenter();
+  public void getValue() {
+    when(presenter.getValue()).thenReturn(control);
 
-    assertEquals(this.presenter, presenter);
+    assertEquals(control, view.getValue());
+
+    verify(presenter).getValue();
+  }
+
+  @Test
+  public void setValue() {
+    view.setValue(control);
+
+    verify(presenter).setValue(control);
+  }
+
+  @Test
+  public void isReadOnly_True() {
+    when(presenter.isReadOnly()).thenReturn(true);
+
+    assertTrue(view.isReadOnly());
+
+    verify(presenter).isReadOnly();
+  }
+
+  @Test
+  public void isReadOnly_False() {
+    when(presenter.isReadOnly()).thenReturn(false);
+
+    assertFalse(view.isReadOnly());
+
+    verify(presenter).isReadOnly();
+  }
+
+  @Test
+  public void setReadOnly_True() {
+    view.setReadOnly(true);
+
+    verify(presenter).setReadOnly(true);
+  }
+
+  @Test
+  public void setReadOnly_False() {
+    view.setReadOnly(false);
+
+    verify(presenter).setReadOnly(false);
   }
 }

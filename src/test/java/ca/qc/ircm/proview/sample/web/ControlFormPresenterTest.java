@@ -322,8 +322,9 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void editable_False() {
+  public void readOnly_True() {
     presenter.init(view);
+    presenter.setReadOnly(true);
 
     assertTrue(view.nameField.isReadOnly());
     assertTrue(view.supportField.isReadOnly());
@@ -350,9 +351,9 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void editable_False_AfterStandards() {
+  public void readOnly_True_AfterStandards() {
     presenter.init(view);
-    presenter.setEditable(true);
+    presenter.setReadOnly(false);
 
     Standard standard = new Standard();
     if (dataProvider(view.standardsGrid).getItems().size() < 1) {
@@ -364,7 +365,7 @@ public class ControlFormPresenterTest {
         .getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
     final TextField standardCommentsField = (TextField) view.standardsGrid
         .getColumn(STANDARD_COMMENTS).getValueProvider().apply(standard);
-    presenter.setEditable(false);
+    presenter.setReadOnly(true);
     assertTrue(view.nameField.isReadOnly());
     assertTrue(view.supportField.isReadOnly());
     assertTrue(view.quantityField.isReadOnly());
@@ -380,10 +381,11 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void editable_False_Update() {
+  public void readOnly_True_Update() {
     presenter.init(view);
+    presenter.setReadOnly(true);
     Control control = entityManager.find(Control.class, 444L);
-    presenter.setBean(control);
+    presenter.setValue(control);
 
     assertTrue(view.nameField.isReadOnly());
     assertTrue(view.supportField.isReadOnly());
@@ -410,9 +412,8 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void editable_True() {
+  public void readOnly_False() {
     presenter.init(view);
-    presenter.setEditable(true);
 
     assertFalse(view.nameField.isReadOnly());
     assertFalse(view.supportField.isReadOnly());
@@ -439,8 +440,9 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void editable_True_AfterStandards() {
+  public void readOnly_False_AfterStandards() {
     presenter.init(view);
+    presenter.setReadOnly(true);
 
     Standard standard = new Standard();
     if (dataProvider(view.standardsGrid).getItems().size() < 1) {
@@ -452,7 +454,7 @@ public class ControlFormPresenterTest {
         .getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
     final TextField standardCommentsField = (TextField) view.standardsGrid
         .getColumn(STANDARD_COMMENTS).getValueProvider().apply(standard);
-    presenter.setEditable(true);
+    presenter.setReadOnly(false);
     assertFalse(view.nameField.isReadOnly());
     assertFalse(view.supportField.isReadOnly());
     assertFalse(view.quantityField.isReadOnly());
@@ -468,11 +470,10 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void editable_True_Update() {
+  public void readOnly_False_Update() {
     presenter.init(view);
-    presenter.setEditable(true);
     Control control = entityManager.find(Control.class, 444L);
-    presenter.setBean(control);
+    presenter.setValue(control);
 
     assertFalse(view.nameField.isReadOnly());
     assertFalse(view.supportField.isReadOnly());
@@ -502,7 +503,6 @@ public class ControlFormPresenterTest {
   public void updateStandardCount() {
     presenter.init(view);
     assertFalse(view.standardsTableLayout.isVisible());
-    presenter.setEditable(true);
 
     view.standardCountField.setValue("2");
 
@@ -527,7 +527,6 @@ public class ControlFormPresenterTest {
   @Test
   public void fillStandards() {
     presenter.init(view);
-    presenter.setEditable(true);
 
     view.standardCountField.setValue("3");
 
@@ -563,7 +562,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_MissingName() {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     view.nameField.setValue("");
 
@@ -579,7 +577,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_InvalidName() {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     view.nameField.setValue(name + "?");
 
@@ -595,7 +592,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_InvalidSampleVolume() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     view.volumeField.setValue("a");
 
@@ -611,7 +607,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_BelowZeroSampleVolume() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     view.volumeField.setValue("-1");
 
@@ -626,7 +621,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_MissingStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     view.standardCountField.setValue("");
 
@@ -639,7 +633,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_InvalidStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     view.standardCountField.setValue("a");
 
@@ -655,7 +648,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_BelowZeroStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     view.standardCountField.setValue("-1");
 
@@ -671,7 +663,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_AboveMaxStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     view.standardCountField.setValue("200");
 
@@ -687,7 +678,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_DoubleStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     view.standardCountField.setValue("1.2");
 
@@ -703,7 +693,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_MissingStandardName_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     standardNameField1.setValue("");
 
@@ -719,7 +708,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_MissingStandardName_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     standardNameField2.setValue("");
 
@@ -735,7 +723,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_MissingStandardQuantity_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     standardQuantityField1.setValue("");
 
@@ -751,7 +738,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_MissingStandardQuantity_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
     standardQuantityField2.setValue("");
 
@@ -768,8 +754,7 @@ public class ControlFormPresenterTest {
   public void save_MissingJustification() throws Throwable {
     Control control = entityManager.find(Control.class, 444L);
     presenter.init(view);
-    presenter.setEditable(true);
-    presenter.setBean(control);
+    presenter.setValue(control);
     setFields();
 
     view.saveButton.click();
@@ -784,7 +769,6 @@ public class ControlFormPresenterTest {
   @Test
   public void save_Insert() {
     presenter.init(view);
-    presenter.setEditable(true);
     setFields();
 
     view.saveButton.click();
@@ -813,8 +797,7 @@ public class ControlFormPresenterTest {
   public void save_Update() {
     Control control = entityManager.find(Control.class, 444L);
     presenter.init(view);
-    presenter.setEditable(true);
-    presenter.setBean(control);
+    presenter.setValue(control);
     setFields();
     view.justificationField.setValue(justification);
 
@@ -855,8 +838,7 @@ public class ControlFormPresenterTest {
     standard.setComments("com2");
     control.getStandards().add(standard);
     presenter.init(view);
-    presenter.setEditable(true);
-    presenter.setBean(control);
+    presenter.setValue(control);
 
     assertEquals(control.getName(), view.nameField.getValue());
     assertEquals(control.getSupport(), view.supportField.getValue());
