@@ -60,9 +60,9 @@ public class PlateComponentPresenter {
     this.view = view;
     view.addStyleName(PLATE);
     final MessageResource resources = view.getResources();
+    view.spreadsheet.addStyleName(PLATE);
     view.spreadsheet.setFunctionBarVisible(false);
     view.spreadsheet.setSheetSelectionBarVisible(false);
-    view.spreadsheet.setRowColHeadingsVisible(false);
     view.spreadsheet.getActiveSheet().getRow(0).getCell(0).setCellValue(resources.message(PLATE));
     plate = new Plate();
     plate.initWells();

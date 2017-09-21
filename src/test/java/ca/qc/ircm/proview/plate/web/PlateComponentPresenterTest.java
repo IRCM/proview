@@ -87,6 +87,7 @@ public class PlateComponentPresenterTest {
     presenter.init(view);
 
     verify(view).addStyleName(PLATE);
+    assertTrue(view.spreadsheet.getStyleName().contains(PLATE));
   }
 
   @Test
@@ -95,7 +96,7 @@ public class PlateComponentPresenterTest {
 
     assertFalse(view.spreadsheet.isFunctionBarVisible());
     assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
-    assertFalse(view.spreadsheet.isRowColHeadingsVisible());
+    assertTrue(view.spreadsheet.isRowColHeadingsVisible());
     Plate plate = presenter.getPlate();
     assertEquals(plate.getRowCount() + 1, view.spreadsheet.getRows());
     assertEquals(plate.getColumnCount() + 1, view.spreadsheet.getColumns());
@@ -436,7 +437,7 @@ public class PlateComponentPresenterTest {
         .findAny().isPresent());
     assertFalse(view.spreadsheet.isFunctionBarVisible());
     assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
-    assertFalse(view.spreadsheet.isRowColHeadingsVisible());
+    assertTrue(view.spreadsheet.isRowColHeadingsVisible());
     Sheet sheet = view.spreadsheet.getActiveSheet();
     for (int rowIndex = 0; rowIndex < plate.getRowCount() + 1; rowIndex++) {
       Row row = sheet.getRow(rowIndex);
@@ -472,7 +473,7 @@ public class PlateComponentPresenterTest {
         .findAny().isPresent());
     assertFalse(view.spreadsheet.isFunctionBarVisible());
     assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
-    assertFalse(view.spreadsheet.isRowColHeadingsVisible());
+    assertTrue(view.spreadsheet.isRowColHeadingsVisible());
     Sheet sheet = view.spreadsheet.getActiveSheet();
     for (int rowIndex = 0; rowIndex < plate.getRowCount() + 1; rowIndex++) {
       Row row = sheet.getRow(rowIndex);

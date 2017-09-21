@@ -128,9 +128,14 @@
   }
   
   // Plate.
-  .v-layout.plate-well.selected, .v-plate-layout-well.selected {
-    background-color: $v-selection-color;
-  }
+  .v-spreadsheet-plate .top-right-pane .ch, .v-spreadsheet-plate .corner {
+  	height: 15px;
+  	font-size: 0;
+  } 
+  .v-spreadsheet-plate .bottom-left-pane .rh, .v-spreadsheet-plate .corner {
+  	width: 15px;
+  	font-size: 0;
+  } 
 
   // Instant filter.
   .instant-filter .v-popupbutton {
