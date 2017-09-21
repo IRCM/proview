@@ -397,7 +397,7 @@ public class SubmissionsViewPresenter {
 
   private void viewSubmissionResults(Submission submission) {
     SubmissionAnalysesWindow window = submissionAnalysesWindowProvider.get();
-    window.setSubmission(submission);
+    window.setValue(submission);
     window.center();
     view.addWindow(window);
   }

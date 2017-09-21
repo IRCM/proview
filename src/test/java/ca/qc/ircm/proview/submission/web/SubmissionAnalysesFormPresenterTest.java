@@ -138,7 +138,7 @@ public class SubmissionAnalysesFormPresenterTest {
   @Test
   public void components() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     verify(msAnalysisService).all(submission);
     assertEquals(2, view.analysesLayout.getComponentCount());
@@ -147,7 +147,7 @@ public class SubmissionAnalysesFormPresenterTest {
   @Test
   public void styles() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     for (Panel analysisPanel : viewPanels()) {
       assertTrue(analysisPanel.getStyleName().contains(ANALYSIS));
@@ -162,7 +162,7 @@ public class SubmissionAnalysesFormPresenterTest {
   @Test
   public void captions() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
     List<Panel> panels = viewPanels();
@@ -178,7 +178,7 @@ public class SubmissionAnalysesFormPresenterTest {
   @Test
   public void msAnalysisGrids() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     for (Grid<Acquisition> acquisitionsGrid : viewGrids()) {
       List<Column<Acquisition, ?>> columns = acquisitionsGrid.getColumns();
@@ -195,7 +195,7 @@ public class SubmissionAnalysesFormPresenterTest {
   @Test
   public void dataAnalysesGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     final DataAnalysis dataAnalysis1 = dataAnalyses.get(0);
     final DataAnalysis dataAnalysis2 = dataAnalyses.get(1);
@@ -263,7 +263,7 @@ public class SubmissionAnalysesFormPresenterTest {
     when(dataAnalysisService.all(any(Submission.class))).thenReturn(Collections.emptyList());
 
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertFalse(view.dataAnalysesPanel.isVisible());
   }

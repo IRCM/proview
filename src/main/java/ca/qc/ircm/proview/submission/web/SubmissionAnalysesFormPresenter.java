@@ -159,11 +159,11 @@ public class SubmissionAnalysesFormPresenter {
     layout.addComponent(grid);
   }
 
-  Submission getBean() {
+  Submission getValue() {
     return submission;
   }
 
-  void setBean(Submission submission) {
+  void setValue(Submission submission) {
     this.submission = submission;
     List<MsAnalysis> analyses = msAnalysisService.all(submission);
     view.analysesLayout.removeAllComponents();

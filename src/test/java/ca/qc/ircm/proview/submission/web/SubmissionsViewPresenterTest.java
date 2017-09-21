@@ -759,7 +759,7 @@ public class SubmissionsViewPresenterTest {
     button.click();
 
     verify(submissionAnalysesWindowProvider).get();
-    verify(submissionAnalysesWindow).setSubmission(submission);
+    verify(submissionAnalysesWindow).setValue(submission);
     verify(submissionAnalysesWindow).center();
     verify(view).addWindow(submissionAnalysesWindow);
   }
