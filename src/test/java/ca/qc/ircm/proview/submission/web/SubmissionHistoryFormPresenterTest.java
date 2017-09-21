@@ -174,7 +174,7 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
   @Test
   public void styles() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertTrue(view.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
     assertTrue(view.samples.getStyleName().contains(SAMPLES));
@@ -185,7 +185,7 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
   @Test
   public void captions() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
     assertEquals(resources.message(ACTIVITIES_PANEL), view.activitiesPanel.getCaption());
@@ -194,7 +194,7 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
   @Test
   public void samplesGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(2, view.samples.getColumns().size());
     assertEquals(SAMPLE_NAME, view.samples.getColumns().get(0).getId());
@@ -220,7 +220,7 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
   @Test
   public void activitiesGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     assertEquals(5, view.activities.getColumns().size());

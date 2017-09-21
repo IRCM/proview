@@ -411,7 +411,7 @@ public class SubmissionsViewPresenter {
 
   private void viewSubmissionHistory(Submission submission) {
     SubmissionHistoryWindow window = submissionHistoryWindowProvider.get();
-    window.setSubmission(submission);
+    window.setValue(submission);
     window.center();
     view.addWindow(window);
   }

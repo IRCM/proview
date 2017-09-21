@@ -41,11 +41,11 @@ public class SubmissionHistoryForm extends SubmissionHistoryFormDesign implement
     presenter.init(this);
   }
 
-  public Submission getBean() {
-    return presenter.getBean();
+  public Submission getValue() {
+    return presenter.getValue();
   }
 
-  public void setBean(Submission submission) {
-    presenter.setBean(submission);
+  public void setValue(Submission submission) {
+    presenter.setValue(submission);
   }
 }

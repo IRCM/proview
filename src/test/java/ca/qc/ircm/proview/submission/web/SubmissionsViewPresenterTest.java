@@ -789,7 +789,7 @@ public class SubmissionsViewPresenterTest {
     button.click();
 
     verify(submissionHistoryWindowProvider).get();
-    verify(submissionHistoryWindow).setSubmission(submission);
+    verify(submissionHistoryWindow).setValue(submission);
     verify(submissionHistoryWindow).center();
     verify(view).addWindow(submissionHistoryWindow);
   }

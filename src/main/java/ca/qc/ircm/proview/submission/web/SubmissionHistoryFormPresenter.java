@@ -134,11 +134,11 @@ public class SubmissionHistoryFormPresenter implements TimeConverter {
     return label;
   }
 
-  Submission getBean() {
+  Submission getValue() {
     return submission;
   }
 
-  void setBean(Submission submission) {
+  void setValue(Submission submission) {
     this.submission = submission;
     view.samples.setItems(submission != null ? submission.getSamples() : Collections.emptyList());
     view.activities.setItems(activityService.all(submission));
