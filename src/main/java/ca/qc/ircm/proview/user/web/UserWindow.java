@@ -68,7 +68,7 @@ public class UserWindow extends Window implements BaseComponent {
    * @param user
    *          user
    */
-  public void setUser(User user) {
+  public void setValue(User user) {
     if (isAttached()) {
       updateUser(user);
     } else {

@@ -471,7 +471,7 @@ public class AccessViewPresenterTest {
     button.click();
 
     verify(userWindowProvider).get();
-    verify(userWindow).setUser(user);
+    verify(userWindow).setValue(user);
     verify(userWindow).center();
     verify(view).addWindow(userWindow);
   }

@@ -156,11 +156,11 @@ public class LocalDateFilterComponentPresenter {
     view.fireSaveEvent(range);
   }
 
-  Range<LocalDate> getRange() {
+  Range<LocalDate> getValue() {
     return range;
   }
 
-  void setRange(Range<LocalDate> range) {
+  void setValue(Range<LocalDate> range) {
     this.range = range;
     rangeChanged();
   }

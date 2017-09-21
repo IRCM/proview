@@ -272,7 +272,7 @@ public class AccessViewPresenter {
   private void viewUser(User user) {
     UserWindow userWindow = userWindowProvider.get();
     userWindow.center();
-    userWindow.setUser(user);
+    userWindow.setValue(user);
     view.addWindow(userWindow);
   }
 

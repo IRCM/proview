@@ -133,7 +133,7 @@ public class LocalDateFilterComponentPresenterTest {
 
   @Test
   public void defaultValues() {
-    assertEquals(Range.all(), presenter.getRange());
+    assertEquals(Range.all(), presenter.getValue());
     assertNull(view.from.getValue());
     assertNull(view.to.getValue());
   }
@@ -144,11 +144,11 @@ public class LocalDateFilterComponentPresenterTest {
 
     view.set.click();
 
-    assertNotNull(presenter.getRange());
-    assertTrue(presenter.getRange().hasLowerBound());
-    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
-    assertTrue(presenter.getRange().hasUpperBound());
-    assertEquals(toDate, presenter.getRange().upperEndpoint());
+    assertNotNull(presenter.getValue());
+    assertTrue(presenter.getValue().hasLowerBound());
+    assertEquals(fromDate, presenter.getValue().lowerEndpoint());
+    assertTrue(presenter.getValue().hasUpperBound());
+    assertEquals(toDate, presenter.getValue().upperEndpoint());
     assertEquals(intervalCaption(), view.filter.getCaption());
     verify(view).fireSaveEvent(Range.closed(fromDate, toDate));
   }
@@ -159,10 +159,10 @@ public class LocalDateFilterComponentPresenterTest {
 
     view.set.click();
 
-    assertNotNull(presenter.getRange());
-    assertFalse(presenter.getRange().hasLowerBound());
-    assertTrue(presenter.getRange().hasUpperBound());
-    assertEquals(toDate, presenter.getRange().upperEndpoint());
+    assertNotNull(presenter.getValue());
+    assertFalse(presenter.getValue().hasLowerBound());
+    assertTrue(presenter.getValue().hasUpperBound());
+    assertEquals(toDate, presenter.getValue().upperEndpoint());
     assertEquals(intervalCaption(null, toDate), view.filter.getCaption());
     verify(view).fireSaveEvent(Range.atMost(toDate));
   }
@@ -173,10 +173,10 @@ public class LocalDateFilterComponentPresenterTest {
 
     view.set.click();
 
-    assertNotNull(presenter.getRange());
-    assertTrue(presenter.getRange().hasLowerBound());
-    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
-    assertFalse(presenter.getRange().hasUpperBound());
+    assertNotNull(presenter.getValue());
+    assertTrue(presenter.getValue().hasLowerBound());
+    assertEquals(fromDate, presenter.getValue().lowerEndpoint());
+    assertFalse(presenter.getValue().hasUpperBound());
     assertEquals(intervalCaption(fromDate, null), view.filter.getCaption());
     verify(view).fireSaveEvent(Range.atLeast(fromDate));
   }
@@ -185,9 +185,9 @@ public class LocalDateFilterComponentPresenterTest {
   public void set_NullFromTo() {
     view.set.click();
 
-    assertNotNull(presenter.getRange());
-    assertFalse(presenter.getRange().hasLowerBound());
-    assertFalse(presenter.getRange().hasUpperBound());
+    assertNotNull(presenter.getValue());
+    assertFalse(presenter.getValue().hasLowerBound());
+    assertFalse(presenter.getValue().hasUpperBound());
     assertEquals(resources.message(ALL), view.filter.getCaption());
     verify(view).fireSaveEvent(Range.all());
   }
@@ -199,11 +199,11 @@ public class LocalDateFilterComponentPresenterTest {
 
     view.set.click();
 
-    assertNotNull(presenter.getRange());
-    assertTrue(presenter.getRange().hasLowerBound());
-    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
-    assertTrue(presenter.getRange().hasUpperBound());
-    assertEquals(fromDate, presenter.getRange().upperEndpoint());
+    assertNotNull(presenter.getValue());
+    assertTrue(presenter.getValue().hasLowerBound());
+    assertEquals(fromDate, presenter.getValue().lowerEndpoint());
+    assertTrue(presenter.getValue().hasUpperBound());
+    assertEquals(fromDate, presenter.getValue().upperEndpoint());
     assertEquals(intervalCaption(fromDate, fromDate), view.filter.getCaption());
     verify(view).fireSaveEvent(Range.singleton(fromDate));
   }
@@ -216,10 +216,10 @@ public class LocalDateFilterComponentPresenterTest {
 
     view.set.click();
 
-    assertNotNull(presenter.getRange());
-    assertFalse(presenter.getRange().hasLowerBound());
-    assertTrue(presenter.getRange().hasUpperBound());
-    assertEquals(toDate, presenter.getRange().upperEndpoint());
+    assertNotNull(presenter.getValue());
+    assertFalse(presenter.getValue().hasLowerBound());
+    assertTrue(presenter.getValue().hasUpperBound());
+    assertEquals(toDate, presenter.getValue().upperEndpoint());
     assertEquals(intervalCaption(null, toDate), view.filter.getCaption());
     verify(view).fireSaveEvent(Range.atMost(toDate));
   }
@@ -230,7 +230,7 @@ public class LocalDateFilterComponentPresenterTest {
 
     view.clear.click();
 
-    assertEquals(Range.all(), presenter.getRange());
+    assertEquals(Range.all(), presenter.getValue());
     assertEquals(resources.message(ALL), view.filter.getCaption());
     assertNull(view.from.getValue());
     assertNull(view.to.getValue());
@@ -243,17 +243,17 @@ public class LocalDateFilterComponentPresenterTest {
 
     view.set.click();
 
-    assertNotNull(presenter.getRange());
-    assertTrue(presenter.getRange().hasLowerBound());
-    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
-    assertTrue(presenter.getRange().hasUpperBound());
-    assertEquals(toDate, presenter.getRange().upperEndpoint());
+    assertNotNull(presenter.getValue());
+    assertTrue(presenter.getValue().hasLowerBound());
+    assertEquals(fromDate, presenter.getValue().lowerEndpoint());
+    assertTrue(presenter.getValue().hasUpperBound());
+    assertEquals(toDate, presenter.getValue().upperEndpoint());
     assertEquals(intervalCaption(), view.filter.getCaption());
     verify(view).fireSaveEvent(Range.closed(fromDate, toDate));
 
     view.clear.click();
 
-    assertEquals(Range.all(), presenter.getRange());
+    assertEquals(Range.all(), presenter.getValue());
     assertEquals(resources.message(ALL), view.filter.getCaption());
     assertNull(view.from.getValue());
     assertNull(view.to.getValue());
@@ -261,27 +261,27 @@ public class LocalDateFilterComponentPresenterTest {
   }
 
   @Test
-  public void getRange() {
+  public void getValue() {
     setFields();
 
     view.set.click();
 
-    assertNotNull(presenter.getRange());
-    assertTrue(presenter.getRange().hasLowerBound());
-    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
-    assertTrue(presenter.getRange().hasUpperBound());
-    assertEquals(toDate, presenter.getRange().upperEndpoint());
+    assertNotNull(presenter.getValue());
+    assertTrue(presenter.getValue().hasLowerBound());
+    assertEquals(fromDate, presenter.getValue().lowerEndpoint());
+    assertTrue(presenter.getValue().hasUpperBound());
+    assertEquals(toDate, presenter.getValue().upperEndpoint());
   }
 
   @Test
   public void setRange() {
-    presenter.setRange(Range.closed(fromDate, toDate));
+    presenter.setValue(Range.closed(fromDate, toDate));
 
-    assertNotNull(presenter.getRange());
-    assertTrue(presenter.getRange().hasLowerBound());
-    assertEquals(fromDate, presenter.getRange().lowerEndpoint());
-    assertTrue(presenter.getRange().hasUpperBound());
-    assertEquals(toDate, presenter.getRange().upperEndpoint());
+    assertNotNull(presenter.getValue());
+    assertTrue(presenter.getValue().hasLowerBound());
+    assertEquals(fromDate, presenter.getValue().lowerEndpoint());
+    assertTrue(presenter.getValue().hasUpperBound());
+    assertEquals(toDate, presenter.getValue().upperEndpoint());
     assertEquals(fromDate, view.from.getValue());
     assertEquals(toDate, view.to.getValue());
     assertEquals(intervalCaption(), view.filter.getCaption());
@@ -290,11 +290,11 @@ public class LocalDateFilterComponentPresenterTest {
 
   @Test
   public void setRange_All() {
-    presenter.setRange(Range.all());
+    presenter.setValue(Range.all());
 
-    assertNotNull(presenter.getRange());
-    assertFalse(presenter.getRange().hasLowerBound());
-    assertFalse(presenter.getRange().hasUpperBound());
+    assertNotNull(presenter.getValue());
+    assertFalse(presenter.getValue().hasLowerBound());
+    assertFalse(presenter.getValue().hasUpperBound());
     assertNull(view.from.getValue());
     assertNull(view.to.getValue());
     assertEquals(resources.message(ALL), view.filter.getCaption());

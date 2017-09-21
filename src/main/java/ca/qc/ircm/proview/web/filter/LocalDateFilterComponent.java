@@ -81,11 +81,11 @@ public class LocalDateFilterComponent extends LocalDateFilterComponentDesign
     fireEvent(new SaveEvent<>(this, range));
   }
 
-  public Range<LocalDate> getRange() {
-    return presenter.getRange();
+  public Range<LocalDate> getValue() {
+    return presenter.getValue();
   }
 
-  public void setRange(Range<LocalDate> range) {
-    presenter.setRange(range);
+  public void setValue(Range<LocalDate> range) {
+    presenter.setValue(range);
   }
 }

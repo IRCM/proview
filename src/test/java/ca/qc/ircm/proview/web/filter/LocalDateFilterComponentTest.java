@@ -109,22 +109,22 @@ public class LocalDateFilterComponentTest {
   }
 
   @Test
-  public void getRange() {
+  public void getValue() {
     Range<LocalDate> range = Range.atLeast(LocalDate.now());
-    when(presenter.getRange()).thenReturn(range);
+    when(presenter.getValue()).thenReturn(range);
 
-    Range<LocalDate> viewRange = view.getRange();
+    Range<LocalDate> viewRange = view.getValue();
 
-    verify(presenter).getRange();
+    verify(presenter).getValue();
     assertSame(range, viewRange);
   }
 
   @Test
-  public void setRange() {
+  public void setValue() {
     Range<LocalDate> range = Range.atLeast(LocalDate.now());
 
-    view.setRange(range);
+    view.setValue(range);
 
-    verify(presenter).setRange(range);
+    verify(presenter).setValue(range);
   }
 }
