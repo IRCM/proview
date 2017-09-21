@@ -26,6 +26,8 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -33,6 +35,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -46,6 +50,10 @@ public class PlateComponentTest {
   private PlateComponent view;
   @Mock
   private PlateComponentPresenter presenter;
+  @Mock
+  private ValueChangeListener<Plate> valueChangeListener;
+  @Captor
+  private ArgumentCaptor<ValueChangeEvent<Plate>> valueChangeEventCaptor;
   private Plate plate;
 
   /**
@@ -144,19 +152,19 @@ public class PlateComponentTest {
   }
 
   @Test
-  public void getPlate() {
-    when(presenter.getPlate()).thenReturn(plate);
+  public void getValue() {
+    when(presenter.getValue()).thenReturn(plate);
 
-    assertEquals(plate, view.getPlate());
+    assertEquals(plate, view.getValue());
 
-    verify(presenter).getPlate();
+    verify(presenter).getValue();
   }
 
   @Test
-  public void setPlate() {
-    view.setPlate(plate);
+  public void setValue() {
+    view.setValue(plate);
 
-    verify(presenter).setPlate(plate);
+    verify(presenter).setValue(plate);
   }
 
   @Test

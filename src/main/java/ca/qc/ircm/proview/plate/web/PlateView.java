@@ -51,7 +51,7 @@ public class PlateView extends PlateViewDesign implements BaseView {
   public void attach() {
     super.attach();
     Plate plate = plateService.get(1L);
-    plateComponent.setPlate(plate);
+    plateComponent.setValue(plate);
     plateComponent.setMultiSelect(true);
     plateComponentPanel.setCaption(plate.getName());
   }

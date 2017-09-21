@@ -284,7 +284,7 @@ public class TransferViewPresenter implements BinderValidator {
       List<Well> wells =
           samples.stream().flatMap(sample -> wellService.location(sample, plate).stream())
               .collect(Collectors.toList());
-      view.sourcePlateForm.setPlate(plate);
+      view.sourcePlateForm.setValue(plate);
       view.sourcePlateForm.setSelectedWells(wells.stream()
           .filter(w -> w.getPlate().getId().equals(plate.getId())).collect(Collectors.toList()));
     }
@@ -308,7 +308,7 @@ public class TransferViewPresenter implements BinderValidator {
 
     view.destinationPlatePanel.setVisible(plate != null);
     view.destinationPlatePanel.setCaption(plate.getName());
-    view.destinationPlateForm.setPlate(plate);
+    view.destinationPlateForm.setValue(plate);
   }
 
   private void updateSamples() {
@@ -410,7 +410,7 @@ public class TransferViewPresenter implements BinderValidator {
   private ValidationResult validateDestinationPlate() {
     view.destinationPlatesField.setComponentError(null);
     MessageResource resources = view.getResources();
-    Plate plate = view.destinationPlateForm.getPlate();
+    Plate plate = view.destinationPlateForm.getValue();
     Well well = view.destinationPlateForm.getSelectedWell();
     if (well == null) {
       logger.debug("No selection in destination plate");
@@ -459,7 +459,7 @@ public class TransferViewPresenter implements BinderValidator {
           .map(sample -> destinationTubeBinders.get(sample).getBean()).collect(Collectors.toList());
       return new ArrayList<>(destinations);
     } else {
-      Plate plate = view.destinationPlateForm.getPlate();
+      Plate plate = view.destinationPlateForm.getValue();
       Well well = view.destinationPlateForm.getSelectedWell();
       int column = well.getColumn();
       int row = well.getRow();

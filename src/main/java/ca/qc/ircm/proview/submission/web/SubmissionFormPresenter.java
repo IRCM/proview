@@ -1529,7 +1529,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private List<String> plateSampleNames() {
-    return view.plateComponent.getPlate().getWells().stream()
+    return view.plateComponent.getValue().getWells().stream()
         .filter(well -> well.getSample() != null).map(well -> well.getSample().getName())
         .filter(name -> name != null && !name.isEmpty()).collect(Collectors.toList());
   }
@@ -1814,7 +1814,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   private List<SubmissionSample> samplesFromPlate(Submission submission) {
     List<SubmissionSample> samples = new ArrayList<>();
     SubmissionSample firstSample = firstSampleBinder.getBean();
-    view.plateComponent.getPlate().getWells().forEach(well -> {
+    view.plateComponent.getValue().getWells().forEach(well -> {
       if (well.getSample() != null && well.getSample().getName() != null
           && !well.getSample().getName().isEmpty()) {
         SubmissionSample sample = new SubmissionSample();
@@ -1905,10 +1905,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     if (container instanceof Well) {
       Well containerAsWell = (Well) container;
       plateBinder.setBean(containerAsWell.getPlate());
-      view.plateComponent.setPlate(containerAsWell.getPlate());
+      view.plateComponent.setValue(containerAsWell.getPlate());
     } else {
       plateBinder.setBean(new Plate());
-      view.plateComponent.setPlate(new Plate());
+      view.plateComponent.setValue(new Plate());
     }
     Service service = submission.getService();
     if (service != null && !service.available) {

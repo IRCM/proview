@@ -111,8 +111,8 @@ public class PlateComponent extends CustomComponent implements BaseComponent {
     presenter.setSelectedWells(selectedWells);
   }
 
-  public Plate getPlate() {
-    return presenter.getPlate();
+  public Plate getValue() {
+    return presenter.getValue();
   }
 
   /**
@@ -121,8 +121,8 @@ public class PlateComponent extends CustomComponent implements BaseComponent {
    * @param plate
    *          plate, cannot be null
    */
-  public void setPlate(Plate plate) {
-    presenter.setPlate(plate);
+  public void setValue(Plate plate) {
+    presenter.setValue(plate);
   }
 
   @Override

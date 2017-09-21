@@ -464,7 +464,7 @@ public class SubmissionFormPresenterTest {
     when(plateService.nameAvailable(any())).thenReturn(true);
     plate = new Plate();
     plate.initWells();
-    when(view.plateComponent.getPlate()).thenReturn(plate);
+    when(view.plateComponent.getValue()).thenReturn(plate);
   }
 
   private void setFields() {
@@ -6458,7 +6458,7 @@ public class SubmissionFormPresenterTest {
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
     assertEquals(plateName, view.plateNameField.getValue());
-    verify(view.plateComponent).setPlate(plate);
+    verify(view.plateComponent).setValue(plate);
     assertEquals(experience, view.experienceField.getValue());
     assertEquals(experienceGoal, view.experienceGoalField.getValue());
     assertEquals(taxonomy, view.taxonomyField.getValue());

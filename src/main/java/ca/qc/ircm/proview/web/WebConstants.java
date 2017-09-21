@@ -17,6 +17,11 @@
 
 package ca.qc.ircm.proview.web;
 
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.util.ReflectTools;
+
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -42,6 +47,8 @@ public class WebConstants {
   public static final String OVER_MAXIMUM_SIZE = "overMaximumSize";
   public static final String SAVED_SUBMISSIONS = "savedSubmissions";
   public static final String SAVED_SAMPLES = "savedSamples";
+  public static final Method VALUE_CHANGE_LISTENER_METHOD =
+      ReflectTools.findMethod(ValueChangeListener.class, "valueChange", ValueChangeEvent.class);
 
   /**
    * Returns all valid locales for program.

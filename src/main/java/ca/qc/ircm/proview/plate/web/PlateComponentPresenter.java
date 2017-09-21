@@ -191,17 +191,11 @@ public class PlateComponentPresenter {
     }
   }
 
-  Plate getPlate() {
+  Plate getValue() {
     return plate;
   }
 
-  /**
-   * Sets plate, cannot be null.
-   *
-   * @param plate
-   *          plate, cannot be null
-   */
-  void setPlate(Plate plate) {
+  void setValue(Plate plate) {
     if (plate == null) {
       throw new NullPointerException("plate cannot be null");
     }

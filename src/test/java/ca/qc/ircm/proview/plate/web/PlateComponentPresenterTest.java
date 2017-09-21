@@ -97,7 +97,7 @@ public class PlateComponentPresenterTest {
     assertFalse(view.spreadsheet.isFunctionBarVisible());
     assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
     assertTrue(view.spreadsheet.isRowColHeadingsVisible());
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     assertEquals(plate.getRowCount() + 1, view.spreadsheet.getRows());
     assertEquals(plate.getColumnCount() + 1, view.spreadsheet.getColumns());
     Sheet sheet = view.spreadsheet.getActiveSheet();
@@ -138,7 +138,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void setMultiSelect() {
     presenter.init(view);
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
 
     presenter.setMultiSelect(true);
 
@@ -173,7 +173,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void getSelectedWell_NotMulti() {
     presenter.init(view);
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     Well well1 = plate.well(0, 0);
     Well well2 = plate.well(1, 2);
     presenter.setSelectedWells(Arrays.asList(well1, well2));
@@ -204,7 +204,7 @@ public class PlateComponentPresenterTest {
   public void getSelectedWell_Multi() {
     presenter.init(view);
     presenter.setMultiSelect(true);
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     Well well1 = plate.well(0, 0);
     Well well2 = plate.well(1, 2);
     presenter.setSelectedWells(Arrays.asList(well1, well2));
@@ -221,7 +221,7 @@ public class PlateComponentPresenterTest {
   public void getSelectedWells_Multi() {
     presenter.init(view);
     presenter.setMultiSelect(true);
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     Well well1 = plate.well(0, 0);
     Well well2 = plate.well(1, 2);
     presenter.setSelectedWells(Arrays.asList(well1, well2));
@@ -252,7 +252,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void getSelectedWells_NotMulti() {
     presenter.init(view);
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     Well well1 = plate.well(0, 0);
     Well well2 = plate.well(1, 2);
     presenter.setSelectedWells(Arrays.asList(well1, well2));
@@ -273,7 +273,7 @@ public class PlateComponentPresenterTest {
   public void getSelectedWells_MultiThanNotMulti() {
     presenter.init(view);
     presenter.setMultiSelect(true);
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     Well well1 = plate.well(0, 0);
     Well well2 = plate.well(1, 2);
     presenter.setSelectedWells(Arrays.asList(well1, well2));
@@ -290,7 +290,7 @@ public class PlateComponentPresenterTest {
   public void setSelectedWells_Multi() {
     presenter.init(view);
     presenter.setMultiSelect(true);
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     Well well1 = plate.well(0, 0);
     Well well2 = plate.well(1, 2);
     List<Well> wells = new ArrayList<>();
@@ -328,7 +328,7 @@ public class PlateComponentPresenterTest {
   @Test
   public void setSelectedWells_NotMulti() {
     presenter.init(view);
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     Well well1 = plate.well(0, 0);
     Well well2 = plate.well(1, 2);
     List<Well> wells = new ArrayList<>();
@@ -349,17 +349,17 @@ public class PlateComponentPresenterTest {
   }
 
   @Test
-  public void getPlate() {
+  public void getValue() {
     presenter.init(view);
     Plate plate = new Plate();
     plate.initWells();
-    presenter.setPlate(plate);
+    presenter.setValue(plate);
 
-    assertSame(plate, presenter.getPlate());
+    assertSame(plate, presenter.getValue());
   }
 
   @Test
-  public void setPlate() {
+  public void setValue() {
     presenter.init(view);
     Plate plate = new Plate();
     plate.initWells();
@@ -372,9 +372,9 @@ public class PlateComponentPresenterTest {
     Well well4 = plate.well(1, 0);
     well4.setSample(new SubmissionSample(4L, "test control 4"));
 
-    presenter.setPlate(plate);
+    presenter.setValue(plate);
 
-    assertSame(plate, presenter.getPlate());
+    assertSame(plate, presenter.getValue());
     Sheet sheet = view.spreadsheet.getActiveSheet();
     assertEquals(well1.getSample().getName(), view.spreadsheet
         .getCellValue(sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)));
@@ -387,30 +387,30 @@ public class PlateComponentPresenterTest {
   }
 
   @Test
-  public void setPlate_DifferentSize() {
+  public void setValue_DifferentSize() {
     presenter.init(view);
     Plate plate = new Plate();
     plate.setRowCount(13);
     plate.setColumnCount(15);
     plate.initWells();
 
-    presenter.setPlate(plate);
+    presenter.setValue(plate);
 
-    assertSame(plate, presenter.getPlate());
+    assertSame(plate, presenter.getValue());
     assertEquals(14, view.spreadsheet.getRows());
     assertEquals(16, view.spreadsheet.getColumns());
   }
 
   @Test
-  public void setPlate_NoWells() {
+  public void setValue_NoWells() {
     presenter.init(view);
     Plate plate = new Plate();
     plate.setType(PlateType.A);
     plate.initWells();
 
-    presenter.setPlate(plate);
+    presenter.setValue(plate);
 
-    assertSame(plate, presenter.getPlate());
+    assertSame(plate, presenter.getValue());
   }
 
   @Test
@@ -427,7 +427,7 @@ public class PlateComponentPresenterTest {
     presenter.setReadOnly(false);
 
     assertFalse(presenter.isReadOnly());
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     Well well1 = plate.well(0, 0);
     Well well2 = plate.well(1, 1);
     List<Well> wells = new ArrayList<>();
@@ -463,7 +463,7 @@ public class PlateComponentPresenterTest {
     presenter.setReadOnly(true);
 
     assertTrue(presenter.isReadOnly());
-    Plate plate = presenter.getPlate();
+    Plate plate = presenter.getValue();
     Well well1 = plate.well(0, 0);
     Well well2 = plate.well(1, 1);
     List<Well> wells = new ArrayList<>();
@@ -506,11 +506,11 @@ public class PlateComponentPresenterTest {
     CellValueChangeEvent event = new CellValueChangeEvent(view.spreadsheet,
         new HashSet<>(Arrays.asList(new CellReference(1, 1), new CellReference(1, 2))));
     listeners.stream().forEach(lis -> lis.onCellValueChange(event));
-    assertNotNull(presenter.getPlate().well(0, 0).getSample());
-    assertTrue(presenter.getPlate().well(0, 0).getSample() instanceof SubmissionSample);
-    assertEquals("test 1", presenter.getPlate().well(0, 0).getSample().getName());
-    assertNotNull(presenter.getPlate().well(0, 1).getSample());
-    assertTrue(presenter.getPlate().well(0, 1).getSample() instanceof SubmissionSample);
-    assertEquals("test 2", presenter.getPlate().well(0, 1).getSample().getName());
+    assertNotNull(presenter.getValue().well(0, 0).getSample());
+    assertTrue(presenter.getValue().well(0, 0).getSample() instanceof SubmissionSample);
+    assertEquals("test 1", presenter.getValue().well(0, 0).getSample().getName());
+    assertNotNull(presenter.getValue().well(0, 1).getSample());
+    assertTrue(presenter.getValue().well(0, 1).getSample() instanceof SubmissionSample);
+    assertEquals("test 2", presenter.getValue().well(0, 1).getSample().getName());
   }
 }
