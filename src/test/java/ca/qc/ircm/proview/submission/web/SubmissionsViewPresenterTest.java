@@ -744,7 +744,7 @@ public class SubmissionsViewPresenterTest {
     button.click();
 
     verify(submissionWindowProvider).get();
-    verify(submissionWindow).setSubmission(submission);
+    verify(submissionWindow).setValue(submission);
     verify(submissionWindow).center();
     verify(view).addWindow(submissionWindow);
   }

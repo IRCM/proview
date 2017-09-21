@@ -390,7 +390,7 @@ public class SubmissionsViewPresenter {
 
   private void viewSubmission(Submission submission) {
     SubmissionWindow window = submissionWindowProvider.get();
-    window.setSubmission(submission);
+    window.setValue(submission);
     window.center();
     view.addWindow(window);
   }

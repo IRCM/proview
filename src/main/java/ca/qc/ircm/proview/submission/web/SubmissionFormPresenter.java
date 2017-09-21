@@ -286,7 +286,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   private static final int MAX_CONTAMINANT_COUNT = 10;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionFormPresenter.class);
   private SubmissionForm view;
-  private boolean editable = false;
+  private boolean readOnly = false;
   private Binder<Submission> submissionBinder = new BeanValidationBinder<>(Submission.class);
   private Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
@@ -349,10 +349,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.createGelImagesUploader(gelImageFileHandler());
     view.createFilesUploader(fileHandler());
     prepareComponents();
-    setBean(null);
+    setValue(null);
     addFieldListeners();
     updateVisible();
-    updateEditable();
+    updateReadOnly();
     updateSampleCount(view.sampleCountField.getValue());
     updateStandardsTable(view.standardCountField.getValue());
     updateContaminantsTable(view.contaminantCountField.getValue());
@@ -545,7 +545,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
           .withNullRepresentation("").withValidator(validateSampleName(true))
           .bind(SAMPLE_NAME_PROPERTY);
@@ -567,7 +567,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       field.setRequiredIndicatorVisible(true);
       binder.forField(field)
           .withValidator(requiredTextIf(n -> view.serviceOptions.getValue() == INTACT_PROTEIN))
@@ -592,7 +592,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       field.setRequiredIndicatorVisible(true);
       binder.forField(field)
           .withValidator(requiredTextIf(n -> view.serviceOptions.getValue() == INTACT_PROTEIN))
@@ -701,7 +701,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
           .withNullRepresentation("").bind(STANDARD_NAME_PROPERTY);
       standardBinders.put(standard, binder);
@@ -723,7 +723,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       field.setPlaceholder(
           resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY + "." + EXAMPLE));
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
@@ -745,7 +745,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       binder.forField(field).withNullRepresentation("").bind(STANDARD_COMMENTS_PROPERTY);
       standardBinders.put(standard, binder);
       standardCommentsFields.put(standard, field);
@@ -795,7 +795,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
           .withNullRepresentation("").bind(CONTAMINANT_NAME_PROPERTY);
       contaminantBinders.put(contaminant, binder);
@@ -817,7 +817,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       field.setPlaceholder(resources
           .message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY + "." + EXAMPLE));
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
@@ -839,7 +839,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(!editable);
+      field.setReadOnly(readOnly);
       binder.forField(field).withNullRepresentation("").bind(CONTAMINANT_COMMENTS_PROPERTY);
       contaminantBinders.put(contaminant, binder);
       contaminantCommentsFields.put(contaminant, field);
@@ -1134,15 +1134,15 @@ public class SubmissionFormPresenter implements BinderValidator {
   private void updateVisible() {
     final Service service = view.serviceOptions.getValue();
     final SampleSupport support = view.sampleSupportOptions.getValue();
-    view.sampleTypeLabel.setVisible(editable);
-    view.inactiveLabel.setVisible(editable);
+    view.sampleTypeLabel.setVisible(!readOnly);
+    view.inactiveLabel.setVisible(!readOnly);
     view.sampleSupportOptions.setItemEnabledProvider(value -> value != GEL || service == LC_MS_MS);
     view.solutionSolventField
         .setVisible(service == SMALL_MOLECULE && support == SampleSupport.SOLUTION);
     view.sampleNameField.setVisible(service == SMALL_MOLECULE);
     view.formulaField.setVisible(service == SMALL_MOLECULE);
     view.structureLayout.setVisible(service == SMALL_MOLECULE);
-    view.structureUploader.setVisible(service == SMALL_MOLECULE && editable);
+    view.structureUploader.setVisible(service == SMALL_MOLECULE && !readOnly);
     view.structureButton
         .setVisible(service == SMALL_MOLECULE && view.structureButton.getCaption() != null
             && !view.structureButton.getCaption().isEmpty());
@@ -1167,7 +1167,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         Unit.PIXELS);
     view.fillSamplesButton.setVisible((service == INTACT_PROTEIN
         || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != WELL))
-        && editable);
+        && !readOnly);
     view.samplesPlateContainer
         .setVisible(service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == WELL);
     view.experiencePanel.setVisible(service != SMALL_MOLECULE);
@@ -1187,7 +1187,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.standardsGrid
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
     view.fillStandardsButton.setVisible(
-        service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && editable);
+        service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && !readOnly);
     view.contaminantsPanel
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
     view.contaminantCountField
@@ -1195,7 +1195,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.contaminantsGrid
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
     view.fillContaminantsButton.setVisible(
-        service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && editable);
+        service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && !readOnly);
     view.gelPanel.setVisible(service == LC_MS_MS && support == GEL);
     view.separationField.setVisible(service == LC_MS_MS && support == GEL);
     view.thicknessField.setVisible(service == LC_MS_MS && support == GEL);
@@ -1207,7 +1207,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.weightMarkerQuantityField.setVisible(service == LC_MS_MS && support == GEL);
     view.proteinQuantityField.setVisible(service == LC_MS_MS && support == GEL);
     view.gelImagesLayout.setVisible(service == LC_MS_MS && support == GEL);
-    view.gelImagesUploader.setVisible(service == LC_MS_MS && support == GEL && editable);
+    view.gelImagesUploader.setVisible(service == LC_MS_MS && support == GEL && !readOnly);
     view.gelImagesGrid.setVisible(service == LC_MS_MS && support == GEL);
     view.digestionOptions.setVisible(service == LC_MS_MS);
     view.usedProteolyticDigestionMethodField.setVisible(
@@ -1216,8 +1216,8 @@ public class SubmissionFormPresenter implements BinderValidator {
         && view.digestionOptions.getValue() == ProteolyticDigestion.OTHER);
     view.otherProteolyticDigestionMethodNote.setVisible(view.digestionOptions.isVisible()
         && view.digestionOptions.getValue() == ProteolyticDigestion.OTHER);
-    view.enrichmentLabel.setVisible(editable && service == LC_MS_MS);
-    view.exclusionsLabel.setVisible(editable && service == LC_MS_MS);
+    view.enrichmentLabel.setVisible(!readOnly && service == LC_MS_MS);
+    view.exclusionsLabel.setVisible(!readOnly && service == LC_MS_MS);
     view.injectionTypeOptions.setVisible(service == INTACT_PROTEIN);
     view.sourceOptions.setVisible(service == INTACT_PROTEIN);
     view.proteinContentOptions.setVisible(service == LC_MS_MS);
@@ -1237,67 +1237,67 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setVisible(service == SMALL_MOLECULE && view.otherSolventsField.getValue());
     view.otherSolventNoteLabel
         .setVisible(service == SMALL_MOLECULE && view.otherSolventsField.getValue());
-    view.filesUploader.setVisible(editable);
-    view.buttonsLayout.setVisible(editable);
+    view.filesUploader.setVisible(!readOnly);
+    view.buttonsLayout.setVisible(!readOnly);
   }
 
-  private void updateEditable() {
-    view.serviceOptions.setReadOnly(!editable);
-    view.sampleSupportOptions.setReadOnly(!editable);
-    view.solutionSolventField.setReadOnly(!editable);
-    view.sampleNameField.setReadOnly(!editable);
-    view.formulaField.setReadOnly(!editable);
-    view.monoisotopicMassField.setReadOnly(!editable);
-    view.averageMassField.setReadOnly(!editable);
-    view.toxicityField.setReadOnly(!editable);
-    view.lightSensitiveField.setReadOnly(!editable);
-    view.storageTemperatureOptions.setReadOnly(!editable);
-    view.sampleContainerTypeOptions.setReadOnly(!editable);
-    view.plateNameField.setReadOnly(!editable);
-    view.sampleCountField.setReadOnly(!editable);
-    sampleBinders.values().forEach(binder -> binder.setReadOnly(!editable));
-    view.fillSamplesButton.setVisible(editable);
-    view.plateComponent.setReadOnly(!editable);
-    view.experienceField.setReadOnly(!editable);
-    view.experienceGoalField.setReadOnly(!editable);
-    view.taxonomyField.setReadOnly(!editable);
-    view.proteinNameField.setReadOnly(!editable);
-    view.proteinWeightField.setReadOnly(!editable);
-    view.postTranslationModificationField.setReadOnly(!editable);
-    view.sampleQuantityField.setReadOnly(!editable);
-    view.sampleVolumeField.setReadOnly(!editable);
-    view.standardCountField.setReadOnly(!editable);
-    standardBinders.values().forEach(binder -> binder.setReadOnly(!editable));
-    view.contaminantCountField.setReadOnly(!editable);
-    contaminantBinders.values().forEach(binder -> binder.setReadOnly(!editable));
-    view.separationField.setReadOnly(!editable);
-    view.thicknessField.setReadOnly(!editable);
-    view.colorationField.setReadOnly(!editable);
-    view.otherColorationField.setReadOnly(!editable);
-    view.developmentTimeField.setReadOnly(!editable);
-    view.decolorationField.setReadOnly(!editable);
-    view.weightMarkerQuantityField.setReadOnly(!editable);
-    view.proteinQuantityField.setReadOnly(!editable);
-    view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).setHidden(!editable);
-    view.digestionOptions.setReadOnly(!editable);
-    view.usedProteolyticDigestionMethodField.setReadOnly(!editable);
-    view.otherProteolyticDigestionMethodField.setReadOnly(!editable);
-    view.injectionTypeOptions.setReadOnly(!editable);
-    view.sourceOptions.setReadOnly(!editable);
-    view.proteinContentOptions.setReadOnly(!editable);
-    view.instrumentOptions.setReadOnly(!editable);
-    view.proteinIdentificationOptions.setReadOnly(!editable);
-    view.proteinIdentificationLinkField.setReadOnly(!editable);
-    view.quantificationOptions.setReadOnly(!editable);
-    view.quantificationLabelsField.setReadOnly(!editable);
-    view.highResolutionOptions.setReadOnly(!editable);
-    view.acetonitrileSolventsField.setReadOnly(!editable);
-    view.methanolSolventsField.setReadOnly(!editable);
-    view.chclSolventsField.setReadOnly(!editable);
-    view.otherSolventsField.setReadOnly(!editable);
-    view.otherSolventField.setReadOnly(!editable);
-    view.commentsField.setReadOnly(!editable);
-    view.filesGrid.getColumn(REMOVE_FILE).setHidden(!editable);
+  private void updateReadOnly() {
+    view.serviceOptions.setReadOnly(readOnly);
+    view.sampleSupportOptions.setReadOnly(readOnly);
+    view.solutionSolventField.setReadOnly(readOnly);
+    view.sampleNameField.setReadOnly(readOnly);
+    view.formulaField.setReadOnly(readOnly);
+    view.monoisotopicMassField.setReadOnly(readOnly);
+    view.averageMassField.setReadOnly(readOnly);
+    view.toxicityField.setReadOnly(readOnly);
+    view.lightSensitiveField.setReadOnly(readOnly);
+    view.storageTemperatureOptions.setReadOnly(readOnly);
+    view.sampleContainerTypeOptions.setReadOnly(readOnly);
+    view.plateNameField.setReadOnly(readOnly);
+    view.sampleCountField.setReadOnly(readOnly);
+    sampleBinders.values().forEach(binder -> binder.setReadOnly(readOnly));
+    view.fillSamplesButton.setVisible(!readOnly);
+    view.plateComponent.setReadOnly(readOnly);
+    view.experienceField.setReadOnly(readOnly);
+    view.experienceGoalField.setReadOnly(readOnly);
+    view.taxonomyField.setReadOnly(readOnly);
+    view.proteinNameField.setReadOnly(readOnly);
+    view.proteinWeightField.setReadOnly(readOnly);
+    view.postTranslationModificationField.setReadOnly(readOnly);
+    view.sampleQuantityField.setReadOnly(readOnly);
+    view.sampleVolumeField.setReadOnly(readOnly);
+    view.standardCountField.setReadOnly(readOnly);
+    standardBinders.values().forEach(binder -> binder.setReadOnly(readOnly));
+    view.contaminantCountField.setReadOnly(readOnly);
+    contaminantBinders.values().forEach(binder -> binder.setReadOnly(readOnly));
+    view.separationField.setReadOnly(readOnly);
+    view.thicknessField.setReadOnly(readOnly);
+    view.colorationField.setReadOnly(readOnly);
+    view.otherColorationField.setReadOnly(readOnly);
+    view.developmentTimeField.setReadOnly(readOnly);
+    view.decolorationField.setReadOnly(readOnly);
+    view.weightMarkerQuantityField.setReadOnly(readOnly);
+    view.proteinQuantityField.setReadOnly(readOnly);
+    view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).setHidden(readOnly);
+    view.digestionOptions.setReadOnly(readOnly);
+    view.usedProteolyticDigestionMethodField.setReadOnly(readOnly);
+    view.otherProteolyticDigestionMethodField.setReadOnly(readOnly);
+    view.injectionTypeOptions.setReadOnly(readOnly);
+    view.sourceOptions.setReadOnly(readOnly);
+    view.proteinContentOptions.setReadOnly(readOnly);
+    view.instrumentOptions.setReadOnly(readOnly);
+    view.proteinIdentificationOptions.setReadOnly(readOnly);
+    view.proteinIdentificationLinkField.setReadOnly(readOnly);
+    view.quantificationOptions.setReadOnly(readOnly);
+    view.quantificationLabelsField.setReadOnly(readOnly);
+    view.highResolutionOptions.setReadOnly(readOnly);
+    view.acetonitrileSolventsField.setReadOnly(readOnly);
+    view.methanolSolventsField.setReadOnly(readOnly);
+    view.chclSolventsField.setReadOnly(readOnly);
+    view.otherSolventsField.setReadOnly(readOnly);
+    view.otherSolventField.setReadOnly(readOnly);
+    view.commentsField.setReadOnly(readOnly);
+    view.filesGrid.getColumn(REMOVE_FILE).setHidden(readOnly);
   }
 
   private void updateSampleCount(String countValue) {
@@ -1859,11 +1859,11 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
   }
 
-  Submission getBean() {
+  Submission getValue() {
     return submissionBinder.getBean();
   }
 
-  void setBean(Submission submission) {
+  void setValue(Submission submission) {
     if (submission == null) {
       submission = new Submission();
       submission.setService(LC_MS_MS);
@@ -1987,17 +1987,17 @@ public class SubmissionFormPresenter implements BinderValidator {
     filesDataProvider.getItems().addAll(files);
     filesDataProvider.refreshAll();
     updateVisible();
-    updateEditable();
+    updateReadOnly();
   }
 
-  boolean isEditable() {
-    return editable;
+  boolean isReadOnly() {
+    return readOnly;
   }
 
-  void setEditable(boolean editable) {
-    this.editable = editable;
+  void setReadOnly(boolean readOnly) {
+    this.readOnly = readOnly;
     updateVisible();
-    updateEditable();
+    updateReadOnly();
   }
 
   private List<MassDetectionInstrument> instrumentValues() {

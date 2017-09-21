@@ -60,50 +60,50 @@ public class SubmissionFormTest {
   }
 
   @Test
-  public void getBean() {
-    when(presenter.getBean()).thenReturn(submission);
+  public void getValue() {
+    when(presenter.getValue()).thenReturn(submission);
 
-    assertEquals(submission, view.getBean());
+    assertEquals(submission, view.getValue());
 
-    verify(presenter).getBean();
+    verify(presenter).getValue();
   }
 
   @Test
-  public void setBean() {
-    view.setBean(submission);
+  public void setValue() {
+    view.setValue(submission);
 
-    verify(presenter).setBean(submission);
+    verify(presenter).setValue(submission);
   }
 
   @Test
-  public void isEditable_True() {
-    when(presenter.isEditable()).thenReturn(true);
+  public void isReadOnly_True() {
+    when(presenter.isReadOnly()).thenReturn(true);
 
-    assertTrue(view.isEditable());
+    assertTrue(view.isReadOnly());
 
-    verify(presenter).isEditable();
+    verify(presenter).isReadOnly();
   }
 
   @Test
-  public void isEditable_False() {
-    when(presenter.isEditable()).thenReturn(false);
+  public void isReadOnly_False() {
+    when(presenter.isReadOnly()).thenReturn(false);
 
-    assertFalse(view.isEditable());
+    assertFalse(view.isReadOnly());
 
-    verify(presenter).isEditable();
+    verify(presenter).isReadOnly();
   }
 
   @Test
-  public void setEditable_True() {
-    view.setEditable(true);
+  public void setReadOnly_True() {
+    view.setReadOnly(true);
 
-    verify(presenter).setEditable(true);
+    verify(presenter).setReadOnly(true);
   }
 
   @Test
-  public void setEditable_False() {
-    view.setEditable(false);
+  public void setReadOnly_False() {
+    view.setReadOnly(false);
 
-    verify(presenter).setEditable(false);
+    verify(presenter).setReadOnly(false);
   }
 }

@@ -104,19 +104,21 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
     return filesUploader;
   }
 
-  public Submission getBean() {
-    return presenter.getBean();
+  public Submission getValue() {
+    return presenter.getValue();
   }
 
-  public void setBean(Submission submission) {
-    presenter.setBean(submission);
+  public void setValue(Submission submission) {
+    presenter.setValue(submission);
   }
 
-  public boolean isEditable() {
-    return presenter.isEditable();
+  @Override
+  public boolean isReadOnly() {
+    return presenter.isReadOnly();
   }
 
-  public void setEditable(boolean editable) {
-    presenter.setEditable(editable);
+  @Override
+  public void setReadOnly(boolean readOnly) {
+    presenter.setReadOnly(readOnly);
   }
 }

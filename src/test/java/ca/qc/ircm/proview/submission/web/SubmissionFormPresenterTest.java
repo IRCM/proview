@@ -835,7 +835,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void samplesTableColumns_IntactProtein() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
 
     assertEquals(3, view.samplesGrid.getColumns().size());
@@ -868,8 +867,9 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void gelImagesColumns() {
+  public void gelImagesColumns_ReadOnly() {
     presenter.init(view);
+    presenter.setReadOnly(true);
 
     assertEquals(2, view.gelImagesGrid.getColumns().size());
     assertEquals(GEL_IMAGE_FILENAME_PROPERTY, view.gelImagesGrid.getColumns().get(0).getId());
@@ -879,9 +879,8 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void gelImagesColumns_Editable() {
+  public void gelImagesColumns() {
     presenter.init(view);
-    presenter.setEditable(true);
 
     assertEquals(2, view.gelImagesGrid.getColumns().size());
     assertEquals(GEL_IMAGE_FILENAME_PROPERTY, view.gelImagesGrid.getColumns().get(0).getId());
@@ -891,8 +890,9 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void filesColumns() {
+  public void filesColumns_ReadOnly() {
     presenter.init(view);
+    presenter.setReadOnly(true);
 
     assertEquals(2, view.filesGrid.getColumns().size());
     assertEquals(FILE_FILENAME_PROPERTY, view.filesGrid.getColumns().get(0).getId());
@@ -902,9 +902,8 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void filesColumns_Editable() {
+  public void filesColumns() {
     presenter.init(view);
-    presenter.setEditable(true);
 
     assertEquals(2, view.filesGrid.getColumns().size());
     assertEquals(FILE_FILENAME_PROPERTY, view.filesGrid.getColumns().get(0).getId());
@@ -1012,7 +1011,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void required_ProteinWeight_Lcmsms() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
     if (samplesDataProvider.getItems().size() < 1) {
@@ -1030,7 +1028,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void required_ProteinWeight_IntactProtein() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(view.samplesGrid);
     if (samplesDataProvider.getItems().size() < 1) {
@@ -1063,7 +1060,7 @@ public class SubmissionFormPresenterTest {
     when(submissionService.get(any())).thenReturn(submission);
 
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertTrue(dataProvider(view.serviceOptions).getItems().contains(service));
     assertFalse(view.serviceOptions.getItemEnabledProvider().test(service));
@@ -1072,7 +1069,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void gelSupportDisabled_Smallmolecule() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
 
     assertFalse(view.sampleSupportOptions.getItemEnabledProvider().test(GEL));
@@ -1081,7 +1077,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void gelSupportDisabled_Intactprotein() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
 
     assertFalse(view.sampleSupportOptions.getItemEnabledProvider().test(GEL));
@@ -1090,7 +1085,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void digestion_RequiredText() {
     presenter.init(view);
-    presenter.setEditable(true);
 
     view.digestionOptions.setValue(TRYPSIN);
     assertFalse(view.usedProteolyticDigestionMethodField.isVisible());
@@ -1125,7 +1119,7 @@ public class SubmissionFormPresenterTest {
     when(submissionService.get(any())).thenReturn(submission);
 
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertTrue(dataProvider(view.sourceOptions).getItems().contains(source));
     assertFalse(view.sourceOptions.getItemEnabledProvider().test(source));
@@ -1151,7 +1145,7 @@ public class SubmissionFormPresenterTest {
     when(submissionService.get(any())).thenReturn(submission);
 
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertTrue(dataProvider(view.instrumentOptions).getItems().contains(instrument));
     assertFalse(view.instrumentOptions.getItemEnabledProvider().test(instrument));
@@ -1177,7 +1171,7 @@ public class SubmissionFormPresenterTest {
     when(submissionService.get(any())).thenReturn(submission);
 
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertTrue(
         dataProvider(view.proteinIdentificationOptions).getItems().contains(proteinIdentification));
@@ -1188,7 +1182,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void proteinIdentification_RequiredText() {
     presenter.init(view);
-    presenter.setEditable(true);
 
     view.proteinIdentificationOptions.setValue(REFSEQ);
     assertFalse(view.proteinIdentificationLinkField.isVisible());
@@ -1201,7 +1194,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void quantification_RequiredText() {
     presenter.init(view);
-    presenter.setEditable(true);
 
     view.quantificationOptions.setValue(null);
     assertFalse(view.quantificationLabelsField.isRequiredIndicatorVisible());
@@ -1538,7 +1530,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void editable_False() {
+  public void readOnly_True() {
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
@@ -1549,7 +1541,8 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
 
     assertTrue(view.serviceOptions.isReadOnly());
     assertTrue(view.sampleSupportOptions.isReadOnly());
@@ -1626,7 +1619,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void editable_True() {
+  public void readOnly_False() {
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
@@ -1637,8 +1630,7 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
-    presenter.setEditable(true);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertFalse(view.serviceOptions.isReadOnly());
     assertFalse(view.sampleSupportOptions.isReadOnly());
@@ -1715,7 +1707,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Lcmsms_Solution() {
+  public void visible_Lcmsms_Solution_ReadOnly() {
     Submission submission = new Submission();
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
@@ -1724,7 +1716,8 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -1802,9 +1795,8 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Lcmsms_Solution_Editable() {
+  public void visible_Lcmsms_Solution() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
 
@@ -1886,7 +1878,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Lcmsms_UsedDigestion() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
 
@@ -1898,7 +1889,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Lcmsms_OtherDigestion() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
 
@@ -1911,7 +1901,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Lcmsms_Plate() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
 
@@ -1925,7 +1914,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Lcmsms_Dry() {
+  public void visible_Lcmsms_Dry_ReadOnly() {
     Submission submission = new Submission();
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
@@ -1934,7 +1923,8 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2012,9 +2002,8 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Lcmsms_Dry_Editable() {
+  public void visible_Lcmsms_Dry() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(DRY);
 
@@ -2094,7 +2083,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Lcmsms_Gel() {
+  public void visible_Lcmsms_Gel_ReadOnly() {
     Submission submission = new Submission();
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
@@ -2103,7 +2092,8 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2181,9 +2171,8 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Lcmsms_Gel_Editable() {
+  public void visible_Lcmsms_Gel() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
 
@@ -2265,7 +2254,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Lcmsms_Gel_OtherColoration() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
 
@@ -2275,7 +2263,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Smallmolecule_Solution() {
+  public void visible_Smallmolecule_Solution_ReadOnly() {
     Submission submission = new Submission();
     submission.setService(SMALL_MOLECULE);
     SubmissionSample sample = new SubmissionSample();
@@ -2286,7 +2274,8 @@ public class SubmissionFormPresenterTest {
     submission.getStructure().setFilename("structure.png");
     when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2364,9 +2353,8 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Smallmolecule_Solution_Editable() throws Throwable {
+  public void visible_Smallmolecule_Solution() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     uploadStructure();
@@ -2449,7 +2437,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Smallmolecule_Solution_NoStructure() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     view.otherSolventsField.setValue(true);
@@ -2460,7 +2447,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Smallmolecule_Solution_OtherSolvents() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     uploadStructure();
@@ -2471,7 +2457,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Smallmolecule_Dry() {
+  public void visible_Smallmolecule_Dry_ReadOnly() {
     Submission submission = new Submission();
     submission.setService(SMALL_MOLECULE);
     SubmissionSample sample = new SubmissionSample();
@@ -2482,7 +2468,8 @@ public class SubmissionFormPresenterTest {
     submission.getStructure().setFilename("structure.png");
     when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2560,9 +2547,8 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Smallmolecule_Dry_Editable() throws Throwable {
+  public void visible_Smallmolecule_Dry() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(DRY);
     uploadStructure();
@@ -2643,7 +2629,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Intactprotein_Solution() {
+  public void visible_Intactprotein_Solution_ReadOnly() {
     Submission submission = new Submission();
     submission.setService(INTACT_PROTEIN);
     SubmissionSample sample = new SubmissionSample();
@@ -2652,7 +2638,8 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2730,9 +2717,8 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Intactprotein_Solution_Editable() {
+  public void visible_Intactprotein_Solution() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
 
@@ -2812,7 +2798,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Intactprotein_Dry() {
+  public void visible_Intactprotein_Dry_ReadOnly() {
     Submission submission = new Submission();
     submission.setService(INTACT_PROTEIN);
     SubmissionSample sample = new SubmissionSample();
@@ -2821,7 +2807,8 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
 
     assertFalse(view.sampleTypeLabel.isVisible());
     assertFalse(view.inactiveLabel.isVisible());
@@ -2899,9 +2886,8 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void visible_Intactprotein_Dry_Editable() {
+  public void visible_Intactprotein_Dry() {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(DRY);
 
@@ -2983,7 +2969,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingService() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(null);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3003,7 +2988,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSupport() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(null);
     setFields();
@@ -3023,7 +3007,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSolutionSolvent() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3044,7 +3027,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSampleCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3065,7 +3047,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidSampleCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3086,7 +3067,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowOneSampleCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3107,7 +3087,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_AboveMaxSampleCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3128,7 +3107,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_DoubleSampleCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3149,7 +3127,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSampleName() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3170,7 +3147,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_ExistsSampleName() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3192,7 +3168,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingFormula() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3213,7 +3188,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingStructure() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3230,7 +3204,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingMonoisotopicMass() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3251,7 +3224,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidMonoisotopicMass() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3272,7 +3244,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroMonoisotopicMass() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3292,7 +3263,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidAverageMass() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3313,7 +3283,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroAverageMass() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3333,7 +3302,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingStorageTemperature() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3354,7 +3322,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingPlateName() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3376,7 +3343,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_ExistsPlateName() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3399,7 +3365,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSampleNames_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3419,7 +3384,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_ExistsSampleNames_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3441,7 +3405,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSampleNames_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3462,7 +3425,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_ExistsSampleNames_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3484,7 +3446,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_DuplicateSampleNames() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3504,7 +3465,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingPlateSampleNames_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3525,7 +3485,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_ExistsPlateSampleNames_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3544,7 +3503,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingPlateSampleNames_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3565,7 +3523,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_ExistsPlateSampleNames_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3584,7 +3541,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_DuplicatePlateSampleNames() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3605,7 +3561,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSampleNumberProtein1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3626,7 +3581,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidSampleNumberProtein1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3647,7 +3601,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroSampleNumberProtein1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3667,7 +3620,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_DoubleSampleNumberProtein1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3688,7 +3640,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSampleNumberProtein2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3709,7 +3660,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidSampleNumberProtein2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3730,7 +3680,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroSampleNumberProtein2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3750,7 +3699,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_DoubleSampleNumberProtein2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3771,7 +3719,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingProteinWeight1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3792,7 +3739,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidProteinWeight1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3813,7 +3759,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroProteinWeight1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3833,7 +3778,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingProteinWeight2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3854,7 +3798,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidProteinWeight2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3875,7 +3818,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroProteinWeight2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3895,7 +3837,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingExperience() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3916,7 +3857,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingTaxonomy() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3937,7 +3877,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidProteinWeight() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3958,7 +3897,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroProteinWeight() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3978,7 +3916,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSampleQuantity() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -3999,7 +3936,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSampleVolume() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4020,7 +3956,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidSampleVolume() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4041,7 +3976,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroSampleVolume() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4061,7 +3995,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4079,7 +4012,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4100,7 +4032,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4121,7 +4052,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_AboveMaxStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4142,7 +4072,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_DoubleStandardCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4163,7 +4092,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingStandardName_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4184,7 +4112,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingStandardName_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4205,7 +4132,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingStandardQuantity_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4226,7 +4152,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingStandardQuantity_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4247,7 +4172,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingContaminantCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4265,7 +4189,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidContaminantCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4286,7 +4209,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_BelowZeroContaminantCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4307,7 +4229,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_AboveMaxContaminantCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4328,7 +4249,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_DoubleContaminantCount() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4349,7 +4269,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingContaminantName_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4370,7 +4289,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingContaminantName_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4391,7 +4309,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingContaminantQuantity_1() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4412,7 +4329,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingContaminantQuantity_2() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4433,7 +4349,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingGelSeparation() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
     setFields();
@@ -4454,7 +4369,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingGelThickness() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
     setFields();
@@ -4475,7 +4389,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingOtherGelColoration() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
     setFields();
@@ -4497,7 +4410,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_InvalidWeightMarkerQuantity() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
     setFields();
@@ -4518,7 +4430,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingGelImages() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
     setFields();
@@ -4535,7 +4446,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingDigestion() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4556,7 +4466,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingUsedDigestion() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4578,7 +4487,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingOtherDigestion() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4600,7 +4508,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingInjectionType() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4621,7 +4528,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSource() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4642,7 +4548,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingProteinContent() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4663,7 +4568,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingInstrument() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4681,7 +4585,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingProteinIdentification() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4702,7 +4605,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingProteinIdentificationLink() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4724,7 +4626,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingQuantificationLabels() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4746,7 +4647,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingHighResolution() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4767,7 +4667,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingSolvents() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4789,7 +4688,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_MissingOtherSolvent() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4811,7 +4709,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_Lcmsms_Solution() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -4950,7 +4847,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_Lcmsms_Solution_Plate() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -5103,7 +4999,6 @@ public class SubmissionFormPresenterTest {
   public void submit_Lcmsms_Solution_OtherDigestion() throws Throwable {
     final ProteolyticDigestion digestion = ProteolyticDigestion.OTHER;
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -5245,7 +5140,6 @@ public class SubmissionFormPresenterTest {
   public void submit_Lcmsms_Dry() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -5385,7 +5279,6 @@ public class SubmissionFormPresenterTest {
   public void submit_Lcmsms_Dry_Plate() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -5537,7 +5430,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_Lcmsms_Gel() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
     setFields();
@@ -5650,7 +5542,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_Lcmsms_Gel_Plate() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
     setFields();
@@ -5776,7 +5667,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_SmallMolecule_Solution() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -5889,7 +5779,6 @@ public class SubmissionFormPresenterTest {
   public void submit_SmallMolecule_Dry() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -6001,7 +5890,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_SmallMolecule_Plate() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -6024,7 +5912,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_Intactprotein_Solution() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -6164,7 +6051,6 @@ public class SubmissionFormPresenterTest {
   public void submit_Intactprotein_Dry() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -6303,7 +6189,6 @@ public class SubmissionFormPresenterTest {
   @Test
   public void submit_IntactProtein_Plate() throws Throwable {
     presenter.init(view);
-    presenter.setEditable(true);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
     setFields();
@@ -6334,12 +6219,12 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void setBean_Lcmsms() throws Throwable {
+  public void setValue_Lcmsms() throws Throwable {
     presenter.init(view);
     Submission submission = createSubmission();
     when(submissionService.get(any())).thenReturn(submission);
 
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(LC_MS_MS, view.serviceOptions.getValue());
     assertEquals(SOLUTION, view.sampleSupportOptions.getValue());
@@ -6423,7 +6308,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void setBean_Lcmsms_Plate() throws Throwable {
+  public void setValue_Lcmsms_Plate() throws Throwable {
     presenter.init(view);
     Submission submission = createSubmission();
     Plate plate = new Plate(2L, plateName);
@@ -6432,7 +6317,7 @@ public class SubmissionFormPresenterTest {
     submission.getSamples().get(1).setOriginalContainer(plate.well(1, 0));
     when(submissionService.get(any())).thenReturn(submission);
 
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(LC_MS_MS, view.serviceOptions.getValue());
     assertEquals(SOLUTION, view.sampleSupportOptions.getValue());
@@ -6518,13 +6403,13 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void setBean_SmallMolecule() throws Throwable {
+  public void setValue_SmallMolecule() throws Throwable {
     presenter.init(view);
     Submission submission = createSubmission();
     submission.setService(SMALL_MOLECULE);
     when(submissionService.get(any())).thenReturn(submission);
 
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(SMALL_MOLECULE, view.serviceOptions.getValue());
     assertEquals(SOLUTION, view.sampleSupportOptions.getValue());
@@ -6608,13 +6493,13 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void setBean_IntactProtein() throws Throwable {
+  public void setValue_IntactProtein() throws Throwable {
     presenter.init(view);
     Submission submission = createSubmission();
     submission.setService(INTACT_PROTEIN);
     when(submissionService.get(any())).thenReturn(submission);
 
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(INTACT_PROTEIN, view.serviceOptions.getValue());
     assertEquals(SOLUTION, view.sampleSupportOptions.getValue());

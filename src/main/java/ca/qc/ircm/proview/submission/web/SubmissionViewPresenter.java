@@ -65,7 +65,7 @@ public class SubmissionViewPresenter {
     logger.debug("Submission view");
     this.view = view;
     prepareComponents();
-    view.submissionForm.setEditable(true);
+    view.submissionForm.setReadOnly(false);
   }
 
   private void prepareComponents() {
@@ -88,19 +88,19 @@ public class SubmissionViewPresenter {
         Long id = Long.valueOf(parameters);
         logger.debug("Set submission {}", id);
         Submission submission = submissionService.get(id);
-        view.submissionForm.setBean(submission);
-        view.submissionForm.setEditable(editable(submission));
+        view.submissionForm.setValue(submission);
+        view.submissionForm.setReadOnly(readOnly(submission));
       } catch (NumberFormatException e) {
         view.showWarning(view.getResources().message(INVALID_SUBMISSION));
       }
     }
   }
 
-  private boolean editable(Submission submission) {
-    boolean editable = true;
+  private boolean readOnly(Submission submission) {
+    boolean readOnly = false;
     for (SubmissionSample sample : submission.getSamples()) {
-      editable &= sample.getStatus() == SampleStatus.TO_RECEIVE;
+      readOnly |= sample.getStatus() != SampleStatus.TO_RECEIVE;
     }
-    return editable;
+    return readOnly;
   }
 }

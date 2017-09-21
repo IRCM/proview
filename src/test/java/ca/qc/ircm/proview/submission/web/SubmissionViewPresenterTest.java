@@ -93,18 +93,18 @@ public class SubmissionViewPresenterTest {
   }
 
   @Test
-  public void enter_NoSubmission() {
+  public void enter_NoSubmission_ReadOnly() {
     presenter.enter("");
 
     verify(submissionService, never()).get(any());
-    verify(view.submissionForm, never()).setBean(any());
-    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
+    verify(view.submissionForm, never()).setValue(any());
+    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  public void enter_Submission_Editable() {
+  public void enter_Submission() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
     sample.setStatus(SampleStatus.TO_RECEIVE);
@@ -115,14 +115,14 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionForm).setBean(submission);
-    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
+    verify(view.submissionForm).setValue(submission);
+    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  public void enter_Submission_NotEditable_Received() {
+  public void enter_Submission_ReadOnly_Received() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
     sample.setStatus(SampleStatus.RECEIVED);
@@ -133,14 +133,14 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionForm).setBean(submission);
-    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
+    verify(view.submissionForm).setValue(submission);
+    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  public void enter_Submission_NotEditable_ToAnalyse() {
+  public void enter_Submission_ReadOnly_ToAnalyse() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
     sample.setStatus(SampleStatus.TO_ANALYSE);
@@ -151,14 +151,14 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionForm).setBean(submission);
-    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
+    verify(view.submissionForm).setValue(submission);
+    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  public void enter_Submission_NotEditable_DataAnalysis() {
+  public void enter_Submission_ReadOnly_DataAnalysis() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
     sample.setStatus(SampleStatus.DATA_ANALYSIS);
@@ -169,14 +169,14 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionForm).setBean(submission);
-    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
+    verify(view.submissionForm).setValue(submission);
+    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
   @Test
-  public void enter_Submission_NotEditable_Analysed() {
+  public void enter_Submission_ReadOnly_Analysed() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
     sample.setStatus(SampleStatus.ANALYSED);
@@ -187,9 +187,9 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionForm).setBean(submission);
-    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
+    verify(view.submissionForm).setValue(submission);
+    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 
@@ -198,9 +198,9 @@ public class SubmissionViewPresenterTest {
     presenter.enter("a");
 
     verify(submissionService, never()).get(any());
-    verify(view.submissionForm, never()).setBean(any());
-    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
+    verify(view.submissionForm, never()).setValue(any());
+    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
     verify(view).showWarning(resources.message(INVALID_SUBMISSION));
   }
 }
