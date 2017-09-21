@@ -149,11 +149,6 @@
     margin-right: 0.3em;
   }
 
-  // Should not be used, use panels instead.
-  .v-formlayout-with-header > table > tbody [class*="firstrow"] > td {
-    border-top: 1px solid #dfdfdf;
-    padding-top: $v-layout-spacing-vertical;
-  }
   // Not used. Should probably be used if expandable panels are used.
   .v-label-expandable {
     cursor: pointer;
