@@ -67,7 +67,7 @@ public class SubmissionTreatmentsWindow extends Window implements BaseComponent 
    * @param submission
    *          submission
    */
-  public void setSubmission(Submission submission) {
+  public void setValue(Submission submission) {
     if (isAttached()) {
       updateSubmission(submission);
     } else {
@@ -78,6 +78,6 @@ public class SubmissionTreatmentsWindow extends Window implements BaseComponent 
   private void updateSubmission(Submission submission) {
     logger.debug("Submission treatments window for submission {}", submission);
     setCaption(getResources().message(TITLE, submission.getExperience()));
-    view.setBean(submission);
+    view.setValue(submission);
   }
 }

@@ -404,7 +404,7 @@ public class SubmissionsViewPresenter {
 
   private void viewSubmissionTreatments(Submission submission) {
     SubmissionTreatmentsWindow window = submissionTreatmentsWindowProvider.get();
-    window.setSubmission(submission);
+    window.setValue(submission);
     window.center();
     view.addWindow(window);
   }

@@ -424,7 +424,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void styles() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertTrue(view.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
     assertTrue(view.samples.getStyleName().contains(SAMPLES));
@@ -447,7 +447,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void captions() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
     assertEquals(resources.message(SOLUBILISATIONS_PANEL), view.solubilisationsPanel.getCaption());
@@ -463,7 +463,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void samplesGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(2, view.samples.getColumns().size());
     assertEquals(SAMPLES_NAME, view.samples.getColumns().get(0).getId());
@@ -490,7 +490,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void solubilisationsGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(5, view.solubilisations.getColumns().size());
     assertEquals(SOLUBILISATION_SAMPLE, view.solubilisations.getColumns().get(0).getId());
@@ -541,7 +541,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   public void solubilisationsGrid_Empty() {
     when(solubilisationService.all(any(Submission.class))).thenReturn(Arrays.asList());
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertFalse(view.solubilisationsPanel.isVisible());
   }
@@ -549,7 +549,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void transfersGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(4, view.transfers.getColumns().size());
     assertEquals(TRANSFER_SAMPLE, view.transfers.getColumns().get(0).getId());
@@ -592,7 +592,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   public void transfersGrid_Empty() {
     when(transferService.all(any(Submission.class))).thenReturn(Arrays.asList());
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertFalse(view.transfersPanel.isVisible());
   }
@@ -600,7 +600,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void digestionsGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(4, view.digestions.getColumns().size());
     assertEquals(DIGESTION_SAMPLE, view.digestions.getColumns().get(0).getId());
@@ -643,7 +643,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   public void digestionsGrid_Empty() {
     when(digestionService.all(any(Submission.class))).thenReturn(Arrays.asList());
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertFalse(view.digestionsPanel.isVisible());
   }
@@ -651,7 +651,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void standardAdditionsGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(5, view.standardAdditions.getColumns().size());
     assertEquals(STANDARD_ADDITION_SAMPLE, view.standardAdditions.getColumns().get(0).getId());
@@ -701,7 +701,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   public void standardAdditionsGrid_Empty() {
     when(standardAdditionService.all(any(Submission.class))).thenReturn(Arrays.asList());
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertFalse(view.standardAdditionsPanel.isVisible());
   }
@@ -709,7 +709,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void enrichmentsGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(4, view.enrichments.getColumns().size());
     assertEquals(ENRICHMENT_SAMPLE, view.enrichments.getColumns().get(0).getId());
@@ -752,7 +752,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   public void enrichmentsGrid_Empty() {
     when(enrichmentService.all(any(Submission.class))).thenReturn(Arrays.asList());
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertFalse(view.enrichmentsPanel.isVisible());
   }
@@ -760,7 +760,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void dilutionsGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(6, view.dilutions.getColumns().size());
     assertEquals(DILUTION_SAMPLE, view.dilutions.getColumns().get(0).getId());
@@ -817,7 +817,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   public void dilutionsGrid_Empty() {
     when(dilutionService.all(any(Submission.class))).thenReturn(Arrays.asList());
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertFalse(view.dilutionsPanel.isVisible());
   }
@@ -825,7 +825,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   @Test
   public void fractionationsGrid() {
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertEquals(6, view.fractionations.getColumns().size());
     assertEquals(FRACTIONATION_SAMPLE, view.fractionations.getColumns().get(0).getId());
@@ -888,7 +888,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   public void fractionationsGrid_Empty() {
     when(fractionationService.all(any(Submission.class))).thenReturn(Arrays.asList());
     presenter.init(view);
-    presenter.setBean(submission);
+    presenter.setValue(submission);
 
     assertFalse(view.fractionationsPanel.isVisible());
   }

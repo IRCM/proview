@@ -390,11 +390,11 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
     view.fractionationsPanel.setVisible(!fractionations.isEmpty());
   }
 
-  Submission getBean() {
+  Submission getValue() {
     return submission;
   }
 
-  void setBean(Submission submission) {
+  void setValue(Submission submission) {
     this.submission = submission;
     updateSubmission();
   }
