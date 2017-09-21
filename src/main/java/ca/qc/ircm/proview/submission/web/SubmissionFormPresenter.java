@@ -85,7 +85,6 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.data.NullableListDataProvider;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue;
@@ -111,8 +110,6 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -137,7 +134,6 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -534,21 +530,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.fillSamplesButton.addStyleName(FILL_SAMPLES_PROPERTY);
     view.fillSamplesButton.addStyleName(FILL_BUTTON_STYLE);
     view.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
-    view.samplesSpreadsheet.addStyleName(SAMPLES_PLATE);
-    view.samplesSpreadsheet.setMaxColumns(13);
-    view.samplesSpreadsheet.setMaxRows(9);
-    IntStream.range(0, view.samplesSpreadsheet.getRows()).forEach(row -> {
-      IntStream.range(0, view.samplesSpreadsheet.getColumns()).forEach(column -> {
-        if (view.samplesSpreadsheet.getCell(row, column) == null) {
-          view.samplesSpreadsheet.createCell(row, column, "");
-        }
-      });
-    });
-    view.samplesSpreadsheet.setSelection(1, 1);
-    view.samplesSpreadsheet.getActiveSheet().getRow(0).getCell(0)
-        .setCellValue(resources.message(SAMPLES_PLATE));
-    view.samplesSpreadsheet.setFunctionBarVisible(false);
-    view.samplesSpreadsheet.setSheetSelectionBarVisible(false);
+    view.plateComponent.addStyleName(SAMPLES_PLATE);
   }
 
   private TextField sampleNameTextField(SubmissionSample sample) {
@@ -1275,13 +1257,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.sampleCountField.setReadOnly(!editable);
     sampleBinders.values().forEach(binder -> binder.setReadOnly(!editable));
     view.fillSamplesButton.setVisible(editable);
-    view.samplesSpreadsheet.setReportStyle(!editable);
-    view.samplesSpreadsheet.setFunctionBarVisible(false);
-    view.samplesSpreadsheet.setSheetSelectionBarVisible(false);
-    view.samplesSpreadsheet.setRowColHeadingsVisible(false);
-    CellStyle locked = view.samplesSpreadsheet.getWorkbook().createCellStyle();
-    locked.setLocked(!editable);
-    cells(view.samplesSpreadsheet).forEach(cell -> cell.setCellStyle(locked));
+    view.plateComponent.setReadOnly(!editable);
     view.experienceField.setReadOnly(!editable);
     view.experienceGoalField.setReadOnly(!editable);
     view.taxonomyField.setReadOnly(!editable);
@@ -1552,14 +1528,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     };
   }
 
-  private Stream<Cell> cells(Spreadsheet spreadsheet) {
-    List<Cell> cells = new ArrayList<>();
-    for (int column = 1; column < spreadsheet.getColumns(); column++) {
-      for (int row = 1; row < spreadsheet.getRows(); row++) {
-        cells.add(spreadsheet.getCell(row, column));
-      }
-    }
-    return cells.stream().filter(c -> c != null);
+  private List<String> plateSampleNames() {
+    return view.plateComponent.getPlate().getWells().stream()
+        .filter(well -> well.getSample() != null).map(well -> well.getSample().getName())
+        .filter(name -> name != null && !name.isEmpty()).collect(Collectors.toList());
   }
 
   private boolean validate() {
@@ -1577,10 +1549,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         }
       } else {
         valid &= validate(plateBinder);
-        List<String> excelNames =
-            cells(view.samplesSpreadsheet).map(cell -> view.samplesSpreadsheet.getCellValue(cell))
-                .filter(name -> name != null && !name.isEmpty()).collect(Collectors.toList());
-        valid &= validate(validateSampleName(false), view.samplesSpreadsheet, excelNames);
+        valid &= validate(validateSampleName(false), view.plateComponent, plateSampleNames());
       }
       if (sample.getSupport() == DRY || sample.getSupport() == SOLUTION) {
         valid &= validate(standardCountBinder);
@@ -1636,10 +1605,8 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
     } else {
       int count = 0;
-      List<String> excelNames =
-          cells(view.samplesSpreadsheet).map(cell -> view.samplesSpreadsheet.getCellValue(cell))
-              .filter(name -> name != null && !name.isEmpty()).collect(Collectors.toList());
-      for (String name : excelNames) {
+      List<String> plateSampleNames = plateSampleNames();
+      for (String name : plateSampleNames) {
         count++;
         if (!names.add(name)) {
           return ValidationResult
@@ -1847,12 +1814,11 @@ public class SubmissionFormPresenter implements BinderValidator {
   private List<SubmissionSample> samplesFromPlate(Submission submission) {
     List<SubmissionSample> samples = new ArrayList<>();
     SubmissionSample firstSample = firstSampleBinder.getBean();
-    Plate plate = plateBinder.getBean();
-    cells(view.samplesSpreadsheet).forEach(cell -> {
-      String name = view.samplesSpreadsheet.getCellValue(cell);
-      if (name != null && !name.isEmpty()) {
+    view.plateComponent.getPlate().getWells().forEach(well -> {
+      if (well.getSample() != null && well.getSample().getName() != null
+          && !well.getSample().getName().isEmpty()) {
         SubmissionSample sample = new SubmissionSample();
-        sample.setName(name);
+        sample.setName(well.getSample().getName());
         sample.setSupport(firstSample.getSupport());
         sample.setQuantity(firstSample.getQuantity());
         sample.setVolume(firstSample.getVolume());
@@ -1862,10 +1828,10 @@ public class SubmissionFormPresenter implements BinderValidator {
           copyStandardsFromTableToSample(sample);
           copyContaminantsFromTableToSample(sample);
         }
-        Well container = new Well(cell.getRowIndex() - 1, cell.getColumnIndex() - 1);
-        container.setPlate(plate);
-        sample.setOriginalContainer(container);
+        sample.setOriginalContainer(well);
         samples.add(sample);
+        well.setSample(sample);
+        well.getPlate().setName(plateBinder.getBean().getName());
       }
     });
     return samples;
@@ -1893,17 +1859,11 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
   }
 
-  public Submission getBean() {
+  Submission getBean() {
     return submissionBinder.getBean();
   }
 
-  /**
-   * Sets submission.
-   *
-   * @param submission
-   *          submission
-   */
-  public void setBean(Submission submission) {
+  void setBean(Submission submission) {
     if (submission == null) {
       submission = new Submission();
       submission.setService(LC_MS_MS);
@@ -1945,19 +1905,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     if (container instanceof Well) {
       Well containerAsWell = (Well) container;
       plateBinder.setBean(containerAsWell.getPlate());
-      view.samplesSpreadsheet.createCell(containerAsWell.getRow() + 1,
-          containerAsWell.getColumn() + 1, firstSample.getName());
-      logger.debug("Sample name at plate {}-{} is {} and should be {}", containerAsWell.getRow(),
-          containerAsWell.getColumn(), firstSample.getName(),
-          view.samplesSpreadsheet.getCellValue(view.samplesSpreadsheet
-              .getCell(containerAsWell.getRow() + 1, containerAsWell.getColumn() + 1)));
-      samples.stream().skip(1).forEach(sample -> {
-        Well well = (Well) sample.getOriginalContainer();
-        view.samplesSpreadsheet.createCell(well.getRow() + 1, well.getColumn() + 1,
-            sample.getName());
-      });
+      view.plateComponent.setPlate(containerAsWell.getPlate());
     } else {
       plateBinder.setBean(new Plate());
+      view.plateComponent.setPlate(new Plate());
     }
     Service service = submission.getService();
     if (service != null && !service.available) {
@@ -2039,17 +1990,11 @@ public class SubmissionFormPresenter implements BinderValidator {
     updateEditable();
   }
 
-  public boolean isEditable() {
+  boolean isEditable() {
     return editable;
   }
 
-  /**
-   * Sets if form is editable.
-   *
-   * @param editable
-   *          editable
-   */
-  public void setEditable(boolean editable) {
+  void setEditable(boolean editable) {
     this.editable = editable;
     updateVisible();
     updateEditable();

@@ -131,6 +131,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -143,6 +144,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.web.PlateComponent;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -174,7 +176,6 @@ import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.data.ValueContext;
 import com.vaadin.data.converter.AbstractStringToNumberConverter;
 import com.vaadin.data.converter.StringToDoubleConverter;
@@ -198,7 +199,6 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import org.apache.poi.ss.usermodel.Cell;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -284,6 +284,7 @@ public class SubmissionFormPresenterTest {
   private StorageTemperature storageTemperature = StorageTemperature.LOW;
   private SampleContainerType sampleContainerType = SampleContainerType.TUBE;
   private String plateName = "my_plate";
+  private Plate plate;
   private String experience = "my_experience";
   private String experienceGoal = "to succeed!";
   private String taxonomy = "human";
@@ -394,8 +395,7 @@ public class SubmissionFormPresenterTest {
     view.samplesGrid = new Grid<>();
     view.fillSamplesButton = new Button();
     view.samplesPlateContainer = new VerticalLayout();
-    view.samplesSpreadsheet =
-        new Spreadsheet(getClass().getResourceAsStream("/Plate-Template.xlsx"));
+    view.plateComponent = mock(PlateComponent.class);
     view.experiencePanel = new Panel();
     view.experienceField = new TextField();
     view.experienceGoalField = new TextField();
@@ -462,6 +462,9 @@ public class SubmissionFormPresenterTest {
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
     when(plateService.nameAvailable(any())).thenReturn(true);
+    plate = new Plate();
+    plate.initWells();
+    when(view.plateComponent.getPlate()).thenReturn(plate);
   }
 
   private void setFields() {
@@ -477,8 +480,8 @@ public class SubmissionFormPresenterTest {
     view.plateNameField.setValue(plateName);
     view.sampleCountField.setValue(String.valueOf(sampleCount));
     setValuesInSamplesTable();
-    plateSampleNameCell(1, 1).setCellValue(sampleName1);
-    plateSampleNameCell(1, 2).setCellValue(sampleName2);
+    plate.well(0, 0).setSample(new SubmissionSample(null, sampleName1));
+    plate.well(1, 0).setSample(new SubmissionSample(null, sampleName2));
     view.experienceField.setValue(experience);
     view.experienceGoalField.setValue(experienceGoal);
     view.taxonomyField.setValue(taxonomy);
@@ -642,13 +645,6 @@ public class SubmissionFormPresenterTest {
     Path file2Path = temporaryFolder.getRoot().toPath().resolve("file2.tmp");
     Files.copy(new ByteArrayInputStream(filesContent2), file2Path);
     handler.handleFile(file2Path.toFile(), filesFilename2, filesMimeType2, filesContent2.length);
-  }
-
-  private Cell plateSampleNameCell(int column, int row) {
-    if (view.samplesSpreadsheet.getCell(row, column) == null) {
-      view.samplesSpreadsheet.createCell(row, column, "");
-    }
-    return view.samplesSpreadsheet.getCell(row, column);
   }
 
   private String errorMessage(String message) {
@@ -1092,15 +1088,6 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void samplesPlateSelectedCell() {
-    presenter.init(view);
-    presenter.setEditable(true);
-
-    assertEquals(1, view.samplesSpreadsheet.getSelectedCellReference().getCol());
-    assertEquals(1, view.samplesSpreadsheet.getSelectedCellReference().getRow());
-  }
-
-  @Test
   public void digestion_RequiredText() {
     presenter.init(view);
     presenter.setEditable(true);
@@ -1256,7 +1243,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.samplesGrid.getStyleName().contains(SAMPLES_TABLE));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_SAMPLES_PROPERTY));
     assertTrue(view.fillSamplesButton.getStyleName().contains(FILL_BUTTON_STYLE));
-    assertTrue(view.samplesSpreadsheet.getStyleName().contains(SAMPLES_PLATE));
+    verify(view.plateComponent).addStyleName(SAMPLES_PLATE);
     assertTrue(view.experiencePanel.getStyleName().contains(EXPERIENCE_PANEL));
     assertTrue(view.experienceField.getStyleName().contains(EXPERIENCE_PROPERTY));
     assertTrue(view.experienceGoalField.getStyleName().contains(EXPERIENCE_GOAL_PROPERTY));
@@ -1386,20 +1373,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(PROTEIN_WEIGHT_PROPERTY),
         view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_SAMPLES_PROPERTY), view.fillSamplesButton.getCaption());
-    assertEquals(null, view.samplesSpreadsheet.getCaption());
-    assertEquals(resources.message(SAMPLES_PLATE), plateSampleNameCell(0, 0).getStringCellValue());
-    for (int column = 1; column < view.samplesSpreadsheet.getColumns(); column++) {
-      assertEquals(Plate.columnLabel(column - 1),
-          String.valueOf((int) plateSampleNameCell(column, 0).getNumericCellValue()));
-    }
-    for (int row = 1; row < view.samplesSpreadsheet.getRows(); row++) {
-      assertEquals(Plate.rowLabel(row - 1), plateSampleNameCell(0, row).getStringCellValue());
-    }
-    for (int column = 1; column < view.samplesSpreadsheet.getColumns(); column++) {
-      for (int row = 1; row < view.samplesSpreadsheet.getRows(); row++) {
-        assertEquals("", plateSampleNameCell(column, row).getStringCellValue());
-      }
-    }
+    assertEquals(null, view.plateComponent.getCaption());
     assertEquals(resources.message(EXPERIENCE_PANEL), view.experiencePanel.getCaption());
     assertEquals(resources.message(EXPERIENCE_PROPERTY), view.experienceField.getCaption());
     assertEquals(resources.message(EXPERIENCE_GOAL_PROPERTY),
@@ -3535,7 +3509,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(WELL);
-    plateSampleNameCell(1, 1).setCellValue("");
+    plate.well(0, 0).setSample(new SubmissionSample(null, ""));
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3575,7 +3549,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(WELL);
-    plateSampleNameCell(1, 2).setCellValue("");
+    plate.well(1, 0).setSample(new SubmissionSample(null, ""));
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -3615,7 +3589,7 @@ public class SubmissionFormPresenterTest {
     view.sampleSupportOptions.setValue(support);
     setFields();
     view.sampleContainerTypeOptions.setValue(WELL);
-    plateSampleNameCell(1, 2).setCellValue(sampleName1);
+    plate.well(1, 0).setSample(new SubmissionSample(null, sampleName1));
     uploadStructure();
     uploadGelImages();
     uploadFiles();
@@ -6484,8 +6458,7 @@ public class SubmissionFormPresenterTest {
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
     assertEquals(plateName, view.plateNameField.getValue());
-    assertEquals(sampleName1, plateSampleNameCell(1, 1).getStringCellValue());
-    assertEquals(sampleName2, plateSampleNameCell(1, 2).getStringCellValue());
+    verify(view.plateComponent).setPlate(plate);
     assertEquals(experience, view.experienceField.getValue());
     assertEquals(experienceGoal, view.experienceGoalField.getValue());
     assertEquals(taxonomy, view.taxonomyField.getValue());

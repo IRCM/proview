@@ -17,48 +17,46 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import ca.qc.ircm.proview.plate.web.PlateComponent;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.ui.Upload;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import org.vaadin.easyuploads.MultiFileUpload;
 
-import java.io.IOException;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 /**
  * Submission form.
  */
+@Controller
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionForm extends SubmissionFormDesign implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
-  private static final Logger logger = LoggerFactory.getLogger(SubmissionForm.class);
+  @Inject
   private transient SubmissionFormPresenter presenter;
   protected Upload structureUploader;
   protected DefaultMultiFileUpload gelImagesUploader;
   protected DefaultMultiFileUpload filesUploader;
-  protected Spreadsheet samplesSpreadsheet;
+  @Inject
+  protected PlateComponent plateComponent;
 
-  public void setPresenter(SubmissionFormPresenter presenter) {
-    this.presenter = presenter;
+  protected SubmissionForm() {
   }
 
-  /**
-   * Creates SubmissionForm.
-   */
-  public SubmissionForm() {
-    try {
-      samplesSpreadsheet =
-          new Spreadsheet(new XSSFWorkbook(getClass().getResourceAsStream("/Plate-Template.xlsx")));
-    } catch (IOException e) {
-      logger.error("Could not load plate-template");
-      samplesSpreadsheet = new Spreadsheet();
-    }
-    samplesSpreadsheet.setWidth("1024px");
-    samplesSpreadsheet.setHeight("250px");
-    samplesPlateContainer.addComponent(samplesSpreadsheet);
+  protected SubmissionForm(SubmissionFormPresenter presenter, PlateComponent plateComponent) {
+    this.presenter = presenter;
+    this.plateComponent = plateComponent;
+  }
+
+  @PostConstruct
+  public void init() {
+    samplesPlateContainer.addComponent(plateComponent);
   }
 
   @Override
@@ -104,5 +102,21 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
     filesUploader.setFileHandler(fileHandler);
     filesUploaderLayout.addComponent(filesUploader);
     return filesUploader;
+  }
+
+  public Submission getBean() {
+    return presenter.getBean();
+  }
+
+  public void setBean(Submission submission) {
+    presenter.setBean(submission);
+  }
+
+  public boolean isEditable() {
+    return presenter.isEditable();
+  }
+
+  public void setEditable(boolean editable) {
+    presenter.setEditable(editable);
   }
 }

@@ -36,15 +36,13 @@ public class SubmissionView extends SubmissionViewDesign implements BaseView {
   @Inject
   private transient SubmissionViewPresenter presenter;
   @Inject
-  protected transient SubmissionFormPresenter submissionFormPresenter;
-  protected SubmissionForm submissionForm = new SubmissionForm();
+  protected SubmissionForm submissionForm;
 
   /**
    * Initializes view.
    */
   @PostConstruct
   public void init() {
-    submissionForm.setPresenter(submissionFormPresenter);
     submissionFormLayout.addComponent(submissionForm);
   }
 

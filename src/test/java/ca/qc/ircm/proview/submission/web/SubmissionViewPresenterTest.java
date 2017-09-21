@@ -75,7 +75,6 @@ public class SubmissionViewPresenterTest {
     presenter = new SubmissionViewPresenter(submissionService, applicationName);
     view.headerLabel = new Label();
     view.submissionForm = mock(SubmissionForm.class);
-    view.submissionFormPresenter = mock(SubmissionFormPresenter.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
@@ -98,8 +97,8 @@ public class SubmissionViewPresenterTest {
     presenter.enter("");
 
     verify(submissionService, never()).get(any());
-    verify(view.submissionFormPresenter, never()).setBean(any());
-    verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
+    verify(view.submissionForm, never()).setBean(any());
+    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
@@ -116,8 +115,8 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setBean(submission);
-    verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
+    verify(view.submissionForm).setBean(submission);
+    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
@@ -134,8 +133,8 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setBean(submission);
-    verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
+    verify(view.submissionForm).setBean(submission);
+    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
@@ -152,8 +151,8 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setBean(submission);
-    verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
+    verify(view.submissionForm).setBean(submission);
+    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
@@ -170,8 +169,8 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setBean(submission);
-    verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
+    verify(view.submissionForm).setBean(submission);
+    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
@@ -188,8 +187,8 @@ public class SubmissionViewPresenterTest {
     presenter.enter("1");
 
     verify(submissionService).get(1L);
-    verify(view.submissionFormPresenter).setBean(submission);
-    verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
+    verify(view.submissionForm).setBean(submission);
+    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
@@ -199,8 +198,8 @@ public class SubmissionViewPresenterTest {
     presenter.enter("a");
 
     verify(submissionService, never()).get(any());
-    verify(view.submissionFormPresenter, never()).setBean(any());
-    verify(view.submissionFormPresenter, atLeastOnce()).setEditable(booleanCaptor.capture());
+    verify(view.submissionForm, never()).setBean(any());
+    verify(view.submissionForm, atLeastOnce()).setEditable(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     verify(view).showWarning(resources.message(INVALID_SUBMISSION));
   }

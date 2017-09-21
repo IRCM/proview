@@ -42,7 +42,6 @@
   <entry key="plate.name">Plate name</entry>
   <entry key="samples">Samples</entry>
   <entry key="numberProtein">Number of proteins</entry>
-  <entry key="samplesPlate">Plate</entry>
   <entry key="samples.missing">Fill plate with {0} samples</entry>
   <entry key="fillSamples">Fill down</entry>
   <entry key="experiencePanel">Sample details</entry>

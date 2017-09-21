@@ -42,7 +42,6 @@
   <entry key="plate.name">Nom de la plaque</entry>
   <entry key="samples">Échantillons</entry>
   <entry key="numberProtein">Nombre de protéines</entry>
-  <entry key="samplesPlate">Plaque</entry>
   <entry key="samples.missing">Remplissez la plate avec {0} échantillons</entry>
   <entry key="fillSamples">Copier vers le bas</entry>
   <entry key="experiencePanel">Détails à propos des échantillons</entry>

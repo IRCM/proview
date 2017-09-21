@@ -65,7 +65,7 @@ public class SubmissionViewPresenter {
     logger.debug("Submission view");
     this.view = view;
     prepareComponents();
-    view.submissionFormPresenter.setEditable(true);
+    view.submissionForm.setEditable(true);
   }
 
   private void prepareComponents() {
@@ -88,8 +88,8 @@ public class SubmissionViewPresenter {
         Long id = Long.valueOf(parameters);
         logger.debug("Set submission {}", id);
         Submission submission = submissionService.get(id);
-        view.submissionFormPresenter.setBean(submission);
-        view.submissionFormPresenter.setEditable(editable(submission));
+        view.submissionForm.setBean(submission);
+        view.submissionForm.setEditable(editable(submission));
       } catch (NumberFormatException e) {
         view.showWarning(view.getResources().message(INVALID_SUBMISSION));
       }
