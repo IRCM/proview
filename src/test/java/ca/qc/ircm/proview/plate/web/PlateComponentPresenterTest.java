@@ -101,15 +101,19 @@ public class PlateComponentPresenterTest {
     assertEquals(plate.getRowCount() + 1, view.spreadsheet.getRows());
     assertEquals(plate.getColumnCount() + 1, view.spreadsheet.getColumns());
     Sheet sheet = view.spreadsheet.getActiveSheet();
-    assertEquals(resources.message(PLATE),
-        view.spreadsheet.getCellValue(sheet.getRow(0).getCell(0)));
     for (int rowIndex = 0; rowIndex < plate.getRowCount() + 1; rowIndex++) {
       Row row = sheet.getRow(rowIndex);
       for (int column = 0; column < plate.getColumnCount() + 1; column++) {
         Cell cell = row.getCell(column);
         CellStyle style = cell.getCellStyle();
         assertEquals(rowIndex + "-" + column, rowIndex == 0 || column == 0, style.getLocked());
-        if (rowIndex > 0 && column > 0) {
+        if (rowIndex == 0 && column == 0) {
+          assertEquals(resources.message(PLATE), view.spreadsheet.getCellValue(cell));
+        } else if (rowIndex == 0) {
+          assertEquals(Plate.columnLabel(column - 1), view.spreadsheet.getCellValue(cell));
+        } else if (column == 0) {
+          assertEquals(Plate.rowLabel(rowIndex - 1), view.spreadsheet.getCellValue(cell));
+        } else if (rowIndex > 0 && column > 0) {
           assertEquals("", view.spreadsheet.getCellValue(cell));
         }
       }
