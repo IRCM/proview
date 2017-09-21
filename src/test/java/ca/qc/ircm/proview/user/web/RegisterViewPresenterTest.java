@@ -64,7 +64,6 @@ public class RegisterViewPresenterTest {
     presenter = new RegisterViewPresenter(applicationName);
     view.headerLabel = new Label();
     view.userForm = mock(UserForm.class);
-    view.userFormPresenter = mock(UserFormPresenter.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
@@ -80,16 +79,6 @@ public class RegisterViewPresenterTest {
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), view.headerLabel.getValue());
-  }
-
-  @Test
-  public void editable() {
-    verify(view.userFormPresenter).setEditable(true);
-  }
-
-  @Test
-  public void defaultPhoneNumber() {
-    verify(view.userFormPresenter).addPhoneNumber();
   }
 
   @Test

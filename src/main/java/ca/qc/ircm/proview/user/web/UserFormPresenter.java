@@ -43,7 +43,6 @@ import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
@@ -95,7 +94,7 @@ public class UserFormPresenter implements BinderValidator {
   public static final String SAVE = "save";
   private static final Logger logger = LoggerFactory.getLogger(UserFormPresenter.class);
   private UserForm view;
-  private CheckBox editableProperty = new CheckBox(null, false);
+  private boolean readOnly;
   private Binder<User> userBinder = new BeanValidationBinder<>(User.class);
   private Binder<Passwords> passwordsBinder = new BeanValidationBinder<>(Passwords.class);
   private Binder<User> managerBinder = new BeanValidationBinder<>(User.class);
@@ -131,7 +130,7 @@ public class UserFormPresenter implements BinderValidator {
     prepareComponents();
     addListeners();
     passwordsBinder.setBean(new Passwords());
-    setBean(null);
+    setValue(null);
   }
 
   private void prepareComponents() {
@@ -243,7 +242,6 @@ public class UserFormPresenter implements BinderValidator {
   }
 
   private void addListeners() {
-    editableProperty.addValueChangeListener(e -> updateEditable());
     view.confirmPasswordField.addValueChangeListener(e -> {
       passwordsBinder.validate();
     });
@@ -253,49 +251,46 @@ public class UserFormPresenter implements BinderValidator {
     view.saveButton.addClickListener(e -> save());
   }
 
-  private void updateEditable() {
-    final boolean editable = editableProperty.getValue();
+  private void updateReadOnly() {
     final boolean newUser = isNewUser();
     final boolean manager = isManager();
     final boolean admin = isAdmin();
-    view.emailField.setReadOnly(!editable);
-    view.nameField.setReadOnly(!editable);
-    view.newLaboratoryField.setReadOnly(!editable || !newUser);
-    view.managerField.setReadOnly(!editable || !newUser);
-    view.organizationField.setReadOnly(!editable || (!newUser && !manager) || (newUser && admin));
-    view.laboratoryNameField.setReadOnly(!editable || (!newUser && !manager) || (newUser && admin));
-    view.addressLineField.setReadOnly(!editable);
-    view.townField.setReadOnly(!editable);
-    view.stateField.setReadOnly(!editable);
-    view.countryField.setReadOnly(!editable);
-    view.postalCodeField.setReadOnly(!editable);
-    phoneNumberBinders.forEach(binder -> binder.setReadOnly(!editable));
+    view.emailField.setReadOnly(readOnly);
+    view.nameField.setReadOnly(readOnly);
+    view.newLaboratoryField.setReadOnly(readOnly || !newUser);
+    view.managerField.setReadOnly(readOnly || !newUser);
+    view.organizationField.setReadOnly(readOnly || (!newUser && !manager) || (newUser && admin));
+    view.laboratoryNameField.setReadOnly(readOnly || (!newUser && !manager) || (newUser && admin));
+    view.addressLineField.setReadOnly(readOnly);
+    view.townField.setReadOnly(readOnly);
+    view.stateField.setReadOnly(readOnly);
+    view.countryField.setReadOnly(readOnly);
+    view.postalCodeField.setReadOnly(readOnly);
+    phoneNumberBinders.forEach(binder -> binder.setReadOnly(readOnly));
     updateVisible();
   }
 
   private void updateVisible() {
-    final boolean editable = editableProperty.getValue();
     final boolean newUser = isNewUser();
     final boolean newLaboratory = view.newLaboratoryField.getValue();
     final boolean admin = isAdmin();
-    view.passwordField.setVisible(editable);
-    view.confirmPasswordField.setVisible(editable);
-    view.newLaboratoryField.setVisible(newUser && editable && !admin);
-    view.managerField.setVisible(newUser && editable && !newLaboratory && !admin);
-    view.organizationField.setVisible(!newUser || !editable || newLaboratory || (newUser && admin));
+    view.passwordField.setVisible(!readOnly);
+    view.confirmPasswordField.setVisible(!readOnly);
+    view.newLaboratoryField.setVisible(newUser && !readOnly && !admin);
+    view.managerField.setVisible(newUser && !readOnly && !newLaboratory && !admin);
+    view.organizationField.setVisible(!newUser || readOnly || newLaboratory || (newUser && admin));
     view.laboratoryNameField
-        .setVisible(!newUser || !editable || newLaboratory || (newUser && admin));
-    view.clearAddressButton.setVisible(editable);
-    removePhoneNumberButtons.forEach(button -> button.setVisible(editable));
-    view.addPhoneNumberButton.setVisible(editable);
-    view.saveLayout.setVisible(editable);
-    view.registerWarningLabel.setVisible(newUser && editable && !admin);
-    view.saveButton.setVisible(editable);
+        .setVisible(!newUser || readOnly || newLaboratory || (newUser && admin));
+    view.clearAddressButton.setVisible(!readOnly);
+    removePhoneNumberButtons.forEach(button -> button.setVisible(!readOnly));
+    view.addPhoneNumberButton.setVisible(!readOnly);
+    view.saveLayout.setVisible(!readOnly);
+    view.registerWarningLabel.setVisible(newUser && !readOnly && !admin);
+    view.saveButton.setVisible(!readOnly);
   }
 
   private void clearAddress() {
-    boolean editable = editableProperty.getValue();
-    if (editable) {
+    if (!readOnly) {
       view.addressLineField.setValue("");
       view.townField.setValue("");
       view.stateField.setValue("");
@@ -304,10 +299,7 @@ public class UserFormPresenter implements BinderValidator {
     }
   }
 
-  /**
-   * Adds fields for a phone number.
-   */
-  public void addPhoneNumber() {
+  private void addPhoneNumber() {
     PhoneNumber phoneNumber = new PhoneNumber();
     phoneNumber.setType(PhoneNumberType.WORK);
     addPhoneNumber(phoneNumber);
@@ -358,7 +350,7 @@ public class UserFormPresenter implements BinderValidator {
     removeButton.addClickListener(e -> removePhoneNumber(phoneNumberBinder, layout, removeButton));
     removePhoneNumberButtons.add(removeButton);
     layout.addComponent(removeButton);
-    updateEditable();
+    updateReadOnly();
   }
 
   private void removePhoneNumber(Binder<PhoneNumber> phoneNumberBinder, Component layout,
@@ -442,7 +434,7 @@ public class UserFormPresenter implements BinderValidator {
     return authorizationService.hasAdminRole();
   }
 
-  public User getBean() {
+  public User getValue() {
     return userBinder.getBean();
   }
 
@@ -452,7 +444,7 @@ public class UserFormPresenter implements BinderValidator {
    * @param user
    *          user
    */
-  public void setBean(User user) {
+  public void setValue(User user) {
     if (user == null) {
       Address address = new Address();
       address.setLine(defaultAddressConfiguration.getAddress());
@@ -469,6 +461,9 @@ public class UserFormPresenter implements BinderValidator {
         user.getLaboratory().setOrganization(currentUser.getLaboratory().getOrganization());
       }
       user.setPhoneNumbers(new ArrayList<>());
+      PhoneNumber phoneNumber = new PhoneNumber();
+      phoneNumber.setType(PhoneNumberType.WORK);
+      user.getPhoneNumbers().add(phoneNumber);
     }
 
     userBinder.setBean(user);
@@ -486,15 +481,16 @@ public class UserFormPresenter implements BinderValidator {
     if (user.getPhoneNumbers() != null) {
       user.getPhoneNumbers().forEach(phoneNumber -> addPhoneNumber(phoneNumber));
     }
-    updateEditable();
+    updateReadOnly();
   }
 
-  public boolean isEditable() {
-    return editableProperty.getValue();
+  public boolean isReadOnly() {
+    return readOnly;
   }
 
-  public void setEditable(boolean editable) {
-    editableProperty.setValue(editable);
+  public void setReadOnly(boolean readOnly) {
+    this.readOnly = readOnly;
+    updateReadOnly();
   }
 
   private static class Passwords {

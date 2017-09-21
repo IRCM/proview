@@ -99,13 +99,14 @@ public class UserViewPresenter {
 
     if (user == null) {
       view.showWarning(view.getResources().message(INVALID_USER));
+      view.userForm.setReadOnly(true);
     } else {
-      view.userFormPresenter.setBean(user);
-      view.userFormPresenter.setEditable(editable(user));
+      view.userForm.setValue(user);
+      view.userForm.setReadOnly(readOnly(user));
     }
   }
 
-  private boolean editable(User user) {
-    return authorizationService.hasUserWritePermission(user);
+  private boolean readOnly(User user) {
+    return !authorizationService.hasUserWritePermission(user);
   }
 }

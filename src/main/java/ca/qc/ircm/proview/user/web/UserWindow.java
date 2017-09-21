@@ -79,6 +79,6 @@ public class UserWindow extends Window implements BaseComponent {
   private void updateUser(User user) {
     logger.debug("User window for user {}", user);
     setCaption(getResources().message(TITLE, user != null ? user.getName() : ""));
-    view.getPresenter().setBean(user);
+    view.setValue(user);
   }
 }

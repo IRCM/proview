@@ -65,8 +65,6 @@ public class RegisterViewPresenter {
     view.headerLabel.addStyleName(HEADER);
     view.headerLabel.addStyleName("h1");
     view.headerLabel.setValue(resources.message(HEADER));
-    view.userFormPresenter.setEditable(true);
-    view.userFormPresenter.addPhoneNumber();
   }
 
   private void addFieldListeners() {

@@ -60,7 +60,21 @@ public class UserForm extends UserFormDesign implements BaseComponent {
     fireEvent(new SaveEvent<>(this, user));
   }
 
-  public UserFormPresenter getPresenter() {
-    return presenter;
+  public User getValue() {
+    return presenter.getValue();
+  }
+
+  public void setValue(User user) {
+    presenter.setValue(user);
+  }
+
+  @Override
+  public boolean isReadOnly() {
+    return presenter.isReadOnly();
+  }
+
+  @Override
+  public void setReadOnly(boolean readOnly) {
+    presenter.setReadOnly(readOnly);
   }
 }

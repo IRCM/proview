@@ -198,12 +198,12 @@ public class UserFormPresenterTest {
     when(authorizationService.getCurrentUser()).thenReturn(currentUser);
   }
 
-  private void addFirstPhoneNumber() {
+  private void addPhoneNumber() {
     view.addPhoneNumberButton.click();
   }
 
   private boolean isNewUser() {
-    return presenter.getBean().getId() == null;
+    return presenter.getValue().getId() == null;
   }
 
   private boolean isAdmin() {
@@ -226,8 +226,6 @@ public class UserFormPresenterTest {
     view.countryField.setValue(country);
     view.postalCodeField.setValue(postalCode);
     int phoneNumberIndex = view.phoneNumbersLayout.getComponentCount() - 1;
-    view.addPhoneNumberButton.click();
-    phoneNumberIndex++;
     typeField(phoneNumberIndex).setValue(type1);
     numberField(phoneNumberIndex).setValue(number1);
     extensionField(phoneNumberIndex).setValue(extension1);
@@ -284,7 +282,7 @@ public class UserFormPresenterTest {
     assertTrue(view.postalCodeField.getStyleName().contains(ADDRESS_POSTAL_CODE));
     assertTrue(view.clearAddressButton.getStyleName().contains(CLEAR_ADDRESS));
     assertTrue(view.phoneNumbersPanel.getStyleName().contains(PHONE_NUMBERS));
-    addFirstPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).getStyleName().contains(PHONE_NUMBER_TYPE));
     assertTrue(numberField(0).getStyleName().contains(PHONE_NUMBER_NUMBER));
     assertTrue(extensionField(0).getStyleName().contains(PHONE_NUMBER_EXTENSION));
@@ -336,7 +334,7 @@ public class UserFormPresenterTest {
         view.postalCodeField.getPlaceholder());
     assertEquals(resources.message(CLEAR_ADDRESS), view.clearAddressButton.getCaption());
     assertEquals(resources.message(PHONE_NUMBERS), view.phoneNumbersPanel.getCaption());
-    addFirstPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
     assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_TYPE),
         typeField(0).getCaption());
     assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER),
@@ -368,7 +366,7 @@ public class UserFormPresenterTest {
     assertTrue(view.stateField.isRequiredIndicatorVisible());
     assertTrue(view.countryField.isRequiredIndicatorVisible());
     assertTrue(view.postalCodeField.isRequiredIndicatorVisible());
-    addFirstPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isRequiredIndicatorVisible());
     assertTrue(numberField(0).isRequiredIndicatorVisible());
     assertFalse(extensionField(0).isRequiredIndicatorVisible());
@@ -376,7 +374,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void required_ExistingUser() {
-    presenter.setBean(user);
+    presenter.setValue(user);
 
     assertTrue(view.emailField.isRequiredIndicatorVisible());
     assertTrue(view.nameField.isRequiredIndicatorVisible());
@@ -390,14 +388,15 @@ public class UserFormPresenterTest {
     assertTrue(view.stateField.isRequiredIndicatorVisible());
     assertTrue(view.countryField.isRequiredIndicatorVisible());
     assertTrue(view.postalCodeField.isRequiredIndicatorVisible());
-    addFirstPhoneNumber();
+    addPhoneNumber();
     assertTrue(typeField(0).isRequiredIndicatorVisible());
     assertTrue(numberField(0).isRequiredIndicatorVisible());
     assertFalse(extensionField(0).isRequiredIndicatorVisible());
   }
 
   @Test
-  public void editable_False_NewUser() {
+  public void readOnly_True_NewUser() {
+    presenter.setReadOnly(true);
     assertTrue(view.emailField.isReadOnly());
     assertTrue(view.nameField.isReadOnly());
     assertFalse(view.passwordField.isVisible());
@@ -411,16 +410,17 @@ public class UserFormPresenterTest {
     assertTrue(view.stateField.isReadOnly());
     assertTrue(view.countryField.isReadOnly());
     assertTrue(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
     assertTrue(extensionField(0).isReadOnly());
   }
 
   @Test
-  public void editable_False_NewAdminUser() {
+  public void readOnly_True_NewAdminUser() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(null);
+    presenter.setValue(null);
+    presenter.setReadOnly(true);
 
     assertTrue(view.emailField.isReadOnly());
     assertTrue(view.nameField.isReadOnly());
@@ -435,16 +435,16 @@ public class UserFormPresenterTest {
     assertTrue(view.stateField.isReadOnly());
     assertTrue(view.countryField.isReadOnly());
     assertTrue(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
     assertTrue(extensionField(0).isReadOnly());
   }
 
   @Test
-  public void editable_False_ExistsUser() {
-    presenter.setBean(user);
-    presenter.setEditable(false);
+  public void readOnly_True_ExistsUser() {
+    presenter.setValue(user);
+    presenter.setReadOnly(true);
 
     assertTrue(view.emailField.isReadOnly());
     assertTrue(view.nameField.isReadOnly());
@@ -459,17 +459,17 @@ public class UserFormPresenterTest {
     assertTrue(view.stateField.isReadOnly());
     assertTrue(view.countryField.isReadOnly());
     assertTrue(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    addPhoneNumber();
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
     assertTrue(extensionField(0).isReadOnly());
   }
 
   @Test
-  public void editable_False_ExistsManagerUser() {
+  public void readOnly_True_ExistsManagerUser() {
     when(authorizationService.hasManagerRole()).thenReturn(true);
-    presenter.setBean(user);
-    presenter.setEditable(false);
+    presenter.setValue(user);
+    presenter.setReadOnly(true);
 
     assertTrue(view.emailField.isReadOnly());
     assertTrue(view.nameField.isReadOnly());
@@ -484,17 +484,17 @@ public class UserFormPresenterTest {
     assertTrue(view.stateField.isReadOnly());
     assertTrue(view.countryField.isReadOnly());
     assertTrue(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    addPhoneNumber();
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
     assertTrue(extensionField(0).isReadOnly());
   }
 
   @Test
-  public void editable_False_ExistsAdminUser() {
+  public void readOnly_True_ExistsAdminUser() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(user);
-    presenter.setEditable(false);
+    presenter.setValue(user);
+    presenter.setReadOnly(true);
 
     assertTrue(view.emailField.isReadOnly());
     assertTrue(view.nameField.isReadOnly());
@@ -509,16 +509,14 @@ public class UserFormPresenterTest {
     assertTrue(view.stateField.isReadOnly());
     assertTrue(view.countryField.isReadOnly());
     assertTrue(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    addPhoneNumber();
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
     assertTrue(extensionField(0).isReadOnly());
   }
 
   @Test
-  public void editable_True_NewUser() {
-    presenter.setEditable(true);
-
+  public void readOnly_False_NewUser() {
     assertFalse(view.emailField.isReadOnly());
     assertFalse(view.nameField.isReadOnly());
     assertTrue(view.passwordField.isVisible());
@@ -534,17 +532,16 @@ public class UserFormPresenterTest {
     assertFalse(view.stateField.isReadOnly());
     assertFalse(view.countryField.isReadOnly());
     assertFalse(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
     assertFalse(extensionField(0).isReadOnly());
   }
 
   @Test
-  public void editable_True_NewAdminUser() {
+  public void readOnly_False_NewAdminUser() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(null);
-    presenter.setEditable(true);
+    presenter.setValue(null);
 
     assertFalse(view.emailField.isReadOnly());
     assertFalse(view.nameField.isReadOnly());
@@ -561,16 +558,15 @@ public class UserFormPresenterTest {
     assertFalse(view.stateField.isReadOnly());
     assertFalse(view.countryField.isReadOnly());
     assertFalse(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
     assertFalse(extensionField(0).isReadOnly());
   }
 
   @Test
-  public void editable_True_ExistsUser() {
-    presenter.setBean(user);
-    presenter.setEditable(true);
+  public void readOnly_False_ExistsUser() {
+    presenter.setValue(user);
 
     assertFalse(view.emailField.isReadOnly());
     assertFalse(view.nameField.isReadOnly());
@@ -587,17 +583,16 @@ public class UserFormPresenterTest {
     assertFalse(view.stateField.isReadOnly());
     assertFalse(view.countryField.isReadOnly());
     assertFalse(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    addPhoneNumber();
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
     assertFalse(extensionField(0).isReadOnly());
   }
 
   @Test
-  public void editable_True_ExistsManagerUser() {
+  public void readOnly_False_ExistsManagerUser() {
     when(authorizationService.hasManagerRole()).thenReturn(true);
-    presenter.setBean(user);
-    presenter.setEditable(true);
+    presenter.setValue(user);
 
     assertFalse(view.emailField.isReadOnly());
     assertFalse(view.nameField.isReadOnly());
@@ -614,17 +609,16 @@ public class UserFormPresenterTest {
     assertFalse(view.stateField.isReadOnly());
     assertFalse(view.countryField.isReadOnly());
     assertFalse(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    addPhoneNumber();
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
     assertFalse(extensionField(0).isReadOnly());
   }
 
   @Test
-  public void editable_True_ExistsAdminUser() {
+  public void readOnly_False_ExistsAdminUser() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(user);
-    presenter.setEditable(true);
+    presenter.setValue(user);
 
     assertFalse(view.emailField.isReadOnly());
     assertFalse(view.nameField.isReadOnly());
@@ -641,144 +635,147 @@ public class UserFormPresenterTest {
     assertFalse(view.stateField.isReadOnly());
     assertFalse(view.countryField.isReadOnly());
     assertFalse(view.postalCodeField.isReadOnly());
-    addFirstPhoneNumber();
+    addPhoneNumber();
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
     assertFalse(extensionField(0).isReadOnly());
   }
 
   @Test
+  public void visible_ReadOnly_NewUser() {
+    presenter.setReadOnly(true);
+
+    assertTrue(view.userPanel.isVisible());
+    assertTrue(view.emailField.isVisible());
+    assertTrue(view.nameField.isVisible());
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
+    assertFalse(view.newLaboratoryField.isVisible());
+    assertFalse(view.managerField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
+    assertTrue(view.addressPanel.isVisible());
+    assertTrue(view.addressLineField.isVisible());
+    assertTrue(view.townField.isVisible());
+    assertTrue(view.stateField.isVisible());
+    assertTrue(view.countryField.isVisible());
+    assertTrue(view.postalCodeField.isVisible());
+    assertFalse(view.clearAddressButton.isVisible());
+    assertTrue(view.phoneNumbersPanel.isVisible());
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertTrue(typeField(0).isVisible());
+    assertTrue(numberField(0).isVisible());
+    assertTrue(extensionField(0).isVisible());
+    assertFalse(removePhoneNumberButton(0).isVisible());
+    assertFalse(view.addPhoneNumberButton.isVisible());
+    assertFalse(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
+    assertFalse(view.saveButton.isVisible());
+  }
+
+  @Test
+  public void visible_ReadOnly_NewAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setValue(null);
+    presenter.setReadOnly(true);
+
+    assertTrue(view.userPanel.isVisible());
+    assertTrue(view.emailField.isVisible());
+    assertTrue(view.nameField.isVisible());
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
+    assertFalse(view.newLaboratoryField.isVisible());
+    assertFalse(view.managerField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
+    assertTrue(view.addressPanel.isVisible());
+    assertTrue(view.addressLineField.isVisible());
+    assertTrue(view.townField.isVisible());
+    assertTrue(view.stateField.isVisible());
+    assertTrue(view.countryField.isVisible());
+    assertTrue(view.postalCodeField.isVisible());
+    assertFalse(view.clearAddressButton.isVisible());
+    assertTrue(view.phoneNumbersPanel.isVisible());
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertTrue(typeField(0).isVisible());
+    assertTrue(numberField(0).isVisible());
+    assertTrue(extensionField(0).isVisible());
+    assertFalse(removePhoneNumberButton(0).isVisible());
+    assertFalse(view.addPhoneNumberButton.isVisible());
+    assertFalse(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
+    assertFalse(view.saveButton.isVisible());
+  }
+
+  @Test
+  public void visible_ReadOnly_ExistsUser() {
+    presenter.setValue(user);
+    presenter.setReadOnly(true);
+
+    assertTrue(view.userPanel.isVisible());
+    assertTrue(view.emailField.isVisible());
+    assertTrue(view.nameField.isVisible());
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
+    assertFalse(view.newLaboratoryField.isVisible());
+    assertFalse(view.managerField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
+    assertTrue(view.addressPanel.isVisible());
+    assertTrue(view.addressLineField.isVisible());
+    assertTrue(view.townField.isVisible());
+    assertTrue(view.stateField.isVisible());
+    assertTrue(view.countryField.isVisible());
+    assertTrue(view.postalCodeField.isVisible());
+    assertFalse(view.clearAddressButton.isVisible());
+    assertTrue(view.phoneNumbersPanel.isVisible());
+    addPhoneNumber();
+    assertTrue(typeField(0).isVisible());
+    assertTrue(numberField(0).isVisible());
+    assertTrue(extensionField(0).isVisible());
+    assertFalse(removePhoneNumberButton(0).isVisible());
+    assertFalse(view.addPhoneNumberButton.isVisible());
+    assertFalse(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
+    assertFalse(view.saveButton.isVisible());
+  }
+
+  @Test
+  public void visible_ReadOnly_ExistsAdminUser() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.setValue(user);
+    presenter.setReadOnly(true);
+
+    assertTrue(view.userPanel.isVisible());
+    assertTrue(view.emailField.isVisible());
+    assertTrue(view.nameField.isVisible());
+    assertFalse(view.passwordField.isVisible());
+    assertFalse(view.confirmPasswordField.isVisible());
+    assertFalse(view.newLaboratoryField.isVisible());
+    assertFalse(view.managerField.isVisible());
+    assertTrue(view.organizationField.isVisible());
+    assertTrue(view.laboratoryNameField.isVisible());
+    assertTrue(view.addressPanel.isVisible());
+    assertTrue(view.addressLineField.isVisible());
+    assertTrue(view.townField.isVisible());
+    assertTrue(view.stateField.isVisible());
+    assertTrue(view.countryField.isVisible());
+    assertTrue(view.postalCodeField.isVisible());
+    assertFalse(view.clearAddressButton.isVisible());
+    assertTrue(view.phoneNumbersPanel.isVisible());
+    addPhoneNumber();
+    assertTrue(typeField(0).isVisible());
+    assertTrue(numberField(0).isVisible());
+    assertTrue(extensionField(0).isVisible());
+    assertFalse(removePhoneNumberButton(0).isVisible());
+    assertFalse(view.addPhoneNumberButton.isVisible());
+    assertFalse(view.saveLayout.isVisible());
+    assertFalse(view.registerWarningLabel.isVisible());
+    assertFalse(view.saveButton.isVisible());
+  }
+
+  @Test
   public void visible_NewUser() {
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertFalse(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
-    addFirstPhoneNumber();
-    assertTrue(typeField(0).isVisible());
-    assertTrue(numberField(0).isVisible());
-    assertTrue(extensionField(0).isVisible());
-    assertFalse(removePhoneNumberButton(0).isVisible());
-    assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertFalse(view.saveButton.isVisible());
-  }
-
-  @Test
-  public void visible_NewAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(null);
-
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertFalse(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
-    addFirstPhoneNumber();
-    assertTrue(typeField(0).isVisible());
-    assertTrue(numberField(0).isVisible());
-    assertTrue(extensionField(0).isVisible());
-    assertFalse(removePhoneNumberButton(0).isVisible());
-    assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertFalse(view.saveButton.isVisible());
-  }
-
-  @Test
-  public void visible_ExistsUser() {
-    presenter.setBean(user);
-
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertFalse(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
-    addFirstPhoneNumber();
-    assertTrue(typeField(0).isVisible());
-    assertTrue(numberField(0).isVisible());
-    assertTrue(extensionField(0).isVisible());
-    assertFalse(removePhoneNumberButton(0).isVisible());
-    assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertFalse(view.saveButton.isVisible());
-  }
-
-  @Test
-  public void visible_ExistsAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(user);
-
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertFalse(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
-    addFirstPhoneNumber();
-    assertTrue(typeField(0).isVisible());
-    assertTrue(numberField(0).isVisible());
-    assertTrue(extensionField(0).isVisible());
-    assertFalse(removePhoneNumberButton(0).isVisible());
-    assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertFalse(view.saveButton.isVisible());
-  }
-
-  @Test
-  public void visible_Editable_NewUser() {
-    presenter.setEditable(true);
-
     assertTrue(view.userPanel.isVisible());
     assertTrue(view.emailField.isVisible());
     assertTrue(view.nameField.isVisible());
@@ -796,7 +793,7 @@ public class UserFormPresenterTest {
     assertTrue(view.postalCodeField.isVisible());
     assertTrue(view.clearAddressButton.isVisible());
     assertTrue(view.phoneNumbersPanel.isVisible());
-    addFirstPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
@@ -808,10 +805,9 @@ public class UserFormPresenterTest {
   }
 
   @Test
-  public void visible_Editable_NewAdminUser() {
+  public void visible_NewAdminUser() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(null);
-    presenter.setEditable(true);
+    presenter.setValue(null);
 
     assertTrue(view.userPanel.isVisible());
     assertTrue(view.emailField.isVisible());
@@ -830,7 +826,7 @@ public class UserFormPresenterTest {
     assertTrue(view.postalCodeField.isVisible());
     assertTrue(view.clearAddressButton.isVisible());
     assertTrue(view.phoneNumbersPanel.isVisible());
-    addFirstPhoneNumber();
+    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
@@ -842,9 +838,7 @@ public class UserFormPresenterTest {
   }
 
   @Test
-  public void visible_Editable_NewUser_NewLaboratory() {
-    presenter.setEditable(true);
-
+  public void visible_NewUser_NewLaboratory() {
     view.newLaboratoryField.setValue(true);
     assertTrue(view.newLaboratoryField.isVisible());
     assertFalse(view.managerField.isVisible());
@@ -853,9 +847,8 @@ public class UserFormPresenterTest {
   }
 
   @Test
-  public void visible_Editable_ExistsUser() {
-    presenter.setBean(user);
-    presenter.setEditable(true);
+  public void visible_ExistsUser() {
+    presenter.setValue(user);
 
     assertTrue(view.userPanel.isVisible());
     assertTrue(view.emailField.isVisible());
@@ -874,7 +867,7 @@ public class UserFormPresenterTest {
     assertTrue(view.postalCodeField.isVisible());
     assertTrue(view.clearAddressButton.isVisible());
     assertTrue(view.phoneNumbersPanel.isVisible());
-    addFirstPhoneNumber();
+    addPhoneNumber();
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
@@ -886,10 +879,9 @@ public class UserFormPresenterTest {
   }
 
   @Test
-  public void visible_Editable_ExistsAdminUser() {
+  public void visible_ExistsAdminUser() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(user);
-    presenter.setEditable(true);
+    presenter.setValue(user);
 
     assertTrue(view.userPanel.isVisible());
     assertTrue(view.emailField.isVisible());
@@ -908,7 +900,7 @@ public class UserFormPresenterTest {
     assertTrue(view.postalCodeField.isVisible());
     assertTrue(view.clearAddressButton.isVisible());
     assertTrue(view.phoneNumbersPanel.isVisible());
-    addFirstPhoneNumber();
+    addPhoneNumber();
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
@@ -930,7 +922,7 @@ public class UserFormPresenterTest {
   @Test
   public void defaultLaboratory_NewAdminUser() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(null);
+    presenter.setValue(null);
 
     assertEquals(currentUser.getLaboratory().getOrganization(), view.organizationField.getValue());
     assertEquals(currentUser.getLaboratory().getName(), view.laboratoryNameField.getValue());
@@ -938,7 +930,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void defaultLaboratory_ExistingUser() {
-    presenter.setBean(user);
+    presenter.setValue(user);
 
     assertEquals(user.getLaboratory().getOrganization(), view.organizationField.getValue());
     assertEquals(user.getLaboratory().getName(), view.laboratoryNameField.getValue());
@@ -947,7 +939,7 @@ public class UserFormPresenterTest {
   @Test
   public void defaultLaboratory_ExistingAdminUser() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(user);
+    presenter.setValue(user);
 
     assertEquals(user.getLaboratory().getOrganization(), view.organizationField.getValue());
     assertEquals(user.getLaboratory().getName(), view.laboratoryNameField.getValue());
@@ -964,8 +956,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void clearAddress() {
-    presenter.setEditable(true);
-
     view.clearAddressButton.click();
 
     assertTrue(view.addressLineField.getValue().isEmpty());
@@ -977,32 +967,23 @@ public class UserFormPresenterTest {
 
   @Test
   public void defaultPhoneType() {
-    addFirstPhoneNumber();
     assertEquals(PhoneNumberType.WORK, typeField(0).getValue());
   }
 
   @Test
-  public void addPhoneNumber() {
-    presenter.addPhoneNumber();
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
-  }
-
-  @Test
   public void addPhoneNumber_Button() {
-    addFirstPhoneNumber();
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    view.addPhoneNumberButton.click();
+    assertEquals(2, view.phoneNumbersLayout.getComponentCount());
   }
 
   @Test
   public void removePhoneNumber() {
-    addFirstPhoneNumber();
     removePhoneNumberButton(0).click();
     assertEquals(0, view.phoneNumbersLayout.getComponentCount());
   }
 
   @Test
   public void save_Email_Empty() {
-    presenter.setEditable(true);
     setFields();
     view.emailField.setValue("");
 
@@ -1017,7 +998,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Email_Invalid() {
-    presenter.setEditable(true);
     setFields();
     view.emailField.setValue("abc");
 
@@ -1033,7 +1013,6 @@ public class UserFormPresenterTest {
   @Test
   public void save_Email_AlreadyExists_NewUser() {
     when(userService.exists(any())).thenReturn(true);
-    presenter.setEditable(true);
     setFields();
 
     view.saveButton.click();
@@ -1049,12 +1028,11 @@ public class UserFormPresenterTest {
   @Test
   public void save_Email_AlreadyExists_ExistingUser() {
     Long userId = user.getId();
-    presenter.setBean(user);
+    presenter.setValue(user);
     User databaseUser = new User(userId);
     databaseUser.setEmail("other@email.com");
     when(userService.exists(any())).thenReturn(true);
     when(userService.get(any(Long.class))).thenReturn(databaseUser);
-    presenter.setEditable(true);
     setFields();
 
     view.saveButton.click();
@@ -1071,12 +1049,11 @@ public class UserFormPresenterTest {
   @Test
   public void save_Email_AlreadyExists_ExistingUser_DatabaseEmail() throws Throwable {
     Long userId = user.getId();
-    presenter.setBean(user);
+    presenter.setValue(user);
     User databaseUser = new User(userId);
     databaseUser.setEmail(email);
     when(userService.exists(any())).thenReturn(true);
     when(userService.get(any(Long.class))).thenReturn(databaseUser);
-    presenter.setEditable(true);
     setFields();
 
     view.saveButton.click();
@@ -1089,7 +1066,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Name_Empty() throws Throwable {
-    presenter.setEditable(true);
     setFields();
     view.nameField.setValue("");
 
@@ -1104,7 +1080,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Password_Empty_NewUser() throws Throwable {
-    presenter.setEditable(true);
     setFields();
     view.passwordField.setValue("");
 
@@ -1119,7 +1094,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_ConfirmPassword_Empty_NewUser() throws Throwable {
-    presenter.setEditable(true);
     setFields();
     view.confirmPasswordField.setValue("");
 
@@ -1134,8 +1108,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Passwords_Empty_ExistingUser() throws Throwable {
-    presenter.setBean(user);
-    presenter.setEditable(true);
+    presenter.setValue(user);
     setFields();
     view.passwordField.setValue("");
     view.confirmPasswordField.setValue("");
@@ -1148,7 +1121,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Passwords_Match() throws Throwable {
-    presenter.setEditable(true);
     setFields();
 
     view.saveButton.click();
@@ -1159,7 +1131,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Passwords_DontMatch_ConfirmPasswordChanged() {
-    presenter.setEditable(true);
     setFields();
     view.confirmPasswordField.setValue("password2");
 
@@ -1174,7 +1145,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Passwords_DontMatch_PasswordChanged() {
-    presenter.setEditable(true);
     setFields();
     view.passwordField.setValue("password2");
 
@@ -1189,7 +1159,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Manager_Empty() {
-    presenter.setEditable(true);
     setFields();
     view.managerField.setValue("");
 
@@ -1204,7 +1173,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Manager_Empty_NewLaboratory() {
-    presenter.setEditable(true);
     setFields();
     view.newLaboratoryField.setValue(true);
     view.managerField.setValue("");
@@ -1217,7 +1185,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Manager_Invalid() {
-    presenter.setEditable(true);
     setFields();
     view.managerField.setValue("abc");
 
@@ -1232,7 +1199,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Manager_NotManager() {
-    presenter.setEditable(true);
     setFields();
     when(userService.isManager(any())).thenReturn(false);
     view.managerField.setValue("not.manager@ircm.qc.ca");
@@ -1248,7 +1214,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Organization_Empty() {
-    presenter.setEditable(true);
     setFields();
     view.newLaboratoryField.setValue(true);
     view.organizationField.setValue("");
@@ -1264,7 +1229,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Organization_Empty_ExistingLaboratory() {
-    presenter.setEditable(true);
     setFields();
     view.organizationField.setValue("");
 
@@ -1276,7 +1240,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_LaboratoryName_Empty() {
-    presenter.setEditable(true);
     setFields();
     view.newLaboratoryField.setValue(true);
     view.laboratoryNameField.setValue("");
@@ -1292,7 +1255,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_LaboratoryName_Empty_ExistingLaboratory() {
-    presenter.setEditable(true);
     setFields();
     view.laboratoryNameField.setValue("");
 
@@ -1304,7 +1266,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_AddressLine_Empty() {
-    presenter.setEditable(true);
     setFields();
     view.addressLineField.setValue("");
 
@@ -1319,7 +1280,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Town_Empty() {
-    presenter.setEditable(true);
     setFields();
     view.townField.setValue("");
 
@@ -1334,7 +1294,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_State_Empty() {
-    presenter.setEditable(true);
     setFields();
     view.stateField.setValue("");
 
@@ -1349,7 +1308,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Country_Empty() {
-    presenter.setEditable(true);
     setFields();
     view.countryField.setValue("");
 
@@ -1364,7 +1322,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_PostalCode_Empty() {
-    presenter.setEditable(true);
     setFields();
     view.postalCodeField.setValue("");
 
@@ -1379,7 +1336,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_PhoneNumberType_Empty_1() {
-    presenter.setEditable(true);
     setFields();
     typeField(0).setValue(null);
 
@@ -1394,7 +1350,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Number_Empty_1() {
-    presenter.setEditable(true);
     setFields();
     numberField(0).setValue("");
 
@@ -1409,7 +1364,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Number_Invalid_1() {
-    presenter.setEditable(true);
     setFields();
     numberField(0).setValue("123-abc");
 
@@ -1425,7 +1379,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Extension_Invalid_1() {
-    presenter.setEditable(true);
     setFields();
     extensionField(0).setValue("1-a");
 
@@ -1441,7 +1394,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_PhoneNumberType_Empty_2() {
-    presenter.setEditable(true);
     setFields();
     typeField(1).setValue(null);
 
@@ -1456,7 +1408,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Number_Empty_2() {
-    presenter.setEditable(true);
     setFields();
     numberField(1).setValue("");
 
@@ -1471,7 +1422,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Number_Invalid_2() {
-    presenter.setEditable(true);
     setFields();
     numberField(1).setValue("123-abc");
 
@@ -1487,7 +1437,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Extension_Invalid_2() {
-    presenter.setEditable(true);
     setFields();
     extensionField(1).setValue("1-a");
 
@@ -1503,7 +1452,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Insert() {
-    presenter.setEditable(true);
     setFields();
     String validationUrl = "validationUrl";
     when(view.getUrl(any())).thenReturn(validationUrl);
@@ -1547,7 +1495,6 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Insert_NewLaboratory() {
-    presenter.setEditable(true);
     setFields();
     view.newLaboratoryField.setValue(true);
     String validationUrl = "validationUrl";
@@ -1594,8 +1541,7 @@ public class UserFormPresenterTest {
   @Test
   public void save_InsertAdmin() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(null);
-    presenter.setEditable(true);
+    presenter.setValue(null);
     setFields();
     String validationUrl = "validationUrl";
     when(view.getUrl(any())).thenReturn(validationUrl);
@@ -1634,10 +1580,9 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Update() {
-    presenter.setBean(user);
-    presenter.setEditable(true);
+    presenter.setValue(user);
     setFields();
-    final int expectedPhoneNumberSize = this.user.getPhoneNumbers().size() + 2;
+    final int expectedPhoneNumberSize = this.user.getPhoneNumbers().size() + 1;
 
     view.saveButton.click();
 
@@ -1677,10 +1622,9 @@ public class UserFormPresenterTest {
   @Test
   public void save_UpdateAdmin() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.setBean(user);
-    presenter.setEditable(true);
+    presenter.setValue(user);
     setFields();
-    final int expectedPhoneNumberSize = this.user.getPhoneNumbers().size() + 2;
+    final int expectedPhoneNumberSize = this.user.getPhoneNumbers().size() + 1;
 
     view.saveButton.click();
 
@@ -1719,8 +1663,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Update_KeepPassword() {
-    presenter.setBean(user);
-    presenter.setEditable(true);
+    presenter.setValue(user);
     setFields();
     view.passwordField.setValue("");
     view.confirmPasswordField.setValue("");
@@ -1732,29 +1675,22 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_Update_RemovePhoneNumber() {
-    presenter.setBean(user);
-    presenter.setEditable(true);
+    PhoneNumber secondPhoneNumber = new PhoneNumber();
+    user.getPhoneNumbers().add(secondPhoneNumber);
+    presenter.setValue(user);
     setFields();
-    final int expectedPhoneNumberSize = this.user.getPhoneNumbers().size() + 1;
     removePhoneNumberButton(0).click();
 
     view.saveButton.click();
 
     verify(userService).update(userCaptor.capture(), eq(password));
     User user = userCaptor.getValue();
-    assertEquals(expectedPhoneNumberSize, user.getPhoneNumbers().size());
-    for (int i = 1; i < expectedPhoneNumberSize - 2; i++) {
-      PhoneNumber expected = this.user.getPhoneNumbers().get(i);
-      PhoneNumber phoneNumber = user.getPhoneNumbers().get(i);
-      assertEquals(expected.getType(), phoneNumber.getType());
-      assertEquals(expected.getNumber(), phoneNumber.getNumber());
-      assertEquals(expected.getExtension(), phoneNumber.getExtension());
-    }
-    PhoneNumber phoneNumber = user.getPhoneNumbers().get(expectedPhoneNumberSize - 2);
+    assertEquals(2, user.getPhoneNumbers().size());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
     assertEquals(type1, phoneNumber.getType());
     assertEquals(number1, phoneNumber.getNumber());
     assertEquals(extension1, phoneNumber.getExtension());
-    phoneNumber = user.getPhoneNumbers().get(expectedPhoneNumberSize - 1);
+    phoneNumber = user.getPhoneNumbers().get(1);
     assertEquals(type2, phoneNumber.getType());
     assertEquals(number2, phoneNumber.getNumber());
     assertEquals(extension2, phoneNumber.getExtension());

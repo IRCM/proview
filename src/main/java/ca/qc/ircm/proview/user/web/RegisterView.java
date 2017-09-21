@@ -34,7 +34,6 @@ public class RegisterView extends RegisterViewDesign implements BaseView {
   private transient RegisterViewPresenter presenter;
   @Inject
   protected UserForm userForm;
-  protected transient UserFormPresenter userFormPresenter;
 
   /**
    * Initializes view.
@@ -42,7 +41,6 @@ public class RegisterView extends RegisterViewDesign implements BaseView {
   @PostConstruct
   public void init() {
     userFormLayout.addComponent(userForm);
-    userFormPresenter = userForm.getPresenter();
   }
 
   @Override

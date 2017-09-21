@@ -37,12 +37,10 @@ public class UserView extends UserViewDesign implements BaseView {
   private transient UserViewPresenter presenter;
   @Inject
   protected UserForm userForm;
-  protected transient UserFormPresenter userFormPresenter;
 
   @PostConstruct
   protected void init() {
     userFormLayout.addComponent(userForm);
-    userFormPresenter = userForm.getPresenter();
   }
 
   @Override

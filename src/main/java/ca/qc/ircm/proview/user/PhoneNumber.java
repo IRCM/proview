@@ -72,7 +72,8 @@ public class PhoneNumber implements Serializable {
 
   @Override
   public String toString() {
-    return "PhoneNumber [id=" + id + ", number=" + number + "]";
+    return "PhoneNumber [id=" + id + ", type=" + type + ", number=" + number + ", extension="
+        + extension + "]";
   }
 
   public Long getId() {

@@ -73,7 +73,6 @@ public class UserViewPresenterTest {
     view.header = new Label();
     view.userFormLayout = new VerticalLayout();
     view.userForm = mock(UserForm.class);
-    view.userFormPresenter = mock(UserFormPresenter.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
@@ -93,56 +92,56 @@ public class UserViewPresenterTest {
   }
 
   @Test
-  public void enter() {
+  public void enter_ReadOnly() {
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     presenter.enter("");
 
-    verify(view.userFormPresenter).setBean(userCaptor.capture());
+    verify(view.userForm).setValue(userCaptor.capture());
     User user = userCaptor.getValue();
     assertEquals(this.user, user);
-    verify(view.userFormPresenter, never()).setEditable(true);
+    verify(view.userForm).setReadOnly(true);
     verify(authorizationService).hasUserWritePermission(user);
   }
 
   @Test
-  public void enter_Editable() {
+  public void enter() {
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(authorizationService.hasUserWritePermission(any())).thenReturn(true);
 
     presenter.enter("");
 
-    verify(view.userFormPresenter).setBean(userCaptor.capture());
+    verify(view.userForm).setValue(userCaptor.capture());
     User user = userCaptor.getValue();
     assertEquals(this.user, user);
-    verify(view.userFormPresenter).setEditable(true);
+    verify(view.userForm).setReadOnly(false);
+    verify(authorizationService).hasUserWritePermission(user);
+  }
+
+  @Test
+  public void enter_User_ReadOnly() {
+    when(userService.get(any(Long.class))).thenReturn(user);
+
+    presenter.enter("1");
+
+    verify(view.userForm).setValue(userCaptor.capture());
+    User user = userCaptor.getValue();
+    assertEquals(this.user, user);
+    verify(view.userForm).setReadOnly(true);
     verify(authorizationService).hasUserWritePermission(user);
   }
 
   @Test
   public void enter_User() {
     when(userService.get(any(Long.class))).thenReturn(user);
-
-    presenter.enter("1");
-
-    verify(view.userFormPresenter).setBean(userCaptor.capture());
-    User user = userCaptor.getValue();
-    assertEquals(this.user, user);
-    verify(view.userFormPresenter, never()).setEditable(true);
-    verify(authorizationService).hasUserWritePermission(user);
-  }
-
-  @Test
-  public void enter_UserEditable() {
-    when(userService.get(any(Long.class))).thenReturn(user);
     when(authorizationService.hasUserWritePermission(any())).thenReturn(true);
 
     presenter.enter("1");
 
-    verify(view.userFormPresenter).setBean(userCaptor.capture());
+    verify(view.userForm).setValue(userCaptor.capture());
     User user = userCaptor.getValue();
     assertEquals(this.user, user);
-    verify(view.userFormPresenter).setEditable(true);
+    verify(view.userForm).setReadOnly(false);
     verify(authorizationService).hasUserWritePermission(user);
   }
 
@@ -150,8 +149,8 @@ public class UserViewPresenterTest {
   public void enter_InvalidId() {
     presenter.enter("a");
 
-    verify(view.userFormPresenter, never()).setBean(any());
-    verify(view.userFormPresenter, never()).setEditable(true);
+    verify(view.userForm, never()).setValue(any());
+    verify(view.userForm).setReadOnly(true);
     verify(view).showWarning(resources.message(INVALID_USER));
   }
 
@@ -161,8 +160,8 @@ public class UserViewPresenterTest {
 
     presenter.enter("1");
 
-    verify(view.userFormPresenter, never()).setBean(any());
-    verify(view.userFormPresenter, never()).setEditable(true);
+    verify(view.userForm, never()).setValue(any());
+    verify(view.userForm).setReadOnly(true);
     verify(view).showWarning(resources.message(INVALID_USER));
   }
 }
