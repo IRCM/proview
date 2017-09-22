@@ -1907,8 +1907,10 @@ public class SubmissionFormPresenter implements BinderValidator {
       plateBinder.setBean(containerAsWell.getPlate());
       view.plateComponent.setValue(containerAsWell.getPlate());
     } else {
-      plateBinder.setBean(new Plate());
-      view.plateComponent.setValue(new Plate());
+      Plate plate = new Plate();
+      plate.initWells();
+      plateBinder.setBean(plate);
+      view.plateComponent.setValue(plate);
     }
     Service service = submission.getService();
     if (service != null && !service.available) {
