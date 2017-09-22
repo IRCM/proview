@@ -107,7 +107,7 @@ public class SubmissionViewPresenterTest {
   public void enter_Submission() {
     when(submissionService.get(any())).thenReturn(submission);
     SubmissionSample sample = new SubmissionSample();
-    sample.setStatus(SampleStatus.TO_RECEIVE);
+    sample.setStatus(SampleStatus.TO_APPROVE);
     List<SubmissionSample> samples = new ArrayList<>();
     samples.add(sample);
     when(submission.getSamples()).thenReturn(samples);
@@ -118,6 +118,24 @@ public class SubmissionViewPresenterTest {
     verify(view.submissionForm).setValue(submission);
     verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
+    verify(view, never()).showWarning(any());
+  }
+
+  @Test
+  public void enter_Submission_ReadOnly_ToReceive() {
+    when(submissionService.get(any())).thenReturn(submission);
+    SubmissionSample sample = new SubmissionSample();
+    sample.setStatus(SampleStatus.TO_RECEIVE);
+    List<SubmissionSample> samples = new ArrayList<>();
+    samples.add(sample);
+    when(submission.getSamples()).thenReturn(samples);
+
+    presenter.enter("1");
+
+    verify(submissionService).get(1L);
+    verify(view.submissionForm).setValue(submission);
+    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     verify(view, never()).showWarning(any());
   }
 

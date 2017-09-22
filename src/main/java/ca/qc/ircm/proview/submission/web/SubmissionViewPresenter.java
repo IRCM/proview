@@ -99,7 +99,7 @@ public class SubmissionViewPresenter {
   private boolean readOnly(Submission submission) {
     boolean readOnly = false;
     for (SubmissionSample sample : submission.getSamples()) {
-      readOnly |= sample.getStatus() != SampleStatus.TO_RECEIVE;
+      readOnly |= sample.getStatus() != SampleStatus.TO_APPROVE;
     }
     return readOnly;
   }
