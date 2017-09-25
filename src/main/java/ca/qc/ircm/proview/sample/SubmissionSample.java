@@ -72,7 +72,7 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
   /**
    * Contaminants that are in the same at submission.
    */
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "sampleId", updatable = false, nullable = false)
   private List<Contaminant> contaminants;
 

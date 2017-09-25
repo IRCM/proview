@@ -107,7 +107,7 @@ public abstract class Sample implements Data, Named, Serializable {
   /**
    * Standards that are in the sample.
    */
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "sampleId", updatable = false, nullable = false)
   private List<Standard> standards;
 
@@ -149,8 +149,8 @@ public abstract class Sample implements Data, Named, Serializable {
     return name;
   }
 
-  public void setName(String tag) {
-    this.name = tag;
+  public void setName(String name) {
+    this.name = name;
   }
 
   public SampleContainer getOriginalContainer() {

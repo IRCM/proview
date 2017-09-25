@@ -37,6 +37,7 @@ import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
+import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
@@ -52,6 +53,7 @@ import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
@@ -76,6 +78,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -94,7 +97,7 @@ import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionServiceTest {
+public class SubmissionServiceTest implements TimeConverter {
   private SubmissionService submissionService;
   @PersistenceContext
   private EntityManager entityManager;
@@ -742,12 +745,15 @@ public class SubmissionServiceTest {
   @Test
   public void insert_EluateSubmission_Plate() throws Exception {
     // Create new submission.
+    Plate plate = new Plate();
+    plate.initWells();
+    plate.setName("unit_test_plate");
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
     sample.setSupport(SampleSupport.SOLUTION);
     sample.setVolume(10.0);
     sample.setQuantity("2.0 μg");
-    sample.setOriginalContainer(new Well(0, 0));
+    sample.setOriginalContainer(plate.well(0, 0));
     sample.setNumberProtein(10);
     sample.setMolecularWeight(120.0);
     SubmissionSample sample2 = new SubmissionSample();
@@ -755,7 +761,7 @@ public class SubmissionServiceTest {
     sample2.setSupport(SampleSupport.SOLUTION);
     sample2.setVolume(10.0);
     sample2.setQuantity("2.0 μg");
-    sample2.setOriginalContainer(new Well(1, 0));
+    sample2.setOriginalContainer(plate.well(1, 0));
     sample2.setNumberProtein(10);
     sample2.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
@@ -869,7 +875,7 @@ public class SubmissionServiceTest {
     assertEquals("comments", standard.getComments());
     Well well = (Well) submissionSample.getOriginalContainer();
     assertNotNull(well);
-    assertEquals(submission.getExperience(), well.getPlate().getName());
+    assertEquals("unit_test_plate", well.getPlate().getName());
     assertEquals(PlateType.SUBMISSION, well.getPlate().getType());
     assertEquals(96, well.getPlate().getWells().size());
     assertEquals(submissionSample, well.getSample());
@@ -1112,6 +1118,386 @@ public class SubmissionServiceTest {
   }
 
   @Test
+  public void update() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 36L);
+    entityManager.detach(submission);
+    submission.setExperience("experience");
+    submission.setGoal("goal");
+    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+
+    submissionService.update(submission);
+
+    entityManager.flush();
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(submissionActivityService).update(submissionCaptor.capture());
+    verify(activityService).insert(activity);
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    assertEquals((Long) 10L, submission.getUser().getId());
+    assertEquals((Long) 2L, submission.getLaboratory().getId());
+    assertEquals(Service.LC_MS_MS, submission.getService());
+    assertEquals("human", submission.getTaxonomy());
+    assertEquals("cap_project", submission.getProject());
+    assertEquals("experience", submission.getExperience());
+    assertEquals("goal", submission.getGoal());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(null, submission.getSource());
+    assertEquals(null, submission.getInjectionType());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
+    assertEquals(null, submission.getUsedProteolyticDigestionMethod());
+    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
+    assertEquals(ProteinIdentification.NCBINR, submission.getProteinIdentification());
+    assertEquals(null, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getEnrichmentType());
+    assertEquals(null, submission.getOtherEnrichmentType());
+    assertEquals(null, submission.getProtein());
+    assertEquals(null, submission.getPostTranslationModification());
+    assertEquals(null, submission.getMudPitFraction());
+    assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
+    assertEquals(null, submission.getComments());
+    assertEquals(LocalDate.of(2011, 11, 16), toLocalDate(submission.getSubmissionDate()));
+    List<SubmissionSample> samples = submission.getSamples();
+    assertEquals(1, samples.size());
+    SubmissionSample submissionSample = samples.get(0);
+    assertEquals((Long) 447L, submissionSample.getId());
+    assertEquals("CAP_20111116_01", submissionSample.getName());
+    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(50.0, submissionSample.getVolume(), 0.0001);
+    assertEquals("1.5 μg", submissionSample.getQuantity());
+    assertEquals(null, submissionSample.getNumberProtein());
+    assertEquals(null, submissionSample.getMolecularWeight());
+    List<Contaminant> contaminants = submissionSample.getContaminants();
+    assertEquals(1, submissionSample.getContaminants().size());
+    Contaminant contaminant = contaminants.get(0);
+    assertEquals((Long) 3L, contaminant.getId());
+    assertEquals("cap_contaminant", contaminant.getName());
+    assertEquals("3 μg", contaminant.getQuantity());
+    assertEquals("some_comments", contaminant.getComments());
+    List<Standard> standards = submissionSample.getStandards();
+    assertEquals(1, standards.size());
+    Standard standard = standards.get(0);
+    assertEquals((Long) 5L, standard.getId());
+    assertEquals("cap_standard", standard.getName());
+    assertEquals("3 μg", standard.getQuantity());
+    assertEquals("some_comments", standard.getComments());
+    Tube tube = (Tube) submissionSample.getOriginalContainer();
+    assertEquals((Long) 9L, tube.getId());
+    assertEquals("CAP_20111116_01", tube.getName());
+    assertEquals(submissionSample, tube.getSample());
+    assertEquals(false, tube.isBanned());
+    assertEquals(0, submission.getGelImages().size());
+    assertEquals(0, submission.getFiles().size());
+
+    // Validate log.
+    Submission submissionLogged = submissionCaptor.getValue();
+    assertEquals(submission.getId(), submissionLogged.getId());
+  }
+
+  @Test
+  public void update_Sample() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 36L);
+    entityManager.detach(submission);
+    submission.setExperience("experience");
+    submission.setGoal("goal");
+    submission.getSamples().get(0).setName("unit_test_01");
+    submission.getSamples().get(0).setVolume(20.0);
+    submission.getSamples().get(0).setQuantity("2.0 μg");
+    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
+        .thenReturn("unit_test_01");
+
+    submissionService.update(submission);
+
+    entityManager.flush();
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(submissionActivityService).update(submissionCaptor.capture());
+    verify(activityService).insert(activity);
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    List<SubmissionSample> samples = submission.getSamples();
+    assertEquals(1, samples.size());
+    SubmissionSample submissionSample = samples.get(0);
+    assertEquals((Long) 447L, submissionSample.getId());
+    assertEquals("unit_test_01", submissionSample.getName());
+    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(20.0, submissionSample.getVolume(), 0.0001);
+    assertEquals("2.0 μg", submissionSample.getQuantity());
+    assertEquals(null, submissionSample.getNumberProtein());
+    assertEquals(null, submissionSample.getMolecularWeight());
+    List<Contaminant> contaminants = submissionSample.getContaminants();
+    assertEquals(1, submissionSample.getContaminants().size());
+    Contaminant contaminant = contaminants.get(0);
+    assertEquals((Long) 3L, contaminant.getId());
+    assertEquals("cap_contaminant", contaminant.getName());
+    assertEquals("3 μg", contaminant.getQuantity());
+    assertEquals("some_comments", contaminant.getComments());
+    List<Standard> standards = submissionSample.getStandards();
+    assertEquals(1, standards.size());
+    Standard standard = standards.get(0);
+    assertEquals((Long) 5L, standard.getId());
+    assertEquals("cap_standard", standard.getName());
+    assertEquals("3 μg", standard.getQuantity());
+    assertEquals("some_comments", standard.getComments());
+    Tube tube = (Tube) submissionSample.getOriginalContainer();
+    assertEquals((Long) 9L, tube.getId());
+    assertEquals("unit_test_01", tube.getName());
+    assertEquals(submissionSample, tube.getSample());
+    assertEquals(false, tube.isBanned());
+    assertEquals(0, submission.getGelImages().size());
+    assertEquals(0, submission.getFiles().size());
+
+    // Validate log.
+    Submission submissionLogged = submissionCaptor.getValue();
+    assertEquals(submission.getId(), submissionLogged.getId());
+  }
+
+  @Test
+  public void update_NewSamples() throws Exception {
+    SubmissionSample sample = new SubmissionSample();
+    sample.setName("unit_test_eluate_01");
+    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setVolume(10.0);
+    sample.setQuantity("2.0 μg");
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
+    SubmissionSample sample2 = new SubmissionSample();
+    sample2.setName("unit_test_eluate_02");
+    sample2.setSupport(SampleSupport.SOLUTION);
+    sample2.setVolume(10.0);
+    sample2.setQuantity("2.0 μg");
+    sample2.setNumberProtein(10);
+    sample2.setMolecularWeight(120.0);
+    List<SubmissionSample> samples = new LinkedList<>();
+    samples.add(sample);
+    samples.add(sample2);
+    Contaminant contaminant = new Contaminant();
+    contaminant.setName("contaminant1");
+    contaminant.setQuantity("1.0 μg");
+    contaminant.setComments("comments");
+    List<Contaminant> contaminants = new ArrayList<>();
+    contaminants.add(contaminant);
+    sample.setContaminants(contaminants);
+    Standard standard = new Standard();
+    standard.setName("standard1");
+    standard.setQuantity("1.0 μg");
+    standard.setComments("comments");
+    List<Standard> standards = new ArrayList<>();
+    standards.add(standard);
+    sample.setStandards(standards);
+    final Set<String> excludes1 = new HashSet<>();
+    final Set<String> excludes2 = new HashSet<>();
+    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
+        .thenAnswer(new Answer<String>() {
+          @Override
+          public String answer(InvocationOnMock invocation) throws Throwable {
+            @SuppressWarnings("unchecked")
+            Collection<String> methodExcludes = (Collection<String>) invocation.getArguments()[1];
+            excludes1.addAll(methodExcludes);
+            return "unit_test_eluate_01";
+          }
+        }).thenAnswer(new Answer<String>() {
+          @Override
+          public String answer(InvocationOnMock invocation) throws Throwable {
+            @SuppressWarnings("unchecked")
+            Collection<String> methodExcludes = (Collection<String>) invocation.getArguments()[1];
+            excludes2.addAll(methodExcludes);
+            return "unit_test_eluate_02";
+          }
+        });
+    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+    Submission submission = entityManager.find(Submission.class, 36L);
+    entityManager.detach(submission);
+    submission.setSamples(samples);
+
+    submissionService.update(submission);
+
+    entityManager.flush();
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(submissionActivityService).update(submissionCaptor.capture());
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
+    verify(tubeService).generateTubeName(eq(sample), anyCollectionOf(String.class));
+    assertEquals(true, excludes1.isEmpty());
+    verify(tubeService).generateTubeName(eq(sample2), anyCollectionOf(String.class));
+    assertEquals(1, excludes2.size());
+    assertEquals(true, excludes2.contains("unit_test_eluate_01"));
+    verify(activityService).insert(activity);
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    samples = submission.getSamples();
+    assertEquals(2, samples.size());
+    SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
+    assertEquals("unit_test_eluate_01", submissionSample.getName());
+    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(new Double(10.0), submissionSample.getVolume());
+    assertEquals("2.0 μg", submissionSample.getQuantity());
+    assertEquals(new Integer(10), submissionSample.getNumberProtein());
+    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
+    contaminants = submissionSample.getContaminants();
+    assertEquals(1, contaminants.size());
+    contaminant = contaminants.get(0);
+    assertEquals("contaminant1", contaminant.getName());
+    assertEquals("1.0 μg", contaminant.getQuantity());
+    assertEquals("comments", contaminant.getComments());
+    standards = submissionSample.getStandards();
+    assertEquals(1, standards.size());
+    standard = standards.get(0);
+    assertEquals("standard1", standard.getName());
+    assertEquals("1.0 μg", standard.getQuantity());
+    assertEquals("comments", standard.getComments());
+    Tube tube = (Tube) submissionSample.getOriginalContainer();
+    assertNotNull(tube);
+    assertEquals("unit_test_eluate_01", tube.getName());
+    assertEquals(submissionSample, tube.getSample());
+    assertEquals(false, tube.isBanned());
+    assertNull(entityManager.find(SubmissionSample.class, 447L));
+    assertNull(entityManager.find(Tube.class, 9L));
+
+    // Validate log.
+    Submission submissionLogged = submissionCaptor.getValue();
+    assertEquals(submission.getId(), submissionLogged.getId());
+  }
+
+  @Test
+  public void update_NewSample_Plate() throws Exception {
+    // Create new submission.
+    Plate plate = new Plate();
+    plate.initWells();
+    plate.setName("unit_test_plate");
+    SubmissionSample sample = new SubmissionSample();
+    sample.setName("unit_test_eluate_01");
+    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setVolume(10.0);
+    sample.setQuantity("2.0 μg");
+    sample.setOriginalContainer(plate.well(0, 0));
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
+    SubmissionSample sample2 = new SubmissionSample();
+    sample2.setName("unit_test_eluate_02");
+    sample2.setSupport(SampleSupport.SOLUTION);
+    sample2.setVolume(10.0);
+    sample2.setQuantity("2.0 μg");
+    sample2.setOriginalContainer(plate.well(1, 0));
+    sample2.setNumberProtein(10);
+    sample2.setMolecularWeight(120.0);
+    List<SubmissionSample> samples = new LinkedList<>();
+    samples.add(sample);
+    samples.add(sample2);
+    Contaminant contaminant = new Contaminant();
+    contaminant.setName("contaminant1");
+    contaminant.setQuantity("1.0 μg");
+    contaminant.setComments("comments");
+    List<Contaminant> contaminants = new ArrayList<>();
+    contaminants.add(contaminant);
+    sample.setContaminants(contaminants);
+    Standard standard = new Standard();
+    standard.setName("standard1");
+    standard.setQuantity("1.0 μg");
+    standard.setComments("comments");
+    List<Standard> standards = new ArrayList<>();
+    standards.add(standard);
+    sample.setStandards(standards);
+    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+    Submission submission = entityManager.find(Submission.class, 36L);
+    entityManager.detach(submission);
+    submission.setSamples(samples);
+
+    submissionService.update(submission);
+
+    entityManager.flush();
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(submissionActivityService).update(submissionCaptor.capture());
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
+    verify(tubeService, never()).generateTubeName(any(), any());
+    verify(activityService).insert(activity);
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    assertEquals((Long) 10L, submission.getUser().getId());
+    assertEquals((Long) 2L, submission.getLaboratory().getId());
+    samples = submission.getSamples();
+    assertEquals(2, samples.size());
+    SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
+    assertEquals("unit_test_eluate_01", submissionSample.getName());
+    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(new Double(10.0), submissionSample.getVolume());
+    assertEquals("2.0 μg", submissionSample.getQuantity());
+    assertEquals(new Integer(10), submissionSample.getNumberProtein());
+    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
+    contaminants = submissionSample.getContaminants();
+    assertEquals(1, contaminants.size());
+    contaminant = contaminants.get(0);
+    assertEquals("contaminant1", contaminant.getName());
+    assertEquals("1.0 μg", contaminant.getQuantity());
+    assertEquals("comments", contaminant.getComments());
+    standards = submissionSample.getStandards();
+    assertEquals(1, standards.size());
+    standard = standards.get(0);
+    assertEquals("standard1", standard.getName());
+    assertEquals("1.0 μg", standard.getQuantity());
+    assertEquals("comments", standard.getComments());
+    Well well = (Well) submissionSample.getOriginalContainer();
+    assertNotNull(well);
+    assertEquals("unit_test_plate", well.getPlate().getName());
+    assertEquals(PlateType.SUBMISSION, well.getPlate().getType());
+    assertEquals(96, well.getPlate().getWells().size());
+    assertEquals(submissionSample, well.getSample());
+    assertEquals(0, well.getRow());
+    assertEquals(0, well.getColumn());
+    assertEquals(false, well.isBanned());
+    assertNull(entityManager.find(SubmissionSample.class, 447L));
+    assertNull(entityManager.find(Tube.class, 9L));
+
+    // Validate log.
+    Submission submissionLogged = submissionCaptor.getValue();
+    assertEquals(submission.getId(), submissionLogged.getId());
+  }
+
+  @Test
+  public void update_UpdateUser() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 36L);
+    entityManager.detach(submission);
+    User user = entityManager.find(User.class, 4L);
+    submission.setUser(user);
+
+    submissionService.update(submission);
+
+    entityManager.flush();
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    assertEquals((Long) 10L, submission.getUser().getId());
+    assertEquals((Long) 2L, submission.getLaboratory().getId());
+  }
+
+  @Test
+  public void update_UpdateDate() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 36L);
+    entityManager.detach(submission);
+    submission.setSubmissionDate(Instant.now());
+
+    submissionService.update(submission);
+
+    entityManager.flush();
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    assertEquals(LocalDate.of(2011, 11, 16), toLocalDate(submission.getSubmissionDate()));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_NotToApprove() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 147L);
+    entityManager.detach(submission);
+
+    submissionService.update(submission);
+  }
+
+  @Test
   public void forceUpdate() throws Exception {
     Submission submission = entityManager.find(Submission.class, 1L);
     entityManager.detach(submission);
@@ -1159,14 +1545,17 @@ public class SubmissionServiceTest {
     submission.setUser(user);
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(submissionActivityService.forceUpdate(any(Submission.class), any(String.class),
+        any(Submission.class))).thenReturn(optionalActivity);
 
     submissionService.forceUpdate(submission, "unit_test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
+    verify(submissionActivityService).forceUpdate(submissionCaptor.capture(), eq("unit_test"),
+        submissionCaptor.capture());
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     verify(activityService).insert(activity);
     submission = entityManager.find(Submission.class, 1L);
     entityManager.refresh(submission);
@@ -1207,10 +1596,97 @@ public class SubmissionServiceTest {
     assertArrayEquals(fileContent, file.getContent());
 
     // Validate log.
-    Submission submissionLogged = submissionCaptor.getValue();
+    Submission submissionLogged = submissionCaptor.getAllValues().get(0);
     assertEquals((Long) 1L, submissionLogged.getId());
     assertEquals(user, submissionLogged.getUser());
     assertEquals(user.getLaboratory().getId(), submissionLogged.getLaboratory().getId());
     assertEquals(newInstant, submissionLogged.getSubmissionDate());
+    Submission oldSubmissionLogged = submissionCaptor.getAllValues().get(1);
+    assertEquals((Long) 1L, oldSubmissionLogged.getId());
+    assertEquals((Long) 3L, oldSubmissionLogged.getUser().getId());
+    assertEquals((Long) 2L, oldSubmissionLogged.getLaboratory().getId());
+    assertEquals(LocalDate.of(2010, 10, 15), toLocalDate(oldSubmissionLogged.getSubmissionDate()));
+  }
+
+  @Test
+  public void forceUpdate_NewSample() throws Exception {
+    SubmissionSample sample = new SubmissionSample();
+    sample.setName("unit_test_eluate_01");
+    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setVolume(10.0);
+    sample.setQuantity("2.0 μg");
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
+    Contaminant contaminant = new Contaminant();
+    contaminant.setName("contaminant1");
+    contaminant.setQuantity("1.0 μg");
+    contaminant.setComments("comments");
+    List<Contaminant> contaminants = new ArrayList<>();
+    contaminants.add(contaminant);
+    sample.setContaminants(contaminants);
+    Standard standard = new Standard();
+    standard.setName("standard1");
+    standard.setQuantity("1.0 μg");
+    standard.setComments("comments");
+    List<Standard> standards = new ArrayList<>();
+    standards.add(standard);
+    sample.setStandards(standards);
+    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
+        .thenReturn("unit_test_eluate_01");
+    Submission submission = entityManager.find(Submission.class, 147L);
+    entityManager.detach(submission);
+    submission.getSamples().add(sample);
+    when(submissionActivityService.forceUpdate(any(Submission.class), any(String.class),
+        any(Submission.class))).thenReturn(optionalActivity);
+
+    submissionService.forceUpdate(submission, "unit_test");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(submissionActivityService).forceUpdate(submissionCaptor.capture(), eq("unit_test"),
+        submissionCaptor.capture());
+    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
+    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
+    verify(tubeService).generateTubeName(eq(sample), anyCollectionOf(String.class));
+    verify(activityService).insert(activity);
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    List<SubmissionSample> samples = submission.getSamples();
+    assertEquals(3, samples.size());
+    SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
+    assertEquals("unit_test_eluate_01", submissionSample.getName());
+    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(new Double(10.0), submissionSample.getVolume());
+    assertEquals("2.0 μg", submissionSample.getQuantity());
+    assertEquals(new Integer(10), submissionSample.getNumberProtein());
+    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
+    contaminants = submissionSample.getContaminants();
+    assertEquals(1, contaminants.size());
+    contaminant = contaminants.get(0);
+    assertEquals("contaminant1", contaminant.getName());
+    assertEquals("1.0 μg", contaminant.getQuantity());
+    assertEquals("comments", contaminant.getComments());
+    standards = submissionSample.getStandards();
+    assertEquals(1, standards.size());
+    standard = standards.get(0);
+    assertEquals("standard1", standard.getName());
+    assertEquals("1.0 μg", standard.getQuantity());
+    assertEquals("comments", standard.getComments());
+    Tube tube = (Tube) submissionSample.getOriginalContainer();
+    assertNotNull(tube);
+    assertEquals("unit_test_eluate_01", tube.getName());
+    assertEquals(submissionSample, tube.getSample());
+    assertEquals(false, tube.isBanned());
+
+    // Validate log.
+    Submission submissionLogged = submissionCaptor.getAllValues().get(0);
+    assertEquals((Long) 147L, submissionLogged.getId());
+    assertEquals((Long) 559L, submissionLogged.getSamples().get(0).getId());
+    assertEquals((Long) 560L, submissionLogged.getSamples().get(1).getId());
+    assertNotNull(submissionLogged.getSamples().get(2).getId());
+    Submission oldSubmissionLogged = submissionCaptor.getAllValues().get(1);
+    assertEquals((Long) 147L, oldSubmissionLogged.getId());
+    assertEquals((Long) 559L, oldSubmissionLogged.getSamples().get(0).getId());
+    assertEquals((Long) 560L, oldSubmissionLogged.getSamples().get(1).getId());
   }
 }

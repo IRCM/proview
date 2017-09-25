@@ -89,7 +89,7 @@ public class Plate implements Data, Serializable, Named {
   /**
    * List of all treatments done on samples.
    */
-  @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "plate")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "plate", orphanRemoval = true)
   private List<Well> wells;
 
   public Plate() {

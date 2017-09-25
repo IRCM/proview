@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.time;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -31,5 +32,9 @@ public interface TimeConverter {
 
   default LocalDateTime toLocalDateTime(Instant instant) {
     return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+  }
+
+  default LocalDate toLocalDate(Instant instant) {
+    return toLocalDateTime(instant).toLocalDate();
   }
 }

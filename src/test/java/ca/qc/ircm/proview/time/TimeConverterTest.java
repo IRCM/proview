@@ -51,6 +51,17 @@ public class TimeConverterTest {
         testTimeConverter.toLocalDateTime(instant2));
   }
 
+  @Test
+  public void toLocalDate_Instant() {
+    Instant instant1 = Instant.now();
+    Instant instant2 = Instant.now().minus(10, ChronoUnit.MINUTES);
+
+    assertEquals(LocalDateTime.ofInstant(instant1, ZoneId.systemDefault()).toLocalDate(),
+        testTimeConverter.toLocalDate(instant1));
+    assertEquals(LocalDateTime.ofInstant(instant2, ZoneId.systemDefault()).toLocalDate(),
+        testTimeConverter.toLocalDate(instant2));
+  }
+
   private static class TestTimeConverter implements TimeConverter {
   }
 }

@@ -22,8 +22,11 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.DatabaseLogUtil;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleActivityService;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.Structure;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.transaction.annotation.Propagation;
@@ -34,6 +37,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
@@ -50,14 +54,17 @@ public class SubmissionActivityService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
+  private SampleActivityService sampleActivityService;
+  @Inject
   private AuthorizationService authorizationService;
 
   protected SubmissionActivityService() {
   }
 
   protected SubmissionActivityService(EntityManager entityManager,
-      AuthorizationService authorizationService) {
+      SampleActivityService sampleActivityService, AuthorizationService authorizationService) {
     this.entityManager = entityManager;
+    this.sampleActivityService = sampleActivityService;
     this.authorizationService = authorizationService;
   }
 
@@ -87,15 +94,37 @@ public class SubmissionActivityService {
    *
    * @param newSubmission
    *          submission containing new properties/values
-   * @param justification
-   *          justification for the changes
    * @return activity about update of samples submission
    */
   @CheckReturnValue
-  public Optional<Activity> update(final Submission newSubmission, final String justification) {
+  public Activity update(final Submission newSubmission) {
     User user = authorizationService.getCurrentUser();
 
-    Submission oldSubmission = entityManager.find(Submission.class, newSubmission.getId());
+    Activity activity = new Activity();
+    activity.setActionType(ActionType.UPDATE);
+    activity.setRecordId(newSubmission.getId());
+    activity.setUser(user);
+    activity.setTableName("submission");
+    activity.setJustification(null);
+    activity.setUpdates(null);
+    return activity;
+  }
+
+  /**
+   * Creates an activity about forced update of samples submission.
+   *
+   * @param newSubmission
+   *          submission containing new properties/values
+   * @param justification
+   *          justification for the changes
+   * @param oldSubmission
+   *          old submission
+   * @return activity about update of samples submission
+   */
+  @CheckReturnValue
+  public Optional<Activity> forceUpdate(final Submission newSubmission, final String justification,
+      Submission oldSubmission) {
+    User user = authorizationService.getCurrentUser();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     class SubmissionUpdateActivityBuilder extends UpdateActivityBuilder {
@@ -219,6 +248,29 @@ public class SubmissionActivityService {
         .newValue(newSubmission.getLaboratory().getId()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionDate")
         .oldValue(oldSubmission.getSubmissionDate()).newValue(newSubmission.getSubmissionDate()));
+    // Sample.
+    Set<Long> oldSampleIds =
+        oldSubmission.getSamples().stream().filter(sample -> sample.getId() != null)
+            .map(sample -> sample.getId()).collect(Collectors.toSet());
+    Set<Long> newSampleIds =
+        newSubmission.getSamples().stream().filter(sample -> sample.getId() != null)
+            .map(sample -> sample.getId()).collect(Collectors.toSet());
+    for (SubmissionSample sample : oldSubmission.getSamples()) {
+      if (!newSampleIds.contains(sample.getId())) {
+        updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.DELETE)
+            .tableName(Sample.TABLE_NAME).recordId(sample.getId()));
+      }
+    }
+    for (SubmissionSample sample : newSubmission.getSamples()) {
+      if (oldSampleIds.contains(sample.getId())) {
+        Optional<Activity> optionalActivity = sampleActivityService.update(sample, justification);
+        optionalActivity.ifPresent(activity -> updateBuilders.addAll(activity.getUpdates().stream()
+            .map(ua -> new UpdateActivityBuilder(ua)).collect(Collectors.toList())));
+      } else {
+        updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.INSERT)
+            .tableName(Sample.TABLE_NAME).recordId(sample.getId()));
+      }
+    }
     // Gel images.
     List<String> oldGelImages =
         oldSubmission.getGelImages() != null ? oldSubmission.getGelImages().stream()
@@ -262,7 +314,7 @@ public class SubmissionActivityService {
         .oldValue(DatabaseLogUtil.reduceLength(oldFiles.toString(), 255))
         .newValue(DatabaseLogUtil.reduceLength(newFiles.toString(), 255)));
 
-    // Keep updates that did not change.
+    // Keep updates that changed.
     final Collection<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {

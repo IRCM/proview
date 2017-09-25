@@ -283,7 +283,7 @@ public class Submission implements Data, LaboratoryData, Serializable {
   /**
    * Solvents that our lab uses that can solubilise sample.
    */
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "submissionId")
   private List<SampleSolvent> solvents;
   /**
@@ -355,12 +355,12 @@ public class Submission implements Data, LaboratoryData, Serializable {
   /**
    * Samples that are part of this submission.
    */
-  @OneToMany(mappedBy = "submission")
+  @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<SubmissionSample> samples;
   /**
    * Gel images.
    */
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "submissionId")
   private List<GelImage> gelImages;
   /**
@@ -372,7 +372,7 @@ public class Submission implements Data, LaboratoryData, Serializable {
   /**
    * Additional files related to submission.
    */
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "submissionId")
   private List<SubmissionFile> files;
 

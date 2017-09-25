@@ -51,6 +51,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -161,38 +163,17 @@ public class SubmissionService {
     submission.setUser(user);
     submission.setSubmissionDate(Instant.now());
     submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
-    Set<String> otherTubeNames = new HashSet<>();
-    Plate plate = null;
-    for (SubmissionSample sample : submission.getSamples()) {
+    Plate plate = plate(submission);
+    submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
       sample.setStatus(SampleStatus.TO_APPROVE);
-      if (sample.getOriginalContainer() == null) {
-        Tube tube = new Tube();
-        tube.setSample(sample);
-        tube.setName(tubeService.generateTubeName(sample, otherTubeNames));
-        tube.setTimestamp(Instant.now());
-        otherTubeNames.add(tube.getName());
-        sample.setOriginalContainer(tube);
-      } else if (sample.getOriginalContainer().getType() == SampleContainerType.WELL) {
-        if (plate == null) {
-          plate = createSubmissionPlate(submission);
-        }
-        Well sourceWell = (Well) sample.getOriginalContainer();
-        Well well = plate.well(sourceWell.getRow(), sourceWell.getColumn());
-        well.setSample(sample);
-        sample.setOriginalContainer(well);
-      }
-    }
+    });
 
     entityManager.persist(submission);
     if (plate != null) {
-      entityManager.persist(plate);
-    }
-    for (SubmissionSample sample : submission.getSamples()) {
-      entityManager.persist(sample);
-      if (sample.getOriginalContainer().getType() == SampleContainerType.TUBE) {
-        entityManager.persist(sample.getOriginalContainer());
-      }
+      persistPlate(submission, plate);
+    } else {
+      persistTubes(submission);
     }
 
     logger.info("Submission {} added to database", submission);
@@ -210,14 +191,36 @@ public class SubmissionService {
     activityService.insert(activity);
   }
 
-  private Plate createSubmissionPlate(Submission submission) {
-    Plate plate = new Plate();
+  private Plate plate(Submission submission) {
+    return submission.getSamples().stream()
+        .filter(sample -> sample.getOriginalContainer() != null
+            && sample.getOriginalContainer().getType() == SampleContainerType.WELL)
+        .findAny().map(sample -> ((Well) sample.getOriginalContainer()).getPlate()).orElse(null);
+  }
+
+  private void persistPlate(Submission submission, Plate plate) {
     plate.setType(PlateType.SUBMISSION);
-    plate.setName(submission.getExperience());
     plate.setInsertTime(Instant.now());
-    plate.initWells();
     plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
-    return plate;
+    submission.getSamples().forEach(sample -> {
+      sample.getOriginalContainer().setSample(sample);
+    });
+    entityManager.persist(plate);
+  }
+
+  private void persistTubes(Submission submission) {
+    Set<String> otherTubeNames = new HashSet<>();
+    submission.getSamples().forEach(sample -> persistTube(sample, otherTubeNames));
+  }
+
+  private void persistTube(SubmissionSample sample, Set<String> otherTubeNames) {
+    Tube tube = new Tube();
+    tube.setSample(sample);
+    tube.setName(tubeService.generateTubeName(sample, otherTubeNames));
+    tube.setTimestamp(Instant.now());
+    otherTubeNames.add(tube.getName());
+    sample.setOriginalContainer(tube);
+    entityManager.persist(tube);
   }
 
   private List<User> adminUsers() {
@@ -264,6 +267,86 @@ public class SubmissionService {
   }
 
   /**
+   * Updates submission. <br>
+   * <strong>Will only work if all samples status are {@link SampleStatus#TO_APPROVE}</strong>
+   *
+   * @param submission
+   *          submission with new information
+   * @throws IllegalArgumentException
+   *           samples don't all have {@link SampleStatus#TO_APPROVE} status
+   */
+  public void update(Submission submission) throws IllegalArgumentException {
+    if (submission.getSamples().stream()
+        .filter(
+            sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.TO_APPROVE)
+        .findAny().isPresent()) {
+      throw new IllegalArgumentException("Cannot update submission if samples don't have "
+          + SampleStatus.TO_APPROVE.name() + " status");
+    }
+    authorizationService.checkSubmissionWritePermission(submission);
+
+    Submission old = entityManager.find(Submission.class, submission.getId());
+    submission.setUser(old.getUser());
+    submission.setLaboratory(old.getLaboratory());
+    submission.setSubmissionDate(old.getSubmissionDate());
+    submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
+    updateNoSecurity(submission);
+
+    Activity activity = submissionActivityService.update(submission);
+    activityService.insert(activity);
+  }
+
+  private void updateNoSecurity(Submission submission) throws IllegalArgumentException {
+    Submission old = entityManager.find(Submission.class, submission.getId());
+    removeUnusedContainers(submission, old);
+    submission.getSamples().forEach(sample -> {
+      sample.setSubmission(submission);
+      sample.setStatus(SampleStatus.TO_APPROVE);
+      if (sample.getId() == null) {
+        entityManager.persist(sample);
+      }
+    });
+
+    entityManager.merge(submission);
+    Plate plate = plate(submission);
+    if (plate != null) {
+      if (plate.getId() == null) {
+        persistPlate(submission, plate);
+      } else {
+        plate = entityManager.merge(plate);
+      }
+    } else {
+      Set<String> otherTubeNames = new HashSet<>();
+      for (SubmissionSample sample : submission.getSamples()) {
+        Tube tube = (Tube) sample.getOriginalContainer();
+        if (tube == null || tube.getId() == null) {
+          persistTube(sample, otherTubeNames);
+        } else {
+          if (!tube.getName().startsWith(sample.getName())) {
+            tube.setName(tubeService.generateTubeName(sample, otherTubeNames));
+          }
+          entityManager.merge(tube);
+        }
+      }
+    }
+  }
+
+  private void removeUnusedContainers(Submission submission, Submission old) {
+    Plate plate = plate(submission);
+    Plate oldPlate = plate(old);
+    if (oldPlate != null && (plate == null || !oldPlate.getId().equals(plate.getId()))) {
+      entityManager.remove(plate);
+    }
+    Function<Submission, Set<Tube>> stubes = sm -> sm.getSamples().stream()
+        .filter(sample -> sample.getOriginalContainer() != null
+            && sample.getOriginalContainer().getType() == SampleContainerType.TUBE)
+        .map(sample -> (Tube) sample.getOriginalContainer()).collect(Collectors.toSet());
+    Set<Tube> tubes = stubes.apply(submission);
+    stubes.apply(old).stream().filter(tube -> !tubes.contains(tube))
+        .forEach(tube -> entityManager.remove(tube));
+  }
+
+  /**
    * Forces submission update.
    *
    * @param submission
@@ -274,14 +357,19 @@ public class SubmissionService {
   public void forceUpdate(Submission submission, String justification) {
     authorizationService.checkAdminRole();
 
+    final Submission old = entityManager.find(Submission.class, submission.getId());
+    entityManager.detach(old);
+
     submission.setLaboratory(submission.getUser().getLaboratory());
+    submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
+    updateNoSecurity(submission);
+    entityManager.flush();
 
     // Log update to database.
-    Optional<Activity> activity = submissionActivityService.update(submission, justification);
+    Optional<Activity> activity =
+        submissionActivityService.forceUpdate(submission, justification, old);
     if (activity.isPresent()) {
       activityService.insert(activity.get());
     }
-
-    entityManager.merge(submission);
   }
 }

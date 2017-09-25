@@ -19,6 +19,9 @@ package ca.qc.ircm.proview.submission;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.ActionType;
@@ -29,8 +32,11 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleActivityService;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.Structure;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
@@ -64,6 +70,8 @@ public class SubmissionActivityServiceTest {
   @PersistenceContext
   private EntityManager entityManager;
   @Mock
+  private SampleActivityService sampleActivityService;
+  @Mock
   private AuthorizationService authorizationService;
   private User user;
 
@@ -73,9 +81,10 @@ public class SubmissionActivityServiceTest {
   @Before
   public void beforeTest() {
     submissionActivityService =
-        new SubmissionActivityService(entityManager, authorizationService);
+        new SubmissionActivityService(entityManager, sampleActivityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(sampleActivityService.update(any(), any())).thenReturn(Optional.empty());
   }
 
   private SampleSolvent find(Collection<SampleSolvent> solvents, Solvent solvent) {
@@ -105,6 +114,72 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void update() {
+    Submission oldSubmission = entityManager.find(Submission.class, 1L);
+    entityManager.detach(oldSubmission);
+    Submission newSubmission = entityManager.find(Submission.class, 1L);
+    entityManager.detach(newSubmission);
+    newSubmission.setService(Service.MALDI_MS);
+    newSubmission.setTaxonomy("mouse");
+    newSubmission.setProject("new_project");
+    newSubmission.setExperience("new_experience");
+    newSubmission.setGoal("new_goal");
+    newSubmission.setMassDetectionInstrument(MassDetectionInstrument.TOF);
+    newSubmission.setSource(MassDetectionInstrumentSource.LDTD);
+    newSubmission.setInjectionType(InjectionType.LC_MS);
+    newSubmission.setProteolyticDigestionMethod(ProteolyticDigestion.DIGESTED);
+    newSubmission.setUsedProteolyticDigestionMethod("Trypsine");
+    newSubmission.setOtherProteolyticDigestionMethod("None");
+    newSubmission.setProteinIdentification(ProteinIdentification.OTHER);
+    newSubmission.setProteinIdentificationLink("http://cou24/my_database");
+    newSubmission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
+    newSubmission.setOtherEnrichmentType("Phosphopeptides");
+    newSubmission.setLowResolution(true);
+    newSubmission.setHighResolution(true);
+    newSubmission.setMsms(true);
+    newSubmission.setExactMsms(true);
+    newSubmission.setMudPitFraction(MudPitFraction.TWELVE);
+    newSubmission.setProteinContent(ProteinContent.LARGE);
+    newSubmission.setProtein("my_protein");
+    newSubmission.setPostTranslationModification("my_modification");
+    newSubmission.setSeparation(GelSeparation.TWO_DIMENSION);
+    newSubmission.setThickness(GelThickness.ONE_HALF);
+    newSubmission.setColoration(GelColoration.OTHER);
+    newSubmission.setOtherColoration("my_coloration");
+    newSubmission.setDevelopmentTime("2.0 min");
+    newSubmission.setDecoloration(true);
+    newSubmission.setWeightMarkerQuantity(2.5);
+    newSubmission.setProteinQuantity("12.0 pmol");
+    newSubmission.setFormula("h2o");
+    newSubmission.setMonoisotopicMass(18.0);
+    newSubmission.setAverageMass(18.0);
+    newSubmission.setSolutionSolvent("ethanol");
+    newSubmission.setOtherSolvent("ch3oh");
+    newSubmission.setToxicity("die");
+    newSubmission.setLightSensitive(true);
+    newSubmission.setStorageTemperature(StorageTemperature.LOW);
+    newSubmission.setQuantification(Quantification.LABEL_FREE);
+    newSubmission.setQuantificationLabels("Heavy:Lys8,Arg10\nMedium:Lys4,Arg6\nLight:None");
+    newSubmission.setComments("new_comment");
+    newSubmission.setSubmissionDate(Instant.now());
+    newSubmission.setAdditionalPrice(new BigDecimal("21.50"));
+    newSubmission.setGelImages(new ArrayList<>());
+    newSubmission.getGelImages().add(new GelImage("image1.jpg"));
+    newSubmission.getGelImages().add(new GelImage("image2.jpg"));
+    newSubmission.setFiles(new ArrayList<>());
+    newSubmission.getFiles().add(new SubmissionFile("my_file.xlsx"));
+    newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
+
+    Activity activity = submissionActivityService.update(newSubmission);
+
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals("submission", activity.getTableName());
+    assertEquals(newSubmission.getId(), activity.getRecordId());
+    assertEquals(null, activity.getJustification());
+    assertEquals(user, activity.getUser());
+  }
+
+  @Test
+  public void forceUpdate() {
     Submission oldSubmission = entityManager.find(Submission.class, 1L);
     entityManager.detach(oldSubmission);
     Submission newSubmission = entityManager.find(Submission.class, 1L);
@@ -167,7 +242,7 @@ public class SubmissionActivityServiceTest {
     newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.update(newSubmission, "unit_test");
+        submissionActivityService.forceUpdate(newSubmission, "unit_test", oldSubmission);
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -572,7 +647,55 @@ public class SubmissionActivityServiceTest {
   }
 
   @Test
-  public void update_MoleculeSample_AddSolvent() throws Throwable {
+  public void forceUpdate_ChangeSamples() {
+    Submission oldSubmission = entityManager.find(Submission.class, 147L);
+    entityManager.detach(oldSubmission);
+    Submission submission = entityManager.find(Submission.class, 147L);
+    entityManager.detach(submission);
+    submission.getSamples().remove(1);
+    submission.getSamples().add(new SubmissionSample(640L, "new_sample"));
+    Activity sampleUpdate = new Activity();
+    sampleUpdate.setUpdates(new ArrayList<>());
+    UpdateActivity updateSampleNameActivity = new UpdateActivity();
+    updateSampleNameActivity.setActionType(ActionType.UPDATE);
+    updateSampleNameActivity.setTableName(Sample.TABLE_NAME);
+    updateSampleNameActivity.setRecordId(559L);
+    updateSampleNameActivity.setColumn("name");
+    updateSampleNameActivity.setOldValue("POLR2A_20141008_1");
+    updateSampleNameActivity.setNewValue("POLR2A_20141008_1_New");
+    sampleUpdate.getUpdates().add(updateSampleNameActivity);
+    when(sampleActivityService.update(any(), any())).thenReturn(Optional.of(sampleUpdate));
+
+    Optional<Activity> optionalActivity =
+        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
+
+    verify(sampleActivityService).update(eq(submission.getSamples().get(0)), any());
+    assertEquals(true, optionalActivity.isPresent());
+    Activity activity = optionalActivity.get();
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals("submission", activity.getTableName());
+    assertEquals(submission.getId(), activity.getRecordId());
+    assertEquals("unit_test", activity.getJustification());
+    assertEquals(user, activity.getUser());
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
+    UpdateActivity removeSampleActivity = new UpdateActivity();
+    removeSampleActivity.setActionType(ActionType.DELETE);
+    removeSampleActivity.setTableName(Sample.TABLE_NAME);
+    removeSampleActivity.setRecordId(560L);
+    expectedUpdateActivities.add(removeSampleActivity);
+    UpdateActivity addSampleActivity = new UpdateActivity();
+    addSampleActivity.setActionType(ActionType.INSERT);
+    addSampleActivity.setTableName(Sample.TABLE_NAME);
+    addSampleActivity.setRecordId(640L);
+    expectedUpdateActivities.add(addSampleActivity);
+    expectedUpdateActivities.add(updateSampleNameActivity);
+    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
+  }
+
+  @Test
+  public void forceUpdate_AddSolvent() throws Throwable {
+    Submission oldSubmission = entityManager.find(Submission.class, 33L);
+    entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
     SampleSolvent solvent = new SampleSolvent(203L, Solvent.OTHER);
@@ -582,7 +705,7 @@ public class SubmissionActivityServiceTest {
     Long solventId = solvent.getId();
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.update(submission, "unit_test");
+        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -610,7 +733,9 @@ public class SubmissionActivityServiceTest {
   }
 
   @Test
-  public void update_MoleculeSample_RemoveSolvent() throws Throwable {
+  public void forceUpdate_RemoveSolvent() throws Throwable {
+    Submission oldSubmission = entityManager.find(Submission.class, 33L);
+    entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
     SampleSolvent solvent = find(submission.getSolvents(), Solvent.METHANOL);
@@ -619,7 +744,7 @@ public class SubmissionActivityServiceTest {
     final Long solventId = solvent.getId();
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.update(submission, "unit_test");
+        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -638,7 +763,9 @@ public class SubmissionActivityServiceTest {
   }
 
   @Test
-  public void update_MoleculeSample_UpdateStructure() throws Throwable {
+  public void forceUpdate_UpdateStructure() throws Throwable {
+    Submission oldSubmission = entityManager.find(Submission.class, 33L);
+    entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
     Structure structure = submission.getStructure();
@@ -650,7 +777,7 @@ public class SubmissionActivityServiceTest {
     structure.setContent(bytes);
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.update(submission, "unit_test");
+        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -672,12 +799,14 @@ public class SubmissionActivityServiceTest {
   }
 
   @Test
-  public void update_NoChange() {
+  public void forceUpdate_NoChange() {
+    Submission oldSubmission = entityManager.find(Submission.class, 1L);
+    entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 1L);
     entityManager.detach(submission);
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.update(submission, "unit_test");
+        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
 
     assertEquals(false, optionalActivity.isPresent());
   }

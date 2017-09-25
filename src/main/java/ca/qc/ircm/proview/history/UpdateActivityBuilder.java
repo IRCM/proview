@@ -29,6 +29,21 @@ public class UpdateActivityBuilder {
   public UpdateActivityBuilder() {
   }
 
+  /**
+   * Creates a builder from activity.
+   *
+   * @param activity
+   *          activity
+   */
+  public UpdateActivityBuilder(UpdateActivity activity) {
+    tableName = activity.getTableName();
+    recordId = activity.getRecordId();
+    actionType = activity.getActionType();
+    column = activity.getColumn();
+    oldValue = activity.getOldValue();
+    newValue = activity.getNewValue();
+  }
+
   public UpdateActivityBuilder(Object oldValue, Object newValue) {
     this.oldValue = oldValue;
     this.newValue = newValue;
@@ -40,7 +55,7 @@ public class UpdateActivityBuilder {
 
   /**
    * Returns update activity for this builder.
-   * 
+   *
    * @return update activity
    */
   public UpdateActivity build() {
