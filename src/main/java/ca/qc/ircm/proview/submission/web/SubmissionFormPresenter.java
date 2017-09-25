@@ -1815,10 +1815,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     List<SubmissionSample> samples = new ArrayList<>();
     SubmissionSample firstSample = firstSampleBinder.getBean();
     view.plateComponent.getValue().getWells().forEach(well -> {
-      if (well.getSample() != null && well.getSample().getName() != null
-          && !well.getSample().getName().isEmpty()) {
-        SubmissionSample sample = new SubmissionSample();
-        sample.setName(well.getSample().getName());
+      if (well.getSample() != null && well.getSample() instanceof SubmissionSample
+          && well.getSample().getName() != null && !well.getSample().getName().isEmpty()) {
+        SubmissionSample sample = (SubmissionSample) well.getSample();
         sample.setSupport(firstSample.getSupport());
         sample.setQuantity(firstSample.getQuantity());
         sample.setVolume(firstSample.getVolume());
@@ -1830,7 +1829,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         }
         sample.setOriginalContainer(well);
         samples.add(sample);
-        well.setSample(sample);
         well.getPlate().setName(plateBinder.getBean().getName());
       }
     });
@@ -1876,8 +1874,6 @@ public class SubmissionFormPresenter implements BinderValidator {
       submission.setSource(ESI);
       submission.setProteinContent(ProteinContent.SMALL);
       submission.setProteinIdentification(REFSEQ);
-    } else {
-      submission = submissionService.get(submission.getId());
     }
     List<SubmissionSample> samples = submission.getSamples();
     if (samples == null) {
@@ -1887,17 +1883,23 @@ public class SubmissionFormPresenter implements BinderValidator {
     if (samples.isEmpty()) {
       firstSample = new SubmissionSample();
       firstSample.setSupport(SOLUTION);
-      firstSample.setNumberProtein(1);
       firstSample.setOriginalContainer(new Tube());
-      samples.add(firstSample);
+      samples.add(new SubmissionSample());
+      samples.get(0).setNumberProtein(1);
     } else {
-      firstSample = samples.get(0);
+      SubmissionSample original = submission.getSamples().get(0);
+      firstSample = new SubmissionSample();
+      firstSample.setContaminants(original.getContaminants());
+      firstSample.setId(original.getId());
+      firstSample.setMolecularWeight(original.getMolecularWeight());
+      firstSample.setName(original.getName());
+      firstSample.setNumberProtein(original.getNumberProtein());
+      firstSample.setOriginalContainer(original.getOriginalContainer());
+      firstSample.setQuantity(original.getQuantity());
+      firstSample.setStandards(original.getStandards());
+      firstSample.setSupport(original.getSupport());
+      firstSample.setVolume(original.getVolume());
     }
-    SubmissionSample firstSampleCopy =
-        new SubmissionSample(firstSample.getId(), firstSample.getName());
-    firstSampleCopy.setNumberProtein(firstSample.getNumberProtein());
-    firstSampleCopy.setMolecularWeight(firstSample.getMolecularWeight());
-    samples.set(0, firstSampleCopy);
     SampleContainer container = firstSample.getOriginalContainer();
 
     submissionBinder.setBean(submission);

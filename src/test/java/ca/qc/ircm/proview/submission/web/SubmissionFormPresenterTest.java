@@ -1057,7 +1057,6 @@ public class SubmissionFormPresenterTest {
     Service service = Service.MALDI_MS;
     Submission submission = new Submission();
     submission.setService(service);
-    when(submissionService.get(any())).thenReturn(submission);
 
     presenter.init(view);
     presenter.setValue(submission);
@@ -1116,7 +1115,6 @@ public class SubmissionFormPresenterTest {
     source = MassDetectionInstrumentSource.LDTD;
     Submission submission = new Submission();
     submission.setSource(source);
-    when(submissionService.get(any())).thenReturn(submission);
 
     presenter.init(view);
     presenter.setValue(submission);
@@ -1142,7 +1140,6 @@ public class SubmissionFormPresenterTest {
     instrument = MassDetectionInstrument.TOF;
     Submission submission = new Submission();
     submission.setMassDetectionInstrument(instrument);
-    when(submissionService.get(any())).thenReturn(submission);
 
     presenter.init(view);
     presenter.setValue(submission);
@@ -1168,7 +1165,6 @@ public class SubmissionFormPresenterTest {
     proteinIdentification = ProteinIdentification.NCBINR;
     Submission submission = new Submission();
     submission.setProteinIdentification(proteinIdentification);
-    when(submissionService.get(any())).thenReturn(submission);
 
     presenter.init(view);
     presenter.setValue(submission);
@@ -1539,7 +1535,6 @@ public class SubmissionFormPresenterTest {
     sample.setStandards(Arrays.asList(new Standard()));
     sample.setContaminants(Arrays.asList(new Contaminant()));
     submission.setSamples(Arrays.asList(sample));
-    when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -1628,7 +1623,6 @@ public class SubmissionFormPresenterTest {
     sample.setStandards(Arrays.asList(new Standard()));
     sample.setContaminants(Arrays.asList(new Contaminant()));
     submission.setSamples(Arrays.asList(sample));
-    when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.setValue(submission);
 
@@ -1714,7 +1708,6 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(support);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -1921,7 +1914,6 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(DRY);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -2090,7 +2082,6 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(GEL);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -2272,7 +2263,6 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     submission.setStructure(new Structure());
     submission.getStructure().setFilename("structure.png");
-    when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -2466,7 +2456,6 @@ public class SubmissionFormPresenterTest {
     submission.setSamples(Arrays.asList(sample));
     submission.setStructure(new Structure());
     submission.getStructure().setFilename("structure.png");
-    when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -2636,7 +2625,6 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(SOLUTION);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -2805,7 +2793,6 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(DRY);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    when(submissionService.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -6222,7 +6209,6 @@ public class SubmissionFormPresenterTest {
   public void setValue_Lcmsms() throws Throwable {
     presenter.init(view);
     Submission submission = createSubmission();
-    when(submissionService.get(any())).thenReturn(submission);
 
     presenter.setValue(submission);
 
@@ -6315,7 +6301,6 @@ public class SubmissionFormPresenterTest {
     plate.initWells();
     submission.getSamples().get(0).setOriginalContainer(plate.well(0, 0));
     submission.getSamples().get(1).setOriginalContainer(plate.well(1, 0));
-    when(submissionService.get(any())).thenReturn(submission);
 
     presenter.setValue(submission);
 
@@ -6407,7 +6392,6 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     Submission submission = createSubmission();
     submission.setService(SMALL_MOLECULE);
-    when(submissionService.get(any())).thenReturn(submission);
 
     presenter.setValue(submission);
 
@@ -6497,7 +6481,6 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     Submission submission = createSubmission();
     submission.setService(INTACT_PROTEIN);
-    when(submissionService.get(any())).thenReturn(submission);
 
     presenter.setValue(submission);
 
