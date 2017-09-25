@@ -365,8 +365,8 @@ public class AuthorizationService {
   public void checkSampleReadPermission(Sample sample) {
     if (sample != null) {
       sample = getSample(sample.getId());
-      getSubject().checkRole("USER");
-      if (!getSubject().hasRole("PROTEOMIC")) {
+      getSubject().checkRole(USER);
+      if (!getSubject().hasRole(ADMIN)) {
         if (sample instanceof SubmissionSample) {
           SubmissionSample submissionSample = (SubmissionSample) sample;
           boolean permitted = false;
@@ -400,8 +400,31 @@ public class AuthorizationService {
   public void checkSubmissionReadPermission(Submission submission) {
     if (submission != null) {
       submission = getSubmission(submission.getId());
-      getSubject().checkRole("USER");
-      if (!getSubject().hasRole("PROTEOMIC")) {
+      getSubject().checkRole(USER);
+      if (!getSubject().hasRole(ADMIN)) {
+        boolean permitted = false;
+        User owner = submission.getUser();
+        permitted |= getSubject().getPrincipal().equals(owner.getId());
+        Laboratory laboratory = submission.getLaboratory();
+        permitted |= getSubject().isPermitted("laboratory:manager:" + laboratory.getId());
+        if (!permitted) {
+          getSubject().checkPermission("submission:owner:" + submission.getId());
+        }
+      }
+    }
+  }
+
+  /**
+   * Checks that current user can write submission.
+   *
+   * @param submission
+   *          submission
+   */
+  public void checkSubmissionWritePermission(Submission submission) {
+    if (submission != null) {
+      submission = getSubmission(submission.getId());
+      getSubject().checkRole(USER);
+      if (!getSubject().hasRole(ADMIN)) {
         boolean permitted = false;
         User owner = submission.getUser();
         permitted |= getSubject().getPrincipal().equals(owner.getId());
@@ -457,8 +480,8 @@ public class AuthorizationService {
    */
   public void checkMsAnalysisReadPermission(MsAnalysis msAnalysis) {
     if (msAnalysis != null) {
-      getSubject().checkRole("USER");
-      if (!getSubject().hasRole("PROTEOMIC")) {
+      getSubject().checkRole(USER);
+      if (!getSubject().hasRole(ADMIN)) {
         boolean permitted = false;
         permitted |= sampleOwnerByMsAnalysis(msAnalysis);
         permitted |= laboratoryManagerByMsAnalysis(msAnalysis);
@@ -508,8 +531,8 @@ public class AuthorizationService {
    */
   public void checkDataAnalysisReadPermission(DataAnalysis dataAnalysis) {
     if (dataAnalysis != null) {
-      getSubject().checkRole("USER");
-      if (!getSubject().hasRole("PROTEOMIC")) {
+      getSubject().checkRole(USER);
+      if (!getSubject().hasRole(ADMIN)) {
         boolean permitted = false;
         permitted |= sampleOwnerByDataAnalysis(dataAnalysis);
         permitted |= laboratoryManagerByDataAnalysis(dataAnalysis);

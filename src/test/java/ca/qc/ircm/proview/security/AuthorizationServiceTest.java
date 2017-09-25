@@ -846,7 +846,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -873,7 +873,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -885,7 +885,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
@@ -902,7 +902,7 @@ public class AuthorizationServiceTest {
     }
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).checkPermission("sample:owner:446");
   }
@@ -916,7 +916,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -943,7 +943,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -955,7 +955,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkSampleReadPermission(sample);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -972,7 +972,7 @@ public class AuthorizationServiceTest {
     }
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
     verify(subject).checkPermission("sample:owner:444");
   }
 
@@ -990,7 +990,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkSubmissionReadPermission(submission);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -1010,14 +1010,14 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
-  public void checkSubmissionReadPermission_SampleOwner() {
+  public void checkSubmissionReadPermission_SubmissionOwner() {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(35L);
 
     authorizationService.checkSubmissionReadPermission(submission);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -1029,7 +1029,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkSubmissionReadPermission(submission);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
@@ -1046,7 +1046,7 @@ public class AuthorizationServiceTest {
     }
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).checkPermission("submission:owner:35");
   }
@@ -1054,6 +1054,81 @@ public class AuthorizationServiceTest {
   @Test
   public void checkSubmissionReadPermission_Null() {
     authorizationService.checkSubmissionReadPermission(null);
+  }
+
+  @Test
+  public void checkSubmissionWritePermission_Proteomic() {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Submission submission = new Submission(35L);
+
+    authorizationService.checkSubmissionWritePermission(submission);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("ADMIN");
+  }
+
+  @Test
+  public void checkSubmissionWritePermission_NotUser() {
+    doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
+    Submission submission = new Submission(35L);
+
+    try {
+      authorizationService.checkSubmissionWritePermission(submission);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void checkSubmissionWritePermission_SubmissionOwner() {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Submission submission = new Submission(35L);
+
+    authorizationService.checkSubmissionWritePermission(submission);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("ADMIN");
+  }
+
+  @Test
+  public void checkSubmissionWritePermission_LaboratoryManager() {
+    when(subject.isPermitted(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Submission submission = new Submission(35L);
+
+    authorizationService.checkSubmissionWritePermission(submission);
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("ADMIN");
+    verify(subject).isPermitted("laboratory:manager:2");
+  }
+
+  @Test
+  public void checkSubmissionWritePermission_Other() {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+
+    Submission submission = new Submission(35L);
+    try {
+      authorizationService.checkSubmissionWritePermission(submission);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+
+    verify(subject).checkRole("USER");
+    verify(subject).hasRole("ADMIN");
+    verify(subject).isPermitted("laboratory:manager:2");
+    verify(subject).checkPermission("submission:owner:35");
+  }
+
+  @Test
+  public void checkSubmissionWritePermission_Null() {
+    authorizationService.checkSubmissionWritePermission(null);
   }
 
   @Test
@@ -1065,7 +1140,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkMsAnalysisReadPermission(msAnalysis);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -1092,7 +1167,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkMsAnalysisReadPermission(msAnalysis);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -1104,7 +1179,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkMsAnalysisReadPermission(msAnalysis);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -1121,7 +1196,7 @@ public class AuthorizationServiceTest {
     }
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
     verify(subject).checkPermission("msAnalysis:read:13");
   }
 
@@ -1139,7 +1214,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -1166,7 +1241,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -1178,7 +1253,7 @@ public class AuthorizationServiceTest {
     authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
   }
 
   @Test
@@ -1195,7 +1270,7 @@ public class AuthorizationServiceTest {
     }
 
     verify(subject).checkRole("USER");
-    verify(subject).hasRole("PROTEOMIC");
+    verify(subject).hasRole("ADMIN");
     verify(subject).checkPermission("dataAnalysis:read:5");
   }
 
