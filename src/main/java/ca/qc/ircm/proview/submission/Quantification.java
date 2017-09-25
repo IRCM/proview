@@ -25,15 +25,14 @@ import java.util.Locale;
  * Quantification.
  */
 public enum Quantification {
-  LABEL_FREE, SILAC;
-
-  private static MessageResource getResources(Locale locale) {
-    return new MessageResource(Quantification.class, locale);
-  }
+  NULL, LABEL_FREE, SILAC;
 
   public static String getNullLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
-    return resources.message("NULL");
+    return NULL.getLabel(locale);
+  }
+
+  private MessageResource getResources(Locale locale) {
+    return new MessageResource(Quantification.class, locale);
   }
 
   public String getLabel(Locale locale) {

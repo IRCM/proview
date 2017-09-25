@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.Quantification.LABEL_FREE;
+import static ca.qc.ircm.proview.submission.Quantification.NULL;
 import static ca.qc.ircm.proview.submission.Quantification.SILAC;
 import static org.junit.Assert.assertEquals;
 
@@ -30,6 +31,12 @@ public class QuantificationTest {
   public void getNullLabel() {
     assertEquals("None", Quantification.getNullLabel(Locale.ENGLISH));
     assertEquals("Aucune", Quantification.getNullLabel(Locale.FRENCH));
+  }
+
+  @Test
+  public void getLabel_Null() {
+    assertEquals("None", NULL.getLabel(Locale.ENGLISH));
+    assertEquals("Aucune", NULL.getLabel(Locale.FRENCH));
   }
 
   @Test

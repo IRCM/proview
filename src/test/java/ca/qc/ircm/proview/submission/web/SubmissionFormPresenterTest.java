@@ -1129,7 +1129,7 @@ public class SubmissionFormPresenterTest {
   public void instrument_Options() {
     presenter.init(view);
 
-    assertEquals(MassDetectionInstrument.availables().size() + 1,
+    assertEquals(MassDetectionInstrument.availables().size(),
         dataProvider(view.instrumentOptions).getItems().size());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.availables()) {
       assertTrue(instrument.name(),

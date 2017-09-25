@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.msanalysis;
 
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
+import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.NULL;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.ORBITRAP_FUSION;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.Q_EXACTIVE;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.Q_TOF;
@@ -36,6 +37,7 @@ import java.util.Locale;
 public class MassDetectionInstrumentTest {
   @Test
   public void availables() {
+    assertTrue(NULL.available);
     assertTrue(VELOS.available);
     assertTrue(Q_EXACTIVE.available);
     assertTrue(TSQ_VANTAGE.available);
@@ -45,17 +47,24 @@ public class MassDetectionInstrumentTest {
     assertFalse(TOF.available);
 
     List<MassDetectionInstrument> availables = MassDetectionInstrument.availables();
-    assertEquals(4, availables.size());
-    assertEquals(VELOS, availables.get(0));
-    assertEquals(Q_EXACTIVE, availables.get(1));
-    assertEquals(TSQ_VANTAGE, availables.get(2));
-    assertEquals(ORBITRAP_FUSION, availables.get(3));
+    assertEquals(5, availables.size());
+    assertEquals(NULL, availables.get(0));
+    assertEquals(VELOS, availables.get(1));
+    assertEquals(Q_EXACTIVE, availables.get(2));
+    assertEquals(TSQ_VANTAGE, availables.get(3));
+    assertEquals(ORBITRAP_FUSION, availables.get(4));
   }
 
   @Test
   public void getNullLabel() {
     assertEquals("Specialist's choice", MassDetectionInstrument.getNullLabel(Locale.ENGLISH));
     assertEquals("Choix du spécialiste", MassDetectionInstrument.getNullLabel(Locale.FRENCH));
+  }
+
+  @Test
+  public void getLabel_Null() {
+    assertEquals("Specialist's choice", NULL.getLabel(Locale.ENGLISH));
+    assertEquals("Choix du spécialiste", NULL.getLabel(Locale.FRENCH));
   }
 
   @Test

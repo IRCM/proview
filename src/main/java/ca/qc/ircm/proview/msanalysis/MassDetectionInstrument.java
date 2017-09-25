@@ -28,8 +28,8 @@ import java.util.stream.Stream;
  * Instruments available for protein mass detection.
  */
 public enum MassDetectionInstrument {
-  VELOS(true), Q_EXACTIVE(true), TSQ_VANTAGE(true), ORBITRAP_FUSION(true), LTQ_ORBI_TRAP(false),
-  Q_TOF(false), TOF(false);
+  NULL(true), VELOS(true), Q_EXACTIVE(true), TSQ_VANTAGE(true), ORBITRAP_FUSION(true),
+  LTQ_ORBI_TRAP(false), Q_TOF(false), TOF(false);
 
   public final boolean available;
 
@@ -42,13 +42,12 @@ public enum MassDetectionInstrument {
         .collect(Collectors.toList());
   }
 
-  private static MessageResource getResources(Locale locale) {
-    return new MessageResource(MassDetectionInstrument.class, locale);
+  public static String getNullLabel(Locale locale) {
+    return NULL.getLabel(locale);
   }
 
-  public static String getNullLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
-    return resources.message("NULL");
+  private MessageResource getResources(Locale locale) {
+    return new MessageResource(MassDetectionInstrument.class, locale);
   }
 
   public String getLabel(Locale locale) {

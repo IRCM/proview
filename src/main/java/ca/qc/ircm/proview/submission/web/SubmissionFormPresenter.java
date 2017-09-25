@@ -82,7 +82,6 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.proview.web.data.NullableListDataProvider;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -1001,12 +1000,13 @@ public class SubmissionFormPresenter implements BinderValidator {
         .bind(PROTEIN_CONTENT_PROPERTY);
     view.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
     view.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
-    view.instrumentOptions.setDataProvider(new NullableListDataProvider<>(instrumentValues()));
+    view.instrumentOptions.setItems(instrumentValues());
     view.instrumentOptions.setItemCaptionGenerator(instrument -> instrument != null
         ? instrument.getLabel(locale) : MassDetectionInstrument.getNullLabel(locale));
     view.instrumentOptions
         .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : true);
-    submissionBinder.forField(view.instrumentOptions).bind(INSTRUMENT_PROPERTY);
+    submissionBinder.forField(view.instrumentOptions)
+        .withNullRepresentation(MassDetectionInstrument.NULL).bind(INSTRUMENT_PROPERTY);
     view.proteinIdentificationOptions.addStyleName(PROTEIN_IDENTIFICATION_PROPERTY);
     view.proteinIdentificationOptions
         .setCaption(resources.message(PROTEIN_IDENTIFICATION_PROPERTY));
@@ -1028,11 +1028,11 @@ public class SubmissionFormPresenter implements BinderValidator {
         .withNullRepresentation("").bind(PROTEIN_IDENTIFICATION_LINK_PROPERTY);
     view.quantificationOptions.addStyleName(QUANTIFICATION_PROPERTY);
     view.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
-    view.quantificationOptions
-        .setDataProvider(new NullableListDataProvider<>(quantificationValues()));
+    view.quantificationOptions.setItems(quantificationValues());
     view.quantificationOptions.setItemCaptionGenerator(quantification -> quantification != null
         ? quantification.getLabel(locale) : Quantification.getNullLabel(locale));
-    submissionBinder.forField(view.quantificationOptions).bind(QUANTIFICATION_PROPERTY);
+    submissionBinder.forField(view.quantificationOptions)
+        .withNullRepresentation(Quantification.NULL).bind(QUANTIFICATION_PROPERTY);
     view.quantificationLabelsField.addStyleName(QUANTIFICATION_LABELS_PROPERTY);
     view.quantificationLabelsField.setCaption(resources.message(QUANTIFICATION_LABELS_PROPERTY));
     view.quantificationLabelsField
@@ -2003,15 +2003,11 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private List<MassDetectionInstrument> instrumentValues() {
-    List<MassDetectionInstrument> values = new ArrayList<>(MassDetectionInstrument.availables());
-    values.add(0, null);
-    return values;
+    return MassDetectionInstrument.availables();
   }
 
   private List<Quantification> quantificationValues() {
-    List<Quantification> values = new ArrayList<>(Arrays.asList(Quantification.values()));
-    values.add(0, null);
-    return values;
+    return Arrays.asList(Quantification.values());
   }
 
   @SuppressWarnings("serial")
