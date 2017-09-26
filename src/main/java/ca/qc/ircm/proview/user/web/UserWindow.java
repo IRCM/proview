@@ -17,9 +17,10 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.ui.Panel;
+import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,28 +39,32 @@ import javax.inject.Inject;
 public class UserWindow extends Window implements BaseComponent {
   public static final String WINDOW_STYLE = "user-window";
   public static final String TITLE = "title";
+  public static final String UPDATE = "update";
   private static final long serialVersionUID = 9032686080431923743L;
   private static final Logger logger = LoggerFactory.getLogger(UserWindow.class);
-  private Panel panel;
+  private UserWindowDesign view = new UserWindowDesign();
   @Inject
-  private UserForm view;
+  private UserForm userForm;
+  @Inject
+  private AuthorizationService authorizationService;
 
   @PostConstruct
   protected void init() {
     addStyleName(WINDOW_STYLE);
-    panel = new Panel();
-    setContent(panel);
-    panel.setContent(view);
-    view.setMargin(true);
+    setContent(view);
+    view.userLayout.addComponent(userForm);
+    view.update.setVisible(false);
+    view.update.addStyleName(UPDATE);
     setHeight("650px");
     setWidth("500px");
-    panel.setSizeFull();
   }
 
   @Override
   public void attach() {
     super.attach();
-    view.addSaveListener(e -> close());
+    final MessageResource resources = getResources();
+    userForm.addSaveListener(e -> close());
+    view.update.setCaption(resources.message(UPDATE));
   }
 
   /**
@@ -79,7 +84,12 @@ public class UserWindow extends Window implements BaseComponent {
   private void updateUser(User user) {
     logger.debug("User window for user {}", user);
     setCaption(getResources().message(TITLE, user != null ? user.getName() : ""));
-    view.setValue(user);
-    view.setReadOnly(true);
+    view.update.setVisible(authorizationService.hasUserWritePermission(user));
+    view.update.addClickListener(e -> {
+      navigateTo(UserView.VIEW_NAME, String.valueOf(user.getId()));
+      close();
+    });
+    userForm.setValue(user);
+    userForm.setReadOnly(true);
   }
 }
