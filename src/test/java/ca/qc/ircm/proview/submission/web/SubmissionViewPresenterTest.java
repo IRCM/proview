@@ -30,8 +30,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
@@ -46,8 +45,6 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,6 +55,8 @@ public class SubmissionViewPresenterTest {
   private SubmissionView view;
   @Mock
   private SubmissionService submissionService;
+  @Mock
+  private AuthorizationService authorizationService;
   @Mock
   private Submission submission;
   @Captor
@@ -72,7 +71,8 @@ public class SubmissionViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionViewPresenter(submissionService, applicationName);
+    presenter =
+        new SubmissionViewPresenter(submissionService, authorizationService, applicationName);
     view.headerLabel = new Label();
     view.submissionForm = mock(SubmissionForm.class);
     when(view.getLocale()).thenReturn(locale);
@@ -106,11 +106,7 @@ public class SubmissionViewPresenterTest {
   @Test
   public void enter_Submission() {
     when(submissionService.get(any())).thenReturn(submission);
-    SubmissionSample sample = new SubmissionSample();
-    sample.setStatus(SampleStatus.TO_APPROVE);
-    List<SubmissionSample> samples = new ArrayList<>();
-    samples.add(sample);
-    when(submission.getSamples()).thenReturn(samples);
+    when(authorizationService.hasSubmissionWritePermission(any())).thenReturn(true);
 
     presenter.enter("1");
 
@@ -122,85 +118,9 @@ public class SubmissionViewPresenterTest {
   }
 
   @Test
-  public void enter_Submission_ReadOnly_ToReceive() {
+  public void enter_Submission_ReadOnly() {
     when(submissionService.get(any())).thenReturn(submission);
-    SubmissionSample sample = new SubmissionSample();
-    sample.setStatus(SampleStatus.TO_RECEIVE);
-    List<SubmissionSample> samples = new ArrayList<>();
-    samples.add(sample);
-    when(submission.getSamples()).thenReturn(samples);
-
-    presenter.enter("1");
-
-    verify(submissionService).get(1L);
-    verify(view.submissionForm).setValue(submission);
-    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
-    verify(view, never()).showWarning(any());
-  }
-
-  @Test
-  public void enter_Submission_ReadOnly_Received() {
-    when(submissionService.get(any())).thenReturn(submission);
-    SubmissionSample sample = new SubmissionSample();
-    sample.setStatus(SampleStatus.RECEIVED);
-    List<SubmissionSample> samples = new ArrayList<>();
-    samples.add(sample);
-    when(submission.getSamples()).thenReturn(samples);
-
-    presenter.enter("1");
-
-    verify(submissionService).get(1L);
-    verify(view.submissionForm).setValue(submission);
-    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
-    verify(view, never()).showWarning(any());
-  }
-
-  @Test
-  public void enter_Submission_ReadOnly_ToAnalyse() {
-    when(submissionService.get(any())).thenReturn(submission);
-    SubmissionSample sample = new SubmissionSample();
-    sample.setStatus(SampleStatus.TO_ANALYSE);
-    List<SubmissionSample> samples = new ArrayList<>();
-    samples.add(sample);
-    when(submission.getSamples()).thenReturn(samples);
-
-    presenter.enter("1");
-
-    verify(submissionService).get(1L);
-    verify(view.submissionForm).setValue(submission);
-    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
-    verify(view, never()).showWarning(any());
-  }
-
-  @Test
-  public void enter_Submission_ReadOnly_DataAnalysis() {
-    when(submissionService.get(any())).thenReturn(submission);
-    SubmissionSample sample = new SubmissionSample();
-    sample.setStatus(SampleStatus.DATA_ANALYSIS);
-    List<SubmissionSample> samples = new ArrayList<>();
-    samples.add(sample);
-    when(submission.getSamples()).thenReturn(samples);
-
-    presenter.enter("1");
-
-    verify(submissionService).get(1L);
-    verify(view.submissionForm).setValue(submission);
-    verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
-    verify(view, never()).showWarning(any());
-  }
-
-  @Test
-  public void enter_Submission_ReadOnly_Analysed() {
-    when(submissionService.get(any())).thenReturn(submission);
-    SubmissionSample sample = new SubmissionSample();
-    sample.setStatus(SampleStatus.ANALYSED);
-    List<SubmissionSample> samples = new ArrayList<>();
-    samples.add(sample);
-    when(submission.getSamples()).thenReturn(samples);
+    when(authorizationService.hasSubmissionWritePermission(any())).thenReturn(false);
 
     presenter.enter("1");
 

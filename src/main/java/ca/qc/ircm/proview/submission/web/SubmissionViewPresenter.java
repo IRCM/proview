@@ -17,8 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.utils.MessageResource;
@@ -44,14 +43,18 @@ public class SubmissionViewPresenter {
   private SubmissionView view;
   @Inject
   private SubmissionService submissionService;
+  @Inject
+  private AuthorizationService authorizationService;
   @Value("${spring.application.name}")
   private String applicationName;
 
   protected SubmissionViewPresenter() {
   }
 
-  protected SubmissionViewPresenter(SubmissionService submissionService, String applicationName) {
+  protected SubmissionViewPresenter(SubmissionService submissionService,
+      AuthorizationService authorizationService, String applicationName) {
     this.submissionService = submissionService;
+    this.authorizationService = authorizationService;
     this.applicationName = applicationName;
   }
 
@@ -89,18 +92,11 @@ public class SubmissionViewPresenter {
         logger.debug("Set submission {}", id);
         Submission submission = submissionService.get(id);
         view.submissionForm.setValue(submission);
-        view.submissionForm.setReadOnly(readOnly(submission));
+        view.submissionForm
+            .setReadOnly(!authorizationService.hasSubmissionWritePermission(submission));
       } catch (NumberFormatException e) {
         view.showWarning(view.getResources().message(INVALID_SUBMISSION));
       }
     }
-  }
-
-  private boolean readOnly(Submission submission) {
-    boolean readOnly = false;
-    for (SubmissionSample sample : submission.getSamples()) {
-      readOnly |= sample.getStatus() != SampleStatus.TO_APPROVE;
-    }
-    return readOnly;
   }
 }
