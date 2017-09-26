@@ -328,7 +328,7 @@ public class SubmissionActivityService {
       activity.setRecordId(newSubmission.getId());
       activity.setUser(user);
       activity.setTableName("submission");
-      activity.setJustification(justification);
+      activity.setJustification(DatabaseLogUtil.reduceLength(justification, 255));
       activity.setUpdates(new LinkedList<>(updates));
       return Optional.of(activity);
     } else {
