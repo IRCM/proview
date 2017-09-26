@@ -127,6 +127,8 @@ Light: None</entry>
   <entry key="files.error">File {0} could not be uploaded</entry>
   <entry key="files.overMaximumCount">Maximum of {0} allowed additional files</entry>
   <entry key="filesUploader">Upload files</entry>
+  <entry key="explanationPanel">Explanation</entry>
   <entry key="submit">Save</entry>
   <entry key="save">Saved submission {0}</entry>
+  <entry key="updateError">Error saving submission {0}, submission may already have been partially processed</entry>
 </properties>

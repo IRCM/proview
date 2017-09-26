@@ -47,6 +47,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPLANATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_GRID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
@@ -112,9 +114,11 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_UPLOADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SUBMIT_ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.UPDATE_ERROR;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY_PROPERTY;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
@@ -130,7 +134,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -157,6 +163,7 @@ import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelImage;
 import ca.qc.ircm.proview.submission.GelSeparation;
@@ -169,6 +176,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -181,6 +189,7 @@ import com.vaadin.data.converter.AbstractStringToNumberConverter;
 import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
@@ -215,6 +224,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -223,10 +233,11 @@ import java.util.Random;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionFormPresenterTest {
+public class SubmissionFormPresenterTest implements TimeConverter {
   private SubmissionFormPresenter presenter;
   @PersistenceContext
   private EntityManager entityManager;
@@ -236,6 +247,8 @@ public class SubmissionFormPresenterTest {
   private SubmissionSampleService submissionSampleService;
   @Mock
   private PlateService plateService;
+  @Mock
+  private AuthorizationService authorizationService;
   @Mock
   private SubmissionForm view;
   @Mock
@@ -256,6 +269,8 @@ public class SubmissionFormPresenterTest {
   private ArgumentCaptor<MultiFileUploadFileHandler> uploadFinishedHandlerCaptor;
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
+  @Captor
+  private ArgumentCaptor<ErrorMessage> errorMessageCaptor;
   @Rule
   public TemporaryFolder temporaryFolder = new TemporaryFolder();
   private final Locale locale = Locale.FRENCH;
@@ -345,6 +360,7 @@ public class SubmissionFormPresenterTest {
   private String filesFilename2 = "samples.xlsx";
   private String filesMimeType2 = "xlsx";
   private byte[] filesContent2 = new byte[10240];
+  private String explanation = "my explanation";
   private TextField sampleNameField1;
   private TextField sampleNameField2;
   private TextField sampleNumberProteinField1;
@@ -368,8 +384,8 @@ public class SubmissionFormPresenterTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    presenter =
-        new SubmissionFormPresenter(submissionService, submissionSampleService, plateService);
+    presenter = new SubmissionFormPresenter(submissionService, submissionSampleService,
+        plateService, authorizationService);
     view.sampleTypeLabel = new Label();
     view.inactiveLabel = new Label();
     view.servicePanel = new Panel();
@@ -456,6 +472,8 @@ public class SubmissionFormPresenterTest {
     view.filesUploaderLayout = new VerticalLayout();
     view.filesUploader = filesUploader;
     view.filesGrid = new Grid<>();
+    view.explanationPanel = new Panel();
+    view.explanation = new TextArea();
     view.buttonsLayout = new HorizontalLayout();
     view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
@@ -520,6 +538,7 @@ public class SubmissionFormPresenterTest {
     view.otherSolventsField.setValue(otherSolvents);
     view.otherSolventField.setValue(otherSolvent);
     view.commentsField.setValue(comments);
+    view.explanation.setValue(explanation);
   }
 
   @SuppressWarnings("unchecked")
@@ -1302,6 +1321,10 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.filesPanel.getStyleName().contains(FILES_PROPERTY));
     verify(view.filesUploader).addStyleName(FILES_UPLOADER);
     assertTrue(view.filesGrid.getStyleName().contains(FILES_GRID));
+    assertTrue(view.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
+    assertTrue(view.explanationPanel.getStyleName().contains(REQUIRED));
+    assertTrue(view.explanation.getStyleName().contains(EXPLANATION));
+    assertTrue(view.saveButton.getStyleName().contains(SUBMIT_ID));
   }
 
   @Test
@@ -1523,6 +1546,8 @@ public class SubmissionFormPresenterTest {
         view.filesGrid.getColumn(FILE_FILENAME_PROPERTY).getCaption());
     assertEquals(resources.message(FILES_PROPERTY + "." + REMOVE_FILE),
         view.filesGrid.getColumn(REMOVE_FILE).getCaption());
+    assertEquals(resources.message(EXPLANATION_PANEL), view.explanationPanel.getCaption());
+    assertEquals(resources.message(SUBMIT_ID), view.saveButton.getCaption());
   }
 
   @Test
@@ -1611,6 +1636,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherSolventField.isReadOnly());
     assertTrue(view.commentsField.isReadOnly());
     assertTrue(view.filesGrid.getColumn(REMOVE_FILE).isHidden());
+    assertFalse(view.explanationPanel.isVisible());
+    assertFalse(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -1698,6 +1725,26 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventField.isReadOnly());
     assertFalse(view.commentsField.isReadOnly());
     assertFalse(view.filesGrid.getColumn(REMOVE_FILE).isHidden());
+    assertFalse(view.explanationPanel.isVisible());
+    assertTrue(view.buttonsLayout.isVisible());
+  }
+
+  @Test
+  public void readOnly_False_ForceUpdate() {
+    Submission submission = new Submission();
+    submission.setService(Service.LC_MS_MS);
+    SubmissionSample sample = new SubmissionSample();
+    sample.setSupport(support);
+    sample.setOriginalContainer(new Tube());
+    sample.setStatus(SampleStatus.RECEIVED);
+    sample.setStandards(Arrays.asList(new Standard()));
+    sample.setContaminants(Arrays.asList(new Contaminant()));
+    submission.setSamples(Arrays.asList(sample));
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+
+    assertTrue(view.explanationPanel.isVisible());
   }
 
   @Test
@@ -1785,6 +1832,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertFalse(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -1866,6 +1915,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertTrue(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -1991,6 +2042,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertFalse(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2072,6 +2125,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertTrue(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2159,6 +2214,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertFalse(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2240,6 +2297,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertTrue(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2340,6 +2399,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertFalse(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2422,6 +2483,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertTrue(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2533,6 +2596,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertFalse(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2615,6 +2680,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertTrue(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2702,6 +2769,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertFalse(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2783,6 +2852,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertTrue(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2870,6 +2941,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertFalse(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -2951,6 +3024,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(view.otherSolventsField.isVisible());
     assertFalse(view.otherSolventField.isVisible());
     assertFalse(view.otherSolventNoteLabel.isVisible());
+    assertFalse(view.explanationPanel.isVisible());
+    assertTrue(view.buttonsLayout.isVisible());
   }
 
   @Test
@@ -3184,7 +3259,9 @@ public class SubmissionFormPresenterTest {
     view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(resources.message(STRUCTURE_PROPERTY + "." + REQUIRED), stringCaptor.getValue());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(resources.message(STRUCTURE_PROPERTY + "." + REQUIRED)),
+        view.structureLayout.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3444,8 +3521,9 @@ public class SubmissionFormPresenterTest {
     view.saveButton.click();
 
     verify(view, atLeastOnce()).showError(stringCaptor.capture());
-    assertEquals(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1)),
+        sampleNameField2.getComponentError().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3464,8 +3542,10 @@ public class SubmissionFormPresenterTest {
     view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    verify(view.plateComponent, atLeastOnce()).setComponentError(errorMessageCaptor.capture());
+    assertEquals(errorMessage(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount)),
+        errorMessageCaptor.getValue().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3502,8 +3582,10 @@ public class SubmissionFormPresenterTest {
     view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    verify(view.plateComponent, atLeastOnce()).setComponentError(errorMessageCaptor.capture());
+    assertEquals(errorMessage(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount)),
+        errorMessageCaptor.getValue().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -3540,8 +3622,10 @@ public class SubmissionFormPresenterTest {
     view.saveButton.click();
 
     verify(view, atLeastOnce()).showError(stringCaptor.capture());
-    assertEquals(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1),
-        stringCaptor.getValue());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    verify(view.plateComponent, atLeastOnce()).setComponentError(errorMessageCaptor.capture());
+    assertEquals(errorMessage(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1)),
+        errorMessageCaptor.getValue().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4426,7 +4510,9 @@ public class SubmissionFormPresenterTest {
     view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED), stringCaptor.getValue());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED)),
+        view.gelImagesLayout.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4668,7 +4754,9 @@ public class SubmissionFormPresenterTest {
     view.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(resources.message(SOLVENTS_PROPERTY + "." + REQUIRED), stringCaptor.getValue());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(resources.message(SOLVENTS_PROPERTY + "." + REQUIRED)),
+        view.solventsLayout.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4691,6 +4779,27 @@ public class SubmissionFormPresenterTest {
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         view.otherSolventField.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void submit_MissingExplanation() throws Throwable {
+    Submission submission = entityManager.find(Submission.class, 147L);
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(view.samplesGrid).getItems());
+    samples.forEach(sample -> {
+      view.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).getValueProvider().apply(sample);
+    });
+    view.explanation.setValue("");
+
+    view.saveButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        view.explanation.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).forceUpdate(any(), any());
   }
 
   @Test
@@ -6203,6 +6312,317 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
+  }
+
+  @Test
+  public void save_Update() throws Throwable {
+    Submission submission = entityManager.find(Submission.class, 36L);
+    presenter.init(view);
+    presenter.setValue(submission);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    uploadStructure();
+    uploadGelImages();
+    uploadFiles();
+
+    view.saveButton.click();
+
+    verify(view, never()).showError(any());
+    verify(view, never()).showWarning(any());
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
+    verify(submissionService).update(submissionCaptor.capture());
+    submission = submissionCaptor.getValue();
+    assertEquals((Long) 36L, submission.getId());
+    assertEquals(LC_MS_MS, submission.getService());
+    assertEquals(taxonomy, submission.getTaxonomy());
+    assertEquals("cap_project", submission.getProject());
+    assertEquals(experience, submission.getExperience());
+    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(instrument, submission.getMassDetectionInstrument());
+    assertEquals(null, submission.getSource());
+    assertEquals(digestion, submission.getProteolyticDigestionMethod());
+    assertEquals(usedDigestion, submission.getUsedProteolyticDigestionMethod());
+    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
+    assertEquals(proteinIdentification, submission.getProteinIdentification());
+    assertEquals(proteinIdentificationLink, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getEnrichmentType());
+    assertEquals(false, submission.isLowResolution());
+    assertEquals(false, submission.isHighResolution());
+    assertEquals(false, submission.isMsms());
+    assertEquals(false, submission.isExactMsms());
+    assertEquals(null, submission.getMudPitFraction());
+    assertEquals(proteinContent, submission.getProteinContent());
+    assertEquals(proteinName, submission.getProtein());
+    assertEquals(postTranslationModification, submission.getPostTranslationModification());
+    assertEquals(null, submission.getSeparation());
+    assertEquals(null, submission.getThickness());
+    assertEquals(null, submission.getColoration());
+    assertEquals(null, submission.getOtherColoration());
+    assertEquals(null, submission.getDevelopmentTime());
+    assertEquals(false, submission.isDecoloration());
+    assertEquals(null, submission.getWeightMarkerQuantity());
+    assertEquals(null, submission.getProteinQuantity());
+    assertEquals(null, submission.getFormula());
+    assertEquals(null, submission.getMonoisotopicMass());
+    assertEquals(null, submission.getAverageMass());
+    assertEquals(null, submission.getSolutionSolvent());
+    assertTrue(submission.getSolvents() == null || submission.getSolvents().isEmpty());
+    assertEquals(null, submission.getOtherSolvent());
+    assertEquals(null, submission.getToxicity());
+    assertEquals(false, submission.isLightSensitive());
+    assertEquals(null, submission.getStorageTemperature());
+    assertEquals(quantification, submission.getQuantification());
+    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(comments, submission.getComments());
+    assertEquals(LocalDate.of(2011, 11, 16), toLocalDate(submission.getSubmissionDate()));
+    assertEquals(null, submission.getPrice());
+    assertEquals(null, submission.getAdditionalPrice());
+    assertEquals((Long) 10L, submission.getUser().getId());
+    assertEquals((Long) 2L, submission.getLaboratory().getId());
+    assertNotNull(submission.getSamples());
+    assertEquals(2, submission.getSamples().size());
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals((Long) 447L, sample.getId());
+    assertEquals(sampleName1, sample.getName());
+    assertEquals(support, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
+    assertNotNull(sample.getOriginalContainer());
+    assertEquals((Long) 9L, sample.getOriginalContainer().getId());
+    assertEquals(SampleContainerType.TUBE, sample.getOriginalContainer().getType());
+    assertEquals("CAP_20111116_01", sample.getOriginalContainer().getName());
+    assertEquals(2, sample.getStandards().size());
+    Standard standard = sample.getStandards().get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    assertEquals(standardComment1, standard.getComments());
+    standard = sample.getStandards().get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals(standardComment2, standard.getComments());
+    assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
+    assertEquals(submission, sample.getSubmission());
+    assertEquals(2, sample.getContaminants().size());
+    Contaminant contaminant = sample.getContaminants().get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    assertEquals(contaminantComment1, contaminant.getComments());
+    contaminant = sample.getContaminants().get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(contaminantComment2, contaminant.getComments());
+    sample = submission.getSamples().get(1);
+    assertEquals(null, sample.getId());
+    assertEquals(sampleName2, sample.getName());
+    assertEquals(support, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
+    assertEquals(null, sample.getOriginalContainer());
+    assertEquals(2, sample.getStandards().size());
+    standard = sample.getStandards().get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    assertEquals(standardComment1, standard.getComments());
+    standard = sample.getStandards().get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals(standardComment2, standard.getComments());
+    assertEquals(null, sample.getStatus());
+    assertEquals(null, sample.getSubmission());
+    assertEquals(2, sample.getContaminants().size());
+    contaminant = sample.getContaminants().get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    assertEquals(contaminantComment1, contaminant.getComments());
+    contaminant = sample.getContaminants().get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(contaminantComment2, contaminant.getComments());
+    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
+    assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
+  }
+
+  @Test
+  public void save_ForceUpdate() throws Throwable {
+    Submission submission = entityManager.find(Submission.class, 147L);
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    uploadStructure();
+    uploadGelImages();
+    uploadFiles();
+
+    view.saveButton.click();
+
+    verify(view, never()).showError(any());
+    verify(view, never()).showWarning(any());
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
+    verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
+    verify(submissionService).forceUpdate(submissionCaptor.capture(), eq(explanation));
+    submission = submissionCaptor.getValue();
+    assertEquals((Long) 147L, submission.getId());
+    assertEquals(LC_MS_MS, submission.getService());
+    assertEquals(taxonomy, submission.getTaxonomy());
+    assertEquals("Flag", submission.getProject());
+    assertEquals(experience, submission.getExperience());
+    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(instrument, submission.getMassDetectionInstrument());
+    assertEquals(null, submission.getSource());
+    assertEquals(digestion, submission.getProteolyticDigestionMethod());
+    assertEquals(usedDigestion, submission.getUsedProteolyticDigestionMethod());
+    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
+    assertEquals(proteinIdentification, submission.getProteinIdentification());
+    assertEquals(proteinIdentificationLink, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getEnrichmentType());
+    assertEquals(false, submission.isLowResolution());
+    assertEquals(false, submission.isHighResolution());
+    assertEquals(false, submission.isMsms());
+    assertEquals(false, submission.isExactMsms());
+    assertEquals(null, submission.getMudPitFraction());
+    assertEquals(proteinContent, submission.getProteinContent());
+    assertEquals(proteinName, submission.getProtein());
+    assertEquals(postTranslationModification, submission.getPostTranslationModification());
+    assertEquals(null, submission.getSeparation());
+    assertEquals(null, submission.getThickness());
+    assertEquals(null, submission.getColoration());
+    assertEquals(null, submission.getOtherColoration());
+    assertEquals(null, submission.getDevelopmentTime());
+    assertEquals(false, submission.isDecoloration());
+    assertEquals(null, submission.getWeightMarkerQuantity());
+    assertEquals(null, submission.getProteinQuantity());
+    assertEquals(null, submission.getFormula());
+    assertEquals(null, submission.getMonoisotopicMass());
+    assertEquals(null, submission.getAverageMass());
+    assertEquals(null, submission.getSolutionSolvent());
+    assertTrue(submission.getSolvents() == null || submission.getSolvents().isEmpty());
+    assertEquals(null, submission.getOtherSolvent());
+    assertEquals(null, submission.getToxicity());
+    assertEquals(false, submission.isLightSensitive());
+    assertEquals(null, submission.getStorageTemperature());
+    assertEquals(quantification, submission.getQuantification());
+    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(comments, submission.getComments());
+    assertEquals(LocalDate.of(2014, 10, 8), toLocalDate(submission.getSubmissionDate()));
+    assertEquals(null, submission.getPrice());
+    assertEquals(null, submission.getAdditionalPrice());
+    assertEquals((Long) 10L, submission.getUser().getId());
+    assertEquals((Long) 2L, submission.getLaboratory().getId());
+    assertNotNull(submission.getSamples());
+    assertEquals(2, submission.getSamples().size());
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals((Long) 559L, sample.getId());
+    assertEquals(sampleName1, sample.getName());
+    assertEquals(support, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
+    assertNotNull(sample.getOriginalContainer());
+    assertEquals((Long) 11L, sample.getOriginalContainer().getId());
+    assertEquals(SampleContainerType.TUBE, sample.getOriginalContainer().getType());
+    assertEquals("POLR2A_20141008_1", sample.getOriginalContainer().getName());
+    assertEquals(2, sample.getStandards().size());
+    Standard standard = sample.getStandards().get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    assertEquals(standardComment1, standard.getComments());
+    standard = sample.getStandards().get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals(standardComment2, standard.getComments());
+    assertEquals(SampleStatus.TO_ANALYSE, sample.getStatus());
+    assertEquals(submission, sample.getSubmission());
+    assertEquals(2, sample.getContaminants().size());
+    Contaminant contaminant = sample.getContaminants().get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    assertEquals(contaminantComment1, contaminant.getComments());
+    contaminant = sample.getContaminants().get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(contaminantComment2, contaminant.getComments());
+    sample = submission.getSamples().get(1);
+    assertEquals((Long) 560L, sample.getId());
+    assertEquals(sampleName2, sample.getName());
+    assertEquals(support, sample.getSupport());
+    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleQuantity, sample.getQuantity());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
+    assertNotNull(sample.getOriginalContainer());
+    assertEquals((Long) 12L, sample.getOriginalContainer().getId());
+    assertEquals(SampleContainerType.TUBE, sample.getOriginalContainer().getType());
+    assertEquals("POLR2A_20141008_2", sample.getOriginalContainer().getName());
+    assertEquals(2, sample.getStandards().size());
+    standard = sample.getStandards().get(0);
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    assertEquals(standardComment1, standard.getComments());
+    standard = sample.getStandards().get(1);
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals(standardComment2, standard.getComments());
+    assertEquals(SampleStatus.TO_ANALYSE, sample.getStatus());
+    assertEquals(submission, sample.getSubmission());
+    assertEquals(2, sample.getContaminants().size());
+    contaminant = sample.getContaminants().get(0);
+    assertEquals(contaminantName1, contaminant.getName());
+    assertEquals(contaminantQuantity1, contaminant.getQuantity());
+    assertEquals(contaminantComment1, contaminant.getComments());
+    contaminant = sample.getContaminants().get(1);
+    assertEquals(contaminantName2, contaminant.getName());
+    assertEquals(contaminantQuantity2, contaminant.getQuantity());
+    assertEquals(contaminantComment2, contaminant.getComments());
+    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
+    assertNull(submission.getStructure());
+    assertEquals(2, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals(filesFilename1, file.getFilename());
+    assertArrayEquals(filesContent1, file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals(filesFilename2, file.getFilename());
+    assertArrayEquals(filesContent2, file.getContent());
+    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
+  }
+
+  @Test
+  public void save_ForceUpdateError() throws Throwable {
+    Submission submission = entityManager.find(Submission.class, 147L);
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+    view.serviceOptions.setValue(LC_MS_MS);
+    view.sampleSupportOptions.setValue(support);
+    setFields();
+    uploadStructure();
+    uploadGelImages();
+    uploadFiles();
+    doThrow(new PersistenceException("Could not update submission")).when(submissionService)
+        .forceUpdate(any(), any());
+
+    view.saveButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(resources.message(UPDATE_ERROR, experience), stringCaptor.getValue());
   }
 
   @Test

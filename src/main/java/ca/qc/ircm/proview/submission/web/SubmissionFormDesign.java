@@ -111,6 +111,8 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Panel filesPanel;
   protected VerticalLayout filesUploaderLayout;
   protected Grid<ca.qc.ircm.proview.submission.SubmissionFile> filesGrid;
+  protected Panel explanationPanel;
+  protected TextArea explanation;
   protected HorizontalLayout buttonsLayout;
   protected Button saveButton;
 

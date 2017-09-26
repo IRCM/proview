@@ -62,11 +62,13 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleSolvent;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelImage;
 import ca.qc.ircm.proview.submission.GelSeparation;
@@ -98,6 +100,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.StreamResource;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.AbstractListing;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Button;
@@ -136,6 +139,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
 
 /**
  * Submission form presenter.
@@ -269,6 +273,8 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String FILES_PROPERTY = submission.files.getMetadata().getName();
   public static final String FILES_UPLOADER = submission.files.getMetadata().getName() + "Uploader";
   public static final String FILES_GRID = FILES_PROPERTY + "Grid";
+  public static final String EXPLANATION_PANEL = "explanationPanel";
+  public static final String EXPLANATION = "explanation";
   public static final int MAXIMUM_FILES_SIZE = 10 * 1024 * 1024; // 10MB
   public static final int MAXIMUM_FILES_COUNT = 4;
   public static final int FILES_TABLE_LENGTH = 3;
@@ -276,6 +282,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       submissionFile.filename.getMetadata().getName();
   public static final String REMOVE_FILE = "removeFile";
   public static final String SUBMIT_ID = "submit";
+  public static final String UPDATE_ERROR = "updateError";
   public static final int NULL_ID = -1;
   public static final String EXAMPLE = "example";
   public static final String FILL_BUTTON_STYLE = "skip-row";
@@ -321,15 +328,19 @@ public class SubmissionFormPresenter implements BinderValidator {
   private SubmissionSampleService submissionSampleService;
   @Inject
   private PlateService plateService;
+  @Inject
+  private AuthorizationService authorizationService;
 
   protected SubmissionFormPresenter() {
   }
 
   protected SubmissionFormPresenter(SubmissionService submissionService,
-      SubmissionSampleService submissionSampleService, PlateService plateService) {
+      SubmissionSampleService submissionSampleService, PlateService plateService,
+      AuthorizationService authorizationService) {
     this.submissionService = submissionService;
     this.submissionSampleService = submissionSampleService;
     this.plateService = plateService;
+    this.authorizationService = authorizationService;
   }
 
   /**
@@ -402,6 +413,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.filesGrid.addColumn(file -> removeFileButton(file), new ComponentRenderer())
         .setId(REMOVE_FILE).setCaption(resources.message(FILES_PROPERTY + "." + REMOVE_FILE));
     view.filesGrid.setDataProvider(filesDataProvider);
+    view.explanationPanel.addStyleName(EXPLANATION_PANEL);
+    view.explanationPanel.addStyleName(REQUIRED);
+    view.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
+    view.explanation.addStyleName(EXPLANATION);
     view.saveButton.addStyleName(SUBMIT_ID);
     view.saveButton.setCaption(resources.message(SUBMIT_ID));
   }
@@ -1001,8 +1016,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
     view.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
     view.instrumentOptions.setItems(instrumentValues());
-    view.instrumentOptions.setItemCaptionGenerator(instrument -> instrument != null
-        ? instrument.getLabel(locale) : MassDetectionInstrument.getNullLabel(locale));
+    view.instrumentOptions
+        .setItemCaptionGenerator(instrument -> instrument != null ? instrument.getLabel(locale)
+            : MassDetectionInstrument.getNullLabel(locale));
     view.instrumentOptions
         .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : true);
     submissionBinder.forField(view.instrumentOptions)
@@ -1029,8 +1045,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.quantificationOptions.addStyleName(QUANTIFICATION_PROPERTY);
     view.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
     view.quantificationOptions.setItems(quantificationValues());
-    view.quantificationOptions.setItemCaptionGenerator(quantification -> quantification != null
-        ? quantification.getLabel(locale) : Quantification.getNullLabel(locale));
+    view.quantificationOptions.setItemCaptionGenerator(
+        quantification -> quantification != null ? quantification.getLabel(locale)
+            : Quantification.getNullLabel(locale));
     submissionBinder.forField(view.quantificationOptions)
         .withNullRepresentation(Quantification.NULL).bind(QUANTIFICATION_PROPERTY);
     view.quantificationLabelsField.addStyleName(QUANTIFICATION_LABELS_PROPERTY);
@@ -1539,6 +1556,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     boolean valid = true;
     valid &= validate(submissionBinder);
     valid &= validate(firstSampleBinder);
+    valid &= validate(() -> validateExplanation());
     Submission submission = submissionBinder.getBean();
     SubmissionSample sample = firstSampleBinder.getBean();
     if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
@@ -1551,6 +1569,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         valid &= validate(plateBinder);
         valid &= validate(validateSampleName(false), view.plateComponent, plateSampleNames());
       }
+      valid &= validate(() -> validateSampleNames());
       if (sample.getSupport() == DRY || sample.getSupport() == SOLUTION) {
         valid &= validate(standardCountBinder);
         for (Standard standard : standardsDataProvider.getItems()) {
@@ -1560,24 +1579,17 @@ public class SubmissionFormPresenter implements BinderValidator {
         for (Contaminant contaminant : contaminantsDataProvider.getItems()) {
           valid &= validate(contaminantBinders.get(contaminant));
         }
+      } else if (sample.getSupport() == GEL) {
+        valid &= validate(() -> validateGelImages(submission));
       }
+    } else if (submission.getService() == Service.SMALL_MOLECULE) {
+      valid &= validate(() -> validateStructure(submission));
+      valid &= validate(() -> validateSolvents());
     }
     if (!valid) {
       final MessageResource generalResources = view.getGeneralResources();
       logger.trace("Submission field validation failed");
       view.showError(generalResources.message(FIELD_NOTIFICATION));
-    }
-    if (valid) {
-      if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
-        valid &= validate(() -> validateSampleNames());
-        if (sample.getSupport() == GEL) {
-          valid &= validate(() -> validateGelImages(submission));
-        }
-      }
-      if (submission.getService() == Service.SMALL_MOLECULE) {
-        valid &= validate(() -> validateStructure(submission));
-        valid &= validate(() -> validateSolvents());
-      }
     }
     return valid;
   }
@@ -1586,7 +1598,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     ValidationResult result = validator.get();
     if (result.isError()) {
       logger.trace("Validation error {}", result.getErrorMessage());
-      view.showError(result.getErrorMessage());
       return false;
     } else {
       return true;
@@ -1594,13 +1605,15 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private ValidationResult validateSampleNames() {
+    view.plateComponent.setComponentError(null);
     MessageResource resources = view.getResources();
     Set<String> names = new HashSet<>();
     if (view.sampleContainerTypeOptions.getValue() != WELL) {
       for (SubmissionSample sample : samplesDataProvider.getItems()) {
         if (!names.add(sample.getName())) {
-          return ValidationResult
-              .error(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sample.getName()));
+          String error = resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sample.getName());
+          sampleNameFields.get(sample).setComponentError(new UserError(error));
+          return ValidationResult.error(error);
         }
       }
     } else {
@@ -1609,13 +1622,16 @@ public class SubmissionFormPresenter implements BinderValidator {
       for (String name : plateSampleNames) {
         count++;
         if (!names.add(name)) {
-          return ValidationResult
-              .error(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", name));
+          String error = resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", name);
+          view.plateComponent.setComponentError(new UserError(error));
+          return ValidationResult.error(error);
         }
       }
       if (count < sampleCountBinder.getBean().getCount()) {
-        return ValidationResult.error(resources.message(SAMPLES_PROPERTY + ".missing",
-            sampleCountBinder.getBean().getCount()));
+        String error = resources.message(SAMPLES_PROPERTY + ".missing",
+            sampleCountBinder.getBean().getCount());
+        view.plateComponent.setComponentError(new UserError(error));
+        return ValidationResult.error(error);
       }
     }
     return ValidationResult.ok();
@@ -1623,26 +1639,46 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private ValidationResult validateStructure(Submission submission) {
+    view.structureLayout.setComponentError(null);
     if (submission.getStructure() == null || submission.getStructure().getFilename() == null) {
       MessageResource resources = view.getResources();
-      return ValidationResult.error(resources.message(STRUCTURE_PROPERTY + "." + REQUIRED));
+      String error = resources.message(STRUCTURE_PROPERTY + "." + REQUIRED);
+      view.structureLayout.setComponentError(new UserError(error));
+      return ValidationResult.error(error);
     }
     return ValidationResult.ok();
   }
 
   private ValidationResult validateGelImages(Submission submission) {
+    view.gelImagesLayout.setComponentError(null);
     if (gelImagesDataProvider.getItems().size() == 0) {
       MessageResource resources = view.getResources();
-      return ValidationResult.error(resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED));
+      String error = resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED);
+      view.gelImagesLayout.setComponentError(new UserError(error));
+      return ValidationResult.error(error);
     }
     return ValidationResult.ok();
   }
 
   private ValidationResult validateSolvents() {
+    view.solventsLayout.setComponentError(null);
     if (!view.acetonitrileSolventsField.getValue() && !view.methanolSolventsField.getValue()
         && !view.chclSolventsField.getValue() && !view.otherSolventsField.getValue()) {
       MessageResource resources = view.getResources();
-      return ValidationResult.error(resources.message(SOLVENTS_PROPERTY + "." + REQUIRED));
+      String error = resources.message(SOLVENTS_PROPERTY + "." + REQUIRED);
+      view.solventsLayout.setComponentError(new UserError(error));
+      return ValidationResult.error(error);
+    }
+    return ValidationResult.ok();
+  }
+
+  private ValidationResult validateExplanation() {
+    view.explanation.setComponentError(null);
+    if (view.explanationPanel.isVisible() && view.explanation.getValue().isEmpty()) {
+      MessageResource generalResources = view.getGeneralResources();
+      String error = generalResources.message(REQUIRED);
+      view.explanation.setComponentError(new UserError(error));
+      return ValidationResult.error(error);
     }
     return ValidationResult.ok();
   }
@@ -1776,8 +1812,20 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       submission.setFiles(new ArrayList<>(filesDataProvider.getItems()));
       logger.debug("Save submission {}", submission);
-      submissionService.insert(submission);
-      MessageResource resources = view.getResources();
+      final MessageResource resources = view.getResources();
+      if (submission.getId() != null) {
+        try {
+          if (view.explanationPanel.isVisible()) {
+            submissionService.forceUpdate(submission, view.explanation.getValue());
+          } else {
+            submissionService.update(submission);
+          }
+        } catch (PersistenceException e) {
+          view.showError(resources.message(UPDATE_ERROR, submission.getExperience()));
+        }
+      } else {
+        submissionService.insert(submission);
+      }
       view.showTrayNotification(resources.message("save", submission.getExperience()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     }
@@ -1990,6 +2038,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     filesDataProvider.getItems().clear();
     filesDataProvider.getItems().addAll(files);
     filesDataProvider.refreshAll();
+    view.explanationPanel.setVisible(authorizationService.hasAdminRole() && samples.stream()
+        .filter(
+            sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.TO_APPROVE)
+        .findAny().isPresent());
     updateVisible();
     updateReadOnly();
   }

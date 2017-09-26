@@ -125,6 +125,8 @@ Léger: Aucun</entry>
   <entry key="files.error">Fichier {0} n''a pu être envoyé</entry>
   <entry key="files.overMaximumCount">Maximum de {0} fichiers permis</entry>
   <entry key="filesUploader">Télécharger fichiers</entry>
+  <entry key="explanationPanel">Explication</entry>
   <entry key="submit">Sauvegarder</entry>
   <entry key="save">Soumission {0} sauvegardée</entry>
+  <entry key="updateError">Erreur lors de la sauvegarde de la soumission {0}, la submission a peut-être déjà été partiellement traitée</entry>
 </properties>
