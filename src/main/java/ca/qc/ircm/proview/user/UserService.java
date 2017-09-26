@@ -397,7 +397,6 @@ public class UserService {
     authorizationService.checkUserWritePermission(user);
 
     if (newPassword != null) {
-      authorizationService.checkUserWritePasswordPermission(user);
       setUserPassword(user, newPassword);
     }
 

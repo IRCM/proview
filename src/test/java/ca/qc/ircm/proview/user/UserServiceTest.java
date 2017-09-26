@@ -830,7 +830,7 @@ public class UserServiceTest {
     userService.update(user, "unit_test_password");
 
     entityManager.flush();
-    verify(authorizationService).checkUserWritePasswordPermission(user);
+    verify(authorizationService).checkUserWritePermission(user);
     verify(authenticationService).hashPassword("unit_test_password");
     user = entityManager.find(User.class, 4L);
     assertEquals(hashedPassword.getPassword(), user.getHashedPassword());

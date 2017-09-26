@@ -303,21 +303,6 @@ public class AuthorizationService {
     }
   }
 
-  /**
-   * Checks that current user can write user's password.
-   *
-   * @param user
-   *          user
-   */
-  public void checkUserWritePasswordPermission(User user) {
-    if (user != null) {
-      getSubject().checkRole(USER);
-      if (!getSubject().hasRole(ADMIN)) {
-        getSubject().checkPermission("user:write_password:" + user.getId());
-      }
-    }
-  }
-
   private boolean sampleOwnerForAnyMsAnalysisByControl(Sample sampleParam) {
     User user = getCurrentUser();
     if (user == null) {
