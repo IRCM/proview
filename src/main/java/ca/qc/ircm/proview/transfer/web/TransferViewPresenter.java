@@ -39,6 +39,7 @@ import ca.qc.ircm.proview.transfer.SampleTransfer;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.tube.TubeComparator;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -59,6 +60,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -87,7 +89,7 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String SOURCE_PLATE_EMPTY_WELL = "sourcePlate.emptyWell";
   public static final String SOURCE_PLATE_SAMPLE_NOT_SELECTED = "sourcePlate.sampleNotSelected";
   public static final String DESTINATION = "destination";
-  public static final String DESTINATION_TABS = "destinationTabs";
+  public static final String DESTINATION_TYPE = "destinationType";
   public static final String DESTINATION_TUBES = "destinationTubes";
   public static final String DESTINATION_PLATES = "destinationPlates";
   public static final String DESTINATION_PLATES_TYPE = "destinationPlatesType";
@@ -153,6 +155,7 @@ public class TransferViewPresenter implements BinderValidator {
     prepareComponents();
     addListeners();
     updateDestinationPlateType();
+    updateVisibility();
   }
 
   private void prepareComponents() {
@@ -168,6 +171,7 @@ public class TransferViewPresenter implements BinderValidator {
     view.sourceType.addStyleName(SOURCE_TYPE);
     view.sourceType.setItems(SampleContainerType.values());
     view.sourceType.setItemCaptionGenerator(type -> type.getLabel(locale));
+    view.sourceType.addValueChangeListener(e -> updateVisibility());
     prepareSourceTubesGrid();
     view.sourcePlatesField.addStyleName(SOURCE_PLATES);
     view.sourcePlatesField.setCaption(resources.message(SOURCE_PLATES));
@@ -179,7 +183,10 @@ public class TransferViewPresenter implements BinderValidator {
     view.sourcePlateForm.setMultiSelect(true);
     view.destination.addStyleName(DESTINATION);
     view.destination.setCaption(resources.message(DESTINATION));
-    view.destinationType.addStyleName(DESTINATION_TABS);
+    view.destinationType.addStyleName(DESTINATION_TYPE);
+    view.destinationType.setItems(SampleContainerType.values());
+    view.destinationType.setItemCaptionGenerator(type -> type.getLabel(locale));
+    view.destinationType.addValueChangeListener(e -> updateVisibility());
     prepareDestinationTubesGrid();
     view.destinationPlatesTypeField.setEmptySelectionAllowed(false);
     view.destinationPlatesTypeField.addStyleName(DESTINATION_PLATES_TYPE);
@@ -225,6 +232,9 @@ public class TransferViewPresenter implements BinderValidator {
       comboBox.addStyleName(TUBE);
       comboBox.setEmptySelectionAllowed(false);
       List<Tube> tubes = tubeService.all(sample);
+      Collections.sort(tubes,
+          new TubeComparator(view.getLocale(), TubeComparator.Compare.TIME_STAMP));
+      Collections.reverse(tubes);
       comboBox.setItems(tubes);
       comboBox.setItemCaptionGenerator(Tube::getName);
       comboBox.setRequiredIndicatorVisible(true);
@@ -275,6 +285,15 @@ public class TransferViewPresenter implements BinderValidator {
     view.destinationPlatesTypeField.addValueChangeListener(e -> updateDestinationPlateType());
     view.destinationPlatesField.addValueChangeListener(e -> updateDestinationPlate());
     view.saveButton.addClickListener(e -> save());
+  }
+
+  private void updateVisibility() {
+    SampleContainerType sourceType = view.sourceType.getValue();
+    view.sourceTubesGrid.setVisible(sourceType == SampleContainerType.TUBE);
+    view.sourcePlateLayout.setVisible(sourceType == SampleContainerType.WELL);
+    SampleContainerType destinationType = view.destinationType.getValue();
+    view.destinationTubesGrid.setVisible(destinationType == SampleContainerType.TUBE);
+    view.destinationPlateLayout.setVisible(destinationType == SampleContainerType.WELL);
   }
 
   private void updateSourcePlate(Plate plate) {
@@ -335,7 +354,7 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private boolean isTubeDestination() {
-    return view.destinationType.getValue() == SampleContainerType.WELL;
+    return view.destinationType.getValue() == SampleContainerType.TUBE;
   }
 
   private boolean validate() {
@@ -387,19 +406,15 @@ public class TransferViewPresenter implements BinderValidator {
     Map<Sample, Boolean> sampleSelection =
         samples.stream().collect(Collectors.toMap(s -> s, s -> false));
     for (Well well : selectedWells) {
-      if (well.getSample() == null) {
-        logger.debug("A selected well {} does not have a sample", well);
-        String message = resources.message(SOURCE_PLATE_EMPTY_WELL, well.getName());
-        view.sourcePlatesField.setComponentError(new UserError(message));
-        return ValidationResult.error(message);
+      if (well.getSample() != null) {
+        sampleSelection.put(well.getSample(), true);
       }
-      sampleSelection.put(well.getSample(), true);
     }
     Optional<Map.Entry<Sample, Boolean>> emptySelectionEntry =
         sampleSelection.entrySet().stream().filter(e -> !e.getValue()).findAny();
     if (emptySelectionEntry.isPresent()) {
       Sample sample = emptySelectionEntry.orElse(null).getKey();
-      logger.debug("A selected well {} does not have a sample", sample);
+      logger.debug("A selected sample {} does not have a well", sample);
       String message = resources.message(SOURCE_PLATE_SAMPLE_NOT_SELECTED, sample.getName());
       view.sourcePlatesField.setComponentError(new UserError(message));
       return ValidationResult.error(message);
@@ -449,7 +464,8 @@ public class TransferViewPresenter implements BinderValidator {
               .collect(Collectors.toList());
       return new ArrayList<>(sources);
     } else {
-      return new ArrayList<>(view.sourcePlateForm.getSelectedWells());
+      return new ArrayList<>(view.sourcePlateForm.getSelectedWells().stream()
+          .filter(well -> well.getSample() != null).collect(Collectors.toList()));
     }
   }
 

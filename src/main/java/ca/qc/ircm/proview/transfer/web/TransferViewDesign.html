@@ -11,11 +11,11 @@
      Sample transfer 
    </vaadin-label>
    <vaadin-panel caption="Source" _id="source">
-    <vaadin-vertical-layout size-auto>
+    <vaadin-vertical-layout>
      <vaadin-radio-button-group data-item-type="ca.qc.ircm.proview.sample.SampleContainerType" _id="sourceType"></vaadin-radio-button-group>
      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.Sample" _id="sourceTubesGrid"></vaadin-grid>
-     <vaadin-vertical-layout _id="sourcePlateLayout">
-      <vaadin-form-layout size-auto>
+     <vaadin-vertical-layout margin="false" _id="sourcePlateLayout">
+      <vaadin-form-layout size-auto margin="false">
        <vaadin-combo-box data-item-type="ca.qc.ircm.proview.plate.Plate" _id="sourcePlatesField"></vaadin-combo-box>
       </vaadin-form-layout>
       <vaadin-panel size-auto _id="sourcePlatePanel">
@@ -25,11 +25,11 @@
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Destination" _id="destination">
-    <vaadin-vertical-layout size-auto>
+    <vaadin-vertical-layout>
      <vaadin-radio-button-group data-item-type="ca.qc.ircm.proview.sample.SampleContainerType" _id="destinationType"></vaadin-radio-button-group>
      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.Sample" _id="destinationTubesGrid"></vaadin-grid>
-     <vaadin-vertical-layout _id="destinationPlateLayout">
-      <vaadin-form-layout size-auto>
+     <vaadin-vertical-layout margin="false" _id="destinationPlateLayout">
+      <vaadin-form-layout size-auto margin="false">
        <vaadin-combo-box data-item-type="ca.qc.ircm.proview.plate.PlateType" _id="destinationPlatesTypeField"></vaadin-combo-box>
        <vaadin-combo-box data-item-type="java.lang.String" _id="destinationPlatesField"></vaadin-combo-box>
       </vaadin-form-layout>
