@@ -17,11 +17,14 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD;
+
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Window;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -36,6 +39,9 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@SuppressFBWarnings(
+    value = "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+    justification = DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD)
 public class UserWindow extends Window implements BaseComponent {
   public static final String WINDOW_STYLE = "user-window";
   public static final String TITLE = "title";
