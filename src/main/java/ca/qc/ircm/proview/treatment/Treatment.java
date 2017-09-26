@@ -104,8 +104,8 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
   /**
    * Description of what caused the treatment to be deleted.
    */
-  @Column(name = "deletionJustification")
-  private String deletionJustification;
+  @Column(name = "deletionExplanation")
+  private String deletionExplanation;
   /**
    * List of all treatments done on samples.
    */
@@ -147,12 +147,12 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
     this.deletionType = deletionType;
   }
 
-  public String getDeletionJustification() {
-    return deletionJustification;
+  public String getDeletionExplanation() {
+    return deletionExplanation;
   }
 
-  public void setDeletionJustification(String deletionJustification) {
-    this.deletionJustification = deletionJustification;
+  public void setDeletionExplanation(String deletionExplanation) {
+    this.deletionExplanation = deletionExplanation;
   }
 
   public User getUser() {

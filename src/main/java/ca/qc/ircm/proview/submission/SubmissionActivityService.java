@@ -84,7 +84,7 @@ public class SubmissionActivityService {
     activity.setRecordId(submission.getId());
     activity.setUser(user);
     activity.setTableName("submission");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
   }
@@ -105,7 +105,7 @@ public class SubmissionActivityService {
     activity.setRecordId(newSubmission.getId());
     activity.setUser(user);
     activity.setTableName("submission");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
   }
@@ -115,14 +115,14 @@ public class SubmissionActivityService {
    *
    * @param newSubmission
    *          submission containing new properties/values
-   * @param justification
-   *          justification for the changes
+   * @param explanation
+   *          explanation for the changes
    * @param oldSubmission
    *          old submission
    * @return activity about update of samples submission
    */
   @CheckReturnValue
-  public Optional<Activity> forceUpdate(final Submission newSubmission, final String justification,
+  public Optional<Activity> forceUpdate(final Submission newSubmission, final String explanation,
       Submission oldSubmission) {
     User user = authorizationService.getCurrentUser();
 
@@ -263,7 +263,7 @@ public class SubmissionActivityService {
     }
     for (SubmissionSample sample : newSubmission.getSamples()) {
       if (oldSampleIds.contains(sample.getId())) {
-        Optional<Activity> optionalActivity = sampleActivityService.update(sample, justification);
+        Optional<Activity> optionalActivity = sampleActivityService.update(sample, explanation);
         optionalActivity.ifPresent(activity -> updateBuilders.addAll(activity.getUpdates().stream()
             .map(ua -> new UpdateActivityBuilder(ua)).collect(Collectors.toList())));
       } else {
@@ -328,7 +328,7 @@ public class SubmissionActivityService {
       activity.setRecordId(newSubmission.getId());
       activity.setUser(user);
       activity.setTableName("submission");
-      activity.setJustification(DatabaseLogUtil.reduceLength(justification, 255));
+      activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
       activity.setUpdates(new LinkedList<>(updates));
       return Optional.of(activity);
     } else {

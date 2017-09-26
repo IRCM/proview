@@ -122,7 +122,7 @@ public class EnrichmentServiceTest {
         enrichment.getInsertTime());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionType());
-    assertEquals(null, enrichment.getDeletionJustification());
+    assertEquals(null, enrichment.getDeletionExplanation());
     List<EnrichedSample> enrichedSamples = enrichment.getTreatmentSamples();
     assertEquals(1, enrichedSamples.size());
     EnrichedSample enrichedSample = enrichedSamples.get(0);
@@ -187,7 +187,7 @@ public class EnrichmentServiceTest {
     enrichment = enrichmentService.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionType());
-    assertEquals(null, enrichment.getDeletionJustification());
+    assertEquals(null, enrichment.getDeletionExplanation());
     assertEquals(user, enrichment.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(enrichment.getInsertTime()));
@@ -227,7 +227,7 @@ public class EnrichmentServiceTest {
     enrichment = enrichmentService.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionType());
-    assertEquals(null, enrichment.getDeletionJustification());
+    assertEquals(null, enrichment.getDeletionExplanation());
     assertEquals(user, enrichment.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(enrichment.getInsertTime()));
@@ -259,7 +259,7 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, enrichment.getDeletionType());
-    assertEquals("undo unit test", enrichment.getDeletionJustification());
+    assertEquals("undo unit test", enrichment.getDeletionExplanation());
   }
 
   @Test
@@ -280,7 +280,7 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
-    assertEquals("fail unit test", enrichment.getDeletionJustification());
+    assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
   }
@@ -303,7 +303,7 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
-    assertEquals("fail unit test", enrichment.getDeletionJustification());
+    assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 800L);
     assertEquals(true, well.isBanned());
     well = entityManager.find(Well.class, 812L);
@@ -332,7 +332,7 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
-    assertEquals("fail unit test", enrichment.getDeletionJustification());
+    assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 801L);
     assertEquals(true, well.isBanned());
     well = entityManager.find(Well.class, 813L);
@@ -367,7 +367,7 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
-    assertEquals("fail unit test", enrichment.getDeletionJustification());
+    assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 825L);
     assertEquals(true, well.isBanned());
     well = entityManager.find(Well.class, 837L);
@@ -407,7 +407,7 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
-    assertEquals("fail unit test", enrichment.getDeletionJustification());
+    assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 849L);
     assertEquals(true, well.isBanned());
     well = entityManager.find(Well.class, 861L);
@@ -453,7 +453,7 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
-    assertEquals("fail unit test", enrichment.getDeletionJustification());
+    assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 873L);
     assertEquals(true, well.isBanned());
     well = entityManager.find(Well.class, 885L);

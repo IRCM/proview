@@ -19,243 +19,243 @@ INSERT INTO protocol (id,name,type)
 VALUES (1,'digestion_protocol_1','DIGESTION');
 INSERT INTO protocol (id,name,type)
 VALUES (2,'enrichment_protocol_1','ENRICHMENT');
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (1,'SOLUBILISATION',NULL,NULL,4,'2011-10-13 11:45:00',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (2,'FRACTIONATION',NULL,'MUDPIT',4,'2011-10-19 12:20:33',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (3,'TRANSFER',NULL,NULL,4,'2011-10-19 15:01:00',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (4,'DILUTION',NULL,NULL,2,'2011-11-09 15:03:54',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (5,'STANDARD_ADDITION',NULL,NULL,2,'2011-11-09 15:12:02',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (6,'DIGESTION',1,NULL,2,'2011-11-09 15:15:20',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (7,'ENRICHMENT',2,NULL,2,'2011-11-09 15:20:21',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (8,'FRACTIONATION',NULL,'MUDPIT',2,'2011-11-16 13:31:12',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (9,'TRANSFER',NULL,NULL,4,'2011-11-16 15:07:34',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (194,'TRANSFER',NULL,NULL,4,'2014-10-08 10:41:52',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (195,'DIGESTION',1,NULL,4,'2014-10-08 10:42:26',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (196,'DIGESTION',1,NULL,4,'2014-10-08 11:16:34',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (197,'DIGESTION',1,NULL,4,'2014-10-08 11:17:13',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (198,'DIGESTION',1,NULL,4,'2014-10-08 11:17:22',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (199,'DIGESTION',1,NULL,4,'2014-10-08 11:17:30',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (201,'TRANSFER',NULL,NULL,4,'2014-10-08 11:19:10',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (203,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-08 11:23:05',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (204,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-08 11:25:39',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (205,'TRANSFER',NULL,NULL,4,'2014-10-08 11:26:32',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (206,'TRANSFER',NULL,NULL,4,'2014-10-08 11:43:31',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (207,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-08 11:44:38',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (209,'TRANSFER',NULL,NULL,4,'2014-10-09 12:20:31',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (210,'DILUTION',NULL,NULL,4,'2014-10-09 12:20:50',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (211,'DILUTION',NULL,NULL,4,'2014-10-09 12:21:46',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (212,'TRANSFER',NULL,NULL,4,'2014-10-09 12:22:08',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (213,'DILUTION',NULL,NULL,4,'2014-10-09 13:10:37',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (215,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-09 13:17:15',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (216,'DILUTION',NULL,NULL,4,'2014-10-09 13:28:11',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (217,'TRANSFER',NULL,NULL,4,'2014-10-09 13:28:42',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (218,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-09 13:29:59',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (219,'DILUTION',NULL,NULL,4,'2014-10-09 13:30:21',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (220,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-09 13:31:02',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (221,'TRANSFER',NULL,NULL,4,'2014-10-09 13:31:32',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (222,'TRANSFER',NULL,NULL,4,'2014-10-14 14:06:54',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (223,'ENRICHMENT',2,NULL,4,'2014-10-14 14:07:16',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (224,'TRANSFER',NULL,NULL,4,'2014-10-14 14:08:31',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (225,'ENRICHMENT',2,NULL,4,'2014-10-14 14:09:02',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (226,'ENRICHMENT',2,NULL,4,'2014-10-14 14:09:11',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (227,'ENRICHMENT',2,NULL,4,'2014-10-14 14:09:24',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (228,'ENRICHMENT',2,NULL,4,'2014-10-14 14:09:29',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (229,'TRANSFER',NULL,NULL,4,'2014-10-14 14:10:03',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (230,'TRANSFER',NULL,NULL,4,'2014-10-14 14:10:23',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (231,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-14 14:11:50',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (232,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-14 14:13:51',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (233,'TRANSFER',NULL,NULL,4,'2014-10-14 14:15:33',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (234,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-14 14:16:47',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (235,'TRANSFER',NULL,NULL,4,'2014-10-15 09:57:34',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (236,'SOLUBILISATION',NULL,NULL,4,'2014-10-15 09:57:51',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (237,'SOLUBILISATION',NULL,NULL,4,'2014-10-15 10:29:55',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (238,'SOLUBILISATION',NULL,NULL,4,'2014-10-15 10:30:09',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (239,'SOLUBILISATION',NULL,NULL,4,'2014-10-15 10:30:19',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (240,'SOLUBILISATION',NULL,NULL,4,'2014-10-15 10:30:29',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (241,'TRANSFER',NULL,NULL,4,'2014-10-15 10:31:23',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (242,'TRANSFER',NULL,NULL,4,'2014-10-15 10:31:47',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (243,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 10:33:55',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (244,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 10:34:39',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (245,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 10:35:27',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (246,'TRANSFER',NULL,NULL,4,'2014-10-15 10:35:59',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (247,'TRANSFER',NULL,NULL,4,'2014-10-15 13:44:44',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (248,'STANDARD_ADDITION',NULL,NULL,4,'2014-10-15 13:45:42',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (249,'STANDARD_ADDITION',NULL,NULL,4,'2014-10-15 13:46:07',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (250,'STANDARD_ADDITION',NULL,NULL,4,'2014-10-15 13:46:27',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (251,'STANDARD_ADDITION',NULL,NULL,4,'2014-10-15 13:46:45',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (252,'STANDARD_ADDITION',NULL,NULL,4,'2014-10-15 13:47:04',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (253,'TRANSFER',NULL,NULL,4,'2014-10-15 13:48:08',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (254,'TRANSFER',NULL,NULL,4,'2014-10-15 13:48:37',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (255,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 13:49:57',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (256,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 13:50:43',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (257,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 13:51:30',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (258,'TRANSFER',NULL,NULL,4,'2014-10-15 13:52:13',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (259,'TRANSFER',NULL,NULL,4,'2014-10-15 15:44:43',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (260,'TRANSFER',NULL,NULL,4,'2014-10-15 15:45:02',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (261,'TRANSFER',NULL,NULL,4,'2014-10-15 15:45:51',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (262,'TRANSFER',NULL,NULL,4,'2014-10-15 15:46:11',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (263,'DILUTION',NULL,NULL,4,'2014-10-15 15:46:38',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (264,'ENRICHMENT',2,NULL,4,'2014-10-15 15:47:30',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (265,'TRANSFER',NULL,NULL,4,'2014-10-15 16:02:21',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (266,'TRANSFER',NULL,NULL,4,'2014-10-15 16:02:40',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (267,'TRANSFER',NULL,NULL,4,'2014-10-15 16:03:02',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (268,'TRANSFER',NULL,NULL,4,'2014-10-15 16:03:22',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (269,'TRANSFER',NULL,NULL,4,'2014-10-15 16:03:46',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (270,'TRANSFER',NULL,NULL,4,'2014-10-15 16:04:11',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (271,'TRANSFER',NULL,NULL,4,'2014-10-15 16:04:27',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (272,'TRANSFER',NULL,NULL,4,'2014-10-15 16:04:41',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (273,'TRANSFER',NULL,NULL,4,'2014-10-15 16:05:18',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (274,'TRANSFER',NULL,NULL,4,'2014-10-15 16:05:47',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (275,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 16:06:40',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (276,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 16:07:34',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (277,'TRANSFER',NULL,NULL,4,'2014-10-15 16:27:51',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (278,'TRANSFER',NULL,NULL,4,'2014-10-15 16:28:12',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (279,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 16:29:06',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (280,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 16:30:08',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (281,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 16:30:43',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (282,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-15 16:31:56',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (283,'TRANSFER',NULL,NULL,4,'2014-10-15 16:33:25',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (284,'TRANSFER',NULL,NULL,4,'2014-10-15 16:34:07',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (285,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-17 11:32:50',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (286,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-17 11:33:20',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (287,'ENRICHMENT',2,NULL,4,'2014-10-17 11:34:06',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (288,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-17 11:47:57',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (289,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-17 11:48:28',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (290,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-17 11:48:51',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (291,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-17 11:49:14',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (292,'TRANSFER',NULL,NULL,4,'2014-10-17 11:50:19',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (293,'TRANSFER',NULL,NULL,4,'2014-10-17 11:51:01',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (294,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-17 11:51:50',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (295,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-17 11:52:40',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (296,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-17 11:53:43',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (297,'TRANSFER',NULL,NULL,4,'2014-10-17 11:54:22',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (298,'TRANSFER',NULL,NULL,4,'2014-10-22 09:51:27',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (299,'TRANSFER',NULL,NULL,4,'2014-10-22 09:51:43',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (300,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-22 09:55:29',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (301,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-22 09:55:59',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (302,'FRACTIONATION',NULL,'MUDPIT',4,'2014-10-22 09:56:54',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (303,'TRANSFER',NULL,NULL,4,'2014-10-22 09:57:18',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (321,'DIGESTION',1,NULL,2,'2015-05-27 13:45:22',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (322,'DILUTION',NULL,NULL,2,'2015-05-27 13:45:56',0,NULL,NULL);
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (323,'TRANSFER',NULL,NULL,2,'2015-05-27 13:47:51',1,'ERRONEOUS','Erroneous transfer test');
-INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (324,'FRACTIONATION',NULL,'MUDPIT',2,'2015-05-27 14:06:27',1,'ERRONEOUS','Erroneous fractionation test');
 INSERT INTO treatmentsample (id,treatmentId,treatmentType,sampleId,containerId,destinationContainerId,comments,sourceVolume,solvent,solventVolume,name,quantity,position,number,piInterval)
 VALUES (1,1,'SOLUBILISATION',1,1,NULL,NULL,NULL,'Methanol',20,NULL,NULL,NULL,NULL,NULL);
@@ -779,27 +779,27 @@ INSERT INTO treatmentsample (id,treatmentId,treatmentType,sampleId,containerId,d
 VALUES (473,324,'FRACTIONATION',638,2278,1583,NULL,NULL,NULL,NULL,NULL,NULL,2,4,NULL);
 INSERT INTO treatmentsample (id,treatmentId,treatmentType,sampleId,containerId,destinationContainerId,comments,sourceVolume,solvent,solventVolume,name,quantity,position,number,piInterval)
 VALUES (474,324,'FRACTIONATION',638,2278,1571,NULL,NULL,NULL,NULL,NULL,NULL,1,2,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (1,'NSI','LTQ_ORBI_TRAP','2010-12-13 14:10:27',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (12,'LDTD','LTQ_ORBI_TRAP','2011-10-14 14:14:25',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (13,'LDTD','LTQ_ORBI_TRAP','2011-11-09 15:37:09',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (14,'LDTD','LTQ_ORBI_TRAP','2011-11-15 10:09:11',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (19,'LDTD','VELOS','2014-10-15 15:52:55',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (20,'LDTD','VELOS','2014-10-15 15:53:34',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (21,'NSI','VELOS','2014-10-17 11:34:47',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (22,'NSI','VELOS','2014-10-22 09:49:08',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (23,'NSI','VELOS','2014-10-22 09:49:39',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (24,'NSI','VELOS','2014-10-22 09:50:16',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionJustification)
+INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (25,'NSI','VELOS','2014-10-22 09:50:43',0,NULL,NULL);
 INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comments)
 VALUES (1,1,1,1,1,'XL_20100614_02','XL_20100614_COU_09',1,1,NULL);

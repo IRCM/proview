@@ -190,10 +190,10 @@ public class DataAnalysisService {
    *
    * @param dataAnalysis
    *          data analysis with new information
-   * @param justification
-   *          justification for changes made to data analysis
+   * @param explanation
+   *          explanation for changes made to data analysis
    */
-  public void update(DataAnalysis dataAnalysis, String justification) {
+  public void update(DataAnalysis dataAnalysis, String explanation) {
     authorizationService.checkAdminRole();
 
     // Update sample status.
@@ -205,7 +205,7 @@ public class DataAnalysisService {
     }
 
     // Log update of data analysis.
-    Optional<Activity> activity = dataAnalysisActivityService.update(dataAnalysis, justification);
+    Optional<Activity> activity = dataAnalysisActivityService.update(dataAnalysis, explanation);
     if (activity.isPresent()) {
       activityService.insert(activity.get());
     }

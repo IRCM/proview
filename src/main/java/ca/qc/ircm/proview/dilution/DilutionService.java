@@ -139,18 +139,18 @@ public class DilutionService extends BaseTreatmentService {
    *
    * @param dilution
    *          erroneous dilution to undo
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the dilution
    */
-  public void undoErroneous(Dilution dilution, String justification) {
+  public void undoErroneous(Dilution dilution, String explanation) {
     authorizationService.checkAdminRole();
 
     dilution.setDeleted(true);
     dilution.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    dilution.setDeletionJustification(justification);
+    dilution.setDeletionExplanation(explanation);
 
     // Log changes.
-    Activity activity = dilutionActivityService.undoErroneous(dilution, justification);
+    Activity activity = dilutionActivityService.undoErroneous(dilution, explanation);
     activityService.insert(activity);
 
     entityManager.merge(dilution);
@@ -175,7 +175,7 @@ public class DilutionService extends BaseTreatmentService {
 
     dilution.setDeleted(true);
     dilution.setDeletionType(Treatment.DeletionType.FAILED);
-    dilution.setDeletionJustification(failedDescription);
+    dilution.setDeletionExplanation(failedDescription);
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during dilution.

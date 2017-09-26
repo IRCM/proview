@@ -74,7 +74,7 @@ public class SampleActivityService {
     activity.setRecordId(control.getId());
     activity.setUser(user);
     activity.setTableName("sample");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
   }
@@ -84,12 +84,12 @@ public class SampleActivityService {
    *
    * @param newSample
    *          sample containing new properties/values
-   * @param justification
-   *          justification for changes made to sample
+   * @param explanation
+   *          explanation for changes made to sample
    * @return activity about update of sample
    */
   @CheckReturnValue
-  public Optional<Activity> update(final Sample newSample, final String justification) {
+  public Optional<Activity> update(final Sample newSample, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
     final Sample oldSample = entityManager.find(Sample.class, newSample.getId());
@@ -199,10 +199,12 @@ public class SampleActivityService {
           .oldValue(oldSubmission.getMolecularWeight())
           .newValue(newSubmission.getMolecularWeight()));
       // Contaminants.
-      List<Contaminant> oldContaminants = oldSubmission.getContaminants() != null
-          ? oldSubmission.getContaminants() : new ArrayList<>();
-      List<Contaminant> newContaminants = newSubmission.getContaminants() != null
-          ? newSubmission.getContaminants() : new ArrayList<>();
+      List<Contaminant> oldContaminants =
+          oldSubmission.getContaminants() != null ? oldSubmission.getContaminants()
+              : new ArrayList<>();
+      List<Contaminant> newContaminants =
+          newSubmission.getContaminants() != null ? newSubmission.getContaminants()
+              : new ArrayList<>();
       for (Contaminant oldContaminant : oldContaminants) {
         boolean deleted = true;
         for (Contaminant newContaminant : newContaminants) {
@@ -264,7 +266,7 @@ public class SampleActivityService {
       activity.setRecordId(newSample.getId());
       activity.setUser(user);
       activity.setTableName("sample");
-      activity.setJustification(justification);
+      activity.setExplanation(explanation);
       activity.setUpdates(new LinkedList<>(updates));
       return Optional.of(activity);
     } else {

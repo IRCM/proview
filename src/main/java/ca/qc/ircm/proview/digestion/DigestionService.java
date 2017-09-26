@@ -139,18 +139,18 @@ public class DigestionService extends BaseTreatmentService {
    *
    * @param digestion
    *          erroneous digestion to undo
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the digestion
    */
-  public void undoErroneous(Digestion digestion, String justification) {
+  public void undoErroneous(Digestion digestion, String explanation) {
     authorizationService.checkAdminRole();
 
     digestion.setDeleted(true);
     digestion.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    digestion.setDeletionJustification(justification);
+    digestion.setDeletionExplanation(explanation);
 
     // Log changes.
-    Activity activity = digestionActivityService.undoErroneous(digestion, justification);
+    Activity activity = digestionActivityService.undoErroneous(digestion, explanation);
     activityService.insert(activity);
 
     entityManager.merge(digestion);
@@ -175,7 +175,7 @@ public class DigestionService extends BaseTreatmentService {
 
     digestion.setDeleted(true);
     digestion.setDeletionType(Treatment.DeletionType.FAILED);
-    digestion.setDeletionJustification(failedDescription);
+    digestion.setDeletionExplanation(failedDescription);
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during digestion.

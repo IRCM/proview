@@ -75,7 +75,7 @@ public class DigestionActivityService {
     activity.setRecordId(digestion.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
   }
@@ -85,12 +85,12 @@ public class DigestionActivityService {
    *
    * @param digestion
    *          erroneous digestion that was undone
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the digestion
    * @return activity about digestion being marked as erroneous
    */
   @CheckReturnValue
-  public Activity undoErroneous(final Digestion digestion, final String justification) {
+  public Activity undoErroneous(final Digestion digestion, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
     Activity activity = new Activity();
@@ -98,7 +98,7 @@ public class DigestionActivityService {
     activity.setRecordId(digestion.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(null);
     return activity;
   }
@@ -137,13 +137,13 @@ public class DigestionActivityService {
       }
     }
 
-    final String justification = DatabaseLogUtil.reduceLength(failedDescription, 255);
+    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(digestion.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }

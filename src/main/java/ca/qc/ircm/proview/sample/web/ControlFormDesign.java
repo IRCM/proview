@@ -34,8 +34,8 @@ public class ControlFormDesign extends VerticalLayout {
   protected HorizontalLayout standardsTableLayout;
   protected Grid<ca.qc.ircm.proview.sample.Standard> standardsGrid;
   protected Button fillStandardsButton;
-  protected VerticalLayout justificationLayout;
-  protected TextField justificationField;
+  protected VerticalLayout explanationLayout;
+  protected TextField explanationField;
   protected Button saveButton;
 
   public ControlFormDesign() {

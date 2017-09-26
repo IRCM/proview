@@ -263,18 +263,18 @@ public class MsAnalysisService extends BaseTreatmentService {
    *
    * @param msAnalysis
    *          erroneous MS analysis to undo
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the MS analysis
    */
-  public void undoErroneous(MsAnalysis msAnalysis, String justification) {
+  public void undoErroneous(MsAnalysis msAnalysis, String explanation) {
     authorizationService.checkAdminRole();
 
     msAnalysis.setDeleted(true);
     msAnalysis.setDeletionType(MsAnalysis.DeletionType.ERRONEOUS);
-    msAnalysis.setDeletionJustification(justification);
+    msAnalysis.setDeletionExplanation(explanation);
 
     // Log changes.
-    Activity activity = msAnalysisActivityService.undoErroneous(msAnalysis, justification);
+    Activity activity = msAnalysisActivityService.undoErroneous(msAnalysis, explanation);
     activityService.insert(activity);
 
     entityManager.merge(msAnalysis);
@@ -299,7 +299,7 @@ public class MsAnalysisService extends BaseTreatmentService {
 
     msAnalysis.setDeleted(true);
     msAnalysis.setDeletionType(MsAnalysis.DeletionType.FAILED);
-    msAnalysis.setDeletionJustification(failedDescription);
+    msAnalysis.setDeletionExplanation(failedDescription);
 
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {

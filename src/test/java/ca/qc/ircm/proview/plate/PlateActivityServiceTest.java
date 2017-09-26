@@ -73,7 +73,7 @@ public class PlateActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
@@ -94,7 +94,7 @@ public class PlateActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
     for (Well banned : bans) {
@@ -154,7 +154,7 @@ public class PlateActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
     for (Well activated : wells) {

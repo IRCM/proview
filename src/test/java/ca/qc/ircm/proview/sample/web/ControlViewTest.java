@@ -65,7 +65,7 @@ public class ControlViewTest extends ControlViewPageObject {
   private final String standardName2 = "std-test-2";
   private final String standardQuantity2 = "1.2 ng";
   private final String standardComments2 = "std2-comment";
-  private final String justification = "justification-test";
+  private final String explanation = "explanation-test";
 
   private void setFields() {
     setName(name);
@@ -82,8 +82,8 @@ public class ControlViewTest extends ControlViewPageObject {
     setStandardName(1, standardName2);
     setStandardQuantity(1, standardQuantity2);
     setStandardComments(1, standardComments2);
-    if (optional(() -> justificationField()).isPresent()) {
-      setJustification(justification);
+    if (optional(() -> explanationField()).isPresent()) {
+      setExplanation(explanation);
     }
   }
 
@@ -158,7 +158,7 @@ public class ControlViewTest extends ControlViewPageObject {
     setStandardCount("2");
     assertTrue(optional(() -> standardsGrid()).isPresent());
     assertTrue(optional(() -> fillStandardsButton()).isPresent());
-    assertFalse(optional(() -> justificationField()).isPresent());
+    assertFalse(optional(() -> explanationField()).isPresent());
     assertTrue(optional(() -> saveButton()).isPresent());
   }
 
@@ -175,7 +175,7 @@ public class ControlViewTest extends ControlViewPageObject {
     assertTrue(optional(() -> standardCountField()).isPresent());
     assertFalse(optional(() -> standardsGrid()).isPresent());
     assertFalse(optional(() -> fillStandardsButton()).isPresent());
-    assertTrue(optional(() -> justificationField()).isPresent());
+    assertTrue(optional(() -> explanationField()).isPresent());
     assertTrue(optional(() -> saveButton()).isPresent());
   }
 

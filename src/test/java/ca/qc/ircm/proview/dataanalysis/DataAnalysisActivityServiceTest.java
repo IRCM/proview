@@ -81,7 +81,7 @@ public class DataAnalysisActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("dataanalysis", activity.getTableName());
     assertEquals(dataAnalysis.getId(), activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals((Long) 1L, activity.getUser().getId());
     final Set<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
     UpdateActivity sampleStatusUpdate = new UpdateActivity();
@@ -116,7 +116,7 @@ public class DataAnalysisActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("dataanalysis", activity.getTableName());
     assertEquals(dataAnalysis.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 1L, activity.getUser().getId());
     final Set<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
     UpdateActivity sampleStatusUpdate = new UpdateActivity();
@@ -175,7 +175,7 @@ public class DataAnalysisActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("dataanalysis", activity.getTableName());
     assertEquals(dataAnalysis.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 1L, activity.getUser().getId());
     final Set<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
     UpdateActivity sampleStatusUpdate = new UpdateActivity();

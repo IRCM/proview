@@ -103,7 +103,7 @@ public class MsAnalysisActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("msanalysis", activity.getTableName());
     assertEquals(msAnalysis.getId(), activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals((Long) 1L, activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity sampleStatusActivity = new UpdateActivity();
@@ -129,7 +129,7 @@ public class MsAnalysisActivityServiceTest {
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("msanalysis", activity.getTableName());
     assertEquals(msAnalysis.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 1L, activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
@@ -146,7 +146,7 @@ public class MsAnalysisActivityServiceTest {
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("msanalysis", activity.getTableName());
     assertEquals(msAnalysis.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 1L, activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
@@ -169,7 +169,7 @@ public class MsAnalysisActivityServiceTest {
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("msanalysis", activity.getTableName());
     assertEquals(msAnalysis.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 1L, activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity bannedTubeActivity = new UpdateActivity();
@@ -213,7 +213,7 @@ public class MsAnalysisActivityServiceTest {
     }
     String reasonCutAt255Bytes = builder.toString();
     verify(authorizationService, atLeastOnce()).getCurrentUser();
-    assertEquals(255, activity.getJustification().length());
-    assertEquals(reasonCutAt255Bytes, activity.getJustification());
+    assertEquals(255, activity.getExplanation().length());
+    assertEquals(reasonCutAt255Bytes, activity.getExplanation());
   }
 }

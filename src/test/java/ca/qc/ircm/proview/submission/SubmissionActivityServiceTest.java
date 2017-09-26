@@ -108,7 +108,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("submission", activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
@@ -175,7 +175,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("submission", activity.getTableName());
     assertEquals(newSubmission.getId(), activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
   }
 
@@ -250,7 +250,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("submission", activity.getTableName());
     assertEquals(newSubmission.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity serviceActivity = new UpdateActivity();
@@ -676,7 +676,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("submission", activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeSampleActivity = new UpdateActivity();
@@ -714,7 +714,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("submission", activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity otherSolventActivity = new UpdateActivity();
@@ -752,7 +752,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("submission", activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeSolventActivity = new UpdateActivity();
@@ -785,7 +785,7 @@ public class SubmissionActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("submission", activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeSolventActivity = new UpdateActivity();
@@ -835,7 +835,7 @@ public class SubmissionActivityServiceTest {
       builder.deleteCharAt(builder.length() - 1);
     }
     String reasonCutAt255Bytes = builder.toString();
-    assertEquals(255, activity.getJustification().length());
-    assertEquals(reasonCutAt255Bytes, activity.getJustification());
+    assertEquals(255, activity.getExplanation().length());
+    assertEquals(reasonCutAt255Bytes, activity.getExplanation());
   }
 }

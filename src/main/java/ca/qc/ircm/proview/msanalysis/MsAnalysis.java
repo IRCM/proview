@@ -98,8 +98,8 @@ public class MsAnalysis implements Data, Serializable {
   /**
    * Description of what caused the MS analysis to be deleted.
    */
-  @Column(name = "deletionJustification")
-  private String deletionJustification;
+  @Column(name = "deletionExplanation")
+  private String deletionExplanation;
   /**
    * Acquisitions of samples made in this MS analysis.
    */
@@ -160,12 +160,12 @@ public class MsAnalysis implements Data, Serializable {
     this.deletionType = deletionType;
   }
 
-  public String getDeletionJustification() {
-    return deletionJustification;
+  public String getDeletionExplanation() {
+    return deletionExplanation;
   }
 
-  public void setDeletionJustification(String deletionJustification) {
-    this.deletionJustification = deletionJustification;
+  public void setDeletionExplanation(String deletionExplanation) {
+    this.deletionExplanation = deletionExplanation;
   }
 
   public boolean isDeleted() {

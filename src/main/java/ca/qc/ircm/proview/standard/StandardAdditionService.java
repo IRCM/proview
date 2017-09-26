@@ -141,19 +141,19 @@ public class StandardAdditionService extends BaseTreatmentService {
    *
    * @param standardAddition
    *          erroneous standard addition to undo
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the standard addition
    */
-  public void undoErroneous(StandardAddition standardAddition, String justification) {
+  public void undoErroneous(StandardAddition standardAddition, String explanation) {
     authorizationService.checkAdminRole();
 
     standardAddition.setDeleted(true);
     standardAddition.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    standardAddition.setDeletionJustification(justification);
+    standardAddition.setDeletionExplanation(explanation);
 
     // Log changes.
     Activity activity =
-        standardAdditionActivityService.undoErroneous(standardAddition, justification);
+        standardAdditionActivityService.undoErroneous(standardAddition, explanation);
     activityService.insert(activity);
 
     entityManager.merge(standardAddition);
@@ -179,7 +179,7 @@ public class StandardAdditionService extends BaseTreatmentService {
 
     standardAddition.setDeleted(true);
     standardAddition.setDeletionType(Treatment.DeletionType.FAILED);
-    standardAddition.setDeletionJustification(failedDescription);
+    standardAddition.setDeletionExplanation(failedDescription);
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during standardAddition.

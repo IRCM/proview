@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_STANDARDS;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.JUSTIFICATION;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;
@@ -176,16 +176,16 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
     return wrap(ButtonElement.class, findElement(className(FILL_STANDARDS)));
   }
 
-  protected TextFieldElement justificationField() {
-    return wrap(TextFieldElement.class, findElement(className(JUSTIFICATION)));
+  protected TextFieldElement explanationField() {
+    return wrap(TextFieldElement.class, findElement(className(EXPLANATION)));
   }
 
-  protected String getJustification() {
-    return justificationField().getValue();
+  protected String getExplanation() {
+    return explanationField().getValue();
   }
 
-  protected void setJustification(String value) {
-    justificationField().setValue(value);
+  protected void setExplanation(String value) {
+    explanationField().setValue(value);
   }
 
   protected ButtonElement saveButton() {

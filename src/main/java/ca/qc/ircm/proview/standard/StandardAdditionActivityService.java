@@ -75,7 +75,7 @@ public class StandardAdditionActivityService {
     activity.setRecordId(standardAddition.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
   }
@@ -85,13 +85,13 @@ public class StandardAdditionActivityService {
    *
    * @param standardAddition
    *          inserted addition of standards
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the addition of standards
    * @return activity about insertion of addition of standards
    */
   @CheckReturnValue
   public Activity undoErroneous(final StandardAddition standardAddition,
-      final String justification) {
+      final String explanation) {
     User user = authorizationService.getCurrentUser();
 
     Activity activity = new Activity();
@@ -99,7 +99,7 @@ public class StandardAdditionActivityService {
     activity.setRecordId(standardAddition.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(null);
     return activity;
   }
@@ -138,13 +138,13 @@ public class StandardAdditionActivityService {
       }
     }
 
-    final String justification = DatabaseLogUtil.reduceLength(failedDescription, 255);
+    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(standardAddition.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }

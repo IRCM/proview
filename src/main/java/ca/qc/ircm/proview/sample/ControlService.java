@@ -130,14 +130,14 @@ public class ControlService {
    *
    * @param control
    *          control containing new information
-   * @param justification
-   *          justification for changes made to sample
+   * @param explanation
+   *          explanation for changes made to sample
    */
-  public void update(Control control, String justification) {
+  public void update(Control control, String explanation) {
     authorizationService.checkAdminRole();
 
     // Log changes.
-    Optional<Activity> activity = sampleActivityService.update(control, justification);
+    Optional<Activity> activity = sampleActivityService.update(control, explanation);
     if (activity.isPresent()) {
       activityService.insert(activity.get());
     }

@@ -75,7 +75,7 @@ public class DilutionActivityService {
     activity.setRecordId(dilution.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
   }
@@ -85,12 +85,12 @@ public class DilutionActivityService {
    *
    * @param dilution
    *          erroneous dilution that was undone
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the dilution
    * @return activity about dilution being marked as erroneous
    */
   @CheckReturnValue
-  public Activity undoErroneous(final Dilution dilution, final String justification) {
+  public Activity undoErroneous(final Dilution dilution, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
     Activity activity = new Activity();
@@ -98,7 +98,7 @@ public class DilutionActivityService {
     activity.setRecordId(dilution.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(null);
     return activity;
   }
@@ -137,13 +137,13 @@ public class DilutionActivityService {
       }
     }
 
-    final String justification = DatabaseLogUtil.reduceLength(failedDescription, 255);
+    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(dilution.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }

@@ -139,18 +139,18 @@ public class EnrichmentService extends BaseTreatmentService {
    *
    * @param enrichment
    *          erroneous enrichment to undo
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the enrichment
    */
-  public void undoErroneous(Enrichment enrichment, String justification) {
+  public void undoErroneous(Enrichment enrichment, String explanation) {
     authorizationService.checkAdminRole();
 
     enrichment.setDeleted(true);
     enrichment.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    enrichment.setDeletionJustification(justification);
+    enrichment.setDeletionExplanation(explanation);
 
     // Log changes.
-    Activity activity = enrichmentActivityService.undoErroneous(enrichment, justification);
+    Activity activity = enrichmentActivityService.undoErroneous(enrichment, explanation);
     activityService.insert(activity);
 
     entityManager.merge(enrichment);
@@ -175,7 +175,7 @@ public class EnrichmentService extends BaseTreatmentService {
 
     enrichment.setDeleted(true);
     enrichment.setDeletionType(Treatment.DeletionType.FAILED);
-    enrichment.setDeletionJustification(failedDescription);
+    enrichment.setDeletionExplanation(failedDescription);
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during enrichment.

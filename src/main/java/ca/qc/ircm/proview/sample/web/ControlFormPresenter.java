@@ -85,7 +85,7 @@ public class ControlFormPresenter implements BinderValidator {
   public static final String FILL_STANDARDS = "fillStandards";
   public static final String EXAMPLE = "example";
   public static final String FILL_BUTTON_STYLE = "skip-row";
-  public static final String JUSTIFICATION = "justification";
+  public static final String EXPLANATION = "explanation";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
   private static final int MAX_STANDARD_COUNT = 10;
@@ -124,10 +124,10 @@ public class ControlFormPresenter implements BinderValidator {
     prepareSamplesComponents();
     prepareStandardsComponents();
     updateStandardsTable(view.standardCountField.getValue());
-    view.justificationLayout.setVisible(false);
-    view.justificationField.addStyleName(JUSTIFICATION);
-    view.justificationField.setCaption(resources.message(JUSTIFICATION));
-    view.justificationField.setRequiredIndicatorVisible(true);
+    view.explanationLayout.setVisible(false);
+    view.explanationField.addStyleName(EXPLANATION);
+    view.explanationField.setCaption(resources.message(EXPLANATION));
+    view.explanationField.setRequiredIndicatorVisible(true);
     view.saveButton.addStyleName(SAVE);
     view.saveButton.setCaption(resources.message(SAVE));
     view.saveButton.addClickListener(e -> save());
@@ -311,7 +311,7 @@ public class ControlFormPresenter implements BinderValidator {
     view.fillStandardsButton.setVisible(!readOnly);
     view.saveButton.setVisible(!readOnly);
     if (!newControl()) {
-      view.justificationLayout.setVisible(!readOnly);
+      view.explanationLayout.setVisible(!readOnly);
     }
     standardBinders.values().forEach(binder -> {
       binder.getBinding(STANDARD_NAME)
@@ -343,10 +343,10 @@ public class ControlFormPresenter implements BinderValidator {
     for (Standard standard : standardsDataProvider.getItems()) {
       valid &= validate(standardBinders.get(standard));
     }
-    if (!newControl() && view.justificationField.getValue().isEmpty()) {
-      logger.trace("Justification field is required");
+    if (!newControl() && view.explanationField.getValue().isEmpty()) {
+      logger.trace("Explanation field is required");
       final MessageResource generalResources = view.getGeneralResources();
-      view.justificationField.setComponentError(new UserError(generalResources.message(REQUIRED)));
+      view.explanationField.setComponentError(new UserError(generalResources.message(REQUIRED)));
       valid = false;
     }
     if (!valid) {
@@ -369,7 +369,7 @@ public class ControlFormPresenter implements BinderValidator {
       if (newControl()) {
         controlService.insert(control);
       } else {
-        controlService.update(control, view.justificationField.getValue());
+        controlService.update(control, view.explanationField.getValue());
       }
       final MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED, control.getName()));

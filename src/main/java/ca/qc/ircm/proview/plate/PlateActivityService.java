@@ -78,7 +78,7 @@ public class PlateActivityService {
     activity.setRecordId(plate.getId());
     activity.setUser(user);
     activity.setTableName("plate");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
   }
@@ -99,12 +99,12 @@ public class PlateActivityService {
    *
    * @param wells
    *          wells that were banned
-   * @param justification
-   *          justification for banning wells
+   * @param explanation
+   *          explanation for banning wells
    * @return activity about wells being marked as banned
    */
   @CheckReturnValue
-  public Activity ban(final Collection<Well> wells, final String justification) {
+  public Activity ban(final Collection<Well> wells, final String explanation) {
     validateSamePlate(wells);
     final User user = authorizationService.getCurrentUser();
     final Plate plate = wells.iterator().next().getPlate();
@@ -128,7 +128,7 @@ public class PlateActivityService {
     activity.setRecordId(plate.getId());
     activity.setUser(user);
     activity.setTableName("plate");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }
@@ -138,12 +138,12 @@ public class PlateActivityService {
    *
    * @param wells
    *          wells that were reactivated
-   * @param justification
-   *          justification for reactivating wells
+   * @param explanation
+   *          explanation for reactivating wells
    * @return activity about wells being marked as reactivated
    */
   @CheckReturnValue
-  public Activity activate(final Collection<Well> wells, final String justification) {
+  public Activity activate(final Collection<Well> wells, final String explanation) {
     validateSamePlate(wells);
     final User user = authorizationService.getCurrentUser();
     Plate plate = wells.iterator().next().getPlate();
@@ -168,7 +168,7 @@ public class PlateActivityService {
     activity.setRecordId(plate.getId());
     activity.setUser(user);
     activity.setTableName("plate");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }

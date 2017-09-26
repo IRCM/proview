@@ -63,7 +63,7 @@ public class ProtocolActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("protocol", activity.getTableName());
     assertEquals(protocol.getId(), activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
@@ -79,7 +79,7 @@ public class ProtocolActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("protocol", activity.getTableName());
     assertEquals(protocol.getId(), activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }

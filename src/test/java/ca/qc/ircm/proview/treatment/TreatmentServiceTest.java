@@ -69,7 +69,7 @@ public class TreatmentServiceTest {
         treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
     assertEquals(null, treatment.getDeletionType());
-    assertEquals(null, treatment.getDeletionJustification());
+    assertEquals(null, treatment.getDeletionExplanation());
     assertEquals(true, treatment instanceof Solubilisation);
     Solubilisation solubilisation = (Solubilisation) treatment;
     List<SolubilisedSample> solubilisedSamples = solubilisation.getTreatmentSamples();
@@ -96,7 +96,7 @@ public class TreatmentServiceTest {
         treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
     assertEquals(null, treatment.getDeletionType());
-    assertEquals(null, treatment.getDeletionJustification());
+    assertEquals(null, treatment.getDeletionExplanation());
     assertEquals(true, treatment instanceof Fractionation);
     Fractionation fractionation = (Fractionation) treatment;
     assertEquals(FractionationType.MUDPIT, fractionation.getFractionationType());

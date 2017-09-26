@@ -92,7 +92,7 @@ public class FractionationActivityService {
     activity.setRecordId(fractionation.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }
@@ -102,14 +102,14 @@ public class FractionationActivityService {
    *
    * @param fractionation
    *          erroneous fractionation that was undone
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the fractionation
    * @param samplesRemoved
    *          containers were sample was removed
    * @return activity about fractionation being marked as erroneous
    */
   @CheckReturnValue
-  public Activity undoErroneous(final Fractionation fractionation, final String justification,
+  public Activity undoErroneous(final Fractionation fractionation, final String explanation,
       final Collection<SampleContainer> samplesRemoved) {
     final User user = authorizationService.getCurrentUser();
 
@@ -134,7 +134,7 @@ public class FractionationActivityService {
     activity.setRecordId(fractionation.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }
@@ -173,13 +173,13 @@ public class FractionationActivityService {
       }
     }
 
-    final String justification = DatabaseLogUtil.reduceLength(failedDescription, 255);
+    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(fractionation.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }

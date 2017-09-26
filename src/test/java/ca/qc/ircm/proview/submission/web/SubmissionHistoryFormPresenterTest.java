@@ -22,7 +22,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.A
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTIVITY_ACTION_TYPE;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTIVITY_DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTIVITY_DESCRIPTION_LONG;
-import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTIVITY_JUSTIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTIVITY_EXPLANATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTIVITY_TIMESTAMP;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTIVITY_USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLES;
@@ -151,7 +151,7 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
     activity2.setUser(new User(1L, "test@ircm.qc.ca"));
     activity2.setActionType(ActionType.UPDATE);
     activity2.setTimestamp(Instant.now());
-    activity2.setJustification("test_justification");
+    activity2.setExplanation("test_explanation");
     when(activityService.all(any(Submission.class)))
         .thenReturn(Arrays.asList(activity1, activity2));
     activityDescription1 = "description 1";
@@ -228,7 +228,7 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
     assertEquals(ACTIVITY_ACTION_TYPE, view.activities.getColumns().get(1).getId());
     assertEquals(ACTIVITY_TIMESTAMP, view.activities.getColumns().get(2).getId());
     assertEquals(ACTIVITY_DESCRIPTION, view.activities.getColumns().get(3).getId());
-    assertEquals(ACTIVITY_JUSTIFICATION, view.activities.getColumns().get(4).getId());
+    assertEquals(ACTIVITY_EXPLANATION, view.activities.getColumns().get(4).getId());
     assertEquals(resources.message(ACTIVITY_USER),
         view.activities.getColumn(ACTIVITY_USER).getCaption());
     assertEquals(activity1.getUser().getEmail(),
@@ -262,12 +262,12 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
             activityDescription2.substring(0, activityDescription2.indexOf("\n"))),
         descriptionLabel.getValue());
     assertEquals(activityDescription2, descriptionLabel.getDescription());
-    assertEquals(resources.message(ACTIVITY_JUSTIFICATION),
-        view.activities.getColumn(ACTIVITY_JUSTIFICATION).getCaption());
-    assertEquals(activity1.getJustification(),
-        view.activities.getColumn(ACTIVITY_JUSTIFICATION).getValueProvider().apply(activity1));
-    assertEquals(activity2.getJustification(),
-        view.activities.getColumn(ACTIVITY_JUSTIFICATION).getValueProvider().apply(activity2));
+    assertEquals(resources.message(ACTIVITY_EXPLANATION),
+        view.activities.getColumn(ACTIVITY_EXPLANATION).getCaption());
+    assertEquals(activity1.getExplanation(),
+        view.activities.getColumn(ACTIVITY_EXPLANATION).getValueProvider().apply(activity1));
+    assertEquals(activity2.getExplanation(),
+        view.activities.getColumn(ACTIVITY_EXPLANATION).getValueProvider().apply(activity2));
 
     verify(activityService).all(submission);
     Collection<Activity> activities = dataProvider(view.activities).getItems();

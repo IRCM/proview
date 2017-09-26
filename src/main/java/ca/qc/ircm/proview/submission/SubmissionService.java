@@ -351,10 +351,10 @@ public class SubmissionService {
    *
    * @param submission
    *          submission with new information
-   * @param justification
-   *          justification for changes made to submission
+   * @param explanation
+   *          explanation for changes made to submission
    */
-  public void forceUpdate(Submission submission, String justification) {
+  public void forceUpdate(Submission submission, String explanation) {
     authorizationService.checkAdminRole();
 
     final Submission old = entityManager.find(Submission.class, submission.getId());
@@ -367,7 +367,7 @@ public class SubmissionService {
 
     // Log update to database.
     Optional<Activity> activity =
-        submissionActivityService.forceUpdate(submission, justification, old);
+        submissionActivityService.forceUpdate(submission, explanation, old);
     if (activity.isPresent()) {
       activityService.insert(activity.get());
     }

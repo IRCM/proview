@@ -123,7 +123,7 @@ public class FractionationServiceTest {
         fractionation.getInsertTime());
     assertEquals(false, fractionation.isDeleted());
     assertEquals(null, fractionation.getDeletionType());
-    assertEquals(null, fractionation.getDeletionJustification());
+    assertEquals(null, fractionation.getDeletionExplanation());
     FractionationDetail fractionationDetail = fractionation.getTreatmentSamples().get(0);
     assertEquals((Long) 2L, fractionationDetail.getId());
     assertEquals(fractionation, fractionationDetail.getFractionation());
@@ -256,7 +256,7 @@ public class FractionationServiceTest {
     assertNotNull(fractionation);
     assertEquals(false, fractionation.isDeleted());
     assertEquals(null, fractionation.getDeletionType());
-    assertEquals(null, fractionation.getDeletionJustification());
+    assertEquals(null, fractionation.getDeletionExplanation());
     assertEquals(user, fractionation.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(fractionation.getInsertTime()));
@@ -305,7 +305,7 @@ public class FractionationServiceTest {
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, fractionation.getDeletionType());
-    assertEquals("undo unit test", fractionation.getDeletionJustification());
+    assertEquals("undo unit test", fractionation.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 1L);
     assertEquals((Long) 1L, sourceTube.getSample().getId());
     Well destinationWell = entityManager.find(Well.class, 128L);
@@ -366,7 +366,7 @@ public class FractionationServiceTest {
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
-    assertEquals("fail unit test", fractionation.getDeletionJustification());
+    assertEquals("fail unit test", fractionation.getDeletionExplanation());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
   }
@@ -389,7 +389,7 @@ public class FractionationServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 1L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 128L);
@@ -418,7 +418,7 @@ public class FractionationServiceTest {
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
-    assertEquals("fail unit test", fractionation.getDeletionJustification());
+    assertEquals("fail unit test", fractionation.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 81L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1282L);
@@ -455,7 +455,7 @@ public class FractionationServiceTest {
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
-    assertEquals("fail unit test", fractionation.getDeletionJustification());
+    assertEquals("fail unit test", fractionation.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 82L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1283L);
@@ -498,7 +498,7 @@ public class FractionationServiceTest {
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
-    assertEquals("fail unit test", fractionation.getDeletionJustification());
+    assertEquals("fail unit test", fractionation.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 83L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1284L);
@@ -547,7 +547,7 @@ public class FractionationServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 84L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1285L);

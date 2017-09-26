@@ -92,7 +92,7 @@ public class FractionationActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity tubeSampleActivity = new UpdateActivity();
@@ -126,7 +126,7 @@ public class FractionationActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity wellSampleActivity = new UpdateActivity();
@@ -153,7 +153,7 @@ public class FractionationActivityServiceTest {
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity deleteTubeActivity = new UpdateActivity();
@@ -178,7 +178,7 @@ public class FractionationActivityServiceTest {
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateWellActivity = new UpdateActivity();
@@ -201,7 +201,7 @@ public class FractionationActivityServiceTest {
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
@@ -215,7 +215,7 @@ public class FractionationActivityServiceTest {
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
@@ -233,7 +233,7 @@ public class FractionationActivityServiceTest {
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateTubeActivity = new UpdateActivity();
@@ -260,7 +260,7 @@ public class FractionationActivityServiceTest {
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateWellActivity = new UpdateActivity();
@@ -294,7 +294,7 @@ public class FractionationActivityServiceTest {
       builder.deleteCharAt(builder.length() - 1);
     }
     String reasonCutAt255Bytes = builder.toString();
-    assertEquals(255, activity.getJustification().length());
-    assertEquals(reasonCutAt255Bytes, activity.getJustification());
+    assertEquals(255, activity.getExplanation().length());
+    assertEquals(reasonCutAt255Bytes, activity.getExplanation());
   }
 }

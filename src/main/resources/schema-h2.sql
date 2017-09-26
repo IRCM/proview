@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS treatment (
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   deletionType varchar(50) DEFAULT NULL,
-  deletionJustification clob,
+  deletionExplanation clob,
   PRIMARY KEY (id),
   CONSTRAINT treatment_ibfk_1 FOREIGN KEY (protocolId) REFERENCES protocol (id) ON UPDATE CASCADE,
   CONSTRAINT treatment_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS msanalysis (
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   deletionType varchar(50) DEFAULT NULL,
-  deletionJustification clob,
+  deletionExplanation clob,
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS acquisition (
@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS activity (
   recordId bigint(20) NOT NULL,
   actionType varchar(50) NOT NULL,
   time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  justification clob,
+  explanation clob,
   PRIMARY KEY (id)
 );
 CREATE INDEX IF NOT EXISTS activityRecordIndex ON activity (tableName,recordId,actionType);

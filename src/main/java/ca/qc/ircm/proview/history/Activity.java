@@ -78,10 +78,10 @@ public class Activity implements Data {
   @Column(name = "time", nullable = false)
   private Instant timestamp;
   /**
-   * Justification of changes.
+   * Explanation of changes.
    */
-  @Column(name = "justification", nullable = false)
-  private String justification;
+  @Column(name = "explanation", nullable = false)
+  private String explanation;
   /**
    * Updates done in this action, if any. This will most likely be null or empty if
    * {@link #getActionType()} does not return {@link ActionType#UPDATE}.
@@ -145,12 +145,12 @@ public class Activity implements Data {
     this.updates = updates;
   }
 
-  public String getJustification() {
-    return justification;
+  public String getExplanation() {
+    return explanation;
   }
 
-  public void setJustification(String justification) {
-    this.justification = justification;
+  public void setExplanation(String explanation) {
+    this.explanation = explanation;
   }
 
   public Instant getTimestamp() {

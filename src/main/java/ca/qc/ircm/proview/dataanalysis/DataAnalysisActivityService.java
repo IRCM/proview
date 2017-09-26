@@ -92,7 +92,7 @@ public class DataAnalysisActivityService {
     activity.setRecordId(dataAnalysis.getId());
     activity.setUser(user);
     activity.setTableName("dataanalysis");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }
@@ -102,12 +102,12 @@ public class DataAnalysisActivityService {
    *
    * @param dataAnalysis
    *          data analysis after update
-   * @param justification
-   *          justification for changes made to data analysis
+   * @param explanation
+   *          explanation for changes made to data analysis
    * @return activity about update of a data analysis
    */
   @CheckReturnValue
-  public Optional<Activity> update(final DataAnalysis dataAnalysis, final String justification) {
+  public Optional<Activity> update(final DataAnalysis dataAnalysis, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
     // Get old data analysis outside of transaction.
@@ -154,7 +154,7 @@ public class DataAnalysisActivityService {
       activity.setRecordId(dataAnalysis.getId());
       activity.setUser(user);
       activity.setTableName("dataanalysis");
-      activity.setJustification(justification);
+      activity.setExplanation(explanation);
       activity.setUpdates(new LinkedList<>(updates));
       return Optional.of(activity);
     } else {

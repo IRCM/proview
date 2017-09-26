@@ -138,7 +138,7 @@ public class ActivityServiceTest {
     assertFalse(activities.isEmpty());
     Activity activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals((Long) 26L, activity.getRecordId());
     assertEquals("plate", activity.getTableName());
     assertEquals(
@@ -167,7 +167,7 @@ public class ActivityServiceTest {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
-    assertEquals("problem with wells", activity.getJustification());
+    assertEquals("problem with wells", activity.getExplanation());
     assertEquals(
         LocalDateTime.of(2011, 11, 16, 13, 53, 16, 0).atZone(ZoneId.systemDefault()).toInstant(),
         activity.getTimestamp());
@@ -201,7 +201,7 @@ public class ActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 9L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(
         LocalDateTime.of(2011, 11, 16, 15, 07, 34, 0).atZone(ZoneId.systemDefault()).toInstant(),
         activity.getTimestamp());
@@ -219,7 +219,7 @@ public class ActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 8L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(
         LocalDateTime.of(2011, 11, 16, 13, 31, 13, 0).atZone(ZoneId.systemDefault()).toInstant(),
         activity.getTimestamp());
@@ -252,7 +252,7 @@ public class ActivityServiceTest {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("msanalysis", activity.getTableName());
     assertEquals((Long) 20L, activity.getRecordId());
-    assertEquals(null, activity.getJustification());
+    assertEquals(null, activity.getExplanation());
     assertEquals(
         LocalDateTime.of(2014, 10, 15, 15, 53, 34).atZone(ZoneId.systemDefault()).toInstant(),
         activity.getTimestamp());
@@ -561,7 +561,7 @@ public class ActivityServiceTest {
     activity.setRecordId(45L);
     activity.setUser(user);
     activity.setTableName("sample");
-    activity.setJustification("unit_test");
+    activity.setExplanation("unit_test");
     activity.setUpdates(null);
 
     activityService.insert(activity);
@@ -576,7 +576,7 @@ public class ActivityServiceTest {
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 45L, activity.getRecordId());
     assertEquals("sample", activity.getTableName());
     Instant beforeInsert =
@@ -616,7 +616,7 @@ public class ActivityServiceTest {
     activity.setRecordId(45L);
     activity.setUser(user);
     activity.setTableName("sample");
-    activity.setJustification("unit_test");
+    activity.setExplanation("unit_test");
     activity.setUpdates(updateActivities);
 
     activityService.insert(activity);
@@ -631,7 +631,7 @@ public class ActivityServiceTest {
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("unit_test", activity.getJustification());
+    assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 45L, activity.getRecordId());
     assertEquals("sample", activity.getTableName());
     Instant beforeInsert =

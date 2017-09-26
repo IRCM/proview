@@ -114,7 +114,7 @@ public class DigestionServiceTest {
         digestion.getInsertTime());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionType());
-    assertEquals(null, digestion.getDeletionJustification());
+    assertEquals(null, digestion.getDeletionExplanation());
     List<DigestedSample> digestedSamples = digestion.getTreatmentSamples();
     assertEquals(1, digestedSamples.size());
     DigestedSample digestedSample = digestedSamples.get(0);
@@ -176,7 +176,7 @@ public class DigestionServiceTest {
     digestion = entityManager.find(Digestion.class, digestion.getId());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionType());
-    assertEquals(null, digestion.getDeletionJustification());
+    assertEquals(null, digestion.getDeletionExplanation());
     assertEquals(user, digestion.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(digestion.getInsertTime()));
@@ -216,7 +216,7 @@ public class DigestionServiceTest {
     digestion = digestionService.get(digestion.getId());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionType());
-    assertEquals(null, digestion.getDeletionJustification());
+    assertEquals(null, digestion.getDeletionExplanation());
     assertEquals(user, digestion.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(digestion.getInsertTime()));
@@ -248,7 +248,7 @@ public class DigestionServiceTest {
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, digestion.getDeletionType());
-    assertEquals("undo unit test", digestion.getDeletionJustification());
+    assertEquals("undo unit test", digestion.getDeletionExplanation());
   }
 
   @Test
@@ -269,7 +269,7 @@ public class DigestionServiceTest {
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
-    assertEquals("fail unit test", digestion.getDeletionJustification());
+    assertEquals("fail unit test", digestion.getDeletionExplanation());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
@@ -293,7 +293,7 @@ public class DigestionServiceTest {
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
-    assertEquals("fail unit test", digestion.getDeletionJustification());
+    assertEquals("fail unit test", digestion.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 224L);
     assertEquals(true, well.isBanned());
     well = entityManager.find(Well.class, 236L);
@@ -323,7 +323,7 @@ public class DigestionServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 13L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 14L);
@@ -359,7 +359,7 @@ public class DigestionServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 15L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 16L);
@@ -402,7 +402,7 @@ public class DigestionServiceTest {
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
-    assertEquals("fail unit test", digestion.getDeletionJustification());
+    assertEquals("fail unit test", digestion.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 17L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 18L);
@@ -451,7 +451,7 @@ public class DigestionServiceTest {
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
-    assertEquals("fail unit test", digestion.getDeletionJustification());
+    assertEquals("fail unit test", digestion.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 19L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 20L);
@@ -506,7 +506,7 @@ public class DigestionServiceTest {
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
-    assertEquals("fail unit test", digestion.getDeletionJustification());
+    assertEquals("fail unit test", digestion.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 2279L);
     assertEquals(true, tube.isBanned());
     Well well = entityManager.find(Well.class, 1570L);

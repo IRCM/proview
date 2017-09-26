@@ -123,14 +123,14 @@ public class SubmissionSampleService {
    *
    * @param sample
    *          sample containing new information
-   * @param justification
-   *          justification for changes made to sample
+   * @param explanation
+   *          explanation for changes made to sample
    */
-  public void update(SubmissionSample sample, String justification) {
+  public void update(SubmissionSample sample, String explanation) {
     authorizationService.checkAdminRole();
 
     // Log changes.
-    Optional<Activity> activity = sampleActivityService.update(sample, justification);
+    Optional<Activity> activity = sampleActivityService.update(sample, explanation);
     if (activity.isPresent()) {
       activityService.insert(activity.get());
     }

@@ -60,7 +60,7 @@ public class ProtocolActivityService {
     activity.setRecordId(protocol.getId());
     activity.setUser(user);
     activity.setTableName("protocol");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
   }

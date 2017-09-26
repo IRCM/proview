@@ -242,18 +242,18 @@ public class FractionationService extends BaseTreatmentService {
    *
    * @param fractionation
    *          erroneous fractionation to undo
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the fractionation
    * @throws DestinationUsedInTreatmentException
    *           destination container(s) is used in another treatment and sample cannot be remove
    */
-  public void undoErroneous(Fractionation fractionation, String justification)
+  public void undoErroneous(Fractionation fractionation, String explanation)
       throws DestinationUsedInTreatmentException {
     authorizationService.checkAdminRole();
 
     fractionation.setDeleted(true);
     fractionation.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    fractionation.setDeletionJustification(justification);
+    fractionation.setDeletionExplanation(explanation);
     // Remove sample from destinations.
     Collection<SampleContainer> samplesRemoved = new LinkedHashSet<>();
     Collection<SampleContainer> removeFailed = new LinkedHashSet<>();
@@ -276,7 +276,7 @@ public class FractionationService extends BaseTreatmentService {
 
     // Log changes.
     Activity activity =
-        fractionationActivityService.undoErroneous(fractionation, justification, samplesRemoved);
+        fractionationActivityService.undoErroneous(fractionation, explanation, samplesRemoved);
     activityService.insert(activity);
 
     entityManager.merge(fractionation);
@@ -305,7 +305,7 @@ public class FractionationService extends BaseTreatmentService {
 
     fractionation.setDeleted(true);
     fractionation.setDeletionType(Treatment.DeletionType.FAILED);
-    fractionation.setDeletionJustification(failedDescription);
+    fractionation.setDeletionExplanation(failedDescription);
 
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {

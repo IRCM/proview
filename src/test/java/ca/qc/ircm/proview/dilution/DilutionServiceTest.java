@@ -120,7 +120,7 @@ public class DilutionServiceTest {
         dilution.getInsertTime());
     assertEquals(false, dilution.isDeleted());
     assertEquals(null, dilution.getDeletionType());
-    assertEquals(null, dilution.getDeletionJustification());
+    assertEquals(null, dilution.getDeletionExplanation());
     List<DilutedSample> dilutedSamples = dilution.getTreatmentSamples();
     assertEquals(1, dilutedSamples.size());
     DilutedSample dilutedSample = dilutedSamples.get(0);
@@ -187,7 +187,7 @@ public class DilutionServiceTest {
     dilution = dilutionService.get(dilution.getId());
     assertEquals(false, dilution.isDeleted());
     assertEquals(null, dilution.getDeletionType());
-    assertEquals(null, dilution.getDeletionJustification());
+    assertEquals(null, dilution.getDeletionExplanation());
     assertEquals(user, dilution.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(dilution.getInsertTime()));
@@ -231,7 +231,7 @@ public class DilutionServiceTest {
     dilution = dilutionService.get(dilution.getId());
     assertEquals(false, dilution.isDeleted());
     assertEquals(null, dilution.getDeletionType());
-    assertEquals(null, dilution.getDeletionJustification());
+    assertEquals(null, dilution.getDeletionExplanation());
     assertEquals(user, dilution.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(dilution.getInsertTime()));
@@ -265,7 +265,7 @@ public class DilutionServiceTest {
     assertNotNull(dilution);
     assertEquals(true, dilution.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, dilution.getDeletionType());
-    assertEquals("undo unit test", dilution.getDeletionJustification());
+    assertEquals("undo unit test", dilution.getDeletionExplanation());
   }
 
   @Test
@@ -286,7 +286,7 @@ public class DilutionServiceTest {
     assertNotNull(dilution);
     assertEquals(true, dilution.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
-    assertEquals("fail unit test", dilution.getDeletionJustification());
+    assertEquals("fail unit test", dilution.getDeletionExplanation());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
@@ -310,7 +310,7 @@ public class DilutionServiceTest {
     assertNotNull(dilution);
     assertEquals(true, dilution.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
-    assertEquals("fail unit test", dilution.getDeletionJustification());
+    assertEquals("fail unit test", dilution.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 608L);
     assertEquals(true, well.isBanned());
     well = entityManager.find(Well.class, 620L);
@@ -340,7 +340,7 @@ public class DilutionServiceTest {
     assertNotNull(dilution);
     assertEquals(true, dilution.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
-    assertEquals("fail unit test", dilution.getDeletionJustification());
+    assertEquals("fail unit test", dilution.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 24L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 23L);
@@ -376,7 +376,7 @@ public class DilutionServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 26L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 25L);
@@ -418,7 +418,7 @@ public class DilutionServiceTest {
     assertNotNull(dilution);
     assertEquals(true, dilution.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
-    assertEquals("fail unit test", dilution.getDeletionJustification());
+    assertEquals("fail unit test", dilution.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 28L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 27L);
@@ -467,7 +467,7 @@ public class DilutionServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 29L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 30L);
@@ -522,7 +522,7 @@ public class DilutionServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 2278L);
     assertEquals(true, tube.isBanned());
     Well well = entityManager.find(Well.class, 1583L);

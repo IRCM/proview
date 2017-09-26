@@ -128,7 +128,7 @@ public class MsAnalysisServiceTest {
         msAnalysis.getInsertTime());
     assertEquals(false, msAnalysis.isDeleted());
     assertEquals(null, msAnalysis.getDeletionType());
-    assertEquals(null, msAnalysis.getDeletionJustification());
+    assertEquals(null, msAnalysis.getDeletionExplanation());
   }
 
   @Test
@@ -152,7 +152,7 @@ public class MsAnalysisServiceTest {
         msAnalysis.getInsertTime());
     assertEquals(false, msAnalysis.isDeleted());
     assertEquals(null, msAnalysis.getDeletionType());
-    assertEquals(null, msAnalysis.getDeletionJustification());
+    assertEquals(null, msAnalysis.getDeletionExplanation());
   }
 
   @Test
@@ -396,7 +396,7 @@ public class MsAnalysisServiceTest {
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals(MsAnalysis.DeletionType.ERRONEOUS, msAnalysis.getDeletionType());
-    assertEquals("undo unit test", msAnalysis.getDeletionJustification());
+    assertEquals("undo unit test", msAnalysis.getDeletionExplanation());
   }
 
   @Test
@@ -417,7 +417,7 @@ public class MsAnalysisServiceTest {
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
-    assertEquals("fail unit test", msAnalysis.getDeletionJustification());
+    assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
   }
@@ -440,7 +440,7 @@ public class MsAnalysisServiceTest {
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
-    assertEquals("fail unit test", msAnalysis.getDeletionJustification());
+    assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 2L);
     assertEquals(true, tube.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
@@ -466,7 +466,7 @@ public class MsAnalysisServiceTest {
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
-    assertEquals("fail unit test", msAnalysis.getDeletionJustification());
+    assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 85L);
     assertEquals(true, tube.isBanned());
     Well well = entityManager.find(Well.class, 1472L);
@@ -495,7 +495,7 @@ public class MsAnalysisServiceTest {
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
-    assertEquals("fail unit test", msAnalysis.getDeletionJustification());
+    assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 86L);
     assertEquals(true, tube.isBanned());
     Well well = entityManager.find(Well.class, 1473L);
@@ -527,7 +527,7 @@ public class MsAnalysisServiceTest {
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
-    assertEquals("fail unit test", msAnalysis.getDeletionJustification());
+    assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 87L);
     assertEquals(true, tube.isBanned());
     Well well = entityManager.find(Well.class, 1474L);
@@ -561,7 +561,7 @@ public class MsAnalysisServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(MsAnalysis.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 88L);
     assertEquals(true, tube.isBanned());
     Well well = entityManager.find(Well.class, 1475L);

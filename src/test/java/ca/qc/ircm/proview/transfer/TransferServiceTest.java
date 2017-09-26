@@ -115,7 +115,7 @@ public class TransferServiceTest {
         transfer.getInsertTime());
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionType());
-    assertEquals(null, transfer.getDeletionJustification());
+    assertEquals(null, transfer.getDeletionExplanation());
     assertEquals(1, transfer.getTreatmentSamples().size());
     SampleTransfer sampleTransfer = transfer.getTreatmentSamples().get(0);
     assertEquals((Long) 3L, sampleTransfer.getId());
@@ -181,7 +181,7 @@ public class TransferServiceTest {
     transfer = transferService.get(transfer.getId());
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionType());
-    assertEquals(null, transfer.getDeletionJustification());
+    assertEquals(null, transfer.getDeletionExplanation());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(transfer.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -227,7 +227,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionType());
-    assertEquals(null, transfer.getDeletionJustification());
+    assertEquals(null, transfer.getDeletionExplanation());
     assertEquals(user, transfer.getUser());
     assertEquals(1, transfer.getTreatmentSamples().size());
     sampleTransfer = transfer.getTreatmentSamples().get(0);
@@ -271,7 +271,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionType());
-    assertEquals(null, transfer.getDeletionJustification());
+    assertEquals(null, transfer.getDeletionExplanation());
     assertEquals(user, transfer.getUser());
     assertEquals(1, transfer.getTreatmentSamples().size());
     sampleTransfer = transfer.getTreatmentSamples().get(0);
@@ -315,7 +315,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionType());
-    assertEquals(null, transfer.getDeletionJustification());
+    assertEquals(null, transfer.getDeletionExplanation());
     assertEquals(user, transfer.getUser());
     assertEquals(1, transfer.getTreatmentSamples().size());
     sampleTransfer = transfer.getTreatmentSamples().get(0);
@@ -350,7 +350,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, transfer.getDeletionType());
-    assertEquals("undo unit test", transfer.getDeletionJustification());
+    assertEquals("undo unit test", transfer.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 1L);
     assertEquals((Long) 1L, sourceTube.getSample().getId());
     Tube destinationTube = entityManager.find(Tube.class, 7L);
@@ -379,7 +379,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, transfer.getDeletionType());
-    assertEquals("undo unit test", transfer.getDeletionJustification());
+    assertEquals("undo unit test", transfer.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 53L);
     assertEquals((Long) 601L, sourceTube.getSample().getId());
     sourceTube = entityManager.find(Tube.class, 54L);
@@ -473,7 +473,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube destinationTube = entityManager.find(Tube.class, 7L);
     assertEquals(false, destinationTube.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -498,7 +498,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Well destinationWell = entityManager.find(Well.class, 998L);
     assertEquals(false, destinationWell.isBanned());
     destinationWell = entityManager.find(Well.class, 1010L);
@@ -525,7 +525,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube destinationTube = entityManager.find(Tube.class, 7L);
     assertEquals(true, destinationTube.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -551,7 +551,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Well destinationWell = entityManager.find(Well.class, 998L);
     assertEquals(true, destinationWell.isBanned());
     destinationWell = entityManager.find(Well.class, 1010L);
@@ -580,7 +580,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 67L);
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 75L);
@@ -612,7 +612,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 68L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1184L);
@@ -644,7 +644,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 69L);
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 76L);
@@ -679,7 +679,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 70L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1185L);
@@ -714,7 +714,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 71L);
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 77L);
@@ -752,7 +752,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, transfer.getDeletionType());
-    assertEquals("fail unit test", transfer.getDeletionJustification());
+    assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 72L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1186L);
@@ -790,7 +790,7 @@ public class TransferServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 73L);
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 78L);
@@ -830,7 +830,7 @@ public class TransferServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 74L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1164L);

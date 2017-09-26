@@ -60,8 +60,8 @@ public class SubmissionHistoryFormPresenter implements TimeConverter {
       ACTIVITIES + "." + activity.timestamp.getMetadata().getName();
   public static final String ACTIVITY_DESCRIPTION = ACTIVITIES + "." + "description";
   public static final String ACTIVITY_DESCRIPTION_LONG = ACTIVITY_DESCRIPTION + ".long";
-  public static final String ACTIVITY_JUSTIFICATION =
-      ACTIVITIES + "." + activity.justification.getMetadata().getName();
+  public static final String ACTIVITY_EXPLANATION =
+      ACTIVITIES + "." + activity.explanation.getMetadata().getName();
   private SubmissionHistoryForm view;
   private Submission submission;
   @Inject
@@ -118,8 +118,8 @@ public class SubmissionHistoryFormPresenter implements TimeConverter {
             ac -> descriptionLabel(activityService.description(ac, submission, locale), resources),
             new ComponentRenderer())
         .setId(ACTIVITY_DESCRIPTION).setCaption(resources.message(ACTIVITY_DESCRIPTION));
-    view.activities.addColumn(ac -> ac.getJustification()).setId(ACTIVITY_JUSTIFICATION)
-        .setCaption(resources.message(ACTIVITY_JUSTIFICATION));
+    view.activities.addColumn(ac -> ac.getExplanation()).setId(ACTIVITY_EXPLANATION)
+        .setCaption(resources.message(ACTIVITY_EXPLANATION));
     view.activities.sort(ACTIVITY_TIMESTAMP, SortDirection.DESCENDING);
   }
 

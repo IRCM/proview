@@ -229,10 +229,10 @@ public class PlateService {
    *          first well to ban
    * @param to
    *          last well to ban
-   * @param justification
-   *          justification for banning wells
+   * @param explanation
+   *          explanation for banning wells
    */
-  public void ban(Plate plate, WellLocation from, WellLocation to, String justification) {
+  public void ban(Plate plate, WellLocation from, WellLocation to, String explanation) {
     authorizationService.checkAdminRole();
 
     Collection<Well> wells = plate.wells(from, to);
@@ -241,7 +241,7 @@ public class PlateService {
     }
 
     // Log change.
-    Activity activity = plateActivityService.ban(wells, justification);
+    Activity activity = plateActivityService.ban(wells, explanation);
     activityService.insert(activity);
 
     for (Well well : wells) {
@@ -260,10 +260,10 @@ public class PlateService {
    *          first well to reactivate
    * @param to
    *          last well to reactivate
-   * @param justification
-   *          justification for reactivating wells
+   * @param explanation
+   *          explanation for reactivating wells
    */
-  public void activate(Plate plate, WellLocation from, WellLocation to, String justification) {
+  public void activate(Plate plate, WellLocation from, WellLocation to, String explanation) {
     authorizationService.checkAdminRole();
 
     Collection<Well> wells = plate.wells(from, to);
@@ -272,7 +272,7 @@ public class PlateService {
     }
 
     // Log change.
-    Activity activity = plateActivityService.activate(wells, justification);
+    Activity activity = plateActivityService.activate(wells, explanation);
     activityService.insert(activity);
 
     for (Well well : wells) {

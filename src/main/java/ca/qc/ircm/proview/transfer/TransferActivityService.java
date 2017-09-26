@@ -91,7 +91,7 @@ public class TransferActivityService {
     activity.setRecordId(transfer.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }
@@ -101,14 +101,14 @@ public class TransferActivityService {
    *
    * @param transfer
    *          erroneous transfer that was undone
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the transfer
    * @param samplesRemoved
    *          containers were sample was removed
    * @return activity about transfer being marked as erroneous
    */
   @CheckReturnValue
-  public Activity undoErroneous(final Transfer transfer, final String justification,
+  public Activity undoErroneous(final Transfer transfer, final String explanation,
       final Collection<SampleContainer> samplesRemoved) {
     final User user = authorizationService.getCurrentUser();
 
@@ -133,7 +133,7 @@ public class TransferActivityService {
     activity.setRecordId(transfer.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }
@@ -172,13 +172,13 @@ public class TransferActivityService {
       }
     }
 
-    final String justification = DatabaseLogUtil.reduceLength(failedDescription, 255);
+    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(transfer.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }

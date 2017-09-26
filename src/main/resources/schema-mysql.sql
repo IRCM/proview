@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS treatment (
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   deletionType enum('ERRONEOUS','FAILED') DEFAULT NULL,
-  deletionJustification text,
+  deletionExplanation text,
   PRIMARY KEY (id),
   FOREIGN KEY (protocolId) REFERENCES protocol (id) ON UPDATE CASCADE,
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS msanalysis (
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   deletionType enum('ERRONEOUS','FAILED') DEFAULT NULL,
-  deletionJustification text,
+  deletionExplanation text,
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS acquisition (
@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS activity (
   recordId bigint(20) NOT NULL,
   actionType enum('INSERT','UPDATE','DELETE') NOT NULL,
   time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  justification text,
+  explanation text,
   PRIMARY KEY (id),
   KEY activityRecordIndex (tableName,recordId,actionType)
 );

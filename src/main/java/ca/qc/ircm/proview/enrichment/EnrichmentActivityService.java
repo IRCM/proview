@@ -75,7 +75,7 @@ public class EnrichmentActivityService {
     activity.setRecordId(enrichment.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
   }
@@ -85,12 +85,12 @@ public class EnrichmentActivityService {
    *
    * @param enrichment
    *          erroneous enrichment that was undone
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the enrichment
    * @return activity about enrichment being marked as erroneous
    */
   @CheckReturnValue
-  public Activity undoErroneous(final Enrichment enrichment, final String justification) {
+  public Activity undoErroneous(final Enrichment enrichment, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
     Activity activity = new Activity();
@@ -98,7 +98,7 @@ public class EnrichmentActivityService {
     activity.setRecordId(enrichment.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(null);
     return activity;
   }
@@ -137,13 +137,13 @@ public class EnrichmentActivityService {
       }
     }
 
-    final String justification = DatabaseLogUtil.reduceLength(failedDescription, 255);
+    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(enrichment.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }

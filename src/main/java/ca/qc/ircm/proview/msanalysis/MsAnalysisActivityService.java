@@ -101,7 +101,7 @@ public class MsAnalysisActivityService {
     activity.setRecordId(msAnalysis.getId());
     activity.setUser(user);
     activity.setTableName("msanalysis");
-    activity.setJustification(null);
+    activity.setExplanation(null);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }
@@ -111,12 +111,12 @@ public class MsAnalysisActivityService {
    *
    * @param msAnalysis
    *          erroneous MS analysis that was undone
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the MS analysis
    * @return activity about MS analysis being marked as erroneous
    */
   @CheckReturnValue
-  public Activity undoErroneous(final MsAnalysis msAnalysis, final String justification) {
+  public Activity undoErroneous(final MsAnalysis msAnalysis, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
     Activity activity = new Activity();
@@ -124,7 +124,7 @@ public class MsAnalysisActivityService {
     activity.setRecordId(msAnalysis.getId());
     activity.setUser(user);
     activity.setTableName("msanalysis");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(null);
     return activity;
   }
@@ -163,13 +163,13 @@ public class MsAnalysisActivityService {
       }
     }
 
-    final String justification = DatabaseLogUtil.reduceLength(failedDescription, 255);
+    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(msAnalysis.getId());
     activity.setUser(user);
     activity.setTableName("msanalysis");
-    activity.setJustification(justification);
+    activity.setExplanation(explanation);
     activity.setUpdates(new LinkedList<>(updates));
     return activity;
   }

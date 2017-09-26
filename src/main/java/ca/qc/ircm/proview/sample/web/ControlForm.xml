@@ -33,7 +33,7 @@
   <entry key="standards.quantity.example">10 μg</entry>
   <entry key="standards.comments">Comments</entry>
   <entry key="fillStandards">Fill down</entry>
-  <entry key="justification">Justification</entry>
+  <entry key="explanation">Explanation</entry>
   <entry key="save">Save</entry>
   <entry key="saved">Control {0} saved</entry>
 </properties>

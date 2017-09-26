@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.FindbugsJustifications.DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD;
+import static ca.qc.ircm.proview.FindbugsExplanations.DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD;
 
 import com.vaadin.ui.themes.ValoTheme;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;

@@ -121,7 +121,7 @@ public class StandardAdditionServiceTest {
         standardAddition.getInsertTime());
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionType());
-    assertEquals(null, standardAddition.getDeletionJustification());
+    assertEquals(null, standardAddition.getDeletionExplanation());
     List<AddedStandard> addedStandards = standardAddition.getTreatmentSamples();
     assertEquals(1, addedStandards.size());
     AddedStandard addedStandard = addedStandards.get(0);
@@ -189,7 +189,7 @@ public class StandardAdditionServiceTest {
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionType());
-    assertEquals(null, standardAddition.getDeletionJustification());
+    assertEquals(null, standardAddition.getDeletionExplanation());
     assertEquals(user, standardAddition.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(standardAddition.getInsertTime()));
@@ -231,7 +231,7 @@ public class StandardAdditionServiceTest {
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionType());
-    assertEquals(null, standardAddition.getDeletionJustification());
+    assertEquals(null, standardAddition.getDeletionExplanation());
     assertEquals(user, standardAddition.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(standardAddition.getInsertTime()));
@@ -265,7 +265,7 @@ public class StandardAdditionServiceTest {
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.ERRONEOUS, standardAddition.getDeletionType());
-    assertEquals("undo unit test", standardAddition.getDeletionJustification());
+    assertEquals("undo unit test", standardAddition.getDeletionExplanation());
   }
 
   @Test
@@ -286,7 +286,7 @@ public class StandardAdditionServiceTest {
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
-    assertEquals("fail unit test", standardAddition.getDeletionJustification());
+    assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
   }
@@ -309,7 +309,7 @@ public class StandardAdditionServiceTest {
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
-    assertEquals("fail unit test", standardAddition.getDeletionJustification());
+    assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 997L);
     assertEquals(true, well.isBanned());
     well = entityManager.find(Well.class, 1009L);
@@ -338,7 +338,7 @@ public class StandardAdditionServiceTest {
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
-    assertEquals("fail unit test", standardAddition.getDeletionJustification());
+    assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 53L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 54L);
@@ -373,7 +373,7 @@ public class StandardAdditionServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
-    assertEquals("fail unit test", test.getDeletionJustification());
+    assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 55L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 56L);
@@ -414,7 +414,7 @@ public class StandardAdditionServiceTest {
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
-    assertEquals("fail unit test", standardAddition.getDeletionJustification());
+    assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 57L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 58L);
@@ -461,7 +461,7 @@ public class StandardAdditionServiceTest {
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
-    assertEquals("fail unit test", standardAddition.getDeletionJustification());
+    assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 60L);
     assertEquals(true, tube.isBanned());
     tube = entityManager.find(Tube.class, 59L);

@@ -140,18 +140,18 @@ public class SolubilisationService extends BaseTreatmentService {
    *
    * @param solubilisation
    *          erroneous solubilisation to undo
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the solubilisation
    */
-  public void undoErroneous(Solubilisation solubilisation, String justification) {
+  public void undoErroneous(Solubilisation solubilisation, String explanation) {
     authorizationService.checkAdminRole();
 
     solubilisation.setDeleted(true);
     solubilisation.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    solubilisation.setDeletionJustification(justification);
+    solubilisation.setDeletionExplanation(explanation);
 
     // Log changes.
-    Activity activity = solubilisationActivityService.undoErroneous(solubilisation, justification);
+    Activity activity = solubilisationActivityService.undoErroneous(solubilisation, explanation);
     activityService.insert(activity);
 
     entityManager.merge(solubilisation);
@@ -177,7 +177,7 @@ public class SolubilisationService extends BaseTreatmentService {
 
     solubilisation.setDeleted(true);
     solubilisation.setDeletionType(Treatment.DeletionType.FAILED);
-    solubilisation.setDeletionJustification(failedDescription);
+    solubilisation.setDeletionExplanation(failedDescription);
 
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {

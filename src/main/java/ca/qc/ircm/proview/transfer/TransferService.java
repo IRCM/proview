@@ -163,18 +163,18 @@ public class TransferService extends BaseTreatmentService {
    *
    * @param transfer
    *          erroneous transfer to undo
-   * @param justification
+   * @param explanation
    *          explanation of what was incorrect with the transfer
    * @throws DestinationUsedInTreatmentException
    *           destination container(s) is used in another treatment and sample cannot be remove
    */
-  public void undoErroneous(Transfer transfer, String justification)
+  public void undoErroneous(Transfer transfer, String explanation)
       throws DestinationUsedInTreatmentException {
     authorizationService.checkAdminRole();
 
     transfer.setDeleted(true);
     transfer.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    transfer.setDeletionJustification(justification);
+    transfer.setDeletionExplanation(explanation);
 
     // Remove sample from destinations.
     Collection<SampleContainer> samplesRemoved = new LinkedHashSet<>();
@@ -198,7 +198,7 @@ public class TransferService extends BaseTreatmentService {
 
     // Log changes.
     Activity activity =
-        transferActivityService.undoErroneous(transfer, justification, samplesRemoved);
+        transferActivityService.undoErroneous(transfer, explanation, samplesRemoved);
     activityService.insert(activity);
 
     entityManager.merge(transfer);
@@ -226,7 +226,7 @@ public class TransferService extends BaseTreatmentService {
 
     transfer.setDeleted(true);
     transfer.setDeletionType(Treatment.DeletionType.FAILED);
-    transfer.setDeletionJustification(failedDescription);
+    transfer.setDeletionExplanation(failedDescription);
 
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {

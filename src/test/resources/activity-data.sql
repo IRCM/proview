@@ -15,649 +15,649 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5543,3,'submission',1,'INSERT','2011-06-14 16:32:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5544,3,'msanalysis',1,'INSERT','2011-06-14 16:32:27',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5545,4,'protocol',1,'INSERT','2011-10-13 10:18:15',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5546,4,'protocol',2,'INSERT','2011-10-13 10:21:52',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5547,3,'submission',32,'INSERT','2011-10-13 10:36:33',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5548,3,'submission',33,'INSERT','2011-10-13 11:00:34',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5549,4,'sample',444,'INSERT','2011-10-13 11:06:42',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5550,4,'treatment',1,'INSERT','2011-10-13 11:45:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5551,2,'msanalysis',12,'INSERT','2011-10-14 14:14:25',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5552,2,'dataanalysis',3,'INSERT','2011-10-14 14:24:22',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5553,2,'dataanalysis',3,'UPDATE','2011-10-14 14:24:22',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5554,2,'dataanalysis',4,'INSERT','2011-10-14 14:24:23',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5556,2,'submission',34,'INSERT','2011-10-17 15:15:09',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5557,4,'treatment',2,'INSERT','2011-10-19 12:20:33',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5558,4,'treatment',3,'INSERT','2011-10-19 15:01:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5559,2,'plate',26,'INSERT','2011-11-08 13:33:21',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5560,10,'submission',35,'INSERT','2011-11-09 14:35:54',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5561,2,'treatment',4,'INSERT','2011-11-09 15:03:54',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5562,2,'treatment',5,'INSERT','2011-11-09 15:12:02',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5563,2,'treatment',6,'INSERT','2011-11-09 15:15:20',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5564,2,'treatment',7,'INSERT','2011-11-09 15:20:21',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5565,2,'msanalysis',13,'INSERT','2011-11-09 15:37:09',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5566,10,'dataanalysis',5,'INSERT','2011-11-09 15:37:09',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5568,2,'msanalysis',14,'INSERT','2011-11-15 10:09:11',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5569,2,'treatment',8,'INSERT','2011-11-16 13:31:13',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5570,2,'plate',26,'UPDATE','2011-11-16 13:53:16','problem with wells');
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5571,10,'submission',36,'INSERT','2011-11-16 14:29:32',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5572,4,'sample',448,'INSERT','2011-11-16 14:47:48',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5573,4,'treatment',9,'INSERT','2011-11-16 15:07:34',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5634,10,'submission',147,'INSERT','2014-10-08 10:00:49',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5635,4,'sample',559,'UPDATE','2014-10-08 10:15:05',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5636,4,'sample',560,'UPDATE','2014-10-08 10:15:05',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5637,4,'plate',107,'INSERT','2014-10-08 10:41:39',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5638,4,'treatment',194,'INSERT','2014-10-08 10:41:52',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5639,4,'treatment',195,'INSERT','2014-10-08 10:42:26',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5640,4,'sample',559,'UPDATE','2014-10-08 10:43:43',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5641,4,'sample',560,'UPDATE','2014-10-08 10:43:43',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5642,10,'submission',148,'INSERT','2014-10-08 11:15:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5643,4,'sample',561,'UPDATE','2014-10-08 11:15:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5644,4,'sample',562,'UPDATE','2014-10-08 11:15:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5645,4,'sample',563,'UPDATE','2014-10-08 11:15:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5646,4,'sample',564,'UPDATE','2014-10-08 11:15:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5647,4,'sample',565,'UPDATE','2014-10-08 11:15:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5648,4,'sample',566,'UPDATE','2014-10-08 11:15:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5649,4,'sample',567,'UPDATE','2014-10-08 11:15:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5650,4,'sample',568,'UPDATE','2014-10-08 11:15:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5651,4,'treatment',196,'INSERT','2014-10-08 11:16:34',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5652,4,'treatment',197,'INSERT','2014-10-08 11:17:13',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5653,4,'treatment',198,'INSERT','2014-10-08 11:17:22',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5654,4,'treatment',199,'INSERT','2014-10-08 11:17:30',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5655,4,'plate',108,'INSERT','2014-10-08 11:18:03',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5657,4,'treatment',201,'INSERT','2014-10-08 11:19:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5659,4,'treatment',203,'INSERT','2014-10-08 11:23:05',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5660,4,'plate',109,'INSERT','2014-10-08 11:24:47',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5661,4,'treatment',204,'INSERT','2014-10-08 11:25:39',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5662,4,'treatment',205,'INSERT','2014-10-08 11:26:32',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5665,4,'treatment',206,'INSERT','2014-10-08 11:43:31',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5666,4,'treatment',207,'INSERT','2014-10-08 11:44:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5667,4,'sample',561,'UPDATE','2014-10-08 11:45:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5668,4,'sample',562,'UPDATE','2014-10-08 11:45:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5669,4,'sample',563,'UPDATE','2014-10-08 11:45:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5670,4,'sample',564,'UPDATE','2014-10-08 11:45:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5671,4,'sample',565,'UPDATE','2014-10-08 11:45:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5672,4,'sample',566,'UPDATE','2014-10-08 11:45:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5673,4,'sample',567,'UPDATE','2014-10-08 11:45:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5674,4,'sample',568,'UPDATE','2014-10-08 11:45:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5675,10,'submission',149,'INSERT','2014-10-09 12:18:31',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5676,4,'plate',110,'INSERT','2014-10-09 12:19:35',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5678,4,'plate',111,'INSERT','2014-10-09 12:20:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5679,4,'treatment',209,'INSERT','2014-10-09 12:20:31',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5680,4,'treatment',210,'INSERT','2014-10-09 12:20:50',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5681,4,'treatment',211,'INSERT','2014-10-09 12:21:46',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5682,4,'treatment',212,'INSERT','2014-10-09 12:22:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5683,4,'treatment',213,'INSERT','2014-10-09 13:10:37',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5685,4,'treatment',215,'INSERT','2014-10-09 13:17:15',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5686,4,'treatment',216,'INSERT','2014-10-09 13:28:12',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5687,4,'treatment',217,'INSERT','2014-10-09 13:28:42',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5688,4,'plate',112,'INSERT','2014-10-09 13:29:26',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5689,4,'treatment',218,'INSERT','2014-10-09 13:29:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5690,4,'treatment',219,'INSERT','2014-10-09 13:30:21',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5691,4,'treatment',220,'INSERT','2014-10-09 13:31:02',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5692,4,'treatment',221,'INSERT','2014-10-09 13:31:32',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5693,10,'submission',150,'INSERT','2014-10-14 14:05:34',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5694,4,'sample',569,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5695,4,'sample',570,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5696,4,'sample',571,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5697,4,'sample',572,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5698,4,'sample',573,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5699,4,'sample',574,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5700,4,'sample',575,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5701,4,'sample',576,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5702,4,'sample',577,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5703,4,'sample',578,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5704,4,'sample',579,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5705,4,'sample',580,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5706,4,'sample',581,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5707,4,'sample',582,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5708,4,'sample',583,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5709,4,'sample',584,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5710,4,'sample',585,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5711,4,'sample',586,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5712,4,'sample',587,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5713,4,'sample',588,'UPDATE','2014-10-14 14:06:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5714,4,'plate',113,'INSERT','2014-10-14 14:06:42',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5715,4,'plate',114,'INSERT','2014-10-14 14:06:47',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5716,4,'treatment',222,'INSERT','2014-10-14 14:06:54',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5717,4,'treatment',223,'INSERT','2014-10-14 14:07:16',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5718,4,'treatment',224,'INSERT','2014-10-14 14:08:31',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5719,4,'treatment',225,'INSERT','2014-10-14 14:09:02',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5720,4,'treatment',226,'INSERT','2014-10-14 14:09:11',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5721,4,'treatment',227,'INSERT','2014-10-14 14:09:24',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5722,4,'treatment',228,'INSERT','2014-10-14 14:09:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5723,4,'treatment',229,'INSERT','2014-10-14 14:10:03',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5724,4,'treatment',230,'INSERT','2014-10-14 14:10:23',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5725,4,'treatment',231,'INSERT','2014-10-14 14:11:50',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5726,4,'treatment',232,'INSERT','2014-10-14 14:13:51',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5727,4,'treatment',233,'INSERT','2014-10-14 14:15:33',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5728,4,'treatment',234,'INSERT','2014-10-14 14:16:47',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5729,4,'sample',569,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5730,4,'sample',570,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5731,4,'sample',571,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5732,4,'sample',572,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5733,4,'sample',573,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5734,4,'sample',574,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5735,4,'sample',575,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5736,4,'sample',576,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5737,4,'sample',577,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5738,4,'sample',578,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5739,4,'sample',579,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5740,4,'sample',580,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5741,4,'sample',581,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5742,4,'sample',582,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5743,4,'sample',583,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5744,4,'sample',584,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5745,4,'sample',585,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5746,4,'sample',586,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5747,4,'sample',587,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5748,4,'sample',588,'UPDATE','2014-10-14 14:20:00',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5749,10,'submission',151,'INSERT','2014-10-15 09:56:30',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5750,4,'sample',589,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5751,4,'sample',590,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5752,4,'sample',591,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5753,4,'sample',592,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5754,4,'sample',593,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5755,4,'sample',594,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5756,4,'sample',595,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5757,4,'sample',596,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5758,4,'sample',597,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5759,4,'sample',598,'UPDATE','2014-10-15 09:56:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5760,4,'plate',115,'INSERT','2014-10-15 09:57:17',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5761,4,'plate',116,'INSERT','2014-10-15 09:57:20',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5762,4,'treatment',235,'INSERT','2014-10-15 09:57:34',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5763,4,'treatment',236,'INSERT','2014-10-15 09:57:51',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5764,4,'treatment',237,'INSERT','2014-10-15 10:29:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5765,4,'treatment',238,'INSERT','2014-10-15 10:30:09',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5766,4,'treatment',239,'INSERT','2014-10-15 10:30:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5767,4,'treatment',240,'INSERT','2014-10-15 10:30:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5768,4,'treatment',241,'INSERT','2014-10-15 10:31:23',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5769,4,'treatment',242,'INSERT','2014-10-15 10:31:47',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5770,4,'treatment',243,'INSERT','2014-10-15 10:33:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5771,4,'treatment',244,'INSERT','2014-10-15 10:34:39',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5772,4,'treatment',245,'INSERT','2014-10-15 10:35:27',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5773,4,'treatment',246,'INSERT','2014-10-15 10:35:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5774,4,'sample',589,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5775,4,'sample',590,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5776,4,'sample',591,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5777,4,'sample',592,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5778,4,'sample',593,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5779,4,'sample',594,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5780,4,'sample',595,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5781,4,'sample',596,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5782,4,'sample',597,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5783,4,'sample',598,'UPDATE','2014-10-15 10:36:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5784,10,'submission',152,'INSERT','2014-10-15 13:43:47',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5785,4,'sample',599,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5786,4,'sample',600,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5787,4,'sample',601,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5788,4,'sample',602,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5789,4,'sample',603,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5790,4,'sample',604,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5791,4,'sample',605,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5792,4,'sample',606,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5793,4,'sample',607,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5794,4,'sample',608,'UPDATE','2014-10-15 13:44:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5795,4,'treatment',247,'INSERT','2014-10-15 13:44:44',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5796,4,'treatment',248,'INSERT','2014-10-15 13:45:42',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5797,4,'treatment',249,'INSERT','2014-10-15 13:46:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5798,4,'treatment',250,'INSERT','2014-10-15 13:46:27',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5799,4,'treatment',251,'INSERT','2014-10-15 13:46:45',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5800,4,'treatment',252,'INSERT','2014-10-15 13:47:04',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5801,4,'treatment',253,'INSERT','2014-10-15 13:48:09',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5802,4,'treatment',254,'INSERT','2014-10-15 13:48:37',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5803,4,'treatment',255,'INSERT','2014-10-15 13:49:57',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5804,4,'treatment',256,'INSERT','2014-10-15 13:50:43',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5805,4,'treatment',257,'INSERT','2014-10-15 13:51:30',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5806,4,'treatment',258,'INSERT','2014-10-15 13:52:13',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5807,4,'sample',599,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5808,4,'sample',600,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5809,4,'sample',601,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5810,4,'sample',602,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5811,4,'sample',603,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5812,4,'sample',604,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5813,4,'sample',605,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5814,4,'sample',606,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5815,4,'sample',607,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5816,4,'sample',608,'UPDATE','2014-10-15 15:42:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5817,10,'submission',153,'INSERT','2014-10-15 15:43:25',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5818,4,'sample',609,'UPDATE','2014-10-15 15:43:45',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5819,4,'sample',610,'UPDATE','2014-10-15 15:43:45',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5820,4,'sample',611,'UPDATE','2014-10-15 15:43:45',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5821,4,'sample',612,'UPDATE','2014-10-15 15:43:45',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5822,4,'treatment',259,'INSERT','2014-10-15 15:44:43',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5823,4,'treatment',260,'INSERT','2014-10-15 15:45:02',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5824,4,'treatment',261,'INSERT','2014-10-15 15:45:51',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5825,4,'treatment',262,'INSERT','2014-10-15 15:46:11',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5826,4,'treatment',263,'INSERT','2014-10-15 15:46:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5827,4,'treatment',264,'INSERT','2014-10-15 15:47:30',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5828,4,'msanalysis',19,'INSERT','2014-10-15 15:52:55',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5829,4,'msanalysis',20,'INSERT','2014-10-15 15:53:34',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5830,4,'sample',609,'UPDATE','2014-10-15 15:54:11',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5831,4,'sample',611,'UPDATE','2014-10-15 15:54:11',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5832,10,'submission',154,'INSERT','2014-10-15 16:01:39',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5833,4,'sample',613,'UPDATE','2014-10-15 16:02:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5834,4,'sample',614,'UPDATE','2014-10-15 16:02:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5835,4,'sample',615,'UPDATE','2014-10-15 16:02:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5836,4,'sample',616,'UPDATE','2014-10-15 16:02:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5837,4,'sample',617,'UPDATE','2014-10-15 16:02:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5838,4,'sample',618,'UPDATE','2014-10-15 16:02:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5839,4,'sample',619,'UPDATE','2014-10-15 16:02:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5840,4,'sample',620,'UPDATE','2014-10-15 16:02:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5841,4,'treatment',265,'INSERT','2014-10-15 16:02:21',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5842,4,'treatment',266,'INSERT','2014-10-15 16:02:40',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5843,4,'treatment',267,'INSERT','2014-10-15 16:03:02',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5844,4,'treatment',268,'INSERT','2014-10-15 16:03:22',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5845,4,'plate',117,'INSERT','2014-10-15 16:03:39',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5846,4,'treatment',269,'INSERT','2014-10-15 16:03:46',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5847,4,'treatment',270,'INSERT','2014-10-15 16:04:11',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5848,4,'treatment',271,'INSERT','2014-10-15 16:04:27',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5849,4,'treatment',272,'INSERT','2014-10-15 16:04:41',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5850,4,'treatment',273,'INSERT','2014-10-15 16:05:18',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5851,4,'treatment',274,'INSERT','2014-10-15 16:05:47',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5852,4,'treatment',275,'INSERT','2014-10-15 16:06:40',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5853,4,'treatment',276,'INSERT','2014-10-15 16:07:34',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5854,4,'treatment',277,'INSERT','2014-10-15 16:27:51',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5855,4,'treatment',278,'INSERT','2014-10-15 16:28:12',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5856,4,'treatment',279,'INSERT','2014-10-15 16:29:06',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5857,4,'treatment',280,'INSERT','2014-10-15 16:30:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5858,4,'treatment',281,'INSERT','2014-10-15 16:30:43',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5859,4,'treatment',282,'INSERT','2014-10-15 16:31:56',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5860,4,'treatment',283,'INSERT','2014-10-15 16:33:25',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5861,4,'treatment',284,'INSERT','2014-10-15 16:34:07',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5862,10,'submission',155,'INSERT','2014-10-17 11:29:23',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5863,4,'sample',621,'UPDATE','2014-10-17 11:29:44',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5864,4,'sample',622,'UPDATE','2014-10-17 11:29:44',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5865,4,'sample',623,'UPDATE','2014-10-17 11:29:44',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5866,4,'sample',624,'UPDATE','2014-10-17 11:29:44',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5867,4,'sample',625,'UPDATE','2014-10-17 11:29:44',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5868,4,'sample',626,'UPDATE','2014-10-17 11:29:44',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5869,4,'sample',613,'UPDATE','2014-10-17 11:30:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5870,4,'sample',614,'UPDATE','2014-10-17 11:30:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5871,4,'sample',615,'UPDATE','2014-10-17 11:30:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5872,4,'sample',616,'UPDATE','2014-10-17 11:30:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5873,4,'sample',617,'UPDATE','2014-10-17 11:30:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5874,4,'sample',618,'UPDATE','2014-10-17 11:30:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5875,4,'sample',619,'UPDATE','2014-10-17 11:30:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5876,4,'sample',620,'UPDATE','2014-10-17 11:30:08',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5877,4,'plate',118,'INSERT','2014-10-17 11:32:34',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5878,4,'treatment',285,'INSERT','2014-10-17 11:32:50',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5879,4,'treatment',286,'INSERT','2014-10-17 11:33:20',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5880,4,'sample',621,'UPDATE','2014-10-17 11:33:44',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5881,4,'sample',622,'UPDATE','2014-10-17 11:33:44',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5882,4,'treatment',287,'INSERT','2014-10-17 11:34:06',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5883,4,'msanalysis',21,'INSERT','2014-10-17 11:34:47',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5884,4,'treatment',288,'INSERT','2014-10-17 11:47:57',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5885,4,'treatment',289,'INSERT','2014-10-17 11:48:28',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5886,4,'treatment',290,'INSERT','2014-10-17 11:48:51',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5887,4,'treatment',291,'INSERT','2014-10-17 11:49:14',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5888,4,'plate',119,'INSERT','2014-10-17 11:50:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5889,4,'treatment',292,'INSERT','2014-10-17 11:50:19',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5890,4,'treatment',293,'INSERT','2014-10-17 11:51:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5891,4,'treatment',294,'INSERT','2014-10-17 11:51:50',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5892,4,'treatment',295,'INSERT','2014-10-17 11:52:40',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5893,4,'treatment',296,'INSERT','2014-10-17 11:53:43',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5894,4,'treatment',297,'INSERT','2014-10-17 11:54:22',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5895,4,'sample',623,'UPDATE','2014-10-17 11:54:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5896,4,'sample',624,'UPDATE','2014-10-17 11:54:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5897,4,'sample',625,'UPDATE','2014-10-17 11:54:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5898,4,'sample',626,'UPDATE','2014-10-17 11:54:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5899,10,'submission',156,'INSERT','2014-10-22 09:47:04',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5900,4,'sample',627,'UPDATE','2014-10-22 09:47:33',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5901,4,'sample',628,'UPDATE','2014-10-22 09:47:33',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5902,4,'sample',629,'UPDATE','2014-10-22 09:47:33',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5903,4,'sample',630,'UPDATE','2014-10-22 09:47:33',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5904,4,'sample',627,'UPDATE','2014-10-22 09:47:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5905,4,'sample',628,'UPDATE','2014-10-22 09:47:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5906,4,'sample',629,'UPDATE','2014-10-22 09:47:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5907,4,'sample',630,'UPDATE','2014-10-22 09:47:38',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5908,4,'msanalysis',22,'INSERT','2014-10-22 09:49:09',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5909,4,'msanalysis',23,'INSERT','2014-10-22 09:49:39',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5910,4,'msanalysis',24,'INSERT','2014-10-22 09:50:16',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5911,4,'msanalysis',25,'INSERT','2014-10-22 09:50:43',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5912,4,'plate',120,'INSERT','2014-10-22 09:51:11',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5913,4,'treatment',298,'INSERT','2014-10-22 09:51:27',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5914,4,'treatment',299,'INSERT','2014-10-22 09:51:43',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5915,4,'treatment',300,'INSERT','2014-10-22 09:55:29',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5916,4,'treatment',301,'INSERT','2014-10-22 09:55:59',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5917,4,'plate',121,'INSERT','2014-10-22 09:56:23',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5918,4,'treatment',302,'INSERT','2014-10-22 09:56:54',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5919,4,'treatment',303,'INSERT','2014-10-22 09:57:18',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5920,4,'plate',122,'INSERT','2014-10-24 14:30:21',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5923,10,'submission',161,'INSERT','2015-05-27 13:33:23',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5924,10,'submission',162,'INSERT','2015-05-27 13:33:31',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5925,2,'sample',638,'UPDATE','2015-05-27 13:34:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5926,2,'sample',639,'UPDATE','2015-05-27 13:34:01',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5927,2,'treatment',321,'INSERT','2015-05-27 13:45:22',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5928,2,'treatment',322,'INSERT','2015-05-27 13:45:56',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5929,2,'treatment',323,'INSERT','2015-05-27 13:47:51',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5930,2,'treatment',324,'INSERT','2015-05-27 14:06:27',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5931,2,'sample',638,'UPDATE','2015-05-27 14:40:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5932,2,'sample',639,'UPDATE','2015-05-27 14:40:10',NULL);
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5933,2,'treatment',323,'DELETE','2015-05-27 14:41:16','Erroneous transfer test');
-INSERT INTO activity (id,userId,tableName,recordId,actionType,time,justification)
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5934,2,'treatment',324,'DELETE','2015-05-27 14:41:52','Erroneous fractionation test');
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
 VALUES (1020,5551,'sample',442,'UPDATE','status','TO_APPROVE','ANALYSED');

@@ -19,9 +19,9 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXAMPLE;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_BUTTON_STYLE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_STANDARDS;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.JUSTIFICATION;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAMPLE_PANEL;
@@ -118,7 +118,7 @@ public class ControlFormPresenterTest {
   private String standardName2 = "std2";
   private String standardQuantity2 = "2 ug";
   private String standardComment2 = "com2";
-  private String justification = "test justification";
+  private String explanation = "test explanation";
   private TextField standardNameField1;
   private TextField standardNameField2;
   private TextField standardQuantityField1;
@@ -141,8 +141,8 @@ public class ControlFormPresenterTest {
     view.standardsTableLayout = new HorizontalLayout();
     view.standardsGrid = new Grid<>();
     view.fillStandardsButton = new Button();
-    view.justificationLayout = new VerticalLayout();
-    view.justificationField = new TextField();
+    view.explanationLayout = new VerticalLayout();
+    view.explanationField = new TextField();
     view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -227,7 +227,7 @@ public class ControlFormPresenterTest {
     assertTrue(standardCommentsField.getStyleName().contains(ValoTheme.TEXTFIELD_TINY));
     assertTrue(view.fillStandardsButton.getStyleName().contains(FILL_STANDARDS));
     assertTrue(view.fillStandardsButton.getStyleName().contains(FILL_BUTTON_STYLE));
-    assertTrue(view.justificationField.getStyleName().contains(JUSTIFICATION));
+    assertTrue(view.explanationField.getStyleName().contains(EXPLANATION));
     assertTrue(view.saveButton.getStyleName().contains(SAVE));
   }
 
@@ -268,7 +268,7 @@ public class ControlFormPresenterTest {
         standardQuantityField.getPlaceholder());
     assertEquals(resources.message(FILL_STANDARDS), view.fillStandardsButton.getCaption());
     assertEquals(VaadinIcons.ARROW_DOWN, view.fillStandardsButton.getIcon());
-    assertEquals(resources.message(JUSTIFICATION), view.justificationField.getCaption());
+    assertEquals(resources.message(EXPLANATION), view.explanationField.getCaption());
     assertEquals(resources.message(SAVE), view.saveButton.getCaption());
   }
 
@@ -318,7 +318,7 @@ public class ControlFormPresenterTest {
     assertFalse(view.quantityField.isRequiredIndicatorVisible());
     assertFalse(view.volumeField.isRequiredIndicatorVisible());
     assertTrue(view.controlTypeField.isRequiredIndicatorVisible());
-    assertTrue(view.justificationField.isRequiredIndicatorVisible());
+    assertTrue(view.explanationField.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -346,7 +346,7 @@ public class ControlFormPresenterTest {
         .getValueProvider().apply(standard);
     assertTrue(standardCommentsField.isReadOnly());
     assertFalse(view.fillStandardsButton.isVisible());
-    assertFalse(view.justificationLayout.isVisible());
+    assertFalse(view.explanationLayout.isVisible());
     assertFalse(view.saveButton.isVisible());
   }
 
@@ -376,7 +376,7 @@ public class ControlFormPresenterTest {
     assertTrue(standardQuantityField.isReadOnly());
     assertTrue(standardCommentsField.isReadOnly());
     assertFalse(view.fillStandardsButton.isVisible());
-    assertFalse(view.justificationLayout.isVisible());
+    assertFalse(view.explanationLayout.isVisible());
     assertFalse(view.saveButton.isVisible());
   }
 
@@ -407,7 +407,7 @@ public class ControlFormPresenterTest {
         .getValueProvider().apply(standard);
     assertTrue(standardCommentsField.isReadOnly());
     assertFalse(view.fillStandardsButton.isVisible());
-    assertFalse(view.justificationLayout.isVisible());
+    assertFalse(view.explanationLayout.isVisible());
     assertFalse(view.saveButton.isVisible());
   }
 
@@ -435,7 +435,7 @@ public class ControlFormPresenterTest {
         .getValueProvider().apply(standard);
     assertFalse(standardCommentsField.isReadOnly());
     assertTrue(view.fillStandardsButton.isVisible());
-    assertFalse(view.justificationLayout.isVisible());
+    assertFalse(view.explanationLayout.isVisible());
     assertTrue(view.saveButton.isVisible());
   }
 
@@ -465,7 +465,7 @@ public class ControlFormPresenterTest {
     assertFalse(standardQuantityField.isReadOnly());
     assertFalse(standardCommentsField.isReadOnly());
     assertTrue(view.fillStandardsButton.isVisible());
-    assertFalse(view.justificationLayout.isVisible());
+    assertFalse(view.explanationLayout.isVisible());
     assertTrue(view.saveButton.isVisible());
   }
 
@@ -495,7 +495,7 @@ public class ControlFormPresenterTest {
         .getValueProvider().apply(standard);
     assertFalse(standardCommentsField.isReadOnly());
     assertTrue(view.fillStandardsButton.isVisible());
-    assertTrue(view.justificationLayout.isVisible());
+    assertTrue(view.explanationLayout.isVisible());
     assertTrue(view.saveButton.isVisible());
   }
 
@@ -751,7 +751,7 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void save_MissingJustification() throws Throwable {
+  public void save_MissingExplanation() throws Throwable {
     Control control = entityManager.find(Control.class, 444L);
     presenter.init(view);
     presenter.setValue(control);
@@ -762,7 +762,7 @@ public class ControlFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.justificationField.getErrorMessage().getFormattedHtmlMessage());
+        view.explanationField.getErrorMessage().getFormattedHtmlMessage());
     verify(controlService, never()).update(any(), any());
   }
 
@@ -799,12 +799,12 @@ public class ControlFormPresenterTest {
     presenter.init(view);
     presenter.setValue(control);
     setFields();
-    view.justificationField.setValue(justification);
+    view.explanationField.setValue(explanation);
 
     view.saveButton.click();
 
     verify(view, never()).showError(any());
-    verify(controlService).update(controlCaptor.capture(), eq(justification));
+    verify(controlService).update(controlCaptor.capture(), eq(explanation));
     control = controlCaptor.getValue();
     assertEquals((Long) 444L, control.getId());
     assertEquals(name, control.getName());
@@ -857,6 +857,6 @@ public class ControlFormPresenterTest {
           ((TextField) view.standardsGrid.getColumn(STANDARD_COMMENTS).getValueProvider().apply(cs))
               .getValue());
     }
-    assertEquals("", view.justificationField.getValue());
+    assertEquals("", view.explanationField.getValue());
   }
 }
