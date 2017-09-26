@@ -313,7 +313,7 @@ public class SubmissionService {
       if (plate.getId() == null) {
         persistPlate(submission, plate);
       } else {
-        plate = entityManager.merge(plate);
+        entityManager.merge(plate);
       }
     } else {
       Set<String> otherTubeNames = new HashSet<>();
