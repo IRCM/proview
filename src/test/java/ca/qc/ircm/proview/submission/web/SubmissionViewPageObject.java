@@ -74,6 +74,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_Q
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_SUPPORT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PANEL;
@@ -87,7 +88,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SUBMIT_ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY_PROPERTY;
@@ -583,7 +583,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected ButtonElement saveButton() {
-    return wrap(ButtonElement.class, findElement(className(SUBMIT_ID)));
+    return wrap(ButtonElement.class, findElement(className(SAVE)));
   }
 
   protected void clickSaveButton() {

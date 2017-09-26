@@ -281,7 +281,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String FILE_FILENAME_PROPERTY =
       submissionFile.filename.getMetadata().getName();
   public static final String REMOVE_FILE = "removeFile";
-  public static final String SUBMIT_ID = "submit";
+  public static final String SAVE = "save";
   public static final String UPDATE_ERROR = "updateError";
   public static final int NULL_ID = -1;
   public static final String EXAMPLE = "example";
@@ -417,8 +417,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.explanationPanel.addStyleName(REQUIRED);
     view.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
     view.explanation.addStyleName(EXPLANATION);
-    view.saveButton.addStyleName(SUBMIT_ID);
-    view.saveButton.setCaption(resources.message(SUBMIT_ID));
+    view.saveButton.addStyleName(SAVE);
+    view.saveButton.setCaption(resources.message(SAVE));
   }
 
   private Button downloadFileButton(SubmissionFile file) {
@@ -1145,7 +1145,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.quantificationOptions.addValueChangeListener(e -> view.quantificationLabelsField
         .setRequiredIndicatorVisible(view.quantificationOptions.getValue() == SILAC));
     view.otherSolventsField.addValueChangeListener(e -> updateVisible());
-    view.saveButton.addClickListener(e -> saveSubmission());
+    view.saveButton.addClickListener(e -> save());
   }
 
   private void updateVisible() {
@@ -1764,7 +1764,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     clearInvisibleField(view.otherSolventField);
   }
 
-  private void saveSubmission() {
+  private void save() {
     clearInvisibleFields();
     if (validate()) {
       Submission submission = submissionBinder.getBean();
@@ -1826,7 +1826,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       } else {
         submissionService.insert(submission);
       }
-      view.showTrayNotification(resources.message("save", submission.getExperience()));
+      view.showTrayNotification(resources.message(SAVE + ".done", submission.getExperience()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     }
   }

@@ -98,6 +98,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_Q
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_SUPPORT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PANEL;
@@ -114,7 +115,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SUBMIT_ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY_PROPERTY;
@@ -1324,7 +1324,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     assertTrue(view.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(view.explanationPanel.getStyleName().contains(REQUIRED));
     assertTrue(view.explanation.getStyleName().contains(EXPLANATION));
-    assertTrue(view.saveButton.getStyleName().contains(SUBMIT_ID));
+    assertTrue(view.saveButton.getStyleName().contains(SAVE));
   }
 
   @Test
@@ -1547,7 +1547,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     assertEquals(resources.message(FILES_PROPERTY + "." + REMOVE_FILE),
         view.filesGrid.getColumn(REMOVE_FILE).getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), view.explanationPanel.getCaption());
-    assertEquals(resources.message(SUBMIT_ID), view.saveButton.getCaption());
+    assertEquals(resources.message(SAVE), view.saveButton.getCaption());
   }
 
   @Test
@@ -3029,7 +3029,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingService() throws Throwable {
+  public void save_MissingService() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(null);
     view.sampleSupportOptions.setValue(support);
@@ -3048,7 +3048,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSupport() throws Throwable {
+  public void save_MissingSupport() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(null);
@@ -3067,7 +3067,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSolutionSolvent() throws Throwable {
+  public void save_MissingSolutionSolvent() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3087,7 +3087,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSampleCount() throws Throwable {
+  public void save_MissingSampleCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3107,7 +3107,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidSampleCount() throws Throwable {
+  public void save_InvalidSampleCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3127,7 +3127,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowOneSampleCount() throws Throwable {
+  public void save_BelowOneSampleCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3147,7 +3147,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_AboveMaxSampleCount() throws Throwable {
+  public void save_AboveMaxSampleCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3167,7 +3167,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_DoubleSampleCount() throws Throwable {
+  public void save_DoubleSampleCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3187,7 +3187,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSampleName() throws Throwable {
+  public void save_MissingSampleName() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3207,7 +3207,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_ExistsSampleName() throws Throwable {
+  public void save_ExistsSampleName() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3228,7 +3228,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingFormula() throws Throwable {
+  public void save_MissingFormula() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3248,7 +3248,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingStructure() throws Throwable {
+  public void save_MissingStructure() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3266,7 +3266,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingMonoisotopicMass() throws Throwable {
+  public void save_MissingMonoisotopicMass() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3286,7 +3286,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidMonoisotopicMass() throws Throwable {
+  public void save_InvalidMonoisotopicMass() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3306,7 +3306,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroMonoisotopicMass() throws Throwable {
+  public void save_BelowZeroMonoisotopicMass() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3325,7 +3325,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidAverageMass() throws Throwable {
+  public void save_InvalidAverageMass() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3345,7 +3345,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroAverageMass() throws Throwable {
+  public void save_BelowZeroAverageMass() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3364,7 +3364,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingStorageTemperature() throws Throwable {
+  public void save_MissingStorageTemperature() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -3384,7 +3384,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingPlateName() throws Throwable {
+  public void save_MissingPlateName() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3405,7 +3405,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_ExistsPlateName() throws Throwable {
+  public void save_ExistsPlateName() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3427,7 +3427,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSampleNames_1() throws Throwable {
+  public void save_MissingSampleNames_1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3446,7 +3446,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_ExistsSampleNames_1() throws Throwable {
+  public void save_ExistsSampleNames_1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3467,7 +3467,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSampleNames_2() throws Throwable {
+  public void save_MissingSampleNames_2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3487,7 +3487,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_ExistsSampleNames_2() throws Throwable {
+  public void save_ExistsSampleNames_2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3508,7 +3508,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_DuplicateSampleNames() throws Throwable {
+  public void save_DuplicateSampleNames() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3528,7 +3528,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingPlateSampleNames_1() throws Throwable {
+  public void save_MissingPlateSampleNames_1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3550,7 +3550,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_ExistsPlateSampleNames_1() throws Throwable {
+  public void save_ExistsPlateSampleNames_1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3568,7 +3568,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingPlateSampleNames_2() throws Throwable {
+  public void save_MissingPlateSampleNames_2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3590,7 +3590,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_ExistsPlateSampleNames_2() throws Throwable {
+  public void save_ExistsPlateSampleNames_2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3608,7 +3608,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_DuplicatePlateSampleNames() throws Throwable {
+  public void save_DuplicatePlateSampleNames() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3630,7 +3630,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSampleNumberProtein1() throws Throwable {
+  public void save_MissingSampleNumberProtein1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3650,7 +3650,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidSampleNumberProtein1() throws Throwable {
+  public void save_InvalidSampleNumberProtein1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3670,7 +3670,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroSampleNumberProtein1() throws Throwable {
+  public void save_BelowZeroSampleNumberProtein1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3689,7 +3689,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_DoubleSampleNumberProtein1() throws Throwable {
+  public void save_DoubleSampleNumberProtein1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3709,7 +3709,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSampleNumberProtein2() throws Throwable {
+  public void save_MissingSampleNumberProtein2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3729,7 +3729,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidSampleNumberProtein2() throws Throwable {
+  public void save_InvalidSampleNumberProtein2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3749,7 +3749,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroSampleNumberProtein2() throws Throwable {
+  public void save_BelowZeroSampleNumberProtein2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3768,7 +3768,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_DoubleSampleNumberProtein2() throws Throwable {
+  public void save_DoubleSampleNumberProtein2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3788,7 +3788,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingProteinWeight1() throws Throwable {
+  public void save_MissingProteinWeight1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3808,7 +3808,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidProteinWeight1() throws Throwable {
+  public void save_InvalidProteinWeight1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3828,7 +3828,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroProteinWeight1() throws Throwable {
+  public void save_BelowZeroProteinWeight1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3847,7 +3847,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingProteinWeight2() throws Throwable {
+  public void save_MissingProteinWeight2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3867,7 +3867,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidProteinWeight2() throws Throwable {
+  public void save_InvalidProteinWeight2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3887,7 +3887,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroProteinWeight2() throws Throwable {
+  public void save_BelowZeroProteinWeight2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -3906,7 +3906,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingExperience() throws Throwable {
+  public void save_MissingExperience() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3926,7 +3926,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingTaxonomy() throws Throwable {
+  public void save_MissingTaxonomy() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3946,7 +3946,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidProteinWeight() throws Throwable {
+  public void save_InvalidProteinWeight() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3966,7 +3966,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroProteinWeight() throws Throwable {
+  public void save_BelowZeroProteinWeight() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -3985,7 +3985,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSampleQuantity() throws Throwable {
+  public void save_MissingSampleQuantity() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4005,7 +4005,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSampleVolume() throws Throwable {
+  public void save_MissingSampleVolume() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4025,7 +4025,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidSampleVolume() throws Throwable {
+  public void save_InvalidSampleVolume() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4045,7 +4045,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroSampleVolume() throws Throwable {
+  public void save_BelowZeroSampleVolume() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4064,7 +4064,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingStandardCount() throws Throwable {
+  public void save_MissingStandardCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4081,7 +4081,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidStandardCount() throws Throwable {
+  public void save_InvalidStandardCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4101,7 +4101,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroStandardCount() throws Throwable {
+  public void save_BelowZeroStandardCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4121,7 +4121,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_AboveMaxStandardCount() throws Throwable {
+  public void save_AboveMaxStandardCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4141,7 +4141,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_DoubleStandardCount() throws Throwable {
+  public void save_DoubleStandardCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4161,7 +4161,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingStandardName_1() throws Throwable {
+  public void save_MissingStandardName_1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4181,7 +4181,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingStandardName_2() throws Throwable {
+  public void save_MissingStandardName_2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4201,7 +4201,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingStandardQuantity_1() throws Throwable {
+  public void save_MissingStandardQuantity_1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4221,7 +4221,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingStandardQuantity_2() throws Throwable {
+  public void save_MissingStandardQuantity_2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4241,7 +4241,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingContaminantCount() throws Throwable {
+  public void save_MissingContaminantCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4258,7 +4258,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidContaminantCount() throws Throwable {
+  public void save_InvalidContaminantCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4278,7 +4278,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_BelowZeroContaminantCount() throws Throwable {
+  public void save_BelowZeroContaminantCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4298,7 +4298,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_AboveMaxContaminantCount() throws Throwable {
+  public void save_AboveMaxContaminantCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4318,7 +4318,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_DoubleContaminantCount() throws Throwable {
+  public void save_DoubleContaminantCount() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4338,7 +4338,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingContaminantName_1() throws Throwable {
+  public void save_MissingContaminantName_1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4358,7 +4358,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingContaminantName_2() throws Throwable {
+  public void save_MissingContaminantName_2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4378,7 +4378,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingContaminantQuantity_1() throws Throwable {
+  public void save_MissingContaminantQuantity_1() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4398,7 +4398,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingContaminantQuantity_2() throws Throwable {
+  public void save_MissingContaminantQuantity_2() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4418,7 +4418,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingGelSeparation() throws Throwable {
+  public void save_MissingGelSeparation() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
@@ -4438,7 +4438,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingGelThickness() throws Throwable {
+  public void save_MissingGelThickness() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
@@ -4458,7 +4458,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingOtherGelColoration() throws Throwable {
+  public void save_MissingOtherGelColoration() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
@@ -4479,7 +4479,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_InvalidWeightMarkerQuantity() throws Throwable {
+  public void save_InvalidWeightMarkerQuantity() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
@@ -4499,7 +4499,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingGelImages() throws Throwable {
+  public void save_MissingGelImages() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
@@ -4517,7 +4517,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingDigestion() throws Throwable {
+  public void save_MissingDigestion() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4537,7 +4537,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingUsedDigestion() throws Throwable {
+  public void save_MissingUsedDigestion() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4558,7 +4558,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingOtherDigestion() throws Throwable {
+  public void save_MissingOtherDigestion() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4579,7 +4579,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingInjectionType() throws Throwable {
+  public void save_MissingInjectionType() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -4599,7 +4599,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSource() throws Throwable {
+  public void save_MissingSource() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -4619,7 +4619,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingProteinContent() throws Throwable {
+  public void save_MissingProteinContent() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4639,7 +4639,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingInstrument() throws Throwable {
+  public void save_MissingInstrument() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4656,7 +4656,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingProteinIdentification() throws Throwable {
+  public void save_MissingProteinIdentification() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4676,7 +4676,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingProteinIdentificationLink() throws Throwable {
+  public void save_MissingProteinIdentificationLink() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4697,7 +4697,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingQuantificationLabels() throws Throwable {
+  public void save_MissingQuantificationLabels() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4718,7 +4718,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingHighResolution() throws Throwable {
+  public void save_MissingHighResolution() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -4738,7 +4738,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingSolvents() throws Throwable {
+  public void save_MissingSolvents() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -4761,7 +4761,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingOtherSolvent() throws Throwable {
+  public void save_MissingOtherSolvent() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -4782,7 +4782,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_MissingExplanation() throws Throwable {
+  public void save_MissingExplanation() throws Throwable {
     Submission submission = entityManager.find(Submission.class, 147L);
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
@@ -4803,7 +4803,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_Lcmsms_Solution() throws Throwable {
+  public void save_Lcmsms_Solution() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -4936,12 +4936,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_Lcmsms_Solution_Plate() throws Throwable {
+  public void save_Lcmsms_Solution_Plate() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(support);
@@ -5087,12 +5087,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_Lcmsms_Solution_OtherDigestion() throws Throwable {
+  public void save_Lcmsms_Solution_OtherDigestion() throws Throwable {
     final ProteolyticDigestion digestion = ProteolyticDigestion.OTHER;
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
@@ -5228,12 +5228,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_Lcmsms_Dry() throws Throwable {
+  public void save_Lcmsms_Dry() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
@@ -5367,12 +5367,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_Lcmsms_Dry_Plate() throws Throwable {
+  public void save_Lcmsms_Dry_Plate() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
@@ -5519,12 +5519,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_Lcmsms_Gel() throws Throwable {
+  public void save_Lcmsms_Gel() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
@@ -5631,12 +5631,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_Lcmsms_Gel_Plate() throws Throwable {
+  public void save_Lcmsms_Gel_Plate() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(LC_MS_MS);
     view.sampleSupportOptions.setValue(GEL);
@@ -5756,12 +5756,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_SmallMolecule_Solution() throws Throwable {
+  public void save_SmallMolecule_Solution() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -5867,12 +5867,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", sampleName));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", sampleName));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_SmallMolecule_Dry() throws Throwable {
+  public void save_SmallMolecule_Dry() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
@@ -5979,12 +5979,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", sampleName));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", sampleName));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_SmallMolecule_Plate() throws Throwable {
+  public void save_SmallMolecule_Plate() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(SMALL_MOLECULE);
     view.sampleSupportOptions.setValue(support);
@@ -6006,7 +6006,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
   }
 
   @Test
-  public void submit_Intactprotein_Solution() throws Throwable {
+  public void save_Intactprotein_Solution() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -6139,12 +6139,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_Intactprotein_Dry() throws Throwable {
+  public void save_Intactprotein_Dry() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
@@ -6278,12 +6278,12 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test
-  public void submit_IntactProtein_Plate() throws Throwable {
+  public void save_IntactProtein_Plate() throws Throwable {
     presenter.init(view);
     view.serviceOptions.setValue(INTACT_PROTEIN);
     view.sampleSupportOptions.setValue(support);
@@ -6453,7 +6453,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -6600,7 +6600,7 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message("save", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
