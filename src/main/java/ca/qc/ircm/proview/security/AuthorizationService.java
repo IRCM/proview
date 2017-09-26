@@ -30,6 +30,7 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.QAcquisition;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -425,11 +426,14 @@ public class AuthorizationService {
     if (submission != null) {
       submission = getSubmission(submission.getId());
       if (getSubject().hasRole(USER)) {
-        boolean permitted = getSubject().hasRole(ADMIN);
+        if (getSubject().hasRole(ADMIN)) {
+          return true;
+        }
         User owner = submission.getUser();
-        permitted |= getSubject().getPrincipal().equals(owner.getId());
+        boolean permitted = getSubject().getPrincipal().equals(owner.getId());
         Laboratory laboratory = submission.getLaboratory();
         permitted |= getSubject().isPermitted("laboratory:manager:" + laboratory.getId());
+        permitted &= submissionToApprove(submission);
         return permitted;
       }
     }
@@ -450,6 +454,15 @@ public class AuthorizationService {
         getSubject().checkPermission("submission:owner:" + submission.getId());
       }
     }
+  }
+
+  private boolean submissionToApprove(Submission submissionParam) {
+    JPAQuery<Long> query = queryFactory.select(submission.id);
+    query.from(submission);
+    query.join(submission.samples, submissionSample);
+    query.where(submission.id.eq(submissionParam.getId()));
+    query.where(submissionSample.status.ne(SampleStatus.TO_APPROVE));
+    return query.fetchCount() == 0;
   }
 
   private boolean sampleOwnerByMsAnalysis(MsAnalysis msAnalysisParam) {
