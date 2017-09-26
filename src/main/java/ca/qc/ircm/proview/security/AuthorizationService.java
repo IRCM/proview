@@ -415,6 +415,28 @@ public class AuthorizationService {
   }
 
   /**
+   * Returns true if current user can write submission, false otherwise.
+   *
+   * @param submission
+   *          submission
+   * @return true if current user can write submission, false otherwise
+   */
+  public boolean hasSubmissionWritePermission(Submission submission) {
+    if (submission != null) {
+      submission = getSubmission(submission.getId());
+      if (getSubject().hasRole(USER)) {
+        boolean permitted = getSubject().hasRole(ADMIN);
+        User owner = submission.getUser();
+        permitted |= getSubject().getPrincipal().equals(owner.getId());
+        Laboratory laboratory = submission.getLaboratory();
+        permitted |= getSubject().isPermitted("laboratory:manager:" + laboratory.getId());
+        return permitted;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Checks that current user can write submission.
    *
    * @param submission
@@ -424,15 +446,8 @@ public class AuthorizationService {
     if (submission != null) {
       submission = getSubmission(submission.getId());
       getSubject().checkRole(USER);
-      if (!getSubject().hasRole(ADMIN)) {
-        boolean permitted = false;
-        User owner = submission.getUser();
-        permitted |= getSubject().getPrincipal().equals(owner.getId());
-        Laboratory laboratory = submission.getLaboratory();
-        permitted |= getSubject().isPermitted("laboratory:manager:" + laboratory.getId());
-        if (!permitted) {
-          getSubject().checkPermission("submission:owner:" + submission.getId());
-        }
+      if (!hasSubmissionWritePermission(submission)) {
+        getSubject().checkPermission("submission:owner:" + submission.getId());
       }
     }
   }

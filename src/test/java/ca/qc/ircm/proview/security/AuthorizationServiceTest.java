@@ -1057,6 +1057,78 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  public void hasSubmissionWritePermission_Proteomic() {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Submission submission = new Submission(35L);
+
+    boolean value = authorizationService.hasSubmissionWritePermission(submission);
+
+    assertTrue(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("ADMIN");
+  }
+
+  @Test
+  public void hasSubmissionWritePermission_NotUser() {
+    Submission submission = new Submission(35L);
+
+    boolean value = authorizationService.hasSubmissionWritePermission(submission);
+
+    assertFalse(value);
+    verify(subject).hasRole("USER");
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void hasSubmissionWritePermission_SubmissionOwner() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    Submission submission = new Submission(35L);
+
+    boolean value = authorizationService.hasSubmissionWritePermission(submission);
+
+    assertTrue(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("ADMIN");
+  }
+
+  @Test
+  public void hasSubmissionWritePermission_LaboratoryManager() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Submission submission = new Submission(35L);
+
+    boolean value = authorizationService.hasSubmissionWritePermission(submission);
+
+    assertTrue(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("ADMIN");
+    verify(subject).isPermitted("laboratory:manager:2");
+  }
+
+  @Test
+  public void hasSubmissionWritePermission_Other() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.isPermitted(any(String.class))).thenReturn(false);
+    Submission submission = new Submission(35L);
+
+    boolean value = authorizationService.hasSubmissionWritePermission(submission);
+
+    assertFalse(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("ADMIN");
+    verify(subject).isPermitted("laboratory:manager:2");
+  }
+
+  @Test
+  public void hasSubmissionWritePermission_Null() {
+    boolean value = authorizationService.hasSubmissionWritePermission(null);
+
+    assertFalse(value);
+  }
+
+  @Test
   public void checkSubmissionWritePermission_Proteomic() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1086,6 +1158,7 @@ public class AuthorizationServiceTest {
   @Test
   @WithSubject(userId = 10)
   public void checkSubmissionWritePermission_SubmissionOwner() {
+    when(subject.hasRole("USER")).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(35L);
 
@@ -1097,6 +1170,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkSubmissionWritePermission_LaboratoryManager() {
+    when(subject.hasRole("USER")).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(35L);
@@ -1110,6 +1184,7 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkSubmissionWritePermission_Other() {
+    when(subject.hasRole("USER")).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
 
     Submission submission = new Submission(35L);
