@@ -79,5 +79,6 @@ public class SubmissionWindow extends Window implements BaseComponent {
     logger.debug("Submission window for submission {}", submission);
     setCaption(getResources().message(TITLE, submission.getExperience()));
     view.setValue(submission);
+    view.setReadOnly(true);
   }
 }

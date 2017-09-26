@@ -80,5 +80,6 @@ public class UserWindow extends Window implements BaseComponent {
     logger.debug("User window for user {}", user);
     setCaption(getResources().message(TITLE, user != null ? user.getName() : ""));
     view.setValue(user);
+    view.setReadOnly(true);
   }
 }
