@@ -55,6 +55,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,6 +64,7 @@ import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.WellComparator;
 import ca.qc.ircm.proview.plate.WellLocation;
 import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.plate.web.PlateComponent;
@@ -103,6 +105,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -171,6 +174,7 @@ public class TransferViewPresenterTest {
     view.destinationPlatePanel = new Panel();
     view.destinationPlateFormLayout = new VerticalLayout();
     view.destinationPlateForm = mock(PlateComponent.class);
+    view.test = new Button();
     view.saveButton = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -333,7 +337,7 @@ public class TransferViewPresenterTest {
     presenter.enter("");
 
     assertFalse(view.sourceTubesGrid.isVisible());
-    assertFalse(view.sourcePlateLayout.isVisible());
+    assertTrue(view.sourcePlateLayout.isVisible());
 
     view.sourceType.setValue(SampleContainerType.TUBE);
     assertTrue(view.sourceTubesGrid.isVisible());
@@ -350,7 +354,7 @@ public class TransferViewPresenterTest {
     presenter.enter("");
 
     assertFalse(view.destinationTubesGrid.isVisible());
-    assertFalse(view.destinationPlateLayout.isVisible());
+    assertTrue(view.destinationPlateLayout.isVisible());
 
     view.destinationType.setValue(SampleContainerType.TUBE);
     assertTrue(view.destinationTubesGrid.isVisible());
@@ -518,6 +522,316 @@ public class TransferViewPresenterTest {
     assertEquals(sourcePlates.size(), plateNames.size());
     assertTrue(plateNames.containsAll(expectedPlateNames));
     assertTrue(expectedPlateNames.containsAll(plateNames));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void test_TubeToNewPlate() {
+    presenter.init(view);
+    presenter.enter("");
+    Map<Sample, Tube> sources = new HashMap<>();
+    samples.forEach(sample -> {
+      ComboBox<Tube> comboBox =
+          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+      sources.put(sample, comboBox.getValue());
+    });
+    view.sourceType.setValue(SampleContainerType.TUBE);
+    view.destinationType.setValue(SampleContainerType.WELL);
+    Plate plate = new Plate(null, "test");
+    plate.setType(PlateType.A);
+    plate.initWells();
+    view.destinationPlatesField.setValue(plate.getName());
+    when(view.destinationPlateForm.getValue()).thenReturn(plate);
+    when(plateService.get(any(String.class))).thenReturn(null);
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm).setValue(plate);
+    assertEquals(samples.get(0), plate.well(0, 0).getSample());
+    assertEquals(samples.get(1), plate.well(1, 0).getSample());
+    assertEquals(samples.get(2), plate.well(2, 0).getSample());
+    for (Well well : plate.wells(new WellLocation(3, 0), new WellLocation(7, 11))) {
+      assertNull(well.getSample());
+    }
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    assertEquals(samples.get(0), plate.well(2, 3).getSample());
+    assertEquals(samples.get(1), plate.well(3, 3).getSample());
+    assertEquals(samples.get(2), plate.well(4, 3).getSample());
+    for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(1, 3))) {
+      assertNull(well.getSample());
+    }
+    for (Well well : plate.wells(new WellLocation(5, 3), new WellLocation(7, 11))) {
+      assertNull(well.getSample());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void test_TubeToExistingPlate() {
+    presenter.init(view);
+    presenter.enter("");
+    Map<Sample, Tube> sources = new HashMap<>();
+    samples.forEach(sample -> {
+      ComboBox<Tube> comboBox =
+          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+      sources.put(sample, comboBox.getValue());
+    });
+    view.sourceType.setValue(SampleContainerType.TUBE);
+    view.destinationType.setValue(SampleContainerType.WELL);
+    Plate plate = sourcePlates.get(0);
+    view.destinationPlatesField.setValue(plate.getName());
+    when(view.destinationPlateForm.getValue()).thenReturn(plate);
+    Plate plateCopy = new Plate();
+    plateCopy.setName(plate.getName());
+    plateCopy.setColumnCount(plate.getColumnCount());
+    plateCopy.setRowCount(plate.getRowCount());
+    plateCopy.initWells();
+    plateCopy.getWells().stream()
+        .forEach(well -> well.setSample(plate.well(well.getRow(), well.getColumn()).getSample()));
+    when(plateService.get(any(String.class))).thenReturn(plateCopy);
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm).setValue(plate);
+    assertEquals(samples.get(0), plate.well(0, 2).getSample());
+    assertEquals(samples.get(1), plate.well(1, 2).getSample());
+    assertEquals(samples.get(2), plate.well(2, 2).getSample());
+    for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(7, 1))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+    for (Well well : plate.wells(new WellLocation(3, 2), new WellLocation(7, 11))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    assertEquals(samples.get(0), plate.well(2, 3).getSample());
+    assertEquals(samples.get(1), plate.well(3, 3).getSample());
+    assertEquals(samples.get(2), plate.well(4, 3).getSample());
+    for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(1, 3))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+    for (Well well : plate.wells(new WellLocation(5, 3), new WellLocation(7, 11))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+  }
+
+  @Test
+  public void test_PlateToNewPlate() {
+    presenter.init(view);
+    presenter.enter("");
+    view.sourceType.setValue(SampleContainerType.WELL);
+    Plate sourcePlate = sourcePlates.get(0);
+    when(view.sourcePlateForm.getSelectedWells()).thenReturn(
+        sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
+    view.destinationType.setValue(SampleContainerType.WELL);
+    Plate plate = new Plate(null, "test");
+    plate.setType(PlateType.A);
+    plate.initWells();
+    view.destinationPlatesField.setValue(plate.getName());
+    when(view.destinationPlateForm.getValue()).thenReturn(plate);
+    when(plateService.get(any(String.class))).thenReturn(null);
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm).setValue(plate);
+    assertEquals(samples.get(0), plate.well(0, 0).getSample());
+    assertEquals(samples.get(1), plate.well(1, 0).getSample());
+    assertEquals(samples.get(2), plate.well(2, 0).getSample());
+    for (Well well : plate.wells(new WellLocation(3, 0), new WellLocation(7, 11))) {
+      assertNull(well.getSample());
+    }
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    assertEquals(samples.get(0), plate.well(2, 3).getSample());
+    assertEquals(samples.get(1), plate.well(3, 3).getSample());
+    assertEquals(samples.get(2), plate.well(4, 3).getSample());
+    for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(1, 3))) {
+      assertNull(well.getSample());
+    }
+    for (Well well : plate.wells(new WellLocation(5, 3), new WellLocation(7, 11))) {
+      assertNull(well.getSample());
+    }
+  }
+
+  @Test
+  public void test_PlateToExistingPlate() {
+    presenter.init(view);
+    presenter.enter("");
+    view.sourceType.setValue(SampleContainerType.WELL);
+    Plate sourcePlate = sourcePlates.get(0);
+    when(view.sourcePlateForm.getSelectedWells()).thenReturn(
+        sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
+    view.destinationType.setValue(SampleContainerType.WELL);
+    Plate plate = sourcePlates.get(0);
+    view.destinationPlatesField.setValue(plate.getName());
+    when(view.destinationPlateForm.getValue()).thenReturn(plate);
+    Plate plateCopy = new Plate();
+    plateCopy.setName(plate.getName());
+    plateCopy.setColumnCount(plate.getColumnCount());
+    plateCopy.setRowCount(plate.getRowCount());
+    plateCopy.initWells();
+    plateCopy.getWells().stream()
+        .forEach(well -> well.setSample(plate.well(well.getRow(), well.getColumn()).getSample()));
+    when(plateService.get(any(String.class))).thenReturn(plateCopy);
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm).setValue(plate);
+    assertEquals(samples.get(0), plate.well(0, 2).getSample());
+    assertEquals(samples.get(1), plate.well(1, 2).getSample());
+    assertEquals(samples.get(2), plate.well(2, 2).getSample());
+    for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(7, 1))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+    for (Well well : plate.wells(new WellLocation(3, 2), new WellLocation(7, 11))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    assertEquals(samples.get(0), plate.well(2, 3).getSample());
+    assertEquals(samples.get(1), plate.well(3, 3).getSample());
+    assertEquals(samples.get(2), plate.well(4, 3).getSample());
+    for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(1, 3))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+    for (Well well : plate.wells(new WellLocation(5, 3), new WellLocation(7, 11))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+  }
+
+  @Test
+  public void test_PlateToNewPlate_MultipleWellPerSample() {
+    presenter.init(view);
+    presenter.enter("");
+    view.sourceType.setValue(SampleContainerType.WELL);
+    Plate sourcePlate = sourcePlates.get(1);
+    List<Well> sourceWells = this.sourceWells.values().stream()
+        .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
+    when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
+    view.destinationType.setValue(SampleContainerType.WELL);
+    Plate plate = new Plate(null, "test");
+    plate.setType(PlateType.A);
+    plate.initWells();
+    view.destinationPlatesField.setValue(plate.getName());
+    when(view.destinationPlateForm.getValue()).thenReturn(plate);
+    when(plateService.get(any(String.class))).thenReturn(null);
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm).setValue(plate);
+    assertEquals(samples.get(0), plate.well(0, 0).getSample());
+    assertEquals(samples.get(1), plate.well(1, 0).getSample());
+    assertEquals(samples.get(2), plate.well(2, 0).getSample());
+    assertEquals(samples.get(0), plate.well(3, 0).getSample());
+    assertEquals(samples.get(1), plate.well(4, 0).getSample());
+    assertEquals(samples.get(2), plate.well(5, 0).getSample());
+    for (Well well : plate.wells(new WellLocation(6, 0), new WellLocation(7, 11))) {
+      assertNull(well.getSample());
+    }
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    assertEquals(samples.get(0), plate.well(2, 3).getSample());
+    assertEquals(samples.get(1), plate.well(3, 3).getSample());
+    assertEquals(samples.get(2), plate.well(4, 3).getSample());
+    assertEquals(samples.get(0), plate.well(5, 3).getSample());
+    assertEquals(samples.get(1), plate.well(6, 3).getSample());
+    assertEquals(samples.get(2), plate.well(7, 3).getSample());
+    for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(1, 3))) {
+      assertNull(well.getSample());
+    }
+    for (Well well : plate.wells(new WellLocation(0, 4), new WellLocation(7, 11))) {
+      assertNull(well.getSample());
+    }
+  }
+
+  @Test
+  public void test_PlateToExistingPlate_MultipleWellPerSample() {
+    presenter.init(view);
+    presenter.enter("");
+    view.sourceType.setValue(SampleContainerType.WELL);
+    Plate sourcePlate = sourcePlates.get(1);
+    List<Well> sourceWells = this.sourceWells.values().stream()
+        .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
+    when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
+    view.destinationType.setValue(SampleContainerType.WELL);
+    Plate plate = sourcePlates.get(0);
+    view.destinationPlatesField.setValue(plate.getName());
+    when(view.destinationPlateForm.getValue()).thenReturn(plate);
+    Plate plateCopy = new Plate();
+    plateCopy.setName(plate.getName());
+    plateCopy.setColumnCount(plate.getColumnCount());
+    plateCopy.setRowCount(plate.getRowCount());
+    plateCopy.initWells();
+    plateCopy.getWells().stream()
+        .forEach(well -> well.setSample(plate.well(well.getRow(), well.getColumn()).getSample()));
+    when(plateService.get(any(String.class))).thenReturn(plateCopy);
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm).setValue(plate);
+    assertEquals(samples.get(0), plate.well(0, 2).getSample());
+    assertEquals(samples.get(1), plate.well(1, 2).getSample());
+    assertEquals(samples.get(2), plate.well(2, 2).getSample());
+    assertEquals(samples.get(0), plate.well(3, 2).getSample());
+    assertEquals(samples.get(1), plate.well(4, 2).getSample());
+    assertEquals(samples.get(2), plate.well(5, 2).getSample());
+    for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(7, 1))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+    for (Well well : plate.wells(new WellLocation(6, 2), new WellLocation(7, 11))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    view.test.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    assertEquals(samples.get(0), plate.well(2, 3).getSample());
+    assertEquals(samples.get(1), plate.well(3, 3).getSample());
+    assertEquals(samples.get(2), plate.well(4, 3).getSample());
+    assertEquals(samples.get(0), plate.well(5, 3).getSample());
+    assertEquals(samples.get(1), plate.well(6, 3).getSample());
+    assertEquals(samples.get(2), plate.well(7, 3).getSample());
+    for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(1, 3))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
+    for (Well well : plate.wells(new WellLocation(0, 4), new WellLocation(7, 11))) {
+      assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
+    }
   }
 
   @Test
@@ -1038,24 +1352,16 @@ public class TransferViewPresenterTest {
     Transfer transfer = transferCaptor.getValue();
     assertNull(transfer.getId());
     assertEquals(transfer.getTreatmentSamples().size(), sourceWells.size());
+    Collections.sort(sourceWells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
     int count = 0;
-    for (int i = 0; i < samples.size(); i++) {
-      Sample sample = samples.get(i);
-      List<SampleTransfer> sampleTransfers = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(2, sampleTransfers.size());
-      SampleTransfer sampleTransfer = sampleTransfers.get(0);
+    for (int i = 0; i < sourceWells.size(); i++) {
+      Well source = sourceWells.get(i);
+      Sample sample = source.getSample();
+      SampleTransfer sampleTransfer = transfer.getTreatmentSamples().get(i);
       assertEquals(sample, sampleTransfer.getSample());
-      assertEquals(sourcePlate.well(i, 1), sampleTransfer.getContainer());
+      assertEquals(source, sampleTransfer.getContainer());
       assertTrue(sampleTransfer.getDestinationContainer() instanceof Well);
       Well destinationWell = (Well) sampleTransfer.getDestinationContainer();
-      assertEquals(plate, destinationWell.getPlate());
-      assertEquals(count++, destinationWell.getRow());
-      assertEquals(0, destinationWell.getColumn());
-      sampleTransfer = sampleTransfers.get(1);
-      assertEquals(sample, sampleTransfer.getSample());
-      assertEquals(sourcePlate.well(i, 3), sampleTransfer.getContainer());
-      assertTrue(sampleTransfer.getDestinationContainer() instanceof Well);
-      destinationWell = (Well) sampleTransfer.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(count++, destinationWell.getRow());
       assertEquals(0, destinationWell.getColumn());
@@ -1084,24 +1390,16 @@ public class TransferViewPresenterTest {
     Transfer transfer = transferCaptor.getValue();
     assertNull(transfer.getId());
     assertEquals(transfer.getTreatmentSamples().size(), sourceWells.size());
+    Collections.sort(sourceWells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
     int count = 0;
-    for (int i = 0; i < samples.size(); i++) {
-      Sample sample = samples.get(i);
-      List<SampleTransfer> sampleTransfers = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(2, sampleTransfers.size());
-      SampleTransfer sampleTransfer = sampleTransfers.get(0);
+    for (int i = 0; i < sourceWells.size(); i++) {
+      Well source = sourceWells.get(i);
+      Sample sample = source.getSample();
+      SampleTransfer sampleTransfer = transfer.getTreatmentSamples().get(i);
       assertEquals(sample, sampleTransfer.getSample());
-      assertEquals(sourcePlate.well(i, 1), sampleTransfer.getContainer());
+      assertEquals(source, sampleTransfer.getContainer());
       assertTrue(sampleTransfer.getDestinationContainer() instanceof Well);
       Well destinationWell = (Well) sampleTransfer.getDestinationContainer();
-      assertEquals(plate, destinationWell.getPlate());
-      assertEquals(count++, destinationWell.getRow());
-      assertEquals(4, destinationWell.getColumn());
-      sampleTransfer = sampleTransfers.get(1);
-      assertEquals(sample, sampleTransfer.getSample());
-      assertEquals(sourcePlate.well(i, 3), sampleTransfer.getContainer());
-      assertTrue(sampleTransfer.getDestinationContainer() instanceof Well);
-      destinationWell = (Well) sampleTransfer.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(count++, destinationWell.getRow());
       assertEquals(4, destinationWell.getColumn());

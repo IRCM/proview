@@ -39,6 +39,7 @@ public class TransferViewDesign extends VerticalLayout {
   protected ComboBox<java.lang.String> destinationPlatesField;
   protected Panel destinationPlatePanel;
   protected VerticalLayout destinationPlateFormLayout;
+  protected Button test;
   protected Button saveButton;
 
   public TransferViewDesign() {

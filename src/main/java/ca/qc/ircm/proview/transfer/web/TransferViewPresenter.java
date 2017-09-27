@@ -30,6 +30,7 @@ import ca.qc.ircm.proview.plate.PlateFilterBuilder;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.WellComparator;
 import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -98,6 +99,7 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String DESTINATION_PLATE_NO_SELECTION = "destinationPlate.noSelection";
   public static final String DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE =
       "destinationPlate.notEnoughFreeSpace";
+  public static final String TEST = "test";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
   public static final String NAME = sample.name.getMetadata().getName();
@@ -156,6 +158,8 @@ public class TransferViewPresenter implements BinderValidator {
     addListeners();
     updateDestinationPlateType();
     updateVisibility();
+    view.sourceType.setValue(SampleContainerType.WELL);
+    view.destinationType.setValue(SampleContainerType.WELL);
   }
 
   private void prepareComponents() {
@@ -169,6 +173,7 @@ public class TransferViewPresenter implements BinderValidator {
     view.source.addStyleName(SOURCE);
     view.source.setCaption(resources.message(SOURCE));
     view.sourceType.addStyleName(SOURCE_TYPE);
+    view.sourceType.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
     view.sourceType.setItems(SampleContainerType.values());
     view.sourceType.setItemCaptionGenerator(type -> type.getLabel(locale));
     view.sourceType.addValueChangeListener(e -> updateVisibility());
@@ -210,6 +215,8 @@ public class TransferViewPresenter implements BinderValidator {
     Plate destinationPlate = new Plate();
     destinationPlate.setType(PlateType.A);
     destinationPlateBinder.setBean(destinationPlate);
+    view.test.addStyleName(TEST);
+    view.test.addClickListener(e -> test());
     view.saveButton.addStyleName(SAVE);
     view.saveButton.setCaption(resources.message(SAVE));
   }
@@ -403,17 +410,19 @@ public class TransferViewPresenter implements BinderValidator {
       view.sourcePlatesField.setComponentError(new UserError(message));
       return ValidationResult.error(message);
     }
-    Map<Sample, Boolean> sampleSelection =
-        samples.stream().collect(Collectors.toMap(s -> s, s -> false));
+    Map<Long, Boolean> sampleSelection =
+        samples.stream().collect(Collectors.toMap(s -> s.getId(), s -> false));
     for (Well well : selectedWells) {
       if (well.getSample() != null) {
-        sampleSelection.put(well.getSample(), true);
+        sampleSelection.put(well.getSample().getId(), true);
       }
     }
-    Optional<Map.Entry<Sample, Boolean>> emptySelectionEntry =
+    Optional<Map.Entry<Long, Boolean>> emptySelectionEntry =
         sampleSelection.entrySet().stream().filter(e -> !e.getValue()).findAny();
     if (emptySelectionEntry.isPresent()) {
-      Sample sample = emptySelectionEntry.orElse(null).getKey();
+      Sample sample =
+          samples.stream().filter(sa -> emptySelectionEntry.get().getKey().equals(sa.getId()))
+              .findAny().orElse(null);
       logger.debug("A selected sample {} does not have a well", sample);
       String message = resources.message(SOURCE_PLATE_SAMPLE_NOT_SELECTED, sample.getName());
       view.sourcePlatesField.setComponentError(new UserError(message));
@@ -464,8 +473,10 @@ public class TransferViewPresenter implements BinderValidator {
               .collect(Collectors.toList());
       return new ArrayList<>(sources);
     } else {
-      return new ArrayList<>(view.sourcePlateForm.getSelectedWells().stream()
-          .filter(well -> well.getSample() != null).collect(Collectors.toList()));
+      return new ArrayList<>(
+          view.sourcePlateForm.getSelectedWells().stream().filter(well -> well.getSample() != null)
+              .sorted(new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN))
+              .collect(Collectors.toList()));
     }
   }
 
@@ -489,6 +500,30 @@ public class TransferViewPresenter implements BinderValidator {
         }
       }
       return destinations;
+    }
+  }
+
+  private void test() {
+    if (validate()) {
+      if (view.destinationType.getValue() == SampleContainerType.WELL) {
+        // Reset samples.
+        Plate database = plateService.get(view.destinationPlatesField.getValue());
+        if (database == null) {
+          view.destinationPlateForm.getValue().getWells().forEach(well -> well.setSample(null));
+        } else {
+          view.destinationPlateForm.getValue().getWells().forEach(
+              well -> well.setSample(database.well(well.getRow(), well.getColumn()).getSample()));
+        }
+        // Set samples.
+        List<SampleContainer> sources = sources();
+        List<SampleContainer> destinations = destinations();
+        for (int i = 0; i < sources.size(); i++) {
+          SampleContainer source = sources.get(i);
+          SampleContainer destination = destinations.get(i);
+          destination.setSample(source.getSample());
+        }
+        view.destinationPlateForm.setValue(view.destinationPlateForm.getValue());
+      }
     }
   }
 
