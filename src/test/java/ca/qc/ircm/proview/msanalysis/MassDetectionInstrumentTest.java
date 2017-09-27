@@ -40,19 +40,18 @@ public class MassDetectionInstrumentTest {
     assertTrue(NULL.available);
     assertTrue(VELOS.available);
     assertTrue(Q_EXACTIVE.available);
-    assertTrue(TSQ_VANTAGE.available);
+    assertFalse(TSQ_VANTAGE.available);
     assertTrue(ORBITRAP_FUSION.available);
     assertFalse(LTQ_ORBI_TRAP.available);
     assertFalse(Q_TOF.available);
     assertFalse(TOF.available);
 
     List<MassDetectionInstrument> availables = MassDetectionInstrument.availables();
-    assertEquals(5, availables.size());
+    assertEquals(4, availables.size());
     assertEquals(NULL, availables.get(0));
     assertEquals(VELOS, availables.get(1));
     assertEquals(Q_EXACTIVE, availables.get(2));
-    assertEquals(TSQ_VANTAGE, availables.get(3));
-    assertEquals(ORBITRAP_FUSION, availables.get(4));
+    assertEquals(ORBITRAP_FUSION, availables.get(3));
   }
 
   @Test

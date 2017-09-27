@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * Instruments available for protein mass detection.
  */
 public enum MassDetectionInstrument {
-  NULL(true), VELOS(true), Q_EXACTIVE(true), TSQ_VANTAGE(true), ORBITRAP_FUSION(true),
+  NULL(true), VELOS(true), Q_EXACTIVE(true), TSQ_VANTAGE(false), ORBITRAP_FUSION(true),
   LTQ_ORBI_TRAP(false), Q_TOF(false), TOF(false);
 
   public final boolean available;
