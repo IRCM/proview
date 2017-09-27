@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.WindowElement;
@@ -207,5 +208,17 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     clickUpdateStatusButton();
 
     assertEquals(viewUrl(SampleStatusView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void transfer() throws Throwable {
+    admin = true;
+    open();
+    selectSubmissions(1, 3);
+
+    clickTransferButton();
+
+    assertEquals(viewUrl(TransferView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

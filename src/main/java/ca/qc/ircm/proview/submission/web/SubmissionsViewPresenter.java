@@ -31,6 +31,7 @@ import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
@@ -95,6 +96,7 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_SAMPLES = "selectSamples";
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
   public static final String UPDATE_STATUS = "updateStatus";
+  public static final String TRANSFER = "transfer";
   public static final String CONDITION_FALSE = "condition-false";
   public static final String COLUMN_ORDER = "columnOrder";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
@@ -175,6 +177,10 @@ public class SubmissionsViewPresenter {
     view.updateStatusButton.addStyleName(UPDATE_STATUS);
     view.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     view.updateStatusButton.setVisible(authorizationService.hasAdminRole());
+    view.transfer.addStyleName(TRANSFER);
+    view.transfer.setCaption(resources.message(TRANSFER));
+    view.transfer.setVisible(authorizationService.hasAdminRole());
+    view.transfer.addClickListener(e -> transfer());
   }
 
   private void prepareSumissionsGrid() {
@@ -446,6 +452,15 @@ public class SubmissionsViewPresenter {
       view.saveSamples(samples);
     }
     view.navigateTo(SampleStatusView.VIEW_NAME);
+  }
+
+  private void transfer() {
+    if (!view.submissionsGrid.getSelectedItems().isEmpty()) {
+      List<Sample> samples = view.submissionsGrid.getSelectedItems().stream()
+          .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
+      view.saveSamples(samples);
+    }
+    view.navigateTo(TransferView.VIEW_NAME);
   }
 
   SubmissionWebFilter getFilter() {

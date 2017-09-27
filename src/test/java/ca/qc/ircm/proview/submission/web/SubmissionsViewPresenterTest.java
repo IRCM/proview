@@ -34,6 +34,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TITLE;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TRANSFER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.USER;
@@ -44,6 +45,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,6 +61,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
@@ -179,6 +182,7 @@ public class SubmissionsViewPresenterTest {
     view.selectSamplesButton = new Button();
     view.selectedSamplesLabel = new Label();
     view.updateStatusButton = new Button();
+    view.transfer = new Button();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     submissions = queryFactory.select(submission).from(submission).fetch();
@@ -625,6 +629,7 @@ public class SubmissionsViewPresenterTest {
     assertTrue(view.selectSamplesButton.getStyleName().contains(SELECT_SAMPLES));
     assertTrue(view.selectedSamplesLabel.getStyleName().contains(SELECT_SAMPLES_LABEL));
     assertTrue(view.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
+    assertTrue(view.transfer.getStyleName().contains(TRANSFER));
   }
 
   @Test
@@ -642,6 +647,7 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(SELECT_SAMPLES), view.selectSamplesButton.getCaption());
     assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0), view.selectedSamplesLabel.getValue());
     assertEquals(resources.message(UPDATE_STATUS), view.updateStatusButton.getCaption());
+    assertEquals(resources.message(TRANSFER), view.transfer.getCaption());
   }
 
   @Test
@@ -652,6 +658,7 @@ public class SubmissionsViewPresenterTest {
     assertFalse(view.selectSamplesButton.isVisible());
     assertFalse(view.selectedSamplesLabel.isVisible());
     assertFalse(view.updateStatusButton.isVisible());
+    assertFalse(view.transfer.isVisible());
   }
 
   @Test
@@ -663,6 +670,7 @@ public class SubmissionsViewPresenterTest {
     assertTrue(view.selectSamplesButton.isVisible());
     assertTrue(view.selectedSamplesLabel.isVisible());
     assertTrue(view.updateStatusButton.isVisible());
+    assertTrue(view.transfer.isVisible());
   }
 
   @Test
@@ -831,6 +839,17 @@ public class SubmissionsViewPresenterTest {
   public void updateStatus() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
+
+    view.updateStatusButton.click();
+
+    verify(view, never()).saveSamples(any());
+    verify(view).navigateTo(SampleStatusView.VIEW_NAME);
+  }
+
+  @Test
+  public void updateStatus_Selection() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
     final Submission submission1 = find(submissions, 32L).orElse(null);
     final Submission submission2 = find(submissions, 156L).orElse(null);
     view.submissionsGrid.select(submission1);
@@ -844,5 +863,35 @@ public class SubmissionsViewPresenterTest {
     assertTrue(samples.containsAll(submission1.getSamples()));
     assertTrue(samples.containsAll(submission2.getSamples()));
     verify(view).navigateTo(SampleStatusView.VIEW_NAME);
+  }
+
+  @Test
+  public void transfer() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+
+    view.transfer.click();
+
+    verify(view, never()).saveSamples(any());
+    verify(view).navigateTo(TransferView.VIEW_NAME);
+  }
+
+  @Test
+  public void transfer_Selection() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    final Submission submission1 = find(submissions, 32L).orElse(null);
+    final Submission submission2 = find(submissions, 156L).orElse(null);
+    view.submissionsGrid.select(submission1);
+    view.submissionsGrid.select(submission2);
+
+    view.transfer.click();
+
+    verify(view).saveSamples(samplesCaptor.capture());
+    Collection<Sample> samples = samplesCaptor.getValue();
+    assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
+    assertTrue(samples.containsAll(submission1.getSamples()));
+    assertTrue(samples.containsAll(submission2.getSamples()));
+    verify(view).navigateTo(TransferView.VIEW_NAME);
   }
 }

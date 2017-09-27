@@ -25,6 +25,7 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected Button selectSamplesButton;
   protected Label selectedSamplesLabel;
   protected Button updateStatusButton;
+  protected Button transfer;
 
   public SubmissionsViewDesign() {
     Design.read(this);
