@@ -89,7 +89,15 @@ public class PlateComponentPresenter {
     clearPlate();
     view.spreadsheet.setMaxColumns(plate.getColumnCount() + 1);
     view.spreadsheet.setMaxRows(plate.getRowCount() + 1);
-    setWellsContent();
+    forEachCell(cell -> {
+      int row = cell.getRowIndex() - 1;
+      int col = cell.getColumnIndex() - 1;
+      Well well = plate.well(row, col);
+      if (well.getSample() != null) {
+        cell.setCellValue(well.getSample().getName());
+      }
+    });
+    view.spreadsheet.refreshAllCellValues();
   }
 
   private void updateReadOnly() {
@@ -113,17 +121,6 @@ public class PlateComponentPresenter {
 
   private void clearPlate() {
     forEachCell(cell -> cell.setCellValue(""));
-  }
-
-  private void setWellsContent() {
-    forEachCell(cell -> {
-      int row = cell.getRowIndex() - 1;
-      int col = cell.getColumnIndex() - 1;
-      Well well = plate.well(row, col);
-      if (well.getSample() != null) {
-        cell.setCellValue(well.getSample().getName());
-      }
-    });
   }
 
   private void deselectAllWells() {

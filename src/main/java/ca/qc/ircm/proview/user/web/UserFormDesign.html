@@ -2,14 +2,14 @@
 <html>
  <head>
   <meta charset="UTF-8">
-  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
-  <meta name="vaadin-version" content="8.0.2">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="8.0.5">
  </head>
  <body>
   <vaadin-vertical-layout margin="false">
    <vaadin-panel caption="User" size-auto _id="userPanel">
     <vaadin-vertical-layout>
-     <vaadin-form-layout size-auto>
+     <vaadin-form-layout size-auto margin="false">
       <vaadin-text-field caption="Email" _id="emailField"></vaadin-text-field>
       <vaadin-text-field caption="Name" _id="nameField"></vaadin-text-field>
       <vaadin-password-field caption="Password" _id="passwordField"></vaadin-password-field>
@@ -19,7 +19,7 @@
    </vaadin-panel>
    <vaadin-panel caption="Laboratory" size-auto _id="laboratoryPanel">
     <vaadin-vertical-layout size-auto>
-     <vaadin-form-layout size-auto>
+     <vaadin-form-layout size-auto margin="false">
       <vaadin-check-box caption="New laboratory" _id="newLaboratoryField"></vaadin-check-box>
       <vaadin-text-field caption="Laboratory manager email" _id="managerField"></vaadin-text-field>
       <vaadin-text-field caption="Organization" _id="organizationField"></vaadin-text-field>
@@ -29,7 +29,7 @@
    </vaadin-panel>
    <vaadin-panel caption="Address" size-auto _id="addressPanel">
     <vaadin-vertical-layout size-auto>
-     <vaadin-form-layout size-auto>
+     <vaadin-form-layout size-auto margin="false">
       <vaadin-text-field caption="Address" _id="addressLineField"></vaadin-text-field>
       <vaadin-text-field caption="Town" _id="townField"></vaadin-text-field>
       <vaadin-text-field caption="State" _id="stateField"></vaadin-text-field>
@@ -43,8 +43,8 @@
    </vaadin-panel>
    <vaadin-panel caption="Phone numbers" size-auto _id="phoneNumbersPanel">
     <vaadin-vertical-layout size-auto>
-     <vaadin-vertical-layout margin="false" _id="phoneNumbersLayout">
-      <vaadin-form-layout size-auto>
+     <vaadin-vertical-layout size-auto margin="false" _id="phoneNumbersLayout">
+      <vaadin-form-layout size-auto margin="false">
        <vaadin-combo-box caption="Type" data-item-type="ca.qc.ircm.proview.user.PhoneNumberType" _id="phoneNumberTypeField"></vaadin-combo-box>
        <vaadin-text-field caption="Phone number" _id="numberField"></vaadin-text-field>
        <vaadin-text-field caption="Extension" _id="extensionField"></vaadin-text-field>
