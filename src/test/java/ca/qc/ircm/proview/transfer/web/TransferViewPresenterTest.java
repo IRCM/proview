@@ -20,11 +20,9 @@ package ca.qc.ircm.proview.transfer.web;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATES;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATES_TYPE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_NO_SELECTION;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_PANEL;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_TYPES;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_SAMPLE_NAME;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBES;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBE_NAME;
@@ -40,6 +38,7 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE_SAMPLE_NOT_SELECTED;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_TUBES;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_TYPE;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TEST;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TITLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TUBE;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
@@ -55,7 +54,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -170,7 +168,6 @@ public class TransferViewPresenterTest {
     view.destinationTubesGrid = new Grid<>();
     view.destinationPlateLayout = new VerticalLayout();
     view.destinationPlatesField = new ComboBox<>();
-    view.destinationPlatesTypeField = new ComboBox<>();
     view.destinationPlatePanel = new Panel();
     view.destinationPlateFormLayout = new VerticalLayout();
     view.destinationPlateForm = mock(PlateComponent.class);
@@ -271,10 +268,10 @@ public class TransferViewPresenterTest {
     assertTrue(view.destination.getStyleName().contains(DESTINATION));
     assertTrue(view.destinationType.getStyleName().contains(DESTINATION_TYPE));
     assertTrue(view.destinationTubesGrid.getStyleName().contains(DESTINATION_TUBES));
-    assertTrue(view.destinationPlatesTypeField.getStyleName().contains(DESTINATION_PLATES_TYPE));
     assertTrue(view.destinationPlatesField.getStyleName().contains(DESTINATION_PLATES));
     assertTrue(view.destinationPlatePanel.getStyleName().contains(DESTINATION_PLATE_PANEL));
     verify(view.destinationPlateForm).addStyleName(DESTINATION_PLATE);
+    assertTrue(view.test.getStyleName().contains(TEST));
     assertTrue(view.saveButton.getStyleName().contains(SAVE));
   }
 
@@ -297,13 +294,8 @@ public class TransferViewPresenterTest {
         view.destinationTubesGrid.getColumn(DESTINATION_SAMPLE_NAME).getCaption());
     assertEquals(resources.message(DESTINATION_TUBE_NAME),
         view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getCaption());
-    assertEquals(resources.message(DESTINATION_PLATES_TYPE),
-        view.destinationPlatesTypeField.getCaption());
-    for (PlateType type : DESTINATION_PLATE_TYPES) {
-      assertEquals(type.getLabel(locale),
-          view.destinationPlatesTypeField.getItemCaptionGenerator().apply(type));
-    }
     assertEquals(resources.message(DESTINATION_PLATES), view.destinationPlatesField.getCaption());
+    assertEquals(resources.message(TEST), view.test.getCaption());
     assertEquals(resources.message(SAVE), view.saveButton.getCaption());
   }
 
@@ -475,40 +467,6 @@ public class TransferViewPresenterTest {
   }
 
   @Test
-  public void destinationPlateTypeField() {
-    presenter.init(view);
-    presenter.enter("");
-
-    assertFalse(view.destinationPlatesTypeField.isEmptySelectionAllowed());
-    assertNull(view.destinationPlatesTypeField.getNewItemHandler());
-    Collection<PlateType> plateTypes = dataProvider(view.destinationPlatesTypeField).getItems();
-    assertEquals(DESTINATION_PLATE_TYPES.length, plateTypes.size());
-    for (PlateType type : DESTINATION_PLATE_TYPES) {
-      assertTrue(plateTypes.contains(type));
-    }
-    assertEquals(PlateType.A, view.destinationPlatesTypeField.getValue());
-    assertTrue(view.destinationPlatesTypeField.isRequiredIndicatorVisible());
-  }
-
-  @Test
-  public void destinationPlateTypeField_Change() {
-    presenter.init(view);
-    presenter.enter("");
-    sourcePlates.clear();
-    sourcePlates.add(entityManager.find(Plate.class, 109L));
-    sourcePlates.add(entityManager.find(Plate.class, 110L));
-
-    view.destinationPlatesTypeField.setValue(PlateType.G);
-
-    Collection<String> plateNames = dataProvider(view.destinationPlatesField).getItems();
-    List<String> expectedPlateNames =
-        sourcePlates.stream().map(p -> p.getName()).collect(Collectors.toList());
-    assertEquals(sourcePlates.size(), plateNames.size());
-    assertTrue(plateNames.containsAll(expectedPlateNames));
-    assertTrue(expectedPlateNames.containsAll(plateNames));
-  }
-
-  @Test
   public void destinationPlatesField() {
     presenter.init(view);
     presenter.enter("");
@@ -516,12 +474,10 @@ public class TransferViewPresenterTest {
     assertFalse(view.destinationPlatesField.isEmptySelectionAllowed());
     assertNotNull(view.destinationPlatesField.getNewItemHandler() != null);
     assertTrue(view.destinationPlatesField.isRequiredIndicatorVisible());
-    Collection<String> plateNames = dataProvider(view.destinationPlatesField).getItems();
-    List<String> expectedPlateNames =
-        sourcePlates.stream().map(p -> p.getName()).collect(Collectors.toList());
-    assertEquals(sourcePlates.size(), plateNames.size());
-    assertTrue(plateNames.containsAll(expectedPlateNames));
-    assertTrue(expectedPlateNames.containsAll(plateNames));
+    Collection<Plate> plates = dataProvider(view.destinationPlatesField).getItems();
+    assertEquals(sourcePlates.size(), plates.size());
+    assertTrue(plates.containsAll(sourcePlates));
+    assertTrue(sourcePlates.containsAll(plates));
   }
 
   @Test
@@ -540,15 +496,15 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initWells();
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
-    when(plateService.get(any(String.class))).thenReturn(null);
+    when(plateService.get(any(Long.class))).thenReturn(null);
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(0, 0).getSample());
     assertEquals(samples.get(1), plate.well(1, 0).getSample());
     assertEquals(samples.get(2), plate.well(2, 0).getSample());
@@ -560,7 +516,7 @@ public class TransferViewPresenterTest {
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(2, 3).getSample());
     assertEquals(samples.get(1), plate.well(3, 3).getSample());
     assertEquals(samples.get(2), plate.well(4, 3).getSample());
@@ -586,7 +542,7 @@ public class TransferViewPresenterTest {
     view.sourceType.setValue(SampleContainerType.TUBE);
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     Plate plateCopy = new Plate();
     plateCopy.setName(plate.getName());
@@ -595,13 +551,13 @@ public class TransferViewPresenterTest {
     plateCopy.initWells();
     plateCopy.getWells().stream()
         .forEach(well -> well.setSample(plate.well(well.getRow(), well.getColumn()).getSample()));
-    when(plateService.get(any(String.class))).thenReturn(plateCopy);
+    when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(0, 2).getSample());
     assertEquals(samples.get(1), plate.well(1, 2).getSample());
     assertEquals(samples.get(2), plate.well(2, 2).getSample());
@@ -616,7 +572,7 @@ public class TransferViewPresenterTest {
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(2, 3).getSample());
     assertEquals(samples.get(1), plate.well(3, 3).getSample());
     assertEquals(samples.get(2), plate.well(4, 3).getSample());
@@ -640,15 +596,15 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initWells();
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
-    when(plateService.get(any(String.class))).thenReturn(null);
+    when(plateService.get(any(Long.class))).thenReturn(null);
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(0, 0).getSample());
     assertEquals(samples.get(1), plate.well(1, 0).getSample());
     assertEquals(samples.get(2), plate.well(2, 0).getSample());
@@ -660,7 +616,7 @@ public class TransferViewPresenterTest {
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(2, 3).getSample());
     assertEquals(samples.get(1), plate.well(3, 3).getSample());
     assertEquals(samples.get(2), plate.well(4, 3).getSample());
@@ -682,7 +638,7 @@ public class TransferViewPresenterTest {
         sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     Plate plateCopy = new Plate();
     plateCopy.setName(plate.getName());
@@ -691,13 +647,13 @@ public class TransferViewPresenterTest {
     plateCopy.initWells();
     plateCopy.getWells().stream()
         .forEach(well -> well.setSample(plate.well(well.getRow(), well.getColumn()).getSample()));
-    when(plateService.get(any(String.class))).thenReturn(plateCopy);
+    when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(0, 2).getSample());
     assertEquals(samples.get(1), plate.well(1, 2).getSample());
     assertEquals(samples.get(2), plate.well(2, 2).getSample());
@@ -712,7 +668,7 @@ public class TransferViewPresenterTest {
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(2, 3).getSample());
     assertEquals(samples.get(1), plate.well(3, 3).getSample());
     assertEquals(samples.get(2), plate.well(4, 3).getSample());
@@ -737,15 +693,15 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initWells();
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
-    when(plateService.get(any(String.class))).thenReturn(null);
+    when(plateService.get(any(Long.class))).thenReturn(null);
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(0, 0).getSample());
     assertEquals(samples.get(1), plate.well(1, 0).getSample());
     assertEquals(samples.get(2), plate.well(2, 0).getSample());
@@ -760,7 +716,7 @@ public class TransferViewPresenterTest {
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(2, 3).getSample());
     assertEquals(samples.get(1), plate.well(3, 3).getSample());
     assertEquals(samples.get(2), plate.well(4, 3).getSample());
@@ -786,7 +742,7 @@ public class TransferViewPresenterTest {
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     Plate plateCopy = new Plate();
     plateCopy.setName(plate.getName());
@@ -795,13 +751,13 @@ public class TransferViewPresenterTest {
     plateCopy.initWells();
     plateCopy.getWells().stream()
         .forEach(well -> well.setSample(plate.well(well.getRow(), well.getColumn()).getSample()));
-    when(plateService.get(any(String.class))).thenReturn(plateCopy);
+    when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(0, 2).getSample());
     assertEquals(samples.get(1), plate.well(1, 2).getSample());
     assertEquals(samples.get(2), plate.well(2, 2).getSample());
@@ -819,7 +775,7 @@ public class TransferViewPresenterTest {
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    verify(view.destinationPlateForm, times(2)).setValue(plate);
+    verify(view.destinationPlateForm, atLeastOnce()).setValue(plate);
     assertEquals(samples.get(0), plate.well(2, 3).getSample());
     assertEquals(samples.get(1), plate.well(3, 3).getSample());
     assertEquals(samples.get(2), plate.well(4, 3).getSample());
@@ -990,7 +946,9 @@ public class TransferViewPresenterTest {
     });
     view.sourceType.setValue(SampleContainerType.TUBE);
     view.destinationType.setValue(SampleContainerType.WELL);
-    view.destinationPlatesField.setValue("test");
+    Plate plate = new Plate(null, "test");
+    plate.initWells();
+    view.destinationPlatesField.setValue(plate);
 
     view.saveButton.click();
 
@@ -1012,7 +970,7 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initWells();
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     when(view.destinationPlateForm.getSelectedWell())
         .thenReturn(plate.well(plate.getRowCount() - 2, plate.getColumnCount() - 1));
@@ -1039,7 +997,7 @@ public class TransferViewPresenterTest {
     plate.setType(PlateType.A);
     plate.initWells();
     plate.well(1, 0).setSample(samples.get(0));
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
 
@@ -1110,7 +1068,7 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initWells();
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
 
@@ -1150,7 +1108,7 @@ public class TransferViewPresenterTest {
     view.sourceType.setValue(SampleContainerType.TUBE);
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 4));
 
@@ -1223,7 +1181,7 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initWells();
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
 
@@ -1259,7 +1217,7 @@ public class TransferViewPresenterTest {
         sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 4));
 
@@ -1341,7 +1299,7 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.setType(PlateType.A);
     plate.initWells();
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
 
@@ -1379,7 +1337,7 @@ public class TransferViewPresenterTest {
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
-    view.destinationPlatesField.setValue(plate.getName());
+    view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 4));
 
