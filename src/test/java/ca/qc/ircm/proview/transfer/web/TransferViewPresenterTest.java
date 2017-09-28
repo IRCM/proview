@@ -17,18 +17,19 @@
 
 package ca.qc.ircm.proview.transfer.web;
 
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.CONTAINER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_CONTAINER_DUPLICATE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATES;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_NO_SELECTION;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_PANEL;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_SAMPLE_NAME;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBES;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBE_NAME;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TYPE;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBE;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_WELL;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_WELL_IN_USE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.HEADER;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.NAME;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAVE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE;
@@ -36,11 +37,12 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE_EMPTY;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE_PANEL;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE_SAMPLE_NOT_SELECTED;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_TUBES;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_TYPE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TEST;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TITLE;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TUBE;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFERS;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFERS_PANEL;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYPE;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYPE_PANEL;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -66,7 +68,7 @@ import ca.qc.ircm.proview.plate.WellLocation;
 import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.plate.web.PlateComponent;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.SampleTransfer;
 import ca.qc.ircm.proview.transfer.Transfer;
@@ -83,7 +85,6 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.RadioButtonGroup;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -154,17 +155,17 @@ public class TransferViewPresenterTest {
     presenter = new TransferViewPresenter(transferService, tubeService, wellService, plateService,
         applicationName);
     view.headerLabel = new Label();
+    view.typePanel = new Panel();
+    view.type = new RadioButtonGroup<>();
+    view.transfersPanel = new Panel();
+    view.transfers = new Grid<>();
     view.source = new Panel();
-    view.sourceType = new RadioButtonGroup<>();
-    view.sourceTubesGrid = new Grid<>();
     view.sourcePlateLayout = new VerticalLayout();
     view.sourcePlatesField = new ComboBox<>();
     view.sourcePlatePanel = new Panel();
     view.sourcePlateFormLayout = new VerticalLayout();
     view.sourcePlateForm = mock(PlateComponent.class);
     view.destination = new Panel();
-    view.destinationType = new RadioButtonGroup<>();
-    view.destinationTubesGrid = new Grid<>();
     view.destinationPlateLayout = new VerticalLayout();
     view.destinationPlatesField = new ComboBox<>();
     view.destinationPlatePanel = new Panel();
@@ -257,16 +258,16 @@ public class TransferViewPresenterTest {
 
     assertTrue(view.headerLabel.getStyleName().contains(HEADER));
     assertTrue(view.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(view.typePanel.getStyleName().contains(TRANSFER_TYPE_PANEL));
+    assertTrue(view.type.getStyleName().contains(TRANSFER_TYPE));
+    assertTrue(view.transfersPanel.getStyleName().contains(TRANSFERS_PANEL));
+    assertTrue(view.transfers.getStyleName().contains(TRANSFERS));
+    assertTrue(view.transfers.getStyleName().contains(COMPONENTS));
     assertTrue(view.source.getStyleName().contains(SOURCE));
-    assertTrue(view.sourceType.getStyleName().contains(SOURCE_TYPE));
-    assertTrue(view.sourceTubesGrid.getStyleName().contains(SOURCE_TUBES));
-    assertTrue(view.sourceTubesGrid.getStyleName().contains(COMPONENTS));
     assertTrue(view.sourcePlatesField.getStyleName().contains(SOURCE_PLATES));
     assertTrue(view.sourcePlatePanel.getStyleName().contains(SOURCE_PLATE_PANEL));
     verify(view.sourcePlateForm).addStyleName(SOURCE_PLATE);
     assertTrue(view.destination.getStyleName().contains(DESTINATION));
-    assertTrue(view.destinationType.getStyleName().contains(DESTINATION_TYPE));
-    assertTrue(view.destinationTubesGrid.getStyleName().contains(DESTINATION_TUBES));
     assertTrue(view.destinationPlatesField.getStyleName().contains(DESTINATION_PLATES));
     assertTrue(view.destinationPlatePanel.getStyleName().contains(DESTINATION_PLATE_PANEL));
     verify(view.destinationPlateForm).addStyleName(DESTINATION_PLATE);
@@ -280,101 +281,105 @@ public class TransferViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), view.headerLabel.getValue());
+    assertEquals(resources.message(TRANSFER_TYPE_PANEL), view.typePanel.getCaption());
+    assertEquals(resources.message(TRANSFERS_PANEL), view.transfersPanel.getCaption());
     assertEquals(resources.message(SOURCE), view.source.getCaption());
-    assertEquals(SampleContainerType.TUBE.getLabel(locale),
-        view.sourceType.getItemCaptionGenerator().apply(SampleContainerType.TUBE));
-    assertEquals(SampleContainerType.WELL.getLabel(locale),
-        view.sourceType.getItemCaptionGenerator().apply(SampleContainerType.WELL));
-    assertEquals(resources.message(NAME), view.sourceTubesGrid.getColumn(NAME).getCaption());
-    assertEquals(resources.message(TUBE), view.sourceTubesGrid.getColumn(TUBE).getCaption());
+    for (TransferType type : TransferType.values()) {
+      assertEquals(type.getLabel(locale), view.type.getItemCaptionGenerator().apply(type));
+    }
     assertEquals(resources.message(SOURCE_PLATES), view.sourcePlatesField.getCaption());
     assertEquals(resources.message(DESTINATION), view.destination.getCaption());
-    assertEquals(resources.message(DESTINATION_SAMPLE_NAME),
-        view.destinationTubesGrid.getColumn(DESTINATION_SAMPLE_NAME).getCaption());
-    assertEquals(resources.message(DESTINATION_TUBE_NAME),
-        view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getCaption());
     assertEquals(resources.message(DESTINATION_PLATES), view.destinationPlatesField.getCaption());
     assertEquals(resources.message(TEST), view.test.getCaption());
     assertEquals(resources.message(SAVE), view.saveButton.getCaption());
   }
 
   @Test
-  public void sourceTypeValues() {
+  public void typeValues() {
     presenter.init(view);
     presenter.enter("");
 
-    ListDataProvider<SampleContainerType> dataProvider = dataProvider(view.sourceType);
-    assertEquals(SampleContainerType.values().length, dataProvider.getItems().size());
-    for (SampleContainerType type : SampleContainerType.values()) {
+    ListDataProvider<TransferType> dataProvider = dataProvider(view.type);
+    assertEquals(TransferType.values().length, dataProvider.getItems().size());
+    for (TransferType type : TransferType.values()) {
       assertTrue(dataProvider.getItems().contains(type));
     }
   }
 
   @Test
-  public void destinationTypeValues() {
+  public void changeType() {
     presenter.init(view);
     presenter.enter("");
 
-    ListDataProvider<SampleContainerType> dataProvider = dataProvider(view.destinationType);
-    assertEquals(SampleContainerType.values().length, dataProvider.getItems().size());
-    for (SampleContainerType type : SampleContainerType.values()) {
-      assertTrue(dataProvider.getItems().contains(type));
-    }
-  }
+    assertFalse(view.transfersPanel.isVisible());
+    assertTrue(view.source.isVisible());
+    assertTrue(view.destination.isVisible());
 
-  @Test
-  public void changeSource() {
-    presenter.init(view);
-    presenter.enter("");
+    view.type.setValue(TransferType.TUBES_TO_PLATE);
+    assertTrue(view.transfersPanel.isVisible());
+    assertFalse(view.source.isVisible());
+    assertTrue(view.destination.isVisible());
 
-    assertFalse(view.sourceTubesGrid.isVisible());
-    assertTrue(view.sourcePlateLayout.isVisible());
-
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    assertTrue(view.sourceTubesGrid.isVisible());
-    assertFalse(view.sourcePlateLayout.isVisible());
-
-    view.sourceType.setValue(SampleContainerType.WELL);
-    assertFalse(view.sourceTubesGrid.isVisible());
-    assertTrue(view.sourcePlateLayout.isVisible());
-  }
-
-  @Test
-  public void changeDestination() {
-    presenter.init(view);
-    presenter.enter("");
-
-    assertFalse(view.destinationTubesGrid.isVisible());
-    assertTrue(view.destinationPlateLayout.isVisible());
-
-    view.destinationType.setValue(SampleContainerType.TUBE);
-    assertTrue(view.destinationTubesGrid.isVisible());
-    assertFalse(view.destinationPlateLayout.isVisible());
-
-    view.destinationType.setValue(SampleContainerType.WELL);
-    assertFalse(view.destinationTubesGrid.isVisible());
-    assertTrue(view.destinationPlateLayout.isVisible());
+    view.type.setValue(TransferType.TUBES_TO_TUBES);
+    assertTrue(view.transfersPanel.isVisible());
+    assertFalse(view.source.isVisible());
+    assertFalse(view.destination.isVisible());
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void sourceTubesColumns() {
+  public void transfers() {
     presenter.init(view);
     presenter.enter("");
 
-    assertEquals(NAME, view.sourceTubesGrid.getColumns().get(0).getId());
-    assertEquals(TUBE, view.sourceTubesGrid.getColumns().get(1).getId());
-    assertTrue(containsInstanceOf(view.sourceTubesGrid.getColumns().get(1).getExtensions(),
+    assertEquals(SAMPLE, view.transfers.getColumns().get(0).getId());
+    assertEquals(resources.message(SAMPLE), view.transfers.getColumn(SAMPLE).getCaption());
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
+      assertEquals(ts.getSample().getName(),
+          view.transfers.getColumn(SAMPLE).getValueProvider().apply(ts));
+    }
+    assertEquals(CONTAINER, view.transfers.getColumns().get(1).getId());
+    assertTrue(containsInstanceOf(view.transfers.getColumn(CONTAINER).getExtensions(),
         ComponentRenderer.class));
-    Sample sample = dataProvider(view.sourceTubesGrid).getItems().iterator().next();
-    ComboBox<Tube> comboBox =
-        (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-    Collection<Tube> tubes = dataProvider(comboBox).getItems();
-    assertEquals(sourceTubes.get(sample).size(), tubes.size());
-    assertTrue(sourceTubes.get(sample).containsAll(tubes));
-    assertTrue(tubes.containsAll(sourceTubes.get(sample)));
-    for (Tube tube : sourceTubes.get(sample)) {
-      assertEquals(tube.getName(), comboBox.getItemCaptionGenerator().apply(tube));
+    assertEquals(resources.message(CONTAINER), view.transfers.getColumn(CONTAINER).getCaption());
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Tube> field =
+          (ComboBox<Tube>) view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+      ListDataProvider<Tube> dataProvider = dataProvider(field);
+      assertEquals(sourceTubes.get(ts.getSample()), dataProvider.getItems());
+      assertEquals(sourceTubes.get(ts.getSample()).get(0), field.getValue());
+    }
+    assertEquals(DESTINATION_TUBE, view.transfers.getColumns().get(2).getId());
+    assertTrue(containsInstanceOf(view.transfers.getColumn(DESTINATION_TUBE).getExtensions(),
+        ComponentRenderer.class));
+    assertEquals(resources.message(DESTINATION_TUBE),
+        view.transfers.getColumn(DESTINATION_TUBE).getCaption());
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Tube> field =
+          (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE).getValueProvider().apply(ts);
+      ListDataProvider<Tube> dataProvider = dataProvider(field);
+      assertTrue(dataProvider.getItems().isEmpty());
+    }
+    assertEquals(DESTINATION_WELL, view.transfers.getColumns().get(3).getId());
+    assertTrue(containsInstanceOf(view.transfers.getColumn(DESTINATION_WELL).getExtensions(),
+        ComponentRenderer.class));
+    assertEquals(resources.message(DESTINATION_WELL),
+        view.transfers.getColumn(DESTINATION_WELL).getCaption());
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      ListDataProvider<Well> dataProvider = dataProvider(field);
+      assertTrue(dataProvider.getItems().isEmpty());
+    }
+    Plate plate = new Plate();
+    plate.initWells();
+    view.destinationPlatesField.setValue(plate);
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      ListDataProvider<Well> dataProvider = dataProvider(field);
+      assertEquals(plate.getWells(), dataProvider.getItems());
     }
   }
 
@@ -451,21 +456,6 @@ public class TransferViewPresenterTest {
   }
 
   @Test
-  public void destinationTubesColumns() {
-    presenter.init(view);
-    presenter.enter("");
-
-    assertEquals(DESTINATION_SAMPLE_NAME, view.destinationTubesGrid.getColumns().get(0).getId());
-    assertEquals(DESTINATION_TUBE_NAME, view.destinationTubesGrid.getColumns().get(1).getId());
-    assertTrue(containsInstanceOf(view.destinationTubesGrid.getColumns().get(1).getExtensions(),
-        ComponentRenderer.class));
-    Sample sample = dataProvider(view.destinationTubesGrid).getItems().iterator().next();
-    TextField tubeNameField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
-        .getValueProvider().apply(sample);
-    assertTrue(tubeNameField.isRequiredIndicatorVisible());
-  }
-
-  @Test
   public void destinationPlatesField() {
     presenter.init(view);
     presenter.enter("");
@@ -484,14 +474,14 @@ public class TransferViewPresenterTest {
   public void test_TubeToNewPlate() {
     presenter.init(view);
     presenter.enter("");
+    view.type.setValue(TransferType.TUBES_TO_PLATE);
     Map<Sample, Tube> sources = new HashMap<>();
-    samples.forEach(sample -> {
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    transfers.forEach(ts -> {
       ComboBox<Tube> comboBox =
-          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-      sources.put(sample, comboBox.getValue());
+          (ComboBox<Tube>) view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+      sources.put(ts.getSample(), comboBox.getValue());
     });
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
@@ -531,14 +521,14 @@ public class TransferViewPresenterTest {
   public void test_TubeToExistingPlate() {
     presenter.init(view);
     presenter.enter("");
+    view.type.setValue(TransferType.TUBES_TO_PLATE);
     Map<Sample, Tube> sources = new HashMap<>();
-    samples.forEach(sample -> {
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    transfers.forEach(ts -> {
       ComboBox<Tube> comboBox =
-          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-      sources.put(sample, comboBox.getValue());
+          (ComboBox<Tube>) view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+      sources.put(ts.getSample(), comboBox.getValue());
     });
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -586,11 +576,10 @@ public class TransferViewPresenterTest {
   public void test_PlateToNewPlate() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(
         sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
-    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
@@ -629,11 +618,10 @@ public class TransferViewPresenterTest {
   public void test_PlateToExistingPlate() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(
         sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
-    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -681,12 +669,11 @@ public class TransferViewPresenterTest {
   public void test_PlateToNewPlate_MultipleWellPerSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(1);
     List<Well> sourceWells = this.sourceWells.values().stream()
         .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
-    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
@@ -731,12 +718,12 @@ public class TransferViewPresenterTest {
   public void test_PlateToExistingPlate_MultipleWellPerSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(1);
     List<Well> sourceWells = this.sourceWells.values().stream()
         .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
-    view.destinationType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate plate = sourcePlates.get(0);
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -793,16 +780,18 @@ public class TransferViewPresenterTest {
     sourceTubes.put(sample, new ArrayList<>());
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.TUBE);
-    for (Sample samp : samples) {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(samp);
+    view.type.setValue(TransferType.TUBES_TO_TUBES);
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
+      view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
     }
-    for (Sample samp : samples) {
-      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(samp);
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Tube> field =
+          (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE).getValueProvider().apply(ts);
+      field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
     }
-    ComboBox<Tube> comboBox =
-        (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    ComboBox<Tube> comboBox = (ComboBox<Tube>) view.transfers.getColumn(CONTAINER)
+        .getValueProvider().apply(transfers.iterator().next());
 
     view.saveButton.click();
 
@@ -816,14 +805,10 @@ public class TransferViewPresenterTest {
   public void save_NoSourceWells() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
-    view.destinationType.setValue(SampleContainerType.TUBE);
-    for (Sample sample : samples) {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-    }
-    for (Sample sample : samples) {
-      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(sample);
-    }
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
+    Plate destination = new Plate(null, "test");
+    destination.initWells();
+    view.destinationPlatesField.setValue(destination);
 
     view.saveButton.click();
 
@@ -837,20 +822,13 @@ public class TransferViewPresenterTest {
   public void save_SourcePlateSelectedWellEmpty() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
-    view.destinationType.setValue(SampleContainerType.TUBE);
-    for (Sample sample : samples) {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-    }
-    IntStream.range(0, samples.size()).forEach(i -> {
-      Sample sample = samples.get(i);
-      TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
-          .getValueProvider().apply(sample);
-      textField.setValue("test" + i);
-    });
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate plate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedWells())
         .thenReturn(plate.wells(new WellLocation(0, 0), new WellLocation(samples.size(), 0)));
+    Plate destination = new Plate(null, "test");
+    destination.initWells();
+    view.destinationPlatesField.setValue(destination);
 
     view.saveButton.click();
 
@@ -862,17 +840,13 @@ public class TransferViewPresenterTest {
   public void save_SourcePlateMissingOneSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
-    view.destinationType.setValue(SampleContainerType.TUBE);
-    for (Sample sample : samples) {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-    }
-    for (Sample sample : samples) {
-      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(sample);
-    }
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate plate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedWells())
         .thenReturn(plate.wells(new WellLocation(1, 0), new WellLocation(samples.size() - 1, 0)));
+    Plate destination = new Plate(null, "test");
+    destination.initWells();
+    view.destinationPlatesField.setValue(destination);
 
     view.saveButton.click();
 
@@ -884,52 +858,181 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_NoDestinationTube() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.TUBE);
-    for (Sample sample : samples) {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    view.type.setValue(TransferType.TUBES_TO_TUBES);
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
+      view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
     }
-    for (Sample sample : samples) {
-      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(sample);
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Tube> field =
+          (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE).getValueProvider().apply(ts);
+      field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
     }
-    Sample sample = dataProvider(view.destinationTubesGrid).getItems().iterator().next();
-    TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
-        .getValueProvider().apply(sample);
+    ComboBox<Tube> field = (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE)
+        .getValueProvider().apply(transfers.iterator().next());
+    field.setValue(null);
 
     view.saveButton.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        textField.getErrorMessage().getFormattedHtmlMessage());
+        field.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_DestinationTubeExists() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.TUBE);
-    for (Sample sample : samples) {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+    view.type.setValue(TransferType.TUBES_TO_TUBES);
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
+      view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
     }
-    for (Sample sample : samples) {
-      view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME).getValueProvider().apply(sample);
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Tube> field =
+          (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE).getValueProvider().apply(ts);
+      field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
     }
-    Sample sample = dataProvider(view.destinationTubesGrid).getItems().iterator().next();
-    TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
-        .getValueProvider().apply(sample);
-    textField.setValue("test");
+    ComboBox<Tube> field = (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE)
+        .getValueProvider().apply(transfers.iterator().next());
+    field.setValue(new Tube(null, "test"));
     when(tubeService.get("test")).thenReturn(new Tube(null, "test"));
 
     view.saveButton.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
-    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS)),
-        textField.getErrorMessage().getFormattedHtmlMessage());
+    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, "test")),
+        field.getErrorMessage().getFormattedHtmlMessage());
+    verify(transferService, never()).insert(any());
+    verify(tubeService).get("test");
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void save_DestinationTubeDuplicate() {
+    presenter.init(view);
+    presenter.enter("");
+    view.type.setValue(TransferType.TUBES_TO_TUBES);
+    List<SampleTransfer> transfers = new ArrayList<>(dataProvider(view.transfers).getItems());
+    for (SampleTransfer ts : transfers) {
+      view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+    }
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Tube> field =
+          (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE).getValueProvider().apply(ts);
+      field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
+    }
+    ComboBox<Tube> field1 = (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE)
+        .getValueProvider().apply(transfers.get(0));
+    field1.setValue(new Tube(null, "test"));
+    ComboBox<Tube> field2 = (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE)
+        .getValueProvider().apply(transfers.get(1));
+    field2.setValue(new Tube(null, "test"));
+
+    view.saveButton.click();
+
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(resources.message(DESTINATION_CONTAINER_DUPLICATE, "test")),
+        field2.getErrorMessage().getFormattedHtmlMessage());
+    verify(transferService, never()).insert(any());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void save_DestinationWellUsed() {
+    presenter.init(view);
+    presenter.enter("");
+    view.type.setValue(TransferType.TUBES_TO_PLATE);
+    Plate destination = new Plate();
+    destination.initWells();
+    view.destinationPlatesField.setValue(destination);
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
+      view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+    }
+    int count = 0;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      field.setValue(destination.well(count++, 0));
+    }
+    destination.well(0, 0).setId(2000L);
+    Well used = new Well(0, 0);
+    used.setSample(new SubmissionSample());
+    when(wellService.get(2000L)).thenReturn(used);
+    ComboBox<Well> field = (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL)
+        .getValueProvider().apply(transfers.iterator().next());
+
+    view.saveButton.click();
+
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(generalResources.message(DESTINATION_WELL_IN_USE, "0-0")),
+        field.getErrorMessage().getFormattedHtmlMessage());
+    verify(transferService, never()).insert(any());
+    verify(wellService).get(2000L);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void save_NoDestinationWell() {
+    presenter.init(view);
+    presenter.enter("");
+    view.type.setValue(TransferType.TUBES_TO_PLATE);
+    Plate destination = new Plate();
+    destination.initWells();
+    view.destinationPlatesField.setValue(destination);
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
+      view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+    }
+    ComboBox<Well> field = (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL)
+        .getValueProvider().apply(transfers.iterator().next());
+
+    view.saveButton.click();
+
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        field.getErrorMessage().getFormattedHtmlMessage());
+    verify(transferService, never()).insert(any());
+    verify(wellService).get(2000L);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void save_DestinationWellDuplicate() {
+    presenter.init(view);
+    presenter.enter("");
+    view.type.setValue(TransferType.TUBES_TO_PLATE);
+    Plate destination = new Plate();
+    destination.initWells();
+    view.destinationPlatesField.setValue(destination);
+    List<SampleTransfer> transfers = new ArrayList<>(dataProvider(view.transfers).getItems());
+    for (SampleTransfer ts : transfers) {
+      view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+    }
+    int count = 0;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      field.setValue(destination.well(count++, 0));
+    }
+    ComboBox<Well> field1 = (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL)
+        .getValueProvider().apply(transfers.get(0));
+    ComboBox<Well> field2 = (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL)
+        .getValueProvider().apply(transfers.get(1));
+    field2.setValue(field1.getValue());
+
+    view.saveButton.click();
+
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(generalResources.message(DESTINATION_CONTAINER_DUPLICATE)),
+        field2.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
   }
 
@@ -937,11 +1040,10 @@ public class TransferViewPresenterTest {
   public void save_DestinationPlateNoSelectedWell() {
     presenter.init(view);
     presenter.enter("");
-    samples.forEach(sample -> {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-    });
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
+    Plate sourcePlate = sourcePlates.get(0);
+    when(view.sourcePlateForm.getSelectedWells()).thenReturn(
+        sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
     Plate plate = new Plate(null, "test");
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
@@ -958,11 +1060,10 @@ public class TransferViewPresenterTest {
   public void save_DestinationPlateNotEnoughFreeSpace_Overflow() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.WELL);
-    samples.forEach(sample -> {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-    });
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
+    Plate sourcePlate = sourcePlates.get(0);
+    when(view.sourcePlateForm.getSelectedWells()).thenReturn(
+        sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
     Plate plate = new Plate(null, "test");
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
@@ -983,11 +1084,10 @@ public class TransferViewPresenterTest {
   public void save_DestinationPlateNotEnoughFreeSpace_WellHasSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.WELL);
-    samples.forEach(sample -> {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-    });
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
+    Plate sourcePlate = sourcePlates.get(0);
+    when(view.sourcePlateForm.getSelectedWells()).thenReturn(
+        sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
     Plate plate = new Plate(null, "test");
     plate.initWells();
     plate.well(1, 0).setSample(samples.get(0));
@@ -1009,23 +1109,19 @@ public class TransferViewPresenterTest {
   public void save_TubeToTube() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.TUBE);
+    view.type.setValue(TransferType.TUBES_TO_TUBES);
     Map<Sample, Tube> sources = new HashMap<>();
-    samples.forEach(sample -> {
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
       ComboBox<Tube> comboBox =
-          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-      sources.put(sample, comboBox.getValue());
-    });
-    for (Sample sample : samples) {
-      view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
+          (ComboBox<Tube>) view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+      sources.put(ts.getSample(), comboBox.getValue());
     }
-    IntStream.range(0, samples.size()).forEach(i -> {
-      Sample sample = samples.get(i);
-      TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
-          .getValueProvider().apply(sample);
-      textField.setValue("test" + i);
-    });
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Tube> field =
+          (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE).getValueProvider().apply(ts);
+      field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
+    }
 
     view.saveButton.click();
 
@@ -1042,7 +1138,8 @@ public class TransferViewPresenterTest {
       assertEquals(sample, sampleTransfer.getSample());
       assertEquals(sources.get(sample), sampleTransfer.getContainer());
       assertTrue(sampleTransfer.getDestinationContainer() instanceof Tube);
-      assertEquals("test" + i, sampleTransfer.getDestinationContainer().getName());
+      assertEquals(sample.getName() + "_destination",
+          sampleTransfer.getDestinationContainer().getName());
     }
   }
 
@@ -1051,14 +1148,14 @@ public class TransferViewPresenterTest {
   public void save_TubeToNewPlate() {
     presenter.init(view);
     presenter.enter("");
+    view.type.setValue(TransferType.TUBES_TO_PLATE);
     Map<Sample, Tube> sources = new HashMap<>();
-    samples.forEach(sample -> {
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
       ComboBox<Tube> comboBox =
-          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-      sources.put(sample, comboBox.getValue());
-    });
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.WELL);
+          (ComboBox<Tube>) view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+      sources.put(ts.getSample(), comboBox.getValue());
+    }
     Plate plate = new Plate(null, "test");
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
@@ -1092,14 +1189,14 @@ public class TransferViewPresenterTest {
   public void save_TubeToExistingPlate() {
     presenter.init(view);
     presenter.enter("");
+    view.type.setValue(TransferType.TUBES_TO_PLATE);
     Map<Sample, Tube> sources = new HashMap<>();
-    samples.forEach(sample -> {
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
       ComboBox<Tube> comboBox =
-          (ComboBox<Tube>) view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
-      sources.put(sample, comboBox.getValue());
-    });
-    view.sourceType.setValue(SampleContainerType.TUBE);
-    view.destinationType.setValue(SampleContainerType.WELL);
+          (ComboBox<Tube>) view.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+      sources.put(ts.getSample(), comboBox.getValue());
+    }
     Plate plate = sourcePlates.get(0);
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -1128,20 +1225,21 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @Ignore("Not available for now")
+  @SuppressWarnings("unchecked")
   public void save_PlateToTube() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
-    view.destinationType.setValue(SampleContainerType.TUBE);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(
         sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
-    IntStream.range(0, samples.size()).forEach(i -> {
-      Sample sample = samples.get(i);
-      TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
-          .getValueProvider().apply(sample);
-      textField.setValue("test" + i);
-    });
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Tube> field =
+          (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE).getValueProvider().apply(ts);
+      field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
+    }
 
     view.saveButton.click();
 
@@ -1166,11 +1264,10 @@ public class TransferViewPresenterTest {
   public void save_PlateToNewPlate() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(
         sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
-    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
@@ -1203,11 +1300,10 @@ public class TransferViewPresenterTest {
   public void save_PlateToExistingPlate() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(0);
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(
         sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
-    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -1236,22 +1332,22 @@ public class TransferViewPresenterTest {
   }
 
   @Test
-  @Ignore("Fix this test later since we never transfer from plate to tubes")
+  @Ignore("Not available for now")
+  @SuppressWarnings("unchecked")
   public void save_PlateToTube_MultipleWellPerSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
-    view.destinationType.setValue(SampleContainerType.TUBE);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(1);
     List<Well> sourceWells = this.sourceWells.values().stream()
         .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
-    IntStream.range(0, samples.size()).forEach(i -> {
-      Sample sample = samples.get(i);
-      TextField textField = (TextField) view.destinationTubesGrid.getColumn(DESTINATION_TUBE_NAME)
-          .getValueProvider().apply(sample);
-      textField.setValue("test" + i);
-    });
+    Collection<SampleTransfer> transfers = dataProvider(view.transfers).getItems();
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Tube> field =
+          (ComboBox<Tube>) view.transfers.getColumn(DESTINATION_TUBE).getValueProvider().apply(ts);
+      field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
+    }
 
     view.saveButton.click();
 
@@ -1282,12 +1378,11 @@ public class TransferViewPresenterTest {
   public void save_PlateToNewPlate_MultipleWellPerSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(1);
     List<Well> sourceWells = this.sourceWells.values().stream()
         .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
-    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
@@ -1321,12 +1416,11 @@ public class TransferViewPresenterTest {
   public void save_PlateToExistingPlate_MultipleWellPerSample() {
     presenter.init(view);
     presenter.enter("");
-    view.sourceType.setValue(SampleContainerType.WELL);
+    view.type.setValue(TransferType.PLATE_TO_PLATE);
     Plate sourcePlate = sourcePlates.get(1);
     List<Well> sourceWells = this.sourceWells.values().stream()
         .flatMap(map -> map.get(sourcePlate).stream()).collect(Collectors.toList());
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
-    view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = sourcePlates.get(0);
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);

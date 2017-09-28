@@ -24,16 +24,16 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class TransferViewDesign extends VerticalLayout {
   protected Label headerLabel;
+  protected Panel typePanel;
+  protected RadioButtonGroup<ca.qc.ircm.proview.transfer.web.TransferType> type;
+  protected Panel transfersPanel;
+  protected Grid<ca.qc.ircm.proview.transfer.SampleTransfer> transfers;
   protected Panel source;
-  protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleContainerType> sourceType;
-  protected Grid<ca.qc.ircm.proview.sample.Sample> sourceTubesGrid;
   protected VerticalLayout sourcePlateLayout;
   protected ComboBox<ca.qc.ircm.proview.plate.Plate> sourcePlatesField;
   protected Panel sourcePlatePanel;
   protected VerticalLayout sourcePlateFormLayout;
   protected Panel destination;
-  protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleContainerType> destinationType;
-  protected Grid<ca.qc.ircm.proview.sample.Sample> destinationTubesGrid;
   protected VerticalLayout destinationPlateLayout;
   protected ComboBox<ca.qc.ircm.proview.plate.Plate> destinationPlatesField;
   protected Panel destinationPlatePanel;
