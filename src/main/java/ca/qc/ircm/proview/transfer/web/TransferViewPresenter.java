@@ -28,7 +28,6 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateFilterBuilder;
 import ca.qc.ircm.proview.plate.PlateService;
-import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.WellComparator;
 import ca.qc.ircm.proview.plate.WellService;
@@ -104,7 +103,6 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String NAME = sample.name.getMetadata().getName();
   public static final String TUBE = tube.getMetadata().getName();
   public static final String PLATE = plate.getMetadata().getName();
-  public static final String PLATE_TYPE = plate.type.getMetadata().getName();
   public static final String PLATE_NAME = plate.name.getMetadata().getName();
   public static final String DESTINATION_SAMPLE = sample.getMetadata().getName();
   public static final String DESTINATION_SAMPLE_NAME =
@@ -193,7 +191,6 @@ public class TransferViewPresenter implements BinderValidator {
     view.destinationPlatesField.setEmptySelectionAllowed(false);
     view.destinationPlatesField.setNewItemHandler(name -> {
       Plate plate = new Plate(null, name);
-      plate.setType(PlateType.A);
       plate.initWells();
       view.destinationPlatesField.setValue(plate);
     });

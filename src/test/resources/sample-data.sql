@@ -57,40 +57,40 @@ INSERT INTO gelimages (id,submissionId,filename,content)
 VALUES (1,1,'frag.jpg',FILE_READ('${project.build.testOutputDirectory}/gelimages1'));
 INSERT INTO submissionfiles (id,submissionId,filename,content)
 VALUES (1,1,'protocol.txt',FILE_READ('${project.build.testOutputDirectory}/submissionfile1.txt'));
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (26,'A_20111108','A',12,8,'2011-11-08 13:33:21');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (107,'G_20141008_01','G',12,8,'2014-10-08 10:41:39');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (108,'A_20141008_01','A',12,8,'2014-10-08 11:18:03');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (109,'A_20141008_02','A',12,8,'2014-10-08 11:24:47');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (110,'A_20141009_01','A',12,8,'2014-10-09 12:19:34');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (111,'PM_20141009_01','PM',12,8,'2014-10-09 12:20:19');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (112,'A_20141009_02','A',12,8,'2014-10-09 13:29:26');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (113,'A_20141014_01','A',12,8,'2014-10-14 14:06:42');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (114,'A_20141014_02','A',12,8,'2014-10-14 14:06:46');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (115,'A_20141015_01','A',12,8,'2014-10-15 09:57:17');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (116,'A_20141015_02','A',12,8,'2014-10-15 09:57:20');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (117,'A_20141015_03','A',12,8,'2014-10-15 16:03:39');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (118,'A_20141017_01','A',12,8,'2014-10-17 11:32:34');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (119,'A_20141017_02','A',12,8,'2014-10-17 11:50:01');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (120,'A_20141022_01','A',12,8,'2014-10-22 09:51:11');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (121,'A_20141022_02','A',12,8,'2014-10-22 09:56:23');
-INSERT INTO plate (id,name,type,columns,rows,insertTime)
-VALUES (122,'A_20141024_01','A',12,8,'2014-10-24 14:30:21');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (26,'A_20111108',12,8,'2011-11-08 13:33:21');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (107,'G_20141008_01',12,8,'2014-10-08 10:41:39');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (108,'A_20141008_01',12,8,'2014-10-08 11:18:03');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (109,'A_20141008_02',12,8,'2014-10-08 11:24:47');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (110,'A_20141009_01',12,8,'2014-10-09 12:19:34');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (111,'PM_20141009_01',12,8,'2014-10-09 12:20:19');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (112,'A_20141009_02',12,8,'2014-10-09 13:29:26');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (113,'A_20141014_01',12,8,'2014-10-14 14:06:42');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (114,'A_20141014_02',12,8,'2014-10-14 14:06:46');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (115,'A_20141015_01',12,8,'2014-10-15 09:57:17');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (116,'A_20141015_02',12,8,'2014-10-15 09:57:20');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (117,'A_20141015_03',12,8,'2014-10-15 16:03:39');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (118,'A_20141017_01',12,8,'2014-10-17 11:32:34');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (119,'A_20141017_02',12,8,'2014-10-17 11:50:01');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (120,'A_20141022_01',12,8,'2014-10-22 09:51:11');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (121,'A_20141022_02',12,8,'2014-10-22 09:56:23');
+INSERT INTO plate (id,name,columns,rows,insertTime)
+VALUES (122,'A_20141024_01',12,8,'2014-10-24 14:30:21');
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)
 VALUES (1,'TUBE','FAM119A_band_01',NULL,NULL,NULL,1,NULL,'2010-10-15 10:44:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,treatmentSampleId,time,banned)

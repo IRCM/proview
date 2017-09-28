@@ -32,7 +32,7 @@ public class LocalizedPlate {
    * @return Header.
    */
   public String getHeader(Plate plate) {
-    return plate.getName() + " (" + plate.getType() + ")";
+    return plate.getName();
   }
 
   /**

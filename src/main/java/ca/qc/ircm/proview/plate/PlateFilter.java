@@ -25,7 +25,5 @@ import java.util.List;
  * Filters plate search.
  */
 public interface PlateFilter {
-  public PlateType type();
-
   public List<Sample> containsAnySamples();
 }

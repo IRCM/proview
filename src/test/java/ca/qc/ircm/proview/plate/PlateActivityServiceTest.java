@@ -66,7 +66,6 @@ public class PlateActivityServiceTest {
     Plate plate = new Plate();
     plate.setId(123456L);
     plate.setName("unit_test_plate_123456");
-    plate.setType(PlateType.A);
 
     Activity activity = plateActivityService.insert(plate);
 
@@ -81,7 +80,7 @@ public class PlateActivityServiceTest {
   @Test
   public void ban() {
     Plate plate = new Plate(26L);
-    List<Well> bans = new ArrayList<Well>();
+    List<Well> bans = new ArrayList<>();
     Well well = new Well(130L);
     well.setPlate(plate);
     bans.add(well);
@@ -96,7 +95,7 @@ public class PlateActivityServiceTest {
     assertEquals(plate.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
-    Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     for (Well banned : bans) {
       UpdateActivity banActivity = new UpdateActivity();
       banActivity.setActionType(ActionType.UPDATE);
@@ -114,7 +113,7 @@ public class PlateActivityServiceTest {
   public void ban_MultiplePlates() {
     final Plate plate1 = new Plate(26L);
     final Plate plate2 = new Plate(107L);
-    List<Well> bans = new ArrayList<Well>();
+    List<Well> bans = new ArrayList<>();
     Well well = new Well(130L);
     well.setPlate(plate1);
     bans.add(well);
@@ -139,7 +138,7 @@ public class PlateActivityServiceTest {
   @Test
   public void activate() {
     Plate plate = new Plate(26L);
-    List<Well> wells = new ArrayList<Well>();
+    List<Well> wells = new ArrayList<>();
     Well well = new Well(199L);
     well.setPlate(plate);
     well.setBanned(true);
@@ -156,7 +155,7 @@ public class PlateActivityServiceTest {
     assertEquals(plate.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
-    Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<UpdateActivity>();
+    Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     for (Well activated : wells) {
       UpdateActivity activateActivity = new UpdateActivity();
       activateActivity.setActionType(ActionType.UPDATE);
@@ -174,7 +173,7 @@ public class PlateActivityServiceTest {
   public void activate_MultiplePlates() {
     final Plate plate1 = new Plate(26L);
     final Plate plate2 = new Plate(107L);
-    List<Well> wells = new ArrayList<Well>();
+    List<Well> wells = new ArrayList<>();
     Well well = new Well(199L);
     well.setPlate(plate1);
     well.setBanned(true);

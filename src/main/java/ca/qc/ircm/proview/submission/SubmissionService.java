@@ -26,7 +26,6 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -199,7 +198,6 @@ public class SubmissionService {
   }
 
   private void persistPlate(Submission submission, Plate plate) {
-    plate.setType(PlateType.SUBMISSION);
     plate.setInsertTime(Instant.now());
     plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
     submission.getSamples().forEach(sample -> {

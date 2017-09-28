@@ -164,14 +164,12 @@ CREATE TABLE IF NOT EXISTS submissionfiles (
 CREATE TABLE IF NOT EXISTS plate (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) NOT NULL,
-  type varchar(50) NOT NULL,
   columns int NOT NULL,
   rows int NOT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY plateName (name)
 );
-CREATE INDEX IF NOT EXISTS plateType ON plate (type);
 CREATE TABLE IF NOT EXISTS samplecontainer (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   type varchar(50) NOT NULL,

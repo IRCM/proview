@@ -29,7 +29,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -405,7 +404,6 @@ public class PlateComponentPresenterTest {
   public void setValue_NoWells() {
     presenter.init(view);
     Plate plate = new Plate();
-    plate.setType(PlateType.A);
     plate.initWells();
 
     presenter.setValue(plate);

@@ -92,13 +92,11 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertEquals(PlateType.A, plate.getType());
     assertEquals((Long) 26L, plate.getId());
     final List<Well> wells = plate.getWells();
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertEquals(PlateType.A, plate.getType());
     assertEquals(96, wells.size());
     final int rowCount = plate.getRowCount();
     List<Well> someWells = plate.wells(new WellLocation(0, 1), new WellLocation(rowCount, 1));
@@ -127,13 +125,11 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertEquals(PlateType.A, plate.getType());
     assertEquals((Long) 26L, plate.getId());
     final List<Well> wells = plate.getWells();
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertEquals(PlateType.A, plate.getType());
     assertEquals(96, wells.size());
     final int rowCount = plate.getRowCount();
     List<Well> someWells = plate.wells(new WellLocation(0, 1), new WellLocation(rowCount, 1));
@@ -163,21 +159,6 @@ public class PlateServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(17, plates.size());
-  }
-
-  @Test
-  public void all_Type() throws Exception {
-    PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
-    filterBuilder.type(PlateType.A);
-
-    List<Plate> plates = plateService.all(filterBuilder.build());
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(15, plates.size());
-    assertNotNull(find(plates, 26L));
-    assertNotNull(find(plates, 122L));
-    assertNull(find(plates, 107L));
-    assertNull(find(plates, 111L));
   }
 
   @Test
@@ -267,7 +248,6 @@ public class PlateServiceTest {
   public void insert() throws Exception {
     Plate plate = new Plate();
     plate.setName("test_plate_4896415");
-    plate.setType(PlateType.A);
     when(plateActivityService.insert(any(Plate.class))).thenReturn(activity);
 
     plateService.insert(plate);
@@ -279,7 +259,6 @@ public class PlateServiceTest {
     assertNotNull(plate.getId());
     plate = plateService.get(plate.getId());
     assertEquals("test_plate_4896415", plate.getName());
-    assertEquals(PlateType.A, plate.getType());
   }
 
   @Test

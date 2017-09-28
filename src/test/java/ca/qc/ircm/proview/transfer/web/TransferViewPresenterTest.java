@@ -60,7 +60,6 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
-import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.WellComparator;
 import ca.qc.ircm.proview.plate.WellLocation;
@@ -494,7 +493,6 @@ public class TransferViewPresenterTest {
     view.sourceType.setValue(SampleContainerType.TUBE);
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
-    plate.setType(PlateType.A);
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -594,7 +592,6 @@ public class TransferViewPresenterTest {
         sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
-    plate.setType(PlateType.A);
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -691,7 +688,6 @@ public class TransferViewPresenterTest {
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
-    plate.setType(PlateType.A);
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -968,7 +964,6 @@ public class TransferViewPresenterTest {
       view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     });
     Plate plate = new Plate(null, "test");
-    plate.setType(PlateType.A);
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -994,7 +989,6 @@ public class TransferViewPresenterTest {
       view.sourceTubesGrid.getColumn(TUBE).getValueProvider().apply(sample);
     });
     Plate plate = new Plate(null, "test");
-    plate.setType(PlateType.A);
     plate.initWells();
     plate.well(1, 0).setSample(samples.get(0));
     view.destinationPlatesField.setValue(plate);
@@ -1066,7 +1060,6 @@ public class TransferViewPresenterTest {
     view.sourceType.setValue(SampleContainerType.TUBE);
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
-    plate.setType(PlateType.A);
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -1179,7 +1172,6 @@ public class TransferViewPresenterTest {
         sourcePlate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
-    plate.setType(PlateType.A);
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
@@ -1297,7 +1289,6 @@ public class TransferViewPresenterTest {
     when(view.sourcePlateForm.getSelectedWells()).thenReturn(sourceWells);
     view.destinationType.setValue(SampleContainerType.WELL);
     Plate plate = new Plate(null, "test");
-    plate.setType(PlateType.A);
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);

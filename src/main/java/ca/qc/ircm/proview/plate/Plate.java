@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.plate;
 
-import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
@@ -35,7 +34,6 @@ import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -63,12 +61,6 @@ public class Plate implements Data, Serializable, Named {
    */
   @Column(name = "name", unique = true, nullable = false)
   private String name;
-  /**
-   * Plate's type.
-   */
-  @Column(name = "type", nullable = false)
-  @Enumerated(STRING)
-  private PlateType type;
   /**
    * Number of columns.
    */
@@ -264,7 +256,7 @@ public class Plate implements Data, Serializable, Named {
 
   @Override
   public String toString() {
-    return "Plate [id=" + id + ", name=" + name + ", type=" + type + "]";
+    return "Plate [id=" + id + ", name=" + name + "]";
   }
 
   @Override
@@ -283,14 +275,6 @@ public class Plate implements Data, Serializable, Named {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public PlateType getType() {
-    return type;
-  }
-
-  public void setType(PlateType type) {
-    this.type = type;
   }
 
   public Instant getInsertTime() {

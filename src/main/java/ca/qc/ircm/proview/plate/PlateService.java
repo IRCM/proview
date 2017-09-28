@@ -33,7 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -122,33 +121,11 @@ public class PlateService {
     }
     JPAQuery<Plate> query = queryFactory.select(plate);
     query.from(plate);
-    if (filter.type() != null) {
-      query.where(plate.type.eq(filter.type()));
-    }
     if (filter.containsAnySamples() != null) {
       query.from(plate.wells, well);
       query.where(well.sample.in(filter.containsAnySamples()));
     }
     return query.distinct().fetch();
-  }
-
-  /**
-   * Selects all plates of specified type.
-   *
-   * @param type
-   *          plate's type
-   * @return all plates of specified type
-   */
-  public List<Plate> choices(PlateType type) {
-    if (type == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Plate> query = queryFactory.select(plate);
-    query.from(plate);
-    query.where(plate.type.eq(type));
-    return query.fetch();
   }
 
   /**

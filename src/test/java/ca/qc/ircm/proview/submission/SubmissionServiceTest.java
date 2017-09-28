@@ -38,7 +38,6 @@ import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateType;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -876,7 +875,6 @@ public class SubmissionServiceTest implements TimeConverter {
     Well well = (Well) submissionSample.getOriginalContainer();
     assertNotNull(well);
     assertEquals("unit_test_plate", well.getPlate().getName());
-    assertEquals(PlateType.SUBMISSION, well.getPlate().getType());
     assertEquals(96, well.getPlate().getWells().size());
     assertEquals(submissionSample, well.getSample());
     assertEquals(0, well.getRow());
@@ -1443,7 +1441,6 @@ public class SubmissionServiceTest implements TimeConverter {
     Well well = (Well) submissionSample.getOriginalContainer();
     assertNotNull(well);
     assertEquals("unit_test_plate", well.getPlate().getName());
-    assertEquals(PlateType.SUBMISSION, well.getPlate().getType());
     assertEquals(96, well.getPlate().getWells().size());
     assertEquals(submissionSample, well.getSample());
     assertEquals(0, well.getRow());
