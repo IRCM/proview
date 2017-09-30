@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.transfer.web;
 
+import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
+import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.CONTAINER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_CONTAINER_DUPLICATE;
@@ -198,12 +200,10 @@ public class TransferViewPresenterTest {
       sourceWells.put(sample, wellsMap);
     });
     when(wellService.location(any(), any())).thenAnswer(i -> i.getArguments()[0] != null
-        ? sourceWells.get(i.getArguments()[0]).get(i.getArguments()[1])
-        : null);
+        ? sourceWells.get(i.getArguments()[0]).get(i.getArguments()[1]) : null);
     when(wellService.last(any()))
         .thenAnswer(i -> i.getArguments()[0] != null && !sourcePlates.isEmpty()
-            ? sourceWells.get(i.getArguments()[0]).get(sourcePlates.get(0)).get(0)
-            : null);
+            ? sourceWells.get(i.getArguments()[0]).get(sourcePlates.get(0)).get(0) : null);
   }
 
   private List<Tube> generateTubes(Sample sample, int count) {
@@ -489,6 +489,12 @@ public class TransferViewPresenterTest {
     when(plateService.get(any(Long.class))).thenReturn(null);
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    int count = 0;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 0));
+    }
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -501,6 +507,12 @@ public class TransferViewPresenterTest {
     }
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    count = 2;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 3));
+    }
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -542,6 +554,12 @@ public class TransferViewPresenterTest {
     when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
+    int count = 0;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 2));
+    }
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -557,6 +575,12 @@ public class TransferViewPresenterTest {
     }
 
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    count = 2;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 3));
+    }
     view.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -829,6 +853,8 @@ public class TransferViewPresenterTest {
     Plate destination = new Plate(null, "test");
     destination.initWells();
     view.destinationPlatesField.setValue(destination);
+    when(view.destinationPlateForm.getValue()).thenReturn(destination);
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(destination.well(0, 0));
 
     view.saveButton.click();
 
@@ -847,6 +873,8 @@ public class TransferViewPresenterTest {
     Plate destination = new Plate(null, "test");
     destination.initWells();
     view.destinationPlatesField.setValue(destination);
+    when(view.destinationPlateForm.getValue()).thenReturn(plate);
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
 
     view.saveButton.click();
 
@@ -910,7 +938,7 @@ public class TransferViewPresenterTest {
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, "test")),
         field.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
-    verify(tubeService).get("test");
+    verify(tubeService, atLeastOnce()).get("test");
   }
 
   @Test
@@ -938,7 +966,8 @@ public class TransferViewPresenterTest {
     view.saveButton.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
-    assertEquals(errorMessage(resources.message(DESTINATION_CONTAINER_DUPLICATE, "test")),
+    assertEquals(
+        errorMessage(resources.message(DESTINATION_CONTAINER_DUPLICATE, TUBE.ordinal(), "test")),
         field2.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
   }
@@ -972,7 +1001,8 @@ public class TransferViewPresenterTest {
     view.saveButton.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
-    assertEquals(errorMessage(generalResources.message(DESTINATION_WELL_IN_USE, "0-0")),
+    assertEquals(
+        errorMessage(resources.message(DESTINATION_WELL_IN_USE, field.getValue().getName())),
         field.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
     verify(wellService).get(2000L);
@@ -1000,7 +1030,6 @@ public class TransferViewPresenterTest {
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         field.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
-    verify(wellService).get(2000L);
   }
 
   @Test
@@ -1031,8 +1060,8 @@ public class TransferViewPresenterTest {
     view.saveButton.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
-    assertEquals(errorMessage(generalResources.message(DESTINATION_CONTAINER_DUPLICATE)),
-        field2.getErrorMessage().getFormattedHtmlMessage());
+    assertEquals(errorMessage(resources.message(DESTINATION_CONTAINER_DUPLICATE, WELL.ordinal(),
+        field2.getValue().getName())), field2.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
   }
 
@@ -1160,7 +1189,13 @@ public class TransferViewPresenterTest {
     plate.initWells();
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 4));
+    int count = 0;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 0));
+    }
 
     view.saveButton.click();
 
@@ -1201,6 +1236,12 @@ public class TransferViewPresenterTest {
     view.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getValue()).thenReturn(plate);
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 4));
+    int count = 0;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field =
+          (ComboBox<Well>) view.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 4));
+    }
 
     view.saveButton.click();
 
