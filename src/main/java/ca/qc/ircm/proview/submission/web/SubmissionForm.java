@@ -58,6 +58,7 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
 
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
     design.samplesPlateContainer.addComponent(plateComponent);
   }

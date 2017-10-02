@@ -40,6 +40,7 @@ public class SubmissionHistoryForm extends CustomComponent implements BaseCompon
 
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
   }
 

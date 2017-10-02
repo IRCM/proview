@@ -41,6 +41,7 @@ public class SampleStatusView extends CustomComponent implements BaseView, Saved
 
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
   }
 

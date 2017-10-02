@@ -45,6 +45,7 @@ public class SubmissionView extends CustomComponent implements BaseView {
    */
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
     design.submissionFormLayout.addComponent(submissionForm);
   }

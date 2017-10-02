@@ -42,6 +42,7 @@ public class RegisterView extends CustomComponent implements BaseView {
    */
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
     design.userFormLayout.addComponent(userForm);
   }

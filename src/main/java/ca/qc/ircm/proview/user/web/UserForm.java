@@ -50,6 +50,7 @@ public class UserForm extends CustomComponent implements BaseComponent {
 
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
   }
 

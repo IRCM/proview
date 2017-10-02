@@ -40,6 +40,7 @@ public class SubmissionAnalysesForm extends CustomComponent implements BaseCompo
 
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
   }
 

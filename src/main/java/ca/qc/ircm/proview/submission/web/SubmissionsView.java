@@ -40,6 +40,7 @@ public class SubmissionsView extends CustomComponent implements BaseView, SavedS
 
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
   }
 

@@ -43,6 +43,7 @@ public class MainView extends CustomComponent implements BaseView {
    * Creates main view.
    */
   public MainView() {
+    setSizeFull();
     setCompositionRoot(design);
     design.signLayout.addComponent(signForm);
   }

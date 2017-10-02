@@ -54,6 +54,7 @@ public class MainLayout extends CustomComponent {
       value = "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD)
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
     design.menuLayout.addComponent(menu);
   }

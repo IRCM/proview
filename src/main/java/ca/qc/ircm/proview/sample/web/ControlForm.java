@@ -50,6 +50,7 @@ public class ControlForm extends CustomComponent implements BaseComponent {
 
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
   }
 

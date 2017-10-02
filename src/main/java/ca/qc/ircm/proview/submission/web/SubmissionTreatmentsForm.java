@@ -40,6 +40,7 @@ public class SubmissionTreatmentsForm extends CustomComponent implements BaseCom
 
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
   }
 

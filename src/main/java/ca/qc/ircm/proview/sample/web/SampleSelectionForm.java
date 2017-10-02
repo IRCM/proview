@@ -52,6 +52,7 @@ public class SampleSelectionForm extends CustomComponent implements BaseComponen
 
   @PostConstruct
   public void init() {
+    setSizeFull();
     setCompositionRoot(design);
   }
 
