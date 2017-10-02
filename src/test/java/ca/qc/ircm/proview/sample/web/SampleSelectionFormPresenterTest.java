@@ -29,6 +29,7 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SELECT;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
+import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.UPDATE;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -50,6 +51,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.SelectionModel;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.Registration;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.Column;
 import org.junit.Before;
 import org.junit.Test;
@@ -142,18 +144,6 @@ public class SampleSelectionFormPresenterTest {
 
     assertEquals(resources.message(SAMPLES_PANEL), design.samplesPanel.getCaption());
     assertEquals(resources.message(CONTROLS_PANEL), design.controlsPanel.getCaption());
-    Control control = controls.get(0);
-    assertEquals(resources.message(NAME), design.controlsGrid.getColumn(NAME).getCaption());
-    assertEquals(control.getName(),
-        design.controlsGrid.getColumn(NAME).getValueProvider().apply(control));
-    assertEquals(resources.message(CONTROL_TYPE),
-        design.controlsGrid.getColumn(CONTROL_TYPE).getCaption());
-    assertEquals(control.getControlType().getLabel(locale),
-        design.controlsGrid.getColumn(CONTROL_TYPE).getValueProvider().apply(control));
-    assertEquals(resources.message(ORIGINAL_CONTAINER_NAME),
-        design.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getCaption());
-    assertEquals(control.getOriginalContainer().getName(),
-        design.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getValueProvider().apply(control));
     assertEquals(resources.message(SELECT), design.selectButton.getCaption());
     assertEquals(resources.message(CLEAR), design.clearButton.getCaption());
   }
@@ -196,15 +186,40 @@ public class SampleSelectionFormPresenterTest {
   }
 
   @Test
-  public void controlsGridColumns() {
+  public void controlsGrid() {
     presenter.init(view);
 
     List<Column<Control, ?>> columns = design.controlsGrid.getColumns();
 
     assertTrue(design.controlsGrid.getSelectionModel() instanceof SelectionModel.Multi);
+    assertEquals(4, columns.size());
     assertEquals(NAME, columns.get(0).getId());
+    assertEquals(resources.message(NAME), design.controlsGrid.getColumn(NAME).getCaption());
+    for (Control control : controls) {
+      assertEquals(control.getName(),
+          design.controlsGrid.getColumn(NAME).getValueProvider().apply(control));
+    }
     assertEquals(CONTROL_TYPE, columns.get(1).getId());
+    assertEquals(resources.message(CONTROL_TYPE),
+        design.controlsGrid.getColumn(CONTROL_TYPE).getCaption());
+    for (Control control : controls) {
+      assertEquals(control.getControlType().getLabel(locale),
+          design.controlsGrid.getColumn(CONTROL_TYPE).getValueProvider().apply(control));
+    }
     assertEquals(ORIGINAL_CONTAINER_NAME, columns.get(2).getId());
+    assertEquals(resources.message(ORIGINAL_CONTAINER_NAME),
+        design.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getCaption());
+    for (Control control : controls) {
+      assertEquals(control.getOriginalContainer().getName(),
+          design.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getValueProvider().apply(control));
+    }
+    assertEquals(UPDATE, columns.get(3).getId());
+    assertEquals("", design.controlsGrid.getColumn(UPDATE).getCaption());
+    for (Control control : controls) {
+      Button button =
+          (Button) design.controlsGrid.getColumn(UPDATE).getValueProvider().apply(control);
+      assertEquals(resources.message(UPDATE), button.getCaption());
+    }
     assertEquals(1, design.controlsGrid.getFrozenColumnCount());
   }
 
@@ -305,5 +320,21 @@ public class SampleSelectionFormPresenterTest {
 
     verify(view).fireSaveEvent(samplesCaptor.capture());
     assertTrue(samplesCaptor.getValue().isEmpty());
+  }
+
+  @Test
+  public void updateControl() {
+    presenter.setItems(new ArrayList<>(selectedSamples));
+    when(controlService.all()).thenReturn(controls);
+    presenter.init(view);
+    Control control = controls.get(0);
+    Button button =
+        (Button) design.controlsGrid.getColumn(UPDATE).getValueProvider().apply(control);
+
+    button.click();
+
+    verify(view).navigateTo(ControlView.VIEW_NAME, String.valueOf(control.getId()));
+    verify(view).fireSaveEvent(samplesCaptor.capture());
+    assertEquals(selectedSamples, samplesCaptor.getValue());
   }
 }

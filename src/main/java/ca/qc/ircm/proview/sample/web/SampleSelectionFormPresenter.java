@@ -31,7 +31,9 @@ import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.GridSortOrderBuilder;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -59,6 +61,7 @@ public class SampleSelectionFormPresenter {
   public static final String ORIGINAL_CONTAINER = sample.originalContainer.getMetadata().getName();
   public static final String ORIGINAL_CONTAINER_NAME =
       ORIGINAL_CONTAINER + "." + tube.name.getMetadata().getName();
+  public static final String UPDATE = "update";
   public static final String SUBMISSION = submission.getMetadata().getName();
   public static final String EXPERIENCE =
       SUBMISSION + "." + submission.experience.getMetadata().getName();
@@ -125,6 +128,8 @@ public class SampleSelectionFormPresenter {
         .setId(CONTROL_TYPE).setCaption(resources.message(CONTROL_TYPE));
     design.controlsGrid.addColumn(control -> control.getOriginalContainer().getName())
         .setId(ORIGINAL_CONTAINER_NAME).setCaption(resources.message(ORIGINAL_CONTAINER_NAME));
+    design.controlsGrid.addColumn(control -> updateButton(control), new ComponentRenderer())
+        .setId(UPDATE);
     design.controlsGrid.setSelectionMode(SelectionMode.MULTI);
     design.controlsGrid.setFrozenColumnCount(1);
     design.controlsGrid.sort(NAME);
@@ -151,6 +156,17 @@ public class SampleSelectionFormPresenter {
         .forEach(sample -> design.samplesGrid.select(sample));
     selectedSamples.stream().filter(sample -> sample instanceof Control)
         .map(sample -> (Control) sample).forEach(sample -> design.controlsGrid.select(sample));
+  }
+
+  private Button updateButton(Control control) {
+    final MessageResource resources = view.getResources();
+    Button button = new Button();
+    button.setCaption(resources.message(UPDATE));
+    button.addClickListener(e -> {
+      view.navigateTo(ControlView.VIEW_NAME, String.valueOf(control.getId()));
+      view.fireSaveEvent(selectedSamples);
+    });
+    return button;
   }
 
   private void selectSamples() {
