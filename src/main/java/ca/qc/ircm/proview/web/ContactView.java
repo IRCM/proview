@@ -37,7 +37,6 @@ public class ContactView extends CustomComponent implements BaseView {
 
   @PostConstruct
   public void init() {
-    setSizeFull();
     setCompositionRoot(design);
   }
 

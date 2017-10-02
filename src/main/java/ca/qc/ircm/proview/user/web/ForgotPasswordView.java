@@ -38,7 +38,6 @@ public class ForgotPasswordView extends CustomComponent implements BaseView {
 
   @PostConstruct
   public void init() {
-    setSizeFull();
     setCompositionRoot(design);
   }
 

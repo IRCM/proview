@@ -42,7 +42,6 @@ public class UserView extends CustomComponent implements BaseView {
 
   @PostConstruct
   protected void init() {
-    setSizeFull();
     setCompositionRoot(design);
     design.userFormLayout.addComponent(userForm);
   }

@@ -42,7 +42,6 @@ public class ControlView extends CustomComponent implements BaseView {
 
   @PostConstruct
   private void init() {
-    setSizeFull();
     setCompositionRoot(design);
     design.controlFormLayout.addComponent(form);
   }
