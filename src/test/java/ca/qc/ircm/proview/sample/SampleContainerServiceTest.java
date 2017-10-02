@@ -17,12 +17,12 @@
 
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -34,7 +34,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,15 +55,6 @@ public class SampleContainerServiceTest {
   public void beforeTest() {
     sampleContainerService =
         new SampleContainerService(entityManager, queryFactory, authorizationService);
-  }
-
-  private <D extends Data> D find(Collection<D> datas, long id) {
-    for (D data : datas) {
-      if (data.getId() == id) {
-        return data;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -119,11 +109,11 @@ public class SampleContainerServiceTest {
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(5, containers.size());
-    assertNotNull(find(containers, 1L));
-    assertNotNull(find(containers, 6L));
-    assertNotNull(find(containers, 7L));
-    assertNotNull(find(containers, 128L));
-    assertNotNull(find(containers, 129L));
+    assertTrue(find(containers, 1L).isPresent());
+    assertTrue(find(containers, 6L).isPresent());
+    assertTrue(find(containers, 7L).isPresent());
+    assertTrue(find(containers, 128L).isPresent());
+    assertTrue(find(containers, 129L).isPresent());
   }
 
   @Test

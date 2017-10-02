@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVATE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.CLEAR;
@@ -31,7 +34,6 @@ import static ca.qc.ircm.proview.user.web.AccessViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.USERS_GRID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -52,7 +54,6 @@ import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.SelectionModel;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.GridSortOrder;
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.ContentMode;
@@ -135,25 +136,6 @@ public class AccessViewPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(userWindowProvider.get()).thenReturn(userWindow);
-  }
-
-  private User find(Collection<User> users, long id) {
-    for (User user : users) {
-      if (id == user.getId()) {
-        return user;
-      }
-    }
-    return null;
-  }
-
-  private <V> boolean containsInstanceOf(Collection<V> extensions, Class<? extends V> clazz) {
-    return extensions.stream().filter(extension -> clazz.isInstance(extension)).findAny()
-        .isPresent();
-  }
-
-  @SuppressWarnings("unchecked")
-  private ListDataProvider<User> dataProvider() {
-    return (ListDataProvider<User>) design.usersGrid.getDataProvider();
   }
 
   @Test
@@ -492,15 +474,15 @@ public class AccessViewPresenterTest {
     verify(userService).activate(usersCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(3, users.size());
-    assertNotNull(find(users, user1.getId()));
-    assertNotNull(find(users, user2.getId()));
-    assertNotNull(find(users, user3.getId()));
+    assertTrue(find(users, user1.getId()).isPresent());
+    assertTrue(find(users, user2.getId()).isPresent());
+    assertTrue(find(users, user3.getId()).isPresent());
     verify(view).showTrayNotification(resources.message(ACTIVATE + ".done", 3,
         user1.getEmail() + resources.message("userSeparator", 0) + user2.getEmail()
             + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(0, design.usersGrid.getSelectedItems().size());
-    assertEquals(0, dataProvider().getItems().size());
+    assertEquals(0, dataProvider(design.usersGrid).getItems().size());
   }
 
   @Test
@@ -529,15 +511,15 @@ public class AccessViewPresenterTest {
     verify(userService).deactivate(usersCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(3, users.size());
-    assertNotNull(find(users, user1.getId()));
-    assertNotNull(find(users, user2.getId()));
-    assertNotNull(find(users, user3.getId()));
+    assertTrue(find(users, user1.getId()).isPresent());
+    assertTrue(find(users, user2.getId()).isPresent());
+    assertTrue(find(users, user3.getId()).isPresent());
     verify(view).showTrayNotification(resources.message(DEACTIVATE + ".done", 3,
         user1.getEmail() + resources.message("userSeparator", 0) + user2.getEmail()
             + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(0, design.usersGrid.getSelectedItems().size());
-    assertEquals(0, dataProvider().getItems().size());
+    assertEquals(0, dataProvider(design.usersGrid).getItems().size());
   }
 
   @Test

@@ -17,7 +17,10 @@
 
 package ca.qc.ircm.proview.fractionation;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -57,7 +60,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -92,21 +94,6 @@ public class FractionationServiceTest {
         fractionationActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
-  }
-
-  private Optional<Fractionation> findFractionation(Collection<Fractionation> fractionations,
-      long id) {
-    return fractionations.stream().filter(f -> f.getId() == id).findFirst();
-  }
-
-  private SampleContainer findContainer(Collection<SampleContainer> containers,
-      SampleContainerType type, long id) {
-    for (SampleContainer container : containers) {
-      if (container.getId() == id && container.getType() == type) {
-        return container;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -145,12 +132,12 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void find() {
+  public void search() {
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(6L);
     tube.setSample(sample);
 
-    FractionationDetail detail = fractionationService.find(tube);
+    FractionationDetail detail = fractionationService.search(tube);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNotNull(detail);
@@ -159,20 +146,20 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void find_None() {
+  public void search_None() {
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
     tube.setSample(sample);
 
-    FractionationDetail detail = fractionationService.find(tube);
+    FractionationDetail detail = fractionationService.search(tube);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNull(detail);
   }
 
   @Test
-  public void find_Null() {
-    FractionationDetail detail = fractionationService.find(null);
+  public void search_Null() {
+    FractionationDetail detail = fractionationService.search(null);
 
     assertNull(detail);
   }
@@ -185,8 +172,8 @@ public class FractionationServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, fractionations.size());
-    assertTrue(findFractionation(fractionations, 2).isPresent());
-    assertTrue(findFractionation(fractionations, 8).isPresent());
+    assertTrue(find(fractionations, 2).isPresent());
+    assertTrue(find(fractionations, 8).isPresent());
   }
 
   @Test
@@ -313,7 +300,7 @@ public class FractionationServiceTest {
     assertNull(destinationWell.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(1, samplesRemoved.size());
-    assertNotNull(findContainer(samplesRemoved, SampleContainerType.WELL, 128L));
+    assertTrue(findContainer(samplesRemoved, SampleContainerType.WELL, 128L).isPresent());
   }
 
   @Test
@@ -326,8 +313,8 @@ public class FractionationServiceTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(2, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1280L));
-      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1292L));
+      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1280L).isPresent());
+      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1292L).isPresent());
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -342,8 +329,8 @@ public class FractionationServiceTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(2, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1281L));
-      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1293L));
+      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1281L).isPresent());
+      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1293L).isPresent());
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -396,8 +383,8 @@ public class FractionationServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(1, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 1L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 128L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 1L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 128L).isPresent());
   }
 
   @Test
@@ -431,11 +418,11 @@ public class FractionationServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 81L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1282L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1294L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1376L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1388L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 81L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1282L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1294L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1376L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1388L).isPresent());
   }
 
   @Test
@@ -472,13 +459,13 @@ public class FractionationServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 82L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1283L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1295L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1378L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1390L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1402L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1414L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 82L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1283L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1295L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1378L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1390L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1402L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1414L).isPresent());
   }
 
   @Test
@@ -519,15 +506,15 @@ public class FractionationServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 83L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1284L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1296L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1377L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1389L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1328L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1340L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1352L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1364L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 83L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1284L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1296L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1377L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1389L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1328L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1340L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1352L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1364L).isPresent());
   }
 
   @Test
@@ -572,16 +559,16 @@ public class FractionationServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 84L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1285L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1297L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1379L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1391L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1403L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1415L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1329L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1341L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1353L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1365L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 84L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1285L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1297L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1379L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1391L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1403L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1415L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1329L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1341L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1353L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1365L).isPresent());
   }
 }

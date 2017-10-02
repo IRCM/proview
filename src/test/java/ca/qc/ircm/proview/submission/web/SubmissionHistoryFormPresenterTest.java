@@ -29,6 +29,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.S
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_LAST_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_NAME;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -52,9 +54,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.GridSortOrder;
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.junit.Before;
@@ -158,15 +158,6 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
         .thenReturn(activityDescription1);
     when(activityService.description(activity2, submission, locale))
         .thenReturn(activityDescription2);
-  }
-
-  @SuppressWarnings("unchecked")
-  private <T> ListDataProvider<T> dataProvider(Grid<T> grid) {
-    return (ListDataProvider<T>) grid.getDataProvider();
-  }
-
-  private boolean containsInstanceOf(Collection<?> objects, Class<?> clazz) {
-    return objects.stream().filter(o -> clazz.isAssignableFrom(o.getClass())).findAny().isPresent();
   }
 
   @Test

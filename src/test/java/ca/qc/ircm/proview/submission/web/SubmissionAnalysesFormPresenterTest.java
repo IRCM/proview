@@ -31,6 +31,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.SCORE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -45,8 +46,8 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Panel;
@@ -59,10 +60,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,7 +74,7 @@ import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionAnalysesFormPresenterTest {
+public class SubmissionAnalysesFormPresenterTest implements TimeConverter {
   private SubmissionAnalysesFormPresenter presenter;
   @PersistenceContext
   private EntityManager entityManager;
@@ -113,15 +110,6 @@ public class SubmissionAnalysesFormPresenterTest {
     dataAnalyses.add(entityManager.find(DataAnalysis.class, 3L));
     dataAnalyses.add(entityManager.find(DataAnalysis.class, 4L));
     when(dataAnalysisService.all(any(Submission.class))).thenReturn(dataAnalyses);
-  }
-
-  @SuppressWarnings("unchecked")
-  private <T> ListDataProvider<T> dataProvider(Grid<T> grid) {
-    return (ListDataProvider<T>) grid.getDataProvider();
-  }
-
-  private LocalDate date(Instant instant) {
-    return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();
   }
 
   private List<Panel> viewPanels() {
@@ -169,7 +157,8 @@ public class SubmissionAnalysesFormPresenterTest {
     for (int i = 0; i < analyses.size(); i++) {
       Panel analysisPanel = panels.get(i);
       MsAnalysis analysis = analyses.get(i);
-      assertEquals(resources.message(ANALYSIS, formatter.format(date(analysis.getInsertTime()))),
+      assertEquals(
+          resources.message(ANALYSIS, formatter.format(toLocalDate(analysis.getInsertTime()))),
           analysisPanel.getCaption());
     }
     assertEquals(resources.message(DATA_ANALYSES_PANEL), design.dataAnalysesPanel.getCaption());

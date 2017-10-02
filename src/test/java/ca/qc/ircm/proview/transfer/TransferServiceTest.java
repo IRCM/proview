@@ -17,7 +17,9 @@
 
 package ca.qc.ircm.proview.transfer;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -90,16 +92,6 @@ public class TransferServiceTest {
         activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
-  }
-
-  private SampleContainer findContainer(Collection<SampleContainer> containers,
-      SampleContainerType type, long id) {
-    for (SampleContainer container : containers) {
-      if (container.getId() == id && container.getType() == type) {
-        return container;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -358,7 +350,7 @@ public class TransferServiceTest {
     assertNull(destinationTube.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(1, samplesRemoved.size());
-    assertNotNull(findContainer(samplesRemoved, SampleContainerType.TUBE, 7L));
+    assertTrue(findContainer(samplesRemoved, SampleContainerType.TUBE, 7L).isPresent());
   }
 
   @Test
@@ -391,8 +383,8 @@ public class TransferServiceTest {
     assertNull(destinationWell.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(2, samplesRemoved.size());
-    assertNotNull(findContainer(samplesRemoved, SampleContainerType.WELL, 998L));
-    assertNotNull(findContainer(samplesRemoved, SampleContainerType.WELL, 1010L));
+    assertTrue(findContainer(samplesRemoved, SampleContainerType.WELL, 998L).isPresent());
+    assertTrue(findContainer(samplesRemoved, SampleContainerType.WELL, 1010L).isPresent());
   }
 
   @Test
@@ -405,7 +397,7 @@ public class TransferServiceTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainerType.TUBE, 65L));
+      assertTrue(findContainer(e.containers, SampleContainerType.TUBE, 65L).isPresent());
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -420,7 +412,7 @@ public class TransferServiceTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainerType.TUBE, 66L));
+      assertTrue(findContainer(e.containers, SampleContainerType.TUBE, 66L).isPresent());
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -435,7 +427,7 @@ public class TransferServiceTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1076L));
+      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1076L).isPresent());
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -450,7 +442,7 @@ public class TransferServiceTest {
       fail("Expected DestinationUsedInTreatmentException to be thrown");
     } catch (DestinationUsedInTreatmentException e) {
       assertEquals(1, e.containers.size());
-      assertNotNull(findContainer(e.containers, SampleContainerType.WELL, 1077));
+      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1077).isPresent());
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -530,7 +522,7 @@ public class TransferServiceTest {
     assertEquals(true, destinationTube.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(1, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 7L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 7L).isPresent());
   }
 
   @Test
@@ -558,8 +550,8 @@ public class TransferServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 998L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1010L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 998L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1010L).isPresent());
   }
 
   @Test
@@ -589,9 +581,9 @@ public class TransferServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 67L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 75L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1208L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 67L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 75L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1208L).isPresent());
   }
 
   @Test
@@ -621,9 +613,9 @@ public class TransferServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 68L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1184L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1160L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 68L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1184L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1160L).isPresent());
   }
 
   @Test
@@ -655,10 +647,10 @@ public class TransferServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(3, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 69L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 76L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1188L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1200L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 69L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 76L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1188L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1200L).isPresent());
   }
 
   @Test
@@ -690,10 +682,10 @@ public class TransferServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(3, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 70L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1185L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1161L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1173L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 70L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1185L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1161L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1173L).isPresent());
   }
 
   @Test
@@ -727,11 +719,11 @@ public class TransferServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 71L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 77L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1189L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1163L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1175L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 71L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 77L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1189L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1163L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1175L).isPresent());
   }
 
   @Test
@@ -765,11 +757,11 @@ public class TransferServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 72L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1186L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1162L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1190L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1202L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 72L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1186L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1162L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1190L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1202L).isPresent());
   }
 
   @Test
@@ -805,12 +797,12 @@ public class TransferServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(5, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 73L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 78L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1191L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1203L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1165L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1177L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 73L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 78L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1191L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1203L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1165L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1177L).isPresent());
   }
 
   @Test
@@ -843,10 +835,10 @@ public class TransferServiceTest {
     assertEquals(true, destinationWell.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(5, bannedContainers.size());
-    assertNull(findContainer(bannedContainers, SampleContainerType.TUBE, 74L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1164L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1176L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1192L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1204L));
+    assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 74L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1164L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1176L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1192L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1204L).isPresent());
   }
 }

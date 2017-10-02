@@ -38,6 +38,9 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TRANSFE
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.USER;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -51,7 +54,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -100,7 +102,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -196,20 +197,6 @@ public class SubmissionsViewPresenterTest {
     when(submissionTreatmentsWindowProvider.get()).thenReturn(submissionTreatmentsWindow);
     when(submissionHistoryWindowProvider.get()).thenReturn(submissionHistoryWindow);
     when(sampleSelectionWindowProvider.get()).thenReturn(sampleSelectionWindow);
-  }
-
-  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
-    return datas.stream().filter(d -> d.getId() == id).findAny();
-  }
-
-  private <V> boolean containsInstanceOf(Collection<V> extensions, Class<? extends V> clazz) {
-    return extensions.stream().filter(extension -> clazz.isInstance(extension)).findAny()
-        .isPresent();
-  }
-
-  @SuppressWarnings("unchecked")
-  private ListDataProvider<Submission> dataProvider() {
-    return (ListDataProvider<Submission>) design.submissionsGrid.getDataProvider();
   }
 
   private String statusesValue(Submission submission) {
@@ -673,7 +660,7 @@ public class SubmissionsViewPresenterTest {
   @Test
   public void defaultSubmissions() {
     presenter.init(view);
-    Collection<Submission> gridSubmissions = dataProvider().getItems();
+    Collection<Submission> gridSubmissions = dataProvider(design.submissionsGrid).getItems();
 
     Set<Long> expectedSubmissionIds =
         submissions.stream().map(s -> s.getId()).collect(Collectors.toSet());

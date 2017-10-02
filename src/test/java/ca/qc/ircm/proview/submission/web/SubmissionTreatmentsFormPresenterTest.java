@@ -69,6 +69,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresente
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_DESTINATION_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_SAMPLE;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -111,8 +112,6 @@ import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.ui.Grid;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -400,11 +399,6 @@ public class SubmissionTreatmentsFormPresenterTest {
         .thenReturn(tubeTransferedSample.getDestinationContainer());
     when(sampleContainerService.last(sample2))
         .thenReturn(plateTransferedSample.getDestinationContainer());
-  }
-
-  @SuppressWarnings("unchecked")
-  private <T> ListDataProvider<T> dataProvider(Grid<T> grid) {
-    return (ListDataProvider<T>) grid.getDataProvider();
   }
 
   @Test

@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_BUTTON;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_EMAIL;
@@ -50,7 +51,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.LoginForm.LoginListener;
 import com.vaadin.ui.PasswordField;
@@ -124,10 +124,6 @@ public class MainViewPresenterTest {
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
     presenter.init(view);
-  }
-
-  private String errorMessage(String message) {
-    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test

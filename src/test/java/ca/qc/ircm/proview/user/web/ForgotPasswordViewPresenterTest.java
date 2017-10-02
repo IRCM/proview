@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.CONFIRM_PASSWORD;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.INVALID_FORGOT_PASSWORD;
@@ -40,7 +41,6 @@ import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.server.UserError;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,10 +96,6 @@ public class ForgotPasswordViewPresenterTest {
   private void setFields() {
     design.passwordField.setValue(password);
     design.confirmPasswordField.setValue(password);
-  }
-
-  private String errorMessage(String message) {
-    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test

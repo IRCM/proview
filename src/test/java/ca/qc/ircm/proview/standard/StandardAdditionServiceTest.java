@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.standard;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -27,7 +29,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
@@ -56,7 +57,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -91,20 +91,6 @@ public class StandardAdditionServiceTest {
         standardAdditionActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
-  }
-
-  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
-    return datas.stream().filter(d -> d.getId() == id).findFirst();
-  }
-
-  private SampleContainer findContainer(Collection<SampleContainer> containers,
-      SampleContainerType type, long id) {
-    for (SampleContainer container : containers) {
-      if (container.getId() == id && container.getType() == type) {
-        return container;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -316,8 +302,8 @@ public class StandardAdditionServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 997L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1009L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 997L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1009L).isPresent());
   }
 
   @Test
@@ -349,10 +335,10 @@ public class StandardAdditionServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 53L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 54L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 998L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1010L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 53L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 54L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 998L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1010L).isPresent());
   }
 
   @Test
@@ -388,12 +374,12 @@ public class StandardAdditionServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 55L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 56L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 999L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1011L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1023L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1035L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 55L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 56L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 999L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1011L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1023L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1035L).isPresent());
   }
 
   @Test
@@ -433,14 +419,14 @@ public class StandardAdditionServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 57L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 58L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1000L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1012L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1090L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1102L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1114L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1126L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 57L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 58L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1000L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1012L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1090L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1102L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1114L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1126L).isPresent());
   }
 
   @Test
@@ -484,15 +470,15 @@ public class StandardAdditionServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 60L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 59L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1001L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1013L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1025L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1037L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1091L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1103L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1115L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1127L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 60L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 59L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1001L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1013L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1025L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1037L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1091L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1103L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1115L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1127L).isPresent());
   }
 }

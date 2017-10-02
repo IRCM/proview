@@ -106,16 +106,16 @@ public class FractionationService extends BaseTreatmentService {
    *          sample's container
    * @return fractionated sample corresponding to specified container
    */
-  public FractionationDetail find(SampleContainer container) {
+  public FractionationDetail search(SampleContainer container) {
     if (container == null) {
       return null;
     }
     authorizationService.checkSampleReadPermission(container.getSample());
 
-    return findFration(container);
+    return searchFration(container);
   }
 
-  private FractionationDetail findFration(SampleContainer container) {
+  private FractionationDetail searchFration(SampleContainer container) {
     FractionationDetail fd = null;
     {
       JPAQuery<FractionationDetail> query = queryFactory.select(fractionationDetail);
@@ -131,7 +131,7 @@ public class FractionationService extends BaseTreatmentService {
       query.where(sampleTransfer.destinationContainer.eq(container));
       SampleTransfer st = query.fetchOne();
       if (st != null) {
-        return findFration(st.getContainer());
+        return searchFration(st.getContainer());
       } else {
         return null;
       }

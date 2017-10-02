@@ -17,16 +17,17 @@
 
 package ca.qc.ircm.proview.plate;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
@@ -74,15 +75,6 @@ public class PlateServiceTest {
   public void beforeTest() {
     plateService = new PlateService(entityManager, queryFactory, plateActivityService,
         activityService, authorizationService);
-  }
-
-  private <D extends Data> D find(Collection<D> datas, long id) {
-    for (D data : datas) {
-      if (data.getId() == id) {
-        return data;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -172,9 +164,9 @@ public class PlateServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(3, plates.size());
-    assertNotNull(find(plates, 107L));
-    assertNotNull(find(plates, 120L));
-    assertNotNull(find(plates, 121L));
+    assertTrue(find(plates, 107L).isPresent());
+    assertTrue(find(plates, 120L).isPresent());
+    assertTrue(find(plates, 121L).isPresent());
   }
 
   @Test
@@ -279,7 +271,7 @@ public class PlateServiceTest {
     assertEquals(true, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
-    assertNotNull(find(loggedWells, 128L));
+    assertTrue(find(loggedWells, 128L).isPresent());
   }
 
   @Test
@@ -324,7 +316,7 @@ public class PlateServiceTest {
     assertEquals(false, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
-    assertNotNull(find(loggedWells, 211L));
+    assertTrue(find(loggedWells, 211L).isPresent());
   }
 
   @Test
@@ -350,8 +342,8 @@ public class PlateServiceTest {
     assertEquals(false, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(3, loggedWells.size());
-    assertNotNull(find(loggedWells, 199L));
-    assertNotNull(find(loggedWells, 211L));
-    assertNotNull(find(loggedWells, 223L));
+    assertTrue(find(loggedWells, 199L).isPresent());
+    assertTrue(find(loggedWells, 211L).isPresent());
+    assertTrue(find(loggedWells, 223L).isPresent());
   }
 }

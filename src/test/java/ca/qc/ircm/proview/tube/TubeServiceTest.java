@@ -17,12 +17,13 @@
 
 package ca.qc.ircm.proview.tube;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -37,7 +38,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -61,15 +61,6 @@ public class TubeServiceTest {
   @Before
   public void beforeTest() {
     tubeService = new TubeService(entityManager, queryFactory, authorizationService);
-  }
-
-  private <D extends Data> D find(Collection<D> datas, long id) {
-    for (D data : datas) {
-      if (data.getId() == id) {
-        return data;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -172,10 +163,10 @@ public class TubeServiceTest {
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(3, tubes.size());
-    assertNotNull(find(tubes, 1L));
-    assertNotNull(find(tubes, 6L));
-    assertNotNull(find(tubes, 7L));
-    assertNull(find(tubes, 5L));
+    assertTrue(find(tubes, 1L).isPresent());
+    assertTrue(find(tubes, 6L).isPresent());
+    assertTrue(find(tubes, 7L).isPresent());
+    assertFalse(find(tubes, 5L).isPresent());
   }
 
   @Test

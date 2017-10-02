@@ -121,6 +121,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.UPDATE_ERROR;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY_PROPERTY;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -191,9 +193,6 @@ import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.SerializableFunction;
-import com.vaadin.server.UserError;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.Receiver;
@@ -450,16 +449,6 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     design.explanation.setValue(explanation);
   }
 
-  @SuppressWarnings("unchecked")
-  private <V> ListDataProvider<V> dataProvider(Grid<V> grid) {
-    return (ListDataProvider<V>) grid.getDataProvider();
-  }
-
-  @SuppressWarnings("unchecked")
-  private <V> ListDataProvider<V> dataProvider(RadioButtonGroup<V> radios) {
-    return (ListDataProvider<V>) radios.getDataProvider();
-  }
-
   private <R extends Number> R convert(AbstractStringToNumberConverter<R> converter,
       TextField component) throws Exception {
     return converter.convertToModel(component.getValue(), new ValueContext(component))
@@ -573,10 +562,6 @@ public class SubmissionFormPresenterTest implements TimeConverter {
     Path file2Path = temporaryFolder.getRoot().toPath().resolve("file2.tmp");
     Files.copy(new ByteArrayInputStream(filesContent2), file2Path);
     handler.handleFile(file2Path.toFile(), filesFilename2, filesMimeType2, filesContent2.length);
-  }
-
-  private String errorMessage(String message) {
-    return new UserError(message).getFormattedHtmlMessage();
   }
 
   private Submission createSubmission() {

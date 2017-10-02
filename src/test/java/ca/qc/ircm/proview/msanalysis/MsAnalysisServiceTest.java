@@ -19,6 +19,8 @@ package ca.qc.ircm.proview.msanalysis;
 
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.LDTD;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -30,7 +32,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService.MsAnalysisAggregate;
@@ -95,25 +96,6 @@ public class MsAnalysisServiceTest {
         msAnalysisActivityService, activityService, authorizationService);
   }
 
-  private <D extends Data> D find(Collection<D> datas, long id) {
-    for (D data : datas) {
-      if (data.getId() == id) {
-        return data;
-      }
-    }
-    return null;
-  }
-
-  private SampleContainer findContainer(Collection<SampleContainer> containers,
-      SampleContainerType type, long id) {
-    for (SampleContainer container : containers) {
-      if (container.getId() == id && container.getType() == type) {
-        return container;
-      }
-    }
-    return null;
-  }
-
   @Test
   public void get() {
     MsAnalysis msAnalysis = msAnalysisService.get(1L);
@@ -170,7 +152,7 @@ public class MsAnalysisServiceTest {
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(1, msAnalyses.size());
-    assertNotNull(find(msAnalyses, 12));
+    assertTrue(find(msAnalyses, 12).isPresent());
   }
 
   @Test
@@ -188,7 +170,7 @@ public class MsAnalysisServiceTest {
 
     verify(authorizationService).checkSubmissionReadPermission(submission);
     assertEquals(1, msAnalyses.size());
-    assertNotNull(find(msAnalyses, 21));
+    assertTrue(find(msAnalyses, 21).isPresent());
   }
 
   @Test
@@ -445,7 +427,7 @@ public class MsAnalysisServiceTest {
     assertEquals(true, tube.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(1, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 2L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 2L).isPresent());
   }
 
   @Test
@@ -473,8 +455,8 @@ public class MsAnalysisServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 85L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1472L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 85L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1472L).isPresent());
   }
 
   @Test
@@ -504,9 +486,9 @@ public class MsAnalysisServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(3, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 86L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1473L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1485L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 86L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1473L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1485L).isPresent());
   }
 
   @Test
@@ -538,10 +520,10 @@ public class MsAnalysisServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 87L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1474L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1568L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1580L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 87L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1474L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1568L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1580L).isPresent());
   }
 
   @Test
@@ -574,10 +556,10 @@ public class MsAnalysisServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(5, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 88L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1475L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1487L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1569L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1581L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 88L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1475L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1487L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1569L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1581L).isPresent());
   }
 }

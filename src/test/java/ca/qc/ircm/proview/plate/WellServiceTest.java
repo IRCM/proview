@@ -17,9 +17,10 @@
 
 package ca.qc.ircm.proview.plate;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.sample.Sample;
@@ -35,7 +36,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,15 +56,6 @@ public class WellServiceTest {
   @Before
   public void beforeTest() {
     wellService = new WellService(entityManager, queryFactory, authorizationService);
-  }
-
-  private Well find(Collection<Well> wells, long id) {
-    for (Well well : wells) {
-      if (well.getId() == id) {
-        return well;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -155,7 +146,7 @@ public class WellServiceTest {
     verify(authorizationService).checkAdminRole();
     assertEquals(96, wells.size());
     for (long i = 128; i <= 223; i++) {
-      assertNotNull(find(wells, i));
+      assertTrue(find(wells, i).isPresent());
     }
   }
 
@@ -174,9 +165,9 @@ public class WellServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(3, wells.size());
-    assertNotNull(find(wells, 1474));
-    assertNotNull(find(wells, 1568));
-    assertNotNull(find(wells, 1580));
+    assertTrue(find(wells, 1474).isPresent());
+    assertTrue(find(wells, 1568).isPresent());
+    assertTrue(find(wells, 1580).isPresent());
   }
 
   @Test
@@ -195,8 +186,8 @@ public class WellServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, wells.size());
-    assertNotNull(find(wells, 322L));
-    assertNotNull(find(wells, 334L));
+    assertTrue(find(wells, 322L).isPresent());
+    assertTrue(find(wells, 334L).isPresent());
   }
 
   @Test

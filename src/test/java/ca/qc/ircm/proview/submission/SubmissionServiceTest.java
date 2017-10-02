@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findSampleSolvent;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -144,28 +146,6 @@ public class SubmissionServiceTest implements TimeConverter {
     optionalActivity = Optional.of(activity);
   }
 
-  private Optional<Submission> find(Collection<Submission> submissions, long id) {
-    return submissions.stream().filter(s -> s.getId() == id).findFirst();
-  }
-
-  private SampleSolvent find(Collection<SampleSolvent> solvents, Solvent solvent) {
-    for (SampleSolvent ssolvent : solvents) {
-      if (ssolvent.getSolvent() == solvent) {
-        return ssolvent;
-      }
-    }
-    return null;
-  }
-
-  private <S extends Sample> S findByName(Collection<S> samples, String name) {
-    for (S sample : samples) {
-      if (sample.getName().equals(name)) {
-        return sample;
-      }
-    }
-    return null;
-  }
-
   private byte[] getResourceContent(String resource) throws IOException, URISyntaxException {
     Path path = Paths.get(getClass().getResource(resource).toURI());
     return Files.readAllBytes(path);
@@ -289,7 +269,7 @@ public class SubmissionServiceTest implements TimeConverter {
     assertEquals("MeOH/TFA 0.1%", submission.getSolutionSolvent());
     assertNotNull(submission.getSolvents());
     assertEquals(1, submission.getSolvents().size());
-    assertNotNull(find(submission.getSolvents(), Solvent.METHANOL));
+    assertTrue(findSampleSolvent(submission.getSolvents(), Solvent.METHANOL).isPresent());
     assertEquals(null, submission.getOtherSolvent());
     assertEquals(null, submission.getToxicity());
     assertEquals(false, submission.isLightSensitive());
@@ -700,7 +680,8 @@ public class SubmissionServiceTest implements TimeConverter {
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
-    SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
+    assertTrue(find(samples, "unit_test_eluate_01").isPresent());
+    SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());
@@ -853,7 +834,8 @@ public class SubmissionServiceTest implements TimeConverter {
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
-    SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
+    assertTrue(find(samples, "unit_test_eluate_01").isPresent());
+    SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());
@@ -995,7 +977,7 @@ public class SubmissionServiceTest implements TimeConverter {
     assertEquals(new Double(18.1), submission.getAverageMass());
     assertEquals("ch3oh", submission.getSolutionSolvent());
     assertEquals(1, submission.getSolvents().size());
-    assertNotNull(find(submission.getSolvents(), Solvent.ACETONITRILE));
+    assertTrue(findSampleSolvent(submission.getSolvents(), Solvent.ACETONITRILE).isPresent());
     assertEquals("chrisanol", submission.getOtherSolvent());
     assertEquals("none", submission.getToxicity());
     assertEquals(true, submission.isLightSensitive());
@@ -1328,7 +1310,8 @@ public class SubmissionServiceTest implements TimeConverter {
     entityManager.refresh(submission);
     samples = submission.getSamples();
     assertEquals(2, samples.size());
-    SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
+    assertTrue(find(samples, "unit_test_eluate_01").isPresent());
+    SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());
@@ -1419,7 +1402,8 @@ public class SubmissionServiceTest implements TimeConverter {
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
-    SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
+    assertTrue(find(samples, "unit_test_eluate_01").isPresent());
+    SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());
@@ -1650,7 +1634,8 @@ public class SubmissionServiceTest implements TimeConverter {
     entityManager.refresh(submission);
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(3, samples.size());
-    SubmissionSample submissionSample = findByName(samples, "unit_test_eluate_01");
+    assertTrue(find(samples, "unit_test_eluate_01").isPresent());
+    SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
     assertEquals(new Double(10.0), submissionSample.getVolume());

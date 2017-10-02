@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -30,7 +31,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.SpringConfiguration;
 import ca.qc.ircm.proview.cache.CacheFlusher;
 import ca.qc.ircm.proview.mail.EmailService;
@@ -61,7 +61,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -111,10 +110,6 @@ public class UserServiceTest {
     hashedPassword = new HashedPassword("da78f3a74658706", "4ae8470fc73a83f369fed012", 1);
     when(authenticationService.hashPassword(any(String.class))).thenReturn(hashedPassword);
     when(emailService.htmlEmail()).thenReturn(email);
-  }
-
-  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
-    return datas.stream().filter(d -> d.getId() == id).findAny();
   }
 
   private <D extends PhoneNumber> D findPhoneNumber(Collection<D> datas, PhoneNumberType type) {
@@ -295,7 +290,7 @@ public class UserServiceTest {
 
     verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
     assertEquals(1, users.size());
-    assertNotNull(find(users, 7));
+    assertTrue(find(users, 7).isPresent());
   }
 
   @Test
@@ -307,8 +302,8 @@ public class UserServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, users.size());
-    assertNotNull(find(users, 6));
-    assertNotNull(find(users, 7));
+    assertTrue(find(users, 6).isPresent());
+    assertTrue(find(users, 7).isPresent());
   }
 
   @Test
@@ -322,10 +317,10 @@ public class UserServiceTest {
 
     verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
     assertEquals(4, users.size());
-    assertNotNull(find(users, 3));
-    assertNotNull(find(users, 10));
-    assertNotNull(find(users, 12));
-    assertNotNull(find(users, 27));
+    assertTrue(find(users, 3).isPresent());
+    assertTrue(find(users, 10).isPresent());
+    assertTrue(find(users, 12).isPresent());
+    assertTrue(find(users, 27).isPresent());
   }
 
   @Test
@@ -337,18 +332,18 @@ public class UserServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(12, users.size());
-    assertNotNull(find(users, 2));
-    assertNotNull(find(users, 3));
-    assertNotNull(find(users, 4));
-    assertNotNull(find(users, 5));
-    assertNotNull(find(users, 10));
-    assertNotNull(find(users, 11));
-    assertNotNull(find(users, 12));
-    assertNotNull(find(users, 19));
-    assertNotNull(find(users, 24));
-    assertNotNull(find(users, 25));
-    assertNotNull(find(users, 26));
-    assertNotNull(find(users, 27));
+    assertTrue(find(users, 2).isPresent());
+    assertTrue(find(users, 3).isPresent());
+    assertTrue(find(users, 4).isPresent());
+    assertTrue(find(users, 5).isPresent());
+    assertTrue(find(users, 10).isPresent());
+    assertTrue(find(users, 11).isPresent());
+    assertTrue(find(users, 12).isPresent());
+    assertTrue(find(users, 19).isPresent());
+    assertTrue(find(users, 24).isPresent());
+    assertTrue(find(users, 25).isPresent());
+    assertTrue(find(users, 26).isPresent());
+    assertTrue(find(users, 27).isPresent());
   }
 
   @Test
@@ -360,16 +355,16 @@ public class UserServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(10, users.size());
-    assertNotNull(find(users, 3));
-    assertNotNull(find(users, 6));
-    assertNotNull(find(users, 7));
-    assertNotNull(find(users, 10));
-    assertNotNull(find(users, 12));
-    assertNotNull(find(users, 19));
-    assertNotNull(find(users, 24));
-    assertNotNull(find(users, 25));
-    assertNotNull(find(users, 26));
-    assertNotNull(find(users, 27));
+    assertTrue(find(users, 3).isPresent());
+    assertTrue(find(users, 6).isPresent());
+    assertTrue(find(users, 7).isPresent());
+    assertTrue(find(users, 10).isPresent());
+    assertTrue(find(users, 12).isPresent());
+    assertTrue(find(users, 19).isPresent());
+    assertTrue(find(users, 24).isPresent());
+    assertTrue(find(users, 25).isPresent());
+    assertTrue(find(users, 26).isPresent());
+    assertTrue(find(users, 27).isPresent());
   }
 
   @Test
@@ -378,20 +373,20 @@ public class UserServiceTest {
 
     authorizationService.checkAdminRole();
     assertEquals(14, users.size());
-    assertNotNull(find(users, 2));
-    assertNotNull(find(users, 3));
-    assertNotNull(find(users, 4));
-    assertNotNull(find(users, 5));
-    assertNotNull(find(users, 6));
-    assertNotNull(find(users, 7));
-    assertNotNull(find(users, 10));
-    assertNotNull(find(users, 11));
-    assertNotNull(find(users, 12));
-    assertNotNull(find(users, 19));
-    assertNotNull(find(users, 24));
-    assertNotNull(find(users, 25));
-    assertNotNull(find(users, 26));
-    assertNotNull(find(users, 27));
+    assertTrue(find(users, 2).isPresent());
+    assertTrue(find(users, 3).isPresent());
+    assertTrue(find(users, 4).isPresent());
+    assertTrue(find(users, 5).isPresent());
+    assertTrue(find(users, 6).isPresent());
+    assertTrue(find(users, 7).isPresent());
+    assertTrue(find(users, 10).isPresent());
+    assertTrue(find(users, 11).isPresent());
+    assertTrue(find(users, 12).isPresent());
+    assertTrue(find(users, 19).isPresent());
+    assertTrue(find(users, 24).isPresent());
+    assertTrue(find(users, 25).isPresent());
+    assertTrue(find(users, 26).isPresent());
+    assertTrue(find(users, 27).isPresent());
   }
 
   @Test
@@ -487,8 +482,8 @@ public class UserServiceTest {
     Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
     entityManager.refresh(laboratory);
     assertEquals(2, laboratory.getManagers().size());
-    assertNotNull(find(laboratory.getManagers(), 3L));
-    assertNotNull(find(laboratory.getManagers(), 27L));
+    assertTrue(find(laboratory.getManagers(), 3L).isPresent());
+    assertTrue(find(laboratory.getManagers(), 27L).isPresent());
     assertNotNull(user.getId());
     user = entityManager.find(User.class, user.getId());
     entityManager.refresh(user);

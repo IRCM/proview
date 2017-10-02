@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -27,7 +28,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -86,10 +86,6 @@ public class ControlServiceTest {
     controlService = new ControlService(entityManager, queryFactory, sampleActivityService,
         activityService, tubeService, authorizationService);
     optionalActivity = Optional.of(activity);
-  }
-
-  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
-    return datas.stream().filter(d -> d.getId() == id).findAny();
   }
 
   @Test

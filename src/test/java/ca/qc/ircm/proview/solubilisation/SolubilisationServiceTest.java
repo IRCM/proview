@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.solubilisation;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -27,7 +29,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
@@ -56,7 +57,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -91,20 +91,6 @@ public class SolubilisationServiceTest {
         solubilisationActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
-  }
-
-  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
-    return datas.stream().filter(d -> d.getId() == id).findFirst();
-  }
-
-  private SampleContainer findContainer(Collection<SampleContainer> containers,
-      SampleContainerType type, long id) {
-    for (SampleContainer container : containers) {
-      if (container.getId() == id && container.getType() == type) {
-        return container;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -327,8 +313,8 @@ public class SolubilisationServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 992L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1004L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 992L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1004L).isPresent());
   }
 
   @Test
@@ -360,10 +346,10 @@ public class SolubilisationServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 44L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 43L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 993L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1005L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 44L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 43L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 993L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1005L).isPresent());
   }
 
   @Test
@@ -399,12 +385,12 @@ public class SolubilisationServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 45L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 46L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 994L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1006L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1018L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1030L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 45L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 46L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 994L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1006L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1018L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1030L).isPresent());
   }
 
   @Test
@@ -444,14 +430,14 @@ public class SolubilisationServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 47L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 48L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 995L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1007L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1088L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1100L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1112L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1124L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 47L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 48L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 995L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1007L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1088L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1100L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1112L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1124L).isPresent());
   }
 
   @Test
@@ -495,15 +481,15 @@ public class SolubilisationServiceTest {
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 49L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 50L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 996L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1008L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1020L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1032L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1089L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1101L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1113L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 1125L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 49L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 50L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 996L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1008L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1020L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1032L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1089L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1101L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1113L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1125L).isPresent());
   }
 }

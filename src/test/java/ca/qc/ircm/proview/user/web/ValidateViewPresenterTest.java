@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.LABORATORY_NAME;
@@ -28,7 +31,6 @@ import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -46,7 +48,6 @@ import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.SelectionModel;
 import com.vaadin.data.provider.GridSortOrder;
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.Column;
@@ -119,25 +120,6 @@ public class ValidateViewPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(userWindowProvider.get()).thenReturn(userWindow);
-  }
-
-  private User find(Collection<User> users, long id) {
-    for (User user : users) {
-      if (id == user.getId()) {
-        return user;
-      }
-    }
-    return null;
-  }
-
-  private <V> boolean containsInstanceOf(Collection<V> extensions, Class<? extends V> clazz) {
-    return extensions.stream().filter(extension -> clazz.isInstance(extension)).findAny()
-        .isPresent();
-  }
-
-  @SuppressWarnings("unchecked")
-  private ListDataProvider<User> dataProvider() {
-    return (ListDataProvider<User>) design.usersGrid.getDataProvider();
   }
 
   @Test
@@ -277,10 +259,10 @@ public class ValidateViewPresenterTest {
     verify(userService).validate(usersCaptor.capture(), homeWebContextCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(1, users.size());
-    assertNotNull(find(users, user.getId()));
+    assertTrue(find(users, user.getId()).isPresent());
     verify(view).showTrayNotification(resources.message("done", 1, user.getEmail()));
     verify(userService, times(2)).all(any());
-    assertEquals(usersToValidateAfter.size(), dataProvider().getItems().size());
+    assertEquals(usersToValidateAfter.size(), dataProvider(design.usersGrid).getItems().size());
     HomeWebContext homeWebContext = homeWebContextCaptor.getValue();
     assertEquals(homeUrl, homeWebContext.getHomeUrl(locale));
   }
@@ -303,15 +285,15 @@ public class ValidateViewPresenterTest {
     verify(userService).validate(usersCaptor.capture(), homeWebContextCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(3, users.size());
-    assertNotNull(find(users, user1.getId()));
-    assertNotNull(find(users, user2.getId()));
-    assertNotNull(find(users, user3.getId()));
+    assertTrue(find(users, user1.getId()).isPresent());
+    assertTrue(find(users, user2.getId()).isPresent());
+    assertTrue(find(users, user3.getId()).isPresent());
     verify(view).showTrayNotification(
         resources.message("done", 3, user1.getEmail() + resources.message("userSeparator", 0)
             + user2.getEmail() + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(0, design.usersGrid.getSelectedItems().size());
-    assertEquals(0, dataProvider().getItems().size());
+    assertEquals(0, dataProvider(design.usersGrid).getItems().size());
     HomeWebContext homeWebContext = homeWebContextCaptor.getValue();
     assertEquals(homeUrl, homeWebContext.getHomeUrl(locale));
   }

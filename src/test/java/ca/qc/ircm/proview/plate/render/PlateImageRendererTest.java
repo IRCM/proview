@@ -52,7 +52,7 @@ public class PlateImageRendererTest {
   @Ignore("Not a real test")
   public void render() throws Exception {
     Plate plate = entityManager.find(Plate.class, 26L);
-    when(fractionationService.find(any(SampleContainer.class)))
+    when(fractionationService.search(any(SampleContainer.class)))
         .thenAnswer(new Answer<FractionationDetail>() {
           @Override
           public FractionationDetail answer(InvocationOnMock invocation) throws Throwable {

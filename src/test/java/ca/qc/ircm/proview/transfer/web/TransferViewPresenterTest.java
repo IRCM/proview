@@ -19,6 +19,10 @@ package ca.qc.ircm.proview.transfer.web;
 
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.CONTAINER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_CONTAINER_DUPLICATE;
@@ -61,7 +65,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
@@ -80,7 +83,6 @@ import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
@@ -111,7 +113,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -200,10 +201,12 @@ public class TransferViewPresenterTest {
       sourceWells.put(sample, wellsMap);
     });
     when(wellService.location(any(), any())).thenAnswer(i -> i.getArguments()[0] != null
-        ? sourceWells.get(i.getArguments()[0]).get(i.getArguments()[1]) : null);
+        ? sourceWells.get(i.getArguments()[0]).get(i.getArguments()[1])
+        : null);
     when(wellService.last(any()))
         .thenAnswer(i -> i.getArguments()[0] != null && !sourcePlates.isEmpty()
-            ? sourceWells.get(i.getArguments()[0]).get(sourcePlates.get(0)).get(0) : null);
+            ? sourceWells.get(i.getArguments()[0]).get(sourcePlates.get(0)).get(0)
+            : null);
   }
 
   private List<Tube> generateTubes(Sample sample, int count) {
@@ -220,36 +223,8 @@ public class TransferViewPresenterTest {
     return tubes;
   }
 
-  private <D extends Data> Optional<D> find(Collection<D> datas, long id) {
-    return datas.stream().filter(d -> d.getId() == id).findFirst();
-  }
-
-  private <V> boolean containsInstanceOf(Collection<V> extensions, Class<? extends V> clazz) {
-    return extensions.stream().filter(extension -> clazz.isInstance(extension)).findAny()
-        .isPresent();
-  }
-
-  @SuppressWarnings("unchecked")
-  private <V> ListDataProvider<V> dataProvider(Grid<V> grid) {
-    return (ListDataProvider<V>) grid.getDataProvider();
-  }
-
-  @SuppressWarnings("unchecked")
-  private <V> ListDataProvider<V> dataProvider(ComboBox<V> comboBox) {
-    return (ListDataProvider<V>) comboBox.getDataProvider();
-  }
-
-  @SuppressWarnings("unchecked")
-  private <V> ListDataProvider<V> dataProvider(RadioButtonGroup<V> radioButtonGroup) {
-    return (ListDataProvider<V>) radioButtonGroup.getDataProvider();
-  }
-
   private List<SampleTransfer> all(Collection<SampleTransfer> datas, Sample sample) {
     return datas.stream().filter(d -> sample.equals(d.getSample())).collect(Collectors.toList());
-  }
-
-  private String errorMessage(String message) {
-    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test

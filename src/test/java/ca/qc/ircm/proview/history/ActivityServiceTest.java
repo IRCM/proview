@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.history;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -43,7 +44,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -80,15 +80,6 @@ public class ActivityServiceTest {
         useFailsafeDescription);
   }
 
-  private <A extends Activity> A find(Collection<A> activities, long id) {
-    for (A activity : activities) {
-      if (activity.getId() == id) {
-        return activity;
-      }
-    }
-    return null;
-  }
-
   @Test
   public void all_Submission() throws Exception {
     Submission submission = entityManager.find(Submission.class, 1L);
@@ -97,15 +88,15 @@ public class ActivityServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(9, activities.size());
-    assertNotNull(find(activities, 5543));
-    assertNotNull(find(activities, 5544));
-    assertNotNull(find(activities, 5550));
-    assertNotNull(find(activities, 5552));
-    assertNotNull(find(activities, 5553));
-    assertNotNull(find(activities, 5557));
-    assertNotNull(find(activities, 5558));
-    assertNotNull(find(activities, 5569));
-    assertNotNull(find(activities, 5573));
+    assertTrue(find(activities, 5543).isPresent());
+    assertTrue(find(activities, 5544).isPresent());
+    assertTrue(find(activities, 5550).isPresent());
+    assertTrue(find(activities, 5552).isPresent());
+    assertTrue(find(activities, 5553).isPresent());
+    assertTrue(find(activities, 5557).isPresent());
+    assertTrue(find(activities, 5558).isPresent());
+    assertTrue(find(activities, 5569).isPresent());
+    assertTrue(find(activities, 5573).isPresent());
   }
 
   @Test
@@ -116,9 +107,9 @@ public class ActivityServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(3, activities.size());
-    assertNotNull(find(activities, 5634));
-    assertNotNull(find(activities, 5638));
-    assertNotNull(find(activities, 5639));
+    assertTrue(find(activities, 5634).isPresent());
+    assertTrue(find(activities, 5638).isPresent());
+    assertTrue(find(activities, 5639).isPresent());
   }
 
   @Test
@@ -197,7 +188,8 @@ public class ActivityServiceTest {
 
     verify(authorizationService).checkAdminRole();
     // Transfer.
-    Activity activity = find(activities, 5573L);
+    assertTrue(find(activities, 5573L).isPresent());
+    Activity activity = find(activities, 5573L).get();
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 9L, activity.getRecordId());
@@ -215,7 +207,8 @@ public class ActivityServiceTest {
     assertEquals(null, updateActivity.getOldValue());
     assertEquals("1", updateActivity.getNewValue());
     // Fractionation.
-    activity = find(activities, 5569L);
+    assertTrue(find(activities, 5569L).isPresent());
+    activity = find(activities, 5569L).get();
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 8L, activity.getRecordId());
@@ -248,7 +241,8 @@ public class ActivityServiceTest {
     List<Activity> activities = activityService.allMsAnalysisActivities(plate);
 
     verify(authorizationService).checkAdminRole();
-    Activity activity = find(activities, 5829L);
+    assertTrue(find(activities, 5829L).isPresent());
+    Activity activity = find(activities, 5829L).get();
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("msanalysis", activity.getTableName());
     assertEquals((Long) 20L, activity.getRecordId());

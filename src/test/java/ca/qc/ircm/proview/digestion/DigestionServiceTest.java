@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.digestion;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -88,16 +89,6 @@ public class DigestionServiceTest {
         activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
-  }
-
-  private SampleContainer findContainer(Collection<SampleContainer> containers,
-      SampleContainerType type, long id) {
-    for (SampleContainer container : containers) {
-      if (container.getId() == id && container.getType() == type) {
-        return container;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -301,8 +292,8 @@ public class DigestionServiceTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 224L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 236L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 224L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 236L).isPresent());
   }
 
   @Test
@@ -335,10 +326,10 @@ public class DigestionServiceTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 13L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 14L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 320L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 332L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 13L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 14L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 320L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 332L).isPresent());
   }
 
   @Test
@@ -375,12 +366,12 @@ public class DigestionServiceTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 15L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 16L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 322L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 334L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 346L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 358L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 15L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 16L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 322L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 334L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 346L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 358L).isPresent());
   }
 
   @Test
@@ -422,14 +413,14 @@ public class DigestionServiceTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 17L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 18L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 321L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 333L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 416L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 428L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 440L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 452L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 17L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 18L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 321L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 333L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 416L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 428L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 440L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 452L).isPresent());
   }
 
   @Test
@@ -475,16 +466,16 @@ public class DigestionServiceTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 19L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 20L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 323L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 335L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 347L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 359L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 417L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 429L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 441L));
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.WELL, 453L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 19L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 20L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 323L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 335L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 347L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 359L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 417L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 429L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 441L).isPresent());
+    assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 453L).isPresent());
   }
 
   @Test
@@ -514,6 +505,6 @@ public class DigestionServiceTest {
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(1, bannedContainers.size());
-    assertNotNull(findContainer(bannedContainers, SampleContainerType.TUBE, 2279L));
+    assertTrue(findContainer(bannedContainers, SampleContainerType.TUBE, 2279L).isPresent());
   }
 }

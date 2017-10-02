@@ -29,6 +29,7 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SELECT;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -49,7 +50,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.SelectionModel;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.Registration;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import org.junit.Before;
 import org.junit.Test;
@@ -120,11 +120,6 @@ public class SampleSelectionFormPresenterTest {
     controls = new ArrayList<>();
     controls.add(entityManager.find(Control.class, 444L));
     controls.add(entityManager.find(Control.class, 448L));
-  }
-
-  @SuppressWarnings("unchecked")
-  private <V> ListDataProvider<V> gridDataProvider(Grid<V> grid) {
-    return (ListDataProvider<V>) grid.getDataProvider();
   }
 
   @Test
@@ -218,7 +213,7 @@ public class SampleSelectionFormPresenterTest {
     presenter.setItems(new ArrayList<>(selectedSamples));
     presenter.init(view);
 
-    ListDataProvider<SubmissionSample> dataProvider = gridDataProvider(design.samplesGrid);
+    ListDataProvider<SubmissionSample> dataProvider = dataProvider(design.samplesGrid);
 
     assertEquals(allSamples.size(), dataProvider.getItems().size());
     assertTrue(allSamples.containsAll(dataProvider.getItems()));
@@ -234,7 +229,7 @@ public class SampleSelectionFormPresenterTest {
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
 
-    ListDataProvider<Control> dataProvider = gridDataProvider(design.controlsGrid);
+    ListDataProvider<Control> dataProvider = dataProvider(design.controlsGrid);
 
     assertEquals(controls.size(), dataProvider.getItems().size());
     assertTrue(controls.containsAll(dataProvider.getItems()));

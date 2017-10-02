@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.LABORATORY_NAME;
@@ -121,11 +122,6 @@ public class SignasViewPresenterTest {
     when(view.getResources()).thenReturn(resources);
     when(userWindowProvider.get()).thenReturn(userWindow);
     presenter.init(view);
-  }
-
-  private <V> boolean containsInstanceOf(Collection<V> extensions, Class<? extends V> clazz) {
-    return extensions.stream().filter(extension -> clazz.isInstance(extension)).findAny()
-        .isPresent();
   }
 
   @Test

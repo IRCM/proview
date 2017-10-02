@@ -31,6 +31,10 @@ import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAMPLES;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAVE;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.TITLE;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -43,7 +47,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -52,11 +55,8 @@ import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.components.grid.NoSelectionModel;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.junit.Before;
@@ -74,7 +74,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -126,29 +125,6 @@ public class SampleStatusViewPresenterTest {
     samples.add(entityManager.find(SubmissionSample.class, 443L));
     samples.forEach(s -> entityManager.detach(s));
     when(view.savedSamples()).thenReturn(new ArrayList<>(samples));
-  }
-
-  private <T extends Data> Optional<T> find(Collection<T> data, long id) {
-    return data.stream().filter(d -> d.getId() == id).findAny();
-  }
-
-  @SuppressWarnings("unchecked")
-  private <V> ListDataProvider<V> dataProvider(Grid<V> grid) {
-    return (ListDataProvider<V>) grid.getDataProvider();
-  }
-
-  @SuppressWarnings("unchecked")
-  private <V> ListDataProvider<V> dataProvider(ComboBox<V> comboBox) {
-    return (ListDataProvider<V>) comboBox.getDataProvider();
-  }
-
-  private <V> boolean containsInstanceOf(Collection<V> extensions, Class<? extends V> clazz) {
-    return extensions.stream().filter(extension -> clazz.isInstance(extension)).findAny()
-        .isPresent();
-  }
-
-  private String errorMessage(String message) {
-    return new UserError(message).getFormattedHtmlMessage();
   }
 
   @Test
