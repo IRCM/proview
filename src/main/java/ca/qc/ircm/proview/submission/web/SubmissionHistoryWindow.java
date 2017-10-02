@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,20 +39,17 @@ public class SubmissionHistoryWindow extends Window implements BaseComponent {
   public static final String TITLE = "title";
   private static final long serialVersionUID = 6528787318119905243L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionHistoryWindow.class);
-  private Panel panel;
+  private SubmissionHistoryWindowDesign design = new SubmissionHistoryWindowDesign();
   @Inject
   private SubmissionHistoryForm view = new SubmissionHistoryForm();
 
   @PostConstruct
   protected void init() {
     addStyleName(WINDOW_STYLE);
-    panel = new Panel();
-    setContent(panel);
-    panel.setContent(view);
-    view.setMargin(true);
+    setContent(design);
+    design.historiesLayout.addComponent(view);
     setHeight("700px");
     setWidth("1200px");
-    panel.setSizeFull();
   }
 
   @Override

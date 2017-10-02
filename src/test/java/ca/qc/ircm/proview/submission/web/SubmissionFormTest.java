@@ -55,8 +55,8 @@ public class SubmissionFormTest {
   public void init() throws Throwable {
     view.init();
 
-    assertEquals(1, view.samplesPlateContainer.getComponentCount());
-    assertEquals(plateComponent, view.samplesPlateContainer.getComponent(0));
+    assertEquals(1, view.design.samplesPlateContainer.getComponentCount());
+    assertEquals(plateComponent, view.design.samplesPlateContainer.getComponent(0));
   }
 
   @Test

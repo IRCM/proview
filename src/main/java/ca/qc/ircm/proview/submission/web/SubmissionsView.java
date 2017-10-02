@@ -20,7 +20,9 @@ package ca.qc.ircm.proview.submission.web;
 import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -29,12 +31,17 @@ import javax.inject.Inject;
  */
 @SpringView(name = SubmissionsView.VIEW_NAME)
 @RolesAllowed({ "USER" })
-public class SubmissionsView extends SubmissionsViewDesign
-    implements BaseView, SavedSamplesComponent {
+public class SubmissionsView extends CustomComponent implements BaseView, SavedSamplesComponent {
   public static final String VIEW_NAME = "submissions";
   private static final long serialVersionUID = -7912663074202035516L;
+  protected SubmissionsViewDesign design = new SubmissionsViewDesign();
   @Inject
   private transient SubmissionsViewPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
 
   @Override
   public void attach() {

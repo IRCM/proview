@@ -292,6 +292,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   private static final int MAX_CONTAMINANT_COUNT = 10;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionFormPresenter.class);
   private SubmissionForm view;
+  private SubmissionFormDesign design;
   private boolean readOnly = false;
   private Binder<Submission> submissionBinder = new BeanValidationBinder<>(Submission.class);
   private Binder<SubmissionSample> firstSampleBinder =
@@ -351,6 +352,7 @@ public class SubmissionFormPresenter implements BinderValidator {
    */
   public void init(SubmissionForm view) {
     this.view = view;
+    design = view.design;
     view.createStructureUploader();
     StructureUploaderReceiver structureUploaderReceiver = new StructureUploaderReceiver();
     view.structureUploader.setReceiver(structureUploaderReceiver);
@@ -363,30 +365,30 @@ public class SubmissionFormPresenter implements BinderValidator {
     addFieldListeners();
     updateVisible();
     updateReadOnly();
-    updateSampleCount(view.sampleCountField.getValue());
-    updateStandardsTable(view.standardCountField.getValue());
-    updateContaminantsTable(view.contaminantCountField.getValue());
+    updateSampleCount(design.sampleCountField.getValue());
+    updateStandardsTable(design.standardCountField.getValue());
+    updateContaminantsTable(design.contaminantCountField.getValue());
   }
 
   private void prepareComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.sampleTypeLabel.addStyleName(SAMPLE_TYPE_LABEL);
-    view.sampleTypeLabel.setValue(resources.message(SAMPLE_TYPE_LABEL));
-    view.inactiveLabel.addStyleName(INACTIVE_LABEL);
-    view.inactiveLabel.setValue(resources.message(INACTIVE_LABEL));
-    view.servicePanel.addStyleName(SERVICE_PANEL);
-    view.servicePanel.addStyleName(REQUIRED);
-    view.servicePanel.setCaption(resources.message(SERVICE_PROPERTY));
-    view.serviceOptions.addStyleName(SERVICE_PROPERTY);
-    view.serviceOptions.addStyleName(HIDE_REQUIRED_STYLE);
-    view.serviceOptions.setItems(Service.availables());
-    view.serviceOptions.setItemCaptionGenerator(service -> service.getLabel(locale));
-    view.serviceOptions.setItemEnabledProvider(service -> service.available);
-    view.serviceOptions
-        .addValueChangeListener(e -> view.sampleSupportOptions.getDataProvider().refreshItem(GEL));
-    submissionBinder.forField(view.serviceOptions).asRequired(generalResources.message(REQUIRED))
+    design.sampleTypeLabel.addStyleName(SAMPLE_TYPE_LABEL);
+    design.sampleTypeLabel.setValue(resources.message(SAMPLE_TYPE_LABEL));
+    design.inactiveLabel.addStyleName(INACTIVE_LABEL);
+    design.inactiveLabel.setValue(resources.message(INACTIVE_LABEL));
+    design.servicePanel.addStyleName(SERVICE_PANEL);
+    design.servicePanel.addStyleName(REQUIRED);
+    design.servicePanel.setCaption(resources.message(SERVICE_PROPERTY));
+    design.serviceOptions.addStyleName(SERVICE_PROPERTY);
+    design.serviceOptions.addStyleName(HIDE_REQUIRED_STYLE);
+    design.serviceOptions.setItems(Service.availables());
+    design.serviceOptions.setItemCaptionGenerator(service -> service.getLabel(locale));
+    design.serviceOptions.setItemEnabledProvider(service -> service.available);
+    design.serviceOptions.addValueChangeListener(
+        e -> design.sampleSupportOptions.getDataProvider().refreshItem(GEL));
+    submissionBinder.forField(design.serviceOptions).asRequired(generalResources.message(REQUIRED))
         .bind(SERVICE_PROPERTY);
     prepareSamplesComponents();
     prepareExperienceComponents();
@@ -394,31 +396,31 @@ public class SubmissionFormPresenter implements BinderValidator {
     prepareContaminantsComponents();
     prepareGelComponents();
     prepareServicesComponents();
-    view.commentsPanel.setCaption(resources.message(COMMENTS_PANEL));
-    view.commentsPanel.addStyleName(COMMENTS_PANEL);
-    view.commentsField.addStyleName(COMMENTS_PROPERTY);
-    submissionBinder.forField(view.commentsField).withNullRepresentation("")
+    design.commentsPanel.setCaption(resources.message(COMMENTS_PANEL));
+    design.commentsPanel.addStyleName(COMMENTS_PANEL);
+    design.commentsField.addStyleName(COMMENTS_PROPERTY);
+    submissionBinder.forField(design.commentsField).withNullRepresentation("")
         .bind(COMMENTS_PROPERTY);
-    view.filesPanel.addStyleName(FILES_PROPERTY);
-    view.filesPanel.setCaption(resources.message(FILES_PROPERTY));
+    design.filesPanel.addStyleName(FILES_PROPERTY);
+    design.filesPanel.setCaption(resources.message(FILES_PROPERTY));
     view.filesUploader.addStyleName(FILES_UPLOADER);
     view.filesUploader.setUploadButtonCaption(resources.message(FILES_UPLOADER));
     view.filesUploader.setMaxFileCount(1000000); // Count is required if size is set.
     view.filesUploader.setMaxFileSize(MAXIMUM_FILES_SIZE);
-    view.filesGrid.addStyleName(FILES_GRID);
-    view.filesGrid.addStyleName(COMPONENTS);
-    view.filesGrid.addColumn(file -> downloadFileButton(file), new ComponentRenderer())
+    design.filesGrid.addStyleName(FILES_GRID);
+    design.filesGrid.addStyleName(COMPONENTS);
+    design.filesGrid.addColumn(file -> downloadFileButton(file), new ComponentRenderer())
         .setId(FILE_FILENAME_PROPERTY)
         .setCaption(resources.message(FILES_PROPERTY + "." + FILE_FILENAME_PROPERTY));
-    view.filesGrid.addColumn(file -> removeFileButton(file), new ComponentRenderer())
+    design.filesGrid.addColumn(file -> removeFileButton(file), new ComponentRenderer())
         .setId(REMOVE_FILE).setCaption(resources.message(FILES_PROPERTY + "." + REMOVE_FILE));
-    view.filesGrid.setDataProvider(filesDataProvider);
-    view.explanationPanel.addStyleName(EXPLANATION_PANEL);
-    view.explanationPanel.addStyleName(REQUIRED);
-    view.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
-    view.explanation.addStyleName(EXPLANATION);
-    view.saveButton.addStyleName(SAVE);
-    view.saveButton.setCaption(resources.message(SAVE));
+    design.filesGrid.setDataProvider(filesDataProvider);
+    design.explanationPanel.addStyleName(EXPLANATION_PANEL);
+    design.explanationPanel.addStyleName(REQUIRED);
+    design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
+    design.explanation.addStyleName(EXPLANATION);
+    design.saveButton.addStyleName(SAVE);
+    design.saveButton.setCaption(resources.message(SAVE));
   }
 
   private Button downloadFileButton(SubmissionFile file) {
@@ -445,105 +447,107 @@ public class SubmissionFormPresenter implements BinderValidator {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.samplesPanel.addStyleName(SAMPLES_PANEL);
-    view.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
-    view.sampleSupportOptions.addStyleName(SAMPLE_SUPPORT_PROPERTY);
-    view.sampleSupportOptions.setCaption(resources.message(SAMPLE_SUPPORT_PROPERTY));
-    view.sampleSupportOptions.setItems(SampleSupport.values());
-    view.sampleSupportOptions.setItemCaptionGenerator(support -> support.getLabel(locale));
-    firstSampleBinder.forField(view.sampleSupportOptions)
+    design.samplesPanel.addStyleName(SAMPLES_PANEL);
+    design.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
+    design.sampleSupportOptions.addStyleName(SAMPLE_SUPPORT_PROPERTY);
+    design.sampleSupportOptions.setCaption(resources.message(SAMPLE_SUPPORT_PROPERTY));
+    design.sampleSupportOptions.setItems(SampleSupport.values());
+    design.sampleSupportOptions.setItemCaptionGenerator(support -> support.getLabel(locale));
+    firstSampleBinder.forField(design.sampleSupportOptions)
         .asRequired(generalResources.message(REQUIRED)).bind(SAMPLE_SUPPORT_PROPERTY);
-    view.solutionSolventField.addStyleName(SOLUTION_SOLVENT_PROPERTY);
-    view.solutionSolventField.setCaption(resources.message(SOLUTION_SOLVENT_PROPERTY));
-    view.solutionSolventField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.solutionSolventField)
-        .withValidator(requiredTextIfVisible(view.solutionSolventField)).withNullRepresentation("")
-        .bind(SOLUTION_SOLVENT_PROPERTY);
-    view.sampleCountField.addStyleName(SAMPLE_COUNT_PROPERTY);
-    view.sampleCountField.setCaption(resources.message(SAMPLE_COUNT_PROPERTY));
-    sampleCountBinder.forField(view.sampleCountField).asRequired(generalResources.message(REQUIRED))
-        .withNullRepresentation("0")
+    design.solutionSolventField.addStyleName(SOLUTION_SOLVENT_PROPERTY);
+    design.solutionSolventField.setCaption(resources.message(SOLUTION_SOLVENT_PROPERTY));
+    design.solutionSolventField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.solutionSolventField)
+        .withValidator(requiredTextIfVisible(design.solutionSolventField))
+        .withNullRepresentation("").bind(SOLUTION_SOLVENT_PROPERTY);
+    design.sampleCountField.addStyleName(SAMPLE_COUNT_PROPERTY);
+    design.sampleCountField.setCaption(resources.message(SAMPLE_COUNT_PROPERTY));
+    sampleCountBinder.forField(design.sampleCountField)
+        .asRequired(generalResources.message(REQUIRED)).withNullRepresentation("0")
         .withConverter(new StringToIntegerConverter(generalResources.message(INVALID_INTEGER)))
         .withValidator(new IntegerRangeValidator(
             generalResources.message(OUT_OF_RANGE, 1, MAX_SAMPLE_COUNT), 1, MAX_SAMPLE_COUNT))
         .bind(ItemCount::getCount, ItemCount::setCount);
-    view.sampleNameField.addStyleName(SAMPLE_NAME_PROPERTY);
-    view.sampleNameField.setCaption(resources.message(SAMPLE_NAME_PROPERTY));
-    view.sampleNameField.setRequiredIndicatorVisible(true);
-    firstSampleBinder.forField(view.sampleNameField)
-        .withValidator(requiredTextIfVisible(view.sampleNameField)).withNullRepresentation("")
+    design.sampleNameField.addStyleName(SAMPLE_NAME_PROPERTY);
+    design.sampleNameField.setCaption(resources.message(SAMPLE_NAME_PROPERTY));
+    design.sampleNameField.setRequiredIndicatorVisible(true);
+    firstSampleBinder.forField(design.sampleNameField)
+        .withValidator(requiredTextIfVisible(design.sampleNameField)).withNullRepresentation("")
         .withValidator(validateSampleName(true)).bind(SAMPLE_NAME_PROPERTY);
-    view.formulaField.addStyleName(FORMULA_PROPERTY);
-    view.formulaField.setCaption(resources.message(FORMULA_PROPERTY));
-    view.formulaField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.formulaField)
-        .withValidator(requiredTextIfVisible(view.formulaField)).withNullRepresentation("")
+    design.formulaField.addStyleName(FORMULA_PROPERTY);
+    design.formulaField.setCaption(resources.message(FORMULA_PROPERTY));
+    design.formulaField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.formulaField)
+        .withValidator(requiredTextIfVisible(design.formulaField)).withNullRepresentation("")
         .bind(FORMULA_PROPERTY);
-    view.structureLayout.addStyleName(REQUIRED);
-    view.structureLayout.setCaption(resources.message(STRUCTURE_PROPERTY));
-    view.structureButton.addStyleName(STRUCTURE_PROPERTY);
-    view.structureButton.setVisible(false);
+    design.structureLayout.addStyleName(REQUIRED);
+    design.structureLayout.setCaption(resources.message(STRUCTURE_PROPERTY));
+    design.structureButton.addStyleName(STRUCTURE_PROPERTY);
+    design.structureButton.setVisible(false);
     view.structureUploader.addStyleName(STRUCTURE_UPLOADER);
     view.structureUploader.setButtonCaption(resources.message(STRUCTURE_UPLOADER));
     view.structureUploader.setImmediateMode(true);
-    view.monoisotopicMassField.addStyleName(MONOISOTOPIC_MASS_PROPERTY);
-    view.monoisotopicMassField.setCaption(resources.message(MONOISOTOPIC_MASS_PROPERTY));
-    view.monoisotopicMassField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.monoisotopicMassField)
-        .withValidator(requiredTextIfVisible(view.monoisotopicMassField)).withNullRepresentation("")
+    design.monoisotopicMassField.addStyleName(MONOISOTOPIC_MASS_PROPERTY);
+    design.monoisotopicMassField.setCaption(resources.message(MONOISOTOPIC_MASS_PROPERTY));
+    design.monoisotopicMassField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.monoisotopicMassField)
+        .withValidator(requiredTextIfVisible(design.monoisotopicMassField))
+        .withNullRepresentation("")
         .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
         .bind(MONOISOTOPIC_MASS_PROPERTY);
-    view.averageMassField.addStyleName(AVERAGE_MASS_PROPERTY);
-    view.averageMassField.setCaption(resources.message(AVERAGE_MASS_PROPERTY));
-    submissionBinder.forField(view.averageMassField).withNullRepresentation("")
+    design.averageMassField.addStyleName(AVERAGE_MASS_PROPERTY);
+    design.averageMassField.setCaption(resources.message(AVERAGE_MASS_PROPERTY));
+    submissionBinder.forField(design.averageMassField).withNullRepresentation("")
         .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
         .bind(AVERAGE_MASS_PROPERTY);
-    view.toxicityField.addStyleName(TOXICITY_PROPERTY);
-    view.toxicityField.setCaption(resources.message(TOXICITY_PROPERTY));
-    submissionBinder.forField(view.toxicityField).withNullRepresentation("")
+    design.toxicityField.addStyleName(TOXICITY_PROPERTY);
+    design.toxicityField.setCaption(resources.message(TOXICITY_PROPERTY));
+    submissionBinder.forField(design.toxicityField).withNullRepresentation("")
         .bind(TOXICITY_PROPERTY);
-    view.lightSensitiveField.addStyleName(LIGHT_SENSITIVE_PROPERTY);
-    view.lightSensitiveField.setCaption(resources.message(LIGHT_SENSITIVE_PROPERTY));
-    submissionBinder.forField(view.lightSensitiveField).bind(LIGHT_SENSITIVE_PROPERTY);
-    view.storageTemperatureOptions.addStyleName(STORAGE_TEMPERATURE_PROPERTY);
-    view.storageTemperatureOptions.setCaption(resources.message(STORAGE_TEMPERATURE_PROPERTY));
-    view.storageTemperatureOptions.setItems(StorageTemperature.values());
-    view.storageTemperatureOptions
+    design.lightSensitiveField.addStyleName(LIGHT_SENSITIVE_PROPERTY);
+    design.lightSensitiveField.setCaption(resources.message(LIGHT_SENSITIVE_PROPERTY));
+    submissionBinder.forField(design.lightSensitiveField).bind(LIGHT_SENSITIVE_PROPERTY);
+    design.storageTemperatureOptions.addStyleName(STORAGE_TEMPERATURE_PROPERTY);
+    design.storageTemperatureOptions.setCaption(resources.message(STORAGE_TEMPERATURE_PROPERTY));
+    design.storageTemperatureOptions.setItems(StorageTemperature.values());
+    design.storageTemperatureOptions
         .setItemCaptionGenerator(storageTemperature -> storageTemperature.getLabel(locale));
-    view.storageTemperatureOptions.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.storageTemperatureOptions)
-        .withValidator(requiredIfVisible(view.storageTemperatureOptions))
+    design.storageTemperatureOptions.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.storageTemperatureOptions)
+        .withValidator(requiredIfVisible(design.storageTemperatureOptions))
         .bind(STORAGE_TEMPERATURE_PROPERTY);
-    view.sampleContainerTypeOptions.addStyleName(SAMPLES_CONTAINER_TYPE_PROPERTY);
-    view.sampleContainerTypeOptions.setCaption(resources.message(SAMPLES_CONTAINER_TYPE_PROPERTY));
-    view.sampleContainerTypeOptions.setItems(SampleContainerType.values());
-    view.sampleContainerTypeOptions
+    design.sampleContainerTypeOptions.addStyleName(SAMPLES_CONTAINER_TYPE_PROPERTY);
+    design.sampleContainerTypeOptions
+        .setCaption(resources.message(SAMPLES_CONTAINER_TYPE_PROPERTY));
+    design.sampleContainerTypeOptions.setItems(SampleContainerType.values());
+    design.sampleContainerTypeOptions
         .setItemCaptionGenerator(sampleContainerType -> sampleContainerType.getLabel(locale));
-    view.sampleContainerTypeOptions.setRequiredIndicatorVisible(true);
-    view.plateNameField.addStyleName(PLATE_PROPERTY + "-" + PLATE_NAME_PROPERTY);
-    view.plateNameField.setCaption(resources.message(PLATE_PROPERTY + "." + PLATE_NAME_PROPERTY));
-    view.plateNameField.setRequiredIndicatorVisible(true);
-    plateBinder.forField(view.plateNameField)
-        .withValidator(requiredTextIfVisible(view.plateNameField)).withNullRepresentation("")
+    design.sampleContainerTypeOptions.setRequiredIndicatorVisible(true);
+    design.plateNameField.addStyleName(PLATE_PROPERTY + "-" + PLATE_NAME_PROPERTY);
+    design.plateNameField.setCaption(resources.message(PLATE_PROPERTY + "." + PLATE_NAME_PROPERTY));
+    design.plateNameField.setRequiredIndicatorVisible(true);
+    plateBinder.forField(design.plateNameField)
+        .withValidator(requiredTextIfVisible(design.plateNameField)).withNullRepresentation("")
         .withValidator(validatePlateName()).bind(PLATE_NAME_PROPERTY);
-    view.samplesLabel.addStyleName(SAMPLES_PROPERTY);
-    view.samplesLabel.setCaption(resources.message(SAMPLES_PROPERTY));
-    view.samplesGrid.addStyleName(SAMPLES_TABLE);
-    view.samplesGrid.addStyleName(COMPONENTS);
-    view.samplesGrid.setDataProvider(samplesDataProvider);
-    view.samplesGrid.addColumn(sample -> sampleNameTextField(sample), new ComponentRenderer())
+    design.samplesLabel.addStyleName(SAMPLES_PROPERTY);
+    design.samplesLabel.setCaption(resources.message(SAMPLES_PROPERTY));
+    design.samplesGrid.addStyleName(SAMPLES_TABLE);
+    design.samplesGrid.addStyleName(COMPONENTS);
+    design.samplesGrid.setDataProvider(samplesDataProvider);
+    design.samplesGrid.addColumn(sample -> sampleNameTextField(sample), new ComponentRenderer())
         .setId(SAMPLE_NAME_PROPERTY).setCaption(resources.message(SAMPLE_NAME_PROPERTY))
         .setWidth(230);
-    view.samplesGrid
+    design.samplesGrid
         .addColumn(sample -> sampleNumberProteinTextField(sample), new ComponentRenderer())
         .setId(SAMPLE_NUMBER_PROTEIN_PROPERTY)
         .setCaption(resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY)).setWidth(230);
-    view.samplesGrid.addColumn(sample -> proteinWeightTextField(sample), new ComponentRenderer())
+    design.samplesGrid.addColumn(sample -> proteinWeightTextField(sample), new ComponentRenderer())
         .setId(PROTEIN_WEIGHT_PROPERTY).setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY))
         .setWidth(230);
-    view.fillSamplesButton.addStyleName(FILL_SAMPLES_PROPERTY);
-    view.fillSamplesButton.addStyleName(FILL_BUTTON_STYLE);
-    view.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
+    design.fillSamplesButton.addStyleName(FILL_SAMPLES_PROPERTY);
+    design.fillSamplesButton.addStyleName(FILL_BUTTON_STYLE);
+    design.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
     view.plateComponent.addStyleName(SAMPLES_PLATE);
   }
 
@@ -584,7 +588,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       field.setReadOnly(readOnly);
       field.setRequiredIndicatorVisible(true);
       binder.forField(field)
-          .withValidator(requiredTextIf(n -> view.serviceOptions.getValue() == INTACT_PROTEIN))
+          .withValidator(requiredTextIf(n -> design.serviceOptions.getValue() == INTACT_PROTEIN))
           .withNullRepresentation("")
           .withConverter(new StringToIntegerConverter(generalResources.message(INVALID_INTEGER)))
           .bind(SAMPLE_NUMBER_PROTEIN_PROPERTY);
@@ -609,7 +613,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       field.setReadOnly(readOnly);
       field.setRequiredIndicatorVisible(true);
       binder.forField(field)
-          .withValidator(requiredTextIf(n -> view.serviceOptions.getValue() == INTACT_PROTEIN))
+          .withValidator(requiredTextIf(n -> design.serviceOptions.getValue() == INTACT_PROTEIN))
           .withNullRepresentation("")
           .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
           .bind(PROTEIN_WEIGHT_PROPERTY);
@@ -622,51 +626,51 @@ public class SubmissionFormPresenter implements BinderValidator {
   private void prepareExperienceComponents() {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.experiencePanel.addStyleName(EXPERIENCE_PANEL);
-    view.experiencePanel.setCaption(resources.message(EXPERIENCE_PANEL));
-    view.experienceField.addStyleName(EXPERIENCE_PROPERTY);
-    view.experienceField.setCaption(resources.message(EXPERIENCE_PROPERTY));
-    view.experienceField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.experienceField)
-        .withValidator(requiredTextIfVisible(view.experienceField)).withNullRepresentation("")
+    design.experiencePanel.addStyleName(EXPERIENCE_PANEL);
+    design.experiencePanel.setCaption(resources.message(EXPERIENCE_PANEL));
+    design.experienceField.addStyleName(EXPERIENCE_PROPERTY);
+    design.experienceField.setCaption(resources.message(EXPERIENCE_PROPERTY));
+    design.experienceField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.experienceField)
+        .withValidator(requiredTextIfVisible(design.experienceField)).withNullRepresentation("")
         .bind(EXPERIENCE_PROPERTY);
-    view.experienceGoalField.addStyleName(EXPERIENCE_GOAL_PROPERTY);
-    view.experienceGoalField.setCaption(resources.message(EXPERIENCE_GOAL_PROPERTY));
-    submissionBinder.forField(view.experienceGoalField).withNullRepresentation("")
+    design.experienceGoalField.addStyleName(EXPERIENCE_GOAL_PROPERTY);
+    design.experienceGoalField.setCaption(resources.message(EXPERIENCE_GOAL_PROPERTY));
+    submissionBinder.forField(design.experienceGoalField).withNullRepresentation("")
         .bind(EXPERIENCE_GOAL_PROPERTY);
-    view.taxonomyField.addStyleName(TAXONOMY_PROPERTY);
-    view.taxonomyField.setCaption(resources.message(TAXONOMY_PROPERTY));
-    view.taxonomyField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.taxonomyField)
-        .withValidator(requiredTextIfVisible(view.taxonomyField)).withNullRepresentation("")
+    design.taxonomyField.addStyleName(TAXONOMY_PROPERTY);
+    design.taxonomyField.setCaption(resources.message(TAXONOMY_PROPERTY));
+    design.taxonomyField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.taxonomyField)
+        .withValidator(requiredTextIfVisible(design.taxonomyField)).withNullRepresentation("")
         .bind(TAXONOMY_PROPERTY);
-    view.proteinNameField.addStyleName(PROTEIN_NAME_PROPERTY);
-    view.proteinNameField.setCaption(resources.message(PROTEIN_NAME_PROPERTY));
-    submissionBinder.forField(view.proteinNameField).withNullRepresentation("")
+    design.proteinNameField.addStyleName(PROTEIN_NAME_PROPERTY);
+    design.proteinNameField.setCaption(resources.message(PROTEIN_NAME_PROPERTY));
+    submissionBinder.forField(design.proteinNameField).withNullRepresentation("")
         .bind(PROTEIN_NAME_PROPERTY);
-    view.proteinWeightField.addStyleName(PROTEIN_WEIGHT_PROPERTY);
-    view.proteinWeightField.setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY));
-    firstSampleBinder.forField(view.proteinWeightField).withNullRepresentation("")
+    design.proteinWeightField.addStyleName(PROTEIN_WEIGHT_PROPERTY);
+    design.proteinWeightField.setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY));
+    firstSampleBinder.forField(design.proteinWeightField).withNullRepresentation("")
         .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
         .bind(PROTEIN_WEIGHT_PROPERTY);
-    view.postTranslationModificationField.addStyleName(POST_TRANSLATION_MODIFICATION_PROPERTY);
-    view.postTranslationModificationField
+    design.postTranslationModificationField.addStyleName(POST_TRANSLATION_MODIFICATION_PROPERTY);
+    design.postTranslationModificationField
         .setCaption(resources.message(POST_TRANSLATION_MODIFICATION_PROPERTY));
-    submissionBinder.forField(view.postTranslationModificationField).withNullRepresentation("")
+    submissionBinder.forField(design.postTranslationModificationField).withNullRepresentation("")
         .bind(POST_TRANSLATION_MODIFICATION_PROPERTY);
-    view.sampleQuantityField.addStyleName(SAMPLE_QUANTITY_PROPERTY);
-    view.sampleQuantityField.setCaption(resources.message(SAMPLE_QUANTITY_PROPERTY));
-    view.sampleQuantityField
+    design.sampleQuantityField.addStyleName(SAMPLE_QUANTITY_PROPERTY);
+    design.sampleQuantityField.setCaption(resources.message(SAMPLE_QUANTITY_PROPERTY));
+    design.sampleQuantityField
         .setPlaceholder(resources.message(SAMPLE_QUANTITY_PROPERTY + "." + EXAMPLE));
-    view.sampleQuantityField.setRequiredIndicatorVisible(true);
-    firstSampleBinder.forField(view.sampleQuantityField)
-        .withValidator(requiredTextIfVisible(view.sampleQuantityField)).withNullRepresentation("")
+    design.sampleQuantityField.setRequiredIndicatorVisible(true);
+    firstSampleBinder.forField(design.sampleQuantityField)
+        .withValidator(requiredTextIfVisible(design.sampleQuantityField)).withNullRepresentation("")
         .bind(SAMPLE_QUANTITY_PROPERTY);
-    view.sampleVolumeField.addStyleName(SAMPLE_VOLUME_PROPERTY);
-    view.sampleVolumeField.setCaption(resources.message(SAMPLE_VOLUME_PROPERTY));
-    view.sampleVolumeField.setRequiredIndicatorVisible(true);
-    firstSampleBinder.forField(view.sampleVolumeField)
-        .withValidator(requiredTextIfVisible(view.sampleVolumeField)).withNullRepresentation("")
+    design.sampleVolumeField.addStyleName(SAMPLE_VOLUME_PROPERTY);
+    design.sampleVolumeField.setCaption(resources.message(SAMPLE_VOLUME_PROPERTY));
+    design.sampleVolumeField.setRequiredIndicatorVisible(true);
+    firstSampleBinder.forField(design.sampleVolumeField)
+        .withValidator(requiredTextIfVisible(design.sampleVolumeField)).withNullRepresentation("")
         .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
         .bind(SAMPLE_VOLUME_PROPERTY);
   }
@@ -674,33 +678,33 @@ public class SubmissionFormPresenter implements BinderValidator {
   private void prepareStandardsComponents() {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.standardsPanel.addStyleName(STANDARDS_PANEL);
-    view.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
-    view.standardCountField.addStyleName(STANDARD_COUNT_PROPERTY);
-    view.standardCountField.setCaption(resources.message(STANDARD_COUNT_PROPERTY));
-    standardCountBinder.forField(view.standardCountField).withNullRepresentation("0")
+    design.standardsPanel.addStyleName(STANDARDS_PANEL);
+    design.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
+    design.standardCountField.addStyleName(STANDARD_COUNT_PROPERTY);
+    design.standardCountField.setCaption(resources.message(STANDARD_COUNT_PROPERTY));
+    standardCountBinder.forField(design.standardCountField).withNullRepresentation("0")
         .withConverter(new StringToIntegerConverter(generalResources.message(INVALID_INTEGER)))
         .withValidator(new IntegerRangeValidator(
             generalResources.message(OUT_OF_RANGE, 0, MAX_STANDARD_COUNT), 0, MAX_STANDARD_COUNT))
         .bind(ItemCount::getCount, ItemCount::setCount);
-    view.standardsGrid.addStyleName(STANDARD_PROPERTY);
-    view.standardsGrid.addStyleName(COMPONENTS);
-    view.standardsGrid.setDataProvider(standardsDataProvider);
-    view.standardsGrid
+    design.standardsGrid.addStyleName(STANDARD_PROPERTY);
+    design.standardsGrid.addStyleName(COMPONENTS);
+    design.standardsGrid.setDataProvider(standardsDataProvider);
+    design.standardsGrid
         .addColumn(standard -> standardNameTextField(standard), new ComponentRenderer())
         .setId(STANDARD_NAME_PROPERTY)
         .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_NAME_PROPERTY));
-    view.standardsGrid
+    design.standardsGrid
         .addColumn(standard -> standardQuantityTextField(standard), new ComponentRenderer())
         .setId(STANDARD_QUANTITY_PROPERTY)
         .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY));
-    view.standardsGrid
+    design.standardsGrid
         .addColumn(standard -> standardCommentsTextField(standard), new ComponentRenderer())
         .setId(STANDARD_COMMENTS_PROPERTY)
         .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENTS_PROPERTY));
-    view.fillStandardsButton.addStyleName(FILL_STANDARDS_PROPERTY);
-    view.fillStandardsButton.addStyleName(FILL_BUTTON_STYLE);
-    view.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS_PROPERTY));
+    design.fillStandardsButton.addStyleName(FILL_STANDARDS_PROPERTY);
+    design.fillStandardsButton.addStyleName(FILL_BUTTON_STYLE);
+    design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS_PROPERTY));
   }
 
   private TextField standardNameTextField(Standard standard) {
@@ -770,31 +774,31 @@ public class SubmissionFormPresenter implements BinderValidator {
   private void prepareContaminantsComponents() {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.contaminantsPanel.addStyleName(CONTAMINANTS_PANEL);
-    view.contaminantsPanel.setCaption(resources.message(CONTAMINANTS_PANEL));
-    view.contaminantCountField.addStyleName(CONTAMINANT_COUNT_PROPERTY);
-    view.contaminantCountField.setCaption(resources.message(CONTAMINANT_COUNT_PROPERTY));
-    contaminantCountBinder.forField(view.contaminantCountField).withNullRepresentation("0")
+    design.contaminantsPanel.addStyleName(CONTAMINANTS_PANEL);
+    design.contaminantsPanel.setCaption(resources.message(CONTAMINANTS_PANEL));
+    design.contaminantCountField.addStyleName(CONTAMINANT_COUNT_PROPERTY);
+    design.contaminantCountField.setCaption(resources.message(CONTAMINANT_COUNT_PROPERTY));
+    contaminantCountBinder.forField(design.contaminantCountField).withNullRepresentation("0")
         .withConverter(new StringToIntegerConverter(generalResources.message(INVALID_INTEGER)))
         .withValidator(new IntegerRangeValidator(
             generalResources.message(OUT_OF_RANGE, 0, MAX_CONTAMINANT_COUNT), 0,
             MAX_CONTAMINANT_COUNT))
         .bind(ItemCount::getCount, ItemCount::setCount);
-    view.contaminantsGrid.addStyleName(CONTAMINANT_PROPERTY);
-    view.contaminantsGrid.addStyleName(COMPONENTS);
-    view.contaminantsGrid.setDataProvider(contaminantsDataProvider);
-    view.contaminantsGrid.addColumn(contaminant -> contaminantNameTextField(contaminant))
+    design.contaminantsGrid.addStyleName(CONTAMINANT_PROPERTY);
+    design.contaminantsGrid.addStyleName(COMPONENTS);
+    design.contaminantsGrid.setDataProvider(contaminantsDataProvider);
+    design.contaminantsGrid.addColumn(contaminant -> contaminantNameTextField(contaminant))
         .setId(CONTAMINANT_NAME_PROPERTY)
         .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_NAME_PROPERTY));
-    view.contaminantsGrid.addColumn(contaminant -> contaminantQuantityTextField(contaminant))
+    design.contaminantsGrid.addColumn(contaminant -> contaminantQuantityTextField(contaminant))
         .setId(CONTAMINANT_QUANTITY_PROPERTY)
         .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY));
-    view.contaminantsGrid.addColumn(contaminant -> contaminantCommentsTextField(contaminant))
+    design.contaminantsGrid.addColumn(contaminant -> contaminantCommentsTextField(contaminant))
         .setId(CONTAMINANT_COMMENTS_PROPERTY)
         .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENTS_PROPERTY));
-    view.fillContaminantsButton.addStyleName(FILL_CONTAMINANTS_PROPERTY);
-    view.fillContaminantsButton.addStyleName(FILL_BUTTON_STYLE);
-    view.fillContaminantsButton.setCaption(resources.message(FILL_CONTAMINANTS_PROPERTY));
+    design.fillContaminantsButton.addStyleName(FILL_CONTAMINANTS_PROPERTY);
+    design.fillContaminantsButton.addStyleName(FILL_BUTTON_STYLE);
+    design.fillContaminantsButton.setCaption(resources.message(FILL_CONTAMINANTS_PROPERTY));
   }
 
   private TextField contaminantNameTextField(Contaminant contaminant) {
@@ -865,73 +869,73 @@ public class SubmissionFormPresenter implements BinderValidator {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.gelPanel.addStyleName(GEL_PANEL);
-    view.gelPanel.setCaption(resources.message(GEL_PANEL));
-    view.separationField.addStyleName(SEPARATION_PROPERTY);
-    view.separationField.setCaption(resources.message(SEPARATION_PROPERTY));
-    view.separationField.setEmptySelectionAllowed(false);
-    view.separationField.setItems(GelSeparation.values());
-    view.separationField.setItemCaptionGenerator(separation -> separation.getLabel(locale));
-    view.separationField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.separationField)
-        .withValidator(requiredIfVisible(view.separationField)).bind(SEPARATION_PROPERTY);
-    view.thicknessField.addStyleName(THICKNESS_PROPERTY);
-    view.thicknessField.setCaption(resources.message(THICKNESS_PROPERTY));
-    view.thicknessField.setEmptySelectionAllowed(false);
-    view.thicknessField.setItems(GelThickness.values());
-    view.thicknessField.setItemCaptionGenerator(thickness -> thickness.getLabel(locale));
-    view.thicknessField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.thicknessField)
-        .withValidator(requiredIfVisible(view.thicknessField)).bind(THICKNESS_PROPERTY);
-    view.colorationField.addStyleName(COLORATION_PROPERTY);
-    view.colorationField.setCaption(resources.message(COLORATION_PROPERTY));
-    view.colorationField.setEmptySelectionAllowed(true);
-    view.colorationField.setEmptySelectionCaption(GelColoration.getNullLabel(locale));
-    view.colorationField.setItems(GelColoration.values());
-    view.colorationField.setItemCaptionGenerator(coloration -> coloration.getLabel(locale));
-    submissionBinder.forField(view.colorationField).bind(COLORATION_PROPERTY);
-    view.otherColorationField.addStyleName(OTHER_COLORATION_PROPERTY);
-    view.otherColorationField.setCaption(resources.message(OTHER_COLORATION_PROPERTY));
-    view.otherColorationField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.otherColorationField)
-        .withValidator(requiredTextIfVisible(view.otherColorationField)).withNullRepresentation("")
-        .bind(OTHER_COLORATION_PROPERTY);
-    view.developmentTimeField.addStyleName(DEVELOPMENT_TIME_PROPERTY);
-    view.developmentTimeField.setCaption(resources.message(DEVELOPMENT_TIME_PROPERTY));
-    view.developmentTimeField
+    design.gelPanel.addStyleName(GEL_PANEL);
+    design.gelPanel.setCaption(resources.message(GEL_PANEL));
+    design.separationField.addStyleName(SEPARATION_PROPERTY);
+    design.separationField.setCaption(resources.message(SEPARATION_PROPERTY));
+    design.separationField.setEmptySelectionAllowed(false);
+    design.separationField.setItems(GelSeparation.values());
+    design.separationField.setItemCaptionGenerator(separation -> separation.getLabel(locale));
+    design.separationField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.separationField)
+        .withValidator(requiredIfVisible(design.separationField)).bind(SEPARATION_PROPERTY);
+    design.thicknessField.addStyleName(THICKNESS_PROPERTY);
+    design.thicknessField.setCaption(resources.message(THICKNESS_PROPERTY));
+    design.thicknessField.setEmptySelectionAllowed(false);
+    design.thicknessField.setItems(GelThickness.values());
+    design.thicknessField.setItemCaptionGenerator(thickness -> thickness.getLabel(locale));
+    design.thicknessField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.thicknessField)
+        .withValidator(requiredIfVisible(design.thicknessField)).bind(THICKNESS_PROPERTY);
+    design.colorationField.addStyleName(COLORATION_PROPERTY);
+    design.colorationField.setCaption(resources.message(COLORATION_PROPERTY));
+    design.colorationField.setEmptySelectionAllowed(true);
+    design.colorationField.setEmptySelectionCaption(GelColoration.getNullLabel(locale));
+    design.colorationField.setItems(GelColoration.values());
+    design.colorationField.setItemCaptionGenerator(coloration -> coloration.getLabel(locale));
+    submissionBinder.forField(design.colorationField).bind(COLORATION_PROPERTY);
+    design.otherColorationField.addStyleName(OTHER_COLORATION_PROPERTY);
+    design.otherColorationField.setCaption(resources.message(OTHER_COLORATION_PROPERTY));
+    design.otherColorationField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.otherColorationField)
+        .withValidator(requiredTextIfVisible(design.otherColorationField))
+        .withNullRepresentation("").bind(OTHER_COLORATION_PROPERTY);
+    design.developmentTimeField.addStyleName(DEVELOPMENT_TIME_PROPERTY);
+    design.developmentTimeField.setCaption(resources.message(DEVELOPMENT_TIME_PROPERTY));
+    design.developmentTimeField
         .setPlaceholder(resources.message(DEVELOPMENT_TIME_PROPERTY + "." + EXAMPLE));
-    submissionBinder.forField(view.developmentTimeField).withNullRepresentation("")
+    submissionBinder.forField(design.developmentTimeField).withNullRepresentation("")
         .bind(DEVELOPMENT_TIME_PROPERTY);
-    view.decolorationField.addStyleName(DECOLORATION_PROPERTY);
-    view.decolorationField.setCaption(resources.message(DECOLORATION_PROPERTY));
-    submissionBinder.forField(view.decolorationField).bind(DECOLORATION_PROPERTY);
-    view.weightMarkerQuantityField.addStyleName(WEIGHT_MARKER_QUANTITY_PROPERTY);
-    view.weightMarkerQuantityField.setCaption(resources.message(WEIGHT_MARKER_QUANTITY_PROPERTY));
-    view.weightMarkerQuantityField
+    design.decolorationField.addStyleName(DECOLORATION_PROPERTY);
+    design.decolorationField.setCaption(resources.message(DECOLORATION_PROPERTY));
+    submissionBinder.forField(design.decolorationField).bind(DECOLORATION_PROPERTY);
+    design.weightMarkerQuantityField.addStyleName(WEIGHT_MARKER_QUANTITY_PROPERTY);
+    design.weightMarkerQuantityField.setCaption(resources.message(WEIGHT_MARKER_QUANTITY_PROPERTY));
+    design.weightMarkerQuantityField
         .setPlaceholder(resources.message(WEIGHT_MARKER_QUANTITY_PROPERTY + "." + EXAMPLE));
-    submissionBinder.forField(view.weightMarkerQuantityField).withNullRepresentation("")
+    submissionBinder.forField(design.weightMarkerQuantityField).withNullRepresentation("")
         .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
         .bind(WEIGHT_MARKER_QUANTITY_PROPERTY);
-    view.proteinQuantityField.addStyleName(PROTEIN_QUANTITY_PROPERTY);
-    view.proteinQuantityField.setCaption(resources.message(PROTEIN_QUANTITY_PROPERTY));
-    view.proteinQuantityField
+    design.proteinQuantityField.addStyleName(PROTEIN_QUANTITY_PROPERTY);
+    design.proteinQuantityField.setCaption(resources.message(PROTEIN_QUANTITY_PROPERTY));
+    design.proteinQuantityField
         .setPlaceholder(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE));
-    submissionBinder.forField(view.proteinQuantityField).withNullRepresentation("")
+    submissionBinder.forField(design.proteinQuantityField).withNullRepresentation("")
         .bind(PROTEIN_QUANTITY_PROPERTY);
-    view.gelImagesLayout.addStyleName(REQUIRED);
-    view.gelImagesLayout.setCaption(resources.message(GEL_IMAGES_PROPERTY));
+    design.gelImagesLayout.addStyleName(REQUIRED);
+    design.gelImagesLayout.setCaption(resources.message(GEL_IMAGES_PROPERTY));
     view.gelImagesUploader.addStyleName(GEL_IMAGES_PROPERTY);
     view.gelImagesUploader.setUploadButtonCaption(resources.message(GEL_IMAGES_UPLOADER));
     view.gelImagesUploader.setMaxFileCount(1000000); // Count is required if size is set.
     view.gelImagesUploader.setMaxFileSize(MAXIMUM_GEL_IMAGES_SIZE);
-    view.gelImagesGrid.addStyleName(GEL_IMAGES_TABLE);
-    view.gelImagesGrid.addStyleName(COMPONENTS);
-    view.gelImagesGrid.addColumn(image -> downloadGelImageButton(image))
+    design.gelImagesGrid.addStyleName(GEL_IMAGES_TABLE);
+    design.gelImagesGrid.addStyleName(COMPONENTS);
+    design.gelImagesGrid.addColumn(image -> downloadGelImageButton(image))
         .setId(GEL_IMAGE_FILENAME_PROPERTY)
         .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + GEL_IMAGE_FILENAME_PROPERTY));
-    view.gelImagesGrid.addColumn(image -> removeGelImageButton(image)).setId(REMOVE_GEL_IMAGE)
+    design.gelImagesGrid.addColumn(image -> removeGelImageButton(image)).setId(REMOVE_GEL_IMAGE)
         .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE));
-    view.gelImagesGrid.setDataProvider(gelImagesDataProvider);
+    design.gelImagesGrid.setDataProvider(gelImagesDataProvider);
   }
 
   private Button downloadGelImageButton(GelImage file) {
@@ -958,138 +962,140 @@ public class SubmissionFormPresenter implements BinderValidator {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.servicesPanel.addStyleName(SERVICES_PANEL);
-    view.servicesPanel.setCaption(resources.message(SERVICES_PANEL));
-    view.digestionOptions.addStyleName(DIGESTION_PROPERTY);
-    view.digestionOptions.setCaption(resources.message(DIGESTION_PROPERTY));
-    view.digestionOptions.setItemCaptionGenerator(digestion -> digestion.getLabel(locale));
-    view.digestionOptions.setItems(ProteolyticDigestion.values());
-    view.digestionOptions.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.digestionOptions)
-        .withValidator(requiredIfVisible(view.digestionOptions)).bind(DIGESTION_PROPERTY);
-    view.usedProteolyticDigestionMethodField.addStyleName(USED_DIGESTION_PROPERTY);
-    view.usedProteolyticDigestionMethodField.setCaption(resources.message(USED_DIGESTION_PROPERTY));
-    view.usedProteolyticDigestionMethodField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.usedProteolyticDigestionMethodField)
-        .withValidator(requiredTextIfVisible(view.usedProteolyticDigestionMethodField))
+    design.servicesPanel.addStyleName(SERVICES_PANEL);
+    design.servicesPanel.setCaption(resources.message(SERVICES_PANEL));
+    design.digestionOptions.addStyleName(DIGESTION_PROPERTY);
+    design.digestionOptions.setCaption(resources.message(DIGESTION_PROPERTY));
+    design.digestionOptions.setItemCaptionGenerator(digestion -> digestion.getLabel(locale));
+    design.digestionOptions.setItems(ProteolyticDigestion.values());
+    design.digestionOptions.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.digestionOptions)
+        .withValidator(requiredIfVisible(design.digestionOptions)).bind(DIGESTION_PROPERTY);
+    design.usedProteolyticDigestionMethodField.addStyleName(USED_DIGESTION_PROPERTY);
+    design.usedProteolyticDigestionMethodField
+        .setCaption(resources.message(USED_DIGESTION_PROPERTY));
+    design.usedProteolyticDigestionMethodField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.usedProteolyticDigestionMethodField)
+        .withValidator(requiredTextIfVisible(design.usedProteolyticDigestionMethodField))
         .withNullRepresentation("").bind(USED_DIGESTION_PROPERTY);
-    view.otherProteolyticDigestionMethodField.addStyleName(OTHER_DIGESTION_PROPERTY);
-    view.otherProteolyticDigestionMethodField
+    design.otherProteolyticDigestionMethodField.addStyleName(OTHER_DIGESTION_PROPERTY);
+    design.otherProteolyticDigestionMethodField
         .setCaption(resources.message(OTHER_DIGESTION_PROPERTY));
-    view.otherProteolyticDigestionMethodField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.otherProteolyticDigestionMethodField)
-        .withValidator(requiredTextIfVisible(view.otherProteolyticDigestionMethodField))
+    design.otherProteolyticDigestionMethodField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.otherProteolyticDigestionMethodField)
+        .withValidator(requiredTextIfVisible(design.otherProteolyticDigestionMethodField))
         .withNullRepresentation("").bind(OTHER_DIGESTION_PROPERTY);
-    view.otherProteolyticDigestionMethodNote
+    design.otherProteolyticDigestionMethodNote
         .setValue(resources.message(OTHER_DIGESTION_PROPERTY + ".note"));
-    view.enrichmentLabel.addStyleName(ENRICHEMENT_PROPERTY);
-    view.enrichmentLabel.setCaption(resources.message(ENRICHEMENT_PROPERTY));
-    view.enrichmentLabel.setValue(resources.message(ENRICHEMENT_PROPERTY + ".value"));
-    view.exclusionsLabel.addStyleName(EXCLUSIONS_PROPERTY);
-    view.exclusionsLabel.setCaption(resources.message(EXCLUSIONS_PROPERTY));
-    view.exclusionsLabel.setValue(resources.message(EXCLUSIONS_PROPERTY + ".value"));
-    view.injectionTypeOptions.addStyleName(INJECTION_TYPE_PROPERTY);
-    view.injectionTypeOptions.setCaption(resources.message(INJECTION_TYPE_PROPERTY));
-    view.injectionTypeOptions.setItems(InjectionType.values());
-    view.injectionTypeOptions
+    design.enrichmentLabel.addStyleName(ENRICHEMENT_PROPERTY);
+    design.enrichmentLabel.setCaption(resources.message(ENRICHEMENT_PROPERTY));
+    design.enrichmentLabel.setValue(resources.message(ENRICHEMENT_PROPERTY + ".value"));
+    design.exclusionsLabel.addStyleName(EXCLUSIONS_PROPERTY);
+    design.exclusionsLabel.setCaption(resources.message(EXCLUSIONS_PROPERTY));
+    design.exclusionsLabel.setValue(resources.message(EXCLUSIONS_PROPERTY + ".value"));
+    design.injectionTypeOptions.addStyleName(INJECTION_TYPE_PROPERTY);
+    design.injectionTypeOptions.setCaption(resources.message(INJECTION_TYPE_PROPERTY));
+    design.injectionTypeOptions.setItems(InjectionType.values());
+    design.injectionTypeOptions
         .setItemCaptionGenerator(injectionType -> injectionType.getLabel(locale));
-    view.injectionTypeOptions.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.injectionTypeOptions)
-        .withValidator(requiredIfVisible(view.injectionTypeOptions)).bind(INJECTION_TYPE_PROPERTY);
-    view.sourceOptions.addStyleName(SOURCE_PROPERTY);
-    view.sourceOptions.setCaption(resources.message(SOURCE_PROPERTY));
-    view.sourceOptions.setItems(MassDetectionInstrumentSource.availables());
-    view.sourceOptions.setItemCaptionGenerator(source -> source.getLabel(locale));
-    view.sourceOptions.setItemEnabledProvider(source -> source.available);
-    view.sourceOptions.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.sourceOptions)
-        .withValidator(requiredIfVisible(view.sourceOptions)).bind(SOURCE_PROPERTY);
-    view.proteinContentOptions.addStyleName(PROTEIN_CONTENT_PROPERTY);
-    view.proteinContentOptions.setCaption(resources.message(PROTEIN_CONTENT_PROPERTY));
-    view.proteinContentOptions.setItems(ProteinContent.values());
-    view.proteinContentOptions
+    design.injectionTypeOptions.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.injectionTypeOptions)
+        .withValidator(requiredIfVisible(design.injectionTypeOptions))
+        .bind(INJECTION_TYPE_PROPERTY);
+    design.sourceOptions.addStyleName(SOURCE_PROPERTY);
+    design.sourceOptions.setCaption(resources.message(SOURCE_PROPERTY));
+    design.sourceOptions.setItems(MassDetectionInstrumentSource.availables());
+    design.sourceOptions.setItemCaptionGenerator(source -> source.getLabel(locale));
+    design.sourceOptions.setItemEnabledProvider(source -> source.available);
+    design.sourceOptions.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.sourceOptions)
+        .withValidator(requiredIfVisible(design.sourceOptions)).bind(SOURCE_PROPERTY);
+    design.proteinContentOptions.addStyleName(PROTEIN_CONTENT_PROPERTY);
+    design.proteinContentOptions.setCaption(resources.message(PROTEIN_CONTENT_PROPERTY));
+    design.proteinContentOptions.setItems(ProteinContent.values());
+    design.proteinContentOptions
         .setItemCaptionGenerator(proteinContent -> proteinContent.getLabel(locale));
-    view.proteinContentOptions.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.proteinContentOptions)
-        .withValidator(requiredIfVisible(view.proteinContentOptions))
+    design.proteinContentOptions.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.proteinContentOptions)
+        .withValidator(requiredIfVisible(design.proteinContentOptions))
         .bind(PROTEIN_CONTENT_PROPERTY);
-    view.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
-    view.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
-    view.instrumentOptions.setItems(instrumentValues());
-    view.instrumentOptions
+    design.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
+    design.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
+    design.instrumentOptions.setItems(instrumentValues());
+    design.instrumentOptions
         .setItemCaptionGenerator(instrument -> instrument != null ? instrument.getLabel(locale)
             : MassDetectionInstrument.getNullLabel(locale));
-    view.instrumentOptions
+    design.instrumentOptions
         .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : true);
-    submissionBinder.forField(view.instrumentOptions)
+    submissionBinder.forField(design.instrumentOptions)
         .withNullRepresentation(MassDetectionInstrument.NULL).bind(INSTRUMENT_PROPERTY);
-    view.proteinIdentificationOptions.addStyleName(PROTEIN_IDENTIFICATION_PROPERTY);
-    view.proteinIdentificationOptions
+    design.proteinIdentificationOptions.addStyleName(PROTEIN_IDENTIFICATION_PROPERTY);
+    design.proteinIdentificationOptions
         .setCaption(resources.message(PROTEIN_IDENTIFICATION_PROPERTY));
-    view.proteinIdentificationOptions.setItems(ProteinIdentification.availables());
-    view.proteinIdentificationOptions
+    design.proteinIdentificationOptions.setItems(ProteinIdentification.availables());
+    design.proteinIdentificationOptions
         .setItemCaptionGenerator(proteinIdentification -> proteinIdentification.getLabel(locale));
-    view.proteinIdentificationOptions
+    design.proteinIdentificationOptions
         .setItemEnabledProvider(proteinIdentification -> proteinIdentification.available);
-    view.proteinIdentificationOptions.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.proteinIdentificationOptions)
-        .withValidator(requiredIfVisible(view.proteinIdentificationOptions))
+    design.proteinIdentificationOptions.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.proteinIdentificationOptions)
+        .withValidator(requiredIfVisible(design.proteinIdentificationOptions))
         .bind(PROTEIN_IDENTIFICATION_PROPERTY);
-    view.proteinIdentificationLinkField.addStyleName(PROTEIN_IDENTIFICATION_LINK_PROPERTY);
-    view.proteinIdentificationLinkField
+    design.proteinIdentificationLinkField.addStyleName(PROTEIN_IDENTIFICATION_LINK_PROPERTY);
+    design.proteinIdentificationLinkField
         .setCaption(resources.message(PROTEIN_IDENTIFICATION_LINK_PROPERTY));
-    view.proteinIdentificationLinkField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.proteinIdentificationLinkField)
-        .withValidator(requiredTextIfVisible(view.proteinIdentificationLinkField))
+    design.proteinIdentificationLinkField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.proteinIdentificationLinkField)
+        .withValidator(requiredTextIfVisible(design.proteinIdentificationLinkField))
         .withNullRepresentation("").bind(PROTEIN_IDENTIFICATION_LINK_PROPERTY);
-    view.quantificationOptions.addStyleName(QUANTIFICATION_PROPERTY);
-    view.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
-    view.quantificationOptions.setItems(quantificationValues());
-    view.quantificationOptions.setItemCaptionGenerator(
+    design.quantificationOptions.addStyleName(QUANTIFICATION_PROPERTY);
+    design.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
+    design.quantificationOptions.setItems(quantificationValues());
+    design.quantificationOptions.setItemCaptionGenerator(
         quantification -> quantification != null ? quantification.getLabel(locale)
             : Quantification.getNullLabel(locale));
-    submissionBinder.forField(view.quantificationOptions)
+    submissionBinder.forField(design.quantificationOptions)
         .withNullRepresentation(Quantification.NULL).bind(QUANTIFICATION_PROPERTY);
-    view.quantificationLabelsField.addStyleName(QUANTIFICATION_LABELS_PROPERTY);
-    view.quantificationLabelsField.setCaption(resources.message(QUANTIFICATION_LABELS_PROPERTY));
-    view.quantificationLabelsField
+    design.quantificationLabelsField.addStyleName(QUANTIFICATION_LABELS_PROPERTY);
+    design.quantificationLabelsField.setCaption(resources.message(QUANTIFICATION_LABELS_PROPERTY));
+    design.quantificationLabelsField
         .setPlaceholder(resources.message(QUANTIFICATION_LABELS_PROPERTY + "." + EXAMPLE));
-    submissionBinder.forField(view.quantificationLabelsField).withValidator((value, context) -> {
-      if (view.quantificationOptions.getValue() == SILAC && value.isEmpty()) {
+    submissionBinder.forField(design.quantificationLabelsField).withValidator((value, context) -> {
+      if (design.quantificationOptions.getValue() == SILAC && value.isEmpty()) {
         return ValidationResult.error(generalResources.message(REQUIRED));
       }
       return ValidationResult.ok();
     }).withNullRepresentation("").bind(QUANTIFICATION_LABELS_PROPERTY);
-    view.highResolutionOptions.addStyleName(HIGH_RESOLUTION_PROPERTY);
-    view.highResolutionOptions.setCaption(resources.message(HIGH_RESOLUTION_PROPERTY));
-    view.highResolutionOptions.setItems(false, true);
-    view.highResolutionOptions.setItemCaptionGenerator(
+    design.highResolutionOptions.addStyleName(HIGH_RESOLUTION_PROPERTY);
+    design.highResolutionOptions.setCaption(resources.message(HIGH_RESOLUTION_PROPERTY));
+    design.highResolutionOptions.setItems(false, true);
+    design.highResolutionOptions.setItemCaptionGenerator(
         value -> resources.message(HIGH_RESOLUTION_PROPERTY + "." + value));
-    view.highResolutionOptions.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.highResolutionOptions)
-        .withValidator(requiredIfVisible(view.highResolutionOptions))
+    design.highResolutionOptions.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.highResolutionOptions)
+        .withValidator(requiredIfVisible(design.highResolutionOptions))
         .bind(HIGH_RESOLUTION_PROPERTY);
-    view.solventsLayout.addStyleName(REQUIRED);
-    view.solventsLayout.setCaption(resources.message(SOLVENTS_PROPERTY));
-    view.acetonitrileSolventsField
+    design.solventsLayout.addStyleName(REQUIRED);
+    design.solventsLayout.setCaption(resources.message(SOLVENTS_PROPERTY));
+    design.acetonitrileSolventsField
         .addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.ACETONITRILE.name());
-    view.acetonitrileSolventsField.setCaption(Solvent.ACETONITRILE.getLabel(locale));
-    view.methanolSolventsField.addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.METHANOL.name());
-    view.methanolSolventsField.setCaption(Solvent.METHANOL.getLabel(locale));
-    view.chclSolventsField.addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.CHCL3.name());
-    view.chclSolventsField.setCaption(Solvent.CHCL3.getLabel(locale));
-    view.chclSolventsField.setCaptionAsHtml(true);
-    view.otherSolventsField.addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.OTHER.name());
-    view.otherSolventsField.setCaption(Solvent.OTHER.getLabel(locale));
-    view.otherSolventField.setCaption(resources.message(OTHER_SOLVENT_PROPERTY));
-    view.otherSolventField.addStyleName(OTHER_SOLVENT_PROPERTY);
-    view.otherSolventField.addStyleName(ValoTheme.TEXTFIELD_SMALL);
-    view.otherSolventField.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(view.otherSolventField)
-        .withValidator(requiredTextIfVisible(view.otherSolventField)).withNullRepresentation("")
+    design.acetonitrileSolventsField.setCaption(Solvent.ACETONITRILE.getLabel(locale));
+    design.methanolSolventsField.addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.METHANOL.name());
+    design.methanolSolventsField.setCaption(Solvent.METHANOL.getLabel(locale));
+    design.chclSolventsField.addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.CHCL3.name());
+    design.chclSolventsField.setCaption(Solvent.CHCL3.getLabel(locale));
+    design.chclSolventsField.setCaptionAsHtml(true);
+    design.otherSolventsField.addStyleName(SOLVENTS_PROPERTY + "-" + Solvent.OTHER.name());
+    design.otherSolventsField.setCaption(Solvent.OTHER.getLabel(locale));
+    design.otherSolventField.setCaption(resources.message(OTHER_SOLVENT_PROPERTY));
+    design.otherSolventField.addStyleName(OTHER_SOLVENT_PROPERTY);
+    design.otherSolventField.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+    design.otherSolventField.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.otherSolventField)
+        .withValidator(requiredTextIfVisible(design.otherSolventField)).withNullRepresentation("")
         .bind(OTHER_SOLVENT_PROPERTY);
-    view.otherSolventNoteLabel.addStyleName(OTHER_SOLVENT_NOTE);
-    view.otherSolventNoteLabel.setValue(resources.message(OTHER_SOLVENT_NOTE));
+    design.otherSolventNoteLabel.addStyleName(OTHER_SOLVENT_NOTE);
+    design.otherSolventNoteLabel.setValue(resources.message(OTHER_SOLVENT_NOTE));
   }
 
   private <V> Validator<V> requiredIfVisible(AbstractListing<V> field) {
@@ -1124,197 +1130,199 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private void addFieldListeners() {
-    view.serviceOptions.addValueChangeListener(e -> updateVisible());
-    view.sampleSupportOptions.addValueChangeListener(e -> updateVisible());
-    view.sampleCountField
-        .addValueChangeListener(e -> updateSampleCount(view.sampleCountField.getValue()));
-    view.sampleCountField.addValueChangeListener(e -> updateSampleCount(e.getValue()));
-    view.sampleContainerTypeOptions.addValueChangeListener(e -> updateVisible());
-    view.fillSamplesButton.addClickListener(e -> fillSamples());
-    view.standardCountField
-        .addValueChangeListener(e -> updateStandardsTable(view.standardCountField.getValue()));
-    view.standardCountField.addValueChangeListener(e -> updateStandardsTable(e.getValue()));
-    view.fillStandardsButton.addClickListener(e -> fillStandards());
-    view.contaminantCountField.addValueChangeListener(
-        e -> updateContaminantsTable(view.contaminantCountField.getValue()));
-    view.contaminantCountField.addValueChangeListener(e -> updateContaminantsTable(e.getValue()));
-    view.fillContaminantsButton.addClickListener(e -> fillContaminants());
-    view.colorationField.addValueChangeListener(e -> updateVisible());
-    view.digestionOptions.addValueChangeListener(e -> updateVisible());
-    view.proteinIdentificationOptions.addValueChangeListener(e -> updateVisible());
-    view.quantificationOptions.addValueChangeListener(e -> view.quantificationLabelsField
-        .setRequiredIndicatorVisible(view.quantificationOptions.getValue() == SILAC));
-    view.otherSolventsField.addValueChangeListener(e -> updateVisible());
-    view.saveButton.addClickListener(e -> save());
+    design.serviceOptions.addValueChangeListener(e -> updateVisible());
+    design.sampleSupportOptions.addValueChangeListener(e -> updateVisible());
+    design.sampleCountField
+        .addValueChangeListener(e -> updateSampleCount(design.sampleCountField.getValue()));
+    design.sampleCountField.addValueChangeListener(e -> updateSampleCount(e.getValue()));
+    design.sampleContainerTypeOptions.addValueChangeListener(e -> updateVisible());
+    design.fillSamplesButton.addClickListener(e -> fillSamples());
+    design.standardCountField
+        .addValueChangeListener(e -> updateStandardsTable(design.standardCountField.getValue()));
+    design.standardCountField.addValueChangeListener(e -> updateStandardsTable(e.getValue()));
+    design.fillStandardsButton.addClickListener(e -> fillStandards());
+    design.contaminantCountField.addValueChangeListener(
+        e -> updateContaminantsTable(design.contaminantCountField.getValue()));
+    design.contaminantCountField.addValueChangeListener(e -> updateContaminantsTable(e.getValue()));
+    design.fillContaminantsButton.addClickListener(e -> fillContaminants());
+    design.colorationField.addValueChangeListener(e -> updateVisible());
+    design.digestionOptions.addValueChangeListener(e -> updateVisible());
+    design.proteinIdentificationOptions.addValueChangeListener(e -> updateVisible());
+    design.quantificationOptions.addValueChangeListener(e -> design.quantificationLabelsField
+        .setRequiredIndicatorVisible(design.quantificationOptions.getValue() == SILAC));
+    design.otherSolventsField.addValueChangeListener(e -> updateVisible());
+    design.saveButton.addClickListener(e -> save());
   }
 
   private void updateVisible() {
-    final Service service = view.serviceOptions.getValue();
-    final SampleSupport support = view.sampleSupportOptions.getValue();
-    view.sampleTypeLabel.setVisible(!readOnly);
-    view.inactiveLabel.setVisible(!readOnly);
-    view.sampleSupportOptions.setItemEnabledProvider(value -> value != GEL || service == LC_MS_MS);
-    view.solutionSolventField
+    final Service service = design.serviceOptions.getValue();
+    final SampleSupport support = design.sampleSupportOptions.getValue();
+    design.sampleTypeLabel.setVisible(!readOnly);
+    design.inactiveLabel.setVisible(!readOnly);
+    design.sampleSupportOptions
+        .setItemEnabledProvider(value -> value != GEL || service == LC_MS_MS);
+    design.solutionSolventField
         .setVisible(service == SMALL_MOLECULE && support == SampleSupport.SOLUTION);
-    view.sampleNameField.setVisible(service == SMALL_MOLECULE);
-    view.formulaField.setVisible(service == SMALL_MOLECULE);
-    view.structureLayout.setVisible(service == SMALL_MOLECULE);
+    design.sampleNameField.setVisible(service == SMALL_MOLECULE);
+    design.formulaField.setVisible(service == SMALL_MOLECULE);
+    design.structureLayout.setVisible(service == SMALL_MOLECULE);
     view.structureUploader.setVisible(service == SMALL_MOLECULE && !readOnly);
-    view.structureButton
-        .setVisible(service == SMALL_MOLECULE && view.structureButton.getCaption() != null
-            && !view.structureButton.getCaption().isEmpty());
-    view.monoisotopicMassField.setVisible(service == SMALL_MOLECULE);
-    view.averageMassField.setVisible(service == SMALL_MOLECULE);
-    view.toxicityField.setVisible(service == SMALL_MOLECULE);
-    view.lightSensitiveField.setVisible(service == SMALL_MOLECULE);
-    view.storageTemperatureOptions.setVisible(service == SMALL_MOLECULE);
-    view.sampleCountField.setVisible(service != SMALL_MOLECULE);
-    view.sampleContainerTypeOptions.setVisible(service == LC_MS_MS);
-    view.plateNameField
-        .setVisible(service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == WELL);
-    view.samplesLabel.setVisible(service != SMALL_MOLECULE);
-    view.samplesGridLayout.setVisible(service == INTACT_PROTEIN
-        || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != WELL));
-    view.samplesGrid.setVisible(service == INTACT_PROTEIN
-        || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != WELL));
-    view.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).setHidden(service != INTACT_PROTEIN);
-    view.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).setHidden(service != INTACT_PROTEIN);
-    view.samplesGrid.setWidth((float) view.samplesGrid.getColumns().stream()
+    design.structureButton
+        .setVisible(service == SMALL_MOLECULE && design.structureButton.getCaption() != null
+            && !design.structureButton.getCaption().isEmpty());
+    design.monoisotopicMassField.setVisible(service == SMALL_MOLECULE);
+    design.averageMassField.setVisible(service == SMALL_MOLECULE);
+    design.toxicityField.setVisible(service == SMALL_MOLECULE);
+    design.lightSensitiveField.setVisible(service == SMALL_MOLECULE);
+    design.storageTemperatureOptions.setVisible(service == SMALL_MOLECULE);
+    design.sampleCountField.setVisible(service != SMALL_MOLECULE);
+    design.sampleContainerTypeOptions.setVisible(service == LC_MS_MS);
+    design.plateNameField
+        .setVisible(service == LC_MS_MS && design.sampleContainerTypeOptions.getValue() == WELL);
+    design.samplesLabel.setVisible(service != SMALL_MOLECULE);
+    design.samplesGridLayout.setVisible(service == INTACT_PROTEIN
+        || (service == LC_MS_MS && design.sampleContainerTypeOptions.getValue() != WELL));
+    design.samplesGrid.setVisible(service == INTACT_PROTEIN
+        || (service == LC_MS_MS && design.sampleContainerTypeOptions.getValue() != WELL));
+    design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY)
+        .setHidden(service != INTACT_PROTEIN);
+    design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).setHidden(service != INTACT_PROTEIN);
+    design.samplesGrid.setWidth((float) design.samplesGrid.getColumns().stream()
         .filter(column -> !column.isHidden()).mapToDouble(column -> column.getWidth()).sum(),
         Unit.PIXELS);
-    view.fillSamplesButton.setVisible((service == INTACT_PROTEIN
-        || (service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() != WELL))
+    design.fillSamplesButton.setVisible((service == INTACT_PROTEIN
+        || (service == LC_MS_MS && design.sampleContainerTypeOptions.getValue() != WELL))
         && !readOnly);
-    view.samplesPlateContainer
-        .setVisible(service == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == WELL);
-    view.experiencePanel.setVisible(service != SMALL_MOLECULE);
-    view.experienceField.setVisible(service != SMALL_MOLECULE);
-    view.experienceGoalField.setVisible(service != SMALL_MOLECULE);
-    view.taxonomyField.setVisible(service != SMALL_MOLECULE);
-    view.proteinNameField.setVisible(service != SMALL_MOLECULE);
-    view.proteinWeightField.setVisible(service == LC_MS_MS);
-    view.postTranslationModificationField.setVisible(service != SMALL_MOLECULE);
-    view.sampleQuantityField
+    design.samplesPlateContainer
+        .setVisible(service == LC_MS_MS && design.sampleContainerTypeOptions.getValue() == WELL);
+    design.experiencePanel.setVisible(service != SMALL_MOLECULE);
+    design.experienceField.setVisible(service != SMALL_MOLECULE);
+    design.experienceGoalField.setVisible(service != SMALL_MOLECULE);
+    design.taxonomyField.setVisible(service != SMALL_MOLECULE);
+    design.proteinNameField.setVisible(service != SMALL_MOLECULE);
+    design.proteinWeightField.setVisible(service == LC_MS_MS);
+    design.postTranslationModificationField.setVisible(service != SMALL_MOLECULE);
+    design.sampleQuantityField
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.sampleVolumeField.setVisible(service != SMALL_MOLECULE && support == SOLUTION);
-    view.standardsPanel
+    design.sampleVolumeField.setVisible(service != SMALL_MOLECULE && support == SOLUTION);
+    design.standardsPanel
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.standardCountField
+    design.standardCountField
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.standardsGrid
+    design.standardsGrid
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.fillStandardsButton.setVisible(
+    design.fillStandardsButton.setVisible(
         service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && !readOnly);
-    view.contaminantsPanel
+    design.contaminantsPanel
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.contaminantCountField
+    design.contaminantCountField
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.contaminantsGrid
+    design.contaminantsGrid
         .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    view.fillContaminantsButton.setVisible(
+    design.fillContaminantsButton.setVisible(
         service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && !readOnly);
-    view.gelPanel.setVisible(service == LC_MS_MS && support == GEL);
-    view.separationField.setVisible(service == LC_MS_MS && support == GEL);
-    view.thicknessField.setVisible(service == LC_MS_MS && support == GEL);
-    view.colorationField.setVisible(service == LC_MS_MS && support == GEL);
-    view.otherColorationField.setVisible(service == LC_MS_MS && support == GEL
-        && view.colorationField.getValue() == GelColoration.OTHER);
-    view.developmentTimeField.setVisible(service == LC_MS_MS && support == GEL);
-    view.decolorationField.setVisible(service == LC_MS_MS && support == GEL);
-    view.weightMarkerQuantityField.setVisible(service == LC_MS_MS && support == GEL);
-    view.proteinQuantityField.setVisible(service == LC_MS_MS && support == GEL);
-    view.gelImagesLayout.setVisible(service == LC_MS_MS && support == GEL);
+    design.gelPanel.setVisible(service == LC_MS_MS && support == GEL);
+    design.separationField.setVisible(service == LC_MS_MS && support == GEL);
+    design.thicknessField.setVisible(service == LC_MS_MS && support == GEL);
+    design.colorationField.setVisible(service == LC_MS_MS && support == GEL);
+    design.otherColorationField.setVisible(service == LC_MS_MS && support == GEL
+        && design.colorationField.getValue() == GelColoration.OTHER);
+    design.developmentTimeField.setVisible(service == LC_MS_MS && support == GEL);
+    design.decolorationField.setVisible(service == LC_MS_MS && support == GEL);
+    design.weightMarkerQuantityField.setVisible(service == LC_MS_MS && support == GEL);
+    design.proteinQuantityField.setVisible(service == LC_MS_MS && support == GEL);
+    design.gelImagesLayout.setVisible(service == LC_MS_MS && support == GEL);
     view.gelImagesUploader.setVisible(service == LC_MS_MS && support == GEL && !readOnly);
-    view.gelImagesGrid.setVisible(service == LC_MS_MS && support == GEL);
-    view.digestionOptions.setVisible(service == LC_MS_MS);
-    view.usedProteolyticDigestionMethodField.setVisible(
-        view.digestionOptions.isVisible() && view.digestionOptions.getValue() == DIGESTED);
-    view.otherProteolyticDigestionMethodField.setVisible(view.digestionOptions.isVisible()
-        && view.digestionOptions.getValue() == ProteolyticDigestion.OTHER);
-    view.otherProteolyticDigestionMethodNote.setVisible(view.digestionOptions.isVisible()
-        && view.digestionOptions.getValue() == ProteolyticDigestion.OTHER);
-    view.enrichmentLabel.setVisible(!readOnly && service == LC_MS_MS);
-    view.exclusionsLabel.setVisible(!readOnly && service == LC_MS_MS);
-    view.injectionTypeOptions.setVisible(service == INTACT_PROTEIN);
-    view.sourceOptions.setVisible(service == INTACT_PROTEIN);
-    view.proteinContentOptions.setVisible(service == LC_MS_MS);
-    view.instrumentOptions.setVisible(service != SMALL_MOLECULE);
-    view.proteinIdentificationOptions.setVisible(service == LC_MS_MS);
-    view.proteinIdentificationLinkField.setVisible(view.proteinIdentificationOptions.isVisible()
-        && view.proteinIdentificationOptions.getValue() == ProteinIdentification.OTHER);
-    view.quantificationOptions.setVisible(service == LC_MS_MS);
-    view.quantificationLabelsField.setVisible(service == LC_MS_MS);
-    view.highResolutionOptions.setVisible(service == SMALL_MOLECULE);
-    view.solventsLayout.setVisible(service == SMALL_MOLECULE);
-    view.acetonitrileSolventsField.setVisible(service == SMALL_MOLECULE);
-    view.methanolSolventsField.setVisible(service == SMALL_MOLECULE);
-    view.chclSolventsField.setVisible(service == SMALL_MOLECULE);
-    view.otherSolventsField.setVisible(service == SMALL_MOLECULE);
-    view.otherSolventField
-        .setVisible(service == SMALL_MOLECULE && view.otherSolventsField.getValue());
-    view.otherSolventNoteLabel
-        .setVisible(service == SMALL_MOLECULE && view.otherSolventsField.getValue());
+    design.gelImagesGrid.setVisible(service == LC_MS_MS && support == GEL);
+    design.digestionOptions.setVisible(service == LC_MS_MS);
+    design.usedProteolyticDigestionMethodField.setVisible(
+        design.digestionOptions.isVisible() && design.digestionOptions.getValue() == DIGESTED);
+    design.otherProteolyticDigestionMethodField.setVisible(design.digestionOptions.isVisible()
+        && design.digestionOptions.getValue() == ProteolyticDigestion.OTHER);
+    design.otherProteolyticDigestionMethodNote.setVisible(design.digestionOptions.isVisible()
+        && design.digestionOptions.getValue() == ProteolyticDigestion.OTHER);
+    design.enrichmentLabel.setVisible(!readOnly && service == LC_MS_MS);
+    design.exclusionsLabel.setVisible(!readOnly && service == LC_MS_MS);
+    design.injectionTypeOptions.setVisible(service == INTACT_PROTEIN);
+    design.sourceOptions.setVisible(service == INTACT_PROTEIN);
+    design.proteinContentOptions.setVisible(service == LC_MS_MS);
+    design.instrumentOptions.setVisible(service != SMALL_MOLECULE);
+    design.proteinIdentificationOptions.setVisible(service == LC_MS_MS);
+    design.proteinIdentificationLinkField.setVisible(design.proteinIdentificationOptions.isVisible()
+        && design.proteinIdentificationOptions.getValue() == ProteinIdentification.OTHER);
+    design.quantificationOptions.setVisible(service == LC_MS_MS);
+    design.quantificationLabelsField.setVisible(service == LC_MS_MS);
+    design.highResolutionOptions.setVisible(service == SMALL_MOLECULE);
+    design.solventsLayout.setVisible(service == SMALL_MOLECULE);
+    design.acetonitrileSolventsField.setVisible(service == SMALL_MOLECULE);
+    design.methanolSolventsField.setVisible(service == SMALL_MOLECULE);
+    design.chclSolventsField.setVisible(service == SMALL_MOLECULE);
+    design.otherSolventsField.setVisible(service == SMALL_MOLECULE);
+    design.otherSolventField
+        .setVisible(service == SMALL_MOLECULE && design.otherSolventsField.getValue());
+    design.otherSolventNoteLabel
+        .setVisible(service == SMALL_MOLECULE && design.otherSolventsField.getValue());
     view.filesUploader.setVisible(!readOnly);
-    view.buttonsLayout.setVisible(!readOnly);
+    design.buttonsLayout.setVisible(!readOnly);
   }
 
   private void updateReadOnly() {
-    view.serviceOptions.setReadOnly(readOnly);
-    view.sampleSupportOptions.setReadOnly(readOnly);
-    view.solutionSolventField.setReadOnly(readOnly);
-    view.sampleNameField.setReadOnly(readOnly);
-    view.formulaField.setReadOnly(readOnly);
-    view.monoisotopicMassField.setReadOnly(readOnly);
-    view.averageMassField.setReadOnly(readOnly);
-    view.toxicityField.setReadOnly(readOnly);
-    view.lightSensitiveField.setReadOnly(readOnly);
-    view.storageTemperatureOptions.setReadOnly(readOnly);
-    view.sampleContainerTypeOptions.setReadOnly(readOnly);
-    view.plateNameField.setReadOnly(readOnly);
-    view.sampleCountField.setReadOnly(readOnly);
+    design.serviceOptions.setReadOnly(readOnly);
+    design.sampleSupportOptions.setReadOnly(readOnly);
+    design.solutionSolventField.setReadOnly(readOnly);
+    design.sampleNameField.setReadOnly(readOnly);
+    design.formulaField.setReadOnly(readOnly);
+    design.monoisotopicMassField.setReadOnly(readOnly);
+    design.averageMassField.setReadOnly(readOnly);
+    design.toxicityField.setReadOnly(readOnly);
+    design.lightSensitiveField.setReadOnly(readOnly);
+    design.storageTemperatureOptions.setReadOnly(readOnly);
+    design.sampleContainerTypeOptions.setReadOnly(readOnly);
+    design.plateNameField.setReadOnly(readOnly);
+    design.sampleCountField.setReadOnly(readOnly);
     sampleBinders.values().forEach(binder -> binder.setReadOnly(readOnly));
-    view.fillSamplesButton.setVisible(!readOnly);
+    design.fillSamplesButton.setVisible(!readOnly);
     view.plateComponent.setReadOnly(readOnly);
-    view.experienceField.setReadOnly(readOnly);
-    view.experienceGoalField.setReadOnly(readOnly);
-    view.taxonomyField.setReadOnly(readOnly);
-    view.proteinNameField.setReadOnly(readOnly);
-    view.proteinWeightField.setReadOnly(readOnly);
-    view.postTranslationModificationField.setReadOnly(readOnly);
-    view.sampleQuantityField.setReadOnly(readOnly);
-    view.sampleVolumeField.setReadOnly(readOnly);
-    view.standardCountField.setReadOnly(readOnly);
+    design.experienceField.setReadOnly(readOnly);
+    design.experienceGoalField.setReadOnly(readOnly);
+    design.taxonomyField.setReadOnly(readOnly);
+    design.proteinNameField.setReadOnly(readOnly);
+    design.proteinWeightField.setReadOnly(readOnly);
+    design.postTranslationModificationField.setReadOnly(readOnly);
+    design.sampleQuantityField.setReadOnly(readOnly);
+    design.sampleVolumeField.setReadOnly(readOnly);
+    design.standardCountField.setReadOnly(readOnly);
     standardBinders.values().forEach(binder -> binder.setReadOnly(readOnly));
-    view.contaminantCountField.setReadOnly(readOnly);
+    design.contaminantCountField.setReadOnly(readOnly);
     contaminantBinders.values().forEach(binder -> binder.setReadOnly(readOnly));
-    view.separationField.setReadOnly(readOnly);
-    view.thicknessField.setReadOnly(readOnly);
-    view.colorationField.setReadOnly(readOnly);
-    view.otherColorationField.setReadOnly(readOnly);
-    view.developmentTimeField.setReadOnly(readOnly);
-    view.decolorationField.setReadOnly(readOnly);
-    view.weightMarkerQuantityField.setReadOnly(readOnly);
-    view.proteinQuantityField.setReadOnly(readOnly);
-    view.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).setHidden(readOnly);
-    view.digestionOptions.setReadOnly(readOnly);
-    view.usedProteolyticDigestionMethodField.setReadOnly(readOnly);
-    view.otherProteolyticDigestionMethodField.setReadOnly(readOnly);
-    view.injectionTypeOptions.setReadOnly(readOnly);
-    view.sourceOptions.setReadOnly(readOnly);
-    view.proteinContentOptions.setReadOnly(readOnly);
-    view.instrumentOptions.setReadOnly(readOnly);
-    view.proteinIdentificationOptions.setReadOnly(readOnly);
-    view.proteinIdentificationLinkField.setReadOnly(readOnly);
-    view.quantificationOptions.setReadOnly(readOnly);
-    view.quantificationLabelsField.setReadOnly(readOnly);
-    view.highResolutionOptions.setReadOnly(readOnly);
-    view.acetonitrileSolventsField.setReadOnly(readOnly);
-    view.methanolSolventsField.setReadOnly(readOnly);
-    view.chclSolventsField.setReadOnly(readOnly);
-    view.otherSolventsField.setReadOnly(readOnly);
-    view.otherSolventField.setReadOnly(readOnly);
-    view.commentsField.setReadOnly(readOnly);
-    view.filesGrid.getColumn(REMOVE_FILE).setHidden(readOnly);
+    design.separationField.setReadOnly(readOnly);
+    design.thicknessField.setReadOnly(readOnly);
+    design.colorationField.setReadOnly(readOnly);
+    design.otherColorationField.setReadOnly(readOnly);
+    design.developmentTimeField.setReadOnly(readOnly);
+    design.decolorationField.setReadOnly(readOnly);
+    design.weightMarkerQuantityField.setReadOnly(readOnly);
+    design.proteinQuantityField.setReadOnly(readOnly);
+    design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).setHidden(readOnly);
+    design.digestionOptions.setReadOnly(readOnly);
+    design.usedProteolyticDigestionMethodField.setReadOnly(readOnly);
+    design.otherProteolyticDigestionMethodField.setReadOnly(readOnly);
+    design.injectionTypeOptions.setReadOnly(readOnly);
+    design.sourceOptions.setReadOnly(readOnly);
+    design.proteinContentOptions.setReadOnly(readOnly);
+    design.instrumentOptions.setReadOnly(readOnly);
+    design.proteinIdentificationOptions.setReadOnly(readOnly);
+    design.proteinIdentificationLinkField.setReadOnly(readOnly);
+    design.quantificationOptions.setReadOnly(readOnly);
+    design.quantificationLabelsField.setReadOnly(readOnly);
+    design.highResolutionOptions.setReadOnly(readOnly);
+    design.acetonitrileSolventsField.setReadOnly(readOnly);
+    design.methanolSolventsField.setReadOnly(readOnly);
+    design.chclSolventsField.setReadOnly(readOnly);
+    design.otherSolventsField.setReadOnly(readOnly);
+    design.otherSolventField.setReadOnly(readOnly);
+    design.commentsField.setReadOnly(readOnly);
+    design.filesGrid.getColumn(REMOVE_FILE).setHidden(readOnly);
   }
 
   private void updateSampleCount(String countValue) {
@@ -1355,7 +1363,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       while (standardsDataProvider.getItems().size() < count) {
         standardsDataProvider.getItems().add(new Standard());
       }
-      view.standardsTableLayout.setVisible(count > 0);
+      design.standardsTableLayout.setVisible(count > 0);
       standardsDataProvider.refreshAll();
     }
   }
@@ -1376,7 +1384,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       while (contaminantsDataProvider.getItems().size() < count) {
         contaminantsDataProvider.getItems().add(new Contaminant());
       }
-      view.contaminantsTableLayout.setVisible(count > 0);
+      design.contaminantsTableLayout.setVisible(count > 0);
       contaminantsDataProvider.refreshAll();
     }
   }
@@ -1439,16 +1447,16 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private void updateStructureButton(Structure structure) {
-    view.structureButton.getExtensions().stream().collect(Collectors.toList())
+    design.structureButton.getExtensions().stream().collect(Collectors.toList())
         .forEach(e -> e.remove());
     if (structure != null) {
-      view.structureButton.setCaption(structure.getFilename());
+      design.structureButton.setCaption(structure.getFilename());
       StreamResource resource = new StreamResource(
           () -> new ByteArrayInputStream(structure.getContent()), structure.getFilename());
       FileDownloader fileDownloader = new FileDownloader(resource);
-      fileDownloader.extend(view.structureButton);
+      fileDownloader.extend(design.structureButton);
     } else {
-      view.structureButton.setCaption("");
+      design.structureButton.setCaption("");
     }
   }
 
@@ -1561,7 +1569,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     SubmissionSample sample = firstSampleBinder.getBean();
     if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
       valid &= validate(sampleCountBinder);
-      if (view.sampleContainerTypeOptions.getValue() != WELL) {
+      if (design.sampleContainerTypeOptions.getValue() != WELL) {
         for (SubmissionSample samp : samplesDataProvider.getItems()) {
           valid &= validate(sampleBinders.get(samp));
         }
@@ -1608,7 +1616,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.plateComponent.setComponentError(null);
     MessageResource resources = view.getResources();
     Set<String> names = new HashSet<>();
-    if (view.sampleContainerTypeOptions.getValue() != WELL) {
+    if (design.sampleContainerTypeOptions.getValue() != WELL) {
       for (SubmissionSample sample : samplesDataProvider.getItems()) {
         if (!names.add(sample.getName())) {
           String error = resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sample.getName());
@@ -1639,45 +1647,45 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private ValidationResult validateStructure(Submission submission) {
-    view.structureLayout.setComponentError(null);
+    design.structureLayout.setComponentError(null);
     if (submission.getStructure() == null || submission.getStructure().getFilename() == null) {
       MessageResource resources = view.getResources();
       String error = resources.message(STRUCTURE_PROPERTY + "." + REQUIRED);
-      view.structureLayout.setComponentError(new UserError(error));
+      design.structureLayout.setComponentError(new UserError(error));
       return ValidationResult.error(error);
     }
     return ValidationResult.ok();
   }
 
   private ValidationResult validateGelImages(Submission submission) {
-    view.gelImagesLayout.setComponentError(null);
+    design.gelImagesLayout.setComponentError(null);
     if (gelImagesDataProvider.getItems().size() == 0) {
       MessageResource resources = view.getResources();
       String error = resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED);
-      view.gelImagesLayout.setComponentError(new UserError(error));
+      design.gelImagesLayout.setComponentError(new UserError(error));
       return ValidationResult.error(error);
     }
     return ValidationResult.ok();
   }
 
   private ValidationResult validateSolvents() {
-    view.solventsLayout.setComponentError(null);
-    if (!view.acetonitrileSolventsField.getValue() && !view.methanolSolventsField.getValue()
-        && !view.chclSolventsField.getValue() && !view.otherSolventsField.getValue()) {
+    design.solventsLayout.setComponentError(null);
+    if (!design.acetonitrileSolventsField.getValue() && !design.methanolSolventsField.getValue()
+        && !design.chclSolventsField.getValue() && !design.otherSolventsField.getValue()) {
       MessageResource resources = view.getResources();
       String error = resources.message(SOLVENTS_PROPERTY + "." + REQUIRED);
-      view.solventsLayout.setComponentError(new UserError(error));
+      design.solventsLayout.setComponentError(new UserError(error));
       return ValidationResult.error(error);
     }
     return ValidationResult.ok();
   }
 
   private ValidationResult validateExplanation() {
-    view.explanation.setComponentError(null);
-    if (view.explanationPanel.isVisible() && view.explanation.getValue().isEmpty()) {
+    design.explanation.setComponentError(null);
+    if (design.explanationPanel.isVisible() && design.explanation.getValue().isEmpty()) {
       MessageResource generalResources = view.getGeneralResources();
       String error = generalResources.message(REQUIRED);
-      view.explanation.setComponentError(new UserError(error));
+      design.explanation.setComponentError(new UserError(error));
       return ValidationResult.error(error);
     }
     return ValidationResult.ok();
@@ -1694,74 +1702,74 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private void clearInvisibleFields() {
-    clearInvisibleField(view.solutionSolventField);
-    clearInvisibleField(view.sampleNameField);
-    clearInvisibleField(view.formulaField);
-    if (!view.structureLayout.isVisible()) {
+    clearInvisibleField(design.solutionSolventField);
+    clearInvisibleField(design.sampleNameField);
+    clearInvisibleField(design.formulaField);
+    if (!design.structureLayout.isVisible()) {
       submissionBinder.getBean().setStructure(null);
     }
-    clearInvisibleField(view.monoisotopicMassField);
-    clearInvisibleField(view.averageMassField);
-    clearInvisibleField(view.toxicityField);
-    clearInvisibleField(view.lightSensitiveField);
-    clearInvisibleField(view.storageTemperatureOptions);
-    clearInvisibleField(view.sampleCountField);
-    clearInvisibleField(view.sampleContainerTypeOptions);
-    clearInvisibleField(view.plateNameField);
-    if (!view.samplesGrid.isVisible()) {
+    clearInvisibleField(design.monoisotopicMassField);
+    clearInvisibleField(design.averageMassField);
+    clearInvisibleField(design.toxicityField);
+    clearInvisibleField(design.lightSensitiveField);
+    clearInvisibleField(design.storageTemperatureOptions);
+    clearInvisibleField(design.sampleCountField);
+    clearInvisibleField(design.sampleContainerTypeOptions);
+    clearInvisibleField(design.plateNameField);
+    if (!design.samplesGrid.isVisible()) {
       sampleNameFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
       sampleNumberProteinFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
       sampleMolecularWeightFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
     }
-    clearInvisibleField(view.experienceField);
-    clearInvisibleField(view.experienceGoalField);
-    clearInvisibleField(view.taxonomyField);
-    clearInvisibleField(view.proteinNameField);
-    clearInvisibleField(view.proteinWeightField);
-    clearInvisibleField(view.postTranslationModificationField);
-    clearInvisibleField(view.sampleQuantityField);
-    clearInvisibleField(view.sampleVolumeField);
-    clearInvisibleField(view.standardCountField);
-    if (!view.standardsGrid.isVisible()) {
+    clearInvisibleField(design.experienceField);
+    clearInvisibleField(design.experienceGoalField);
+    clearInvisibleField(design.taxonomyField);
+    clearInvisibleField(design.proteinNameField);
+    clearInvisibleField(design.proteinWeightField);
+    clearInvisibleField(design.postTranslationModificationField);
+    clearInvisibleField(design.sampleQuantityField);
+    clearInvisibleField(design.sampleVolumeField);
+    clearInvisibleField(design.standardCountField);
+    if (!design.standardsGrid.isVisible()) {
       standardNameFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
       standardQuantityFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
       standardCommentsFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
     }
-    clearInvisibleField(view.contaminantCountField);
-    if (!view.contaminantsGrid.isVisible()) {
+    clearInvisibleField(design.contaminantCountField);
+    if (!design.contaminantsGrid.isVisible()) {
       contaminantNameFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
       contaminantQuantityFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
       contaminantCommentsFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
     }
-    clearInvisibleField(view.separationField);
-    clearInvisibleField(view.thicknessField);
-    clearInvisibleField(view.colorationField);
-    clearInvisibleField(view.otherColorationField);
-    clearInvisibleField(view.developmentTimeField);
-    clearInvisibleField(view.decolorationField);
-    clearInvisibleField(view.weightMarkerQuantityField);
-    clearInvisibleField(view.proteinQuantityField);
-    if (!view.gelImagesLayout.isVisible()) {
+    clearInvisibleField(design.separationField);
+    clearInvisibleField(design.thicknessField);
+    clearInvisibleField(design.colorationField);
+    clearInvisibleField(design.otherColorationField);
+    clearInvisibleField(design.developmentTimeField);
+    clearInvisibleField(design.decolorationField);
+    clearInvisibleField(design.weightMarkerQuantityField);
+    clearInvisibleField(design.proteinQuantityField);
+    if (!design.gelImagesLayout.isVisible()) {
       gelImagesDataProvider.getItems().clear();
       gelImagesDataProvider.refreshAll();
     }
-    clearInvisibleField(view.digestionOptions);
-    clearInvisibleField(view.usedProteolyticDigestionMethodField);
-    clearInvisibleField(view.otherProteolyticDigestionMethodField);
-    clearInvisibleField(view.injectionTypeOptions);
-    clearInvisibleField(view.sourceOptions);
-    clearInvisibleField(view.proteinContentOptions);
-    clearInvisibleField(view.instrumentOptions);
-    clearInvisibleField(view.proteinIdentificationOptions);
-    clearInvisibleField(view.proteinIdentificationLinkField);
-    clearInvisibleField(view.quantificationOptions);
-    clearInvisibleField(view.quantificationLabelsField);
-    setValueIfInvisible(view.highResolutionOptions, false);
-    clearInvisibleField(view.acetonitrileSolventsField);
-    clearInvisibleField(view.methanolSolventsField);
-    clearInvisibleField(view.chclSolventsField);
-    clearInvisibleField(view.otherSolventsField);
-    clearInvisibleField(view.otherSolventField);
+    clearInvisibleField(design.digestionOptions);
+    clearInvisibleField(design.usedProteolyticDigestionMethodField);
+    clearInvisibleField(design.otherProteolyticDigestionMethodField);
+    clearInvisibleField(design.injectionTypeOptions);
+    clearInvisibleField(design.sourceOptions);
+    clearInvisibleField(design.proteinContentOptions);
+    clearInvisibleField(design.instrumentOptions);
+    clearInvisibleField(design.proteinIdentificationOptions);
+    clearInvisibleField(design.proteinIdentificationLinkField);
+    clearInvisibleField(design.quantificationOptions);
+    clearInvisibleField(design.quantificationLabelsField);
+    setValueIfInvisible(design.highResolutionOptions, false);
+    clearInvisibleField(design.acetonitrileSolventsField);
+    clearInvisibleField(design.methanolSolventsField);
+    clearInvisibleField(design.chclSolventsField);
+    clearInvisibleField(design.otherSolventsField);
+    clearInvisibleField(design.otherSolventField);
   }
 
   private void save() {
@@ -1783,16 +1791,16 @@ public class SubmissionFormPresenter implements BinderValidator {
         submission.setSolvents(new ArrayList<>());
         firstSample.setOriginalContainer(null);
         firstSample.setNumberProtein(null);
-        if (view.acetonitrileSolventsField.getValue()) {
+        if (design.acetonitrileSolventsField.getValue()) {
           submission.getSolvents().add(new SampleSolvent(ACETONITRILE));
         }
-        if (view.methanolSolventsField.getValue()) {
+        if (design.methanolSolventsField.getValue()) {
           submission.getSolvents().add(new SampleSolvent(METHANOL));
         }
-        if (view.chclSolventsField.getValue()) {
+        if (design.chclSolventsField.getValue()) {
           submission.getSolvents().add(new SampleSolvent(CHCL3));
         }
-        if (view.otherSolventsField.getValue()) {
+        if (design.otherSolventsField.getValue()) {
           submission.getSolvents().add(new SampleSolvent(Solvent.OTHER));
         }
       } else {
@@ -1815,8 +1823,8 @@ public class SubmissionFormPresenter implements BinderValidator {
       final MessageResource resources = view.getResources();
       if (submission.getId() != null) {
         try {
-          if (view.explanationPanel.isVisible()) {
-            submissionService.forceUpdate(submission, view.explanation.getValue());
+          if (design.explanationPanel.isVisible()) {
+            submissionService.forceUpdate(submission, design.explanation.getValue());
           } else {
             submissionService.update(submission);
           }
@@ -1832,7 +1840,8 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private void copySamplesToSubmission(Submission submission) {
-    if (submission.getService() == LC_MS_MS && view.sampleContainerTypeOptions.getValue() == WELL) {
+    if (submission.getService() == LC_MS_MS
+        && design.sampleContainerTypeOptions.getValue() == WELL) {
       submission.setSamples(samplesFromPlate(submission));
     } else {
       submission.setSamples(samplesFromTable(submission));
@@ -1964,17 +1973,17 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
     Service service = submission.getService();
     if (service != null && !service.available) {
-      view.serviceOptions
+      design.serviceOptions
           .setItems(Stream.concat(Service.availables().stream(), Stream.of(service)));
     }
     samplesDataProvider.getItems().clear();
     samplesDataProvider.getItems().addAll(samples);
     samplesDataProvider.refreshAll();
-    view.sampleCountField.setReadOnly(false);
+    design.sampleCountField.setReadOnly(false);
     sampleCountBinder.setBean(new ItemCount(samples.size()));
-    view.sampleContainerTypeOptions.setReadOnly(false);
-    view.sampleContainerTypeOptions.setValue(firstSample.getOriginalContainer().getType());
-    view.samplesGrid.sort(SAMPLE_NAME_PROPERTY);
+    design.sampleContainerTypeOptions.setReadOnly(false);
+    design.sampleContainerTypeOptions.setValue(firstSample.getOriginalContainer().getType());
+    design.samplesGrid.sort(SAMPLE_NAME_PROPERTY);
     Structure structure = submission.getStructure();
     updateStructureButton(structure);
     List<Standard> standards = firstSample.getStandards();
@@ -1984,7 +1993,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     standardsDataProvider.getItems().clear();
     standardsDataProvider.getItems().addAll(standards);
     standardsDataProvider.refreshAll();
-    view.standardCountField.setReadOnly(false);
+    design.standardCountField.setReadOnly(false);
     standardCountBinder.setBean(new ItemCount(standards.size()));
     List<Contaminant> contaminants = firstSample.getContaminants();
     if (contaminants == null) {
@@ -1993,7 +2002,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     contaminantsDataProvider.getItems().clear();
     contaminantsDataProvider.getItems().addAll(contaminants);
     contaminantsDataProvider.refreshAll();
-    view.contaminantCountField.setReadOnly(false);
+    design.contaminantCountField.setReadOnly(false);
     contaminantCountBinder.setBean(new ItemCount(contaminants.size()));
     List<GelImage> gelImages = submission.getGelImages();
     if (gelImages == null) {
@@ -2004,17 +2013,17 @@ public class SubmissionFormPresenter implements BinderValidator {
     gelImagesDataProvider.refreshAll();
     MassDetectionInstrumentSource source = submission.getSource();
     if (source != null && !source.available) {
-      view.sourceOptions.setItems(
+      design.sourceOptions.setItems(
           Stream.concat(MassDetectionInstrumentSource.availables().stream(), Stream.of(source)));
     }
     MassDetectionInstrument instrument = submission.getMassDetectionInstrument();
     if (instrument != null && !instrument.available) {
-      view.instrumentOptions
+      design.instrumentOptions
           .setItems(Stream.concat(instrumentValues().stream(), Stream.of(instrument)));
     }
     ProteinIdentification proteinIdentification = submission.getProteinIdentification();
     if (proteinIdentification != null && !proteinIdentification.available) {
-      view.proteinIdentificationOptions.setItems(Stream
+      design.proteinIdentificationOptions.setItems(Stream
           .concat(ProteinIdentification.availables().stream(), Stream.of(proteinIdentification)));
     }
     List<SampleSolvent> sampleSolvents = submission.getSolvents();
@@ -2023,14 +2032,14 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
     Set<Solvent> solvents =
         sampleSolvents.stream().map(ss -> ss.getSolvent()).collect(Collectors.toSet());
-    view.acetonitrileSolventsField.setReadOnly(false);
-    view.acetonitrileSolventsField.setValue(solvents.contains(Solvent.ACETONITRILE));
-    view.acetonitrileSolventsField.setReadOnly(false);
-    view.methanolSolventsField.setValue(solvents.contains(Solvent.METHANOL));
-    view.acetonitrileSolventsField.setReadOnly(false);
-    view.chclSolventsField.setValue(solvents.contains(Solvent.CHCL3));
-    view.acetonitrileSolventsField.setReadOnly(false);
-    view.otherSolventsField.setValue(solvents.contains(Solvent.OTHER));
+    design.acetonitrileSolventsField.setReadOnly(false);
+    design.acetonitrileSolventsField.setValue(solvents.contains(Solvent.ACETONITRILE));
+    design.acetonitrileSolventsField.setReadOnly(false);
+    design.methanolSolventsField.setValue(solvents.contains(Solvent.METHANOL));
+    design.acetonitrileSolventsField.setReadOnly(false);
+    design.chclSolventsField.setValue(solvents.contains(Solvent.CHCL3));
+    design.acetonitrileSolventsField.setReadOnly(false);
+    design.otherSolventsField.setValue(solvents.contains(Solvent.OTHER));
     List<SubmissionFile> files = submission.getFiles();
     if (files == null) {
       files = new ArrayList<>();
@@ -2038,7 +2047,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     filesDataProvider.getItems().clear();
     filesDataProvider.getItems().addAll(files);
     filesDataProvider.refreshAll();
-    view.explanationPanel.setVisible(authorizationService.hasAdminRole() && samples.stream()
+    design.explanationPanel.setVisible(authorizationService.hasAdminRole() && samples.stream()
         .filter(
             sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.TO_APPROVE)
         .findAny().isPresent());
@@ -2080,7 +2089,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       structure.setFilename(fileName);
       structure.setContent(output.toByteArray());
-      view.structureButton.setVisible(true);
+      design.structureButton.setVisible(true);
       updateStructureButton(structure);
     }
 

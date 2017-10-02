@@ -35,7 +35,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,6 +63,7 @@ public class SubmissionViewPresenterTest {
   private ArgumentCaptor<Boolean> booleanCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
+  private SubmissionViewDesign design;
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionView.class, locale);
 
@@ -73,7 +74,8 @@ public class SubmissionViewPresenterTest {
   public void beforeTest() {
     presenter =
         new SubmissionViewPresenter(submissionService, authorizationService, applicationName);
-    view.headerLabel = new Label();
+    design = new SubmissionViewDesign();
+    view.design = design;
     view.submissionForm = mock(SubmissionForm.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -82,14 +84,14 @@ public class SubmissionViewPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.headerLabel.getStyleName().contains(HEADER_STYLE));
-    assertTrue(view.headerLabel.getStyleName().contains("h1"));
+    assertTrue(design.headerLabel.getStyleName().contains(HEADER_STYLE));
+    assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
   }
 
   @Test
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER_STYLE), view.headerLabel.getValue());
+    assertEquals(resources.message(HEADER_STYLE), design.headerLabel.getValue());
   }
 
   @Test

@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Upload;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -36,15 +37,16 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SubmissionForm extends SubmissionFormDesign implements BaseComponent {
+public class SubmissionForm extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
-  @Inject
-  private transient SubmissionFormPresenter presenter;
+  protected SubmissionFormDesign design = new SubmissionFormDesign();
   protected Upload structureUploader;
   protected DefaultMultiFileUpload gelImagesUploader;
   protected DefaultMultiFileUpload filesUploader;
   @Inject
   protected PlateComponent plateComponent;
+  @Inject
+  private transient SubmissionFormPresenter presenter;
 
   protected SubmissionForm() {
   }
@@ -56,7 +58,8 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
 
   @PostConstruct
   public void init() {
-    samplesPlateContainer.addComponent(plateComponent);
+    setCompositionRoot(design);
+    design.samplesPlateContainer.addComponent(plateComponent);
   }
 
   @Override
@@ -72,7 +75,7 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
    */
   public Upload createStructureUploader() {
     structureUploader = new Upload();
-    structureUploaderLayout.addComponent(structureUploader);
+    design.structureUploaderLayout.addComponent(structureUploader);
     return structureUploader;
   }
 
@@ -86,7 +89,7 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
   public MultiFileUpload createGelImagesUploader(MultiFileUploadFileHandler fileHandler) {
     gelImagesUploader = new DefaultMultiFileUpload();
     gelImagesUploader.setFileHandler(fileHandler);
-    gelImagesUploaderLayout.addComponent(gelImagesUploader);
+    design.gelImagesUploaderLayout.addComponent(gelImagesUploader);
     return gelImagesUploader;
   }
 
@@ -100,7 +103,7 @@ public class SubmissionForm extends SubmissionFormDesign implements BaseComponen
   public MultiFileUpload createFilesUploader(MultiFileUploadFileHandler fileHandler) {
     filesUploader = new DefaultMultiFileUpload();
     filesUploader.setFileHandler(fileHandler);
-    filesUploaderLayout.addComponent(filesUploader);
+    design.filesUploaderLayout.addComponent(filesUploader);
     return filesUploader;
   }
 

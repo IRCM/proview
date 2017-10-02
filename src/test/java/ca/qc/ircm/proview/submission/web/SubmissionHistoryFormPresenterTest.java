@@ -56,7 +56,6 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,6 +81,7 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
   private ActivityService activityService;
   @Mock
   private SampleContainerService sampleContainerService;
+  private SubmissionHistoryFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SubmissionHistoryForm.class, locale);
   private MessageResource generalResources =
@@ -104,10 +104,8 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
   @Before
   public void beforeTest() {
     presenter = new SubmissionHistoryFormPresenter(activityService, sampleContainerService);
-    view.samplesPanel = new Panel();
-    view.samples = new Grid<>();
-    view.activitiesPanel = new Panel();
-    view.activities = new Grid<>();
+    design = new SubmissionHistoryFormDesign();
+    view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
@@ -176,10 +174,10 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertTrue(view.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
-    assertTrue(view.samples.getStyleName().contains(SAMPLES));
-    assertTrue(view.activitiesPanel.getStyleName().contains(ACTIVITIES_PANEL));
-    assertTrue(view.activities.getStyleName().contains(ACTIVITIES));
+    assertTrue(design.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
+    assertTrue(design.samples.getStyleName().contains(SAMPLES));
+    assertTrue(design.activitiesPanel.getStyleName().contains(ACTIVITIES_PANEL));
+    assertTrue(design.activities.getStyleName().contains(ACTIVITIES));
   }
 
   @Test
@@ -187,8 +185,8 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
-    assertEquals(resources.message(ACTIVITIES_PANEL), view.activitiesPanel.getCaption());
+    assertEquals(resources.message(SAMPLES_PANEL), design.samplesPanel.getCaption());
+    assertEquals(resources.message(ACTIVITIES_PANEL), design.activitiesPanel.getCaption());
   }
 
   @Test
@@ -196,22 +194,23 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(2, view.samples.getColumns().size());
-    assertEquals(SAMPLE_NAME, view.samples.getColumns().get(0).getId());
-    assertEquals(SAMPLE_LAST_CONTAINER, view.samples.getColumns().get(1).getId());
-    assertEquals(resources.message(SAMPLE_NAME), view.samples.getColumn(SAMPLE_NAME).getCaption());
+    assertEquals(2, design.samples.getColumns().size());
+    assertEquals(SAMPLE_NAME, design.samples.getColumns().get(0).getId());
+    assertEquals(SAMPLE_LAST_CONTAINER, design.samples.getColumns().get(1).getId());
+    assertEquals(resources.message(SAMPLE_NAME),
+        design.samples.getColumn(SAMPLE_NAME).getCaption());
     assertEquals(sample1.getName(),
-        view.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample1));
+        design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample1));
     assertEquals(sample2.getName(),
-        view.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample2));
+        design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample2));
     assertEquals(resources.message(SAMPLE_LAST_CONTAINER),
-        view.samples.getColumn(SAMPLE_LAST_CONTAINER).getCaption());
+        design.samples.getColumn(SAMPLE_LAST_CONTAINER).getCaption());
     assertEquals(last1.getFullName(),
-        view.samples.getColumn(SAMPLE_LAST_CONTAINER).getValueProvider().apply(sample1));
+        design.samples.getColumn(SAMPLE_LAST_CONTAINER).getValueProvider().apply(sample1));
     assertEquals(last2.getFullName(),
-        view.samples.getColumn(SAMPLE_LAST_CONTAINER).getValueProvider().apply(sample2));
+        design.samples.getColumn(SAMPLE_LAST_CONTAINER).getValueProvider().apply(sample2));
 
-    Collection<SubmissionSample> samples = dataProvider(view.samples).getItems();
+    Collection<SubmissionSample> samples = dataProvider(design.samples).getItems();
     assertEquals(2, samples.size());
     assertTrue(samples.contains(sample1));
     assertTrue(samples.contains(sample2));
@@ -223,58 +222,58 @@ public class SubmissionHistoryFormPresenterTest implements TimeConverter {
     presenter.setValue(submission);
 
     final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    assertEquals(5, view.activities.getColumns().size());
-    assertEquals(ACTIVITY_USER, view.activities.getColumns().get(0).getId());
-    assertEquals(ACTIVITY_ACTION_TYPE, view.activities.getColumns().get(1).getId());
-    assertEquals(ACTIVITY_TIMESTAMP, view.activities.getColumns().get(2).getId());
-    assertEquals(ACTIVITY_DESCRIPTION, view.activities.getColumns().get(3).getId());
-    assertEquals(ACTIVITY_EXPLANATION, view.activities.getColumns().get(4).getId());
+    assertEquals(5, design.activities.getColumns().size());
+    assertEquals(ACTIVITY_USER, design.activities.getColumns().get(0).getId());
+    assertEquals(ACTIVITY_ACTION_TYPE, design.activities.getColumns().get(1).getId());
+    assertEquals(ACTIVITY_TIMESTAMP, design.activities.getColumns().get(2).getId());
+    assertEquals(ACTIVITY_DESCRIPTION, design.activities.getColumns().get(3).getId());
+    assertEquals(ACTIVITY_EXPLANATION, design.activities.getColumns().get(4).getId());
     assertEquals(resources.message(ACTIVITY_USER),
-        view.activities.getColumn(ACTIVITY_USER).getCaption());
+        design.activities.getColumn(ACTIVITY_USER).getCaption());
     assertEquals(activity1.getUser().getEmail(),
-        view.activities.getColumn(ACTIVITY_USER).getValueProvider().apply(activity1));
+        design.activities.getColumn(ACTIVITY_USER).getValueProvider().apply(activity1));
     assertEquals(activity2.getUser().getEmail(),
-        view.activities.getColumn(ACTIVITY_USER).getValueProvider().apply(activity2));
+        design.activities.getColumn(ACTIVITY_USER).getValueProvider().apply(activity2));
     assertEquals(resources.message(ACTIVITY_ACTION_TYPE),
-        view.activities.getColumn(ACTIVITY_ACTION_TYPE).getCaption());
+        design.activities.getColumn(ACTIVITY_ACTION_TYPE).getCaption());
     assertEquals(activity1.getActionType().getLabel(locale),
-        view.activities.getColumn(ACTIVITY_ACTION_TYPE).getValueProvider().apply(activity1));
+        design.activities.getColumn(ACTIVITY_ACTION_TYPE).getValueProvider().apply(activity1));
     assertEquals(activity2.getActionType().getLabel(locale),
-        view.activities.getColumn(ACTIVITY_ACTION_TYPE).getValueProvider().apply(activity2));
+        design.activities.getColumn(ACTIVITY_ACTION_TYPE).getValueProvider().apply(activity2));
     assertEquals(resources.message(ACTIVITY_TIMESTAMP),
-        view.activities.getColumn(ACTIVITY_TIMESTAMP).getCaption());
+        design.activities.getColumn(ACTIVITY_TIMESTAMP).getCaption());
     assertEquals(dateFormatter.format(toLocalDateTime(activity1.getTimestamp())),
-        view.activities.getColumn(ACTIVITY_TIMESTAMP).getValueProvider().apply(activity1));
+        design.activities.getColumn(ACTIVITY_TIMESTAMP).getValueProvider().apply(activity1));
     assertEquals(dateFormatter.format(toLocalDateTime(activity2.getTimestamp())),
-        view.activities.getColumn(ACTIVITY_TIMESTAMP).getValueProvider().apply(activity2));
+        design.activities.getColumn(ACTIVITY_TIMESTAMP).getValueProvider().apply(activity2));
     assertEquals(resources.message(ACTIVITY_DESCRIPTION),
-        view.activities.getColumn(ACTIVITY_DESCRIPTION).getCaption());
-    assertTrue(containsInstanceOf(view.activities.getColumn(ACTIVITY_DESCRIPTION).getExtensions(),
+        design.activities.getColumn(ACTIVITY_DESCRIPTION).getCaption());
+    assertTrue(containsInstanceOf(design.activities.getColumn(ACTIVITY_DESCRIPTION).getExtensions(),
         ComponentRenderer.class));
-    Label descriptionLabel =
-        (Label) view.activities.getColumn(ACTIVITY_DESCRIPTION).getValueProvider().apply(activity1);
+    Label descriptionLabel = (Label) design.activities.getColumn(ACTIVITY_DESCRIPTION)
+        .getValueProvider().apply(activity1);
     assertEquals(activityDescription1, descriptionLabel.getValue());
     assertEquals(activityDescription1, descriptionLabel.getDescription());
-    descriptionLabel =
-        (Label) view.activities.getColumn(ACTIVITY_DESCRIPTION).getValueProvider().apply(activity2);
+    descriptionLabel = (Label) design.activities.getColumn(ACTIVITY_DESCRIPTION).getValueProvider()
+        .apply(activity2);
     assertEquals(
         resources.message(ACTIVITY_DESCRIPTION_LONG,
             activityDescription2.substring(0, activityDescription2.indexOf("\n"))),
         descriptionLabel.getValue());
     assertEquals(activityDescription2, descriptionLabel.getDescription());
     assertEquals(resources.message(ACTIVITY_EXPLANATION),
-        view.activities.getColumn(ACTIVITY_EXPLANATION).getCaption());
+        design.activities.getColumn(ACTIVITY_EXPLANATION).getCaption());
     assertEquals(activity1.getExplanation(),
-        view.activities.getColumn(ACTIVITY_EXPLANATION).getValueProvider().apply(activity1));
+        design.activities.getColumn(ACTIVITY_EXPLANATION).getValueProvider().apply(activity1));
     assertEquals(activity2.getExplanation(),
-        view.activities.getColumn(ACTIVITY_EXPLANATION).getValueProvider().apply(activity2));
+        design.activities.getColumn(ACTIVITY_EXPLANATION).getValueProvider().apply(activity2));
 
     verify(activityService).all(submission);
-    Collection<Activity> activities = dataProvider(view.activities).getItems();
+    Collection<Activity> activities = dataProvider(design.activities).getItems();
     assertEquals(2, activities.size());
     assertTrue(activities.contains(activity1));
     assertTrue(activities.contains(activity2));
-    List<GridSortOrder<Activity>> sortOrders = view.activities.getSortOrder();
+    List<GridSortOrder<Activity>> sortOrders = design.activities.getSortOrder();
     assertEquals(1, sortOrders.size());
     GridSortOrder<Activity> sortOrder = sortOrders.get(0);
     assertEquals(ACTIVITY_TIMESTAMP, sortOrder.getSorted().getId());

@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -30,20 +31,22 @@ import javax.inject.Inject;
  */
 @SpringView(name = SubmissionView.VIEW_NAME)
 @RolesAllowed({ "USER" })
-public class SubmissionView extends SubmissionViewDesign implements BaseView {
+public class SubmissionView extends CustomComponent implements BaseView {
   public static final String VIEW_NAME = "submission";
   private static final long serialVersionUID = -6009778227571187664L;
-  @Inject
-  private transient SubmissionViewPresenter presenter;
+  protected SubmissionViewDesign design = new SubmissionViewDesign();
   @Inject
   protected SubmissionForm submissionForm;
+  @Inject
+  private transient SubmissionViewPresenter presenter;
 
   /**
    * Initializes view.
    */
   @PostConstruct
   public void init() {
-    submissionFormLayout.addComponent(submissionForm);
+    setCompositionRoot(design);
+    design.submissionFormLayout.addComponent(submissionForm);
   }
 
   @Override

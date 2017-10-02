@@ -113,7 +113,6 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Panel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -148,6 +147,7 @@ public class SubmissionTreatmentsFormPresenterTest {
   private TransferService transferService;
   @Mock
   private MsAnalysisService msAnalysisService;
+  private SubmissionTreatmentsFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SubmissionTreatmentsForm.class, locale);
   private MessageResource generalResources =
@@ -194,22 +194,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter = new SubmissionTreatmentsFormPresenter(sampleContainerService, solubilisationService,
         digestionService, enrichmentService, dilutionService, standardAdditionService,
         fractionationService, transferService);
-    view.samplesPanel = new Panel();
-    view.samples = new Grid<>();
-    view.solubilisationsPanel = new Panel();
-    view.solubilisations = new Grid<>();
-    view.digestionsPanel = new Panel();
-    view.digestions = new Grid<>();
-    view.standardAdditionsPanel = new Panel();
-    view.standardAdditions = new Grid<>();
-    view.enrichmentsPanel = new Panel();
-    view.enrichments = new Grid<>();
-    view.dilutionsPanel = new Panel();
-    view.dilutions = new Grid<>();
-    view.fractionationsPanel = new Panel();
-    view.fractionations = new Grid<>();
-    view.transfersPanel = new Panel();
-    view.transfers = new Grid<>();
+    design = new SubmissionTreatmentsFormDesign();
+    view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
@@ -426,22 +412,22 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertTrue(view.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
-    assertTrue(view.samples.getStyleName().contains(SAMPLES));
-    assertTrue(view.solubilisationsPanel.getStyleName().contains(SOLUBILISATIONS_PANEL));
-    assertTrue(view.solubilisations.getStyleName().contains(SOLUBILISATIONS));
-    assertTrue(view.transfersPanel.getStyleName().contains(TRANSFERS_PANEL));
-    assertTrue(view.transfers.getStyleName().contains(TRANSFERS));
-    assertTrue(view.digestionsPanel.getStyleName().contains(DIGESTIONS_PANEL));
-    assertTrue(view.digestions.getStyleName().contains(DIGESTIONS));
-    assertTrue(view.standardAdditionsPanel.getStyleName().contains(STANDARD_ADDITIONS_PANEL));
-    assertTrue(view.standardAdditions.getStyleName().contains(STANDARD_ADDITIONS));
-    assertTrue(view.enrichmentsPanel.getStyleName().contains(ENRICHMENTS_PANEL));
-    assertTrue(view.enrichments.getStyleName().contains(ENRICHMENTS));
-    assertTrue(view.dilutionsPanel.getStyleName().contains(DILUTIONS_PANEL));
-    assertTrue(view.dilutions.getStyleName().contains(DILUTIONS));
-    assertTrue(view.fractionationsPanel.getStyleName().contains(FRACTIONATIONS_PANEL));
-    assertTrue(view.fractionations.getStyleName().contains(FRACTIONATIONS));
+    assertTrue(design.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
+    assertTrue(design.samples.getStyleName().contains(SAMPLES));
+    assertTrue(design.solubilisationsPanel.getStyleName().contains(SOLUBILISATIONS_PANEL));
+    assertTrue(design.solubilisations.getStyleName().contains(SOLUBILISATIONS));
+    assertTrue(design.transfersPanel.getStyleName().contains(TRANSFERS_PANEL));
+    assertTrue(design.transfers.getStyleName().contains(TRANSFERS));
+    assertTrue(design.digestionsPanel.getStyleName().contains(DIGESTIONS_PANEL));
+    assertTrue(design.digestions.getStyleName().contains(DIGESTIONS));
+    assertTrue(design.standardAdditionsPanel.getStyleName().contains(STANDARD_ADDITIONS_PANEL));
+    assertTrue(design.standardAdditions.getStyleName().contains(STANDARD_ADDITIONS));
+    assertTrue(design.enrichmentsPanel.getStyleName().contains(ENRICHMENTS_PANEL));
+    assertTrue(design.enrichments.getStyleName().contains(ENRICHMENTS));
+    assertTrue(design.dilutionsPanel.getStyleName().contains(DILUTIONS_PANEL));
+    assertTrue(design.dilutions.getStyleName().contains(DILUTIONS));
+    assertTrue(design.fractionationsPanel.getStyleName().contains(FRACTIONATIONS_PANEL));
+    assertTrue(design.fractionations.getStyleName().contains(FRACTIONATIONS));
   }
 
   @Test
@@ -449,15 +435,16 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
-    assertEquals(resources.message(SOLUBILISATIONS_PANEL), view.solubilisationsPanel.getCaption());
-    assertEquals(resources.message(TRANSFERS_PANEL), view.transfersPanel.getCaption());
-    assertEquals(resources.message(DIGESTIONS_PANEL), view.digestionsPanel.getCaption());
+    assertEquals(resources.message(SAMPLES_PANEL), design.samplesPanel.getCaption());
+    assertEquals(resources.message(SOLUBILISATIONS_PANEL),
+        design.solubilisationsPanel.getCaption());
+    assertEquals(resources.message(TRANSFERS_PANEL), design.transfersPanel.getCaption());
+    assertEquals(resources.message(DIGESTIONS_PANEL), design.digestionsPanel.getCaption());
     assertEquals(resources.message(STANDARD_ADDITIONS_PANEL),
-        view.standardAdditionsPanel.getCaption());
-    assertEquals(resources.message(ENRICHMENTS_PANEL), view.enrichmentsPanel.getCaption());
-    assertEquals(resources.message(DILUTIONS_PANEL), view.dilutionsPanel.getCaption());
-    assertEquals(resources.message(FRACTIONATIONS_PANEL), view.fractionationsPanel.getCaption());
+        design.standardAdditionsPanel.getCaption());
+    assertEquals(resources.message(ENRICHMENTS_PANEL), design.enrichmentsPanel.getCaption());
+    assertEquals(resources.message(DILUTIONS_PANEL), design.dilutionsPanel.getCaption());
+    assertEquals(resources.message(FRACTIONATIONS_PANEL), design.fractionationsPanel.getCaption());
   }
 
   @Test
@@ -465,23 +452,23 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(2, view.samples.getColumns().size());
-    assertEquals(SAMPLES_NAME, view.samples.getColumns().get(0).getId());
-    assertEquals(SAMPLES_LAST_CONTAINER, view.samples.getColumns().get(1).getId());
+    assertEquals(2, design.samples.getColumns().size());
+    assertEquals(SAMPLES_NAME, design.samples.getColumns().get(0).getId());
+    assertEquals(SAMPLES_LAST_CONTAINER, design.samples.getColumns().get(1).getId());
     assertEquals(resources.message(SAMPLES_NAME),
-        view.samples.getColumn(SAMPLES_NAME).getCaption());
+        design.samples.getColumn(SAMPLES_NAME).getCaption());
     assertEquals(sample1.getName(),
-        view.samples.getColumn(SAMPLES_NAME).getValueProvider().apply(sample1));
+        design.samples.getColumn(SAMPLES_NAME).getValueProvider().apply(sample1));
     assertEquals(sample2.getName(),
-        view.samples.getColumn(SAMPLES_NAME).getValueProvider().apply(sample2));
+        design.samples.getColumn(SAMPLES_NAME).getValueProvider().apply(sample2));
     assertEquals(resources.message(SAMPLES_LAST_CONTAINER),
-        view.samples.getColumn(SAMPLES_LAST_CONTAINER).getCaption());
+        design.samples.getColumn(SAMPLES_LAST_CONTAINER).getCaption());
     assertEquals(tubeTransferedSample.getDestinationContainer().getFullName(),
-        view.samples.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample1));
+        design.samples.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample1));
     assertEquals(plateTransferedSample.getDestinationContainer().getFullName(),
-        view.samples.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample2));
+        design.samples.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample2));
 
-    Collection<SubmissionSample> samples = dataProvider(view.samples).getItems();
+    Collection<SubmissionSample> samples = dataProvider(design.samples).getItems();
     assertEquals(2, samples.size());
     assertTrue(samples.contains(sample1));
     assertTrue(samples.contains(sample2));
@@ -492,46 +479,46 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(5, view.solubilisations.getColumns().size());
-    assertEquals(SOLUBILISATION_SAMPLE, view.solubilisations.getColumns().get(0).getId());
-    assertEquals(SOLUBILISATION_SOLVENT, view.solubilisations.getColumns().get(1).getId());
-    assertEquals(SOLUBILISATION_SOLVENT_VOLUME, view.solubilisations.getColumns().get(2).getId());
-    assertEquals(SOLUBILISATION_CONTAINER, view.solubilisations.getColumns().get(3).getId());
-    assertEquals(SOLUBILISATION_COMMENTS, view.solubilisations.getColumns().get(4).getId());
+    assertEquals(5, design.solubilisations.getColumns().size());
+    assertEquals(SOLUBILISATION_SAMPLE, design.solubilisations.getColumns().get(0).getId());
+    assertEquals(SOLUBILISATION_SOLVENT, design.solubilisations.getColumns().get(1).getId());
+    assertEquals(SOLUBILISATION_SOLVENT_VOLUME, design.solubilisations.getColumns().get(2).getId());
+    assertEquals(SOLUBILISATION_CONTAINER, design.solubilisations.getColumns().get(3).getId());
+    assertEquals(SOLUBILISATION_COMMENTS, design.solubilisations.getColumns().get(4).getId());
     assertEquals(resources.message(SOLUBILISATION_SAMPLE),
-        view.solubilisations.getColumn(SOLUBILISATION_SAMPLE).getCaption());
-    assertEquals(tubeSolubilisedSample.getSample().getName(), view.solubilisations
+        design.solubilisations.getColumn(SOLUBILISATION_SAMPLE).getCaption());
+    assertEquals(tubeSolubilisedSample.getSample().getName(), design.solubilisations
         .getColumn(SOLUBILISATION_SAMPLE).getValueProvider().apply(tubeSolubilisedSample));
-    assertEquals(plateSolubilisedSample.getSample().getName(), view.solubilisations
+    assertEquals(plateSolubilisedSample.getSample().getName(), design.solubilisations
         .getColumn(SOLUBILISATION_SAMPLE).getValueProvider().apply(plateSolubilisedSample));
     assertEquals(resources.message(SOLUBILISATION_SOLVENT),
-        view.solubilisations.getColumn(SOLUBILISATION_SOLVENT).getCaption());
-    assertEquals(tubeSolubilisedSample.getSolvent(), view.solubilisations
+        design.solubilisations.getColumn(SOLUBILISATION_SOLVENT).getCaption());
+    assertEquals(tubeSolubilisedSample.getSolvent(), design.solubilisations
         .getColumn(SOLUBILISATION_SOLVENT).getValueProvider().apply(tubeSolubilisedSample));
-    assertEquals(plateSolubilisedSample.getSolvent(), view.solubilisations
+    assertEquals(plateSolubilisedSample.getSolvent(), design.solubilisations
         .getColumn(SOLUBILISATION_SOLVENT).getValueProvider().apply(plateSolubilisedSample));
     assertEquals(resources.message(SOLUBILISATION_SOLVENT_VOLUME),
-        view.solubilisations.getColumn(SOLUBILISATION_SOLVENT_VOLUME).getCaption());
-    assertEquals(tubeSolubilisedSample.getSolventVolume(), view.solubilisations
+        design.solubilisations.getColumn(SOLUBILISATION_SOLVENT_VOLUME).getCaption());
+    assertEquals(tubeSolubilisedSample.getSolventVolume(), design.solubilisations
         .getColumn(SOLUBILISATION_SOLVENT_VOLUME).getValueProvider().apply(tubeSolubilisedSample));
-    assertEquals(plateSolubilisedSample.getSolventVolume(), view.solubilisations
+    assertEquals(plateSolubilisedSample.getSolventVolume(), design.solubilisations
         .getColumn(SOLUBILISATION_SOLVENT_VOLUME).getValueProvider().apply(plateSolubilisedSample));
     assertEquals(resources.message(SOLUBILISATION_CONTAINER),
-        view.solubilisations.getColumn(SOLUBILISATION_CONTAINER).getCaption());
-    assertEquals(tubeSolubilisedSample.getContainer().getFullName(), view.solubilisations
+        design.solubilisations.getColumn(SOLUBILISATION_CONTAINER).getCaption());
+    assertEquals(tubeSolubilisedSample.getContainer().getFullName(), design.solubilisations
         .getColumn(SOLUBILISATION_CONTAINER).getValueProvider().apply(tubeSolubilisedSample));
-    assertEquals(plateSolubilisedSample.getContainer().getFullName(), view.solubilisations
+    assertEquals(plateSolubilisedSample.getContainer().getFullName(), design.solubilisations
         .getColumn(SOLUBILISATION_CONTAINER).getValueProvider().apply(plateSolubilisedSample));
     assertEquals(resources.message(SOLUBILISATION_COMMENTS),
-        view.solubilisations.getColumn(SOLUBILISATION_COMMENTS).getCaption());
-    assertEquals(tubeSolubilisedSample.getComments(), view.solubilisations
+        design.solubilisations.getColumn(SOLUBILISATION_COMMENTS).getCaption());
+    assertEquals(tubeSolubilisedSample.getComments(), design.solubilisations
         .getColumn(SOLUBILISATION_COMMENTS).getValueProvider().apply(tubeSolubilisedSample));
-    assertEquals(plateSolubilisedSample.getComments(), view.solubilisations
+    assertEquals(plateSolubilisedSample.getComments(), design.solubilisations
         .getColumn(SOLUBILISATION_COMMENTS).getValueProvider().apply(plateSolubilisedSample));
 
-    assertTrue(view.solubilisationsPanel.isVisible());
+    assertTrue(design.solubilisationsPanel.isVisible());
     Collection<SolubilisedSample> solubilisedSamples =
-        dataProvider(view.solubilisations).getItems();
+        dataProvider(design.solubilisations).getItems();
     assertEquals(2, solubilisedSamples.size());
     assertTrue(solubilisedSamples.contains(tubeSolubilisedSample));
     assertTrue(solubilisedSamples.contains(plateSolubilisedSample));
@@ -543,7 +530,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertFalse(view.solubilisationsPanel.isVisible());
+    assertFalse(design.solubilisationsPanel.isVisible());
   }
 
   @Test
@@ -551,38 +538,38 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(4, view.transfers.getColumns().size());
-    assertEquals(TRANSFER_SAMPLE, view.transfers.getColumns().get(0).getId());
-    assertEquals(TRANSFER_CONTAINER, view.transfers.getColumns().get(1).getId());
-    assertEquals(TRANSFER_DESTINATION_CONTAINER, view.transfers.getColumns().get(2).getId());
-    assertEquals(TRANSFER_COMMENTS, view.transfers.getColumns().get(3).getId());
+    assertEquals(4, design.transfers.getColumns().size());
+    assertEquals(TRANSFER_SAMPLE, design.transfers.getColumns().get(0).getId());
+    assertEquals(TRANSFER_CONTAINER, design.transfers.getColumns().get(1).getId());
+    assertEquals(TRANSFER_DESTINATION_CONTAINER, design.transfers.getColumns().get(2).getId());
+    assertEquals(TRANSFER_COMMENTS, design.transfers.getColumns().get(3).getId());
     assertEquals(resources.message(TRANSFER_SAMPLE),
-        view.transfers.getColumn(TRANSFER_SAMPLE).getCaption());
+        design.transfers.getColumn(TRANSFER_SAMPLE).getCaption());
     assertEquals(tubeTransferedSample.getSample().getName(),
-        view.transfers.getColumn(TRANSFER_SAMPLE).getValueProvider().apply(tubeTransferedSample));
-    assertEquals(plateTransferedSample.getSample().getName(),
-        view.transfers.getColumn(TRANSFER_SAMPLE).getValueProvider().apply(plateTransferedSample));
+        design.transfers.getColumn(TRANSFER_SAMPLE).getValueProvider().apply(tubeTransferedSample));
+    assertEquals(plateTransferedSample.getSample().getName(), design.transfers
+        .getColumn(TRANSFER_SAMPLE).getValueProvider().apply(plateTransferedSample));
     assertEquals(resources.message(TRANSFER_CONTAINER),
-        view.transfers.getColumn(TRANSFER_CONTAINER).getCaption());
-    assertEquals(tubeTransferedSample.getContainer().getFullName(), view.transfers
+        design.transfers.getColumn(TRANSFER_CONTAINER).getCaption());
+    assertEquals(tubeTransferedSample.getContainer().getFullName(), design.transfers
         .getColumn(TRANSFER_CONTAINER).getValueProvider().apply(tubeTransferedSample));
-    assertEquals(plateTransferedSample.getContainer().getFullName(), view.transfers
+    assertEquals(plateTransferedSample.getContainer().getFullName(), design.transfers
         .getColumn(TRANSFER_CONTAINER).getValueProvider().apply(plateTransferedSample));
     assertEquals(resources.message(TRANSFER_DESTINATION_CONTAINER),
-        view.transfers.getColumn(TRANSFER_DESTINATION_CONTAINER).getCaption());
-    assertEquals(tubeTransferedSample.getDestinationContainer().getFullName(), view.transfers
+        design.transfers.getColumn(TRANSFER_DESTINATION_CONTAINER).getCaption());
+    assertEquals(tubeTransferedSample.getDestinationContainer().getFullName(), design.transfers
         .getColumn(TRANSFER_DESTINATION_CONTAINER).getValueProvider().apply(tubeTransferedSample));
-    assertEquals(plateTransferedSample.getDestinationContainer().getFullName(), view.transfers
+    assertEquals(plateTransferedSample.getDestinationContainer().getFullName(), design.transfers
         .getColumn(TRANSFER_DESTINATION_CONTAINER).getValueProvider().apply(plateTransferedSample));
     assertEquals(resources.message(TRANSFER_COMMENTS),
-        view.transfers.getColumn(TRANSFER_COMMENTS).getCaption());
-    assertEquals(tubeTransferedSample.getComments(),
-        view.transfers.getColumn(TRANSFER_COMMENTS).getValueProvider().apply(tubeTransferedSample));
-    assertEquals(plateTransferedSample.getComments(), view.transfers.getColumn(TRANSFER_COMMENTS)
+        design.transfers.getColumn(TRANSFER_COMMENTS).getCaption());
+    assertEquals(tubeTransferedSample.getComments(), design.transfers.getColumn(TRANSFER_COMMENTS)
+        .getValueProvider().apply(tubeTransferedSample));
+    assertEquals(plateTransferedSample.getComments(), design.transfers.getColumn(TRANSFER_COMMENTS)
         .getValueProvider().apply(plateTransferedSample));
 
-    assertTrue(view.transfersPanel.isVisible());
-    Collection<SampleTransfer> transferedSamples = dataProvider(view.transfers).getItems();
+    assertTrue(design.transfersPanel.isVisible());
+    Collection<SampleTransfer> transferedSamples = dataProvider(design.transfers).getItems();
     assertEquals(2, transferedSamples.size());
     assertTrue(transferedSamples.contains(tubeTransferedSample));
     assertTrue(transferedSamples.contains(plateTransferedSample));
@@ -594,7 +581,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertFalse(view.transfersPanel.isVisible());
+    assertFalse(design.transfersPanel.isVisible());
   }
 
   @Test
@@ -602,38 +589,38 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(4, view.digestions.getColumns().size());
-    assertEquals(DIGESTION_SAMPLE, view.digestions.getColumns().get(0).getId());
-    assertEquals(DIGESTION_PROTOCOL, view.digestions.getColumns().get(1).getId());
-    assertEquals(DIGESTION_CONTAINER, view.digestions.getColumns().get(2).getId());
-    assertEquals(DIGESTION_COMMENTS, view.digestions.getColumns().get(3).getId());
+    assertEquals(4, design.digestions.getColumns().size());
+    assertEquals(DIGESTION_SAMPLE, design.digestions.getColumns().get(0).getId());
+    assertEquals(DIGESTION_PROTOCOL, design.digestions.getColumns().get(1).getId());
+    assertEquals(DIGESTION_CONTAINER, design.digestions.getColumns().get(2).getId());
+    assertEquals(DIGESTION_COMMENTS, design.digestions.getColumns().get(3).getId());
     assertEquals(resources.message(DIGESTION_SAMPLE),
-        view.digestions.getColumn(DIGESTION_SAMPLE).getCaption());
+        design.digestions.getColumn(DIGESTION_SAMPLE).getCaption());
     assertEquals(tubeDigestedSample.getSample().getName(),
-        view.digestions.getColumn(DIGESTION_SAMPLE).getValueProvider().apply(tubeDigestedSample));
-    assertEquals(plateDigestedSample.getSample().getName(),
-        view.digestions.getColumn(DIGESTION_SAMPLE).getValueProvider().apply(plateDigestedSample));
+        design.digestions.getColumn(DIGESTION_SAMPLE).getValueProvider().apply(tubeDigestedSample));
+    assertEquals(plateDigestedSample.getSample().getName(), design.digestions
+        .getColumn(DIGESTION_SAMPLE).getValueProvider().apply(plateDigestedSample));
     assertEquals(resources.message(DIGESTION_PROTOCOL),
-        view.digestions.getColumn(DIGESTION_PROTOCOL).getCaption());
-    assertEquals(tubeDigestion.getProtocol().getName(),
-        view.digestions.getColumn(DIGESTION_PROTOCOL).getValueProvider().apply(tubeDigestedSample));
-    assertEquals(plateDigestion.getProtocol().getName(), view.digestions
+        design.digestions.getColumn(DIGESTION_PROTOCOL).getCaption());
+    assertEquals(tubeDigestion.getProtocol().getName(), design.digestions
+        .getColumn(DIGESTION_PROTOCOL).getValueProvider().apply(tubeDigestedSample));
+    assertEquals(plateDigestion.getProtocol().getName(), design.digestions
         .getColumn(DIGESTION_PROTOCOL).getValueProvider().apply(plateDigestedSample));
     assertEquals(resources.message(DIGESTION_CONTAINER),
-        view.digestions.getColumn(DIGESTION_CONTAINER).getCaption());
-    assertEquals(tubeDigestedSample.getContainer().getFullName(), view.digestions
+        design.digestions.getColumn(DIGESTION_CONTAINER).getCaption());
+    assertEquals(tubeDigestedSample.getContainer().getFullName(), design.digestions
         .getColumn(DIGESTION_CONTAINER).getValueProvider().apply(tubeDigestedSample));
-    assertEquals(plateDigestedSample.getContainer().getFullName(), view.digestions
+    assertEquals(plateDigestedSample.getContainer().getFullName(), design.digestions
         .getColumn(DIGESTION_CONTAINER).getValueProvider().apply(plateDigestedSample));
     assertEquals(resources.message(DIGESTION_COMMENTS),
-        view.digestions.getColumn(DIGESTION_COMMENTS).getCaption());
-    assertEquals(tubeDigestedSample.getComments(),
-        view.digestions.getColumn(DIGESTION_COMMENTS).getValueProvider().apply(tubeDigestedSample));
-    assertEquals(plateDigestedSample.getComments(), view.digestions.getColumn(DIGESTION_COMMENTS)
+        design.digestions.getColumn(DIGESTION_COMMENTS).getCaption());
+    assertEquals(tubeDigestedSample.getComments(), design.digestions.getColumn(DIGESTION_COMMENTS)
+        .getValueProvider().apply(tubeDigestedSample));
+    assertEquals(plateDigestedSample.getComments(), design.digestions.getColumn(DIGESTION_COMMENTS)
         .getValueProvider().apply(plateDigestedSample));
 
-    assertTrue(view.digestionsPanel.isVisible());
-    Collection<DigestedSample> digestedSamples = dataProvider(view.digestions).getItems();
+    assertTrue(design.digestionsPanel.isVisible());
+    Collection<DigestedSample> digestedSamples = dataProvider(design.digestions).getItems();
     assertEquals(2, digestedSamples.size());
     assertTrue(digestedSamples.contains(tubeDigestedSample));
     assertTrue(digestedSamples.contains(plateDigestedSample));
@@ -645,7 +632,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertFalse(view.digestionsPanel.isVisible());
+    assertFalse(design.digestionsPanel.isVisible());
   }
 
   @Test
@@ -653,45 +640,45 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(5, view.standardAdditions.getColumns().size());
-    assertEquals(STANDARD_ADDITION_SAMPLE, view.standardAdditions.getColumns().get(0).getId());
-    assertEquals(STANDARD_ADDITION_NAME, view.standardAdditions.getColumns().get(1).getId());
-    assertEquals(STANDARD_ADDITION_QUANTITY, view.standardAdditions.getColumns().get(2).getId());
-    assertEquals(STANDARD_ADDITION_CONTAINER, view.standardAdditions.getColumns().get(3).getId());
-    assertEquals(STANDARD_ADDITION_COMMENTS, view.standardAdditions.getColumns().get(4).getId());
+    assertEquals(5, design.standardAdditions.getColumns().size());
+    assertEquals(STANDARD_ADDITION_SAMPLE, design.standardAdditions.getColumns().get(0).getId());
+    assertEquals(STANDARD_ADDITION_NAME, design.standardAdditions.getColumns().get(1).getId());
+    assertEquals(STANDARD_ADDITION_QUANTITY, design.standardAdditions.getColumns().get(2).getId());
+    assertEquals(STANDARD_ADDITION_CONTAINER, design.standardAdditions.getColumns().get(3).getId());
+    assertEquals(STANDARD_ADDITION_COMMENTS, design.standardAdditions.getColumns().get(4).getId());
     assertEquals(resources.message(STANDARD_ADDITION_SAMPLE),
-        view.standardAdditions.getColumn(STANDARD_ADDITION_SAMPLE).getCaption());
-    assertEquals(tubeAddedStandard.getSample().getName(), view.standardAdditions
+        design.standardAdditions.getColumn(STANDARD_ADDITION_SAMPLE).getCaption());
+    assertEquals(tubeAddedStandard.getSample().getName(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_SAMPLE).getValueProvider().apply(tubeAddedStandard));
-    assertEquals(plateAddedStandard.getSample().getName(), view.standardAdditions
+    assertEquals(plateAddedStandard.getSample().getName(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_SAMPLE).getValueProvider().apply(plateAddedStandard));
     assertEquals(resources.message(STANDARD_ADDITION_NAME),
-        view.standardAdditions.getColumn(STANDARD_ADDITION_NAME).getCaption());
-    assertEquals(tubeAddedStandard.getName(), view.standardAdditions
+        design.standardAdditions.getColumn(STANDARD_ADDITION_NAME).getCaption());
+    assertEquals(tubeAddedStandard.getName(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_NAME).getValueProvider().apply(tubeAddedStandard));
-    assertEquals(plateAddedStandard.getName(), view.standardAdditions
+    assertEquals(plateAddedStandard.getName(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_NAME).getValueProvider().apply(plateAddedStandard));
     assertEquals(resources.message(STANDARD_ADDITION_QUANTITY),
-        view.standardAdditions.getColumn(STANDARD_ADDITION_QUANTITY).getCaption());
-    assertEquals(tubeAddedStandard.getQuantity(), view.standardAdditions
+        design.standardAdditions.getColumn(STANDARD_ADDITION_QUANTITY).getCaption());
+    assertEquals(tubeAddedStandard.getQuantity(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_QUANTITY).getValueProvider().apply(tubeAddedStandard));
-    assertEquals(plateAddedStandard.getQuantity(), view.standardAdditions
+    assertEquals(plateAddedStandard.getQuantity(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_QUANTITY).getValueProvider().apply(plateAddedStandard));
     assertEquals(resources.message(STANDARD_ADDITION_CONTAINER),
-        view.standardAdditions.getColumn(STANDARD_ADDITION_CONTAINER).getCaption());
-    assertEquals(tubeAddedStandard.getContainer().getFullName(), view.standardAdditions
+        design.standardAdditions.getColumn(STANDARD_ADDITION_CONTAINER).getCaption());
+    assertEquals(tubeAddedStandard.getContainer().getFullName(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_CONTAINER).getValueProvider().apply(tubeAddedStandard));
-    assertEquals(plateAddedStandard.getContainer().getFullName(), view.standardAdditions
+    assertEquals(plateAddedStandard.getContainer().getFullName(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_CONTAINER).getValueProvider().apply(plateAddedStandard));
     assertEquals(resources.message(STANDARD_ADDITION_COMMENTS),
-        view.standardAdditions.getColumn(STANDARD_ADDITION_COMMENTS).getCaption());
-    assertEquals(tubeAddedStandard.getComments(), view.standardAdditions
+        design.standardAdditions.getColumn(STANDARD_ADDITION_COMMENTS).getCaption());
+    assertEquals(tubeAddedStandard.getComments(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_COMMENTS).getValueProvider().apply(tubeAddedStandard));
-    assertEquals(plateAddedStandard.getComments(), view.standardAdditions
+    assertEquals(plateAddedStandard.getComments(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_COMMENTS).getValueProvider().apply(plateAddedStandard));
 
-    assertTrue(view.standardAdditionsPanel.isVisible());
-    Collection<AddedStandard> addedStandards = dataProvider(view.standardAdditions).getItems();
+    assertTrue(design.standardAdditionsPanel.isVisible());
+    Collection<AddedStandard> addedStandards = dataProvider(design.standardAdditions).getItems();
     assertEquals(2, addedStandards.size());
     assertTrue(addedStandards.contains(tubeAddedStandard));
     assertTrue(addedStandards.contains(plateAddedStandard));
@@ -703,7 +690,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertFalse(view.standardAdditionsPanel.isVisible());
+    assertFalse(design.standardAdditionsPanel.isVisible());
   }
 
   @Test
@@ -711,38 +698,38 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(4, view.enrichments.getColumns().size());
-    assertEquals(ENRICHMENT_SAMPLE, view.enrichments.getColumns().get(0).getId());
-    assertEquals(ENRICHMENT_PROTOCOL, view.enrichments.getColumns().get(1).getId());
-    assertEquals(ENRICHMENT_CONTAINER, view.enrichments.getColumns().get(2).getId());
-    assertEquals(ENRICHMENT_COMMENTS, view.enrichments.getColumns().get(3).getId());
+    assertEquals(4, design.enrichments.getColumns().size());
+    assertEquals(ENRICHMENT_SAMPLE, design.enrichments.getColumns().get(0).getId());
+    assertEquals(ENRICHMENT_PROTOCOL, design.enrichments.getColumns().get(1).getId());
+    assertEquals(ENRICHMENT_CONTAINER, design.enrichments.getColumns().get(2).getId());
+    assertEquals(ENRICHMENT_COMMENTS, design.enrichments.getColumns().get(3).getId());
     assertEquals(resources.message(ENRICHMENT_SAMPLE),
-        view.enrichments.getColumn(ENRICHMENT_SAMPLE).getCaption());
-    assertEquals(tubeEnrichedSample.getSample().getName(),
-        view.enrichments.getColumn(ENRICHMENT_SAMPLE).getValueProvider().apply(tubeEnrichedSample));
-    assertEquals(plateEnrichedSample.getSample().getName(), view.enrichments
+        design.enrichments.getColumn(ENRICHMENT_SAMPLE).getCaption());
+    assertEquals(tubeEnrichedSample.getSample().getName(), design.enrichments
+        .getColumn(ENRICHMENT_SAMPLE).getValueProvider().apply(tubeEnrichedSample));
+    assertEquals(plateEnrichedSample.getSample().getName(), design.enrichments
         .getColumn(ENRICHMENT_SAMPLE).getValueProvider().apply(plateEnrichedSample));
     assertEquals(resources.message(ENRICHMENT_PROTOCOL),
-        view.enrichments.getColumn(ENRICHMENT_PROTOCOL).getCaption());
-    assertEquals(tubeEnrichment.getProtocol().getName(), view.enrichments
+        design.enrichments.getColumn(ENRICHMENT_PROTOCOL).getCaption());
+    assertEquals(tubeEnrichment.getProtocol().getName(), design.enrichments
         .getColumn(ENRICHMENT_PROTOCOL).getValueProvider().apply(tubeEnrichedSample));
-    assertEquals(plateEnrichment.getProtocol().getName(), view.enrichments
+    assertEquals(plateEnrichment.getProtocol().getName(), design.enrichments
         .getColumn(ENRICHMENT_PROTOCOL).getValueProvider().apply(plateEnrichedSample));
     assertEquals(resources.message(ENRICHMENT_CONTAINER),
-        view.enrichments.getColumn(ENRICHMENT_CONTAINER).getCaption());
-    assertEquals(tubeEnrichedSample.getContainer().getFullName(), view.enrichments
+        design.enrichments.getColumn(ENRICHMENT_CONTAINER).getCaption());
+    assertEquals(tubeEnrichedSample.getContainer().getFullName(), design.enrichments
         .getColumn(ENRICHMENT_CONTAINER).getValueProvider().apply(tubeEnrichedSample));
-    assertEquals(plateEnrichedSample.getContainer().getFullName(), view.enrichments
+    assertEquals(plateEnrichedSample.getContainer().getFullName(), design.enrichments
         .getColumn(ENRICHMENT_CONTAINER).getValueProvider().apply(plateEnrichedSample));
     assertEquals(resources.message(ENRICHMENT_COMMENTS),
-        view.enrichments.getColumn(ENRICHMENT_COMMENTS).getCaption());
-    assertEquals(tubeEnrichedSample.getComments(), view.enrichments.getColumn(ENRICHMENT_COMMENTS)
+        design.enrichments.getColumn(ENRICHMENT_COMMENTS).getCaption());
+    assertEquals(tubeEnrichedSample.getComments(), design.enrichments.getColumn(ENRICHMENT_COMMENTS)
         .getValueProvider().apply(tubeEnrichedSample));
-    assertEquals(plateEnrichedSample.getComments(), view.enrichments.getColumn(ENRICHMENT_COMMENTS)
-        .getValueProvider().apply(plateEnrichedSample));
+    assertEquals(plateEnrichedSample.getComments(), design.enrichments
+        .getColumn(ENRICHMENT_COMMENTS).getValueProvider().apply(plateEnrichedSample));
 
-    assertTrue(view.enrichmentsPanel.isVisible());
-    Collection<EnrichedSample> enrichedSamples = dataProvider(view.enrichments).getItems();
+    assertTrue(design.enrichmentsPanel.isVisible());
+    Collection<EnrichedSample> enrichedSamples = dataProvider(design.enrichments).getItems();
     assertEquals(2, enrichedSamples.size());
     assertTrue(enrichedSamples.contains(tubeEnrichedSample));
     assertTrue(enrichedSamples.contains(plateEnrichedSample));
@@ -754,7 +741,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertFalse(view.enrichmentsPanel.isVisible());
+    assertFalse(design.enrichmentsPanel.isVisible());
   }
 
   @Test
@@ -762,52 +749,52 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(6, view.dilutions.getColumns().size());
-    assertEquals(DILUTION_SAMPLE, view.dilutions.getColumns().get(0).getId());
-    assertEquals(DILUTION_SOURCE_VOLUME, view.dilutions.getColumns().get(1).getId());
-    assertEquals(DILUTION_SOLVENT, view.dilutions.getColumns().get(2).getId());
-    assertEquals(DILUTION_SOLVENT_VOLUME, view.dilutions.getColumns().get(3).getId());
-    assertEquals(DILUTION_CONTAINER, view.dilutions.getColumns().get(4).getId());
-    assertEquals(DILUTION_COMMENTS, view.dilutions.getColumns().get(5).getId());
+    assertEquals(6, design.dilutions.getColumns().size());
+    assertEquals(DILUTION_SAMPLE, design.dilutions.getColumns().get(0).getId());
+    assertEquals(DILUTION_SOURCE_VOLUME, design.dilutions.getColumns().get(1).getId());
+    assertEquals(DILUTION_SOLVENT, design.dilutions.getColumns().get(2).getId());
+    assertEquals(DILUTION_SOLVENT_VOLUME, design.dilutions.getColumns().get(3).getId());
+    assertEquals(DILUTION_CONTAINER, design.dilutions.getColumns().get(4).getId());
+    assertEquals(DILUTION_COMMENTS, design.dilutions.getColumns().get(5).getId());
     assertEquals(resources.message(DILUTION_SAMPLE),
-        view.dilutions.getColumn(DILUTION_SAMPLE).getCaption());
+        design.dilutions.getColumn(DILUTION_SAMPLE).getCaption());
     assertEquals(tubeDilutedSample.getSample().getName(),
-        view.dilutions.getColumn(DILUTION_SAMPLE).getValueProvider().apply(tubeDilutedSample));
+        design.dilutions.getColumn(DILUTION_SAMPLE).getValueProvider().apply(tubeDilutedSample));
     assertEquals(plateDilutedSample.getSample().getName(),
-        view.dilutions.getColumn(DILUTION_SAMPLE).getValueProvider().apply(plateDilutedSample));
+        design.dilutions.getColumn(DILUTION_SAMPLE).getValueProvider().apply(plateDilutedSample));
     assertEquals(resources.message(DILUTION_SOURCE_VOLUME),
-        view.dilutions.getColumn(DILUTION_SOURCE_VOLUME).getCaption());
-    assertEquals(tubeDilutedSample.getSourceVolume(), view.dilutions
+        design.dilutions.getColumn(DILUTION_SOURCE_VOLUME).getCaption());
+    assertEquals(tubeDilutedSample.getSourceVolume(), design.dilutions
         .getColumn(DILUTION_SOURCE_VOLUME).getValueProvider().apply(tubeDilutedSample));
-    assertEquals(plateDilutedSample.getSourceVolume(), view.dilutions
+    assertEquals(plateDilutedSample.getSourceVolume(), design.dilutions
         .getColumn(DILUTION_SOURCE_VOLUME).getValueProvider().apply(plateDilutedSample));
     assertEquals(resources.message(DILUTION_SOLVENT),
-        view.dilutions.getColumn(DILUTION_SOLVENT).getCaption());
+        design.dilutions.getColumn(DILUTION_SOLVENT).getCaption());
     assertEquals(tubeDilutedSample.getSolvent(),
-        view.dilutions.getColumn(DILUTION_SOLVENT).getValueProvider().apply(tubeDilutedSample));
+        design.dilutions.getColumn(DILUTION_SOLVENT).getValueProvider().apply(tubeDilutedSample));
     assertEquals(plateDilutedSample.getSolvent(),
-        view.dilutions.getColumn(DILUTION_SOLVENT).getValueProvider().apply(plateDilutedSample));
+        design.dilutions.getColumn(DILUTION_SOLVENT).getValueProvider().apply(plateDilutedSample));
     assertEquals(resources.message(DILUTION_SOLVENT_VOLUME),
-        view.dilutions.getColumn(DILUTION_SOLVENT_VOLUME).getCaption());
-    assertEquals(tubeDilutedSample.getSolventVolume(), view.dilutions
+        design.dilutions.getColumn(DILUTION_SOLVENT_VOLUME).getCaption());
+    assertEquals(tubeDilutedSample.getSolventVolume(), design.dilutions
         .getColumn(DILUTION_SOLVENT_VOLUME).getValueProvider().apply(tubeDilutedSample));
-    assertEquals(plateDilutedSample.getSolventVolume(), view.dilutions
+    assertEquals(plateDilutedSample.getSolventVolume(), design.dilutions
         .getColumn(DILUTION_SOLVENT_VOLUME).getValueProvider().apply(plateDilutedSample));
     assertEquals(resources.message(DILUTION_CONTAINER),
-        view.dilutions.getColumn(DILUTION_CONTAINER).getCaption());
+        design.dilutions.getColumn(DILUTION_CONTAINER).getCaption());
     assertEquals(tubeDilutedSample.getContainer().getFullName(),
-        view.dilutions.getColumn(DILUTION_CONTAINER).getValueProvider().apply(tubeDilutedSample));
-    assertEquals(plateDilutedSample.getContainer().getFullName(),
-        view.dilutions.getColumn(DILUTION_CONTAINER).getValueProvider().apply(plateDilutedSample));
+        design.dilutions.getColumn(DILUTION_CONTAINER).getValueProvider().apply(tubeDilutedSample));
+    assertEquals(plateDilutedSample.getContainer().getFullName(), design.dilutions
+        .getColumn(DILUTION_CONTAINER).getValueProvider().apply(plateDilutedSample));
     assertEquals(resources.message(DILUTION_COMMENTS),
-        view.dilutions.getColumn(DILUTION_COMMENTS).getCaption());
+        design.dilutions.getColumn(DILUTION_COMMENTS).getCaption());
     assertEquals(tubeDilutedSample.getComments(),
-        view.dilutions.getColumn(DILUTION_COMMENTS).getValueProvider().apply(tubeDilutedSample));
+        design.dilutions.getColumn(DILUTION_COMMENTS).getValueProvider().apply(tubeDilutedSample));
     assertEquals(plateDilutedSample.getComments(),
-        view.dilutions.getColumn(DILUTION_COMMENTS).getValueProvider().apply(plateDilutedSample));
+        design.dilutions.getColumn(DILUTION_COMMENTS).getValueProvider().apply(plateDilutedSample));
 
-    assertTrue(view.dilutionsPanel.isVisible());
-    Collection<DilutedSample> dilutedSamples = dataProvider(view.dilutions).getItems();
+    assertTrue(design.dilutionsPanel.isVisible());
+    Collection<DilutedSample> dilutedSamples = dataProvider(design.dilutions).getItems();
     assertEquals(2, dilutedSamples.size());
     assertTrue(dilutedSamples.contains(tubeDilutedSample));
     assertTrue(dilutedSamples.contains(plateDilutedSample));
@@ -819,7 +806,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertFalse(view.dilutionsPanel.isVisible());
+    assertFalse(design.dilutionsPanel.isVisible());
   }
 
   @Test
@@ -827,58 +814,58 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(6, view.fractionations.getColumns().size());
-    assertEquals(FRACTIONATION_SAMPLE, view.fractionations.getColumns().get(0).getId());
-    assertEquals(FRACTIONATION_TYPE, view.fractionations.getColumns().get(1).getId());
-    assertEquals(FRACTIONATION_TYPE_VALUE, view.fractionations.getColumns().get(2).getId());
-    assertEquals(FRACTIONATION_CONTAINER, view.fractionations.getColumns().get(3).getId());
+    assertEquals(6, design.fractionations.getColumns().size());
+    assertEquals(FRACTIONATION_SAMPLE, design.fractionations.getColumns().get(0).getId());
+    assertEquals(FRACTIONATION_TYPE, design.fractionations.getColumns().get(1).getId());
+    assertEquals(FRACTIONATION_TYPE_VALUE, design.fractionations.getColumns().get(2).getId());
+    assertEquals(FRACTIONATION_CONTAINER, design.fractionations.getColumns().get(3).getId());
     assertEquals(FRACTIONATION_DESTINATION_CONTAINER,
-        view.fractionations.getColumns().get(4).getId());
-    assertEquals(FRACTIONATION_COMMENTS, view.fractionations.getColumns().get(5).getId());
+        design.fractionations.getColumns().get(4).getId());
+    assertEquals(FRACTIONATION_COMMENTS, design.fractionations.getColumns().get(5).getId());
     assertEquals(resources.message(FRACTIONATION_SAMPLE),
-        view.fractionations.getColumn(FRACTIONATION_SAMPLE).getCaption());
-    assertEquals(tubeFractionatedSample.getSample().getName(), view.fractionations
+        design.fractionations.getColumn(FRACTIONATION_SAMPLE).getCaption());
+    assertEquals(tubeFractionatedSample.getSample().getName(), design.fractionations
         .getColumn(FRACTIONATION_SAMPLE).getValueProvider().apply(tubeFractionatedSample));
-    assertEquals(plateFractionatedSample.getSample().getName(), view.fractionations
+    assertEquals(plateFractionatedSample.getSample().getName(), design.fractionations
         .getColumn(FRACTIONATION_SAMPLE).getValueProvider().apply(plateFractionatedSample));
     assertEquals(resources.message(FRACTIONATION_TYPE),
-        view.fractionations.getColumn(FRACTIONATION_TYPE).getCaption());
+        design.fractionations.getColumn(FRACTIONATION_TYPE).getCaption());
     assertEquals(tubeFractionatedSample.getFractionation().getFractionationType().getLabel(locale),
-        view.fractionations.getColumn(FRACTIONATION_TYPE).getValueProvider()
+        design.fractionations.getColumn(FRACTIONATION_TYPE).getValueProvider()
             .apply(tubeFractionatedSample));
     assertEquals(plateFractionatedSample.getFractionation().getFractionationType().getLabel(locale),
-        view.fractionations.getColumn(FRACTIONATION_TYPE).getValueProvider()
+        design.fractionations.getColumn(FRACTIONATION_TYPE).getValueProvider()
             .apply(plateFractionatedSample));
     assertEquals(resources.message(FRACTIONATION_TYPE_VALUE),
-        view.fractionations.getColumn(FRACTIONATION_TYPE_VALUE).getCaption());
-    assertEquals(tubeFractionatedSample.getNumber(), view.fractionations
+        design.fractionations.getColumn(FRACTIONATION_TYPE_VALUE).getCaption());
+    assertEquals(tubeFractionatedSample.getNumber(), design.fractionations
         .getColumn(FRACTIONATION_TYPE_VALUE).getValueProvider().apply(tubeFractionatedSample));
-    assertEquals(plateFractionatedSample.getPiInterval(), view.fractionations
+    assertEquals(plateFractionatedSample.getPiInterval(), design.fractionations
         .getColumn(FRACTIONATION_TYPE_VALUE).getValueProvider().apply(plateFractionatedSample));
     assertEquals(resources.message(FRACTIONATION_CONTAINER),
-        view.fractionations.getColumn(FRACTIONATION_CONTAINER).getCaption());
-    assertEquals(tubeFractionatedSample.getContainer().getFullName(), view.fractionations
+        design.fractionations.getColumn(FRACTIONATION_CONTAINER).getCaption());
+    assertEquals(tubeFractionatedSample.getContainer().getFullName(), design.fractionations
         .getColumn(FRACTIONATION_CONTAINER).getValueProvider().apply(tubeFractionatedSample));
-    assertEquals(plateFractionatedSample.getContainer().getFullName(), view.fractionations
+    assertEquals(plateFractionatedSample.getContainer().getFullName(), design.fractionations
         .getColumn(FRACTIONATION_CONTAINER).getValueProvider().apply(plateFractionatedSample));
     assertEquals(resources.message(FRACTIONATION_DESTINATION_CONTAINER),
-        view.fractionations.getColumn(FRACTIONATION_DESTINATION_CONTAINER).getCaption());
+        design.fractionations.getColumn(FRACTIONATION_DESTINATION_CONTAINER).getCaption());
     assertEquals(tubeFractionatedSample.getDestinationContainer().getFullName(),
-        view.fractionations.getColumn(FRACTIONATION_DESTINATION_CONTAINER).getValueProvider()
+        design.fractionations.getColumn(FRACTIONATION_DESTINATION_CONTAINER).getValueProvider()
             .apply(tubeFractionatedSample));
     assertEquals(plateFractionatedSample.getDestinationContainer().getFullName(),
-        view.fractionations.getColumn(FRACTIONATION_DESTINATION_CONTAINER).getValueProvider()
+        design.fractionations.getColumn(FRACTIONATION_DESTINATION_CONTAINER).getValueProvider()
             .apply(plateFractionatedSample));
     assertEquals(resources.message(FRACTIONATION_COMMENTS),
-        view.fractionations.getColumn(FRACTIONATION_COMMENTS).getCaption());
-    assertEquals(tubeFractionatedSample.getComments(), view.fractionations
+        design.fractionations.getColumn(FRACTIONATION_COMMENTS).getCaption());
+    assertEquals(tubeFractionatedSample.getComments(), design.fractionations
         .getColumn(FRACTIONATION_COMMENTS).getValueProvider().apply(tubeFractionatedSample));
-    assertEquals(plateFractionatedSample.getComments(), view.fractionations
+    assertEquals(plateFractionatedSample.getComments(), design.fractionations
         .getColumn(FRACTIONATION_COMMENTS).getValueProvider().apply(plateFractionatedSample));
 
-    assertTrue(view.fractionationsPanel.isVisible());
+    assertTrue(design.fractionationsPanel.isVisible());
     Collection<FractionationDetail> fractionatedSamples =
-        dataProvider(view.fractionations).getItems();
+        dataProvider(design.fractionations).getItems();
     assertEquals(2, fractionatedSamples.size());
     assertTrue(fractionatedSamples.contains(tubeFractionatedSample));
     assertTrue(fractionatedSamples.contains(plateFractionatedSample));
@@ -890,6 +877,6 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertFalse(view.fractionationsPanel.isVisible());
+    assertFalse(design.fractionationsPanel.isVisible());
   }
 }

@@ -19,10 +19,12 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.ui.CustomComponent;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -30,11 +32,16 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SubmissionTreatmentsForm extends SubmissionTreatmentsFormDesign
-    implements BaseComponent {
+public class SubmissionTreatmentsForm extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = 6009644547823085177L;
+  protected SubmissionTreatmentsFormDesign design = new SubmissionTreatmentsFormDesign();
   @Inject
   private transient SubmissionTreatmentsFormPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
 
   @Override
   public void attach() {

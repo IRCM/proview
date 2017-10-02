@@ -80,6 +80,7 @@ public class SubmissionAnalysesFormPresenter {
   private static final Logger logger =
       LoggerFactory.getLogger(SubmissionAnalysesFormPresenter.class);
   private SubmissionAnalysesForm view;
+  private SubmissionAnalysesFormDesign design;
   private Submission submission;
   @Inject
   private MsAnalysisService msAnalysisService;
@@ -103,30 +104,31 @@ public class SubmissionAnalysesFormPresenter {
    */
   public void init(SubmissionAnalysesForm view) {
     this.view = view;
+    design = view.design;
     prepareComponents();
   }
 
   private void prepareComponents() {
     final MessageResource resources = view.getResources();
     final Locale locale = view.getLocale();
-    view.dataAnalysesPanel.addStyleName(DATA_ANALYSES_PANEL);
-    view.dataAnalysesPanel.setCaption(resources.message(DATA_ANALYSES_PANEL));
-    view.dataAnalyses.addStyleName(DATA_ANALYSES);
-    view.dataAnalyses.addColumn(da -> da.getSample().getName()).setId(NAME)
+    design.dataAnalysesPanel.addStyleName(DATA_ANALYSES_PANEL);
+    design.dataAnalysesPanel.setCaption(resources.message(DATA_ANALYSES_PANEL));
+    design.dataAnalyses.addStyleName(DATA_ANALYSES);
+    design.dataAnalyses.addColumn(da -> da.getSample().getName()).setId(NAME)
         .setCaption(resources.message(NAME));
-    view.dataAnalyses.addColumn(da -> da.getProtein()).setId(PROTEIN)
+    design.dataAnalyses.addColumn(da -> da.getProtein()).setId(PROTEIN)
         .setCaption(resources.message(PROTEIN));
-    view.dataAnalyses.addColumn(da -> da.getPeptide()).setId(PEPTIDE)
+    design.dataAnalyses.addColumn(da -> da.getPeptide()).setId(PEPTIDE)
         .setCaption(resources.message(PEPTIDE));
-    view.dataAnalyses.addColumn(da -> da.getType().getLabel(locale)).setId(DATA_ANALYSIS_TYPE)
+    design.dataAnalyses.addColumn(da -> da.getType().getLabel(locale)).setId(DATA_ANALYSIS_TYPE)
         .setCaption(resources.message(DATA_ANALYSIS_TYPE));
-    view.dataAnalyses.addColumn(da -> da.getMaxWorkTime()).setId(MAX_WORK_TIME)
+    design.dataAnalyses.addColumn(da -> da.getMaxWorkTime()).setId(MAX_WORK_TIME)
         .setCaption(resources.message(MAX_WORK_TIME));
-    view.dataAnalyses.addColumn(da -> da.getScore()).setId(SCORE)
+    design.dataAnalyses.addColumn(da -> da.getScore()).setId(SCORE)
         .setCaption(resources.message(SCORE));
-    view.dataAnalyses.addColumn(da -> da.getWorkTime()).setId(WORK_TIME)
+    design.dataAnalyses.addColumn(da -> da.getWorkTime()).setId(WORK_TIME)
         .setCaption(resources.message(WORK_TIME));
-    view.dataAnalyses.addColumn(da -> da.getStatus().getLabel(locale)).setId(STATUS)
+    design.dataAnalyses.addColumn(da -> da.getStatus().getLabel(locale)).setId(STATUS)
         .setCaption(resources.message(STATUS));
   }
 
@@ -137,7 +139,7 @@ public class SubmissionAnalysesFormPresenter {
   private void createAnalysisPanel(MsAnalysis analysis) {
     final MessageResource resources = view.getResources();
     Panel panel = new Panel();
-    view.analysesLayout.addComponent(panel);
+    design.analysesLayout.addComponent(panel);
     VerticalLayout layout = new VerticalLayout();
     layout.setSizeFull();
     panel.setContent(layout);
@@ -166,12 +168,12 @@ public class SubmissionAnalysesFormPresenter {
   void setValue(Submission submission) {
     this.submission = submission;
     List<MsAnalysis> analyses = msAnalysisService.all(submission);
-    view.analysesLayout.removeAllComponents();
+    design.analysesLayout.removeAllComponents();
     analyses.forEach(analysis -> {
       createAnalysisPanel(analysis);
     });
     List<DataAnalysis> dataAnalyses = dataAnalysisService.all(submission);
-    view.dataAnalyses.setItems(dataAnalyses);
-    view.dataAnalysesPanel.setVisible(!dataAnalyses.isEmpty());
+    design.dataAnalyses.setItems(dataAnalyses);
+    design.dataAnalysesPanel.setVisible(!dataAnalyses.isEmpty());
   }
 }

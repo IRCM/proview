@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,20 +39,17 @@ public class SubmissionTreatmentsWindow extends Window implements BaseComponent 
   public static final String TITLE = "title";
   private static final long serialVersionUID = 4061245566728550570L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionTreatmentsWindow.class);
-  private Panel panel;
+  private SubmissionTreatmentsWindowDesign design = new SubmissionTreatmentsWindowDesign();
   @Inject
   private SubmissionTreatmentsForm view = new SubmissionTreatmentsForm();
 
   @PostConstruct
   protected void init() {
     addStyleName(WINDOW_STYLE);
-    panel = new Panel();
-    setContent(panel);
-    panel.setContent(view);
-    view.setMargin(true);
+    setContent(design);
+    design.treatmentsLayout.addComponent(view);
     setHeight("700px");
     setWidth("1200px");
-    panel.setSizeFull();
   }
 
   @Override

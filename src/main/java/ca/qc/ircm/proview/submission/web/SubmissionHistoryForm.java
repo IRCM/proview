@@ -19,10 +19,12 @@ package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.vaadin.ui.CustomComponent;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -30,10 +32,16 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SubmissionHistoryForm extends SubmissionHistoryFormDesign implements BaseComponent {
+public class SubmissionHistoryForm extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = 4814629523385144606L;
+  protected SubmissionHistoryFormDesign design = new SubmissionHistoryFormDesign();
   @Inject
   private transient SubmissionHistoryFormPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
 
   @Override
   public void attach() {

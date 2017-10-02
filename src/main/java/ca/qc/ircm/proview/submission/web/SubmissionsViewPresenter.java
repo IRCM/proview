@@ -101,6 +101,7 @@ public class SubmissionsViewPresenter {
   public static final String COLUMN_ORDER = "columnOrder";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
   private SubmissionsView view;
+  private SubmissionsViewDesign design;
   private SubmissionWebFilter filter;
   @Inject
   private SubmissionService submissionService;
@@ -155,6 +156,7 @@ public class SubmissionsViewPresenter {
   public void init(SubmissionsView view) {
     logger.debug("View submissions");
     this.view = view;
+    design = view.design;
     filter = new SubmissionWebFilter(view.getLocale());
     prepareComponents();
     addListeners();
@@ -164,23 +166,23 @@ public class SubmissionsViewPresenter {
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.addStyleName(HEADER);
-    view.headerLabel.setValue(resources.message(HEADER));
+    design.headerLabel.addStyleName(HEADER);
+    design.headerLabel.setValue(resources.message(HEADER));
     prepareSumissionsGrid();
-    view.selectSamplesButton.addStyleName(SELECT_SAMPLES);
-    view.selectSamplesButton.setCaption(resources.message(SELECT_SAMPLES));
-    view.selectSamplesButton.setVisible(authorizationService.hasAdminRole());
-    view.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
-    view.selectedSamplesLabel
+    design.selectSamplesButton.addStyleName(SELECT_SAMPLES);
+    design.selectSamplesButton.setCaption(resources.message(SELECT_SAMPLES));
+    design.selectSamplesButton.setVisible(authorizationService.hasAdminRole());
+    design.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
+    design.selectedSamplesLabel
         .setValue(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
-    view.selectedSamplesLabel.setVisible(authorizationService.hasAdminRole());
-    view.updateStatusButton.addStyleName(UPDATE_STATUS);
-    view.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
-    view.updateStatusButton.setVisible(authorizationService.hasAdminRole());
-    view.transfer.addStyleName(TRANSFER);
-    view.transfer.setCaption(resources.message(TRANSFER));
-    view.transfer.setVisible(authorizationService.hasAdminRole());
-    view.transfer.addClickListener(e -> transfer());
+    design.selectedSamplesLabel.setVisible(authorizationService.hasAdminRole());
+    design.updateStatusButton.addStyleName(UPDATE_STATUS);
+    design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
+    design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
+    design.transfer.addStyleName(TRANSFER);
+    design.transfer.setCaption(resources.message(TRANSFER));
+    design.transfer.setVisible(authorizationService.hasAdminRole());
+    design.transfer.addClickListener(e -> transfer());
   }
 
   private void prepareSumissionsGrid() {
@@ -188,114 +190,115 @@ public class SubmissionsViewPresenter {
     final Locale locale = view.getLocale();
     final DateTimeFormatter dateFormatter =
         DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
-    view.submissionsGrid.addStyleName(SUBMISSIONS);
-    view.submissionsGrid.addStyleName(COMPONENTS);
-    view.submissionsGrid.setDataProvider(searchSubmissions());
-    view.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
+    design.submissionsGrid.addStyleName(SUBMISSIONS);
+    design.submissionsGrid.addStyleName(COMPONENTS);
+    design.submissionsGrid.setDataProvider(searchSubmissions());
+    design.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
         .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE));
-    view.submissionsGrid.addColumn(submission -> submission.getUser().getEmail()).setId(USER)
+    design.submissionsGrid.addColumn(submission -> submission.getUser().getEmail()).setId(USER)
         .setCaption(resources.message(USER));
-    view.submissionsGrid.addColumn(submission -> submission.getSamples().size()).setId(SAMPLE_COUNT)
-        .setCaption(resources.message(SAMPLE_COUNT));
-    view.submissionsGrid.addColumn(submission -> submission.getSamples().get(0).getName())
+    design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
+        .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
+    design.submissionsGrid.addColumn(submission -> submission.getSamples().get(0).getName())
         .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME));
-    view.submissionsGrid.addColumn(Submission::getGoal).setId(EXPERIENCE_GOAL)
+    design.submissionsGrid.addColumn(Submission::getGoal).setId(EXPERIENCE_GOAL)
         .setCaption(resources.message(EXPERIENCE_GOAL));
-    view.submissionsGrid.addColumn(submission -> statusesLabel(submission)).setId(SAMPLE_STATUSES)
+    design.submissionsGrid.addColumn(submission -> statusesLabel(submission)).setId(SAMPLE_STATUSES)
         .setCaption(resources.message(SAMPLE_STATUSES));
-    view.submissionsGrid
+    design.submissionsGrid
         .addColumn(submission -> dateFormatter.format(submission.getSubmissionDate())).setId(DATE)
         .setCaption(resources.message(DATE));
-    view.submissionsGrid
+    design.submissionsGrid
         .addColumn(submission -> viewResultsButton(submission), new ComponentRenderer())
         .setId(LINKED_TO_RESULTS).setCaption(resources.message(LINKED_TO_RESULTS));
-    view.submissionsGrid
+    design.submissionsGrid
         .addColumn(submission -> viewTreatmentsButton(submission), new ComponentRenderer())
         .setId(TREATMENTS).setCaption(resources.message(TREATMENTS));
-    view.submissionsGrid
+    design.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
         .setId(HISTORY).setCaption(resources.message(HISTORY));
     if (authorizationService.hasManagerRole() || authorizationService.hasAdminRole()) {
-      view.submissionsGrid.getColumn(USER).setHidable(true);
-      view.submissionsGrid.getColumn(USER).setHidden(userPreferenceService.get(this, USER, false));
+      design.submissionsGrid.getColumn(USER).setHidable(true);
+      design.submissionsGrid.getColumn(USER)
+          .setHidden(userPreferenceService.get(this, USER, false));
     } else {
-      view.submissionsGrid.getColumn(USER).setHidden(true);
+      design.submissionsGrid.getColumn(USER).setHidden(true);
     }
-    view.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
-    view.submissionsGrid.getColumn(SAMPLE_COUNT)
+    design.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
+    design.submissionsGrid.getColumn(SAMPLE_COUNT)
         .setHidden(userPreferenceService.get(this, SAMPLE_COUNT, false));
-    view.submissionsGrid.getColumn(SAMPLE_NAME).setHidable(true);
-    view.submissionsGrid.getColumn(SAMPLE_NAME)
+    design.submissionsGrid.getColumn(SAMPLE_NAME).setHidable(true);
+    design.submissionsGrid.getColumn(SAMPLE_NAME)
         .setHidden(userPreferenceService.get(this, SAMPLE_NAME, false));
-    view.submissionsGrid.getColumn(EXPERIENCE_GOAL).setHidable(true);
-    view.submissionsGrid.getColumn(EXPERIENCE_GOAL)
+    design.submissionsGrid.getColumn(EXPERIENCE_GOAL).setHidable(true);
+    design.submissionsGrid.getColumn(EXPERIENCE_GOAL)
         .setHidden(userPreferenceService.get(this, EXPERIENCE_GOAL, false));
-    view.submissionsGrid.getColumn(SAMPLE_STATUSES).setHidable(true);
-    view.submissionsGrid.getColumn(SAMPLE_STATUSES)
+    design.submissionsGrid.getColumn(SAMPLE_STATUSES).setHidable(true);
+    design.submissionsGrid.getColumn(SAMPLE_STATUSES)
         .setHidden(userPreferenceService.get(this, SAMPLE_STATUSES, false));
-    view.submissionsGrid.getColumn(DATE).setHidable(true);
-    view.submissionsGrid.getColumn(DATE).setHidden(userPreferenceService.get(this, DATE, false));
-    view.submissionsGrid.getColumn(LINKED_TO_RESULTS).setHidable(true);
-    view.submissionsGrid.getColumn(LINKED_TO_RESULTS)
+    design.submissionsGrid.getColumn(DATE).setHidable(true);
+    design.submissionsGrid.getColumn(DATE).setHidden(userPreferenceService.get(this, DATE, false));
+    design.submissionsGrid.getColumn(LINKED_TO_RESULTS).setHidable(true);
+    design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
         .setHidden(userPreferenceService.get(this, LINKED_TO_RESULTS, false));
     if (authorizationService.hasAdminRole()) {
-      view.submissionsGrid.getColumn(TREATMENTS).setHidable(true);
-      view.submissionsGrid.getColumn(TREATMENTS)
+      design.submissionsGrid.getColumn(TREATMENTS).setHidable(true);
+      design.submissionsGrid.getColumn(TREATMENTS)
           .setHidden(userPreferenceService.get(this, TREATMENTS, false));
-      view.submissionsGrid.getColumn(HISTORY).setHidable(true);
-      view.submissionsGrid.getColumn(HISTORY)
+      design.submissionsGrid.getColumn(HISTORY).setHidable(true);
+      design.submissionsGrid.getColumn(HISTORY)
           .setHidden(userPreferenceService.get(this, HISTORY, false));
     } else {
-      view.submissionsGrid.getColumn(TREATMENTS).setHidden(true);
-      view.submissionsGrid.getColumn(HISTORY).setHidden(true);
+      design.submissionsGrid.getColumn(TREATMENTS).setHidden(true);
+      design.submissionsGrid.getColumn(HISTORY).setHidden(true);
     }
-    view.submissionsGrid.addColumnVisibilityChangeListener(e -> {
+    design.submissionsGrid.addColumnVisibilityChangeListener(e -> {
       userPreferenceService.save(SubmissionsViewPresenter.this, e.getColumn().getId(),
           e.isHidden());
     });
     String[] defaultColumnOrder =
-        view.submissionsGrid.getColumns().stream().map(col -> col.getId()).toArray(String[]::new);
-    view.submissionsGrid
+        design.submissionsGrid.getColumns().stream().map(col -> col.getId()).toArray(String[]::new);
+    design.submissionsGrid
         .setColumnOrder(userPreferenceService.get(this, COLUMN_ORDER, defaultColumnOrder));
-    view.submissionsGrid.setColumnReorderingAllowed(true);
-    view.submissionsGrid.addColumnReorderListener(e -> {
-      userPreferenceService.save(SubmissionsViewPresenter.this, COLUMN_ORDER, view.submissionsGrid
+    design.submissionsGrid.setColumnReorderingAllowed(true);
+    design.submissionsGrid.addColumnReorderListener(e -> {
+      userPreferenceService.save(SubmissionsViewPresenter.this, COLUMN_ORDER, design.submissionsGrid
           .getColumns().stream().map(col -> col.getId()).toArray(String[]::new));
     });
-    view.submissionsGrid.setFrozenColumnCount(1);
+    design.submissionsGrid.setFrozenColumnCount(1);
     if (authorizationService.hasAdminRole()) {
-      view.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
+      design.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
     }
-    HeaderRow filterRow = view.submissionsGrid.appendHeaderRow();
+    HeaderRow filterRow = design.submissionsGrid.appendHeaderRow();
     filterRow.getCell(EXPERIENCE).setComponent(textFilter(e -> {
       filter.experienceContains = e.getValue();
-      view.submissionsGrid.getDataProvider().refreshAll();
+      design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(USER).setComponent(textFilter(e -> {
       filter.emailContains = e.getValue();
-      view.submissionsGrid.getDataProvider().refreshAll();
+      design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
       filter.anySampleNameContains = e.getValue();
-      view.submissionsGrid.getDataProvider().refreshAll();
+      design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(EXPERIENCE_GOAL).setComponent(textFilter(e -> {
       filter.goalContains = e.getValue();
-      view.submissionsGrid.getDataProvider().refreshAll();
+      design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_STATUSES).setComponent(comboBoxFilter(e -> {
       filter.anySampleStatus = e.getValue();
-      view.submissionsGrid.getDataProvider().refreshAll();
+      design.submissionsGrid.getDataProvider().refreshAll();
     }, SampleStatus.values(), status -> status.getLabel(locale)));
     filterRow.getCell(DATE).setComponent(instantFilter(e -> {
       filter.dateRange = e.getSavedObject();
-      view.submissionsGrid.getDataProvider().refreshAll();
+      design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(LINKED_TO_RESULTS).setComponent(comboBoxFilter(e -> {
       filter.results = e.getValue();
-      view.submissionsGrid.getDataProvider().refreshAll();
+      design.submissionsGrid.getDataProvider().refreshAll();
     }, new Boolean[] { true, false }, value -> resources.message(LINKED_TO_RESULTS + "." + value)));
-    view.submissionsGrid.sort(DATE, SortDirection.DESCENDING);
+    design.submissionsGrid.sort(DATE, SortDirection.DESCENDING);
   }
 
   private Button viewButton(Submission submission) {
@@ -383,8 +386,8 @@ public class SubmissionsViewPresenter {
   }
 
   private void addListeners() {
-    view.updateStatusButton.addClickListener(e -> updateStatus());
-    view.selectSamplesButton.addClickListener(e -> selectSamples());
+    design.updateStatusButton.addClickListener(e -> updateStatus());
+    design.selectSamplesButton.addClickListener(e -> selectSamples());
   }
 
   private ListDataProvider<Submission> searchSubmissions() {
@@ -426,8 +429,8 @@ public class SubmissionsViewPresenter {
     SampleSelectionWindow window = sampleSelectionWindowProvider.get();
     view.addWindow(window);
     List<Sample> samples;
-    if (!view.submissionsGrid.getSelectedItems().isEmpty()) {
-      samples = view.submissionsGrid.getSelectedItems().stream()
+    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
+      samples = design.submissionsGrid.getSelectedItems().stream()
           .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
     } else {
       samples = view.savedSamples();
@@ -437,17 +440,17 @@ public class SubmissionsViewPresenter {
     window.addSaveListener(e -> {
       MessageResource resources = view.getResources();
       List<Sample> selectedSamples = window.getItems();
-      view.submissionsGrid.deselectAll();
+      design.submissionsGrid.deselectAll();
       view.saveSamples(selectedSamples);
-      view.selectedSamplesLabel
+      design.selectedSamplesLabel
           .setValue(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
       logger.debug("Selected samples {}", selectedSamples);
     });
   }
 
   private void updateStatus() {
-    if (!view.submissionsGrid.getSelectedItems().isEmpty()) {
-      List<Sample> samples = view.submissionsGrid.getSelectedItems().stream()
+    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
+      List<Sample> samples = design.submissionsGrid.getSelectedItems().stream()
           .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
       view.saveSamples(samples);
     }
@@ -455,8 +458,8 @@ public class SubmissionsViewPresenter {
   }
 
   private void transfer() {
-    if (!view.submissionsGrid.getSelectedItems().isEmpty()) {
-      List<Sample> samples = view.submissionsGrid.getSelectedItems().stream()
+    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
+      List<Sample> samples = design.submissionsGrid.getSelectedItems().stream()
           .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
       view.saveSamples(samples);
     }

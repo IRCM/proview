@@ -41,6 +41,7 @@ public class SubmissionViewPresenter {
   public static final String INVALID_SUBMISSION = "submission.invalid";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);
   private SubmissionView view;
+  private SubmissionViewDesign design;
   @Inject
   private SubmissionService submissionService;
   @Inject
@@ -67,6 +68,7 @@ public class SubmissionViewPresenter {
   public void init(SubmissionView view) {
     logger.debug("Submission view");
     this.view = view;
+    design = view.design;
     prepareComponents();
     view.submissionForm.setReadOnly(false);
   }
@@ -74,9 +76,8 @@ public class SubmissionViewPresenter {
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.addStyleName(HEADER_STYLE);
-    view.headerLabel.addStyleName("h1");
-    view.headerLabel.setValue(resources.message(HEADER_STYLE));
+    design.headerLabel.addStyleName(HEADER_STYLE);
+    design.headerLabel.setValue(resources.message(HEADER_STYLE));
   }
 
   /**

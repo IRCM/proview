@@ -63,6 +63,7 @@ public class SubmissionHistoryFormPresenter implements TimeConverter {
   public static final String ACTIVITY_EXPLANATION =
       ACTIVITIES + "." + activity.explanation.getMetadata().getName();
   private SubmissionHistoryForm view;
+  private SubmissionHistoryFormDesign design;
   private Submission submission;
   @Inject
   private ActivityService activityService;
@@ -78,28 +79,35 @@ public class SubmissionHistoryFormPresenter implements TimeConverter {
     this.sampleContainerService = sampleContainerService;
   }
 
+  /**
+   * Initializes presenter.
+   * 
+   * @param view
+   *          view
+   */
   public void init(SubmissionHistoryForm view) {
     this.view = view;
+    design = view.design;
     prepareComponents();
   }
 
   private void prepareComponents() {
     MessageResource resources = view.getResources();
-    view.samplesPanel.addStyleName(SAMPLES_PANEL);
-    view.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
-    view.samples.addStyleName(SAMPLES);
+    design.samplesPanel.addStyleName(SAMPLES_PANEL);
+    design.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
+    design.samples.addStyleName(SAMPLES);
     prepareSamplesGrid();
-    view.activitiesPanel.addStyleName(ACTIVITIES_PANEL);
-    view.activitiesPanel.setCaption(resources.message(ACTIVITIES_PANEL));
-    view.activities.addStyleName(ACTIVITIES);
+    design.activitiesPanel.addStyleName(ACTIVITIES_PANEL);
+    design.activitiesPanel.setCaption(resources.message(ACTIVITIES_PANEL));
+    design.activities.addStyleName(ACTIVITIES);
     prepareActivitiesGrid();
   }
 
   private void prepareSamplesGrid() {
     MessageResource resources = view.getResources();
-    view.samples.addColumn(sa -> sa.getName()).setId(SAMPLE_NAME)
+    design.samples.addColumn(sa -> sa.getName()).setId(SAMPLE_NAME)
         .setCaption(resources.message(SAMPLE_NAME));
-    view.samples.addColumn(sa -> sampleContainerService.last(sa).getFullName())
+    design.samples.addColumn(sa -> sampleContainerService.last(sa).getFullName())
         .setId(SAMPLE_LAST_CONTAINER).setCaption(resources.message(SAMPLE_LAST_CONTAINER));
   }
 
@@ -107,20 +115,20 @@ public class SubmissionHistoryFormPresenter implements TimeConverter {
     MessageResource resources = view.getResources();
     Locale locale = view.getLocale();
     DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    view.activities.addColumn(ac -> ac.getUser().getEmail()).setId(ACTIVITY_USER)
+    design.activities.addColumn(ac -> ac.getUser().getEmail()).setId(ACTIVITY_USER)
         .setCaption(resources.message(ACTIVITY_USER));
-    view.activities.addColumn(ac -> ac.getActionType().getLabel(locale)).setId(ACTIVITY_ACTION_TYPE)
-        .setCaption(resources.message(ACTIVITY_ACTION_TYPE));
-    view.activities.addColumn(ac -> formatter.format(toLocalDateTime(ac.getTimestamp())))
+    design.activities.addColumn(ac -> ac.getActionType().getLabel(locale))
+        .setId(ACTIVITY_ACTION_TYPE).setCaption(resources.message(ACTIVITY_ACTION_TYPE));
+    design.activities.addColumn(ac -> formatter.format(toLocalDateTime(ac.getTimestamp())))
         .setId(ACTIVITY_TIMESTAMP).setCaption(resources.message(ACTIVITY_TIMESTAMP));
-    view.activities
+    design.activities
         .addColumn(
             ac -> descriptionLabel(activityService.description(ac, submission, locale), resources),
             new ComponentRenderer())
         .setId(ACTIVITY_DESCRIPTION).setCaption(resources.message(ACTIVITY_DESCRIPTION));
-    view.activities.addColumn(ac -> ac.getExplanation()).setId(ACTIVITY_EXPLANATION)
+    design.activities.addColumn(ac -> ac.getExplanation()).setId(ACTIVITY_EXPLANATION)
         .setCaption(resources.message(ACTIVITY_EXPLANATION));
-    view.activities.sort(ACTIVITY_TIMESTAMP, SortDirection.DESCENDING);
+    design.activities.sort(ACTIVITY_TIMESTAMP, SortDirection.DESCENDING);
   }
 
   private Label descriptionLabel(String description, MessageResource resources) {
@@ -140,7 +148,7 @@ public class SubmissionHistoryFormPresenter implements TimeConverter {
 
   void setValue(Submission submission) {
     this.submission = submission;
-    view.samples.setItems(submission != null ? submission.getSamples() : Collections.emptyList());
-    view.activities.setItems(activityService.all(submission));
+    design.samples.setItems(submission != null ? submission.getSamples() : Collections.emptyList());
+    design.activities.setItems(activityService.all(submission));
   }
 }
