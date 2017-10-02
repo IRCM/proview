@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.sample.web;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXAMPLE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_BUTTON_STYLE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_STANDARDS;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
@@ -191,7 +192,9 @@ public class ControlFormPresenterTest {
     assertTrue(standardCommentsField.getStyleName().contains(ValoTheme.TEXTFIELD_TINY));
     assertTrue(design.fillStandardsButton.getStyleName().contains(FILL_STANDARDS));
     assertTrue(design.fillStandardsButton.getStyleName().contains(FILL_BUTTON_STYLE));
-    assertTrue(design.explanationField.getStyleName().contains(EXPLANATION));
+    assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
+    assertTrue(design.explanationPanel.getStyleName().contains(REQUIRED));
+    assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
     assertTrue(design.saveButton.getStyleName().contains(SAVE));
   }
 
@@ -233,7 +236,8 @@ public class ControlFormPresenterTest {
         standardQuantityField.getPlaceholder());
     assertEquals(resources.message(FILL_STANDARDS), design.fillStandardsButton.getCaption());
     assertEquals(VaadinIcons.ARROW_DOWN, design.fillStandardsButton.getIcon());
-    assertEquals(resources.message(EXPLANATION), design.explanationField.getCaption());
+    assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
+    assertEquals(null, design.explanation.getCaption());
     assertEquals(resources.message(SAVE), design.saveButton.getCaption());
   }
 
@@ -284,7 +288,7 @@ public class ControlFormPresenterTest {
     assertFalse(design.quantityField.isRequiredIndicatorVisible());
     assertFalse(design.volumeField.isRequiredIndicatorVisible());
     assertTrue(design.controlTypeField.isRequiredIndicatorVisible());
-    assertTrue(design.explanationField.isRequiredIndicatorVisible());
+    assertFalse(design.explanation.isRequiredIndicatorVisible());
   }
 
   @Test
@@ -312,7 +316,7 @@ public class ControlFormPresenterTest {
         .getValueProvider().apply(standard);
     assertTrue(standardCommentsField.isReadOnly());
     assertFalse(design.fillStandardsButton.isVisible());
-    assertFalse(design.explanationLayout.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.saveButton.isVisible());
   }
 
@@ -342,7 +346,7 @@ public class ControlFormPresenterTest {
     assertTrue(standardQuantityField.isReadOnly());
     assertTrue(standardCommentsField.isReadOnly());
     assertFalse(design.fillStandardsButton.isVisible());
-    assertFalse(design.explanationLayout.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.saveButton.isVisible());
   }
 
@@ -373,7 +377,7 @@ public class ControlFormPresenterTest {
         .getValueProvider().apply(standard);
     assertTrue(standardCommentsField.isReadOnly());
     assertFalse(design.fillStandardsButton.isVisible());
-    assertFalse(design.explanationLayout.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.saveButton.isVisible());
   }
 
@@ -401,7 +405,7 @@ public class ControlFormPresenterTest {
         .getValueProvider().apply(standard);
     assertFalse(standardCommentsField.isReadOnly());
     assertTrue(design.fillStandardsButton.isVisible());
-    assertFalse(design.explanationLayout.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.saveButton.isVisible());
   }
 
@@ -431,7 +435,7 @@ public class ControlFormPresenterTest {
     assertFalse(standardQuantityField.isReadOnly());
     assertFalse(standardCommentsField.isReadOnly());
     assertTrue(design.fillStandardsButton.isVisible());
-    assertFalse(design.explanationLayout.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.saveButton.isVisible());
   }
 
@@ -461,7 +465,7 @@ public class ControlFormPresenterTest {
         .getValueProvider().apply(standard);
     assertFalse(standardCommentsField.isReadOnly());
     assertTrue(design.fillStandardsButton.isVisible());
-    assertTrue(design.explanationLayout.isVisible());
+    assertTrue(design.explanationPanel.isVisible());
     assertTrue(design.saveButton.isVisible());
   }
 
@@ -728,7 +732,7 @@ public class ControlFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.explanationField.getErrorMessage().getFormattedHtmlMessage());
+        design.explanation.getErrorMessage().getFormattedHtmlMessage());
     verify(controlService, never()).update(any(), any());
   }
 
@@ -765,7 +769,7 @@ public class ControlFormPresenterTest {
     presenter.init(view);
     presenter.setValue(control);
     setFields();
-    design.explanationField.setValue(explanation);
+    design.explanation.setValue(explanation);
 
     design.saveButton.click();
 
@@ -822,6 +826,6 @@ public class ControlFormPresenterTest {
       assertEquals(cs.getComments(), ((TextField) design.standardsGrid.getColumn(STANDARD_COMMENTS)
           .getValueProvider().apply(cs)).getValue());
     }
-    assertEquals("", design.explanationField.getValue());
+    assertEquals("", design.explanation.getValue());
   }
 }

@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_STANDARDS;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
@@ -38,6 +39,8 @@ import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
+import com.vaadin.testbench.elements.PanelElement;
+import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 public class ControlViewPageObject extends AbstractTestBenchTestCase {
@@ -176,8 +179,12 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
     return wrap(ButtonElement.class, findElement(className(FILL_STANDARDS)));
   }
 
-  protected TextFieldElement explanationField() {
-    return wrap(TextFieldElement.class, findElement(className(EXPLANATION)));
+  protected PanelElement explanationPanel() {
+    return wrap(PanelElement.class, findElement(className(EXPLANATION_PANEL)));
+  }
+
+  protected TextAreaElement explanationField() {
+    return wrap(TextAreaElement.class, findElement(className(EXPLANATION)));
   }
 
   protected String getExplanation() {

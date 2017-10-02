@@ -85,6 +85,7 @@ public class ControlFormPresenter implements BinderValidator {
   public static final String FILL_STANDARDS = "fillStandards";
   public static final String EXAMPLE = "example";
   public static final String FILL_BUTTON_STYLE = "skip-row";
+  public static final String EXPLANATION_PANEL = "explanationPanel";
   public static final String EXPLANATION = "explanation";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
@@ -126,10 +127,11 @@ public class ControlFormPresenter implements BinderValidator {
     prepareSamplesComponents();
     prepareStandardsComponents();
     updateStandardsTable(design.standardCountField.getValue());
-    design.explanationLayout.setVisible(false);
-    design.explanationField.addStyleName(EXPLANATION);
-    design.explanationField.setCaption(resources.message(EXPLANATION));
-    design.explanationField.setRequiredIndicatorVisible(true);
+    design.explanationPanel.addStyleName(EXPLANATION_PANEL);
+    design.explanationPanel.addStyleName(REQUIRED);
+    design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
+    design.explanationPanel.setVisible(false);
+    design.explanation.addStyleName(EXPLANATION);
     design.saveButton.addStyleName(SAVE);
     design.saveButton.setCaption(resources.message(SAVE));
     design.saveButton.addClickListener(e -> save());
@@ -313,7 +315,7 @@ public class ControlFormPresenter implements BinderValidator {
     design.fillStandardsButton.setVisible(!readOnly);
     design.saveButton.setVisible(!readOnly);
     if (!newControl()) {
-      design.explanationLayout.setVisible(!readOnly);
+      design.explanationPanel.setVisible(!readOnly);
     }
     standardBinders.values().forEach(binder -> {
       binder.getBinding(STANDARD_NAME)
@@ -345,10 +347,10 @@ public class ControlFormPresenter implements BinderValidator {
     for (Standard standard : standardsDataProvider.getItems()) {
       valid &= validate(standardBinders.get(standard));
     }
-    if (!newControl() && design.explanationField.getValue().isEmpty()) {
+    if (!newControl() && design.explanation.getValue().isEmpty()) {
       logger.trace("Explanation field is required");
       final MessageResource generalResources = view.getGeneralResources();
-      design.explanationField.setComponentError(new UserError(generalResources.message(REQUIRED)));
+      design.explanation.setComponentError(new UserError(generalResources.message(REQUIRED)));
       valid = false;
     }
     if (!valid) {
@@ -371,7 +373,7 @@ public class ControlFormPresenter implements BinderValidator {
       if (newControl()) {
         controlService.insert(control);
       } else {
-        controlService.update(control, design.explanationField.getValue());
+        controlService.update(control, design.explanation.getValue());
       }
       final MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED, control.getName()));

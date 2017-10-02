@@ -31,11 +31,11 @@
      </vaadin-horizontal-layout>
     </vaadin-vertical-layout>
    </vaadin-panel>
-   <vaadin-vertical-layout _id="explanationLayout">
-    <vaadin-form-layout size-auto margin="false">
-     <vaadin-text-field caption="Explanation" _id="explanationField"></vaadin-text-field>
-    </vaadin-form-layout>
-   </vaadin-vertical-layout>
+   <vaadin-panel caption="Explanation" size-auto _id="explanationPanel">
+    <vaadin-vertical-layout>
+     <vaadin-text-area _id="explanation"></vaadin-text-area>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
    <vaadin-horizontal-layout>
     <vaadin-button plain-text _id="saveButton">
       Save 

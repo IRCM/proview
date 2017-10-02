@@ -7,6 +7,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
@@ -34,8 +35,8 @@ public class ControlFormDesign extends VerticalLayout {
   protected HorizontalLayout standardsTableLayout;
   protected Grid<ca.qc.ircm.proview.sample.Standard> standardsGrid;
   protected Button fillStandardsButton;
-  protected VerticalLayout explanationLayout;
-  protected TextField explanationField;
+  protected Panel explanationPanel;
+  protected TextArea explanation;
   protected Button saveButton;
 
   public ControlFormDesign() {

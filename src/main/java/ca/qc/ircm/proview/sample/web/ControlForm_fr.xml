@@ -33,7 +33,7 @@
   <entry key="standards.quantity.example">10 μg</entry>
   <entry key="standards.comments">Commentaires</entry>
   <entry key="fillStandards">Copier vers le bas</entry>
-  <entry key="explanation">Explication</entry>
+  <entry key="explanationPanel">Explication</entry>
   <entry key="save">Sauvegarder</entry>
   <entry key="saved">Control {0} saved</entry>
 </properties>
