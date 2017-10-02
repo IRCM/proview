@@ -68,9 +68,11 @@ public class SubmissionWebFilterTest {
     return submission;
   }
 
-  private Submission email(String email) {
+  private Submission user(String email, String userName) {
     Submission submission = new Submission();
-    submission.setUser(new User(null, email));
+    User user = new User(null, email);
+    user.setName(userName);
+    submission.setUser(user);
     submission.setSamples(Collections.emptyList());
     return submission;
   }
@@ -137,21 +139,25 @@ public class SubmissionWebFilterTest {
   }
 
   @Test
-  public void emailContains() {
-    filter.emailContains = "test";
+  public void userContains() {
+    filter.userContains = "test";
 
-    assertTrue(filter.test(email("My test")));
-    assertTrue(filter.test(email("Test")));
-    assertFalse(filter.test(email("My experience")));
+    assertTrue(filter.test(user("My test", "My name")));
+    assertTrue(filter.test(user("Test", "Name")));
+    assertTrue(filter.test(user("My email", "My test")));
+    assertTrue(filter.test(user("Email", "Test")));
+    assertFalse(filter.test(user("My experience", "My name")));
   }
 
   @Test
-  public void emailContains_Null() {
-    filter.emailContains = null;
+  public void userContains_Null() {
+    filter.userContains = null;
 
-    assertTrue(filter.test(email("My test")));
-    assertTrue(filter.test(email("Test")));
-    assertTrue(filter.test(email("My experience")));
+    assertTrue(filter.test(user("My test", "My name")));
+    assertTrue(filter.test(user("Test", "Name")));
+    assertTrue(filter.test(user("My email", "My test")));
+    assertTrue(filter.test(user("Email", "Test")));
+    assertTrue(filter.test(user("My experience", "My name")));
   }
 
   @Test

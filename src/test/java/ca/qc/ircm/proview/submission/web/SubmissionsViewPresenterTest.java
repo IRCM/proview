@@ -225,8 +225,10 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());
     assertEquals(USER, columns.get(1).getId());
     assertEquals(resources.message(USER), design.submissionsGrid.getColumn(USER).getCaption());
-    assertEquals(submission.getUser().getEmail(),
+    assertEquals(submission.getUser().getName(),
         design.submissionsGrid.getColumn(USER).getValueProvider().apply(submission));
+    assertEquals(submission.getUser().getEmail(),
+        design.submissionsGrid.getColumn(USER).getDescriptionGenerator().apply(submission));
     assertFalse(design.submissionsGrid.getColumn(USER).isHidable());
     assertTrue(design.submissionsGrid.getColumn(USER).isHidden());
     assertEquals(SAMPLE_COUNT, columns.get(2).getId());
@@ -496,7 +498,7 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.emailContains);
+    assertEquals(filterValue, filter.userContains);
   }
 
   @Test

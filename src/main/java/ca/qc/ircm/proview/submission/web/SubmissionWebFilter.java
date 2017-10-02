@@ -33,7 +33,7 @@ import java.util.Locale;
 public class SubmissionWebFilter implements SerializablePredicate<Submission> {
   private static final long serialVersionUID = -5902082214544061745L;
   public String experienceContains;
-  public String emailContains;
+  public String userContains;
   public String anySampleNameContains;
   public String goalContains;
   public SampleStatus anySampleStatus;
@@ -52,9 +52,11 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
       test &= submission.getExperience().toLowerCase(locale)
           .contains(experienceContains.toLowerCase(locale));
     }
-    if (emailContains != null) {
+    if (userContains != null) {
       test &= submission.getUser().getEmail().toLowerCase(locale)
-          .contains(emailContains.toLowerCase(locale));
+          .contains(userContains.toLowerCase(locale))
+          || submission.getUser().getName().toLowerCase(locale)
+              .contains(userContains.toLowerCase(locale));
     }
     if (anySampleNameContains != null) {
       test &= submission.getSamples().isEmpty()

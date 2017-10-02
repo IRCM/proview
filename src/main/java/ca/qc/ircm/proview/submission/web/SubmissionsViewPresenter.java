@@ -195,8 +195,9 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.setDataProvider(searchSubmissions());
     design.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
         .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE));
-    design.submissionsGrid.addColumn(submission -> submission.getUser().getEmail()).setId(USER)
-        .setCaption(resources.message(USER));
+    design.submissionsGrid.addColumn(submission -> submission.getUser().getName()).setId(USER)
+        .setCaption(resources.message(USER))
+        .setDescriptionGenerator(submission -> submission.getUser().getEmail());
     design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
     design.submissionsGrid.addColumn(submission -> submission.getSamples().get(0).getName())
@@ -275,7 +276,7 @@ public class SubmissionsViewPresenter {
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(USER).setComponent(textFilter(e -> {
-      filter.emailContains = e.getValue();
+      filter.userContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
