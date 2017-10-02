@@ -123,6 +123,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIG
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY_PROPERTY;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -178,7 +179,6 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -228,7 +228,7 @@ import javax.persistence.PersistenceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionFormPresenterTest implements TimeConverter {
+public class SubmissionFormPresenterTest {
   private SubmissionFormPresenter presenter;
   @PersistenceContext
   private EntityManager entityManager;

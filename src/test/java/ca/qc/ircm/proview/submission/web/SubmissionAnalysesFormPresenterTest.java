@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +47,6 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
@@ -74,7 +74,7 @@ import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionAnalysesFormPresenterTest implements TimeConverter {
+public class SubmissionAnalysesFormPresenterTest {
   private SubmissionAnalysesFormPresenter presenter;
   @PersistenceContext
   private EntityManager entityManager;

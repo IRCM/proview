@@ -31,6 +31,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.S
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -48,7 +49,6 @@ import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -73,7 +73,7 @@ import java.util.Locale;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionHistoryFormPresenterTest implements TimeConverter {
+public class SubmissionHistoryFormPresenterTest {
   private SubmissionHistoryFormPresenter presenter;
   @Mock
   private SubmissionHistoryForm view;

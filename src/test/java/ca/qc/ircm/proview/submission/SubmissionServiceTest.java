@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findSampleSolvent;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -54,7 +55,6 @@ import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
@@ -98,7 +98,7 @@ import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionServiceTest implements TimeConverter {
+public class SubmissionServiceTest {
   private SubmissionService submissionService;
   @PersistenceContext
   private EntityManager entityManager;

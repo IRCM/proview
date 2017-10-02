@@ -19,11 +19,11 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.history.QActivity.activity;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Label;
@@ -44,7 +44,7 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SubmissionHistoryFormPresenter implements TimeConverter {
+public class SubmissionHistoryFormPresenter {
   public static final String SAMPLES_PANEL = "samplesPanel";
   public static final String SAMPLES = "samples";
   public static final String SAMPLE_NAME =
@@ -81,7 +81,7 @@ public class SubmissionHistoryFormPresenter implements TimeConverter {
 
   /**
    * Initializes presenter.
-   * 
+   *
    * @param view
    *          view
    */
