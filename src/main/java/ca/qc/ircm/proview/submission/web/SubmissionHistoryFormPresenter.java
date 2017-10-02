@@ -113,8 +113,9 @@ public class SubmissionHistoryFormPresenter {
     MessageResource resources = view.getResources();
     Locale locale = view.getLocale();
     DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    design.activities.addColumn(ac -> ac.getUser().getEmail()).setId(ACTIVITY_USER)
-        .setCaption(resources.message(ACTIVITY_USER));
+    design.activities.addColumn(ac -> ac.getUser().getName()).setId(ACTIVITY_USER)
+        .setCaption(resources.message(ACTIVITY_USER))
+        .setDescriptionGenerator(ac -> ac.getUser().getEmail());
     design.activities.addColumn(ac -> ac.getActionType().getLabel(locale))
         .setId(ACTIVITY_ACTION_TYPE).setCaption(resources.message(ACTIVITY_ACTION_TYPE));
     design.activities.addColumn(ac -> formatter.format(toLocalDateTime(ac.getTimestamp())))

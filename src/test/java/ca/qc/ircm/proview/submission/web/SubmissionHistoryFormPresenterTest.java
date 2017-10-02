@@ -218,10 +218,14 @@ public class SubmissionHistoryFormPresenterTest {
     assertEquals(ACTIVITY_EXPLANATION, design.activities.getColumns().get(4).getId());
     assertEquals(resources.message(ACTIVITY_USER),
         design.activities.getColumn(ACTIVITY_USER).getCaption());
-    assertEquals(activity1.getUser().getEmail(),
+    assertEquals(activity1.getUser().getName(),
         design.activities.getColumn(ACTIVITY_USER).getValueProvider().apply(activity1));
-    assertEquals(activity2.getUser().getEmail(),
+    assertEquals(activity2.getUser().getName(),
         design.activities.getColumn(ACTIVITY_USER).getValueProvider().apply(activity2));
+    assertEquals(activity1.getUser().getEmail(),
+        design.activities.getColumn(ACTIVITY_USER).getDescriptionGenerator().apply(activity1));
+    assertEquals(activity2.getUser().getEmail(),
+        design.activities.getColumn(ACTIVITY_USER).getDescriptionGenerator().apply(activity2));
     assertEquals(resources.message(ACTIVITY_ACTION_TYPE),
         design.activities.getColumn(ACTIVITY_ACTION_TYPE).getCaption());
     assertEquals(activity1.getActionType().getLabel(locale),
