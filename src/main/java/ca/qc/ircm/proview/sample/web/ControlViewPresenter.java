@@ -24,7 +24,6 @@ import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +44,7 @@ public class ControlViewPresenter implements BinderValidator, SaveListener<Contr
   public static final String INVALID_SAMPLE = "sample.invalid";
   private static final Logger logger = LoggerFactory.getLogger(ControlViewPresenter.class);
   private ControlView view;
+  private ControlViewDesign design;
   @Inject
   private ControlService controlService;
   @Inject
@@ -71,13 +71,13 @@ public class ControlViewPresenter implements BinderValidator, SaveListener<Contr
   public void init(ControlView view) {
     logger.debug("Control view");
     this.view = view;
+    design = view.design;
     view.form.setReadOnly(!authorizationService.hasAdminRole());
     view.form.addSaveListener(this);
     final MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.addStyleName(HEADER);
-    view.headerLabel.addStyleName(ValoTheme.LABEL_H1);
-    view.headerLabel.setValue(resources.message(HEADER));
+    design.headerLabel.addStyleName(HEADER);
+    design.headerLabel.setValue(resources.message(HEADER));
   }
 
   private boolean validateParameters(String parameters) {

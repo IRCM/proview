@@ -91,6 +91,7 @@ public class ControlFormPresenter implements BinderValidator {
   private static final int MAX_STANDARD_COUNT = 10;
   private static final Logger logger = LoggerFactory.getLogger(ControlFormPresenter.class);
   private ControlForm view;
+  private ControlFormDesign design;
   private boolean readOnly = false;
   private Binder<Control> sampleBinder = new BeanValidationBinder<>(Control.class);
   private Binder<ItemCount> standardCountBinder = new Binder<>(ItemCount.class);
@@ -119,18 +120,19 @@ public class ControlFormPresenter implements BinderValidator {
   public void init(ControlForm view) {
     logger.debug("Control form");
     this.view = view;
+    design = view.design;
     sampleBinder.setBean(new Control());
     final MessageResource resources = view.getResources();
     prepareSamplesComponents();
     prepareStandardsComponents();
-    updateStandardsTable(view.standardCountField.getValue());
-    view.explanationLayout.setVisible(false);
-    view.explanationField.addStyleName(EXPLANATION);
-    view.explanationField.setCaption(resources.message(EXPLANATION));
-    view.explanationField.setRequiredIndicatorVisible(true);
-    view.saveButton.addStyleName(SAVE);
-    view.saveButton.setCaption(resources.message(SAVE));
-    view.saveButton.addClickListener(e -> save());
+    updateStandardsTable(design.standardCountField.getValue());
+    design.explanationLayout.setVisible(false);
+    design.explanationField.addStyleName(EXPLANATION);
+    design.explanationField.setCaption(resources.message(EXPLANATION));
+    design.explanationField.setRequiredIndicatorVisible(true);
+    design.saveButton.addStyleName(SAVE);
+    design.saveButton.setCaption(resources.message(SAVE));
+    design.saveButton.addClickListener(e -> save());
     updateReadOnly();
   }
 
@@ -138,66 +140,66 @@ public class ControlFormPresenter implements BinderValidator {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.samplePanel.addStyleName(SAMPLE_PANEL);
-    view.samplePanel.setCaption(resources.message(SAMPLE_PANEL));
-    view.nameField.addStyleName(NAME);
-    view.nameField.setCaption(resources.message(NAME));
-    sampleBinder.forField(view.nameField).asRequired(generalResources.message(REQUIRED))
+    design.samplePanel.addStyleName(SAMPLE_PANEL);
+    design.samplePanel.setCaption(resources.message(SAMPLE_PANEL));
+    design.nameField.addStyleName(NAME);
+    design.nameField.setCaption(resources.message(NAME));
+    sampleBinder.forField(design.nameField).asRequired(generalResources.message(REQUIRED))
         .withNullRepresentation("").withValidator(validateSampleName()).bind(NAME);
-    view.supportField.addStyleName(SUPPORT);
-    view.supportField.setCaption(resources.message(SUPPORT));
-    view.supportField.setItems(SampleSupport.values());
-    view.supportField.setItemCaptionGenerator(support -> support.getLabel(locale));
-    sampleBinder.forField(view.supportField).asRequired(generalResources.message(REQUIRED))
+    design.supportField.addStyleName(SUPPORT);
+    design.supportField.setCaption(resources.message(SUPPORT));
+    design.supportField.setItems(SampleSupport.values());
+    design.supportField.setItemCaptionGenerator(support -> support.getLabel(locale));
+    sampleBinder.forField(design.supportField).asRequired(generalResources.message(REQUIRED))
         .bind(SUPPORT);
-    view.quantityField.addStyleName(QUANTITY);
-    view.quantityField.setCaption(resources.message(QUANTITY));
-    view.quantityField.setPlaceholder(resources.message(QUANTITY + "." + EXAMPLE));
-    sampleBinder.forField(view.quantityField).withNullRepresentation("").bind(QUANTITY);
-    view.volumeField.addStyleName(VOLUME);
-    view.volumeField.setCaption(resources.message(VOLUME));
-    sampleBinder.forField(view.volumeField).withNullRepresentation("")
+    design.quantityField.addStyleName(QUANTITY);
+    design.quantityField.setCaption(resources.message(QUANTITY));
+    design.quantityField.setPlaceholder(resources.message(QUANTITY + "." + EXAMPLE));
+    sampleBinder.forField(design.quantityField).withNullRepresentation("").bind(QUANTITY);
+    design.volumeField.addStyleName(VOLUME);
+    design.volumeField.setCaption(resources.message(VOLUME));
+    sampleBinder.forField(design.volumeField).withNullRepresentation("")
         .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
         .bind(VOLUME);
-    view.controlTypeField.addStyleName(CONTROL_TYPE);
-    view.controlTypeField.setCaption(resources.message(CONTROL_TYPE));
-    view.controlTypeField.setItems(ControlType.values());
-    view.controlTypeField.setItemCaptionGenerator(type -> type.getLabel(locale));
-    sampleBinder.forField(view.controlTypeField).asRequired(generalResources.message(REQUIRED))
+    design.controlTypeField.addStyleName(CONTROL_TYPE);
+    design.controlTypeField.setCaption(resources.message(CONTROL_TYPE));
+    design.controlTypeField.setItems(ControlType.values());
+    design.controlTypeField.setItemCaptionGenerator(type -> type.getLabel(locale));
+    sampleBinder.forField(design.controlTypeField).asRequired(generalResources.message(REQUIRED))
         .bind(CONTROL_TYPE);
   }
 
   private void prepareStandardsComponents() {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.standardsPanel.addStyleName(STANDARDS_PANEL);
-    view.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
-    view.standardCountField.addStyleName(STANDARD_COUNT);
-    view.standardCountField.setCaption(resources.message(STANDARD_COUNT));
-    standardCountBinder.forField(view.standardCountField).withNullRepresentation("0")
+    design.standardsPanel.addStyleName(STANDARDS_PANEL);
+    design.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
+    design.standardCountField.addStyleName(STANDARD_COUNT);
+    design.standardCountField.setCaption(resources.message(STANDARD_COUNT));
+    standardCountBinder.forField(design.standardCountField).withNullRepresentation("0")
         .withConverter(new StringToIntegerConverter(generalResources.message(INVALID_INTEGER)))
         .withValidator(new IntegerRangeValidator(
             generalResources.message(OUT_OF_RANGE, 0, MAX_STANDARD_COUNT), 0, MAX_STANDARD_COUNT))
         .bind(ItemCount::getCount, ItemCount::setCount);
-    view.standardCountField
-        .addValueChangeListener(e -> updateStandardsTable(view.standardCountField.getValue()));
-    view.standardsGrid.addStyleName(STANDARD);
-    view.standardsGrid.addStyleName(COMPONENTS);
-    view.standardsGrid.setDataProvider(standardsDataProvider);
-    view.standardsGrid
+    design.standardCountField
+        .addValueChangeListener(e -> updateStandardsTable(design.standardCountField.getValue()));
+    design.standardsGrid.addStyleName(STANDARD);
+    design.standardsGrid.addStyleName(COMPONENTS);
+    design.standardsGrid.setDataProvider(standardsDataProvider);
+    design.standardsGrid
         .addColumn(standard -> standardNameTextField(standard), new ComponentRenderer())
         .setId(STANDARD_NAME).setCaption(resources.message(STANDARD + "." + STANDARD_NAME));
-    view.standardsGrid
+    design.standardsGrid
         .addColumn(standard -> standardQuantityTextField(standard), new ComponentRenderer())
         .setId(STANDARD_QUANTITY).setCaption(resources.message(STANDARD + "." + STANDARD_QUANTITY));
-    view.standardsGrid
+    design.standardsGrid
         .addColumn(standard -> standardCommentsTextField(standard), new ComponentRenderer())
         .setId(STANDARD_COMMENTS).setCaption(resources.message(STANDARD + "." + STANDARD_COMMENTS));
-    view.fillStandardsButton.addStyleName(FILL_STANDARDS);
-    view.fillStandardsButton.addStyleName(FILL_BUTTON_STYLE);
-    view.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS));
-    view.fillStandardsButton.setIcon(VaadinIcons.ARROW_DOWN);
-    view.fillStandardsButton.addClickListener(e -> fillStandards());
+    design.fillStandardsButton.addStyleName(FILL_STANDARDS);
+    design.fillStandardsButton.addStyleName(FILL_BUTTON_STYLE);
+    design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS));
+    design.fillStandardsButton.setIcon(VaadinIcons.ARROW_DOWN);
+    design.fillStandardsButton.addClickListener(e -> fillStandards());
   }
 
   private TextField standardNameTextField(Standard standard) {
@@ -282,7 +284,7 @@ public class ControlFormPresenter implements BinderValidator {
       while (standardsDataProvider.getItems().size() < count) {
         standardsDataProvider.getItems().add(new Standard());
       }
-      view.standardsTableLayout.setVisible(count > 0);
+      design.standardsTableLayout.setVisible(count > 0);
       standardsDataProvider.refreshAll();
     }
   }
@@ -302,16 +304,16 @@ public class ControlFormPresenter implements BinderValidator {
   }
 
   private void updateReadOnly() {
-    view.nameField.setReadOnly(readOnly);
-    view.quantityField.setReadOnly(readOnly);
-    view.volumeField.setReadOnly(readOnly);
-    view.supportField.setReadOnly(readOnly);
-    view.controlTypeField.setReadOnly(readOnly);
-    view.standardCountField.setReadOnly(readOnly);
-    view.fillStandardsButton.setVisible(!readOnly);
-    view.saveButton.setVisible(!readOnly);
+    design.nameField.setReadOnly(readOnly);
+    design.quantityField.setReadOnly(readOnly);
+    design.volumeField.setReadOnly(readOnly);
+    design.supportField.setReadOnly(readOnly);
+    design.controlTypeField.setReadOnly(readOnly);
+    design.standardCountField.setReadOnly(readOnly);
+    design.fillStandardsButton.setVisible(!readOnly);
+    design.saveButton.setVisible(!readOnly);
     if (!newControl()) {
-      view.explanationLayout.setVisible(!readOnly);
+      design.explanationLayout.setVisible(!readOnly);
     }
     standardBinders.values().forEach(binder -> {
       binder.getBinding(STANDARD_NAME)
@@ -343,10 +345,10 @@ public class ControlFormPresenter implements BinderValidator {
     for (Standard standard : standardsDataProvider.getItems()) {
       valid &= validate(standardBinders.get(standard));
     }
-    if (!newControl() && view.explanationField.getValue().isEmpty()) {
+    if (!newControl() && design.explanationField.getValue().isEmpty()) {
       logger.trace("Explanation field is required");
       final MessageResource generalResources = view.getGeneralResources();
-      view.explanationField.setComponentError(new UserError(generalResources.message(REQUIRED)));
+      design.explanationField.setComponentError(new UserError(generalResources.message(REQUIRED)));
       valid = false;
     }
     if (!valid) {
@@ -369,7 +371,7 @@ public class ControlFormPresenter implements BinderValidator {
       if (newControl()) {
         controlService.insert(control);
       } else {
-        controlService.update(control, view.explanationField.getValue());
+        controlService.update(control, design.explanationField.getValue());
       }
       final MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED, control.getName()));

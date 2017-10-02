@@ -18,8 +18,8 @@
 package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_STANDARDS;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_STANDARDS;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;

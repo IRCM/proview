@@ -36,7 +36,6 @@ import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +73,7 @@ public class ControlViewPresenterTest {
   private EntityManager entityManager;
   @Value("${spring.application.name}")
   private String applicationName;
+  private ControlViewDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(ControlView.class, locale);
   private MessageResource generalResources =
@@ -85,7 +85,8 @@ public class ControlViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new ControlViewPresenter(controlService, authorizationService, applicationName);
-    view.headerLabel = new Label();
+    design = new ControlViewDesign();
+    view.design = design;
     view.form = form;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -97,8 +98,8 @@ public class ControlViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    assertTrue(view.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(view.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
   }
 
   @Test
@@ -107,7 +108,7 @@ public class ControlViewPresenterTest {
     presenter.enter("");
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
+    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
   }
 
   @Test

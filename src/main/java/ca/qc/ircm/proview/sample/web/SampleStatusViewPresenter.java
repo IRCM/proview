@@ -80,6 +80,7 @@ public class SampleStatusViewPresenter implements BinderValidator {
   public static final String SPLIT_SAMPLES_PARAMETERS = ",";
   private static final Logger logger = LoggerFactory.getLogger(SampleStatusViewPresenter.class);
   private SampleStatusView view;
+  private SampleStatusViewDesign design;
   private ListDataProvider<SubmissionSample> dataProvider;
   private Map<Object, Binder<SubmissionSample>> sampleBinders = new HashMap<>();
   private Map<Object, ComboBox<SampleStatus>> sampleStatusFields = new HashMap<>();
@@ -109,6 +110,7 @@ public class SampleStatusViewPresenter implements BinderValidator {
   public void init(SampleStatusView view) {
     logger.debug("Update sample status view");
     this.view = view;
+    design = view.design;
     prepareComponents();
     addListeners();
   }
@@ -117,26 +119,26 @@ public class SampleStatusViewPresenter implements BinderValidator {
     final MessageResource resources = view.getResources();
     final Locale locale = view.getLocale();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.addStyleName(HEADER);
-    view.headerLabel.setValue(resources.message(HEADER));
-    view.samplesGrid.addStyleName(SAMPLES);
-    view.samplesGrid.addStyleName(COMPONENTS);
-    view.samplesGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
-    view.samplesGrid.addColumn(sample -> sample.getSubmission().getExperience()).setId(EXPERIENCE)
+    design.headerLabel.addStyleName(HEADER);
+    design.headerLabel.setValue(resources.message(HEADER));
+    design.samplesGrid.addStyleName(SAMPLES);
+    design.samplesGrid.addStyleName(COMPONENTS);
+    design.samplesGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
+    design.samplesGrid.addColumn(sample -> sample.getSubmission().getExperience()).setId(EXPERIENCE)
         .setCaption(resources.message(EXPERIENCE));
-    view.samplesGrid.addColumn(sample -> sample.getStatus().getLabel(locale)).setId(STATUS)
+    design.samplesGrid.addColumn(sample -> sample.getStatus().getLabel(locale)).setId(STATUS)
         .setCaption(resources.message(STATUS));
-    view.samplesGrid.addColumn(sample -> statusesComboBox(sample), new ComponentRenderer())
+    design.samplesGrid.addColumn(sample -> statusesComboBox(sample), new ComponentRenderer())
         .setId(NEW_STATUS).setCaption(resources.message(NEW_STATUS));
-    view.samplesGrid.addColumn(sample -> downButton(sample), new ComponentRenderer()).setId(DOWN)
+    design.samplesGrid.addColumn(sample -> downButton(sample), new ComponentRenderer()).setId(DOWN)
         .setCaption(resources.message(DOWN));
-    view.samplesGrid.setSelectionMode(SelectionMode.NONE);
-    view.saveButton.addStyleName(SAVE);
-    view.saveButton.setCaption(resources.message(SAVE));
+    design.samplesGrid.setSelectionMode(SelectionMode.NONE);
+    design.saveButton.addStyleName(SAVE);
+    design.saveButton.setCaption(resources.message(SAVE));
   }
 
   private void addListeners() {
-    view.saveButton.addClickListener(e -> save());
+    design.saveButton.addClickListener(e -> save());
   }
 
   private ComboBox<SampleStatus> statusesComboBox(SubmissionSample sample) {
@@ -244,8 +246,8 @@ public class SampleStatusViewPresenter implements BinderValidator {
     List<SubmissionSample> samples = dataProvider.getItems().stream()
         .map(sample -> submissionSampleService.get(sample.getId())).collect(Collectors.toList());
     dataProvider = DataProvider.ofCollection(samples);
-    view.samplesGrid.setDataProvider(dataProvider);
-    view.samplesGrid.setSortOrder(new ArrayList<>(view.samplesGrid.getSortOrder()));
+    design.samplesGrid.setDataProvider(dataProvider);
+    design.samplesGrid.setSortOrder(new ArrayList<>(design.samplesGrid.getSortOrder()));
   }
 
   private boolean validateParameters(String parameters) {
@@ -296,6 +298,6 @@ public class SampleStatusViewPresenter implements BinderValidator {
         samplesParameters.stream().filter(s -> s instanceof SubmissionSample)
             .map(s -> (SubmissionSample) s).collect(Collectors.toList());
     dataProvider = DataProvider.ofCollection(samples);
-    view.samplesGrid.setDataProvider(dataProvider);
+    design.samplesGrid.setDataProvider(dataProvider);
   }
 }

@@ -22,12 +22,14 @@ import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.shared.Registration;
+import com.vaadin.ui.CustomComponent;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -35,8 +37,9 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SampleSelectionForm extends SampleSelectionFormDesign implements BaseComponent {
+public class SampleSelectionForm extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = -2890553778973734044L;
+  protected SampleSelectionFormDesign design = new SampleSelectionFormDesign();
   @Inject
   private transient SampleSelectionFormPresenter presenter;
 
@@ -45,6 +48,11 @@ public class SampleSelectionForm extends SampleSelectionFormDesign implements Ba
 
   protected SampleSelectionForm(SampleSelectionFormPresenter presenter) {
     this.presenter = presenter;
+  }
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
   }
 
   @Override

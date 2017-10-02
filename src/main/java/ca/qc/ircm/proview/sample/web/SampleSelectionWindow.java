@@ -21,7 +21,6 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.shared.Registration;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,20 +43,17 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
   public static final String TITLE = "title";
   private static final long serialVersionUID = 988315877226604037L;
   private static final Logger logger = LoggerFactory.getLogger(SampleSelectionWindow.class);
-  private Panel panel;
+  protected SampleSelectionWindowDesign design = new SampleSelectionWindowDesign();
   @Inject
   private SampleSelectionForm view;
 
   @PostConstruct
   protected void init() {
     addStyleName(WINDOW_STYLE);
-    panel = new Panel();
-    setContent(panel);
-    panel.setContent(view);
-    view.setMargin(true);
+    setContent(design);
+    design.selectionLayout.addComponent(view);
     setHeight("700px");
     setWidth("1200px");
-    panel.setSizeFull();
   }
 
   @Override

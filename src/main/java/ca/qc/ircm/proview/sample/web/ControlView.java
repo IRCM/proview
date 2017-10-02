@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.sample.web;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -30,9 +31,10 @@ import javax.inject.Inject;
  */
 @SpringView(name = ControlView.VIEW_NAME)
 @RolesAllowed({ "USER" })
-public class ControlView extends ControlViewDesign implements BaseView {
+public class ControlView extends CustomComponent implements BaseView {
   public static final String VIEW_NAME = "sample/control";
   private static final long serialVersionUID = 996822613187620022L;
+  protected ControlViewDesign design = new ControlViewDesign();
   @Inject
   protected ControlForm form;
   @Inject
@@ -40,7 +42,8 @@ public class ControlView extends ControlViewDesign implements BaseView {
 
   @PostConstruct
   private void init() {
-    controlFormLayout.addComponent(form);
+    setCompositionRoot(design);
+    design.controlFormLayout.addComponent(form);
   }
 
   @Override

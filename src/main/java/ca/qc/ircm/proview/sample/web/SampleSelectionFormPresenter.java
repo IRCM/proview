@@ -65,6 +65,7 @@ public class SampleSelectionFormPresenter {
   public static final String SELECT = "select";
   public static final String CLEAR = "clear";
   private SampleSelectionForm view;
+  private SampleSelectionFormDesign design;
   private List<Sample> selectedSamples = new ArrayList<>();
   @Inject
   private SampleContainerService sampleContainerService;
@@ -88,6 +89,7 @@ public class SampleSelectionFormPresenter {
    */
   public void init(SampleSelectionForm view) {
     this.view = view;
+    design = view.design;
     prepareComponents();
     addListeners();
     updateSamples();
@@ -96,63 +98,65 @@ public class SampleSelectionFormPresenter {
   private void prepareComponents() {
     final MessageResource resources = view.getResources();
     final Locale locale = view.getLocale();
-    view.samplesPanel.addStyleName(SAMPLES_PANEL);
-    view.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
-    view.samplesGrid.addStyleName(SAMPLES);
-    view.samplesGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
-    view.samplesGrid.addColumn(sample -> sample.getSubmission().getExperience()).setId(EXPERIENCE)
+    design.samplesPanel.addStyleName(SAMPLES_PANEL);
+    design.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
+    design.samplesGrid.addStyleName(SAMPLES);
+    design.samplesGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
+    design.samplesGrid.addColumn(sample -> sample.getSubmission().getExperience()).setId(EXPERIENCE)
         .setCaption(resources.message(EXPERIENCE));
-    view.samplesGrid.addColumn(sample -> sample.getStatus().getLabel(locale)).setId(STATUS)
+    design.samplesGrid.addColumn(sample -> sample.getStatus().getLabel(locale)).setId(STATUS)
         .setCaption(resources.message(STATUS));
-    view.samplesGrid.addColumn(sample -> sampleContainerService.last(sample).getFullName())
+    design.samplesGrid.addColumn(sample -> sampleContainerService.last(sample).getFullName())
         .setId(SAMPLES_LAST_CONTAINER).setCaption(resources.message(SAMPLES_LAST_CONTAINER));
-    view.samplesGrid.setSelectionMode(SelectionMode.MULTI);
-    view.samplesGrid.setFrozenColumnCount(1);
-    view.samplesGrid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>()
-        .thenAsc(view.samplesGrid.getColumn(EXPERIENCE)).thenAsc(view.samplesGrid.getColumn(NAME)));
-    view.controlsPanel.addStyleName(CONTROLS_PANEL);
-    view.controlsPanel.setCaption(resources.message(CONTROLS_PANEL));
-    view.controlsGrid.addStyleName(CONTROLS);
-    view.controlsGrid.setItems(controlService.all());
-    view.controlsGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
-    view.controlsGrid
-        .addColumn(control -> control.getControlType() != null
-            ? control.getControlType().getLabel(locale) : ControlType.getNullLabel(locale))
+    design.samplesGrid.setSelectionMode(SelectionMode.MULTI);
+    design.samplesGrid.setFrozenColumnCount(1);
+    design.samplesGrid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>()
+        .thenAsc(design.samplesGrid.getColumn(EXPERIENCE))
+        .thenAsc(design.samplesGrid.getColumn(NAME)));
+    design.controlsPanel.addStyleName(CONTROLS_PANEL);
+    design.controlsPanel.setCaption(resources.message(CONTROLS_PANEL));
+    design.controlsGrid.addStyleName(CONTROLS);
+    design.controlsGrid.setItems(controlService.all());
+    design.controlsGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
+    design.controlsGrid
+        .addColumn(
+            control -> control.getControlType() != null ? control.getControlType().getLabel(locale)
+                : ControlType.getNullLabel(locale))
         .setId(CONTROL_TYPE).setCaption(resources.message(CONTROL_TYPE));
-    view.controlsGrid.addColumn(control -> control.getOriginalContainer().getName())
+    design.controlsGrid.addColumn(control -> control.getOriginalContainer().getName())
         .setId(ORIGINAL_CONTAINER_NAME).setCaption(resources.message(ORIGINAL_CONTAINER_NAME));
-    view.controlsGrid.setSelectionMode(SelectionMode.MULTI);
-    view.controlsGrid.setFrozenColumnCount(1);
-    view.controlsGrid.sort(NAME);
-    view.selectButton.addStyleName(SELECT);
-    view.selectButton.setCaption(resources.message(SELECT));
-    view.clearButton.addStyleName(CLEAR);
-    view.clearButton.setCaption(resources.message(CLEAR));
+    design.controlsGrid.setSelectionMode(SelectionMode.MULTI);
+    design.controlsGrid.setFrozenColumnCount(1);
+    design.controlsGrid.sort(NAME);
+    design.selectButton.addStyleName(SELECT);
+    design.selectButton.setCaption(resources.message(SELECT));
+    design.clearButton.addStyleName(CLEAR);
+    design.clearButton.setCaption(resources.message(CLEAR));
   }
 
   private void addListeners() {
-    view.selectButton.addClickListener(e -> selectSamples());
-    view.clearButton.addClickListener(e -> clearSamples());
+    design.selectButton.addClickListener(e -> selectSamples());
+    design.clearButton.addClickListener(e -> clearSamples());
   }
 
   private void updateSamples() {
-    view.samplesGrid.deselectAll();
-    view.samplesGrid
+    design.samplesGrid.deselectAll();
+    design.samplesGrid
         .setItems(selectedSamples.stream().filter(sample -> sample instanceof SubmissionSample)
             .map(sample -> (SubmissionSample) sample)
             .flatMap(sample -> sample.getSubmission().getSamples().stream()).distinct());
-    view.samplesGrid.setSortOrder(view.samplesGrid.getSortOrder());
+    design.samplesGrid.setSortOrder(design.samplesGrid.getSortOrder());
     selectedSamples.stream().filter(sample -> sample instanceof SubmissionSample)
         .map(sample -> (SubmissionSample) sample)
-        .forEach(sample -> view.samplesGrid.select(sample));
+        .forEach(sample -> design.samplesGrid.select(sample));
     selectedSamples.stream().filter(sample -> sample instanceof Control)
-        .map(sample -> (Control) sample).forEach(sample -> view.controlsGrid.select(sample));
+        .map(sample -> (Control) sample).forEach(sample -> design.controlsGrid.select(sample));
   }
 
   private void selectSamples() {
     selectedSamples.clear();
-    selectedSamples.addAll(view.samplesGrid.getSelectedItems());
-    selectedSamples.addAll(view.controlsGrid.getSelectedItems());
+    selectedSamples.addAll(design.samplesGrid.getSelectedItems());
+    selectedSamples.addAll(design.controlsGrid.getSelectedItems());
     updateSamples();
     view.fireSaveEvent(selectedSamples);
   }

@@ -57,7 +57,6 @@ import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.components.grid.NoSelectionModel;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.junit.Before;
@@ -104,6 +103,7 @@ public class SampleStatusViewPresenterTest {
   private EntityManager entityManager;
   @Value("${spring.application.name}")
   private String applicationName;
+  private SampleStatusViewDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SampleStatusView.class, locale);
   private MessageResource generalResources =
@@ -117,9 +117,8 @@ public class SampleStatusViewPresenterTest {
   public void beforeTest() {
     presenter =
         new SampleStatusViewPresenter(sampleService, submissionSampleService, applicationName);
-    view.headerLabel = new Label();
-    view.samplesGrid = new Grid<>();
-    view.saveButton = new Button();
+    design = new SampleStatusViewDesign();
+    view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
@@ -158,15 +157,15 @@ public class SampleStatusViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    assertTrue(view.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(view.samplesGrid.getStyleName().contains(SAMPLES));
-    assertTrue(view.samplesGrid.getStyleName().contains(COMPONENTS));
-    assertTrue(view.saveButton.getStyleName().contains(SAVE));
+    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(design.samplesGrid.getStyleName().contains(SAMPLES));
+    assertTrue(design.samplesGrid.getStyleName().contains(COMPONENTS));
+    assertTrue(design.saveButton.getStyleName().contains(SAVE));
     SubmissionSample sample = samples.get(0);
-    ComboBox<SampleStatus> newStatus = (ComboBox<SampleStatus>) view.samplesGrid
+    ComboBox<SampleStatus> newStatus = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample);
     assertTrue(newStatus.getStyleName().contains(NEW_STATUS));
-    Button down = (Button) view.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample);
+    Button down = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample);
     assertTrue(down.getStyleName().contains(DOWN));
   }
 
@@ -177,25 +176,25 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("");
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
-    assertEquals(resources.message(NAME), view.samplesGrid.getColumn(NAME).getCaption());
+    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
+    assertEquals(resources.message(NAME), design.samplesGrid.getColumn(NAME).getCaption());
     assertEquals(resources.message(EXPERIENCE),
-        view.samplesGrid.getColumn(EXPERIENCE).getCaption());
-    assertEquals(resources.message(STATUS), view.samplesGrid.getColumn(STATUS).getCaption());
+        design.samplesGrid.getColumn(EXPERIENCE).getCaption());
+    assertEquals(resources.message(STATUS), design.samplesGrid.getColumn(STATUS).getCaption());
     assertEquals(resources.message(NEW_STATUS),
-        view.samplesGrid.getColumn(NEW_STATUS).getCaption());
-    assertEquals(resources.message(DOWN), view.samplesGrid.getColumn(DOWN).getCaption());
-    assertEquals(resources.message(SAVE), view.saveButton.getCaption());
+        design.samplesGrid.getColumn(NEW_STATUS).getCaption());
+    assertEquals(resources.message(DOWN), design.samplesGrid.getColumn(DOWN).getCaption());
+    assertEquals(resources.message(SAVE), design.saveButton.getCaption());
     SubmissionSample sample = samples.get(0);
-    Object statusValue = view.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample);
+    Object statusValue = design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample);
     assertEquals(sample.getStatus().getLabel(locale), statusValue);
-    ComboBox<SampleStatus> newStatus = (ComboBox<SampleStatus>) view.samplesGrid
+    ComboBox<SampleStatus> newStatus = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample);
     for (SampleStatus status : SampleStatus.values()) {
       assertTrue(dataProvider(newStatus).getItems().contains(status));
       assertEquals(status.getLabel(locale), newStatus.getItemCaptionGenerator().apply(status));
     }
-    Button down = (Button) view.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample);
+    Button down = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample);
     assertEquals(resources.message(DOWN), down.getCaption());
   }
 
@@ -203,15 +202,15 @@ public class SampleStatusViewPresenterTest {
   public void samplesGrid_Column() {
     presenter.init(view);
 
-    assertTrue(view.samplesGrid.getSelectionModel() instanceof NoSelectionModel);
-    assertEquals(NAME, view.samplesGrid.getColumns().get(0).getId());
-    assertEquals(EXPERIENCE, view.samplesGrid.getColumns().get(1).getId());
-    assertEquals(STATUS, view.samplesGrid.getColumns().get(2).getId());
-    assertEquals(NEW_STATUS, view.samplesGrid.getColumns().get(3).getId());
-    assertTrue(containsInstanceOf(view.samplesGrid.getColumns().get(3).getExtensions(),
+    assertTrue(design.samplesGrid.getSelectionModel() instanceof NoSelectionModel);
+    assertEquals(NAME, design.samplesGrid.getColumns().get(0).getId());
+    assertEquals(EXPERIENCE, design.samplesGrid.getColumns().get(1).getId());
+    assertEquals(STATUS, design.samplesGrid.getColumns().get(2).getId());
+    assertEquals(NEW_STATUS, design.samplesGrid.getColumns().get(3).getId());
+    assertTrue(containsInstanceOf(design.samplesGrid.getColumns().get(3).getExtensions(),
         ComponentRenderer.class));
-    assertEquals(DOWN, view.samplesGrid.getColumns().get(4).getId());
-    assertTrue(containsInstanceOf(view.samplesGrid.getColumns().get(4).getExtensions(),
+    assertEquals(DOWN, design.samplesGrid.getColumns().get(4).getId());
+    assertTrue(containsInstanceOf(design.samplesGrid.getColumns().get(4).getExtensions(),
         ComponentRenderer.class));
   }
 
@@ -222,11 +221,11 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("");
     SubmissionSample sample1 = samples.get(0);
     SubmissionSample sample2 = samples.get(1);
-    final ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) view.samplesGrid
+    final ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
-    final ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) view.samplesGrid
+    final ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample2);
-    Button down1 = (Button) view.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample1);
+    Button down1 = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample1);
     newStatus1.setValue(SampleStatus.ANALYSED);
 
     down1.click();
@@ -241,16 +240,16 @@ public class SampleStatusViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     SubmissionSample sample = samples.get(0);
-    ComboBox<SampleStatus> newStatus = (ComboBox<SampleStatus>) view.samplesGrid
+    ComboBox<SampleStatus> newStatus = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample);
     samples.stream().skip(1).forEach(otherSample -> {
-      view.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(otherSample);
+      design.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(otherSample);
     });
     newStatus.setValue(null);
     when(submissionSampleService.get(any()))
         .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -266,16 +265,16 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("");
     SubmissionSample sample1 = samples.get(0);
     SubmissionSample sample2 = samples.get(1);
-    ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) view.samplesGrid
+    ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
-    ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) view.samplesGrid
+    ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample2);
     newStatus1.setValue(SampleStatus.ANALYSED);
     newStatus2.setValue(SampleStatus.TO_DIGEST);
     when(submissionSampleService.get(any()))
         .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(submissionSampleService).updateStatus(samplesCaptor.capture());
     Collection<SubmissionSample> samples = samplesCaptor.getValue();
@@ -287,13 +286,13 @@ public class SampleStatusViewPresenterTest {
     assertEquals(SampleStatus.ANALYSED, sample1.getStatus());
     assertEquals(SampleStatus.TO_DIGEST, sample2.getStatus());
     verify(view).showTrayNotification(resources.message(SAVE + ".done", 2));
-    samples = dataProvider(view.samplesGrid).getItems();
+    samples = dataProvider(design.samplesGrid).getItems();
     sample1 = find(samples, sample1.getId()).orElse(null);
     sample2 = find(samples, sample2.getId()).orElse(null);
     assertEquals(sample1.getStatus().getLabel(locale),
-        view.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample1));
+        design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample1));
     assertEquals(sample2.getStatus().getLabel(locale),
-        view.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample2));
+        design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample2));
   }
 
   @Test
@@ -303,15 +302,15 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("");
     SubmissionSample sample1 = samples.get(0);
     SubmissionSample sample2 = samples.get(1);
-    ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) view.samplesGrid
+    ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
-    view.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(sample2);
+    design.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(sample2);
     newStatus1.setValue(SampleStatus.TO_APPROVE);
     when(submissionSampleService.get(any()))
         .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
     final ConfirmDialog confirmDialog = new TestConfirmDialog(true);
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view).showConfirmDialog(eq(resources.message(REGRESS)),
@@ -339,15 +338,15 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("");
     SubmissionSample sample1 = samples.get(0);
     SubmissionSample sample2 = samples.get(1);
-    ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) view.samplesGrid
+    ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
-    view.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(sample2);
+    design.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(sample2);
     newStatus1.setValue(SampleStatus.TO_APPROVE);
     when(submissionSampleService.get(any()))
         .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
     final ConfirmDialog confirmDialog = new TestConfirmDialog(false);
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(view).showConfirmDialog(eq(resources.message(REGRESS)),
@@ -366,7 +365,7 @@ public class SampleStatusViewPresenterTest {
     Collection<SubmissionSample> expectedSamples =
         samples.stream().map(s -> s).collect(Collectors.toSet());
 
-    Collection<?> itemIds = dataProvider(view.samplesGrid).getItems();
+    Collection<?> itemIds = dataProvider(design.samplesGrid).getItems();
 
     Set<SubmissionSample> samples = new HashSet<>();
     for (Object itemId : itemIds) {
@@ -426,7 +425,7 @@ public class SampleStatusViewPresenterTest {
     presenter.enter("445");
 
     verify(sampleService, atLeastOnce()).get(sample.getId());
-    Collection<?> itemIds = dataProvider(view.samplesGrid).getItems();
+    Collection<?> itemIds = dataProvider(design.samplesGrid).getItems();
     Set<SubmissionSample> gridSamples = new HashSet<>();
     for (Object itemId : itemIds) {
       assertTrue(itemId instanceof SubmissionSample);
@@ -451,7 +450,7 @@ public class SampleStatusViewPresenterTest {
 
     verify(sampleService, atLeastOnce()).get(sample1.getId());
     verify(sampleService, atLeastOnce()).get(sample2.getId());
-    Collection<?> itemIds = dataProvider(view.samplesGrid).getItems();
+    Collection<?> itemIds = dataProvider(design.samplesGrid).getItems();
     Set<SubmissionSample> gridSamples = new HashSet<>();
     for (Object itemId : itemIds) {
       assertTrue(itemId instanceof SubmissionSample);
@@ -474,7 +473,7 @@ public class SampleStatusViewPresenterTest {
 
     verify(sampleService, atLeastOnce()).get(sample1.getId());
     verify(sampleService, atLeastOnce()).get(444L);
-    Collection<?> itemIds = dataProvider(view.samplesGrid).getItems();
+    Collection<?> itemIds = dataProvider(design.samplesGrid).getItems();
     Set<SubmissionSample> gridSamples = new HashSet<>();
     for (Object itemId : itemIds) {
       assertTrue(itemId instanceof SubmissionSample);

@@ -49,10 +49,8 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.SelectionModel;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.Registration;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
-import com.vaadin.ui.Panel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +86,7 @@ public class SampleSelectionFormPresenterTest {
   private ArgumentCaptor<List<Sample>> samplesCaptor;
   @PersistenceContext
   private EntityManager entityManager;
+  private SampleSelectionFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SampleSelectionForm.class, locale);
   private List<SubmissionSample> selectedSamples;
@@ -101,12 +100,8 @@ public class SampleSelectionFormPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new SampleSelectionFormPresenter(sampleContainerService, controlService);
-    view.samplesPanel = new Panel();
-    view.samplesGrid = new Grid<>();
-    view.controlsPanel = new Panel();
-    view.controlsGrid = new Grid<>();
-    view.clearButton = new Button();
-    view.selectButton = new Button();
+    design = new SampleSelectionFormDesign();
+    view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     selectedSamples = new ArrayList<>();
@@ -136,12 +131,12 @@ public class SampleSelectionFormPresenterTest {
   public void styles() {
     presenter.init(view);
 
-    assertTrue(view.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
-    assertTrue(view.samplesGrid.getStyleName().contains(SAMPLES));
-    assertTrue(view.controlsPanel.getStyleName().contains(CONTROLS_PANEL));
-    assertTrue(view.controlsGrid.getStyleName().contains(CONTROLS));
-    assertTrue(view.selectButton.getStyleName().contains(SELECT));
-    assertTrue(view.clearButton.getStyleName().contains(CLEAR));
+    assertTrue(design.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
+    assertTrue(design.samplesGrid.getStyleName().contains(SAMPLES));
+    assertTrue(design.controlsPanel.getStyleName().contains(CONTROLS_PANEL));
+    assertTrue(design.controlsGrid.getStyleName().contains(CONTROLS));
+    assertTrue(design.selectButton.getStyleName().contains(SELECT));
+    assertTrue(design.clearButton.getStyleName().contains(CLEAR));
   }
 
   @Test
@@ -150,72 +145,72 @@ public class SampleSelectionFormPresenterTest {
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
 
-    assertEquals(resources.message(SAMPLES_PANEL), view.samplesPanel.getCaption());
-    assertEquals(resources.message(CONTROLS_PANEL), view.controlsPanel.getCaption());
+    assertEquals(resources.message(SAMPLES_PANEL), design.samplesPanel.getCaption());
+    assertEquals(resources.message(CONTROLS_PANEL), design.controlsPanel.getCaption());
     Control control = controls.get(0);
-    assertEquals(resources.message(NAME), view.controlsGrid.getColumn(NAME).getCaption());
+    assertEquals(resources.message(NAME), design.controlsGrid.getColumn(NAME).getCaption());
     assertEquals(control.getName(),
-        view.controlsGrid.getColumn(NAME).getValueProvider().apply(control));
+        design.controlsGrid.getColumn(NAME).getValueProvider().apply(control));
     assertEquals(resources.message(CONTROL_TYPE),
-        view.controlsGrid.getColumn(CONTROL_TYPE).getCaption());
+        design.controlsGrid.getColumn(CONTROL_TYPE).getCaption());
     assertEquals(control.getControlType().getLabel(locale),
-        view.controlsGrid.getColumn(CONTROL_TYPE).getValueProvider().apply(control));
+        design.controlsGrid.getColumn(CONTROL_TYPE).getValueProvider().apply(control));
     assertEquals(resources.message(ORIGINAL_CONTAINER_NAME),
-        view.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getCaption());
+        design.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getCaption());
     assertEquals(control.getOriginalContainer().getName(),
-        view.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getValueProvider().apply(control));
-    assertEquals(resources.message(SELECT), view.selectButton.getCaption());
-    assertEquals(resources.message(CLEAR), view.clearButton.getCaption());
+        design.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getValueProvider().apply(control));
+    assertEquals(resources.message(SELECT), design.selectButton.getCaption());
+    assertEquals(resources.message(CLEAR), design.clearButton.getCaption());
   }
 
   @Test
   public void samplesGrid() {
     presenter.init(view);
 
-    List<Column<SubmissionSample, ?>> columns = view.samplesGrid.getColumns();
+    List<Column<SubmissionSample, ?>> columns = design.samplesGrid.getColumns();
 
-    assertTrue(view.samplesGrid.getSelectionModel() instanceof SelectionModel.Multi);
+    assertTrue(design.samplesGrid.getSelectionModel() instanceof SelectionModel.Multi);
     assertEquals(NAME, columns.get(0).getId());
     assertEquals(EXPERIENCE, columns.get(1).getId());
     assertEquals(STATUS, columns.get(2).getId());
-    assertEquals(1, view.samplesGrid.getFrozenColumnCount());
-    assertEquals(resources.message(NAME), view.samplesGrid.getColumn(NAME).getCaption());
+    assertEquals(1, design.samplesGrid.getFrozenColumnCount());
+    assertEquals(resources.message(NAME), design.samplesGrid.getColumn(NAME).getCaption());
     assertEquals(resources.message(EXPERIENCE),
-        view.samplesGrid.getColumn(EXPERIENCE).getCaption());
-    assertEquals(resources.message(STATUS), view.samplesGrid.getColumn(STATUS).getCaption());
+        design.samplesGrid.getColumn(EXPERIENCE).getCaption());
+    assertEquals(resources.message(STATUS), design.samplesGrid.getColumn(STATUS).getCaption());
     assertEquals(resources.message(SAMPLES_LAST_CONTAINER),
-        view.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getCaption());
+        design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getCaption());
     SubmissionSample sample = selectedSamples.get(0);
     assertEquals(sample.getName(),
-        view.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
+        design.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
     assertEquals(sample.getSubmission().getExperience(),
-        view.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
+        design.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
     assertEquals(sample.getStatus().getLabel(locale),
-        view.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
+        design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
     assertEquals(lastContainers.get(0).getFullName(),
-        view.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample));
+        design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample));
     sample = selectedSamples.get(1);
     assertEquals(sample.getName(),
-        view.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
+        design.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
     assertEquals(sample.getSubmission().getExperience(),
-        view.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
+        design.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
     assertEquals(sample.getStatus().getLabel(locale),
-        view.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
+        design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
     assertEquals(lastContainers.get(1).getFullName(),
-        view.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample));
+        design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample));
   }
 
   @Test
   public void controlsGridColumns() {
     presenter.init(view);
 
-    List<Column<Control, ?>> columns = view.controlsGrid.getColumns();
+    List<Column<Control, ?>> columns = design.controlsGrid.getColumns();
 
-    assertTrue(view.controlsGrid.getSelectionModel() instanceof SelectionModel.Multi);
+    assertTrue(design.controlsGrid.getSelectionModel() instanceof SelectionModel.Multi);
     assertEquals(NAME, columns.get(0).getId());
     assertEquals(CONTROL_TYPE, columns.get(1).getId());
     assertEquals(ORIGINAL_CONTAINER_NAME, columns.get(2).getId());
-    assertEquals(1, view.controlsGrid.getFrozenColumnCount());
+    assertEquals(1, design.controlsGrid.getFrozenColumnCount());
   }
 
   @Test
@@ -223,12 +218,12 @@ public class SampleSelectionFormPresenterTest {
     presenter.setItems(new ArrayList<>(selectedSamples));
     presenter.init(view);
 
-    ListDataProvider<SubmissionSample> dataProvider = gridDataProvider(view.samplesGrid);
+    ListDataProvider<SubmissionSample> dataProvider = gridDataProvider(design.samplesGrid);
 
     assertEquals(allSamples.size(), dataProvider.getItems().size());
     assertTrue(allSamples.containsAll(dataProvider.getItems()));
     assertTrue(dataProvider.getItems().containsAll(allSamples));
-    Collection<SubmissionSample> selection = view.samplesGrid.getSelectedItems();
+    Collection<SubmissionSample> selection = design.samplesGrid.getSelectedItems();
     assertEquals(selectedSamples.size(), selection.size());
     assertTrue(selectedSamples.containsAll(selection));
     assertTrue(selection.containsAll(selectedSamples));
@@ -239,12 +234,12 @@ public class SampleSelectionFormPresenterTest {
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
 
-    ListDataProvider<Control> dataProvider = gridDataProvider(view.controlsGrid);
+    ListDataProvider<Control> dataProvider = gridDataProvider(design.controlsGrid);
 
     assertEquals(controls.size(), dataProvider.getItems().size());
     assertTrue(controls.containsAll(dataProvider.getItems()));
     assertTrue(dataProvider.getItems().containsAll(controls));
-    Collection<Control> selection = view.controlsGrid.getSelectedItems();
+    Collection<Control> selection = design.controlsGrid.getSelectedItems();
     assertEquals(0, selection.size());
   }
 
@@ -253,9 +248,9 @@ public class SampleSelectionFormPresenterTest {
     presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    allSamples.forEach(sample -> view.samplesGrid.select(sample));
+    allSamples.forEach(sample -> design.samplesGrid.select(sample));
 
-    view.selectButton.click();
+    design.selectButton.click();
 
     verify(view).fireSaveEvent(samplesCaptor.capture());
     assertEquals(allSamples, samplesCaptor.getValue());
@@ -266,10 +261,10 @@ public class SampleSelectionFormPresenterTest {
     presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    view.samplesGrid.deselectAll();
-    controls.forEach(sample -> view.controlsGrid.select(sample));
+    design.samplesGrid.deselectAll();
+    controls.forEach(sample -> design.controlsGrid.select(sample));
 
-    view.selectButton.click();
+    design.selectButton.click();
 
     verify(view).fireSaveEvent(samplesCaptor.capture());
     assertEquals(controls, samplesCaptor.getValue());
@@ -280,9 +275,9 @@ public class SampleSelectionFormPresenterTest {
     presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    view.controlsGrid.select(controls.get(0));
+    design.controlsGrid.select(controls.get(0));
 
-    view.selectButton.click();
+    design.selectButton.click();
 
     verify(view).fireSaveEvent(samplesCaptor.capture());
     List<Sample> samples = samplesCaptor.getValue();
@@ -296,9 +291,9 @@ public class SampleSelectionFormPresenterTest {
     presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    view.samplesGrid.deselectAll();
+    design.samplesGrid.deselectAll();
 
-    view.selectButton.click();
+    design.selectButton.click();
 
     verify(view).fireSaveEvent(samplesCaptor.capture());
     assertTrue(samplesCaptor.getValue().isEmpty());
@@ -309,9 +304,9 @@ public class SampleSelectionFormPresenterTest {
     presenter.setItems(new ArrayList<>(selectedSamples));
     when(controlService.all()).thenReturn(controls);
     presenter.init(view);
-    view.controlsGrid.select(controls.get(0));
+    design.controlsGrid.select(controls.get(0));
 
-    view.clearButton.click();
+    design.clearButton.click();
 
     verify(view).fireSaveEvent(samplesCaptor.capture());
     assertTrue(samplesCaptor.getValue().isEmpty());

@@ -21,7 +21,9 @@ import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -30,12 +32,17 @@ import javax.inject.Inject;
  */
 @SpringView(name = SampleStatusView.VIEW_NAME)
 @RolesAllowed({ "ADMIN" })
-public class SampleStatusView extends SampleStatusViewDesign
-    implements BaseView, SavedSamplesComponent {
+public class SampleStatusView extends CustomComponent implements BaseView, SavedSamplesComponent {
   private static final long serialVersionUID = -2790503384190960260L;
   public static final String VIEW_NAME = "samples/status";
+  protected SampleStatusViewDesign design = new SampleStatusViewDesign();
   @Inject
   private transient SampleStatusViewPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
 
   @Override
   public void attach() {
