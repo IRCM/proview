@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -32,25 +33,27 @@ import javax.inject.Inject;
  */
 @SpringView(name = TransferView.VIEW_NAME)
 @RolesAllowed({ "ADMIN" })
-public class TransferView extends TransferViewDesign implements BaseView, SavedSamplesComponent {
+public class TransferView extends CustomComponent implements BaseView, SavedSamplesComponent {
   public static final String VIEW_NAME = "transfer";
   private static final long serialVersionUID = -4719228370965227442L;
-  @Inject
-  private transient TransferViewPresenter presenter;
+  protected TransferViewDesign design = new TransferViewDesign();
   @Inject
   protected PlateComponent sourcePlateForm;
   @Inject
   protected PlateComponent destinationPlateForm;
+  @Inject
+  private transient TransferViewPresenter presenter;
 
   /**
    * Initializes view.
    */
   @PostConstruct
   public void init() {
+    setCompositionRoot(design);
     sourcePlateForm.setWidth("100%");
-    sourcePlateFormLayout.addComponent(sourcePlateForm);
+    design.sourcePlateFormLayout.addComponent(sourcePlateForm);
     destinationPlateForm.setWidth("100%");
-    destinationPlateFormLayout.addComponent(destinationPlateForm);
+    design.destinationPlateFormLayout.addComponent(destinationPlateForm);
   }
 
   @Override
