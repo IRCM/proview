@@ -26,8 +26,6 @@ import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.renderers.ComponentRenderer;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -122,24 +120,23 @@ public class SubmissionHistoryFormPresenter {
     design.activities.addColumn(ac -> formatter.format(toLocalDateTime(ac.getTimestamp())))
         .setId(ACTIVITY_TIMESTAMP).setCaption(resources.message(ACTIVITY_TIMESTAMP));
     design.activities
-        .addColumn(
-            ac -> descriptionLabel(activityService.description(ac, submission, locale), resources),
-            new ComponentRenderer())
-        .setId(ACTIVITY_DESCRIPTION).setCaption(resources.message(ACTIVITY_DESCRIPTION));
+        .addColumn(ac -> activityDescription(activityService.description(ac, submission, locale),
+            resources))
+        .setId(ACTIVITY_DESCRIPTION).setCaption(resources.message(ACTIVITY_DESCRIPTION))
+        .setDescriptionGenerator(ac -> activityService.description(ac, submission, locale));
     design.activities.addColumn(ac -> ac.getExplanation()).setId(ACTIVITY_EXPLANATION)
         .setCaption(resources.message(ACTIVITY_EXPLANATION));
     design.activities.sort(ACTIVITY_TIMESTAMP, SortDirection.DESCENDING);
   }
 
-  private Label descriptionLabel(String description, MessageResource resources) {
+  private String activityDescription(String description, MessageResource resources) {
     String firstLine =
         Pattern.compile("\\n.*", Pattern.DOTALL).matcher(description).replaceFirst("");
-    Label label = new Label(firstLine);
     if (!description.equals(firstLine)) {
-      label.setValue(resources.message(ACTIVITY_DESCRIPTION_LONG, firstLine));
+      return resources.message(ACTIVITY_DESCRIPTION_LONG, firstLine);
+    } else {
+      return description;
     }
-    label.setDescription(description);
-    return label;
   }
 
   Submission getValue() {

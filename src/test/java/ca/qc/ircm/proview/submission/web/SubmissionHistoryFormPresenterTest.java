@@ -29,7 +29,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.S
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_LAST_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_NAME;
-import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static org.junit.Assert.assertEquals;
@@ -55,8 +54,6 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.renderers.ComponentRenderer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -239,19 +236,16 @@ public class SubmissionHistoryFormPresenterTest {
         design.activities.getColumn(ACTIVITY_TIMESTAMP).getValueProvider().apply(activity2));
     assertEquals(resources.message(ACTIVITY_DESCRIPTION),
         design.activities.getColumn(ACTIVITY_DESCRIPTION).getCaption());
-    assertTrue(containsInstanceOf(design.activities.getColumn(ACTIVITY_DESCRIPTION).getExtensions(),
-        ComponentRenderer.class));
-    Label descriptionLabel = (Label) design.activities.getColumn(ACTIVITY_DESCRIPTION)
-        .getValueProvider().apply(activity1);
-    assertEquals(activityDescription1, descriptionLabel.getValue());
-    assertEquals(activityDescription1, descriptionLabel.getDescription());
-    descriptionLabel = (Label) design.activities.getColumn(ACTIVITY_DESCRIPTION).getValueProvider()
-        .apply(activity2);
+    assertEquals(activityDescription1,
+        design.activities.getColumn(ACTIVITY_DESCRIPTION).getValueProvider().apply(activity1));
+    assertEquals(activityDescription1, design.activities.getColumn(ACTIVITY_DESCRIPTION)
+        .getDescriptionGenerator().apply(activity1));
     assertEquals(
         resources.message(ACTIVITY_DESCRIPTION_LONG,
             activityDescription2.substring(0, activityDescription2.indexOf("\n"))),
-        descriptionLabel.getValue());
-    assertEquals(activityDescription2, descriptionLabel.getDescription());
+        design.activities.getColumn(ACTIVITY_DESCRIPTION).getValueProvider().apply(activity2));
+    assertEquals(activityDescription2, design.activities.getColumn(ACTIVITY_DESCRIPTION)
+        .getDescriptionGenerator().apply(activity2));
     assertEquals(resources.message(ACTIVITY_EXPLANATION),
         design.activities.getColumn(ACTIVITY_EXPLANATION).getCaption());
     assertEquals(activity1.getExplanation(),
