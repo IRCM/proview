@@ -19,18 +19,26 @@ package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
  * Contact view.
  */
 @SpringView(name = ContactView.VIEW_NAME)
-public class ContactView extends ContactViewDesign implements BaseView {
+public class ContactView extends CustomComponent implements BaseView {
   private static final long serialVersionUID = -1067651526935267544L;
   public static final String VIEW_NAME = "contact";
+  protected ContactViewDesign design = new ContactViewDesign();
   @Inject
   private transient ContactViewPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
 
   @Override
   public void attach() {

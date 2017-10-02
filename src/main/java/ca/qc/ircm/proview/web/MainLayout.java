@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.FindbugsExplanations.DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD;
 
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.ui.CustomComponent;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -33,10 +33,18 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class MainLayout extends MainLayoutDesign {
+public class MainLayout extends CustomComponent {
   private static final long serialVersionUID = -3818536803897529844L;
   @Inject
   protected Menu menu;
+  protected MainLayoutDesign design = new MainLayoutDesign();
+
+  protected MainLayout() {
+  }
+
+  protected MainLayout(Menu menu) {
+    this.menu = menu;
+  }
 
   /**
    * Initializes layout.
@@ -46,9 +54,8 @@ public class MainLayout extends MainLayoutDesign {
       value = "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD)
   public void init() {
-    menuLayout.addComponent(menu);
-    menuLayout.addStyleName(ValoTheme.LAYOUT_CARD);
-    content.addStyleName(ValoTheme.PANEL_BORDERLESS);
+    setCompositionRoot(design);
+    design.menuLayout.addComponent(menu);
   }
 
   @Override

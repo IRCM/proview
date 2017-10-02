@@ -59,6 +59,7 @@ public class MainViewPresenter {
   public static final String REGISTER_BUTTON = "register";
   private static final Logger logger = LoggerFactory.getLogger(MainViewPresenter.class);
   private MainView view;
+  private MainViewDesign design;
   private Binder<SigninInformation> signBinder = new Binder<>(SigninInformation.class);
   private Binder<SigninInformation> forgotPasswordBinder = new Binder<>(SigninInformation.class);
   @Inject
@@ -93,6 +94,7 @@ public class MainViewPresenter {
    */
   public void init(MainView view) {
     this.view = view;
+    design = view.design;
     signBinder.setBean(new SigninInformation());
     forgotPasswordBinder.setBean(new SigninInformation());
     prepareComponents();
@@ -103,10 +105,10 @@ public class MainViewPresenter {
     MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.header.addStyleName(HEADER);
-    view.header.setValue(resources.message(HEADER));
-    view.signPanel.addStyleName(SIGN_PANEL);
-    view.signPanel.setCaption(resources.message(SIGN_PANEL));
+    design.header.addStyleName(HEADER);
+    design.header.setValue(resources.message(HEADER));
+    design.signPanel.addStyleName(SIGN_PANEL);
+    design.signPanel.setCaption(resources.message(SIGN_PANEL));
     view.signForm.getUserNameField().addStyleName(SIGN_USERNAME);
     view.signForm.getUserNameField().setCaption(resources.message(SIGN_USERNAME));
     signBinder.forField(view.signForm.getUserNameField())
@@ -120,24 +122,24 @@ public class MainViewPresenter {
         .bind(SigninInformation::getPassword, SigninInformation::setPassword);
     view.signForm.getLoginButton().addStyleName(SIGN_BUTTON);
     view.signForm.getLoginButton().setCaption(resources.message(SIGN_BUTTON));
-    view.forgotPasswordPanel.addStyleName(FORGOT_PASSWORD);
-    view.forgotPasswordPanel.setCaption(resources.message(FORGOT_PASSWORD));
-    view.forgotPasswordEmailField.addStyleName(FORGOT_PASSWORD_EMAIL);
-    view.forgotPasswordEmailField.setCaption(resources.message(FORGOT_PASSWORD_EMAIL));
-    forgotPasswordBinder.forField(view.forgotPasswordEmailField)
+    design.forgotPasswordPanel.addStyleName(FORGOT_PASSWORD);
+    design.forgotPasswordPanel.setCaption(resources.message(FORGOT_PASSWORD));
+    design.forgotPasswordEmailField.addStyleName(FORGOT_PASSWORD_EMAIL);
+    design.forgotPasswordEmailField.setCaption(resources.message(FORGOT_PASSWORD_EMAIL));
+    forgotPasswordBinder.forField(design.forgotPasswordEmailField)
         .asRequired(generalResources.message(REQUIRED))
         .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
         .bind(SigninInformation::getUsername, SigninInformation::setUsername);
-    view.forgotPasswordButton.addStyleName(FORGOT_PASSWORD_BUTTON);
-    view.forgotPasswordButton.setCaption(resources.message(FORGOT_PASSWORD_BUTTON));
-    view.registerButton.addStyleName(REGISTER_BUTTON);
-    view.registerButton.setCaption(resources.message(REGISTER_BUTTON));
+    design.forgotPasswordButton.addStyleName(FORGOT_PASSWORD_BUTTON);
+    design.forgotPasswordButton.setCaption(resources.message(FORGOT_PASSWORD_BUTTON));
+    design.registerButton.addStyleName(REGISTER_BUTTON);
+    design.registerButton.setCaption(resources.message(REGISTER_BUTTON));
   }
 
   private void addFieldListeners() {
     view.signForm.addLoginListener(e -> sign());
-    view.forgotPasswordButton.addClickListener(e -> forgotPassword());
-    view.registerButton.addClickListener(e -> {
+    design.forgotPasswordButton.addClickListener(e -> forgotPassword());
+    design.registerButton.addClickListener(e -> {
       view.navigateTo(RegisterView.VIEW_NAME);
     });
   }

@@ -60,8 +60,9 @@ public class MainUi extends UI {
   public void initialize() {
     viewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
     SpringNavigator navigator = springNavigatorProvider.get();
-    navigator.init(this, layout.content);
+    navigator.init(this, layout.design.content);
     getNavigator().setErrorView(ErrorView.class);
+    getNavigator().addViewChangeListener(layout.menu);
     setContent(layout);
   }
 

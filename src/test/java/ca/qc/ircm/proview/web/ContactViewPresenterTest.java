@@ -39,9 +39,6 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,6 +57,7 @@ public class ContactViewPresenterTest {
   private ContactView view;
   @Value("${spring.application.name}")
   private String applicationName;
+  private ContactViewDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(ContactView.class, locale);
 
@@ -69,15 +67,8 @@ public class ContactViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new ContactViewPresenter(applicationName);
-    view.headerLabel = new Label();
-    view.proteomicContactPanel = new Panel();
-    view.proteomicContactNameLink = new Link();
-    view.proteomicContactAddressLink = new Link();
-    view.proteomicContactPhoneLink = new Link();
-    view.websiteContactPanel = new Panel();
-    view.websiteContactNameLink = new Link();
-    view.websiteContactAddressLink = new Link();
-    view.websiteContactPhoneLink = new Link();
+    design = new ContactViewDesign();
+    view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
@@ -85,64 +76,66 @@ public class ContactViewPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(view.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
-    assertTrue(view.proteomicContactPanel.getStyleName().contains(PROTEOMIC));
-    assertTrue(view.proteomicContactNameLink.getStyleName().contains(PROTEOMIC + "-" + NAME));
-    assertTrue(view.proteomicContactAddressLink.getStyleName().contains(PROTEOMIC + "-" + ADDRESS));
-    assertTrue(view.proteomicContactPhoneLink.getStyleName().contains(PROTEOMIC + "-" + PHONE));
-    assertTrue(view.websiteContactPanel.getStyleName().contains(WEBSITE));
-    assertTrue(view.websiteContactNameLink.getStyleName().contains(WEBSITE + "-" + NAME));
-    assertTrue(view.websiteContactAddressLink.getStyleName().contains(WEBSITE + "-" + ADDRESS));
-    assertTrue(view.websiteContactPhoneLink.getStyleName().contains(WEBSITE + "-" + PHONE));
+    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.proteomicContactPanel.getStyleName().contains(PROTEOMIC));
+    assertTrue(design.proteomicContactNameLink.getStyleName().contains(PROTEOMIC + "-" + NAME));
+    assertTrue(
+        design.proteomicContactAddressLink.getStyleName().contains(PROTEOMIC + "-" + ADDRESS));
+    assertTrue(design.proteomicContactPhoneLink.getStyleName().contains(PROTEOMIC + "-" + PHONE));
+    assertTrue(design.websiteContactPanel.getStyleName().contains(WEBSITE));
+    assertTrue(design.websiteContactNameLink.getStyleName().contains(WEBSITE + "-" + NAME));
+    assertTrue(design.websiteContactAddressLink.getStyleName().contains(WEBSITE + "-" + ADDRESS));
+    assertTrue(design.websiteContactPhoneLink.getStyleName().contains(WEBSITE + "-" + PHONE));
   }
 
   @Test
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
-    assertEquals(resources.message(PROTEOMIC), view.proteomicContactPanel.getCaption());
+    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
+    assertEquals(resources.message(PROTEOMIC), design.proteomicContactPanel.getCaption());
     assertEquals(resources.message(PROTEOMIC + "." + NAME),
-        view.proteomicContactNameLink.getCaption());
-    assertEquals(VaadinIcons.ENVELOPE, view.proteomicContactNameLink.getIcon());
+        design.proteomicContactNameLink.getCaption());
+    assertEquals(VaadinIcons.ENVELOPE, design.proteomicContactNameLink.getIcon());
     assertEquals(resources.message(PROTEOMIC + "." + ADDRESS),
-        view.proteomicContactAddressLink.getCaption());
-    assertTrue(view.proteomicContactAddressLink.isCaptionAsHtml());
-    assertEquals(VaadinIcons.MAP_MARKER, view.proteomicContactAddressLink.getIcon());
+        design.proteomicContactAddressLink.getCaption());
+    assertTrue(design.proteomicContactAddressLink.isCaptionAsHtml());
+    assertEquals(VaadinIcons.MAP_MARKER, design.proteomicContactAddressLink.getIcon());
     assertEquals(resources.message(PROTEOMIC + "." + PHONE),
-        view.proteomicContactPhoneLink.getCaption());
-    assertEquals(VaadinIcons.PHONE, view.proteomicContactPhoneLink.getIcon());
-    assertEquals(resources.message(WEBSITE), view.websiteContactPanel.getCaption());
-    assertEquals(resources.message(WEBSITE + "." + NAME), view.websiteContactNameLink.getCaption());
-    assertEquals(VaadinIcons.ENVELOPE, view.websiteContactNameLink.getIcon());
+        design.proteomicContactPhoneLink.getCaption());
+    assertEquals(VaadinIcons.PHONE, design.proteomicContactPhoneLink.getIcon());
+    assertEquals(resources.message(WEBSITE), design.websiteContactPanel.getCaption());
+    assertEquals(resources.message(WEBSITE + "." + NAME),
+        design.websiteContactNameLink.getCaption());
+    assertEquals(VaadinIcons.ENVELOPE, design.websiteContactNameLink.getIcon());
     assertEquals(resources.message(WEBSITE + "." + ADDRESS),
-        view.websiteContactAddressLink.getCaption());
-    assertTrue(view.websiteContactAddressLink.isCaptionAsHtml());
-    assertEquals(VaadinIcons.MAP_MARKER, view.websiteContactAddressLink.getIcon());
+        design.websiteContactAddressLink.getCaption());
+    assertTrue(design.websiteContactAddressLink.isCaptionAsHtml());
+    assertEquals(VaadinIcons.MAP_MARKER, design.websiteContactAddressLink.getIcon());
     assertEquals(resources.message(WEBSITE + "." + PHONE),
-        view.websiteContactPhoneLink.getCaption());
-    assertEquals(VaadinIcons.PHONE, view.websiteContactPhoneLink.getIcon());
+        design.websiteContactPhoneLink.getCaption());
+    assertEquals(VaadinIcons.PHONE, design.websiteContactPhoneLink.getIcon());
   }
 
   @Test
   public void resources() {
-    assertTrue(view.proteomicContactNameLink.getResource() instanceof ExternalResource);
-    ExternalResource resource = (ExternalResource) view.proteomicContactNameLink.getResource();
+    assertTrue(design.proteomicContactNameLink.getResource() instanceof ExternalResource);
+    ExternalResource resource = (ExternalResource) design.proteomicContactNameLink.getResource();
     assertEquals(PROTEOMIC_EMAIL_RESOURCE, resource.getURL());
-    assertTrue(view.proteomicContactAddressLink.getResource() instanceof ExternalResource);
-    resource = (ExternalResource) view.proteomicContactAddressLink.getResource();
+    assertTrue(design.proteomicContactAddressLink.getResource() instanceof ExternalResource);
+    resource = (ExternalResource) design.proteomicContactAddressLink.getResource();
     assertEquals(PROTEOMIC_ADDRESS_RESOURCE, resource.getURL());
-    assertTrue(view.proteomicContactPhoneLink.getResource() instanceof ExternalResource);
-    resource = (ExternalResource) view.proteomicContactPhoneLink.getResource();
+    assertTrue(design.proteomicContactPhoneLink.getResource() instanceof ExternalResource);
+    resource = (ExternalResource) design.proteomicContactPhoneLink.getResource();
     assertEquals(PROTEOMIC_PHONE_RESOURCE, resource.getURL());
-    assertTrue(view.websiteContactNameLink.getResource() instanceof ExternalResource);
-    resource = (ExternalResource) view.websiteContactNameLink.getResource();
+    assertTrue(design.websiteContactNameLink.getResource() instanceof ExternalResource);
+    resource = (ExternalResource) design.websiteContactNameLink.getResource();
     assertEquals(WEBSITE_EMAIL_RESOURCE, resource.getURL());
-    assertTrue(view.websiteContactAddressLink.getResource() instanceof ExternalResource);
-    resource = (ExternalResource) view.websiteContactAddressLink.getResource();
+    assertTrue(design.websiteContactAddressLink.getResource() instanceof ExternalResource);
+    resource = (ExternalResource) design.websiteContactAddressLink.getResource();
     assertEquals(WEBSITE_ADDRESS_RESOURCE, resource.getURL());
-    assertTrue(view.websiteContactPhoneLink.getResource() instanceof ExternalResource);
-    resource = (ExternalResource) view.websiteContactPhoneLink.getResource();
+    assertTrue(design.websiteContactPhoneLink.getResource() instanceof ExternalResource);
+    resource = (ExternalResource) design.websiteContactPhoneLink.getResource();
     assertEquals(WEBSITE_PHONE_RESOURCE, resource.getURL());
   }
 }

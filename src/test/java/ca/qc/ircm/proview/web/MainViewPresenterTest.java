@@ -52,9 +52,7 @@ import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.LoginForm.LoginListener;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import org.apache.shiro.authc.AuthenticationException;
@@ -98,6 +96,7 @@ public class MainViewPresenterTest {
   private ArgumentCaptor<ForgotPasswordWebContext> forgotPasswordWebContextCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
+  private MainViewDesign design;
   private TextField signFormUsername = new TextField();
   private PasswordField signFormPassword = new PasswordField();
   private Button signButton = new Button();
@@ -115,13 +114,9 @@ public class MainViewPresenterTest {
   public void beforeTest() {
     presenter = new MainViewPresenter(authenticationService, authorizationService, userService,
         forgotPasswordService, applicationName);
-    view.header = new Label();
-    view.signPanel = new Panel();
+    design = new MainViewDesign();
+    view.design = design;
     view.signForm = signForm;
-    view.forgotPasswordPanel = new Panel();
-    view.forgotPasswordEmailField = new TextField();
-    view.forgotPasswordButton = new Button();
-    view.registerButton = new Button();
     when(signForm.getUserNameField()).thenReturn(signFormUsername);
     when(signForm.getPasswordField()).thenReturn(signFormPassword);
     when(signForm.getLoginButton()).thenReturn(signButton);
@@ -137,29 +132,30 @@ public class MainViewPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.header.getStyleName().contains(HEADER));
-    assertTrue(view.signPanel.getStyleName().contains(SIGN_PANEL));
+    assertTrue(design.header.getStyleName().contains(HEADER));
+    assertTrue(design.signPanel.getStyleName().contains(SIGN_PANEL));
     assertTrue(signFormUsername.getStyleName().contains(SIGN_USERNAME));
     assertTrue(signFormPassword.getStyleName().contains(SIGN_PASSWORD));
     assertTrue(signButton.getStyleName().contains(SIGN_BUTTON));
-    assertTrue(view.forgotPasswordPanel.getStyleName().contains(FORGOT_PASSWORD));
-    assertTrue(view.forgotPasswordEmailField.getStyleName().contains(FORGOT_PASSWORD_EMAIL));
-    assertTrue(view.forgotPasswordButton.getStyleName().contains(FORGOT_PASSWORD_BUTTON));
-    assertTrue(view.registerButton.getStyleName().contains(REGISTER_BUTTON));
+    assertTrue(design.forgotPasswordPanel.getStyleName().contains(FORGOT_PASSWORD));
+    assertTrue(design.forgotPasswordEmailField.getStyleName().contains(FORGOT_PASSWORD_EMAIL));
+    assertTrue(design.forgotPasswordButton.getStyleName().contains(FORGOT_PASSWORD_BUTTON));
+    assertTrue(design.registerButton.getStyleName().contains(REGISTER_BUTTON));
   }
 
   @Test
   public void captions() {
-    assertEquals(resources.message(HEADER), view.header.getValue());
-    assertEquals(resources.message(SIGN_PANEL), view.signPanel.getCaption());
+    assertEquals(resources.message(HEADER), design.header.getValue());
+    assertEquals(resources.message(SIGN_PANEL), design.signPanel.getCaption());
     assertEquals(resources.message(SIGN_USERNAME), signFormUsername.getCaption());
     assertEquals(resources.message(SIGN_PASSWORD), signFormPassword.getCaption());
     assertEquals(resources.message(SIGN_BUTTON), signButton.getCaption());
-    assertEquals(resources.message(FORGOT_PASSWORD), view.forgotPasswordPanel.getCaption());
+    assertEquals(resources.message(FORGOT_PASSWORD), design.forgotPasswordPanel.getCaption());
     assertEquals(resources.message(FORGOT_PASSWORD_EMAIL),
-        view.forgotPasswordEmailField.getCaption());
-    assertEquals(resources.message(FORGOT_PASSWORD_BUTTON), view.forgotPasswordButton.getCaption());
-    assertEquals(resources.message(REGISTER_BUTTON), view.registerButton.getCaption());
+        design.forgotPasswordEmailField.getCaption());
+    assertEquals(resources.message(FORGOT_PASSWORD_BUTTON),
+        design.forgotPasswordButton.getCaption());
+    assertEquals(resources.message(REGISTER_BUTTON), design.registerButton.getCaption());
   }
 
   @Test
@@ -243,7 +239,7 @@ public class MainViewPresenterTest {
   @Test
   public void forgotPassword() {
     when(userService.exists(any())).thenReturn(true);
-    view.forgotPasswordEmailField.setValue(username);
+    design.forgotPasswordEmailField.setValue(username);
     String forgotPasswordUrl = "/proview/forgotpassword";
     when(view.getUrl(any())).thenReturn(forgotPasswordUrl);
     when(forgotPasswordService.insert(any(), any())).thenReturn(forgotPassword);
@@ -252,7 +248,7 @@ public class MainViewPresenterTest {
     when(forgotPassword.getId()).thenReturn(id);
     when(forgotPassword.getConfirmNumber()).thenReturn(confirmNumber);
 
-    view.forgotPasswordButton.click();
+    design.forgotPasswordButton.click();
 
     verify(view, never()).showError(any());
     verify(userService).exists(username);
@@ -266,9 +262,9 @@ public class MainViewPresenterTest {
   @Test
   public void forgotPassword_EmailNoUser() {
     when(userService.exists(any())).thenReturn(false);
-    view.forgotPasswordEmailField.setValue(username);
+    design.forgotPasswordEmailField.setValue(username);
 
-    view.forgotPasswordButton.click();
+    design.forgotPasswordButton.click();
 
     verify(view, never()).showError(any());
     verify(userService).exists(username);
@@ -278,31 +274,31 @@ public class MainViewPresenterTest {
 
   @Test
   public void forgotPassword_EmailEmpty() {
-    view.forgotPasswordButton.click();
+    design.forgotPasswordButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.forgotPasswordEmailField.getErrorMessage().getFormattedHtmlMessage());
+        design.forgotPasswordEmailField.getErrorMessage().getFormattedHtmlMessage());
     verify(forgotPasswordService, never()).insert(any(), any());
   }
 
   @Test
   public void forgotPassword_EmailInvalid() {
-    view.forgotPasswordEmailField.setValue("aaa");
+    design.forgotPasswordEmailField.setValue("aaa");
 
-    view.forgotPasswordButton.click();
+    design.forgotPasswordButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_EMAIL)),
-        view.forgotPasswordEmailField.getErrorMessage().getFormattedHtmlMessage());
+        design.forgotPasswordEmailField.getErrorMessage().getFormattedHtmlMessage());
     verify(forgotPasswordService, never()).insert(any(), any());
   }
 
   @Test
   public void register() {
-    view.registerButton.click();
+    design.registerButton.click();
 
     verify(view).navigateTo(RegisterView.VIEW_NAME);
   }

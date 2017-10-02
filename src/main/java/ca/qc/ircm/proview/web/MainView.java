@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.web;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +30,11 @@ import javax.inject.Inject;
  * Main view.
  */
 @SpringView(name = MainView.VIEW_NAME)
-public class MainView extends MainViewDesign implements BaseView {
+public class MainView extends CustomComponent implements BaseView {
   private static final long serialVersionUID = -2537732272999926530L;
   public static final String VIEW_NAME = "";
   private static final Logger logger = LoggerFactory.getLogger(MainView.class);
+  protected MainViewDesign design = new MainViewDesign();
   protected CustomLoginForm signForm = new CustomLoginForm();
   @Inject
   private transient MainViewPresenter presenter;
@@ -41,7 +43,8 @@ public class MainView extends MainViewDesign implements BaseView {
    * Creates main view.
    */
   public MainView() {
-    signLayout.addComponent(signForm);
+    setCompositionRoot(design);
+    design.signLayout.addComponent(signForm);
   }
 
   @Override
