@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_
 import static ca.qc.ircm.proview.submission.web.SubmissionWindow.UPDATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionWindow.WINDOW_STYLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
@@ -61,11 +62,18 @@ public class SubmissionWindowTest extends SubmissionsViewPageObject {
     open();
 
     clickViewSubmissionByRow(0);
-
     assertNotNull(findElement(className(WINDOW_STYLE)));
-    WindowElement submissionWindow =
+    WindowElement window1 =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
-    assertNotNull(submissionWindow.findElement(className(UPDATE)));
+    assertFalse(optional(() -> window1.findElement(className(UPDATE))).isPresent());
+    window1.close();
+
+    clickViewSubmissionByRow(12);
+    assertNotNull(findElement(className(WINDOW_STYLE)));
+    WindowElement window2 =
+        wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
+    assertTrue(optional(() -> window2.findElement(className(UPDATE))).isPresent());
+    window2.close();
   }
 
   @Test
@@ -75,11 +83,18 @@ public class SubmissionWindowTest extends SubmissionsViewPageObject {
     manager = true;
 
     clickViewSubmissionByRow(0);
-
-    assertNotNull(findElement(className(SubmissionWindow.WINDOW_STYLE)));
-    WindowElement submissionWindow =
+    assertNotNull(findElement(className(WINDOW_STYLE)));
+    WindowElement window1 =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
-    assertNotNull(submissionWindow.findElement(className(UPDATE)));
+    assertFalse(optional(() -> window1.findElement(className(UPDATE))).isPresent());
+    window1.close();
+
+    clickViewSubmissionByRow(12);
+    assertNotNull(findElement(className(WINDOW_STYLE)));
+    WindowElement window2 =
+        wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
+    assertTrue(optional(() -> window2.findElement(className(UPDATE))).isPresent());
+    window2.close();
   }
 
   @Test
@@ -89,28 +104,35 @@ public class SubmissionWindowTest extends SubmissionsViewPageObject {
     admin = true;
 
     clickViewSubmissionByRow(0);
-
-    assertNotNull(findElement(className(SubmissionWindow.WINDOW_STYLE)));
-    WindowElement submissionWindow =
+    assertNotNull(findElement(className(WINDOW_STYLE)));
+    WindowElement window1 =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
-    assertNotNull(submissionWindow.findElement(className(UPDATE)));
+    assertTrue(optional(() -> window1.findElement(className(UPDATE))).isPresent());
+    window1.close();
+
+    clickViewSubmissionByRow(12);
+    assertNotNull(findElement(className(WINDOW_STYLE)));
+    WindowElement window2 =
+        wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
+    assertTrue(optional(() -> window2.findElement(className(UPDATE))).isPresent());
+    window2.close();
   }
 
   @Test
   public void updateSubmission() throws Throwable {
     open();
 
-    clickViewSubmissionByRow(0);
+    clickViewSubmissionByRow(12);
 
     assertNotNull(findElement(className(SubmissionWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(0);
+    String experience = experienceByRow(12);
     assertTrue(resources(SubmissionWindow.class).message(SubmissionWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
     assertTrue(
         optional(() -> submissionWindow.findElement(className(SERVICE_PROPERTY))).isPresent());
     submissionWindow.findElement(className(UPDATE)).click();
-    assertEquals(viewUrl(SubmissionView.VIEW_NAME, "161"), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SubmissionView.VIEW_NAME, "36"), getDriver().getCurrentUrl());
   }
 }
