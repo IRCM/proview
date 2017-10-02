@@ -74,15 +74,10 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -120,6 +115,7 @@ public class UserFormPresenterTest {
   private ArgumentCaptor<RegisterUserWebContext> registerUserWebContextCaptor;
   @PersistenceContext
   private EntityManager entityManager;
+  private UserFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(UserForm.class, locale);
   private MessageResource generalResources =
@@ -156,33 +152,8 @@ public class UserFormPresenterTest {
   public void beforeTest() {
     presenter =
         new UserFormPresenter(userService, authorizationService, defaultAddressConfiguration);
-    view.userPanel = new Panel();
-    view.emailField = new TextField();
-    view.nameField = new TextField();
-    view.passwordField = new PasswordField();
-    view.confirmPasswordField = new PasswordField();
-    view.laboratoryPanel = new Panel();
-    view.newLaboratoryField = new CheckBox();
-    view.managerField = new TextField();
-    view.organizationField = new TextField();
-    view.laboratoryNameField = new TextField();
-    view.addressPanel = new Panel();
-    view.addressLineField = new TextField();
-    view.townField = new TextField();
-    view.stateField = new TextField();
-    view.countryField = new TextField();
-    view.postalCodeField = new TextField();
-    view.clearAddressButton = new Button();
-    view.phoneNumbersPanel = new Panel();
-    view.phoneNumbersLayout = new VerticalLayout();
-    view.phoneNumberTypeField = new ComboBox<>();
-    view.numberField = new TextField();
-    view.extensionField = new TextField();
-    view.removePhoneNumberButton = new Button();
-    view.addPhoneNumberButton = new Button();
-    view.saveLayout = new VerticalLayout();
-    view.registerWarningLabel = new Label();
-    view.saveButton = new Button();
+    design = new UserFormDesign();
+    view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
@@ -199,7 +170,7 @@ public class UserFormPresenterTest {
   }
 
   private void addPhoneNumber() {
-    view.addPhoneNumberButton.click();
+    design.addPhoneNumberButton.click();
   }
 
   private boolean isNewUser() {
@@ -211,25 +182,25 @@ public class UserFormPresenterTest {
   }
 
   private void setFields() {
-    view.emailField.setValue(email);
-    view.nameField.setValue(name);
-    view.passwordField.setValue(password);
-    view.confirmPasswordField.setValue(password);
+    design.emailField.setValue(email);
+    design.nameField.setValue(name);
+    design.passwordField.setValue(password);
+    design.confirmPasswordField.setValue(password);
     if (isNewUser() && !isAdmin()) {
-      view.managerField.setValue(manager);
-      view.organizationField.setValue(organization);
-      view.laboratoryNameField.setValue(laboratoryName);
+      design.managerField.setValue(manager);
+      design.organizationField.setValue(organization);
+      design.laboratoryNameField.setValue(laboratoryName);
     }
-    view.addressLineField.setValue(addressLine);
-    view.townField.setValue(town);
-    view.stateField.setValue(state);
-    view.countryField.setValue(country);
-    view.postalCodeField.setValue(postalCode);
-    int phoneNumberIndex = view.phoneNumbersLayout.getComponentCount() - 1;
+    design.addressLineField.setValue(addressLine);
+    design.townField.setValue(town);
+    design.stateField.setValue(state);
+    design.countryField.setValue(country);
+    design.postalCodeField.setValue(postalCode);
+    int phoneNumberIndex = design.phoneNumbersLayout.getComponentCount() - 1;
     typeField(phoneNumberIndex).setValue(type1);
     numberField(phoneNumberIndex).setValue(number1);
     extensionField(phoneNumberIndex).setValue(extension1);
-    view.addPhoneNumberButton.click();
+    design.addPhoneNumberButton.click();
     phoneNumberIndex++;
     typeField(phoneNumberIndex).setValue(type2);
     numberField(phoneNumberIndex).setValue(number2);
@@ -238,22 +209,22 @@ public class UserFormPresenterTest {
 
   @SuppressWarnings("unchecked")
   private ComboBox<PhoneNumberType> typeField(int index) {
-    FormLayout layout = (FormLayout) view.phoneNumbersLayout.getComponent(index);
+    FormLayout layout = (FormLayout) design.phoneNumbersLayout.getComponent(index);
     return (ComboBox<PhoneNumberType>) layout.getComponent(0);
   }
 
   private TextField numberField(int index) {
-    FormLayout layout = (FormLayout) view.phoneNumbersLayout.getComponent(index);
+    FormLayout layout = (FormLayout) design.phoneNumbersLayout.getComponent(index);
     return (TextField) layout.getComponent(1);
   }
 
   private TextField extensionField(int index) {
-    FormLayout layout = (FormLayout) view.phoneNumbersLayout.getComponent(index);
+    FormLayout layout = (FormLayout) design.phoneNumbersLayout.getComponent(index);
     return (TextField) layout.getComponent(2);
   }
 
   private Button removePhoneNumberButton(int index) {
-    FormLayout layout = (FormLayout) view.phoneNumbersLayout.getComponent(index);
+    FormLayout layout = (FormLayout) design.phoneNumbersLayout.getComponent(index);
     return (Button) layout.getComponent(3);
   }
 
@@ -263,78 +234,78 @@ public class UserFormPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.userPanel.getStyleName().contains(USER));
-    assertTrue(view.emailField.getStyleName().contains(EMAIL));
-    assertTrue(view.nameField.getStyleName().contains(NAME));
-    assertTrue(view.passwordField.getStyleName().contains(PASSWORD));
-    assertTrue(view.confirmPasswordField.getStyleName().contains(CONFIRM_PASSWORD));
-    assertTrue(view.laboratoryPanel.getStyleName().contains(LABORATORY));
-    assertTrue(view.newLaboratoryField.getStyleName().contains(NEW_LABORATORY));
-    assertTrue(view.managerField.getStyleName().contains(MANAGER));
-    assertTrue(view.organizationField.getStyleName().contains(LABORATORY_ORGANIZATION));
+    assertTrue(design.userPanel.getStyleName().contains(USER));
+    assertTrue(design.emailField.getStyleName().contains(EMAIL));
+    assertTrue(design.nameField.getStyleName().contains(NAME));
+    assertTrue(design.passwordField.getStyleName().contains(PASSWORD));
+    assertTrue(design.confirmPasswordField.getStyleName().contains(CONFIRM_PASSWORD));
+    assertTrue(design.laboratoryPanel.getStyleName().contains(LABORATORY));
+    assertTrue(design.newLaboratoryField.getStyleName().contains(NEW_LABORATORY));
+    assertTrue(design.managerField.getStyleName().contains(MANAGER));
+    assertTrue(design.organizationField.getStyleName().contains(LABORATORY_ORGANIZATION));
     assertTrue(
-        view.laboratoryNameField.getStyleName().contains(LABORATORY + "-" + LABORATORY_NAME));
-    assertTrue(view.addressPanel.getStyleName().contains(ADDRESS));
-    assertTrue(view.addressLineField.getStyleName().contains(ADDRESS_LINE));
-    assertTrue(view.townField.getStyleName().contains(ADDRESS_TOWN));
-    assertTrue(view.stateField.getStyleName().contains(ADDRESS_STATE));
-    assertTrue(view.countryField.getStyleName().contains(ADDRESS_COUNTRY));
-    assertTrue(view.postalCodeField.getStyleName().contains(ADDRESS_POSTAL_CODE));
-    assertTrue(view.clearAddressButton.getStyleName().contains(CLEAR_ADDRESS));
-    assertTrue(view.phoneNumbersPanel.getStyleName().contains(PHONE_NUMBERS));
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+        design.laboratoryNameField.getStyleName().contains(LABORATORY + "-" + LABORATORY_NAME));
+    assertTrue(design.addressPanel.getStyleName().contains(ADDRESS));
+    assertTrue(design.addressLineField.getStyleName().contains(ADDRESS_LINE));
+    assertTrue(design.townField.getStyleName().contains(ADDRESS_TOWN));
+    assertTrue(design.stateField.getStyleName().contains(ADDRESS_STATE));
+    assertTrue(design.countryField.getStyleName().contains(ADDRESS_COUNTRY));
+    assertTrue(design.postalCodeField.getStyleName().contains(ADDRESS_POSTAL_CODE));
+    assertTrue(design.clearAddressButton.getStyleName().contains(CLEAR_ADDRESS));
+    assertTrue(design.phoneNumbersPanel.getStyleName().contains(PHONE_NUMBERS));
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).getStyleName().contains(PHONE_NUMBER_TYPE));
     assertTrue(numberField(0).getStyleName().contains(PHONE_NUMBER_NUMBER));
     assertTrue(extensionField(0).getStyleName().contains(PHONE_NUMBER_EXTENSION));
     assertTrue(removePhoneNumberButton(0).getStyleName().contains(REMOVE_PHONE_NUMBER));
-    assertTrue(view.addPhoneNumberButton.getStyleName().contains(ADD_PHONE_NUMBER));
-    assertTrue(view.registerWarningLabel.getStyleName().contains(REGISTER_WARNING));
-    assertTrue(view.saveButton.getStyleName().contains(SAVE));
+    assertTrue(design.addPhoneNumberButton.getStyleName().contains(ADD_PHONE_NUMBER));
+    assertTrue(design.registerWarningLabel.getStyleName().contains(REGISTER_WARNING));
+    assertTrue(design.saveButton.getStyleName().contains(SAVE));
   }
 
   @Test
   public void captions() {
-    assertEquals(resources.message(USER), view.userPanel.getCaption());
-    assertEquals(resources.message(EMAIL), view.emailField.getCaption());
-    assertEquals(resources.message(EMAIL + "." + PLACEHOLDER), view.emailField.getPlaceholder());
-    assertEquals(resources.message(NAME), view.nameField.getCaption());
-    assertEquals(resources.message(NAME + "." + PLACEHOLDER), view.nameField.getPlaceholder());
-    assertEquals(resources.message(PASSWORD), view.passwordField.getCaption());
-    assertEquals(resources.message(CONFIRM_PASSWORD), view.confirmPasswordField.getCaption());
-    assertEquals(resources.message(NEW_LABORATORY), view.newLaboratoryField.getCaption());
-    assertEquals(resources.message(MANAGER), view.managerField.getCaption());
+    assertEquals(resources.message(USER), design.userPanel.getCaption());
+    assertEquals(resources.message(EMAIL), design.emailField.getCaption());
+    assertEquals(resources.message(EMAIL + "." + PLACEHOLDER), design.emailField.getPlaceholder());
+    assertEquals(resources.message(NAME), design.nameField.getCaption());
+    assertEquals(resources.message(NAME + "." + PLACEHOLDER), design.nameField.getPlaceholder());
+    assertEquals(resources.message(PASSWORD), design.passwordField.getCaption());
+    assertEquals(resources.message(CONFIRM_PASSWORD), design.confirmPasswordField.getCaption());
+    assertEquals(resources.message(NEW_LABORATORY), design.newLaboratoryField.getCaption());
+    assertEquals(resources.message(MANAGER), design.managerField.getCaption());
     assertEquals(resources.message(MANAGER + "." + PLACEHOLDER),
-        view.managerField.getPlaceholder());
+        design.managerField.getPlaceholder());
     assertEquals(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION),
-        view.organizationField.getCaption());
+        design.organizationField.getCaption());
     assertEquals(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION + "." + PLACEHOLDER),
-        view.organizationField.getPlaceholder());
+        design.organizationField.getPlaceholder());
     assertEquals(resources.message(LABORATORY + "." + LABORATORY_NAME),
-        view.laboratoryNameField.getCaption());
+        design.laboratoryNameField.getCaption());
     assertEquals(resources.message(LABORATORY + "." + LABORATORY_NAME + "." + PLACEHOLDER),
-        view.laboratoryNameField.getPlaceholder());
-    assertEquals(resources.message(ADDRESS), view.addressPanel.getCaption());
+        design.laboratoryNameField.getPlaceholder());
+    assertEquals(resources.message(ADDRESS), design.addressPanel.getCaption());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_LINE),
-        view.addressLineField.getCaption());
+        design.addressLineField.getCaption());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_LINE + "." + PLACEHOLDER),
-        view.addressLineField.getPlaceholder());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_TOWN), view.townField.getCaption());
+        design.addressLineField.getPlaceholder());
+    assertEquals(resources.message(ADDRESS + "." + ADDRESS_TOWN), design.townField.getCaption());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_TOWN + "." + PLACEHOLDER),
-        view.townField.getPlaceholder());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_STATE), view.stateField.getCaption());
+        design.townField.getPlaceholder());
+    assertEquals(resources.message(ADDRESS + "." + ADDRESS_STATE), design.stateField.getCaption());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_STATE + "." + PLACEHOLDER),
-        view.stateField.getPlaceholder());
+        design.stateField.getPlaceholder());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_COUNTRY),
-        view.countryField.getCaption());
+        design.countryField.getCaption());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_COUNTRY + "." + PLACEHOLDER),
-        view.countryField.getPlaceholder());
+        design.countryField.getPlaceholder());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE),
-        view.postalCodeField.getCaption());
+        design.postalCodeField.getCaption());
     assertEquals(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE + "." + PLACEHOLDER),
-        view.postalCodeField.getPlaceholder());
-    assertEquals(resources.message(CLEAR_ADDRESS), view.clearAddressButton.getCaption());
-    assertEquals(resources.message(PHONE_NUMBERS), view.phoneNumbersPanel.getCaption());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+        design.postalCodeField.getPlaceholder());
+    assertEquals(resources.message(CLEAR_ADDRESS), design.clearAddressButton.getCaption());
+    assertEquals(resources.message(PHONE_NUMBERS), design.phoneNumbersPanel.getCaption());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_TYPE),
         typeField(0).getCaption());
     assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER),
@@ -346,27 +317,27 @@ public class UserFormPresenterTest {
     assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + "." + PLACEHOLDER),
         extensionField(0).getPlaceholder());
     assertEquals(resources.message(REMOVE_PHONE_NUMBER), removePhoneNumberButton(0).getCaption());
-    assertEquals(resources.message(ADD_PHONE_NUMBER), view.addPhoneNumberButton.getCaption());
-    assertEquals(resources.message(REGISTER_WARNING), view.registerWarningLabel.getValue());
-    assertEquals(VaadinIcons.WARNING, view.registerWarningLabel.getIcon());
-    assertEquals(resources.message(SAVE), view.saveButton.getCaption());
+    assertEquals(resources.message(ADD_PHONE_NUMBER), design.addPhoneNumberButton.getCaption());
+    assertEquals(resources.message(REGISTER_WARNING), design.registerWarningLabel.getValue());
+    assertEquals(VaadinIcons.WARNING, design.registerWarningLabel.getIcon());
+    assertEquals(resources.message(SAVE), design.saveButton.getCaption());
   }
 
   @Test
   public void required_NewUser() {
-    assertTrue(view.emailField.isRequiredIndicatorVisible());
-    assertTrue(view.nameField.isRequiredIndicatorVisible());
-    assertTrue(view.passwordField.isRequiredIndicatorVisible());
-    assertTrue(view.confirmPasswordField.isRequiredIndicatorVisible());
-    assertTrue(view.managerField.isRequiredIndicatorVisible());
-    assertTrue(view.organizationField.isRequiredIndicatorVisible());
-    assertTrue(view.laboratoryNameField.isRequiredIndicatorVisible());
-    assertTrue(view.addressLineField.isRequiredIndicatorVisible());
-    assertTrue(view.townField.isRequiredIndicatorVisible());
-    assertTrue(view.stateField.isRequiredIndicatorVisible());
-    assertTrue(view.countryField.isRequiredIndicatorVisible());
-    assertTrue(view.postalCodeField.isRequiredIndicatorVisible());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertTrue(design.emailField.isRequiredIndicatorVisible());
+    assertTrue(design.nameField.isRequiredIndicatorVisible());
+    assertTrue(design.passwordField.isRequiredIndicatorVisible());
+    assertTrue(design.confirmPasswordField.isRequiredIndicatorVisible());
+    assertTrue(design.managerField.isRequiredIndicatorVisible());
+    assertTrue(design.organizationField.isRequiredIndicatorVisible());
+    assertTrue(design.laboratoryNameField.isRequiredIndicatorVisible());
+    assertTrue(design.addressLineField.isRequiredIndicatorVisible());
+    assertTrue(design.townField.isRequiredIndicatorVisible());
+    assertTrue(design.stateField.isRequiredIndicatorVisible());
+    assertTrue(design.countryField.isRequiredIndicatorVisible());
+    assertTrue(design.postalCodeField.isRequiredIndicatorVisible());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isRequiredIndicatorVisible());
     assertTrue(numberField(0).isRequiredIndicatorVisible());
     assertFalse(extensionField(0).isRequiredIndicatorVisible());
@@ -376,18 +347,18 @@ public class UserFormPresenterTest {
   public void required_ExistingUser() {
     presenter.setValue(user);
 
-    assertTrue(view.emailField.isRequiredIndicatorVisible());
-    assertTrue(view.nameField.isRequiredIndicatorVisible());
-    assertFalse(view.passwordField.isRequiredIndicatorVisible());
-    assertFalse(view.confirmPasswordField.isRequiredIndicatorVisible());
-    assertFalse(view.managerField.isRequiredIndicatorVisible());
-    assertFalse(view.organizationField.isRequiredIndicatorVisible());
-    assertFalse(view.laboratoryNameField.isRequiredIndicatorVisible());
-    assertTrue(view.addressLineField.isRequiredIndicatorVisible());
-    assertTrue(view.townField.isRequiredIndicatorVisible());
-    assertTrue(view.stateField.isRequiredIndicatorVisible());
-    assertTrue(view.countryField.isRequiredIndicatorVisible());
-    assertTrue(view.postalCodeField.isRequiredIndicatorVisible());
+    assertTrue(design.emailField.isRequiredIndicatorVisible());
+    assertTrue(design.nameField.isRequiredIndicatorVisible());
+    assertFalse(design.passwordField.isRequiredIndicatorVisible());
+    assertFalse(design.confirmPasswordField.isRequiredIndicatorVisible());
+    assertFalse(design.managerField.isRequiredIndicatorVisible());
+    assertFalse(design.organizationField.isRequiredIndicatorVisible());
+    assertFalse(design.laboratoryNameField.isRequiredIndicatorVisible());
+    assertTrue(design.addressLineField.isRequiredIndicatorVisible());
+    assertTrue(design.townField.isRequiredIndicatorVisible());
+    assertTrue(design.stateField.isRequiredIndicatorVisible());
+    assertTrue(design.countryField.isRequiredIndicatorVisible());
+    assertTrue(design.postalCodeField.isRequiredIndicatorVisible());
     addPhoneNumber();
     assertTrue(typeField(0).isRequiredIndicatorVisible());
     assertTrue(numberField(0).isRequiredIndicatorVisible());
@@ -397,20 +368,20 @@ public class UserFormPresenterTest {
   @Test
   public void readOnly_True_NewUser() {
     presenter.setReadOnly(true);
-    assertTrue(view.emailField.isReadOnly());
-    assertTrue(view.nameField.isReadOnly());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.managerField.isReadOnly());
-    assertTrue(view.organizationField.isReadOnly());
-    assertTrue(view.laboratoryNameField.isReadOnly());
-    assertTrue(view.addressLineField.isReadOnly());
-    assertTrue(view.townField.isReadOnly());
-    assertTrue(view.stateField.isReadOnly());
-    assertTrue(view.countryField.isReadOnly());
-    assertTrue(view.postalCodeField.isReadOnly());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertTrue(design.emailField.isReadOnly());
+    assertTrue(design.nameField.isReadOnly());
+    assertFalse(design.passwordField.isVisible());
+    assertFalse(design.confirmPasswordField.isVisible());
+    assertTrue(design.newLaboratoryField.isReadOnly());
+    assertTrue(design.managerField.isReadOnly());
+    assertTrue(design.organizationField.isReadOnly());
+    assertTrue(design.laboratoryNameField.isReadOnly());
+    assertTrue(design.addressLineField.isReadOnly());
+    assertTrue(design.townField.isReadOnly());
+    assertTrue(design.stateField.isReadOnly());
+    assertTrue(design.countryField.isReadOnly());
+    assertTrue(design.postalCodeField.isReadOnly());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
     assertTrue(extensionField(0).isReadOnly());
@@ -422,20 +393,20 @@ public class UserFormPresenterTest {
     presenter.setValue(null);
     presenter.setReadOnly(true);
 
-    assertTrue(view.emailField.isReadOnly());
-    assertTrue(view.nameField.isReadOnly());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.managerField.isReadOnly());
-    assertTrue(view.organizationField.isReadOnly());
-    assertTrue(view.laboratoryNameField.isReadOnly());
-    assertTrue(view.addressLineField.isReadOnly());
-    assertTrue(view.townField.isReadOnly());
-    assertTrue(view.stateField.isReadOnly());
-    assertTrue(view.countryField.isReadOnly());
-    assertTrue(view.postalCodeField.isReadOnly());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertTrue(design.emailField.isReadOnly());
+    assertTrue(design.nameField.isReadOnly());
+    assertFalse(design.passwordField.isVisible());
+    assertFalse(design.confirmPasswordField.isVisible());
+    assertTrue(design.newLaboratoryField.isReadOnly());
+    assertTrue(design.managerField.isReadOnly());
+    assertTrue(design.organizationField.isReadOnly());
+    assertTrue(design.laboratoryNameField.isReadOnly());
+    assertTrue(design.addressLineField.isReadOnly());
+    assertTrue(design.townField.isReadOnly());
+    assertTrue(design.stateField.isReadOnly());
+    assertTrue(design.countryField.isReadOnly());
+    assertTrue(design.postalCodeField.isReadOnly());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
     assertTrue(extensionField(0).isReadOnly());
@@ -446,19 +417,19 @@ public class UserFormPresenterTest {
     presenter.setValue(user);
     presenter.setReadOnly(true);
 
-    assertTrue(view.emailField.isReadOnly());
-    assertTrue(view.nameField.isReadOnly());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.managerField.isReadOnly());
-    assertTrue(view.organizationField.isReadOnly());
-    assertTrue(view.laboratoryNameField.isReadOnly());
-    assertTrue(view.addressLineField.isReadOnly());
-    assertTrue(view.townField.isReadOnly());
-    assertTrue(view.stateField.isReadOnly());
-    assertTrue(view.countryField.isReadOnly());
-    assertTrue(view.postalCodeField.isReadOnly());
+    assertTrue(design.emailField.isReadOnly());
+    assertTrue(design.nameField.isReadOnly());
+    assertFalse(design.passwordField.isVisible());
+    assertFalse(design.confirmPasswordField.isVisible());
+    assertTrue(design.newLaboratoryField.isReadOnly());
+    assertTrue(design.managerField.isReadOnly());
+    assertTrue(design.organizationField.isReadOnly());
+    assertTrue(design.laboratoryNameField.isReadOnly());
+    assertTrue(design.addressLineField.isReadOnly());
+    assertTrue(design.townField.isReadOnly());
+    assertTrue(design.stateField.isReadOnly());
+    assertTrue(design.countryField.isReadOnly());
+    assertTrue(design.postalCodeField.isReadOnly());
     addPhoneNumber();
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
@@ -471,19 +442,19 @@ public class UserFormPresenterTest {
     presenter.setValue(user);
     presenter.setReadOnly(true);
 
-    assertTrue(view.emailField.isReadOnly());
-    assertTrue(view.nameField.isReadOnly());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.managerField.isReadOnly());
-    assertTrue(view.organizationField.isReadOnly());
-    assertTrue(view.laboratoryNameField.isReadOnly());
-    assertTrue(view.addressLineField.isReadOnly());
-    assertTrue(view.townField.isReadOnly());
-    assertTrue(view.stateField.isReadOnly());
-    assertTrue(view.countryField.isReadOnly());
-    assertTrue(view.postalCodeField.isReadOnly());
+    assertTrue(design.emailField.isReadOnly());
+    assertTrue(design.nameField.isReadOnly());
+    assertFalse(design.passwordField.isVisible());
+    assertFalse(design.confirmPasswordField.isVisible());
+    assertTrue(design.newLaboratoryField.isReadOnly());
+    assertTrue(design.managerField.isReadOnly());
+    assertTrue(design.organizationField.isReadOnly());
+    assertTrue(design.laboratoryNameField.isReadOnly());
+    assertTrue(design.addressLineField.isReadOnly());
+    assertTrue(design.townField.isReadOnly());
+    assertTrue(design.stateField.isReadOnly());
+    assertTrue(design.countryField.isReadOnly());
+    assertTrue(design.postalCodeField.isReadOnly());
     addPhoneNumber();
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
@@ -496,19 +467,19 @@ public class UserFormPresenterTest {
     presenter.setValue(user);
     presenter.setReadOnly(true);
 
-    assertTrue(view.emailField.isReadOnly());
-    assertTrue(view.nameField.isReadOnly());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.managerField.isReadOnly());
-    assertTrue(view.organizationField.isReadOnly());
-    assertTrue(view.laboratoryNameField.isReadOnly());
-    assertTrue(view.addressLineField.isReadOnly());
-    assertTrue(view.townField.isReadOnly());
-    assertTrue(view.stateField.isReadOnly());
-    assertTrue(view.countryField.isReadOnly());
-    assertTrue(view.postalCodeField.isReadOnly());
+    assertTrue(design.emailField.isReadOnly());
+    assertTrue(design.nameField.isReadOnly());
+    assertFalse(design.passwordField.isVisible());
+    assertFalse(design.confirmPasswordField.isVisible());
+    assertTrue(design.newLaboratoryField.isReadOnly());
+    assertTrue(design.managerField.isReadOnly());
+    assertTrue(design.organizationField.isReadOnly());
+    assertTrue(design.laboratoryNameField.isReadOnly());
+    assertTrue(design.addressLineField.isReadOnly());
+    assertTrue(design.townField.isReadOnly());
+    assertTrue(design.stateField.isReadOnly());
+    assertTrue(design.countryField.isReadOnly());
+    assertTrue(design.postalCodeField.isReadOnly());
     addPhoneNumber();
     assertTrue(typeField(0).isReadOnly());
     assertTrue(numberField(0).isReadOnly());
@@ -517,22 +488,22 @@ public class UserFormPresenterTest {
 
   @Test
   public void readOnly_False_NewUser() {
-    assertFalse(view.emailField.isReadOnly());
-    assertFalse(view.nameField.isReadOnly());
-    assertTrue(view.passwordField.isVisible());
-    assertFalse(view.passwordField.isReadOnly());
-    assertTrue(view.confirmPasswordField.isVisible());
-    assertFalse(view.confirmPasswordField.isReadOnly());
-    assertFalse(view.newLaboratoryField.isReadOnly());
-    assertFalse(view.managerField.isReadOnly());
-    assertFalse(view.organizationField.isReadOnly());
-    assertFalse(view.laboratoryNameField.isReadOnly());
-    assertFalse(view.addressLineField.isReadOnly());
-    assertFalse(view.townField.isReadOnly());
-    assertFalse(view.stateField.isReadOnly());
-    assertFalse(view.countryField.isReadOnly());
-    assertFalse(view.postalCodeField.isReadOnly());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertFalse(design.emailField.isReadOnly());
+    assertFalse(design.nameField.isReadOnly());
+    assertTrue(design.passwordField.isVisible());
+    assertFalse(design.passwordField.isReadOnly());
+    assertTrue(design.confirmPasswordField.isVisible());
+    assertFalse(design.confirmPasswordField.isReadOnly());
+    assertFalse(design.newLaboratoryField.isReadOnly());
+    assertFalse(design.managerField.isReadOnly());
+    assertFalse(design.organizationField.isReadOnly());
+    assertFalse(design.laboratoryNameField.isReadOnly());
+    assertFalse(design.addressLineField.isReadOnly());
+    assertFalse(design.townField.isReadOnly());
+    assertFalse(design.stateField.isReadOnly());
+    assertFalse(design.countryField.isReadOnly());
+    assertFalse(design.postalCodeField.isReadOnly());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
     assertFalse(extensionField(0).isReadOnly());
@@ -543,22 +514,22 @@ public class UserFormPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setValue(null);
 
-    assertFalse(view.emailField.isReadOnly());
-    assertFalse(view.nameField.isReadOnly());
-    assertTrue(view.passwordField.isVisible());
-    assertFalse(view.passwordField.isReadOnly());
-    assertTrue(view.confirmPasswordField.isVisible());
-    assertFalse(view.confirmPasswordField.isReadOnly());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isReadOnly());
-    assertTrue(view.laboratoryNameField.isReadOnly());
-    assertFalse(view.addressLineField.isReadOnly());
-    assertFalse(view.townField.isReadOnly());
-    assertFalse(view.stateField.isReadOnly());
-    assertFalse(view.countryField.isReadOnly());
-    assertFalse(view.postalCodeField.isReadOnly());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertFalse(design.emailField.isReadOnly());
+    assertFalse(design.nameField.isReadOnly());
+    assertTrue(design.passwordField.isVisible());
+    assertFalse(design.passwordField.isReadOnly());
+    assertTrue(design.confirmPasswordField.isVisible());
+    assertFalse(design.confirmPasswordField.isReadOnly());
+    assertFalse(design.newLaboratoryField.isVisible());
+    assertFalse(design.managerField.isVisible());
+    assertTrue(design.organizationField.isReadOnly());
+    assertTrue(design.laboratoryNameField.isReadOnly());
+    assertFalse(design.addressLineField.isReadOnly());
+    assertFalse(design.townField.isReadOnly());
+    assertFalse(design.stateField.isReadOnly());
+    assertFalse(design.countryField.isReadOnly());
+    assertFalse(design.postalCodeField.isReadOnly());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
     assertFalse(extensionField(0).isReadOnly());
@@ -568,21 +539,21 @@ public class UserFormPresenterTest {
   public void readOnly_False_ExistsUser() {
     presenter.setValue(user);
 
-    assertFalse(view.emailField.isReadOnly());
-    assertFalse(view.nameField.isReadOnly());
-    assertTrue(view.passwordField.isVisible());
-    assertFalse(view.passwordField.isReadOnly());
-    assertTrue(view.confirmPasswordField.isVisible());
-    assertFalse(view.confirmPasswordField.isReadOnly());
-    assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.managerField.isReadOnly());
-    assertTrue(view.organizationField.isReadOnly());
-    assertTrue(view.laboratoryNameField.isReadOnly());
-    assertFalse(view.addressLineField.isReadOnly());
-    assertFalse(view.townField.isReadOnly());
-    assertFalse(view.stateField.isReadOnly());
-    assertFalse(view.countryField.isReadOnly());
-    assertFalse(view.postalCodeField.isReadOnly());
+    assertFalse(design.emailField.isReadOnly());
+    assertFalse(design.nameField.isReadOnly());
+    assertTrue(design.passwordField.isVisible());
+    assertFalse(design.passwordField.isReadOnly());
+    assertTrue(design.confirmPasswordField.isVisible());
+    assertFalse(design.confirmPasswordField.isReadOnly());
+    assertTrue(design.newLaboratoryField.isReadOnly());
+    assertTrue(design.managerField.isReadOnly());
+    assertTrue(design.organizationField.isReadOnly());
+    assertTrue(design.laboratoryNameField.isReadOnly());
+    assertFalse(design.addressLineField.isReadOnly());
+    assertFalse(design.townField.isReadOnly());
+    assertFalse(design.stateField.isReadOnly());
+    assertFalse(design.countryField.isReadOnly());
+    assertFalse(design.postalCodeField.isReadOnly());
     addPhoneNumber();
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
@@ -594,21 +565,21 @@ public class UserFormPresenterTest {
     when(authorizationService.hasManagerRole()).thenReturn(true);
     presenter.setValue(user);
 
-    assertFalse(view.emailField.isReadOnly());
-    assertFalse(view.nameField.isReadOnly());
-    assertTrue(view.passwordField.isVisible());
-    assertFalse(view.passwordField.isReadOnly());
-    assertTrue(view.confirmPasswordField.isVisible());
-    assertFalse(view.confirmPasswordField.isReadOnly());
-    assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.managerField.isReadOnly());
-    assertFalse(view.organizationField.isReadOnly());
-    assertFalse(view.laboratoryNameField.isReadOnly());
-    assertFalse(view.addressLineField.isReadOnly());
-    assertFalse(view.townField.isReadOnly());
-    assertFalse(view.stateField.isReadOnly());
-    assertFalse(view.countryField.isReadOnly());
-    assertFalse(view.postalCodeField.isReadOnly());
+    assertFalse(design.emailField.isReadOnly());
+    assertFalse(design.nameField.isReadOnly());
+    assertTrue(design.passwordField.isVisible());
+    assertFalse(design.passwordField.isReadOnly());
+    assertTrue(design.confirmPasswordField.isVisible());
+    assertFalse(design.confirmPasswordField.isReadOnly());
+    assertTrue(design.newLaboratoryField.isReadOnly());
+    assertTrue(design.managerField.isReadOnly());
+    assertFalse(design.organizationField.isReadOnly());
+    assertFalse(design.laboratoryNameField.isReadOnly());
+    assertFalse(design.addressLineField.isReadOnly());
+    assertFalse(design.townField.isReadOnly());
+    assertFalse(design.stateField.isReadOnly());
+    assertFalse(design.countryField.isReadOnly());
+    assertFalse(design.postalCodeField.isReadOnly());
     addPhoneNumber();
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
@@ -620,21 +591,21 @@ public class UserFormPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setValue(user);
 
-    assertFalse(view.emailField.isReadOnly());
-    assertFalse(view.nameField.isReadOnly());
-    assertTrue(view.passwordField.isVisible());
-    assertFalse(view.passwordField.isReadOnly());
-    assertTrue(view.confirmPasswordField.isVisible());
-    assertFalse(view.confirmPasswordField.isReadOnly());
-    assertTrue(view.newLaboratoryField.isReadOnly());
-    assertTrue(view.managerField.isReadOnly());
-    assertTrue(view.organizationField.isReadOnly());
-    assertTrue(view.laboratoryNameField.isReadOnly());
-    assertFalse(view.addressLineField.isReadOnly());
-    assertFalse(view.townField.isReadOnly());
-    assertFalse(view.stateField.isReadOnly());
-    assertFalse(view.countryField.isReadOnly());
-    assertFalse(view.postalCodeField.isReadOnly());
+    assertFalse(design.emailField.isReadOnly());
+    assertFalse(design.nameField.isReadOnly());
+    assertTrue(design.passwordField.isVisible());
+    assertFalse(design.passwordField.isReadOnly());
+    assertTrue(design.confirmPasswordField.isVisible());
+    assertFalse(design.confirmPasswordField.isReadOnly());
+    assertTrue(design.newLaboratoryField.isReadOnly());
+    assertTrue(design.managerField.isReadOnly());
+    assertTrue(design.organizationField.isReadOnly());
+    assertTrue(design.laboratoryNameField.isReadOnly());
+    assertFalse(design.addressLineField.isReadOnly());
+    assertFalse(design.townField.isReadOnly());
+    assertFalse(design.stateField.isReadOnly());
+    assertFalse(design.countryField.isReadOnly());
+    assertFalse(design.postalCodeField.isReadOnly());
     addPhoneNumber();
     assertFalse(typeField(0).isReadOnly());
     assertFalse(numberField(0).isReadOnly());
@@ -645,32 +616,32 @@ public class UserFormPresenterTest {
   public void visible_ReadOnly_NewUser() {
     presenter.setReadOnly(true);
 
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertFalse(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertTrue(design.userPanel.isVisible());
+    assertTrue(design.emailField.isVisible());
+    assertTrue(design.nameField.isVisible());
+    assertFalse(design.passwordField.isVisible());
+    assertFalse(design.confirmPasswordField.isVisible());
+    assertFalse(design.newLaboratoryField.isVisible());
+    assertFalse(design.managerField.isVisible());
+    assertTrue(design.organizationField.isVisible());
+    assertTrue(design.laboratoryNameField.isVisible());
+    assertTrue(design.addressPanel.isVisible());
+    assertTrue(design.addressLineField.isVisible());
+    assertTrue(design.townField.isVisible());
+    assertTrue(design.stateField.isVisible());
+    assertTrue(design.countryField.isVisible());
+    assertTrue(design.postalCodeField.isVisible());
+    assertFalse(design.clearAddressButton.isVisible());
+    assertTrue(design.phoneNumbersPanel.isVisible());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
     assertFalse(removePhoneNumberButton(0).isVisible());
-    assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertFalse(view.saveButton.isVisible());
+    assertFalse(design.addPhoneNumberButton.isVisible());
+    assertFalse(design.saveLayout.isVisible());
+    assertFalse(design.registerWarningLabel.isVisible());
+    assertFalse(design.saveButton.isVisible());
   }
 
   @Test
@@ -679,32 +650,32 @@ public class UserFormPresenterTest {
     presenter.setValue(null);
     presenter.setReadOnly(true);
 
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertFalse(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertTrue(design.userPanel.isVisible());
+    assertTrue(design.emailField.isVisible());
+    assertTrue(design.nameField.isVisible());
+    assertFalse(design.passwordField.isVisible());
+    assertFalse(design.confirmPasswordField.isVisible());
+    assertFalse(design.newLaboratoryField.isVisible());
+    assertFalse(design.managerField.isVisible());
+    assertTrue(design.organizationField.isVisible());
+    assertTrue(design.laboratoryNameField.isVisible());
+    assertTrue(design.addressPanel.isVisible());
+    assertTrue(design.addressLineField.isVisible());
+    assertTrue(design.townField.isVisible());
+    assertTrue(design.stateField.isVisible());
+    assertTrue(design.countryField.isVisible());
+    assertTrue(design.postalCodeField.isVisible());
+    assertFalse(design.clearAddressButton.isVisible());
+    assertTrue(design.phoneNumbersPanel.isVisible());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
     assertFalse(removePhoneNumberButton(0).isVisible());
-    assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertFalse(view.saveButton.isVisible());
+    assertFalse(design.addPhoneNumberButton.isVisible());
+    assertFalse(design.saveLayout.isVisible());
+    assertFalse(design.registerWarningLabel.isVisible());
+    assertFalse(design.saveButton.isVisible());
   }
 
   @Test
@@ -712,32 +683,32 @@ public class UserFormPresenterTest {
     presenter.setValue(user);
     presenter.setReadOnly(true);
 
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertFalse(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
+    assertTrue(design.userPanel.isVisible());
+    assertTrue(design.emailField.isVisible());
+    assertTrue(design.nameField.isVisible());
+    assertFalse(design.passwordField.isVisible());
+    assertFalse(design.confirmPasswordField.isVisible());
+    assertFalse(design.newLaboratoryField.isVisible());
+    assertFalse(design.managerField.isVisible());
+    assertTrue(design.organizationField.isVisible());
+    assertTrue(design.laboratoryNameField.isVisible());
+    assertTrue(design.addressPanel.isVisible());
+    assertTrue(design.addressLineField.isVisible());
+    assertTrue(design.townField.isVisible());
+    assertTrue(design.stateField.isVisible());
+    assertTrue(design.countryField.isVisible());
+    assertTrue(design.postalCodeField.isVisible());
+    assertFalse(design.clearAddressButton.isVisible());
+    assertTrue(design.phoneNumbersPanel.isVisible());
     addPhoneNumber();
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
     assertFalse(removePhoneNumberButton(0).isVisible());
-    assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertFalse(view.saveButton.isVisible());
+    assertFalse(design.addPhoneNumberButton.isVisible());
+    assertFalse(design.saveLayout.isVisible());
+    assertFalse(design.registerWarningLabel.isVisible());
+    assertFalse(design.saveButton.isVisible());
   }
 
   @Test
@@ -746,62 +717,62 @@ public class UserFormPresenterTest {
     presenter.setValue(user);
     presenter.setReadOnly(true);
 
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertFalse(view.passwordField.isVisible());
-    assertFalse(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertFalse(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
+    assertTrue(design.userPanel.isVisible());
+    assertTrue(design.emailField.isVisible());
+    assertTrue(design.nameField.isVisible());
+    assertFalse(design.passwordField.isVisible());
+    assertFalse(design.confirmPasswordField.isVisible());
+    assertFalse(design.newLaboratoryField.isVisible());
+    assertFalse(design.managerField.isVisible());
+    assertTrue(design.organizationField.isVisible());
+    assertTrue(design.laboratoryNameField.isVisible());
+    assertTrue(design.addressPanel.isVisible());
+    assertTrue(design.addressLineField.isVisible());
+    assertTrue(design.townField.isVisible());
+    assertTrue(design.stateField.isVisible());
+    assertTrue(design.countryField.isVisible());
+    assertTrue(design.postalCodeField.isVisible());
+    assertFalse(design.clearAddressButton.isVisible());
+    assertTrue(design.phoneNumbersPanel.isVisible());
     addPhoneNumber();
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
     assertFalse(removePhoneNumberButton(0).isVisible());
-    assertFalse(view.addPhoneNumberButton.isVisible());
-    assertFalse(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertFalse(view.saveButton.isVisible());
+    assertFalse(design.addPhoneNumberButton.isVisible());
+    assertFalse(design.saveLayout.isVisible());
+    assertFalse(design.registerWarningLabel.isVisible());
+    assertFalse(design.saveButton.isVisible());
   }
 
   @Test
   public void visible_NewUser() {
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertTrue(view.passwordField.isVisible());
-    assertTrue(view.confirmPasswordField.isVisible());
-    assertTrue(view.newLaboratoryField.isVisible());
-    assertTrue(view.managerField.isVisible());
-    assertFalse(view.organizationField.isVisible());
-    assertFalse(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertTrue(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertTrue(design.userPanel.isVisible());
+    assertTrue(design.emailField.isVisible());
+    assertTrue(design.nameField.isVisible());
+    assertTrue(design.passwordField.isVisible());
+    assertTrue(design.confirmPasswordField.isVisible());
+    assertTrue(design.newLaboratoryField.isVisible());
+    assertTrue(design.managerField.isVisible());
+    assertFalse(design.organizationField.isVisible());
+    assertFalse(design.laboratoryNameField.isVisible());
+    assertTrue(design.addressPanel.isVisible());
+    assertTrue(design.addressLineField.isVisible());
+    assertTrue(design.townField.isVisible());
+    assertTrue(design.stateField.isVisible());
+    assertTrue(design.countryField.isVisible());
+    assertTrue(design.postalCodeField.isVisible());
+    assertTrue(design.clearAddressButton.isVisible());
+    assertTrue(design.phoneNumbersPanel.isVisible());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
     assertTrue(removePhoneNumberButton(0).isVisible());
-    assertTrue(view.addPhoneNumberButton.isVisible());
-    assertTrue(view.saveLayout.isVisible());
-    assertTrue(view.registerWarningLabel.isVisible());
-    assertTrue(view.saveButton.isVisible());
+    assertTrue(design.addPhoneNumberButton.isVisible());
+    assertTrue(design.saveLayout.isVisible());
+    assertTrue(design.registerWarningLabel.isVisible());
+    assertTrue(design.saveButton.isVisible());
   }
 
   @Test
@@ -809,73 +780,73 @@ public class UserFormPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setValue(null);
 
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertTrue(view.passwordField.isVisible());
-    assertTrue(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertTrue(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
-    assertEquals(1, view.phoneNumbersLayout.getComponentCount());
+    assertTrue(design.userPanel.isVisible());
+    assertTrue(design.emailField.isVisible());
+    assertTrue(design.nameField.isVisible());
+    assertTrue(design.passwordField.isVisible());
+    assertTrue(design.confirmPasswordField.isVisible());
+    assertFalse(design.newLaboratoryField.isVisible());
+    assertFalse(design.managerField.isVisible());
+    assertTrue(design.organizationField.isVisible());
+    assertTrue(design.laboratoryNameField.isVisible());
+    assertTrue(design.addressPanel.isVisible());
+    assertTrue(design.addressLineField.isVisible());
+    assertTrue(design.townField.isVisible());
+    assertTrue(design.stateField.isVisible());
+    assertTrue(design.countryField.isVisible());
+    assertTrue(design.postalCodeField.isVisible());
+    assertTrue(design.clearAddressButton.isVisible());
+    assertTrue(design.phoneNumbersPanel.isVisible());
+    assertEquals(1, design.phoneNumbersLayout.getComponentCount());
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
     assertTrue(removePhoneNumberButton(0).isVisible());
-    assertTrue(view.addPhoneNumberButton.isVisible());
-    assertTrue(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertTrue(view.saveButton.isVisible());
+    assertTrue(design.addPhoneNumberButton.isVisible());
+    assertTrue(design.saveLayout.isVisible());
+    assertFalse(design.registerWarningLabel.isVisible());
+    assertTrue(design.saveButton.isVisible());
   }
 
   @Test
   public void visible_NewUser_NewLaboratory() {
-    view.newLaboratoryField.setValue(true);
-    assertTrue(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
+    design.newLaboratoryField.setValue(true);
+    assertTrue(design.newLaboratoryField.isVisible());
+    assertFalse(design.managerField.isVisible());
+    assertTrue(design.organizationField.isVisible());
+    assertTrue(design.laboratoryNameField.isVisible());
   }
 
   @Test
   public void visible_ExistsUser() {
     presenter.setValue(user);
 
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertTrue(view.passwordField.isVisible());
-    assertTrue(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertTrue(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
+    assertTrue(design.userPanel.isVisible());
+    assertTrue(design.emailField.isVisible());
+    assertTrue(design.nameField.isVisible());
+    assertTrue(design.passwordField.isVisible());
+    assertTrue(design.confirmPasswordField.isVisible());
+    assertFalse(design.newLaboratoryField.isVisible());
+    assertFalse(design.managerField.isVisible());
+    assertTrue(design.organizationField.isVisible());
+    assertTrue(design.laboratoryNameField.isVisible());
+    assertTrue(design.addressPanel.isVisible());
+    assertTrue(design.addressLineField.isVisible());
+    assertTrue(design.townField.isVisible());
+    assertTrue(design.stateField.isVisible());
+    assertTrue(design.countryField.isVisible());
+    assertTrue(design.postalCodeField.isVisible());
+    assertTrue(design.clearAddressButton.isVisible());
+    assertTrue(design.phoneNumbersPanel.isVisible());
     addPhoneNumber();
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
     assertTrue(removePhoneNumberButton(0).isVisible());
-    assertTrue(view.addPhoneNumberButton.isVisible());
-    assertTrue(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertTrue(view.saveButton.isVisible());
+    assertTrue(design.addPhoneNumberButton.isVisible());
+    assertTrue(design.saveLayout.isVisible());
+    assertFalse(design.registerWarningLabel.isVisible());
+    assertTrue(design.saveButton.isVisible());
   }
 
   @Test
@@ -883,40 +854,40 @@ public class UserFormPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setValue(user);
 
-    assertTrue(view.userPanel.isVisible());
-    assertTrue(view.emailField.isVisible());
-    assertTrue(view.nameField.isVisible());
-    assertTrue(view.passwordField.isVisible());
-    assertTrue(view.confirmPasswordField.isVisible());
-    assertFalse(view.newLaboratoryField.isVisible());
-    assertFalse(view.managerField.isVisible());
-    assertTrue(view.organizationField.isVisible());
-    assertTrue(view.laboratoryNameField.isVisible());
-    assertTrue(view.addressPanel.isVisible());
-    assertTrue(view.addressLineField.isVisible());
-    assertTrue(view.townField.isVisible());
-    assertTrue(view.stateField.isVisible());
-    assertTrue(view.countryField.isVisible());
-    assertTrue(view.postalCodeField.isVisible());
-    assertTrue(view.clearAddressButton.isVisible());
-    assertTrue(view.phoneNumbersPanel.isVisible());
+    assertTrue(design.userPanel.isVisible());
+    assertTrue(design.emailField.isVisible());
+    assertTrue(design.nameField.isVisible());
+    assertTrue(design.passwordField.isVisible());
+    assertTrue(design.confirmPasswordField.isVisible());
+    assertFalse(design.newLaboratoryField.isVisible());
+    assertFalse(design.managerField.isVisible());
+    assertTrue(design.organizationField.isVisible());
+    assertTrue(design.laboratoryNameField.isVisible());
+    assertTrue(design.addressPanel.isVisible());
+    assertTrue(design.addressLineField.isVisible());
+    assertTrue(design.townField.isVisible());
+    assertTrue(design.stateField.isVisible());
+    assertTrue(design.countryField.isVisible());
+    assertTrue(design.postalCodeField.isVisible());
+    assertTrue(design.clearAddressButton.isVisible());
+    assertTrue(design.phoneNumbersPanel.isVisible());
     addPhoneNumber();
     assertTrue(typeField(0).isVisible());
     assertTrue(numberField(0).isVisible());
     assertTrue(extensionField(0).isVisible());
     assertTrue(removePhoneNumberButton(0).isVisible());
-    assertTrue(view.addPhoneNumberButton.isVisible());
-    assertTrue(view.saveLayout.isVisible());
-    assertFalse(view.registerWarningLabel.isVisible());
-    assertTrue(view.saveButton.isVisible());
+    assertTrue(design.addPhoneNumberButton.isVisible());
+    assertTrue(design.saveLayout.isVisible());
+    assertFalse(design.registerWarningLabel.isVisible());
+    assertTrue(design.saveButton.isVisible());
   }
 
   @Test
   public void defaultLaboratory_NewUser() {
-    assertTrue(
-        view.organizationField.getValue() == null || view.organizationField.getValue().isEmpty());
-    assertTrue(view.laboratoryNameField.getValue() == null
-        || view.laboratoryNameField.getValue().isEmpty());
+    assertTrue(design.organizationField.getValue() == null
+        || design.organizationField.getValue().isEmpty());
+    assertTrue(design.laboratoryNameField.getValue() == null
+        || design.laboratoryNameField.getValue().isEmpty());
   }
 
   @Test
@@ -924,16 +895,17 @@ public class UserFormPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setValue(null);
 
-    assertEquals(currentUser.getLaboratory().getOrganization(), view.organizationField.getValue());
-    assertEquals(currentUser.getLaboratory().getName(), view.laboratoryNameField.getValue());
+    assertEquals(currentUser.getLaboratory().getOrganization(),
+        design.organizationField.getValue());
+    assertEquals(currentUser.getLaboratory().getName(), design.laboratoryNameField.getValue());
   }
 
   @Test
   public void defaultLaboratory_ExistingUser() {
     presenter.setValue(user);
 
-    assertEquals(user.getLaboratory().getOrganization(), view.organizationField.getValue());
-    assertEquals(user.getLaboratory().getName(), view.laboratoryNameField.getValue());
+    assertEquals(user.getLaboratory().getOrganization(), design.organizationField.getValue());
+    assertEquals(user.getLaboratory().getName(), design.laboratoryNameField.getValue());
   }
 
   @Test
@@ -941,28 +913,28 @@ public class UserFormPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.setValue(user);
 
-    assertEquals(user.getLaboratory().getOrganization(), view.organizationField.getValue());
-    assertEquals(user.getLaboratory().getName(), view.laboratoryNameField.getValue());
+    assertEquals(user.getLaboratory().getOrganization(), design.organizationField.getValue());
+    assertEquals(user.getLaboratory().getName(), design.laboratoryNameField.getValue());
   }
 
   @Test
   public void defaultAddress() {
-    assertEquals(defaultAddressLine, view.addressLineField.getValue());
-    assertEquals(defaultTown, view.townField.getValue());
-    assertEquals(defaultState, view.stateField.getValue());
-    assertEquals(defaultCountry, view.countryField.getValue());
-    assertEquals(defaultPostalCode, view.postalCodeField.getValue());
+    assertEquals(defaultAddressLine, design.addressLineField.getValue());
+    assertEquals(defaultTown, design.townField.getValue());
+    assertEquals(defaultState, design.stateField.getValue());
+    assertEquals(defaultCountry, design.countryField.getValue());
+    assertEquals(defaultPostalCode, design.postalCodeField.getValue());
   }
 
   @Test
   public void clearAddress() {
-    view.clearAddressButton.click();
+    design.clearAddressButton.click();
 
-    assertTrue(view.addressLineField.getValue().isEmpty());
-    assertTrue(view.townField.getValue().isEmpty());
-    assertTrue(view.stateField.getValue().isEmpty());
-    assertTrue(view.countryField.getValue().isEmpty());
-    assertTrue(view.postalCodeField.getValue().isEmpty());
+    assertTrue(design.addressLineField.getValue().isEmpty());
+    assertTrue(design.townField.getValue().isEmpty());
+    assertTrue(design.stateField.getValue().isEmpty());
+    assertTrue(design.countryField.getValue().isEmpty());
+    assertTrue(design.postalCodeField.getValue().isEmpty());
   }
 
   @Test
@@ -972,41 +944,41 @@ public class UserFormPresenterTest {
 
   @Test
   public void addPhoneNumber_Button() {
-    view.addPhoneNumberButton.click();
-    assertEquals(2, view.phoneNumbersLayout.getComponentCount());
+    design.addPhoneNumberButton.click();
+    assertEquals(2, design.phoneNumbersLayout.getComponentCount());
   }
 
   @Test
   public void removePhoneNumber() {
     removePhoneNumberButton(0).click();
-    assertEquals(0, view.phoneNumbersLayout.getComponentCount());
+    assertEquals(0, design.phoneNumbersLayout.getComponentCount());
   }
 
   @Test
   public void save_Email_Empty() {
     setFields();
-    view.emailField.setValue("");
+    design.emailField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.emailField.getErrorMessage().getFormattedHtmlMessage());
+        design.emailField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_Email_Invalid() {
     setFields();
-    view.emailField.setValue("abc");
+    design.emailField.setValue("abc");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_EMAIL)),
-        view.emailField.getErrorMessage().getFormattedHtmlMessage());
+        design.emailField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
@@ -1015,12 +987,12 @@ public class UserFormPresenterTest {
     when(userService.exists(any())).thenReturn(true);
     setFields();
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS)),
-        view.emailField.getErrorMessage().getFormattedHtmlMessage());
+        design.emailField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, atLeastOnce()).exists(email);
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1035,12 +1007,12 @@ public class UserFormPresenterTest {
     when(userService.get(any(Long.class))).thenReturn(databaseUser);
     setFields();
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS)),
-        view.emailField.getErrorMessage().getFormattedHtmlMessage());
+        design.emailField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, atLeastOnce()).exists(email);
     verify(userService, atLeastOnce()).get(userId);
     verify(userService, never()).update(any(), any());
@@ -1056,7 +1028,7 @@ public class UserFormPresenterTest {
     when(userService.get(any(Long.class))).thenReturn(databaseUser);
     setFields();
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService, atLeastOnce()).exists(email);
@@ -1067,42 +1039,42 @@ public class UserFormPresenterTest {
   @Test
   public void save_Name_Empty() throws Throwable {
     setFields();
-    view.nameField.setValue("");
+    design.nameField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.nameField.getErrorMessage().getFormattedHtmlMessage());
+        design.nameField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_Password_Empty_NewUser() throws Throwable {
     setFields();
-    view.passwordField.setValue("");
+    design.passwordField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.passwordField.getErrorMessage().getFormattedHtmlMessage());
+        design.passwordField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_ConfirmPassword_Empty_NewUser() throws Throwable {
     setFields();
-    view.confirmPasswordField.setValue("");
+    design.confirmPasswordField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.confirmPasswordField.getErrorMessage().getFormattedHtmlMessage());
+        design.confirmPasswordField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
@@ -1110,10 +1082,10 @@ public class UserFormPresenterTest {
   public void save_Passwords_Empty_ExistingUser() throws Throwable {
     presenter.setValue(user);
     setFields();
-    view.passwordField.setValue("");
-    view.confirmPasswordField.setValue("");
+    design.passwordField.setValue("");
+    design.confirmPasswordField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService).update(any(), any());
@@ -1123,7 +1095,7 @@ public class UserFormPresenterTest {
   public void save_Passwords_Match() throws Throwable {
     setFields();
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService).register(any(), any(), any(), any());
@@ -1132,52 +1104,52 @@ public class UserFormPresenterTest {
   @Test
   public void save_Passwords_DontMatch_ConfirmPasswordChanged() {
     setFields();
-    view.confirmPasswordField.setValue("password2");
+    design.confirmPasswordField.setValue("password2");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(resources.message(PASSWORD + ".notMatch")),
-        view.passwordField.getErrorMessage().getFormattedHtmlMessage());
+        design.passwordField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_Passwords_DontMatch_PasswordChanged() {
     setFields();
-    view.passwordField.setValue("password2");
+    design.passwordField.setValue("password2");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(resources.message(PASSWORD + ".notMatch")),
-        view.passwordField.getErrorMessage().getFormattedHtmlMessage());
+        design.passwordField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_Manager_Empty() {
     setFields();
-    view.managerField.setValue("");
+    design.managerField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.managerField.getErrorMessage().getFormattedHtmlMessage());
+        design.managerField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_Manager_Empty_NewLaboratory() {
     setFields();
-    view.newLaboratoryField.setValue(true);
-    view.managerField.setValue("");
+    design.newLaboratoryField.setValue(true);
+    design.managerField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(userService).register(any(), any(), any(), any());
@@ -1186,14 +1158,14 @@ public class UserFormPresenterTest {
   @Test
   public void save_Manager_Invalid() {
     setFields();
-    view.managerField.setValue("abc");
+    design.managerField.setValue("abc");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_EMAIL)),
-        view.managerField.getErrorMessage().getFormattedHtmlMessage());
+        design.managerField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
@@ -1201,38 +1173,38 @@ public class UserFormPresenterTest {
   public void save_Manager_NotManager() {
     setFields();
     when(userService.isManager(any())).thenReturn(false);
-    view.managerField.setValue("not.manager@ircm.qc.ca");
+    design.managerField.setValue("not.manager@ircm.qc.ca");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(resources.message(MANAGER + ".notExists")),
-        view.managerField.getErrorMessage().getFormattedHtmlMessage());
+        design.managerField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_Organization_Empty() {
     setFields();
-    view.newLaboratoryField.setValue(true);
-    view.organizationField.setValue("");
+    design.newLaboratoryField.setValue(true);
+    design.organizationField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.organizationField.getErrorMessage().getFormattedHtmlMessage());
+        design.organizationField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_Organization_Empty_ExistingLaboratory() {
     setFields();
-    view.organizationField.setValue("");
+    design.organizationField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(userService).register(any(), any(), any(), any());
@@ -1241,24 +1213,24 @@ public class UserFormPresenterTest {
   @Test
   public void save_LaboratoryName_Empty() {
     setFields();
-    view.newLaboratoryField.setValue(true);
-    view.laboratoryNameField.setValue("");
+    design.newLaboratoryField.setValue(true);
+    design.laboratoryNameField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.laboratoryNameField.getErrorMessage().getFormattedHtmlMessage());
+        design.laboratoryNameField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_LaboratoryName_Empty_ExistingLaboratory() {
     setFields();
-    view.laboratoryNameField.setValue("");
+    design.laboratoryNameField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(userService).register(any(), any(), any(), any());
@@ -1267,70 +1239,70 @@ public class UserFormPresenterTest {
   @Test
   public void save_AddressLine_Empty() {
     setFields();
-    view.addressLineField.setValue("");
+    design.addressLineField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.addressLineField.getErrorMessage().getFormattedHtmlMessage());
+        design.addressLineField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_Town_Empty() {
     setFields();
-    view.townField.setValue("");
+    design.townField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.townField.getErrorMessage().getFormattedHtmlMessage());
+        design.townField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_State_Empty() {
     setFields();
-    view.stateField.setValue("");
+    design.stateField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.stateField.getErrorMessage().getFormattedHtmlMessage());
+        design.stateField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_Country_Empty() {
     setFields();
-    view.countryField.setValue("");
+    design.countryField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.countryField.getErrorMessage().getFormattedHtmlMessage());
+        design.countryField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
   @Test
   public void save_PostalCode_Empty() {
     setFields();
-    view.postalCodeField.setValue("");
+    design.postalCodeField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        view.postalCodeField.getErrorMessage().getFormattedHtmlMessage());
+        design.postalCodeField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
 
@@ -1339,7 +1311,7 @@ public class UserFormPresenterTest {
     setFields();
     typeField(0).setValue(null);
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -1353,7 +1325,7 @@ public class UserFormPresenterTest {
     setFields();
     numberField(0).setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -1367,7 +1339,7 @@ public class UserFormPresenterTest {
     setFields();
     numberField(0).setValue("123-abc");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -1382,7 +1354,7 @@ public class UserFormPresenterTest {
     setFields();
     extensionField(0).setValue("1-a");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -1397,7 +1369,7 @@ public class UserFormPresenterTest {
     setFields();
     typeField(1).setValue(null);
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -1411,7 +1383,7 @@ public class UserFormPresenterTest {
     setFields();
     numberField(1).setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -1425,7 +1397,7 @@ public class UserFormPresenterTest {
     setFields();
     numberField(1).setValue("123-abc");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -1440,7 +1412,7 @@ public class UserFormPresenterTest {
     setFields();
     extensionField(1).setValue("1-a");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -1456,7 +1428,7 @@ public class UserFormPresenterTest {
     String validationUrl = "validationUrl";
     when(view.getUrl(any())).thenReturn(validationUrl);
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService, atLeastOnce()).exists(email);
@@ -1496,11 +1468,11 @@ public class UserFormPresenterTest {
   @Test
   public void save_Insert_NewLaboratory() {
     setFields();
-    view.newLaboratoryField.setValue(true);
+    design.newLaboratoryField.setValue(true);
     String validationUrl = "validationUrl";
     when(view.getUrl(any())).thenReturn(validationUrl);
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService, atLeastOnce()).exists(email);
@@ -1546,7 +1518,7 @@ public class UserFormPresenterTest {
     String validationUrl = "validationUrl";
     when(view.getUrl(any())).thenReturn(validationUrl);
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService, atLeastOnce()).exists(email);
@@ -1584,7 +1556,7 @@ public class UserFormPresenterTest {
     setFields();
     final int expectedPhoneNumberSize = this.user.getPhoneNumbers().size() + 1;
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService, atLeastOnce()).exists(email);
@@ -1626,7 +1598,7 @@ public class UserFormPresenterTest {
     setFields();
     final int expectedPhoneNumberSize = this.user.getPhoneNumbers().size() + 1;
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(view, never()).showError(any());
     verify(userService, atLeastOnce()).exists(email);
@@ -1665,10 +1637,10 @@ public class UserFormPresenterTest {
   public void save_Update_KeepPassword() {
     presenter.setValue(user);
     setFields();
-    view.passwordField.setValue("");
-    view.confirmPasswordField.setValue("");
+    design.passwordField.setValue("");
+    design.confirmPasswordField.setValue("");
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(userService).update(userCaptor.capture(), eq(null));
   }
@@ -1681,7 +1653,7 @@ public class UserFormPresenterTest {
     setFields();
     removePhoneNumberButton(0).click();
 
-    view.saveButton.click();
+    design.saveButton.click();
 
     verify(userService).update(userCaptor.capture(), eq(password));
     User user = userCaptor.getValue();

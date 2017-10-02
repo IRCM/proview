@@ -33,8 +33,7 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +59,7 @@ public class UserViewPresenterTest {
   private ArgumentCaptor<User> userCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
+  private UserViewDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(UserView.class, locale);
   private User user;
@@ -70,8 +70,8 @@ public class UserViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new UserViewPresenter(userService, authorizationService, applicationName);
-    view.header = new Label();
-    view.userFormLayout = new VerticalLayout();
+    design = new UserViewDesign();
+    view.design = design;
     view.userForm = mock(UserForm.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -81,14 +81,14 @@ public class UserViewPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.header.getStyleName().contains("h1"));
-    assertTrue(view.header.getStyleName().contains(HEADER));
+    assertTrue(design.header.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.header.getStyleName().contains(HEADER));
   }
 
   @Test
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), view.header.getValue());
+    assertEquals(resources.message(HEADER), design.header.getValue());
   }
 
   @Test

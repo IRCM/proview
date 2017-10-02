@@ -19,7 +19,9 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -28,11 +30,17 @@ import javax.inject.Inject;
  */
 @SpringView(name = AccessView.VIEW_NAME)
 @RolesAllowed({ "ADMIN", "MANAGER" })
-public class AccessView extends AccessViewDesign implements BaseView {
+public class AccessView extends CustomComponent implements BaseView {
   public static final String VIEW_NAME = "user/access";
   private static final long serialVersionUID = -1897739429426168438L;
+  protected AccessViewDesign design = new AccessViewDesign();
   @Inject
   private transient AccessViewPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
 
   @Override
   public void attach() {

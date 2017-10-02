@@ -94,6 +94,7 @@ public class UserFormPresenter implements BinderValidator {
   public static final String SAVE = "save";
   private static final Logger logger = LoggerFactory.getLogger(UserFormPresenter.class);
   private UserForm view;
+  private UserFormDesign design;
   private boolean readOnly;
   private Binder<User> userBinder = new BeanValidationBinder<>(User.class);
   private Binder<Passwords> passwordsBinder = new BeanValidationBinder<>(Passwords.class);
@@ -127,6 +128,7 @@ public class UserFormPresenter implements BinderValidator {
    */
   public void init(UserForm view) {
     this.view = view;
+    design = view.design;
     prepareComponents();
     addListeners();
     passwordsBinder.setBean(new Passwords());
@@ -136,166 +138,169 @@ public class UserFormPresenter implements BinderValidator {
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    view.userPanel.addStyleName(USER);
-    view.userPanel.setCaption(resources.message(USER));
-    view.emailField.addStyleName(EMAIL);
-    view.emailField.setCaption(resources.message(EMAIL));
-    view.emailField.setPlaceholder(resources.message(EMAIL + "." + PLACEHOLDER));
-    userBinder.forField(view.emailField).asRequired(generalResources.message(REQUIRED))
+    design.userPanel.addStyleName(USER);
+    design.userPanel.setCaption(resources.message(USER));
+    design.emailField.addStyleName(EMAIL);
+    design.emailField.setCaption(resources.message(EMAIL));
+    design.emailField.setPlaceholder(resources.message(EMAIL + "." + PLACEHOLDER));
+    userBinder.forField(design.emailField).asRequired(generalResources.message(REQUIRED))
         .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
         .withValidator(email -> {
           Long userId = userBinder.getBean().getId();
           return !userService.exists(email)
               || (userId != null && userService.get(userId).getEmail().equals(email));
         }, generalResources.message(ALREADY_EXISTS)).bind(User::getEmail, User::setEmail);
-    view.nameField.addStyleName(NAME);
-    view.nameField.setCaption(resources.message(NAME));
-    view.nameField.setPlaceholder(resources.message(NAME + "." + PLACEHOLDER));
-    userBinder.forField(view.nameField).asRequired(generalResources.message(REQUIRED))
+    design.nameField.addStyleName(NAME);
+    design.nameField.setCaption(resources.message(NAME));
+    design.nameField.setPlaceholder(resources.message(NAME + "." + PLACEHOLDER));
+    userBinder.forField(design.nameField).asRequired(generalResources.message(REQUIRED))
         .bind(User::getName, User::setName);
-    view.passwordField.addStyleName(PASSWORD);
-    view.passwordField.setCaption(resources.message(PASSWORD));
-    passwordsBinder.forField(view.passwordField)
+    design.passwordField.addStyleName(PASSWORD);
+    design.passwordField.setCaption(resources.message(PASSWORD));
+    passwordsBinder.forField(design.passwordField)
         .withValidator(password -> !isNewUser() || !password.isEmpty(),
             generalResources.message(REQUIRED))
         .withValidator(password -> {
-          String confirmPassword = view.confirmPasswordField.getValue();
+          String confirmPassword = design.confirmPasswordField.getValue();
           return password == null || password.isEmpty() || confirmPassword == null
               || confirmPassword.isEmpty() || password.equals(confirmPassword);
         }, resources.message(PASSWORD + ".notMatch"))
         .bind(Passwords::getPassword, Passwords::setPassword);
-    view.confirmPasswordField.addStyleName(CONFIRM_PASSWORD);
-    view.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD));
-    passwordsBinder.forField(view.confirmPasswordField)
+    design.confirmPasswordField.addStyleName(CONFIRM_PASSWORD);
+    design.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD));
+    passwordsBinder.forField(design.confirmPasswordField)
         .withValidator(password -> !isNewUser() || !password.isEmpty(),
             generalResources.message(REQUIRED))
         .bind(Passwords::getConfirmPassword, Passwords::setConfirmPassword);
-    view.laboratoryPanel.addStyleName(LABORATORY);
-    view.laboratoryPanel.setCaption(resources.message(LABORATORY));
-    view.newLaboratoryField.addStyleName(NEW_LABORATORY);
-    view.newLaboratoryField.setCaption(resources.message(NEW_LABORATORY));
-    view.managerField.addStyleName(MANAGER);
-    view.managerField.setCaption(resources.message(MANAGER));
-    view.managerField.setPlaceholder(resources.message(MANAGER + "." + PLACEHOLDER));
-    managerBinder.forField(view.managerField).asRequired(generalResources.message(REQUIRED))
+    design.laboratoryPanel.addStyleName(LABORATORY);
+    design.laboratoryPanel.setCaption(resources.message(LABORATORY));
+    design.newLaboratoryField.addStyleName(NEW_LABORATORY);
+    design.newLaboratoryField.setCaption(resources.message(NEW_LABORATORY));
+    design.managerField.addStyleName(MANAGER);
+    design.managerField.setCaption(resources.message(MANAGER));
+    design.managerField.setPlaceholder(resources.message(MANAGER + "." + PLACEHOLDER));
+    managerBinder.forField(design.managerField).asRequired(generalResources.message(REQUIRED))
         .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
         .withValidator(manager -> userService.isManager(manager),
             resources.message(MANAGER + ".notExists"))
         .bind(User::getEmail, User::setEmail);
-    view.organizationField.addStyleName(LABORATORY_ORGANIZATION);
-    view.organizationField
+    design.organizationField.addStyleName(LABORATORY_ORGANIZATION);
+    design.organizationField
         .setCaption(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION));
-    view.organizationField.setPlaceholder(
+    design.organizationField.setPlaceholder(
         resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION + "." + PLACEHOLDER));
-    laboratoryBinder.forField(view.organizationField).asRequired(generalResources.message(REQUIRED))
+    laboratoryBinder.forField(design.organizationField)
+        .asRequired(generalResources.message(REQUIRED))
         .bind(Laboratory::getOrganization, Laboratory::setOrganization);
-    view.laboratoryNameField.addStyleName(LABORATORY + "-" + LABORATORY_NAME);
-    view.laboratoryNameField.setCaption(resources.message(LABORATORY + "." + LABORATORY_NAME));
-    view.laboratoryNameField
+    design.laboratoryNameField.addStyleName(LABORATORY + "-" + LABORATORY_NAME);
+    design.laboratoryNameField.setCaption(resources.message(LABORATORY + "." + LABORATORY_NAME));
+    design.laboratoryNameField
         .setPlaceholder(resources.message(LABORATORY + "." + LABORATORY_NAME + "." + PLACEHOLDER));
-    laboratoryBinder.forField(view.laboratoryNameField)
+    laboratoryBinder.forField(design.laboratoryNameField)
         .asRequired(generalResources.message(REQUIRED))
         .bind(Laboratory::getName, Laboratory::setName);
-    view.addressPanel.addStyleName(ADDRESS);
-    view.addressPanel.setCaption(resources.message(ADDRESS));
-    view.addressLineField.addStyleName(ADDRESS_LINE);
-    view.addressLineField.setCaption(resources.message(ADDRESS + "." + ADDRESS_LINE));
-    view.addressLineField
+    design.addressPanel.addStyleName(ADDRESS);
+    design.addressPanel.setCaption(resources.message(ADDRESS));
+    design.addressLineField.addStyleName(ADDRESS_LINE);
+    design.addressLineField.setCaption(resources.message(ADDRESS + "." + ADDRESS_LINE));
+    design.addressLineField
         .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_LINE + "." + PLACEHOLDER));
-    addressBinder.forField(view.addressLineField).asRequired(generalResources.message(REQUIRED))
+    addressBinder.forField(design.addressLineField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getLine, Address::setLine);
-    view.townField.addStyleName(ADDRESS_TOWN);
-    view.townField.setCaption(resources.message(ADDRESS + "." + ADDRESS_TOWN));
-    view.townField
+    design.townField.addStyleName(ADDRESS_TOWN);
+    design.townField.setCaption(resources.message(ADDRESS + "." + ADDRESS_TOWN));
+    design.townField
         .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_TOWN + "." + PLACEHOLDER));
-    addressBinder.forField(view.townField).asRequired(generalResources.message(REQUIRED))
+    addressBinder.forField(design.townField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getTown, Address::setTown);
-    view.stateField.addStyleName(ADDRESS_STATE);
-    view.stateField.setCaption(resources.message(ADDRESS + "." + ADDRESS_STATE));
-    view.stateField
+    design.stateField.addStyleName(ADDRESS_STATE);
+    design.stateField.setCaption(resources.message(ADDRESS + "." + ADDRESS_STATE));
+    design.stateField
         .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_STATE + "." + PLACEHOLDER));
-    addressBinder.forField(view.stateField).asRequired(generalResources.message(REQUIRED))
+    addressBinder.forField(design.stateField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getState, Address::setState);
-    view.countryField.addStyleName(ADDRESS_COUNTRY);
-    view.countryField.setCaption(resources.message(ADDRESS + "." + ADDRESS_COUNTRY));
-    view.countryField
+    design.countryField.addStyleName(ADDRESS_COUNTRY);
+    design.countryField.setCaption(resources.message(ADDRESS + "." + ADDRESS_COUNTRY));
+    design.countryField
         .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_COUNTRY + "." + PLACEHOLDER));
-    addressBinder.forField(view.countryField).asRequired(generalResources.message(REQUIRED))
+    addressBinder.forField(design.countryField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getCountry, Address::setCountry);
-    view.postalCodeField.addStyleName(ADDRESS_POSTAL_CODE);
-    view.postalCodeField.setCaption(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE));
-    view.postalCodeField
+    design.postalCodeField.addStyleName(ADDRESS_POSTAL_CODE);
+    design.postalCodeField.setCaption(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE));
+    design.postalCodeField
         .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE + "." + PLACEHOLDER));
-    addressBinder.forField(view.postalCodeField).asRequired(generalResources.message(REQUIRED))
+    addressBinder.forField(design.postalCodeField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getPostalCode, Address::setPostalCode);
-    view.clearAddressButton.addStyleName(CLEAR_ADDRESS);
-    view.clearAddressButton.setCaption(resources.message(CLEAR_ADDRESS));
-    view.phoneNumbersPanel.addStyleName(PHONE_NUMBERS);
-    view.phoneNumbersPanel.setCaption(resources.message(PHONE_NUMBERS));
-    view.addPhoneNumberButton.addStyleName(ADD_PHONE_NUMBER);
-    view.addPhoneNumberButton.setCaption(resources.message(ADD_PHONE_NUMBER));
-    view.registerWarningLabel.addStyleName(REGISTER_WARNING);
-    view.registerWarningLabel.setValue(resources.message(REGISTER_WARNING));
-    view.registerWarningLabel.setIcon(VaadinIcons.WARNING);
-    view.saveButton.addStyleName(SAVE);
-    view.saveButton.setCaption(resources.message(SAVE));
+    design.clearAddressButton.addStyleName(CLEAR_ADDRESS);
+    design.clearAddressButton.setCaption(resources.message(CLEAR_ADDRESS));
+    design.phoneNumbersPanel.addStyleName(PHONE_NUMBERS);
+    design.phoneNumbersPanel.setCaption(resources.message(PHONE_NUMBERS));
+    design.addPhoneNumberButton.addStyleName(ADD_PHONE_NUMBER);
+    design.addPhoneNumberButton.setCaption(resources.message(ADD_PHONE_NUMBER));
+    design.registerWarningLabel.addStyleName(REGISTER_WARNING);
+    design.registerWarningLabel.setValue(resources.message(REGISTER_WARNING));
+    design.registerWarningLabel.setIcon(VaadinIcons.WARNING);
+    design.saveButton.addStyleName(SAVE);
+    design.saveButton.setCaption(resources.message(SAVE));
   }
 
   private void addListeners() {
-    view.confirmPasswordField.addValueChangeListener(e -> {
+    design.confirmPasswordField.addValueChangeListener(e -> {
       passwordsBinder.validate();
     });
-    view.newLaboratoryField.addValueChangeListener(e -> updateVisible());
-    view.clearAddressButton.addClickListener(e -> clearAddress());
-    view.addPhoneNumberButton.addClickListener(e -> addPhoneNumber());
-    view.saveButton.addClickListener(e -> save());
+    design.newLaboratoryField.addValueChangeListener(e -> updateVisible());
+    design.clearAddressButton.addClickListener(e -> clearAddress());
+    design.addPhoneNumberButton.addClickListener(e -> addPhoneNumber());
+    design.saveButton.addClickListener(e -> save());
   }
 
   private void updateReadOnly() {
     final boolean newUser = isNewUser();
     final boolean manager = isManager();
     final boolean admin = isAdmin();
-    view.emailField.setReadOnly(readOnly);
-    view.nameField.setReadOnly(readOnly);
-    view.newLaboratoryField.setReadOnly(readOnly || !newUser);
-    view.managerField.setReadOnly(readOnly || !newUser);
-    view.organizationField.setReadOnly(readOnly || (!newUser && !manager) || (newUser && admin));
-    view.laboratoryNameField.setReadOnly(readOnly || (!newUser && !manager) || (newUser && admin));
-    view.addressLineField.setReadOnly(readOnly);
-    view.townField.setReadOnly(readOnly);
-    view.stateField.setReadOnly(readOnly);
-    view.countryField.setReadOnly(readOnly);
-    view.postalCodeField.setReadOnly(readOnly);
+    design.emailField.setReadOnly(readOnly);
+    design.nameField.setReadOnly(readOnly);
+    design.newLaboratoryField.setReadOnly(readOnly || !newUser);
+    design.managerField.setReadOnly(readOnly || !newUser);
+    design.organizationField.setReadOnly(readOnly || (!newUser && !manager) || (newUser && admin));
+    design.laboratoryNameField
+        .setReadOnly(readOnly || (!newUser && !manager) || (newUser && admin));
+    design.addressLineField.setReadOnly(readOnly);
+    design.townField.setReadOnly(readOnly);
+    design.stateField.setReadOnly(readOnly);
+    design.countryField.setReadOnly(readOnly);
+    design.postalCodeField.setReadOnly(readOnly);
     phoneNumberBinders.forEach(binder -> binder.setReadOnly(readOnly));
     updateVisible();
   }
 
   private void updateVisible() {
     final boolean newUser = isNewUser();
-    final boolean newLaboratory = view.newLaboratoryField.getValue();
+    final boolean newLaboratory = design.newLaboratoryField.getValue();
     final boolean admin = isAdmin();
-    view.passwordField.setVisible(!readOnly);
-    view.confirmPasswordField.setVisible(!readOnly);
-    view.newLaboratoryField.setVisible(newUser && !readOnly && !admin);
-    view.managerField.setVisible(newUser && !readOnly && !newLaboratory && !admin);
-    view.organizationField.setVisible(!newUser || readOnly || newLaboratory || (newUser && admin));
-    view.laboratoryNameField
+    design.passwordField.setVisible(!readOnly);
+    design.confirmPasswordField.setVisible(!readOnly);
+    design.newLaboratoryField.setVisible(newUser && !readOnly && !admin);
+    design.managerField.setVisible(newUser && !readOnly && !newLaboratory && !admin);
+    design.organizationField
         .setVisible(!newUser || readOnly || newLaboratory || (newUser && admin));
-    view.clearAddressButton.setVisible(!readOnly);
+    design.laboratoryNameField
+        .setVisible(!newUser || readOnly || newLaboratory || (newUser && admin));
+    design.clearAddressButton.setVisible(!readOnly);
     removePhoneNumberButtons.forEach(button -> button.setVisible(!readOnly));
-    view.addPhoneNumberButton.setVisible(!readOnly);
-    view.saveLayout.setVisible(!readOnly);
-    view.registerWarningLabel.setVisible(newUser && !readOnly && !admin);
-    view.saveButton.setVisible(!readOnly);
+    design.addPhoneNumberButton.setVisible(!readOnly);
+    design.saveLayout.setVisible(!readOnly);
+    design.registerWarningLabel.setVisible(newUser && !readOnly && !admin);
+    design.saveButton.setVisible(!readOnly);
   }
 
   private void clearAddress() {
     if (!readOnly) {
-      view.addressLineField.setValue("");
-      view.townField.setValue("");
-      view.stateField.setValue("");
-      view.countryField.setValue("");
-      view.postalCodeField.setValue("");
+      design.addressLineField.setValue("");
+      design.townField.setValue("");
+      design.stateField.setValue("");
+      design.countryField.setValue("");
+      design.postalCodeField.setValue("");
     }
   }
 
@@ -313,7 +318,7 @@ public class UserFormPresenter implements BinderValidator {
     phoneNumberBinders.add(phoneNumberBinder);
     FormLayout layout = new FormLayout();
     layout.setMargin(false);
-    view.phoneNumbersLayout.addComponent(layout);
+    design.phoneNumbersLayout.addComponent(layout);
     ComboBox<PhoneNumberType> typeField = new ComboBox<>();
     typeField.addStyleName(PHONE_NUMBER_TYPE);
     typeField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_TYPE));
@@ -356,7 +361,7 @@ public class UserFormPresenter implements BinderValidator {
   private void removePhoneNumber(Binder<PhoneNumber> phoneNumberBinder, Component layout,
       Button remove) {
     phoneNumberBinders.remove(phoneNumberBinder);
-    view.phoneNumbersLayout.removeComponent(layout);
+    design.phoneNumbersLayout.removeComponent(layout);
     removePhoneNumberButtons.remove(remove);
   }
 
@@ -366,7 +371,7 @@ public class UserFormPresenter implements BinderValidator {
     valid &= validate(userBinder);
     valid &= validate(passwordsBinder);
     if (isNewUser() && !isAdmin()) {
-      if (view.newLaboratoryField.getValue()) {
+      if (design.newLaboratoryField.getValue()) {
         valid &= validate(laboratoryBinder);
       } else {
         valid &= validate(managerBinder);
@@ -396,14 +401,14 @@ public class UserFormPresenter implements BinderValidator {
       for (Binder<PhoneNumber> phoneNumberBinder : phoneNumberBinders) {
         user.getPhoneNumbers().add(phoneNumberBinder.getBean());
       }
-      String password = view.passwordField.getValue();
+      String password = design.passwordField.getValue();
       if (password.isEmpty()) {
         password = null;
       }
       if (isNewUser()) {
         User manager = null;
-        if (!view.newLaboratoryField.getValue()) {
-          manager = new User(null, view.managerField.getValue());
+        if (!design.newLaboratoryField.getValue()) {
+          manager = new User(null, design.managerField.getValue());
         } else {
           user.setLaboratory(laboratoryBinder.getBean());
         }
@@ -470,14 +475,14 @@ public class UserFormPresenter implements BinderValidator {
     laboratoryBinder.setBean(user.getLaboratory());
     addressBinder.setBean(user.getAddress());
     final boolean newUser = isNewUser();
-    view.passwordField.setRequiredIndicatorVisible(newUser);
-    view.confirmPasswordField.setRequiredIndicatorVisible(newUser);
-    view.managerField.setRequiredIndicatorVisible(newUser);
-    view.organizationField.setRequiredIndicatorVisible(newUser);
-    view.laboratoryNameField.setRequiredIndicatorVisible(newUser);
+    design.passwordField.setRequiredIndicatorVisible(newUser);
+    design.confirmPasswordField.setRequiredIndicatorVisible(newUser);
+    design.managerField.setRequiredIndicatorVisible(newUser);
+    design.organizationField.setRequiredIndicatorVisible(newUser);
+    design.laboratoryNameField.setRequiredIndicatorVisible(newUser);
     phoneNumberBinders.clear();
     removePhoneNumberButtons.clear();
-    view.phoneNumbersLayout.removeAllComponents();
+    design.phoneNumbersLayout.removeAllComponents();
     if (user.getPhoneNumbers() != null) {
       user.getPhoneNumbers().forEach(phoneNumber -> addPhoneNumber(phoneNumber));
     }

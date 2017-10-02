@@ -68,6 +68,7 @@ public class SignasViewPresenter {
   public static final String ALL = "all";
   private static final Logger logger = LoggerFactory.getLogger(SignasViewPresenter.class);
   private SignasView view;
+  private SignasViewDesign design;
   private ListDataProvider<User> usersProvider;
   private UserWebFilter filter;
   @Inject
@@ -99,6 +100,7 @@ public class SignasViewPresenter {
    */
   public void init(SignasView view) {
     this.view = view;
+    design = view.design;
     logger.debug("Sign as user view");
     filter = new UserWebFilter(view.getLocale());
     prepareComponents();
@@ -107,45 +109,44 @@ public class SignasViewPresenter {
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.addStyleName(HEADER);
-    view.headerLabel.addStyleName("h1");
-    view.headerLabel.setValue(resources.message(HEADER));
-    view.usersGrid.addStyleName(USERS_GRID);
+    design.headerLabel.addStyleName(HEADER);
+    design.headerLabel.setValue(resources.message(HEADER));
+    design.usersGrid.addStyleName(USERS_GRID);
     prepareUsersGrid();
   }
 
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
-    view.usersGrid.setDataProvider(searchUsers());
-    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
+    design.usersGrid.setDataProvider(searchUsers());
+    design.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
         .setCaption(resources.message(EMAIL));
-    view.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
-    view.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
+    design.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
+    design.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
         .setCaption(resources.message(LABORATORY_NAME));
-    view.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
+    design.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
         .setCaption(resources.message(ORGANIZATION));
-    view.usersGrid.setFrozenColumnCount(2);
-    view.usersGrid.addColumn(user -> signasButton(user), new ComponentRenderer()).setId(SIGN_AS)
+    design.usersGrid.setFrozenColumnCount(2);
+    design.usersGrid.addColumn(user -> signasButton(user), new ComponentRenderer()).setId(SIGN_AS)
         .setCaption(resources.message(SIGN_AS));
-    view.usersGrid.setFrozenColumnCount(2);
-    view.usersGrid.addStyleName(COMPONENTS);
-    view.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
-    HeaderRow filterRow = view.usersGrid.appendHeaderRow();
+    design.usersGrid.setFrozenColumnCount(2);
+    design.usersGrid.addStyleName(COMPONENTS);
+    design.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
+    HeaderRow filterRow = design.usersGrid.appendHeaderRow();
     filterRow.getCell(EMAIL).setComponent(textFilter(e -> {
       filter.emailContains = e.getValue();
-      view.usersGrid.getDataProvider().refreshAll();
+      design.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(NAME).setComponent(textFilter(e -> {
       filter.nameContains = e.getValue();
-      view.usersGrid.getDataProvider().refreshAll();
+      design.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(LABORATORY_NAME).setComponent(textFilter(e -> {
       filter.laboratoryNameContains = e.getValue();
-      view.usersGrid.getDataProvider().refreshAll();
+      design.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(ORGANIZATION).setComponent(textFilter(e -> {
       filter.organizationContains = e.getValue();
-      view.usersGrid.getDataProvider().refreshAll();
+      design.usersGrid.getDataProvider().refreshAll();
     }, resources));
   }
 

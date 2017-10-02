@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.utils.MessageResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +43,7 @@ public class UserViewPresenter {
   public static final String INVALID_USER = "user.invalid";
   private static final Logger logger = LoggerFactory.getLogger(UserViewPresenter.class);
   private UserView view;
+  private UserViewDesign design;
   @Inject
   private UserService userService;
   @Inject
@@ -67,14 +69,15 @@ public class UserViewPresenter {
    */
   public void init(UserView view) {
     this.view = view;
+    design = view.design;
     prepareComponents();
   }
 
   private void prepareComponents() {
-    view.setTitle(view.getResources().message(TITLE, applicationName));
-    view.header.addStyleName(HEADER);
-    view.header.addStyleName("h1");
-    view.header.setValue(view.getResources().message(HEADER));
+    MessageResource resources = view.getResources();
+    view.setTitle(resources.message(TITLE, applicationName));
+    design.header.addStyleName(HEADER);
+    design.header.setValue(resources.message(HEADER));
   }
 
   /**

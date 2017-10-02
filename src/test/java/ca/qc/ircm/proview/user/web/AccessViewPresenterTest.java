@@ -59,13 +59,13 @@ import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -109,6 +109,7 @@ public class AccessViewPresenterTest {
   private ArgumentCaptor<UserFilter> userFilterCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
+  private AccessViewDesign design;
   private User signedUser;
   private List<User> users;
   private Locale locale = Locale.FRENCH;
@@ -129,11 +130,8 @@ public class AccessViewPresenterTest {
     users.add(entityManager.find(User.class, 10L));
     users.add(entityManager.find(User.class, 11L));
     when(userService.all(any())).thenReturn(users);
-    view.headerLabel = new Label();
-    view.usersGrid = new Grid<>();
-    view.activateButton = new Button();
-    view.deactivateButton = new Button();
-    view.clearButton = new Button();
+    design = new AccessViewDesign();
+    view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(userWindowProvider.get()).thenReturn(userWindow);
@@ -155,14 +153,14 @@ public class AccessViewPresenterTest {
 
   @SuppressWarnings("unchecked")
   private ListDataProvider<User> dataProvider() {
-    return (ListDataProvider<User>) view.usersGrid.getDataProvider();
+    return (ListDataProvider<User>) design.usersGrid.getDataProvider();
   }
 
   @Test
   public void usersGridColumns() {
     presenter.init(view);
 
-    List<Column<User, ?>> columns = view.usersGrid.getColumns();
+    List<Column<User, ?>> columns = design.usersGrid.getColumns();
 
     assertEquals(SELECT, columns.get(0).getId());
     assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
@@ -179,7 +177,7 @@ public class AccessViewPresenterTest {
   public void usersGridSelection() {
     presenter.init(view);
 
-    SelectionModel<User> selectionModel = view.usersGrid.getSelectionModel();
+    SelectionModel<User> selectionModel = design.usersGrid.getSelectionModel();
 
     assertTrue(selectionModel instanceof SelectionModel.Multi);
   }
@@ -188,7 +186,7 @@ public class AccessViewPresenterTest {
   public void usersGridOrder() {
     presenter.init(view);
 
-    List<GridSortOrder<User>> sortOrders = view.usersGrid.getSortOrder();
+    List<GridSortOrder<User>> sortOrders = design.usersGrid.getSortOrder();
 
     assertFalse(sortOrders.isEmpty());
     GridSortOrder<User> sortOrder = sortOrders.get(0);
@@ -200,8 +198,8 @@ public class AccessViewPresenterTest {
   @SuppressWarnings("unchecked")
   public void emailFilter() {
     presenter.init(view);
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EMAIL);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
@@ -221,8 +219,8 @@ public class AccessViewPresenterTest {
   @SuppressWarnings("unchecked")
   public void nameFilter() {
     presenter.init(view);
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(NAME);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
@@ -242,8 +240,8 @@ public class AccessViewPresenterTest {
   @SuppressWarnings("unchecked")
   public void laboratoryNameFilter() {
     presenter.init(view);
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(LABORATORY_NAME);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
@@ -263,8 +261,8 @@ public class AccessViewPresenterTest {
   @SuppressWarnings("unchecked")
   public void organizationFilter() {
     presenter.init(view);
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(ORGANIZATION);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
@@ -284,8 +282,8 @@ public class AccessViewPresenterTest {
   @SuppressWarnings("unchecked")
   public void activeFilter_True() {
     presenter.init(view);
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(ACTIVE);
     ComboBox<Boolean> booleanField = (ComboBox<Boolean>) cell.getComponent();
     boolean filterValue = true;
@@ -301,8 +299,8 @@ public class AccessViewPresenterTest {
   @SuppressWarnings("unchecked")
   public void activeFilter_False() {
     presenter.init(view);
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(ACTIVE);
     ComboBox<Boolean> booleanField = (ComboBox<Boolean>) cell.getComponent();
     boolean filterValue = false;
@@ -318,8 +316,8 @@ public class AccessViewPresenterTest {
   @SuppressWarnings("unchecked")
   public void activeFilter_Clear() {
     presenter.init(view);
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(ACTIVE);
     ComboBox<Boolean> booleanField = (ComboBox<Boolean>) cell.getComponent();
     booleanField.setValue(true);
@@ -336,18 +334,18 @@ public class AccessViewPresenterTest {
     presenter.init(view);
     final User user = users.get(0);
 
-    assertTrue(view.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(view.headerLabel.getStyleName().contains("h1"));
-    assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));
-    CheckBox select = (CheckBox) view.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
+    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.usersGrid.getStyleName().contains(USERS_GRID));
+    CheckBox select = (CheckBox) design.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
     assertTrue(select.getStyleName().contains(SELECT));
-    Button viewButton = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    Button viewButton = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
     assertTrue(viewButton.getStyleName().contains(EMAIL));
-    Label active = (Label) view.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
+    Label active = (Label) design.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
     assertTrue(active.getStyleName().contains(ACTIVE));
-    assertTrue(view.activateButton.getStyleName().contains(ACTIVATE));
-    assertTrue(view.deactivateButton.getStyleName().contains(DEACTIVATE));
-    assertTrue(view.clearButton.getStyleName().contains(CLEAR));
+    assertTrue(design.activateButton.getStyleName().contains(ACTIVATE));
+    assertTrue(design.deactivateButton.getStyleName().contains(DEACTIVATE));
+    assertTrue(design.clearButton.getStyleName().contains(CLEAR));
   }
 
   @Test
@@ -356,30 +354,30 @@ public class AccessViewPresenterTest {
     final User user = users.get(0);
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
-    assertEquals(resources.message(EMAIL), view.usersGrid.getColumn(EMAIL).getCaption());
-    Button email = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
+    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
+    Button email = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
     assertEquals(user.getEmail(), email.getCaption());
-    assertEquals(resources.message(NAME), view.usersGrid.getColumn(NAME).getCaption());
-    assertEquals(user.getName(), view.usersGrid.getColumn(NAME).getValueProvider().apply(user));
+    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
+    assertEquals(user.getName(), design.usersGrid.getColumn(NAME).getValueProvider().apply(user));
     assertEquals(resources.message(LABORATORY_NAME),
-        view.usersGrid.getColumn(LABORATORY_NAME).getCaption());
+        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
     assertEquals(user.getLaboratory().getName(),
-        view.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
+        design.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
     assertEquals(resources.message(ORGANIZATION),
-        view.usersGrid.getColumn(ORGANIZATION).getCaption());
+        design.usersGrid.getColumn(ORGANIZATION).getCaption());
     assertEquals(user.getLaboratory().getOrganization(),
-        view.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
-    assertEquals(resources.message(ACTIVE), view.usersGrid.getColumn(ACTIVE).getCaption());
-    Label active = (Label) view.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
+        design.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
+    assertEquals(resources.message(ACTIVE), design.usersGrid.getColumn(ACTIVE).getCaption());
+    Label active = (Label) design.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
     assertEquals(ContentMode.HTML, active.getContentMode());
     VaadinIcons activeIcon = user.isActive() ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
     String activeValue =
         activeIcon.getHtml() + " " + resources.message(ACTIVE + "." + user.isActive());
     assertEquals(activeValue, active.getValue());
-    assertEquals(resources.message(ACTIVATE), view.activateButton.getCaption());
-    assertEquals(resources.message(DEACTIVATE), view.deactivateButton.getCaption());
-    assertEquals(resources.message(CLEAR), view.clearButton.getCaption());
+    assertEquals(resources.message(ACTIVATE), design.activateButton.getCaption());
+    assertEquals(resources.message(DEACTIVATE), design.deactivateButton.getCaption());
+    assertEquals(resources.message(CLEAR), design.clearButton.getCaption());
   }
 
   @Test
@@ -414,12 +412,13 @@ public class AccessViewPresenterTest {
   public void selectUser() {
     presenter.init(view);
     final User user = users.get(0);
-    CheckBox checkBox = (CheckBox) view.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
+    CheckBox checkBox =
+        (CheckBox) design.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
     assertEquals(false, checkBox.getValue());
 
     checkBox.setValue(true);
 
-    Set<User> selection = view.usersGrid.getSelectedItems();
+    Set<User> selection = design.usersGrid.getSelectedItems();
     assertEquals(1, selection.size());
     assertTrue(selection.contains(user));
   }
@@ -428,13 +427,14 @@ public class AccessViewPresenterTest {
   public void deselectUser() {
     presenter.init(view);
     final User user = users.get(0);
-    CheckBox checkBox = (CheckBox) view.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
-    view.usersGrid.select(user);
+    CheckBox checkBox =
+        (CheckBox) design.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
+    design.usersGrid.select(user);
     assertEquals(true, checkBox.getValue());
 
     checkBox.setValue(false);
 
-    Set<User> selection = view.usersGrid.getSelectedItems();
+    Set<User> selection = design.usersGrid.getSelectedItems();
     assertEquals(0, selection.size());
   }
 
@@ -443,7 +443,7 @@ public class AccessViewPresenterTest {
     presenter.init(view);
     final User user = users.get(0);
     user.setActive(true);
-    Label label = (Label) view.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
+    Label label = (Label) design.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
 
     assertEquals(ContentMode.HTML, label.getContentMode());
     assertEquals(VaadinIcons.CHECK.getHtml() + " " + resources.message(ACTIVE + ".true"),
@@ -455,7 +455,7 @@ public class AccessViewPresenterTest {
     presenter.init(view);
     final User user = users.get(0);
     user.setActive(false);
-    Label label = (Label) view.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
+    Label label = (Label) design.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
 
     assertEquals(ContentMode.HTML, label.getContentMode());
     assertEquals(VaadinIcons.CLOSE.getHtml() + " " + resources.message(ACTIVE + ".false"),
@@ -466,7 +466,7 @@ public class AccessViewPresenterTest {
   public void viewUser() {
     presenter.init(view);
     final User user = users.get(0);
-    Button button = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
 
     button.click();
 
@@ -482,12 +482,12 @@ public class AccessViewPresenterTest {
     final User user1 = users.get(0);
     final User user2 = users.get(1);
     final User user3 = users.get(2);
-    view.usersGrid.select(user1);
-    view.usersGrid.select(user2);
-    view.usersGrid.select(user3);
+    design.usersGrid.select(user1);
+    design.usersGrid.select(user2);
+    design.usersGrid.select(user3);
     when(userService.all(any())).thenReturn(new ArrayList<>());
 
-    view.activateButton.click();
+    design.activateButton.click();
 
     verify(userService).activate(usersCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
@@ -499,7 +499,7 @@ public class AccessViewPresenterTest {
         user1.getEmail() + resources.message("userSeparator", 0) + user2.getEmail()
             + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
-    assertEquals(0, view.usersGrid.getSelectedItems().size());
+    assertEquals(0, design.usersGrid.getSelectedItems().size());
     assertEquals(0, dataProvider().getItems().size());
   }
 
@@ -507,7 +507,7 @@ public class AccessViewPresenterTest {
   public void activate_NoSelection() {
     presenter.init(view);
 
-    view.activateButton.click();
+    design.activateButton.click();
 
     verify(userService, never()).validate(any(), any());
     verify(view).showError(any());
@@ -519,12 +519,12 @@ public class AccessViewPresenterTest {
     final User user1 = users.get(0);
     final User user2 = users.get(1);
     final User user3 = users.get(2);
-    view.usersGrid.select(user1);
-    view.usersGrid.select(user2);
-    view.usersGrid.select(user3);
+    design.usersGrid.select(user1);
+    design.usersGrid.select(user2);
+    design.usersGrid.select(user3);
     when(userService.all(any())).thenReturn(new ArrayList<>());
 
-    view.deactivateButton.click();
+    design.deactivateButton.click();
 
     verify(userService).deactivate(usersCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
@@ -536,7 +536,7 @@ public class AccessViewPresenterTest {
         user1.getEmail() + resources.message("userSeparator", 0) + user2.getEmail()
             + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
-    assertEquals(0, view.usersGrid.getSelectedItems().size());
+    assertEquals(0, design.usersGrid.getSelectedItems().size());
     assertEquals(0, dataProvider().getItems().size());
   }
 
@@ -544,7 +544,7 @@ public class AccessViewPresenterTest {
   public void deactivate_NoSelection() {
     presenter.init(view);
 
-    view.activateButton.click();
+    design.activateButton.click();
 
     verify(userService, never()).validate(any(), any());
     verify(view).showError(any());
@@ -554,7 +554,7 @@ public class AccessViewPresenterTest {
   public void clear() {
     presenter.init(view);
 
-    view.activateButton.click();
+    design.activateButton.click();
 
     verify(userService, never()).validate(any(), any());
     verify(view).showError(any());

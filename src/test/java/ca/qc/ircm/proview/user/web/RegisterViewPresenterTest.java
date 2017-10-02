@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +53,7 @@ public class RegisterViewPresenterTest {
   private ArgumentCaptor<SaveListener<User>> saveListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
+  private RegisterViewDesign design;
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(RegisterView.class, locale);
 
@@ -62,7 +63,8 @@ public class RegisterViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new RegisterViewPresenter(applicationName);
-    view.headerLabel = new Label();
+    design = new RegisterViewDesign();
+    view.design = design;
     view.userForm = mock(UserForm.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -71,14 +73,14 @@ public class RegisterViewPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(view.headerLabel.getStyleName().contains("h1"));
+    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
   }
 
   @Test
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
+    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
   }
 
   @Test

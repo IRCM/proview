@@ -19,7 +19,9 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -28,11 +30,17 @@ import javax.inject.Inject;
  */
 @SpringView(name = SignasView.VIEW_NAME)
 @RolesAllowed("ADMIN")
-public class SignasView extends SignasViewDesign implements BaseView {
+public class SignasView extends CustomComponent implements BaseView {
   public static final String VIEW_NAME = "user/signas";
   private static final long serialVersionUID = 2149245363614885816L;
+  protected SignasViewDesign design = new SignasViewDesign();
   @Inject
   private transient SignasViewPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
 
   @Override
   public void attach() {

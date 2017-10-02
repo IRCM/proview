@@ -20,18 +20,26 @@ package ca.qc.ircm.proview.user.web;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
  * Forgot password view.
  */
 @SpringView(name = ForgotPasswordView.VIEW_NAME)
-public class ForgotPasswordView extends ForgotPasswordViewDesign implements BaseView {
+public class ForgotPasswordView extends CustomComponent implements BaseView {
   public static final String VIEW_NAME = "user/forgotpassword";
   private static final long serialVersionUID = 164307263615957137L;
+  protected ForgotPasswordViewDesign design = new ForgotPasswordViewDesign();
   @Inject
   private transient ForgotPasswordViewPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
 
   @Override
   public void attach() {

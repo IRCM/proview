@@ -50,6 +50,7 @@ public class ForgotPasswordViewPresenter implements BinderValidator {
   public static final String INVALID_FORGOT_PASSWORD = "invalidForgotPassword";
   private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewPresenter.class);
   private ForgotPasswordView view;
+  private ForgotPasswordViewDesign design;
   private Binder<Passwords> passwordsBinder = new Binder<>(Passwords.class);
   private ForgotPassword forgotPassword;
   @Inject
@@ -74,6 +75,7 @@ public class ForgotPasswordViewPresenter implements BinderValidator {
    */
   public void init(ForgotPasswordView view) {
     this.view = view;
+    design = view.design;
     prepareComponents();
     passwordsBinder.setBean(new Passwords());
     addListeners();
@@ -83,34 +85,33 @@ public class ForgotPasswordViewPresenter implements BinderValidator {
     MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.addStyleName(HEADER);
-    view.headerLabel.addStyleName("h1");
-    view.headerLabel.setValue(resources.message(HEADER));
-    view.passwordPanel.addStyleName(PASSWORD_PANEL);
-    view.passwordPanel.setCaption(resources.message(PASSWORD_PANEL));
-    view.passwordField.addStyleName(PASSWORD);
-    view.passwordField.setCaption(resources.message(PASSWORD));
-    passwordsBinder.forField(view.passwordField).asRequired(generalResources.message(REQUIRED))
+    design.headerLabel.addStyleName(HEADER);
+    design.headerLabel.setValue(resources.message(HEADER));
+    design.passwordPanel.addStyleName(PASSWORD_PANEL);
+    design.passwordPanel.setCaption(resources.message(PASSWORD_PANEL));
+    design.passwordField.addStyleName(PASSWORD);
+    design.passwordField.setCaption(resources.message(PASSWORD));
+    passwordsBinder.forField(design.passwordField).asRequired(generalResources.message(REQUIRED))
         .withValidator(password -> {
-          String confirmPassword = view.confirmPasswordField.getValue();
+          String confirmPassword = design.confirmPasswordField.getValue();
           return password == null || password.isEmpty() || confirmPassword == null
               || confirmPassword.isEmpty() || password.equals(confirmPassword);
         }, resources.message(PASSWORD + ".notMatch"))
         .bind(Passwords::getPassword, Passwords::setPassword);
-    view.confirmPasswordField.addStyleName(CONFIRM_PASSWORD);
-    view.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD));
-    passwordsBinder.forField(view.confirmPasswordField)
+    design.confirmPasswordField.addStyleName(CONFIRM_PASSWORD);
+    design.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD));
+    passwordsBinder.forField(design.confirmPasswordField)
         .asRequired(generalResources.message(REQUIRED))
         .bind(Passwords::getConfirmPassword, Passwords::setConfirmPassword);
-    view.saveButton.addStyleName(SAVE);
-    view.saveButton.setCaption(resources.message(SAVE));
+    design.saveButton.addStyleName(SAVE);
+    design.saveButton.setCaption(resources.message(SAVE));
   }
 
   private void addListeners() {
-    view.confirmPasswordField.addValueChangeListener(e -> {
+    design.confirmPasswordField.addValueChangeListener(e -> {
       passwordsBinder.validate();
     });
-    view.saveButton.addClickListener(e -> save());
+    design.saveButton.addClickListener(e -> save());
   }
 
   private boolean validate() {
@@ -130,7 +131,7 @@ public class ForgotPasswordViewPresenter implements BinderValidator {
 
   private void save() {
     if (validate()) {
-      String password = view.passwordField.getValue();
+      String password = design.passwordField.getValue();
       forgotPasswordService.updatePassword(forgotPassword, password);
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message("save.done"));

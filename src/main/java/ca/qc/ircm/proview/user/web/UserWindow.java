@@ -48,7 +48,7 @@ public class UserWindow extends Window implements BaseComponent {
   public static final String UPDATE = "update";
   private static final long serialVersionUID = 9032686080431923743L;
   private static final Logger logger = LoggerFactory.getLogger(UserWindow.class);
-  private UserWindowDesign view = new UserWindowDesign();
+  private UserWindowDesign design = new UserWindowDesign();
   @Inject
   private UserForm userForm;
   @Inject
@@ -57,10 +57,10 @@ public class UserWindow extends Window implements BaseComponent {
   @PostConstruct
   protected void init() {
     addStyleName(WINDOW_STYLE);
-    setContent(view);
-    view.userLayout.addComponent(userForm);
-    view.update.setVisible(false);
-    view.update.addStyleName(UPDATE);
+    setContent(design);
+    design.userLayout.addComponent(userForm);
+    design.update.setVisible(false);
+    design.update.addStyleName(UPDATE);
     setHeight("650px");
     setWidth("500px");
   }
@@ -70,7 +70,7 @@ public class UserWindow extends Window implements BaseComponent {
     super.attach();
     final MessageResource resources = getResources();
     userForm.addSaveListener(e -> close());
-    view.update.setCaption(resources.message(UPDATE));
+    design.update.setCaption(resources.message(UPDATE));
   }
 
   /**
@@ -90,8 +90,8 @@ public class UserWindow extends Window implements BaseComponent {
   private void updateUser(User user) {
     logger.debug("User window for user {}", user);
     setCaption(getResources().message(TITLE, user != null ? user.getName() : ""));
-    view.update.setVisible(authorizationService.hasUserWritePermission(user));
-    view.update.addClickListener(e -> {
+    design.update.setVisible(authorizationService.hasUserWritePermission(user));
+    design.update.addClickListener(e -> {
       navigateTo(UserView.VIEW_NAME, String.valueOf(user.getId()));
       close();
     });

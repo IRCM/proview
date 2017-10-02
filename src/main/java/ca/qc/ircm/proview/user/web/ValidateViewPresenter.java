@@ -32,7 +32,6 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.ComponentRenderer;
-import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,6 +67,7 @@ public class ValidateViewPresenter {
   public static final String VALIDATE_SELECTED_BUTTON = "validateSelected";
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewPresenter.class);
   private ValidateView view;
+  private ValidateViewDesign design;
   @Inject
   private UserService userService;
   @Inject
@@ -98,6 +98,7 @@ public class ValidateViewPresenter {
   public void init(ValidateView view) {
     logger.debug("Validate users view");
     this.view = view;
+    design = view.design;
     prepareComponents();
     addFieldListeners();
   }
@@ -105,35 +106,34 @@ public class ValidateViewPresenter {
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.addStyleName(HEADER);
-    view.headerLabel.addStyleName(ValoTheme.LABEL_H1);
-    view.headerLabel.setValue(resources.message(HEADER));
-    view.usersGrid.addStyleName(USERS_GRID);
+    design.headerLabel.addStyleName(HEADER);
+    design.headerLabel.setValue(resources.message(HEADER));
+    design.usersGrid.addStyleName(USERS_GRID);
     prepareUsersGrid();
-    view.validateSelectedButton.addStyleName(VALIDATE_SELECTED_BUTTON);
-    view.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON));
+    design.validateSelectedButton.addStyleName(VALIDATE_SELECTED_BUTTON);
+    design.validateSelectedButton.setCaption(resources.message(VALIDATE_SELECTED_BUTTON));
   }
 
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
-    view.usersGrid.setItems(searchUsers());
-    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
+    design.usersGrid.setItems(searchUsers());
+    design.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
         .setCaption(resources.message(EMAIL));
-    view.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
-    view.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
+    design.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
+    design.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
         .setCaption(resources.message(LABORATORY_NAME));
-    view.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
+    design.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
         .setCaption(resources.message(ORGANIZATION));
-    view.usersGrid.setFrozenColumnCount(2);
-    view.usersGrid.addColumn(user -> validateButton(user), new ComponentRenderer()).setId(VALIDATE)
-        .setCaption(resources.message(VALIDATE));
-    view.usersGrid.setSelectionMode(SelectionMode.MULTI);
-    view.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
-    view.usersGrid.addStyleName(COMPONENTS);
+    design.usersGrid.setFrozenColumnCount(2);
+    design.usersGrid.addColumn(user -> validateButton(user), new ComponentRenderer())
+        .setId(VALIDATE).setCaption(resources.message(VALIDATE));
+    design.usersGrid.setSelectionMode(SelectionMode.MULTI);
+    design.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
+    design.usersGrid.addStyleName(COMPONENTS);
   }
 
   private void addFieldListeners() {
-    view.validateSelectedButton.addClickListener(event -> {
+    design.validateSelectedButton.addClickListener(event -> {
       validateMany();
     });
   }
@@ -165,9 +165,9 @@ public class ValidateViewPresenter {
   }
 
   private void refresh() {
-    view.usersGrid.getSelectionModel().deselectAll();
-    view.usersGrid.setItems(searchUsers());
-    view.usersGrid.setSortOrder(new ArrayList<>(view.usersGrid.getSortOrder()));
+    design.usersGrid.getSelectionModel().deselectAll();
+    design.usersGrid.setItems(searchUsers());
+    design.usersGrid.setSortOrder(new ArrayList<>(design.usersGrid.getSortOrder()));
   }
 
   private void viewUser(User user) {
@@ -186,7 +186,7 @@ public class ValidateViewPresenter {
   }
 
   private void validateMany() {
-    List<User> users = new ArrayList<>(view.usersGrid.getSelectedItems());
+    List<User> users = new ArrayList<>(design.usersGrid.getSelectedItems());
     if (users.isEmpty()) {
       final MessageResource resources = view.getResources();
       view.showError(resources.message("validateSelected.none"));

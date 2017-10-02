@@ -84,6 +84,7 @@ public class AccessViewPresenter {
   public static final String HIDE_SELECTION = "hide-selection";
   private static final Logger logger = LoggerFactory.getLogger(AccessViewPresenter.class);
   private AccessView view;
+  private AccessViewDesign design;
   private Map<User, CheckBox> selectionCheckboxes = new HashMap<>();
   private ListDataProvider<User> usersProvider;
   private UserWebFilter filter;
@@ -115,6 +116,7 @@ public class AccessViewPresenter {
    */
   public void init(AccessView view) {
     this.view = view;
+    design = view.design;
     logger.debug("Users access view");
     filter = new UserWebFilter(view.getLocale());
     prepareComponents();
@@ -124,58 +126,57 @@ public class AccessViewPresenter {
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.addStyleName(HEADER);
-    view.headerLabel.addStyleName("h1");
-    view.headerLabel.setValue(resources.message(HEADER));
-    view.usersGrid.addStyleName(USERS_GRID);
+    design.headerLabel.addStyleName(HEADER);
+    design.headerLabel.setValue(resources.message(HEADER));
+    design.usersGrid.addStyleName(USERS_GRID);
     prepareUsersGrid();
-    view.activateButton.addStyleName(ACTIVATE);
-    view.activateButton.setCaption(resources.message(ACTIVATE));
-    view.deactivateButton.addStyleName(DEACTIVATE);
-    view.deactivateButton.setCaption(resources.message(DEACTIVATE));
-    view.clearButton.addStyleName(CLEAR);
-    view.clearButton.setCaption(resources.message(CLEAR));
+    design.activateButton.addStyleName(ACTIVATE);
+    design.activateButton.setCaption(resources.message(ACTIVATE));
+    design.deactivateButton.addStyleName(DEACTIVATE);
+    design.deactivateButton.setCaption(resources.message(DEACTIVATE));
+    design.clearButton.addStyleName(CLEAR);
+    design.clearButton.setCaption(resources.message(CLEAR));
   }
 
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
-    view.usersGrid.setDataProvider(searchUsers());
-    view.usersGrid.addColumn(user -> selectCheckBox(user), new ComponentRenderer()).setId(SELECT)
+    design.usersGrid.setDataProvider(searchUsers());
+    design.usersGrid.addColumn(user -> selectCheckBox(user), new ComponentRenderer()).setId(SELECT)
         .setCaption(resources.message(SELECT)).setWidth(56);
-    view.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
+    design.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
         .setCaption(resources.message(EMAIL));
-    view.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
-    view.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
+    design.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
+    design.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
         .setCaption(resources.message(LABORATORY_NAME));
-    view.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
+    design.usersGrid.addColumn(user -> user.getLaboratory().getOrganization()).setId(ORGANIZATION)
         .setCaption(resources.message(ORGANIZATION));
-    view.usersGrid.setFrozenColumnCount(2);
-    view.usersGrid.addColumn(user -> activeLabel(user), new ComponentRenderer()).setId(ACTIVE)
+    design.usersGrid.setFrozenColumnCount(2);
+    design.usersGrid.addColumn(user -> activeLabel(user), new ComponentRenderer()).setId(ACTIVE)
         .setCaption(resources.message(ACTIVE));
-    view.usersGrid.setSelectionMode(SelectionMode.MULTI);
-    view.usersGrid.addStyleName(HIDE_SELECTION);
-    view.usersGrid.addStyleName(COMPONENTS);
-    view.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
-    HeaderRow filterRow = view.usersGrid.appendHeaderRow();
+    design.usersGrid.setSelectionMode(SelectionMode.MULTI);
+    design.usersGrid.addStyleName(HIDE_SELECTION);
+    design.usersGrid.addStyleName(COMPONENTS);
+    design.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
+    HeaderRow filterRow = design.usersGrid.appendHeaderRow();
     filterRow.getCell(EMAIL).setComponent(textFilter(e -> {
       filter.emailContains = e.getValue();
-      view.usersGrid.getDataProvider().refreshAll();
+      design.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(NAME).setComponent(textFilter(e -> {
       filter.nameContains = e.getValue();
-      view.usersGrid.getDataProvider().refreshAll();
+      design.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(LABORATORY_NAME).setComponent(textFilter(e -> {
       filter.laboratoryNameContains = e.getValue();
-      view.usersGrid.getDataProvider().refreshAll();
+      design.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(ORGANIZATION).setComponent(textFilter(e -> {
       filter.organizationContains = e.getValue();
-      view.usersGrid.getDataProvider().refreshAll();
+      design.usersGrid.getDataProvider().refreshAll();
     }, resources));
     filterRow.getCell(ACTIVE).setComponent(comboBoxFilter(e -> {
       filter.active = e.getValue();
-      view.usersGrid.getDataProvider().refreshAll();
+      design.usersGrid.getDataProvider().refreshAll();
     }, resources, value -> resources.message(ACTIVE + "." + value), new Boolean[] { true, false }));
   }
 
@@ -184,13 +185,13 @@ public class AccessViewPresenter {
     checkbox.addStyleName(SELECT);
     checkbox.addValueChangeListener(e -> {
       if (checkbox.getValue()) {
-        view.usersGrid.select(user);
+        design.usersGrid.select(user);
       } else {
-        view.usersGrid.deselect(user);
+        design.usersGrid.deselect(user);
       }
     });
     selectionCheckboxes.put(user, checkbox);
-    checkbox.setValue(view.usersGrid.getSelectedItems().contains(user));
+    checkbox.setValue(design.usersGrid.getSelectedItems().contains(user));
     checkbox.setVisible(!authorizationService.hasManagerRole(user));
     return checkbox;
   }
@@ -239,16 +240,16 @@ public class AccessViewPresenter {
   }
 
   private void addFieldListeners() {
-    view.usersGrid.addSelectionListener(e -> {
+    design.usersGrid.addSelectionListener(e -> {
       Set<User> users = e.getAllSelectedItems();
       for (Map.Entry<User, CheckBox> checkboxEntry : selectionCheckboxes.entrySet()) {
         CheckBox checkbox = checkboxEntry.getValue();
         checkbox.setValue(users.contains(checkboxEntry.getKey()));
       }
     });
-    view.activateButton.addClickListener(event -> activateUsers());
-    view.deactivateButton.addClickListener(event -> deactivateUsers());
-    view.clearButton.addClickListener(event -> clear());
+    design.activateButton.addClickListener(event -> activateUsers());
+    design.deactivateButton.addClickListener(event -> deactivateUsers());
+    design.clearButton.addClickListener(event -> clear());
   }
 
   private DataProvider<User, ?> searchUsers() {
@@ -264,9 +265,9 @@ public class AccessViewPresenter {
   }
 
   private void refreshUsers() {
-    view.usersGrid.getSelectionModel().deselectAll();
-    view.usersGrid.setDataProvider(searchUsers());
-    view.usersGrid.setSortOrder(new ArrayList<>(view.usersGrid.getSortOrder()));
+    design.usersGrid.getSelectionModel().deselectAll();
+    design.usersGrid.setDataProvider(searchUsers());
+    design.usersGrid.setSortOrder(new ArrayList<>(design.usersGrid.getSortOrder()));
   }
 
   private void viewUser(User user) {
@@ -277,7 +278,7 @@ public class AccessViewPresenter {
   }
 
   private List<User> selectedUsers() {
-    return new ArrayList<>(view.usersGrid.getSelectedItems());
+    return new ArrayList<>(design.usersGrid.getSelectedItems());
   }
 
   private void activateUsers() {
@@ -332,7 +333,7 @@ public class AccessViewPresenter {
 
   private void clear() {
     logger.trace("Clear selected users");
-    view.usersGrid.deselectAll();
+    design.usersGrid.deselectAll();
   }
 
   UserWebFilter getFilter() {

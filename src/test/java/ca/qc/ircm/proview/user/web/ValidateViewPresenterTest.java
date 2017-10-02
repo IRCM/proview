@@ -49,9 +49,7 @@ import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
@@ -96,6 +94,7 @@ public class ValidateViewPresenterTest {
   private ArgumentCaptor<HomeWebContext> homeWebContextCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
+  private ValidateViewDesign design;
   private User signedUser;
   private List<User> usersToValidate;
   private Locale locale = Locale.ENGLISH;
@@ -115,9 +114,8 @@ public class ValidateViewPresenterTest {
     usersToValidate.add(entityManager.find(User.class, 5L));
     usersToValidate.add(entityManager.find(User.class, 10L));
     when(userService.all(any())).thenReturn(usersToValidate);
-    view.headerLabel = new Label();
-    view.usersGrid = new Grid<>();
-    view.validateSelectedButton = new Button();
+    design = new ValidateViewDesign();
+    view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(userWindowProvider.get()).thenReturn(userWindow);
@@ -139,14 +137,14 @@ public class ValidateViewPresenterTest {
 
   @SuppressWarnings("unchecked")
   private ListDataProvider<User> dataProvider() {
-    return (ListDataProvider<User>) view.usersGrid.getDataProvider();
+    return (ListDataProvider<User>) design.usersGrid.getDataProvider();
   }
 
   @Test
   public void usersGridColumns() {
     presenter.init(view);
 
-    List<Column<User, ?>> columns = view.usersGrid.getColumns();
+    List<Column<User, ?>> columns = design.usersGrid.getColumns();
 
     assertEquals(EMAIL, columns.get(0).getId());
     assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
@@ -161,7 +159,7 @@ public class ValidateViewPresenterTest {
   public void usersGridSelection() {
     presenter.init(view);
 
-    SelectionModel<User> selectionModel = view.usersGrid.getSelectionModel();
+    SelectionModel<User> selectionModel = design.usersGrid.getSelectionModel();
 
     assertTrue(selectionModel instanceof SelectionModel.Multi);
   }
@@ -170,7 +168,7 @@ public class ValidateViewPresenterTest {
   public void usersGridOrder() {
     presenter.init(view);
 
-    List<GridSortOrder<User>> sortOrders = view.usersGrid.getSortOrder();
+    List<GridSortOrder<User>> sortOrders = design.usersGrid.getSortOrder();
 
     assertFalse(sortOrders.isEmpty());
     GridSortOrder<User> sortOrder = sortOrders.get(0);
@@ -182,16 +180,16 @@ public class ValidateViewPresenterTest {
   public void styles() {
     presenter.init(view);
 
-    assertTrue(view.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(view.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
-    assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));
+    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.usersGrid.getStyleName().contains(USERS_GRID));
     final User user = usersToValidate.get(0);
-    Button viewButton = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    Button viewButton = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
     assertTrue(viewButton.getStyleName().contains(EMAIL));
     Button validateButton =
-        (Button) view.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
+        (Button) design.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
     assertTrue(validateButton.getStyleName().contains(VALIDATE));
-    assertTrue(view.validateSelectedButton.getStyleName().contains(VALIDATE_SELECTED_BUTTON));
+    assertTrue(design.validateSelectedButton.getStyleName().contains(VALIDATE_SELECTED_BUTTON));
   }
 
   @Test
@@ -199,26 +197,26 @@ public class ValidateViewPresenterTest {
     presenter.init(view);
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
+    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
     final User user = usersToValidate.get(0);
-    assertEquals(resources.message(EMAIL), view.usersGrid.getColumn(EMAIL).getCaption());
-    Button email = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
+    Button email = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
     assertEquals(user.getEmail(), email.getCaption());
-    assertEquals(resources.message(NAME), view.usersGrid.getColumn(NAME).getCaption());
-    assertEquals(user.getName(), view.usersGrid.getColumn(NAME).getValueProvider().apply(user));
+    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
+    assertEquals(user.getName(), design.usersGrid.getColumn(NAME).getValueProvider().apply(user));
     assertEquals(resources.message(LABORATORY_NAME),
-        view.usersGrid.getColumn(LABORATORY_NAME).getCaption());
+        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
     assertEquals(user.getLaboratory().getName(),
-        view.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
+        design.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
     assertEquals(resources.message(ORGANIZATION),
-        view.usersGrid.getColumn(ORGANIZATION).getCaption());
+        design.usersGrid.getColumn(ORGANIZATION).getCaption());
     assertEquals(user.getLaboratory().getOrganization(),
-        view.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
-    assertEquals(resources.message(VALIDATE), view.usersGrid.getColumn(VALIDATE).getCaption());
-    Button validate = (Button) view.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
+        design.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
+    assertEquals(resources.message(VALIDATE), design.usersGrid.getColumn(VALIDATE).getCaption());
+    Button validate = (Button) design.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
     assertEquals(resources.message(VALIDATE), validate.getCaption());
     assertEquals(resources.message(VALIDATE_SELECTED_BUTTON),
-        view.validateSelectedButton.getCaption());
+        design.validateSelectedButton.getCaption());
   }
 
   @Test
@@ -253,7 +251,7 @@ public class ValidateViewPresenterTest {
   public void viewUser() {
     presenter.init(view);
     final User user = usersToValidate.get(0);
-    Button button = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
 
     button.click();
 
@@ -272,7 +270,7 @@ public class ValidateViewPresenterTest {
     when(userService.all(any())).thenReturn(usersToValidateAfter);
     String homeUrl = "homeUrl";
     when(view.getUrl(any())).thenReturn(homeUrl);
-    Button button = (Button) view.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
+    Button button = (Button) design.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
 
     button.click();
 
@@ -293,14 +291,14 @@ public class ValidateViewPresenterTest {
     final User user1 = usersToValidate.get(0);
     final User user2 = usersToValidate.get(1);
     final User user3 = usersToValidate.get(2);
-    view.usersGrid.select(user1);
-    view.usersGrid.select(user2);
-    view.usersGrid.select(user3);
+    design.usersGrid.select(user1);
+    design.usersGrid.select(user2);
+    design.usersGrid.select(user3);
     when(userService.all(any())).thenReturn(new ArrayList<>());
     String homeUrl = "homeUrl";
     when(view.getUrl(any())).thenReturn(homeUrl);
 
-    view.validateSelectedButton.click();
+    design.validateSelectedButton.click();
 
     verify(userService).validate(usersCaptor.capture(), homeWebContextCaptor.capture());
     Collection<User> users = usersCaptor.getValue();
@@ -312,7 +310,7 @@ public class ValidateViewPresenterTest {
         resources.message("done", 3, user1.getEmail() + resources.message("userSeparator", 0)
             + user2.getEmail() + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
-    assertEquals(0, view.usersGrid.getSelectedItems().size());
+    assertEquals(0, design.usersGrid.getSelectedItems().size());
     assertEquals(0, dataProvider().getItems().size());
     HomeWebContext homeWebContext = homeWebContextCaptor.getValue();
     assertEquals(homeUrl, homeWebContext.getHomeUrl(locale));
@@ -323,7 +321,7 @@ public class ValidateViewPresenterTest {
     presenter.init(view);
     when(userService.all(any())).thenReturn(new ArrayList<>());
 
-    view.validateSelectedButton.click();
+    design.validateSelectedButton.click();
 
     verify(userService, never()).validate(any(), any());
     verify(view).showError(any());

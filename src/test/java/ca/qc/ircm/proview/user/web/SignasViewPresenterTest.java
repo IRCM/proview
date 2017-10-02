@@ -48,9 +48,7 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
@@ -99,6 +97,7 @@ public class SignasViewPresenterTest {
   private ArgumentCaptor<HomeWebContext> homeWebContextCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
+  private SignasViewDesign design;
   private List<User> users;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SignasView.class, locale);
@@ -116,8 +115,8 @@ public class SignasViewPresenterTest {
     users.add(entityManager.find(User.class, 10L));
     users.add(entityManager.find(User.class, 11L));
     when(userService.all(any())).thenReturn(users);
-    view.headerLabel = new Label();
-    view.usersGrid = new Grid<>();
+    design = new SignasViewDesign();
+    view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(userWindowProvider.get()).thenReturn(userWindow);
@@ -131,7 +130,7 @@ public class SignasViewPresenterTest {
 
   @Test
   public void usersGridColumns() {
-    List<Column<User, ?>> columns = view.usersGrid.getColumns();
+    List<Column<User, ?>> columns = design.usersGrid.getColumns();
 
     assertEquals(EMAIL, columns.get(0).getId());
     assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
@@ -144,7 +143,7 @@ public class SignasViewPresenterTest {
 
   @Test
   public void usersGridOrder() {
-    List<GridSortOrder<User>> sortOrders = view.usersGrid.getSortOrder();
+    List<GridSortOrder<User>> sortOrders = design.usersGrid.getSortOrder();
 
     assertFalse(sortOrders.isEmpty());
     GridSortOrder<User> sortOrder = sortOrders.get(0);
@@ -155,8 +154,8 @@ public class SignasViewPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void emailFilter() {
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EMAIL);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
@@ -175,8 +174,8 @@ public class SignasViewPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void nameFilter() {
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(NAME);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
@@ -195,8 +194,8 @@ public class SignasViewPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void laboratoryNameFilter() {
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(LABORATORY_NAME);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
@@ -215,8 +214,8 @@ public class SignasViewPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void organizationFilter() {
-    view.usersGrid.setDataProvider(usersProvider);
-    HeaderRow filterRow = view.usersGrid.getHeaderRow(1);
+    design.usersGrid.setDataProvider(usersProvider);
+    HeaderRow filterRow = design.usersGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(ORGANIZATION);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
@@ -234,27 +233,28 @@ public class SignasViewPresenterTest {
 
   @Test
   public void styles() {
-    assertTrue(view.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(view.headerLabel.getStyleName().contains("h1"));
-    assertTrue(view.usersGrid.getStyleName().contains(USERS_GRID));
+    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(design.headerLabel.getStyleName().contains("h1"));
+    assertTrue(design.usersGrid.getStyleName().contains(USERS_GRID));
   }
 
   @Test
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), view.headerLabel.getValue());
+    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
     final User user = users.get(0);
-    assertEquals(resources.message(EMAIL), view.usersGrid.getColumn(EMAIL).getCaption());
-    Button viewButton = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
+    Button viewButton = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
     assertTrue(viewButton.getStyleName().contains(EMAIL));
     assertEquals(user.getEmail(), viewButton.getCaption());
-    assertEquals(resources.message(NAME), view.usersGrid.getColumn(NAME).getCaption());
+    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
     assertEquals(resources.message(LABORATORY_NAME),
-        view.usersGrid.getColumn(LABORATORY_NAME).getCaption());
+        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
     assertEquals(resources.message(ORGANIZATION),
-        view.usersGrid.getColumn(ORGANIZATION).getCaption());
-    assertEquals(resources.message(SIGN_AS), view.usersGrid.getColumn(SIGN_AS).getCaption());
-    Button signasButton = (Button) view.usersGrid.getColumn(SIGN_AS).getValueProvider().apply(user);
+        design.usersGrid.getColumn(ORGANIZATION).getCaption());
+    assertEquals(resources.message(SIGN_AS), design.usersGrid.getColumn(SIGN_AS).getCaption());
+    Button signasButton =
+        (Button) design.usersGrid.getColumn(SIGN_AS).getValueProvider().apply(user);
     assertTrue(signasButton.getStyleName().contains(SIGN_AS));
     assertEquals(resources.message(SIGN_AS), signasButton.getCaption());
   }
@@ -273,7 +273,7 @@ public class SignasViewPresenterTest {
   @Test
   public void viewUser() {
     final User user = users.get(0);
-    Button button = (Button) view.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
 
     button.click();
 
@@ -286,7 +286,7 @@ public class SignasViewPresenterTest {
   @Test
   public void signasUser() {
     final User user = users.get(0);
-    Button button = (Button) view.usersGrid.getColumn(SIGN_AS).getValueProvider().apply(user);
+    Button button = (Button) design.usersGrid.getColumn(SIGN_AS).getValueProvider().apply(user);
 
     button.click();
 

@@ -36,6 +36,7 @@ public class RegisterViewPresenter {
   public static final String HEADER = "header";
   private static final Logger logger = LoggerFactory.getLogger(RegisterViewPresenter.class);
   private RegisterView view;
+  private RegisterViewDesign design;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -55,6 +56,7 @@ public class RegisterViewPresenter {
   public void init(RegisterView view) {
     logger.debug("Register user view");
     this.view = view;
+    design = view.design;
     prepareComponents();
     addFieldListeners();
   }
@@ -62,9 +64,8 @@ public class RegisterViewPresenter {
   private void prepareComponents() {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
-    view.headerLabel.addStyleName(HEADER);
-    view.headerLabel.addStyleName("h1");
-    view.headerLabel.setValue(resources.message(HEADER));
+    design.headerLabel.addStyleName(HEADER);
+    design.headerLabel.setValue(resources.message(HEADER));
   }
 
   private void addFieldListeners() {

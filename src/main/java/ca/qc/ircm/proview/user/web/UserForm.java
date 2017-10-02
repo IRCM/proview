@@ -22,10 +22,12 @@ import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.shared.Registration;
+import com.vaadin.ui.CustomComponent;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -33,8 +35,9 @@ import javax.inject.Inject;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class UserForm extends UserFormDesign implements BaseComponent {
+public class UserForm extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = -7630525674289902028L;
+  protected UserFormDesign design = new UserFormDesign();
   @Inject
   private transient UserFormPresenter presenter;
 
@@ -45,10 +48,15 @@ public class UserForm extends UserFormDesign implements BaseComponent {
     this.presenter = presenter;
   }
 
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
+
   @Override
   public void attach() {
     super.attach();
-    phoneNumbersLayout.removeAllComponents();
+    design.phoneNumbersLayout.removeAllComponents();
     presenter.init(this);
   }
 

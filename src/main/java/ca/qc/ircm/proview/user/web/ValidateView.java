@@ -19,7 +19,9 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
@@ -28,11 +30,17 @@ import javax.inject.Inject;
  */
 @SpringView(name = ValidateView.VIEW_NAME)
 @RolesAllowed({ "ADMIN", "MANAGER" })
-public class ValidateView extends ValidateViewDesign implements BaseView {
+public class ValidateView extends CustomComponent implements BaseView {
   public static final String VIEW_NAME = "user/validate";
   private static final long serialVersionUID = -1956061543048432065L;
+  protected ValidateViewDesign design = new ValidateViewDesign();
   @Inject
   private transient ValidateViewPresenter presenter;
+
+  @PostConstruct
+  public void init() {
+    setCompositionRoot(design);
+  }
 
   @Override
   public void attach() {
