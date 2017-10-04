@@ -83,10 +83,10 @@ class UserPreference {
   }
 
   public byte[] getValue() {
-    return value;
+    return value.clone();
   }
 
   public void setValue(byte[] value) {
-    this.value = value;
+    this.value = value.clone();
   }
 }
