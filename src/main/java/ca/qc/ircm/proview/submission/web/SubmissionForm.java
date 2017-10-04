@@ -56,6 +56,9 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
     this.plateComponent = plateComponent;
   }
 
+  /**
+   * Initializes form.
+   */
   @PostConstruct
   public void init() {
     setSizeFull();
