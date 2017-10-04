@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "preference")
-public class Preference {
+class Preference {
   /**
    * Database identifier.
    */

@@ -32,7 +32,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "userpreference")
-public class UserPreference {
+class UserPreference {
   /**
    * Database identifier.
    */
