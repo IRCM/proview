@@ -34,7 +34,10 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_WELL;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_WELL_IN_USE;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DOWN;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DOWN_STYLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.HEADER;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.INVALID_SAMPLES;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAVE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE;
@@ -73,6 +76,7 @@ import ca.qc.ircm.proview.plate.WellLocation;
 import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.plate.web.PlateComponent;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.SampleTransfer;
@@ -124,9 +128,11 @@ public class TransferViewPresenterTest {
   @Mock
   private TubeService tubeService;
   @Mock
+  private WellService wellService;
+  @Mock
   private PlateService plateService;
   @Mock
-  private WellService wellService;
+  private SampleService sampleService;
   @Captor
   private ArgumentCaptor<Collection<Well>> wellsCaptor;
   @Captor
@@ -151,7 +157,7 @@ public class TransferViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new TransferViewPresenter(transferService, tubeService, wellService, plateService,
-        applicationName);
+        sampleService, applicationName);
     design = new TransferViewDesign();
     view.design = design;
     view.sourcePlateForm = mock(PlateComponent.class);
@@ -187,6 +193,10 @@ public class TransferViewPresenterTest {
         .thenAnswer(i -> i.getArguments()[0] != null && !sourcePlates.isEmpty()
             ? sourceWells.get(i.getArguments()[0]).get(sourcePlates.get(0)).get(0)
             : null);
+    when(sampleService.get(any())).thenAnswer(i -> {
+      Long id = i.getArgumentAt(0, Long.class);
+      return id != null ? entityManager.find(Sample.class, id) : null;
+    });
   }
 
   private List<Tube> generateTubes(Sample sample, int count) {
@@ -218,6 +228,8 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.getStyleName().contains(TRANSFERS_PANEL));
     assertTrue(design.transfers.getStyleName().contains(TRANSFERS));
     assertTrue(design.transfers.getStyleName().contains(COMPONENTS));
+    assertTrue(design.down.getStyleName().contains(DOWN));
+    assertTrue(design.down.getStyleName().contains(DOWN_STYLE));
     assertTrue(design.source.getStyleName().contains(SOURCE));
     assertTrue(design.sourcePlatesField.getStyleName().contains(SOURCE_PLATES));
     assertTrue(design.sourcePlatePanel.getStyleName().contains(SOURCE_PLATE_PANEL));
@@ -238,6 +250,7 @@ public class TransferViewPresenterTest {
     assertEquals(resources.message(HEADER), design.headerLabel.getValue());
     assertEquals(resources.message(TRANSFER_TYPE_PANEL), design.typePanel.getCaption());
     assertEquals(resources.message(TRANSFERS_PANEL), design.transfersPanel.getCaption());
+    assertEquals(resources.message(DOWN), design.down.getCaption());
     assertEquals(resources.message(SOURCE), design.source.getCaption());
     for (TransferType type : TransferType.values()) {
       assertEquals(type.getLabel(locale), design.type.getItemCaptionGenerator().apply(type));
@@ -274,11 +287,18 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.isVisible());
     assertFalse(design.source.isVisible());
     assertTrue(design.destination.isVisible());
+    assertTrue(design.down.isVisible());
 
     design.type.setValue(TransferType.TUBES_TO_TUBES);
     assertTrue(design.transfersPanel.isVisible());
     assertFalse(design.source.isVisible());
     assertFalse(design.destination.isVisible());
+    assertFalse(design.down.isVisible());
+
+    design.type.setValue(TransferType.PLATE_TO_PLATE);
+    assertFalse(design.transfersPanel.isVisible());
+    assertTrue(design.source.isVisible());
+    assertTrue(design.destination.isVisible());
   }
 
   @Test
@@ -424,6 +444,53 @@ public class TransferViewPresenterTest {
     assertEquals(sourcePlates.size(), plates.size());
     assertTrue(plates.containsAll(sourcePlates));
     assertTrue(sourcePlates.containsAll(plates));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void down() {
+    presenter.init(view);
+    presenter.enter("");
+    design.type.setValue(TransferType.TUBES_TO_PLATE);
+    Map<Sample, Tube> sources = new HashMap<>();
+    List<SampleTransfer> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    transfers.forEach(ts -> {
+      ComboBox<Tube> comboBox =
+          (ComboBox<Tube>) design.transfers.getColumn(CONTAINER).getValueProvider().apply(ts);
+      sources.put(ts.getSample(), comboBox.getValue());
+    });
+    Plate plate = new Plate(null, "test");
+    plate.initWells();
+    design.destinationPlatesField.setValue(plate);
+    when(view.destinationPlateForm.getValue()).thenReturn(plate);
+    when(plateService.get(any(Long.class))).thenReturn(null);
+    for (SampleTransfer ts : transfers) {
+      design.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+    }
+
+    ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
+        .apply(transfers.get(0))).setValue(plate.well(0, 0));
+    design.down.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    int count = 0;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      assertEquals(plate.well(count++, 0), field.getValue());
+    }
+
+    ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
+        .apply(transfers.get(0))).setValue(plate.well(2, 3));
+    design.down.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    count = 2;
+    for (SampleTransfer ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      assertEquals(plate.well(count++, 3), field.getValue());
+    }
   }
 
   @Test
@@ -1445,5 +1512,62 @@ public class TransferViewPresenterTest {
       assertEquals(count++, destinationWell.getRow());
       assertEquals(4, destinationWell.getColumn());
     }
+  }
+
+  @Test
+  public void enter_Empty() {
+    presenter.init(view);
+    presenter.enter("");
+
+    ListDataProvider<SampleTransfer> tss = dataProvider(design.transfers);
+    assertEquals(samples.size(), tss.getItems().size());
+    for (Sample sample : samples) {
+      assertTrue(tss.getItems().stream().filter(ts -> sample.equals(ts.getSample())).findAny()
+          .isPresent());
+    }
+  }
+
+  @Test
+  public void enter_Samples() {
+    presenter.init(view);
+    presenter.enter("samples/559,560");
+
+    ListDataProvider<SampleTransfer> tss = dataProvider(design.transfers);
+    assertEquals(samples.size() - 1, tss.getItems().size());
+    for (Sample sample : samples.subList(0, 2)) {
+      assertTrue(tss.getItems().stream().filter(ts -> sample.equals(ts.getSample())).findAny()
+          .isPresent());
+    }
+  }
+
+  @Test
+  public void enter_Samples_Empty() {
+    presenter.init(view);
+    presenter.enter("samples/");
+
+    ListDataProvider<SampleTransfer> tss = dataProvider(design.transfers);
+    verify(view).showWarning(resources.message(INVALID_SAMPLES));
+    assertTrue(tss.getItems().isEmpty());
+  }
+
+  @Test
+  public void enter_Samples_NotId() {
+    presenter.init(view);
+    presenter.enter("samples/559,a");
+
+    ListDataProvider<SampleTransfer> tss = dataProvider(design.transfers);
+    verify(view).showWarning(resources.message(INVALID_SAMPLES));
+    assertTrue(tss.getItems().isEmpty());
+  }
+
+  @Test
+  public void enter_Samples_IdNotExists() {
+    when(sampleService.get(any())).thenReturn(null);
+    presenter.init(view);
+    presenter.enter("samples/559,560");
+
+    ListDataProvider<SampleTransfer> tss = dataProvider(design.transfers);
+    verify(view).showWarning(resources.message(INVALID_SAMPLES));
+    assertTrue(tss.getItems().isEmpty());
   }
 }

@@ -36,6 +36,7 @@ import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.transfer.SampleTransfer;
 import ca.qc.ircm.proview.transfer.Transfer;
@@ -51,7 +52,6 @@ import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
@@ -116,6 +116,10 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String DESTINATION_SAMPLE = sample.getMetadata().getName();
   public static final String DESTINATION_SAMPLE_NAME =
       DESTINATION_SAMPLE + "." + sample.name.getMetadata().getName();
+  public static final String DOWN = "down";
+  public static final String DOWN_STYLE = "skip-row";
+  public static final String INVALID_SAMPLES = "samples.invalid";
+  public static final String SPLIT_SAMPLES_PARAMETERS = ",";
   private static final Logger logger = LoggerFactory.getLogger(TransferViewPresenter.class);
   private TransferView view;
   private TransferViewDesign design;
@@ -131,6 +135,8 @@ public class TransferViewPresenter implements BinderValidator {
   private WellService wellService;
   @Inject
   private PlateService plateService;
+  @Inject
+  private SampleService sampleService;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -138,11 +144,13 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   protected TransferViewPresenter(TransferService transferService, TubeService tubeService,
-      WellService wellService, PlateService plateService, String applicationName) {
+      WellService wellService, PlateService plateService, SampleService sampleService,
+      String applicationName) {
     this.transferService = transferService;
     this.tubeService = tubeService;
     this.wellService = wellService;
     this.plateService = plateService;
+    this.sampleService = sampleService;
     this.applicationName = applicationName;
   }
 
@@ -179,6 +187,11 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfersPanel.addStyleName(TRANSFERS_PANEL);
     design.transfersPanel.setCaption(resources.message(TRANSFERS_PANEL));
     prepareTransfersGrid();
+    design.down.addStyleName(DOWN);
+    design.down.addStyleName(DOWN_STYLE);
+    design.down.setCaption(resources.message(DOWN));
+    design.down.setVisible(false);
+    design.down.addClickListener(e -> fillDestinationWells());
     design.source.addStyleName(SOURCE);
     design.source.setCaption(resources.message(SOURCE));
     design.sourcePlatesField.addStyleName(SOURCE_PLATES);
@@ -321,6 +334,7 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfersPanel.setVisible(sourceType == TUBE);
     design.transfers.getColumn(DESTINATION_TUBE).setHidden(destinationType != TUBE);
     design.transfers.getColumn(DESTINATION_WELL).setHidden(destinationType != WELL);
+    design.down.setVisible(destinationType == WELL);
     design.source.setVisible(sourceType == WELL);
     design.destination.setVisible(destinationType == WELL);
   }
@@ -374,6 +388,20 @@ public class TransferViewPresenter implements BinderValidator {
                 design.sourcePlatesField.setValue(p);
               });
         });
+  }
+
+  private void fillDestinationWells() {
+    Well firstWell = destinationWells.get(transferBinders.get(samples.get(0)).getBean()).getValue();
+    Plate plate = design.destinationPlatesField.getValue();
+    List<Well> wells = plate.wells(new WellLocation(firstWell.getRow(), firstWell.getColumn()),
+        new WellLocation(plate.getRowCount() - 1, plate.getColumnCount() - 1));
+    wells.sort(new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
+    int index = 0;
+    for (Sample sample : samples) {
+      SampleTransfer ts = transferBinders.get(sample).getBean();
+      ComboBox<Well> field = destinationWells.get(ts);
+      field.setValue(wells.get(index++));
+    }
   }
 
   private ValidationResult validateDestinationContainer(SampleContainer container) {
@@ -588,50 +616,56 @@ public class TransferViewPresenter implements BinderValidator {
     }
   }
 
+  private boolean validateSamplesParameters(String parameters) {
+    boolean valid = true;
+    String[] rawIds = parameters.split(SPLIT_SAMPLES_PARAMETERS, -1);
+    if (rawIds.length < 1) {
+      valid = false;
+    }
+    try {
+      for (String rawId : rawIds) {
+        Long id = Long.valueOf(rawId);
+        if (sampleService.get(id) == null) {
+          valid = false;
+        }
+      }
+    } catch (NumberFormatException e) {
+      valid = false;
+    }
+    return valid;
+  }
+
+  /**
+   * Called by view when entered.
+   *
+   * @param parameters
+   *          view parameters
+   */
   public void enter(String parameters) {
-    samples = view.savedSamples();
+    Collection<Sample> samplesParameters;
+    if (parameters == null || parameters.isEmpty()) {
+      logger.trace("Recovering samples from session");
+      samplesParameters = view.savedSamples();
+    } else if (parameters.startsWith("samples/")) {
+      parameters = parameters.substring("samples/".length());
+      logger.trace("Parsing samples from parameters");
+      samplesParameters = new ArrayList<>();
+      if (validateSamplesParameters(parameters)) {
+        String[] rawIds = parameters.split(SPLIT_SAMPLES_PARAMETERS, -1);
+        for (String rawId : rawIds) {
+          Long id = Long.valueOf(rawId);
+          samplesParameters.add(sampleService.get(id));
+        }
+      } else {
+        view.showWarning(view.getResources().message(INVALID_SAMPLES));
+      }
+    } else {
+      // TODO This should populate an existing transfer.
+      logger.trace("Recovering samples from session");
+      samplesParameters = view.savedSamples();
+    }
+
+    samples = new ArrayList<>(samplesParameters);
     updateSamples();
-  }
-
-  public static class SampleSourceTube {
-    private Tube tube;
-
-    private SampleSourceTube(Tube tube) {
-      this.tube = tube;
-    }
-
-    public Tube getTube() {
-      return tube;
-    }
-
-    public void setTube(Tube tube) {
-      this.tube = tube;
-    }
-  }
-
-  public static class DestinationTube {
-    private Sample sample;
-    private TextField tubeName;
-
-    private DestinationTube(Sample sample, TextField tubeNameField) {
-      this.sample = sample;
-      this.tubeName = tubeNameField;
-    }
-
-    public Sample getSample() {
-      return sample;
-    }
-
-    public void setSample(Sample sample) {
-      this.sample = sample;
-    }
-
-    public TextField getTubeName() {
-      return tubeName;
-    }
-
-    public void setTubeName(TextField tubeName) {
-      this.tubeName = tubeName;
-    }
   }
 }

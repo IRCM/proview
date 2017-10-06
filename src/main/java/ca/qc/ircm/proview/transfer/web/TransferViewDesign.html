@@ -17,7 +17,12 @@
    </vaadin-panel>
    <vaadin-panel _id="transfersPanel">
     <vaadin-vertical-layout>
-     <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.transfer.SampleTransfer" _id="transfers"></vaadin-grid>
+     <vaadin-horizontal-layout width-full>
+      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.transfer.SampleTransfer" _id="transfers" :expand></vaadin-grid>
+      <vaadin-button plain-text _id="down">
+        Down 
+      </vaadin-button>
+     </vaadin-horizontal-layout>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Source" _id="source">
