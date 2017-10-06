@@ -150,6 +150,7 @@ public class TransferService extends BaseTreatmentService {
         if (destinationWell.getId() == null
             && !insertedPlates.contains(destinationWell.getPlate())) {
           plateService.insert(destinationWell.getPlate());
+          insertedPlates.add(destinationWell.getPlate());
         }
       }
     }
