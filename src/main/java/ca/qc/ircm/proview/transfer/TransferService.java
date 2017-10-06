@@ -22,6 +22,9 @@ import static ca.qc.ircm.proview.transfer.QTransfer.transfer;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateService;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -31,14 +34,18 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -50,6 +57,8 @@ import javax.persistence.PersistenceContext;
 @Service
 @Transactional
 public class TransferService extends BaseTreatmentService {
+  @SuppressWarnings("unused")
+  private static final Logger loggger = LoggerFactory.getLogger(TransferService.class);
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -59,6 +68,8 @@ public class TransferService extends BaseTreatmentService {
   @Inject
   private ActivityService activityService;
   @Inject
+  private PlateService plateService;
+  @Inject
   private AuthorizationService authorizationService;
 
   protected TransferService() {
@@ -66,12 +77,13 @@ public class TransferService extends BaseTreatmentService {
 
   protected TransferService(EntityManager entityManager, JPAQueryFactory queryFactory,
       TransferActivityService transferActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
+      PlateService plateService, AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.transferActivityService = transferActivityService;
     this.activityService = activityService;
+    this.plateService = plateService;
     this.authorizationService = authorizationService;
   }
 
@@ -121,12 +133,7 @@ public class TransferService extends BaseTreatmentService {
   public void insert(Transfer transfer) {
     authorizationService.checkAdminRole();
     final User user = authorizationService.getCurrentUser();
-
-    // Reassign samples inside destinations.
-    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-      sampleTransfer.getDestinationContainer().setSample(sampleTransfer.getSample());
-      sampleTransfer.getDestinationContainer().setTreatmentSample(sampleTransfer);
-    }
+    Instant now = Instant.now();
 
     // Insert destination tubes.
     for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
@@ -135,15 +142,28 @@ public class TransferService extends BaseTreatmentService {
         entityManager.persist(sampleTransfer.getDestinationContainer());
       }
     }
+    // Insert destination plates.
+    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
+      Set<Plate> insertedPlates = new HashSet<>();
+      if (sampleTransfer.getDestinationContainer() instanceof Well) {
+        Well destinationWell = (Well) sampleTransfer.getDestinationContainer();
+        if (destinationWell.getId() == null
+            && !insertedPlates.contains(destinationWell.getPlate())) {
+          plateService.insert(destinationWell.getPlate());
+        }
+      }
+    }
 
     // Insert transfer.
-    transfer.setInsertTime(Instant.now());
+    transfer.setInsertTime(now);
     transfer.setUser(user);
 
     entityManager.persist(transfer);
     // Link container to sample and treatment sample.
     for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-      sampleTransfer.getDestinationContainer().setTimestamp(Instant.now());
+      sampleTransfer.getDestinationContainer().setSample(sampleTransfer.getSample());
+      sampleTransfer.getDestinationContainer().setTreatmentSample(sampleTransfer);
+      sampleTransfer.getDestinationContainer().setTimestamp(now);
     }
 
     // Log insertion of transfer.

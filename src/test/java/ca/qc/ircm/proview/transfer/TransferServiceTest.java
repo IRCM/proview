@@ -27,11 +27,14 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -76,6 +79,8 @@ public class TransferServiceTest {
   @Mock
   private ActivityService activityService;
   @Mock
+  private PlateService plateService;
+  @Mock
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -89,7 +94,7 @@ public class TransferServiceTest {
   @Before
   public void beforeTest() {
     transferService = new TransferService(entityManager, queryFactory, transferActivityService,
-        activityService, authorizationService);
+        activityService, plateService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -147,12 +152,11 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void insert_TubeToTube() {
+  public void insert_TubesToTubes() {
     final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     final Tube sourceTube = new Tube(1L);
     Tube destinationTube = new Tube();
-    destinationTube.setSample(sample);
     destinationTube.setName("unit_test_tube_" + sample.getName());
     SampleTransfer sampleTransfer = new SampleTransfer();
     sampleTransfer.setSample(sample);
@@ -194,12 +198,11 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void insert_TubeToWell() {
+  public void insert_TubesToExistingWells() {
     final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
     Well destinationWell = new Well(134L);
-    destinationWell.setSample(sample);
     SampleTransfer sampleTransfer = new SampleTransfer();
     sampleTransfer.setSample(sample);
     sampleTransfer.setContainer(sourceTube);
@@ -237,12 +240,68 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void insert_WellToTube() {
+  public void insert_TubesToNewWells() {
+    final List<SampleTransfer> sampleTransfers = new ArrayList<>();
+    Sample sample = new SubmissionSample(1L);
+    Plate destinationPlate = new Plate(null, "test_plate");
+    destinationPlate.initWells();
+    Well destinationWell = destinationPlate.well(0, 0);
+    Tube sourceTube = new Tube(1L);
+    SampleTransfer sampleTransfer = new SampleTransfer();
+    sampleTransfer.setSample(sample);
+    sampleTransfer.setContainer(sourceTube);
+    sampleTransfer.setDestinationContainer(destinationWell);
+    sampleTransfers.add(sampleTransfer);
+    Transfer transfer = new Transfer();
+    transfer.setTreatmentSamples(sampleTransfers);
+    when(transferActivityService.insert(any(Transfer.class))).thenReturn(activity);
+    doAnswer(i -> {
+      Plate plate = i.getArgumentAt(0, Plate.class);
+      plate.setInsertTime(Instant.now());
+      plate.initWells();
+      plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
+      entityManager.persist(plate);
+      entityManager.flush();
+      return null;
+    }).when(plateService).insert(any());
+
+    transferService.insert(transfer);
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(transferActivityService).insert(eq(transfer));
+    verify(activityService).insert(eq(activity));
+    verify(plateService).insert(eq(destinationPlate));
+    transfer = transferService.get(transfer.getId());
+    assertNotNull(transfer);
+    assertEquals(false, transfer.isDeleted());
+    assertEquals(null, transfer.getDeletionType());
+    assertEquals(null, transfer.getDeletionExplanation());
+    assertEquals(user, transfer.getUser());
+    assertEquals(1, transfer.getTreatmentSamples().size());
+    sampleTransfer = transfer.getTreatmentSamples().get(0);
+    assertEquals((Long) 1L, sampleTransfer.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, sampleTransfer.getContainer().getType());
+    assertEquals((Long) 1L, sampleTransfer.getContainer().getId());
+    assertEquals(SampleContainerType.WELL, sampleTransfer.getDestinationContainer().getType());
+    assertNotNull(sampleTransfer.getDestinationContainer().getId());
+    destinationWell = (Well) sampleTransfer.getDestinationContainer();
+    assertNotNull(destinationWell.getPlate().getId());
+    assertEquals("test_plate", destinationWell.getPlate().getName());
+    assertEquals(sampleTransfer.getId(),
+        sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
+    Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    assertTrue(before.isBefore(sampleTransfer.getDestinationContainer().getTimestamp()));
+    Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    assertTrue(after.isAfter(sampleTransfer.getDestinationContainer().getTimestamp()));
+  }
+
+  @Test
+  public void insert_WellsToTubes() {
     final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     final Well sourceWell = new Well(128L);
     Tube destinationTube = new Tube();
-    destinationTube.setSample(sample);
     destinationTube.setName("unit_test_tube_" + sample.getName());
     SampleTransfer sampleTransfer = new SampleTransfer();
     sampleTransfer.setSample(sample);
@@ -282,12 +341,11 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void insert_WellToWell() {
+  public void insert_WellsToExistingWells() {
     final List<SampleTransfer> sampleTransfers = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Well sourceWell = new Well(128L);
     Well destinationWell = new Well(134L);
-    destinationWell.setSample(sample);
     SampleTransfer sampleTransfer = new SampleTransfer();
     sampleTransfer.setSample(sample);
     sampleTransfer.setContainer(sourceWell);
@@ -316,6 +374,64 @@ public class TransferServiceTest {
     assertEquals((Long) 128L, sampleTransfer.getContainer().getId());
     assertEquals(SampleContainerType.WELL, sampleTransfer.getDestinationContainer().getType());
     assertEquals((Long) 134L, sampleTransfer.getDestinationContainer().getId());
+    assertEquals(sampleTransfer.getId(),
+        sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
+    Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    assertTrue(before.isBefore(sampleTransfer.getDestinationContainer().getTimestamp()));
+    Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    assertTrue(after.isAfter(sampleTransfer.getDestinationContainer().getTimestamp()));
+  }
+
+  @Test
+  public void insert_WellsToNewWells() {
+    final List<SampleTransfer> sampleTransfers = new ArrayList<>();
+    Sample sample = new SubmissionSample(1L);
+    Plate destinationPlate = new Plate(null, "test_plate");
+    destinationPlate.initWells();
+    Well destinationWell = destinationPlate.well(0, 0);
+    Well sourceWell = new Well(128L);
+    SampleTransfer sampleTransfer = new SampleTransfer();
+    sampleTransfer.setSample(sample);
+    sampleTransfer.setContainer(sourceWell);
+    sampleTransfer.setDestinationContainer(destinationWell);
+    sampleTransfers.add(sampleTransfer);
+    Transfer transfer = new Transfer();
+    transfer.setTreatmentSamples(sampleTransfers);
+    when(transferActivityService.insert(any(Transfer.class))).thenReturn(activity);
+    doAnswer(i -> {
+      Plate plate = i.getArgumentAt(0, Plate.class);
+      plate.setInsertTime(Instant.now());
+      plate.initWells();
+      plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
+      entityManager.persist(plate);
+      entityManager.flush();
+      return null;
+    }).when(plateService).insert(any());
+
+    transferService.insert(transfer);
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(transferActivityService).insert(eq(transfer));
+    verify(activityService).insert(eq(activity));
+    verify(plateService).insert(eq(destinationPlate));
+    transfer = transferService.get(transfer.getId());
+    assertNotNull(transfer);
+    assertEquals(false, transfer.isDeleted());
+    assertEquals(null, transfer.getDeletionType());
+    assertEquals(null, transfer.getDeletionExplanation());
+    assertEquals(user, transfer.getUser());
+    assertEquals(1, transfer.getTreatmentSamples().size());
+    sampleTransfer = transfer.getTreatmentSamples().get(0);
+    assertEquals((Long) 1L, sampleTransfer.getSample().getId());
+    assertEquals(SampleContainerType.WELL, sampleTransfer.getContainer().getType());
+    assertEquals((Long) 128L, sampleTransfer.getContainer().getId());
+    assertEquals(SampleContainerType.WELL, sampleTransfer.getDestinationContainer().getType());
+    assertEquals(SampleContainerType.WELL, sampleTransfer.getDestinationContainer().getType());
+    assertNotNull(sampleTransfer.getDestinationContainer().getId());
+    destinationWell = (Well) sampleTransfer.getDestinationContainer();
+    assertNotNull(destinationWell.getPlate().getId());
+    assertEquals("test_plate", destinationWell.getPlate().getName());
     assertEquals(sampleTransfer.getId(),
         sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
