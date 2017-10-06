@@ -170,10 +170,6 @@ public class TransferService extends BaseTreatmentService {
     entityManager.flush();
     Activity activity = transferActivityService.insert(transfer);
     activityService.insert(activity);
-
-    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-      entityManager.merge(sampleTransfer.getDestinationContainer());
-    }
   }
 
   /**
