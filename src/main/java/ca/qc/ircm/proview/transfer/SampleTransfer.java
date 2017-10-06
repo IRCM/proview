@@ -47,7 +47,7 @@ public class SampleTransfer extends TreatmentSample implements Data {
 
   @Override
   public String toString() {
-    return "SampleTransfer [getId()=" + getId() + "]";
+    return "SampleTransfer [getId()=" + getId() + ", getSample()=" + getSample() + "]";
   }
 
   public SampleContainer getDestinationContainer() {
