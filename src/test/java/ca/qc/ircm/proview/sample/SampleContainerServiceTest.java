@@ -64,7 +64,6 @@ public class SampleContainerServiceTest {
     verify(authorizationService).checkSampleReadPermission(container.getSample());
     assertEquals((Long) 1L, container.getId());
     assertEquals((Long) 1L, container.getSample().getId());
-    assertEquals(null, container.getTreatmentSample());
     assertEquals(SampleContainerType.TUBE, container.getType());
     assertEquals(
         LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -87,7 +86,6 @@ public class SampleContainerServiceTest {
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals((Long) 129L, container.getId());
     assertEquals((Long) 1L, container.getSample().getId());
-    assertEquals((Long) 9L, container.getTreatmentSample().getId());
     assertEquals(SampleContainerType.WELL, container.getType());
     assertEquals(
         LocalDateTime.of(2011, 11, 16, 15, 7, 34, 0).atZone(ZoneId.systemDefault()).toInstant(),

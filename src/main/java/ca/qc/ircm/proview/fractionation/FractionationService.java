@@ -184,7 +184,6 @@ public class FractionationService extends BaseTreatmentService {
     // Reassign samples inside wells.
     for (FractionationDetail detail : fractionation.getTreatmentSamples()) {
       detail.getDestinationContainer().setSample(detail.getSample());
-      detail.getDestinationContainer().setTreatmentSample(detail);
     }
 
     // Insert destination tubes.
@@ -270,7 +269,6 @@ public class FractionationService extends BaseTreatmentService {
     for (FractionationDetail fractionationDetail : fractionation.getTreatmentSamples()) {
       SampleContainer destination = fractionationDetail.getDestinationContainer();
       destination.setSample(null);
-      destination.setTreatmentSample(null);
       samplesRemoved.add(destination);
     }
 

@@ -17,13 +17,11 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -61,12 +59,6 @@ public abstract class SampleContainer implements Data, Named, Serializable {
   @ManyToOne
   @JoinColumn(name = "sampleId")
   private Sample sample;
-  /**
-   * Treatment done on sample, if any.
-   */
-  @ManyToOne(fetch = LAZY)
-  @JoinColumn(name = "treatmentSampleId")
-  private TreatmentSample treatmentSample;
   /**
    * Timestamp of this container. This property should not be set.
    */
@@ -111,14 +103,6 @@ public abstract class SampleContainer implements Data, Named, Serializable {
 
   public void setSample(Sample sample) {
     this.sample = sample;
-  }
-
-  public TreatmentSample getTreatmentSample() {
-    return treatmentSample;
-  }
-
-  public void setTreatmentSample(TreatmentSample treatmentSample) {
-    this.treatmentSample = treatmentSample;
   }
 
   public Instant getTimestamp() {

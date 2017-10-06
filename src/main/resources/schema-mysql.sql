@@ -178,7 +178,6 @@ CREATE TABLE IF NOT EXISTS samplecontainer (
   locationColumn int(11) DEFAULT NULL,
   locationRow int(11) DEFAULT NULL,
   sampleId bigint(20) DEFAULT NULL,
-  treatmentSampleId bigint(20) DEFAULT NULL,
   time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   banned tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
@@ -277,8 +276,6 @@ CREATE TABLE IF NOT EXISTS treatmentsample (
   FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE,
   FOREIGN KEY (destinationContainerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
-ALTER TABLE samplecontainer
-ADD FOREIGN KEY (treatmentSampleId) REFERENCES treatmentsample (id) ON DELETE SET NULL ON UPDATE CASCADE;
 CREATE TABLE IF NOT EXISTS msanalysis (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   source varchar(50) DEFAULT NULL,

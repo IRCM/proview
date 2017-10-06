@@ -163,7 +163,6 @@ public class TransferService extends BaseTreatmentService {
     // Link container to sample and treatment sample.
     for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
       sampleTransfer.getDestinationContainer().setSample(sampleTransfer.getSample());
-      sampleTransfer.getDestinationContainer().setTreatmentSample(sampleTransfer);
       sampleTransfer.getDestinationContainer().setTimestamp(now);
     }
 
@@ -209,7 +208,6 @@ public class TransferService extends BaseTreatmentService {
     for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
       SampleContainer destination = sampleTransfer.getDestinationContainer();
       destination.setSample(null);
-      destination.setTreatmentSample(null);
       samplesRemoved.add(destination);
     }
 

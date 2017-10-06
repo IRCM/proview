@@ -191,8 +191,6 @@ public class TransferServiceTest {
     assertEquals(SampleContainerType.TUBE, sampleTransfer.getDestinationContainer().getType());
     assertNotNull(destinationTube.getId());
     assertEquals(destinationTube.getId(), sampleTransfer.getDestinationContainer().getId());
-    assertEquals(sampleTransfer.getId(),
-        sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
     assertTrue(before.isBefore(sampleTransfer.getDestinationContainer().getTimestamp()));
     assertTrue(after.isAfter(sampleTransfer.getDestinationContainer().getTimestamp()));
   }
@@ -231,8 +229,6 @@ public class TransferServiceTest {
     assertEquals((Long) 1L, sampleTransfer.getContainer().getId());
     assertEquals(SampleContainerType.WELL, sampleTransfer.getDestinationContainer().getType());
     assertEquals((Long) 134L, sampleTransfer.getDestinationContainer().getId());
-    assertEquals(sampleTransfer.getId(),
-        sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(sampleTransfer.getDestinationContainer().getTimestamp()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -288,8 +284,6 @@ public class TransferServiceTest {
     destinationWell = (Well) sampleTransfer.getDestinationContainer();
     assertNotNull(destinationWell.getPlate().getId());
     assertEquals("test_plate", destinationWell.getPlate().getName());
-    assertEquals(sampleTransfer.getId(),
-        sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(sampleTransfer.getDestinationContainer().getTimestamp()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -332,8 +326,6 @@ public class TransferServiceTest {
     assertEquals(SampleContainerType.TUBE, sampleTransfer.getDestinationContainer().getType());
     assertNotNull(destinationTube.getId());
     assertEquals(destinationTube.getId(), sampleTransfer.getDestinationContainer().getId());
-    assertEquals(sampleTransfer.getId(),
-        sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(sampleTransfer.getDestinationContainer().getTimestamp()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -374,8 +366,6 @@ public class TransferServiceTest {
     assertEquals((Long) 128L, sampleTransfer.getContainer().getId());
     assertEquals(SampleContainerType.WELL, sampleTransfer.getDestinationContainer().getType());
     assertEquals((Long) 134L, sampleTransfer.getDestinationContainer().getId());
-    assertEquals(sampleTransfer.getId(),
-        sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(sampleTransfer.getDestinationContainer().getTimestamp()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -432,8 +422,6 @@ public class TransferServiceTest {
     destinationWell = (Well) sampleTransfer.getDestinationContainer();
     assertNotNull(destinationWell.getPlate().getId());
     assertEquals("test_plate", destinationWell.getPlate().getName());
-    assertEquals(sampleTransfer.getId(),
-        sampleTransfer.getDestinationContainer().getTreatmentSample().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(sampleTransfer.getDestinationContainer().getTimestamp()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -463,7 +451,6 @@ public class TransferServiceTest {
     assertEquals((Long) 1L, sourceTube.getSample().getId());
     Tube destinationTube = entityManager.find(Tube.class, 7L);
     assertNull(destinationTube.getSample());
-    assertNull(destinationTube.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(1, samplesRemoved.size());
     assertTrue(findContainer(samplesRemoved, SampleContainerType.TUBE, 7L).isPresent());
@@ -496,7 +483,6 @@ public class TransferServiceTest {
     assertNull(destinationWell.getSample());
     destinationWell = entityManager.find(Well.class, 1010L);
     assertNull(destinationWell.getSample());
-    assertNull(destinationWell.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(2, samplesRemoved.size());
     assertTrue(findContainer(samplesRemoved, SampleContainerType.WELL, 998L).isPresent());

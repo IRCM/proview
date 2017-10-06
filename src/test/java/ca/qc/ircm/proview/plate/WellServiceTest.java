@@ -66,7 +66,6 @@ public class WellServiceTest {
     assertEquals((Long) 129L, well.getId());
     assertEquals((Long) 26L, well.getPlate().getId());
     assertEquals((Long) 1L, well.getSample().getId());
-    assertEquals((Long) 9L, well.getTreatmentSample().getId());
     assertEquals(
         LocalDateTime.of(2011, 11, 16, 15, 7, 34).atZone(ZoneId.systemDefault()).toInstant(),
         well.getTimestamp());
@@ -93,7 +92,6 @@ public class WellServiceTest {
     assertEquals((Long) 155L, well.getId());
     assertEquals((Long) 26L, well.getPlate().getId());
     assertEquals(null, well.getSample());
-    assertEquals(null, well.getTreatmentSample());
     assertEquals(
         LocalDateTime.of(2011, 11, 8, 13, 33, 21).atZone(ZoneId.systemDefault()).toInstant(),
         well.getTimestamp());

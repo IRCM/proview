@@ -256,8 +256,6 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
     assertEquals(SampleContainerType.WELL, fractionationDetail.getDestinationContainer().getType());
     assertEquals((Long) 134L, fractionationDetail.getDestinationContainer().getId());
-    assertEquals(fractionationDetail.getId(),
-        fractionationDetail.getDestinationContainer().getTreatmentSample().getId());
     assertEquals((Integer) 1, fractionationDetail.getNumber());
     assertEquals((Integer) 3, fractionationDetail.getPosition());
     fractionationDetail = fractionation.getTreatmentSamples().get(1);
@@ -266,8 +264,6 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
     assertEquals(SampleContainerType.WELL, fractionationDetail.getDestinationContainer().getType());
     assertEquals((Long) 135L, fractionationDetail.getDestinationContainer().getId());
-    assertEquals(fractionationDetail.getId(),
-        fractionationDetail.getDestinationContainer().getTreatmentSample().getId());
     assertEquals((Integer) 2, fractionationDetail.getNumber());
     assertEquals((Integer) 4, fractionationDetail.getPosition());
     assertTrue(before.isBefore(fractionationDetail.getDestinationContainer().getTimestamp()));
@@ -297,7 +293,6 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, sourceTube.getSample().getId());
     Well destinationWell = entityManager.find(Well.class, 128L);
     assertNull(destinationWell.getSample());
-    assertNull(destinationWell.getTreatmentSample());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
     assertEquals(1, samplesRemoved.size());
     assertTrue(findContainer(samplesRemoved, SampleContainerType.WELL, 128L).isPresent());

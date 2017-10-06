@@ -71,7 +71,6 @@ public class TubeServiceTest {
     assertEquals((Long) 1L, tube.getId());
     assertEquals("FAM119A_band_01", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
-    assertEquals(null, tube.getTreatmentSample());
     assertEquals(SampleContainerType.TUBE, tube.getType());
     assertEquals(
         LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -93,7 +92,6 @@ public class TubeServiceTest {
     assertEquals((Long) 1L, tube.getId());
     assertEquals("FAM119A_band_01", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
-    assertEquals(null, tube.getTreatmentSample());
     assertEquals(SampleContainerType.TUBE, tube.getType());
     assertEquals(
         LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -117,7 +115,6 @@ public class TubeServiceTest {
     assertEquals((Long) 1L, tube.getId());
     assertEquals("FAM119A_band_01", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
-    assertEquals(null, tube.getTreatmentSample());
     assertEquals(SampleContainerType.TUBE, tube.getType());
     assertEquals(
         LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
@@ -141,7 +138,6 @@ public class TubeServiceTest {
     assertEquals((Long) 7L, tube.getId());
     assertEquals("FAM119A_band_01_T1", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
-    assertEquals((Long) 3L, tube.getTreatmentSample().getId());
     assertEquals(SampleContainerType.TUBE, tube.getType());
     assertEquals(
         LocalDateTime.of(2011, 10, 19, 15, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
