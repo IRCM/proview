@@ -91,6 +91,7 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String TRANSFERS = "transfers";
   public static final String SAMPLE = sampleTransfer.sample.getMetadata().getName();
   public static final String CONTAINER = sampleTransfer.container.getMetadata().getName();
+  public static final String CONTAINER_TUBE = CONTAINER + "Tube";
   public static final String DESTINATION_CONTAINER =
       sampleTransfer.destinationContainer.getMetadata().getName();
   public static final String DESTINATION_CONTAINER_DUPLICATE = DESTINATION_CONTAINER + ".duplicate";
@@ -121,11 +122,13 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String DOWN_STYLE = "skip-row";
   public static final String INVALID_SAMPLES = "samples.invalid";
   public static final String SPLIT_SAMPLES_PARAMETERS = ",";
+  public static final String INVALID_TRANSFER = "transfer.invalid";
   private static final Logger logger = LoggerFactory.getLogger(TransferViewPresenter.class);
   private TransferView view;
   private TransferViewDesign design;
-  private List<Sample> samples = new ArrayList<>();
-  private Map<Sample, Binder<SampleTransfer>> transferBinders = new HashMap<>();
+  private boolean readOnly;
+  private List<SampleTransfer> transfers = new ArrayList<>();
+  private Map<SampleTransfer, Binder<SampleTransfer>> transferBinders = new HashMap<>();
   private Map<SampleTransfer, ComboBox<Tube>> sourceTubes = new HashMap<>();
   private Map<SampleTransfer, ComboBox<Tube>> destinationTubes = new HashMap<>();
   private Map<SampleTransfer, ComboBox<Well>> destinationWells = new HashMap<>();
@@ -238,8 +241,15 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfers.addStyleName(COMPONENTS);
     design.transfers.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
-    design.transfers.addColumn(ts -> sourceField(ts), new ComponentRenderer()).setId(CONTAINER)
-        .setCaption(resources.message(CONTAINER));
+    design.transfers
+        .addColumn(ts -> ts.getContainer() != null ? ts.getContainer().getFullName() : "")
+        .setId(CONTAINER).setCaption(resources.message(CONTAINER));
+    design.transfers.addColumn(
+        ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
+            : "")
+        .setId(DESTINATION).setCaption(resources.message(DESTINATION));
+    design.transfers.addColumn(ts -> sourceField(ts), new ComponentRenderer()).setId(CONTAINER_TUBE)
+        .setCaption(resources.message(CONTAINER_TUBE));
     design.transfers.addColumn(ts -> destinationTube(ts), new ComponentRenderer())
         .setId(DESTINATION_TUBE).setCaption(resources.message(DESTINATION_TUBE));
     design.transfers.addColumn(ts -> destinationWell(ts), new ComponentRenderer())
@@ -247,12 +257,12 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private Binder<SampleTransfer> binder(SampleTransfer ts) {
-    if (transferBinders.get(ts.getSample()) != null) {
-      return transferBinders.get(ts.getSample());
+    if (transferBinders.get(ts) != null) {
+      return transferBinders.get(ts);
     } else {
       Binder<SampleTransfer> binder = new BeanValidationBinder<>(SampleTransfer.class);
       binder.setBean(ts);
-      transferBinders.put(ts.getSample(), binder);
+      transferBinders.put(ts, binder);
       return binder;
     }
   }
@@ -263,22 +273,22 @@ public class TransferViewPresenter implements BinderValidator {
     } else {
       final MessageResource generalResources = view.getGeneralResources();
       final Sample sample = ts.getSample();
-      ComboBox<Tube> container = new ComboBox<>();
-      container.addStyleName(CONTAINER);
-      container.setEmptySelectionAllowed(false);
+      ComboBox<Tube> field = new ComboBox<>();
+      field.addStyleName(CONTAINER_TUBE);
+      field.setEmptySelectionAllowed(false);
       List<Tube> tubes = tubeService.all(sample);
       Collections.sort(tubes,
           new TubeComparator(view.getLocale(), TubeComparator.Compare.TIME_STAMP));
       Collections.reverse(tubes);
-      container.setItems(tubes);
-      container.setItemCaptionGenerator(Tube::getName);
-      if (!tubes.isEmpty()) {
+      field.setItems(tubes);
+      field.setItemCaptionGenerator(Tube::getName);
+      if (ts.getContainer() == null && !tubes.isEmpty()) {
         ts.setContainer(tubes.get(0));
       }
-      sourceTubes.put(ts, container);
-      Binder<SampleTransfer> binder = transferBinders.get(sample);
-      binder.forField(container).asRequired(generalResources.message(REQUIRED)).bind(CONTAINER);
-      return container;
+      sourceTubes.put(ts, field);
+      Binder<SampleTransfer> binder = transferBinders.get(ts);
+      binder.forField(field).asRequired(generalResources.message(REQUIRED)).bind(CONTAINER);
+      return field;
     }
   }
 
@@ -312,7 +322,8 @@ public class TransferViewPresenter implements BinderValidator {
       field.setRequiredIndicatorVisible(true);
       field.setItemCaptionGenerator(well -> well.getName());
       field.setItems(design.destinationPlatesField.getValue() != null
-          ? design.destinationPlatesField.getValue().getWells() : Collections.emptyList());
+          ? design.destinationPlatesField.getValue().getWells()
+          : Collections.emptyList());
       destinationWells.put(ts, field);
       return field;
     }
@@ -344,12 +355,16 @@ public class TransferViewPresenter implements BinderValidator {
   private void updateVisibility() {
     final SampleContainerType sourceType = design.type.getValue().sourceType;
     final SampleContainerType destinationType = design.type.getValue().destinationType;
-    design.transfersPanel.setVisible(sourceType == TUBE);
-    design.transfers.getColumn(DESTINATION_TUBE).setHidden(destinationType != TUBE);
-    design.transfers.getColumn(DESTINATION_WELL).setHidden(destinationType != WELL);
-    design.down.setVisible(destinationType == WELL);
-    design.source.setVisible(sourceType == WELL);
-    design.destination.setVisible(destinationType == WELL);
+    design.typePanel.setVisible(!readOnly);
+    design.transfersPanel.setVisible(readOnly || sourceType == TUBE);
+    design.transfers.getColumn(CONTAINER).setHidden(!readOnly);
+    design.transfers.getColumn(DESTINATION).setHidden(!readOnly);
+    design.transfers.getColumn(CONTAINER_TUBE).setHidden(readOnly);
+    design.transfers.getColumn(DESTINATION_TUBE).setHidden(readOnly || destinationType != TUBE);
+    design.transfers.getColumn(DESTINATION_WELL).setHidden(readOnly || destinationType != WELL);
+    design.down.setVisible(!readOnly && destinationType == WELL);
+    design.source.setVisible(!readOnly && sourceType == WELL);
+    design.destination.setVisible(!readOnly && destinationType == WELL);
   }
 
   private void updateSourcePlate(Plate plate) {
@@ -357,7 +372,7 @@ public class TransferViewPresenter implements BinderValidator {
     if (plate != null) {
       design.sourcePlatePanel.setCaption(plate.getName());
       List<Well> wells =
-          samples.stream().flatMap(sample -> wellService.location(sample, plate).stream())
+          transfers.stream().flatMap(ts -> wellService.location(ts.getSample(), plate).stream())
               .collect(Collectors.toList());
       view.sourcePlateForm.setValue(plate);
       view.sourcePlateForm.setSelectedWells(wells.stream()
@@ -376,26 +391,23 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private void updateSamples() {
-    List<SampleTransfer> transfers = samples.stream().map(sample -> {
-      SampleTransfer ts = new SampleTransfer();
-      ts.setSample(sample);
-      return ts;
-    }).collect(Collectors.toList());
     design.transfers.setItems(transfers);
     transfers.stream().forEach(ts -> {
       binder(ts);
+      sourceField(ts);
       destinationTube(ts);
       destinationWell(ts);
     });
-    List<Plate> plates = plateService.all(new PlateFilterBuilder().containsAnySamples(
-        samples.stream().filter(s -> s instanceof SubmissionSample).collect(Collectors.toList()))
+    List<Plate> plates = plateService.all(new PlateFilterBuilder()
+        .containsAnySamples(transfers.stream().map(ts -> ts.getSample())
+            .filter(sample -> sample instanceof SubmissionSample).collect(Collectors.toList()))
         .build());
     design.sourcePlatesField.setItems(plates);
     if (!plates.isEmpty()) {
       design.sourcePlatesField.setValue(plates.get(0));
     }
-    samples.stream().map(s -> wellService.last(s)).filter(well -> well != null).findFirst()
-        .ifPresent(w -> {
+    transfers.stream().map(ts -> wellService.last(ts.getSample())).filter(well -> well != null)
+        .findFirst().ifPresent(w -> {
           plates.stream().filter(p -> p.getId().equals(w.getPlate().getId())).findAny()
               .ifPresent(p -> {
                 design.sourcePlatesField.setValue(p);
@@ -404,14 +416,13 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private void fillDestinationWells() {
-    Well firstWell = destinationWells.get(transferBinders.get(samples.get(0)).getBean()).getValue();
+    Well firstWell = destinationWells.get(transfers.get(0)).getValue();
     Plate plate = design.destinationPlatesField.getValue();
     List<Well> wells = plate.wells(new WellLocation(firstWell.getRow(), firstWell.getColumn()),
         new WellLocation(plate.getRowCount() - 1, plate.getColumnCount() - 1));
     wells.sort(new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
     int index = 0;
-    for (Sample sample : samples) {
-      SampleTransfer ts = transferBinders.get(sample).getBean();
+    for (SampleTransfer ts : transfers) {
       ComboBox<Well> field = destinationWells.get(ts);
       field.setValue(wells.get(index++));
     }
@@ -468,9 +479,7 @@ public class TransferViewPresenter implements BinderValidator {
     final MessageResource resources = view.getResources();
     if (design.type.getValue().sourceType == TUBE) {
       Set<String> containerNames = new HashSet<>();
-      for (Sample sample : samples) {
-        Binder<SampleTransfer> binder = transferBinders.get(sample);
-        SampleTransfer ts = binder.getBean();
+      for (SampleTransfer ts : transfers) {
         if (ts.getDestinationContainer() != null
             && !containerNames.add(ts.getDestinationContainer().getName())) {
           String message = resources.message(DESTINATION_CONTAINER_DUPLICATE,
@@ -500,14 +509,14 @@ public class TransferViewPresenter implements BinderValidator {
       for (int i = 0; i < sources.size(); i++) {
         if (i >= wells.size()) {
           String message =
-              resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, samples.size());
+              resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, transfers.size());
           design.destinationPlatesField.setComponentError(new UserError(message));
           return ValidationResult.error(message);
         }
         Well destination = wells.get(i);
         if (destination.getSample() != null) {
           String message =
-              resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, samples.size());
+              resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, transfers.size());
           design.destinationPlatesField.setComponentError(new UserError(message));
           return ValidationResult.error(message);
         }
@@ -526,7 +535,7 @@ public class TransferViewPresenter implements BinderValidator {
       return ValidationResult.error(message);
     }
     Map<Long, Boolean> sampleSelection =
-        samples.stream().collect(Collectors.toMap(s -> s.getId(), s -> false));
+        transfers.stream().collect(Collectors.toMap(ts -> ts.getSample().getId(), ts -> false));
     for (Well well : selectedWells) {
       if (well.getSample() != null) {
         sampleSelection.put(well.getSample().getId(), true);
@@ -535,9 +544,9 @@ public class TransferViewPresenter implements BinderValidator {
     Optional<Map.Entry<Long, Boolean>> emptySelectionEntry =
         sampleSelection.entrySet().stream().filter(e -> !e.getValue()).findAny();
     if (emptySelectionEntry.isPresent()) {
-      Sample sample =
-          samples.stream().filter(sa -> emptySelectionEntry.get().getKey().equals(sa.getId()))
-              .findAny().orElse(null);
+      Sample sample = transfers.stream()
+          .filter(ts -> emptySelectionEntry.get().getKey().equals(ts.getSample().getId())).findAny()
+          .map(ts -> ts.getSample()).orElse(null);
       String message = resources.message(SOURCE_PLATE_SAMPLE_NOT_SELECTED, sample.getName());
       design.sourcePlatesField.setComponentError(new UserError(message));
       return ValidationResult.error(message);
@@ -547,8 +556,8 @@ public class TransferViewPresenter implements BinderValidator {
 
   private List<SampleContainer> sources() {
     if (design.type.getValue().sourceType == TUBE) {
-      return new ArrayList<>(samples.stream().map(sample -> transferBinders.get(sample))
-          .map(binder -> binder.getBean().getContainer()).collect(Collectors.toList()));
+      return new ArrayList<>(
+          transfers.stream().map(ts -> ts.getContainer()).collect(Collectors.toList()));
     } else {
       return new ArrayList<>(
           view.sourcePlateForm.getSelectedWells().stream().filter(well -> well.getSample() != null)
@@ -559,8 +568,8 @@ public class TransferViewPresenter implements BinderValidator {
 
   private List<SampleContainer> destinations() {
     if (design.type.getValue().sourceType == TUBE) {
-      return new ArrayList<>(samples.stream().map(sample -> transferBinders.get(sample))
-          .map(binder -> binder.getBean().getDestinationContainer()).collect(Collectors.toList()));
+      return new ArrayList<>(
+          transfers.stream().map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     } else {
       Plate plate = design.destinationPlatesField.getValue();
       Well well = view.destinationPlateForm.getSelectedWell();
@@ -585,7 +594,8 @@ public class TransferViewPresenter implements BinderValidator {
       if (design.type.getValue().destinationType == WELL) {
         // Reset samples.
         Plate database = plateService.get(design.destinationPlatesField.getValue() != null
-            ? design.destinationPlatesField.getValue().getId() : null);
+            ? design.destinationPlatesField.getValue().getId()
+            : null);
         if (database == null) {
           design.destinationPlatesField.getValue().getWells().forEach(well -> well.setSample(null));
         } else {
@@ -623,7 +633,7 @@ public class TransferViewPresenter implements BinderValidator {
       transfer.setTreatmentSamples(sampleTransfers);
       transferService.insert(transfer);
       MessageResource resources = view.getResources();
-      view.showTrayNotification(resources.message(SAVED, samples.size()));
+      view.showTrayNotification(resources.message(SAVED, transfers.size()));
       view.navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
     }
   }
@@ -654,30 +664,46 @@ public class TransferViewPresenter implements BinderValidator {
    *          view parameters
    */
   public void enter(String parameters) {
-    Collection<Sample> samplesParameters;
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering samples from session");
-      samplesParameters = view.savedSamples();
+      transfers = view.savedSamples().stream().map(sample -> {
+        SampleTransfer ts = new SampleTransfer();
+        ts.setSample(sample);
+        return ts;
+      }).collect(Collectors.toList());
     } else if (parameters.startsWith("samples/")) {
       parameters = parameters.substring("samples/".length());
       logger.trace("Parsing samples from parameters");
-      samplesParameters = new ArrayList<>();
+      transfers = new ArrayList<>();
       if (validateSamplesParameters(parameters)) {
         String[] rawIds = parameters.split(SPLIT_SAMPLES_PARAMETERS, -1);
         for (String rawId : rawIds) {
           Long id = Long.valueOf(rawId);
-          samplesParameters.add(sampleService.get(id));
+          Sample sample = sampleService.get(id);
+          SampleTransfer ts = new SampleTransfer();
+          ts.setSample(sample);
+          transfers.add(ts);
         }
       } else {
         view.showWarning(view.getResources().message(INVALID_SAMPLES));
       }
     } else {
-      // TODO This should populate an existing transfer.
-      logger.trace("Recovering samples from session");
-      samplesParameters = view.savedSamples();
+      try {
+        Long id = Long.valueOf(parameters);
+        logger.debug("Set transfer {}", id);
+        Transfer transfer = transferService.get(id);
+        if (transfer != null) {
+          transfers = transfer.getTreatmentSamples();
+          readOnly = true;
+        } else {
+          view.showWarning(view.getResources().message(INVALID_TRANSFER));
+        }
+      } catch (NumberFormatException e) {
+        view.showWarning(view.getResources().message(INVALID_TRANSFER));
+      }
     }
 
-    samples = new ArrayList<>(samplesParameters);
     updateSamples();
+    updateVisibility();
   }
 }
