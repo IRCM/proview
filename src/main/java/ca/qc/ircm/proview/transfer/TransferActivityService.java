@@ -73,9 +73,9 @@ public class TransferActivityService {
     final User user = authorizationService.getCurrentUser();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
+    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
       updateBuilders.add(new AddSampleToSampleContainerUpdateActivityBuilder()
-          .newContainer(sampleTransfer.getDestinationContainer()));
+          .newContainer(transferedSample.getDestinationContainer()));
     }
 
     // Keep updates that did not change.

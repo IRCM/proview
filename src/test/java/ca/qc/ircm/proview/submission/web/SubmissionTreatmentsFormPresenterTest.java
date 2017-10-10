@@ -106,9 +106,9 @@ import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.standard.StandardAdditionService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.transfer.SampleTransfer;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.transfer.TransferService;
+import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -181,9 +181,9 @@ public class SubmissionTreatmentsFormPresenterTest {
   private Fractionation plateFractionation;
   private FractionationDetail plateFractionatedSample;
   private Transfer tubeTransfer;
-  private SampleTransfer tubeTransferedSample;
+  private TransferedSample tubeTransferedSample;
   private Transfer plateTransfer;
-  private SampleTransfer plateTransferedSample;
+  private TransferedSample plateTransferedSample;
 
   /**
    * Before test.
@@ -372,7 +372,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     when(fractionationService.all(any(Submission.class)))
         .thenReturn(Arrays.asList(tubeFractionation, plateFractionation));
     tubeTransfer = new Transfer();
-    tubeTransferedSample = new SampleTransfer();
+    tubeTransferedSample = new TransferedSample();
     tubeTransferedSample.setTransfer(tubeTransfer);
     tubeTransferedSample.setSample(sample1);
     tubeTransferedSample.setComments("tube_transfer_comment_1");
@@ -382,7 +382,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Tube) tubeTransferedSample.getDestinationContainer()).setName("destination_tube_1");
     tubeTransfer.setTreatmentSamples(Arrays.asList(tubeTransferedSample));
     plateTransfer = new Transfer();
-    plateTransferedSample = new SampleTransfer();
+    plateTransferedSample = new TransferedSample();
     plateTransferedSample.setTransfer(plateTransfer);
     plateTransferedSample.setSample(sample2);
     plateTransferedSample.setComments("plate_transfer_comment_2");
@@ -563,7 +563,7 @@ public class SubmissionTreatmentsFormPresenterTest {
         .getValueProvider().apply(plateTransferedSample));
 
     assertTrue(design.transfersPanel.isVisible());
-    Collection<SampleTransfer> transferedSamples = dataProvider(design.transfers).getItems();
+    Collection<TransferedSample> transferedSamples = dataProvider(design.transfers).getItems();
     assertEquals(2, transferedSamples.size());
     assertTrue(transferedSamples.contains(tubeTransferedSample));
     assertTrue(transferedSamples.contains(plateTransferedSample));

@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.fractionation;
 
 import static ca.qc.ircm.proview.fractionation.QFractionation.fractionation;
 import static ca.qc.ircm.proview.fractionation.QFractionationDetail.fractionationDetail;
-import static ca.qc.ircm.proview.transfer.QSampleTransfer.sampleTransfer;
+import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -28,7 +28,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.transfer.DestinationUsedInTreatmentException;
-import ca.qc.ircm.proview.transfer.SampleTransfer;
+import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
@@ -126,10 +126,10 @@ public class FractionationService extends BaseTreatmentService {
     if (fd != null) {
       return fd;
     } else {
-      JPAQuery<SampleTransfer> query = queryFactory.select(sampleTransfer);
-      query.from(sampleTransfer);
-      query.where(sampleTransfer.destinationContainer.eq(container));
-      SampleTransfer st = query.fetchOne();
+      JPAQuery<TransferedSample> query = queryFactory.select(transferedSample);
+      query.from(transferedSample);
+      query.where(transferedSample.destinationContainer.eq(container));
+      TransferedSample st = query.fetchOne();
       if (st != null) {
         return searchFration(st.getContainer());
       } else {

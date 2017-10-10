@@ -31,7 +31,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @DiscriminatorValue("TRANSFER")
-public class SampleTransfer extends TreatmentSample implements Data {
+public class TransferedSample extends TreatmentSample implements Data {
   /**
    * Transfer.
    */
@@ -47,7 +47,7 @@ public class SampleTransfer extends TreatmentSample implements Data {
 
   @Override
   public String toString() {
-    return "SampleTransfer [getId()=" + getId() + ", getSample()=" + getSample() + "]";
+    return "transferedSample [getId()=" + getId() + ", getSample()=" + getSample() + "]";
   }
 
   public SampleContainer getDestinationContainer() {

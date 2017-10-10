@@ -24,7 +24,7 @@ import static ca.qc.ircm.proview.history.QUpdateActivity.updateActivity;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.plate.QWell.well;
-import static ca.qc.ircm.proview.transfer.QSampleTransfer.sampleTransfer;
+import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 
@@ -46,7 +46,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
 import ca.qc.ircm.proview.standard.AddedStandard;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.transfer.SampleTransfer;
+import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.tube.Tube;
@@ -258,10 +258,10 @@ public class ActivityService {
     query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(treatment);
     query.where(activity.recordId.eq(treatment.id));
-    query.from(sampleTransfer);
-    query.where(sampleTransfer._super.in(treatment.treatmentSamples));
+    query.from(transferedSample);
+    query.where(transferedSample._super.in(treatment.treatmentSamples));
     query.from(well);
-    query.where(well.eq(sampleTransfer.destinationContainer));
+    query.where(well.eq(transferedSample.destinationContainer));
     query.where(activity.tableName.eq("treatment"));
     query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());
@@ -545,10 +545,10 @@ public class ActivityService {
       if (treatmentSample.getContainer() instanceof Well
           && wellIds.contains(treatmentSample.getContainer().getId())) {
         treatmentSamples.add(treatmentSample);
-      } else if (treatmentSample instanceof SampleTransfer) {
-        SampleTransfer sampleTransfer = (SampleTransfer) treatmentSample;
-        if (sampleTransfer.getDestinationContainer() instanceof Well
-            && wellIds.contains(sampleTransfer.getDestinationContainer().getId())) {
+      } else if (treatmentSample instanceof TransferedSample) {
+        TransferedSample transferedSample = (TransferedSample) treatmentSample;
+        if (transferedSample.getDestinationContainer() instanceof Well
+            && wellIds.contains(transferedSample.getDestinationContainer().getId())) {
           treatmentSamples.add(treatmentSample);
         }
       } else if (treatmentSample instanceof FractionationDetail) {
@@ -611,12 +611,13 @@ public class ActivityService {
           break;
         }
         case TRANSFER: {
-          SampleTransfer sampleTransfer = (SampleTransfer) treatmentSample;
+          TransferedSample transferedSample = (TransferedSample) treatmentSample;
           String destinationContainer =
-              containerMessage(bundle, sampleTransfer.getDestinationContainer());
+              containerMessage(bundle, transferedSample.getDestinationContainer());
           message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
-              sampleTransfer.getContainer().getType().ordinal(), container,
-              sampleTransfer.getDestinationContainer().getType().ordinal(), destinationContainer));
+              transferedSample.getContainer().getType().ordinal(), container,
+              transferedSample.getDestinationContainer().getType().ordinal(),
+              destinationContainer));
           break;
         }
         default:

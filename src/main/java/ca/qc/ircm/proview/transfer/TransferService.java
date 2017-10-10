@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.transfer;
 
-import static ca.qc.ircm.proview.transfer.QSampleTransfer.sampleTransfer;
 import static ca.qc.ircm.proview.transfer.QTransfer.transfer;
+import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -117,9 +117,9 @@ public class TransferService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     JPAQuery<Transfer> query = queryFactory.select(transfer);
-    query.from(transfer, sampleTransfer);
-    query.where(sampleTransfer._super.in(transfer.treatmentSamples));
-    query.where(sampleTransfer.sample.in(submission.getSamples()));
+    query.from(transfer, transferedSample);
+    query.where(transferedSample._super.in(transfer.treatmentSamples));
+    query.where(transferedSample.sample.in(submission.getSamples()));
     query.where(transfer.deleted.eq(false));
     return query.distinct().fetch();
   }
@@ -136,17 +136,17 @@ public class TransferService extends BaseTreatmentService {
     Instant now = Instant.now();
 
     // Insert destination tubes.
-    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-      if (sampleTransfer.getDestinationContainer() instanceof Tube) {
-        sampleTransfer.getDestinationContainer().setTimestamp(Instant.now());
-        entityManager.persist(sampleTransfer.getDestinationContainer());
+    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+      if (transferedSample.getDestinationContainer() instanceof Tube) {
+        transferedSample.getDestinationContainer().setTimestamp(Instant.now());
+        entityManager.persist(transferedSample.getDestinationContainer());
       }
     }
     // Insert destination plates.
-    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
+    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
       Set<Plate> insertedPlates = new HashSet<>();
-      if (sampleTransfer.getDestinationContainer() instanceof Well) {
-        Well destinationWell = (Well) sampleTransfer.getDestinationContainer();
+      if (transferedSample.getDestinationContainer() instanceof Well) {
+        Well destinationWell = (Well) transferedSample.getDestinationContainer();
         if (destinationWell.getId() == null
             && !insertedPlates.contains(destinationWell.getPlate())) {
           plateService.insert(destinationWell.getPlate());
@@ -161,9 +161,9 @@ public class TransferService extends BaseTreatmentService {
 
     entityManager.persist(transfer);
     // Link container to sample and treatment sample.
-    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-      sampleTransfer.getDestinationContainer().setSample(sampleTransfer.getSample());
-      sampleTransfer.getDestinationContainer().setTimestamp(now);
+    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+      transferedSample.getDestinationContainer().setSample(transferedSample.getSample());
+      transferedSample.getDestinationContainer().setTimestamp(now);
     }
 
     // Log insertion of transfer.
@@ -195,8 +195,8 @@ public class TransferService extends BaseTreatmentService {
     // Remove sample from destinations.
     Collection<SampleContainer> samplesRemoved = new LinkedHashSet<>();
     Collection<SampleContainer> removeFailed = new LinkedHashSet<>();
-    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-      SampleContainer destination = sampleTransfer.getDestinationContainer();
+    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+      SampleContainer destination = transferedSample.getDestinationContainer();
       if (containerUsedByTreatmentOrAnalysis(destination)) {
         removeFailed.add(destination);
       }
@@ -205,8 +205,8 @@ public class TransferService extends BaseTreatmentService {
       throw new DestinationUsedInTreatmentException("Cannot remove sample from all destinations",
           removeFailed);
     }
-    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-      SampleContainer destination = sampleTransfer.getDestinationContainer();
+    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+      SampleContainer destination = transferedSample.getDestinationContainer();
       destination.setSample(null);
       samplesRemoved.add(destination);
     }
@@ -217,8 +217,8 @@ public class TransferService extends BaseTreatmentService {
     activityService.insert(activity);
 
     entityManager.merge(transfer);
-    for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-      entityManager.merge(sampleTransfer.getDestinationContainer());
+    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+      entityManager.merge(transferedSample.getDestinationContainer());
     }
   }
 
@@ -246,8 +246,8 @@ public class TransferService extends BaseTreatmentService {
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during transfer.
-      for (SampleTransfer sampleTransfer : transfer.getTreatmentSamples()) {
-        SampleContainer container = sampleTransfer.getDestinationContainer();
+      for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+        SampleContainer container = transferedSample.getDestinationContainer();
         container.setBanned(true);
         bannedContainers.add(container);
 

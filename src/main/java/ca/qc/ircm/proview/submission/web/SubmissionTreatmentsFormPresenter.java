@@ -27,7 +27,7 @@ import static ca.qc.ircm.proview.fractionation.QFractionationDetail.fractionatio
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.solubilisation.QSolubilisedSample.solubilisedSample;
 import static ca.qc.ircm.proview.standard.QAddedStandard.addedStandard;
-import static ca.qc.ircm.proview.transfer.QSampleTransfer.sampleTransfer;
+import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 
 import ca.qc.ircm.proview.digestion.DigestedSample;
 import ca.qc.ircm.proview.digestion.DigestionService;
@@ -45,8 +45,8 @@ import ca.qc.ircm.proview.standard.AddedStandard;
 import ca.qc.ircm.proview.standard.StandardAdditionService;
 import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.transfer.SampleTransfer;
 import ca.qc.ircm.proview.transfer.TransferService;
+import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -74,13 +74,13 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
   public static final String TRANSFERS_PANEL = "transfersPanel";
   public static final String TRANSFERS = "transfers";
   public static final String TRANSFER_SAMPLE =
-      TRANSFERS + "." + sampleTransfer.sample.getMetadata().getName();
+      TRANSFERS + "." + transferedSample.sample.getMetadata().getName();
   public static final String TRANSFER_CONTAINER =
-      TRANSFERS + "." + sampleTransfer.container.getMetadata().getName();
+      TRANSFERS + "." + transferedSample.container.getMetadata().getName();
   public static final String TRANSFER_DESTINATION_CONTAINER =
-      TRANSFERS + "." + sampleTransfer.destinationContainer.getMetadata().getName();
+      TRANSFERS + "." + transferedSample.destinationContainer.getMetadata().getName();
   public static final String TRANSFER_COMMENTS =
-      TRANSFERS + "." + sampleTransfer.comments.getMetadata().getName();
+      TRANSFERS + "." + transferedSample.comments.getMetadata().getName();
   public static final String SOLUBILISATIONS_PANEL = "solubilisationsPanel";
   public static final String SOLUBILISATIONS = "solubilisations";
   public static final String SOLUBILISATION_SAMPLE =
@@ -363,7 +363,7 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
     } else {
       design.samples.setItems(new ArrayList<>());
     }
-    List<SampleTransfer> transfers = transferService.all(submission).stream()
+    List<TransferedSample> transfers = transferService.all(submission).stream()
         .flatMap(d -> d.getTreatmentSamples().stream()).collect(Collectors.toList());
     design.transfers.setItems(transfers);
     design.transfersPanel.setVisible(!transfers.isEmpty());

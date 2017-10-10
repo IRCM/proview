@@ -21,14 +21,14 @@ import static ca.qc.ircm.proview.fractionation.QFractionation.fractionation;
 import static ca.qc.ircm.proview.fractionation.QFractionationDetail.fractionationDetail;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
-import static ca.qc.ircm.proview.transfer.QSampleTransfer.sampleTransfer;
 import static ca.qc.ircm.proview.transfer.QTransfer.transfer;
+import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 
 import ca.qc.ircm.proview.fractionation.FractionationDetail;
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.transfer.SampleTransfer;
+import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.treatment.Treatment.DeletionType;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -82,9 +82,9 @@ public abstract class BaseTreatmentService {
   protected void banDestinations(SampleContainer source,
       Collection<SampleContainer> bannedContainers) {
     // Ban destination for transfers.
-    List<SampleTransfer> sampleTransfers = selectTransfersBySource(source);
-    for (SampleTransfer sampleTransfer : sampleTransfers) {
-      SampleContainer destination = sampleTransfer.getDestinationContainer();
+    List<TransferedSample> transferedSamples = selectTransfersBySource(source);
+    for (TransferedSample transferedSample : transferedSamples) {
+      SampleContainer destination = transferedSample.getDestinationContainer();
       // Failsafe: skip if destination is already in containers.
       if (bannedContainers.add(destination)) {
         destination.setBanned(true);
@@ -106,11 +106,11 @@ public abstract class BaseTreatmentService {
     }
   }
 
-  private List<SampleTransfer> selectTransfersBySource(SampleContainer source) {
-    JPAQuery<SampleTransfer> query = queryFactory.select(sampleTransfer);
-    query.from(transfer, sampleTransfer);
-    query.where(sampleTransfer._super.in(transfer.treatmentSamples));
-    query.where(sampleTransfer.container.eq(source));
+  private List<TransferedSample> selectTransfersBySource(SampleContainer source) {
+    JPAQuery<TransferedSample> query = queryFactory.select(transferedSample);
+    query.from(transfer, transferedSample);
+    query.where(transferedSample._super.in(transfer.treatmentSamples));
+    query.where(transferedSample.container.eq(source));
     query.where(transfer.deleted.eq(false).or(transfer.deletionType.ne(DeletionType.ERRONEOUS)));
     return query.fetch();
   }

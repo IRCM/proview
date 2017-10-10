@@ -74,15 +74,15 @@ public class TransferActivityServiceTest {
     destinationTube.setId(56456748L);
     destinationTube.setName(sample.getName() + "_2");
     destinationTube.setSample(sample);
-    SampleTransfer sampleTransfer = new SampleTransfer();
-    sampleTransfer.setSample(sample);
-    sampleTransfer.setContainer(sourceTube);
-    sampleTransfer.setDestinationContainer(destinationTube);
-    List<SampleTransfer> sampleTransfers = new ArrayList<>();
-    sampleTransfers.add(sampleTransfer);
+    TransferedSample transferedSample = new TransferedSample();
+    transferedSample.setSample(sample);
+    transferedSample.setContainer(sourceTube);
+    transferedSample.setDestinationContainer(destinationTube);
+    List<TransferedSample> transferedSamples = new ArrayList<>();
+    transferedSamples.add(transferedSample);
     Transfer transfer = new Transfer();
     transfer.setId(123456L);
-    transfer.setTreatmentSamples(sampleTransfers);
+    transfer.setTreatmentSamples(transferedSamples);
 
     Activity activity = transferActivityService.insert(transfer);
 
@@ -106,15 +106,15 @@ public class TransferActivityServiceTest {
     Tube sourceTube = new Tube(1L);
     Well destinationWell = new Well(130L);
     destinationWell.setSample(sample);
-    SampleTransfer sampleTransfer = new SampleTransfer();
-    sampleTransfer.setSample(sample);
-    sampleTransfer.setContainer(sourceTube);
-    sampleTransfer.setDestinationContainer(destinationWell);
-    List<SampleTransfer> sampleTransfers = new ArrayList<>();
-    sampleTransfers.add(sampleTransfer);
+    TransferedSample transferedSample = new TransferedSample();
+    transferedSample.setSample(sample);
+    transferedSample.setContainer(sourceTube);
+    transferedSample.setDestinationContainer(destinationWell);
+    List<TransferedSample> transferedSamples = new ArrayList<>();
+    transferedSamples.add(transferedSample);
     Transfer transfer = new Transfer();
     transfer.setId(123456L);
-    transfer.setTreatmentSamples(sampleTransfers);
+    transfer.setTreatmentSamples(transferedSamples);
 
     Activity activity = transferActivityService.insert(transfer);
 

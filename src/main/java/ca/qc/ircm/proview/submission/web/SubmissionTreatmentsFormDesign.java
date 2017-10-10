@@ -22,7 +22,7 @@ public class SubmissionTreatmentsFormDesign extends VerticalLayout {
   protected Panel samplesPanel;
   protected Grid<ca.qc.ircm.proview.sample.SubmissionSample> samples;
   protected Panel transfersPanel;
-  protected Grid<ca.qc.ircm.proview.transfer.SampleTransfer> transfers;
+  protected Grid<ca.qc.ircm.proview.transfer.TransferedSample> transfers;
   protected Panel solubilisationsPanel;
   protected Grid<ca.qc.ircm.proview.solubilisation.SolubilisedSample> solubilisations;
   protected Panel digestionsPanel;
