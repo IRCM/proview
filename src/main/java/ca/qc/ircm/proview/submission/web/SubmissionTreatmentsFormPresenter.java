@@ -22,8 +22,8 @@ import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
 import static ca.qc.ircm.proview.dilution.QDilutedSample.dilutedSample;
 import static ca.qc.ircm.proview.enrichment.QEnrichedSample.enrichedSample;
 import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
+import static ca.qc.ircm.proview.fractionation.QFraction.fraction;
 import static ca.qc.ircm.proview.fractionation.QFractionation.fractionation;
-import static ca.qc.ircm.proview.fractionation.QFractionationDetail.fractionationDetail;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.solubilisation.QSolubilisedSample.solubilisedSample;
 import static ca.qc.ircm.proview.standard.QAddedStandard.addedStandard;
@@ -35,7 +35,7 @@ import ca.qc.ircm.proview.dilution.DilutedSample;
 import ca.qc.ircm.proview.dilution.DilutionService;
 import ca.qc.ircm.proview.enrichment.EnrichedSample;
 import ca.qc.ircm.proview.enrichment.EnrichmentService;
-import ca.qc.ircm.proview.fractionation.FractionationDetail;
+import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.sample.SampleContainerService;
@@ -142,16 +142,16 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
   public static final String FRACTIONATIONS_PANEL = "fractionationsPanel";
   public static final String FRACTIONATIONS = "fractionations";
   public static final String FRACTIONATION_SAMPLE =
-      FRACTIONATIONS + "." + fractionationDetail.sample.getMetadata().getName();
+      FRACTIONATIONS + "." + fraction.sample.getMetadata().getName();
   public static final String FRACTIONATION_TYPE =
       FRACTIONATIONS + "." + fractionation.fractionationType.getMetadata().getName();
   public static final String FRACTIONATION_TYPE_VALUE = FRACTIONATIONS + "." + "typeValue";
   public static final String FRACTIONATION_CONTAINER =
-      FRACTIONATIONS + "." + fractionationDetail.container.getMetadata().getName();
+      FRACTIONATIONS + "." + fraction.container.getMetadata().getName();
   public static final String FRACTIONATION_DESTINATION_CONTAINER =
-      FRACTIONATIONS + "." + fractionationDetail.destinationContainer.getMetadata().getName();
+      FRACTIONATIONS + "." + fraction.destinationContainer.getMetadata().getName();
   public static final String FRACTIONATION_COMMENTS =
-      FRACTIONATIONS + "." + fractionationDetail.comments.getMetadata().getName();
+      FRACTIONATIONS + "." + fraction.comments.getMetadata().getName();
   private SubmissionTreatmentsForm view;
   private SubmissionTreatmentsFormDesign design;
   private Submission submission;
@@ -387,7 +387,7 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
         .flatMap(d -> d.getTreatmentSamples().stream()).collect(Collectors.toList());
     design.dilutions.setItems(dilutions);
     design.dilutionsPanel.setVisible(!dilutions.isEmpty());
-    List<FractionationDetail> fractionations = fractionationService.all(submission).stream()
+    List<Fraction> fractionations = fractionationService.all(submission).stream()
         .flatMap(d -> d.getTreatmentSamples().stream()).collect(Collectors.toList());
     design.fractionations.setItems(fractionations);
     design.fractionationsPanel.setVisible(!fractionations.isEmpty());

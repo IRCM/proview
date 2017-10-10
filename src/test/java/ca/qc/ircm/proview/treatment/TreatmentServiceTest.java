@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 
+import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.Fractionation;
-import ca.qc.ircm.proview.fractionation.FractionationDetail;
 import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -100,17 +100,16 @@ public class TreatmentServiceTest {
     assertEquals(true, treatment instanceof Fractionation);
     Fractionation fractionation = (Fractionation) treatment;
     assertEquals(FractionationType.MUDPIT, fractionation.getFractionationType());
-    FractionationDetail fractionationDetail = fractionation.getTreatmentSamples().get(0);
-    assertEquals((Long) 2L, fractionationDetail.getId());
-    assertEquals(SampleContainerType.TUBE, fractionationDetail.getContainer().getType());
-    assertEquals((Long) 1L, fractionationDetail.getContainer().getId());
-    assertEquals(SampleContainerType.TUBE,
-        fractionationDetail.getDestinationContainer().getType());
-    assertEquals((Long) 6L, fractionationDetail.getDestinationContainer().getId());
-    assertEquals(null, fractionationDetail.getComments());
-    assertEquals((Integer) 1, fractionationDetail.getPosition());
-    assertEquals((Integer) 1, fractionationDetail.getNumber());
-    assertEquals(null, fractionationDetail.getPiInterval());
+    Fraction fraction = fractionation.getTreatmentSamples().get(0);
+    assertEquals((Long) 2L, fraction.getId());
+    assertEquals(SampleContainerType.TUBE, fraction.getContainer().getType());
+    assertEquals((Long) 1L, fraction.getContainer().getId());
+    assertEquals(SampleContainerType.TUBE, fraction.getDestinationContainer().getType());
+    assertEquals((Long) 6L, fraction.getDestinationContainer().getId());
+    assertEquals(null, fraction.getComments());
+    assertEquals((Integer) 1, fraction.getPosition());
+    assertEquals((Integer) 1, fraction.getNumber());
+    assertEquals(null, fraction.getPiInterval());
   }
 
   @Test

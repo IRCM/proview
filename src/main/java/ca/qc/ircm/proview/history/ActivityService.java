@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.history;
 
 import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
-import static ca.qc.ircm.proview.fractionation.QFractionationDetail.fractionationDetail;
+import static ca.qc.ircm.proview.fractionation.QFraction.fraction;
 import static ca.qc.ircm.proview.history.QActivity.activity;
 import static ca.qc.ircm.proview.history.QUpdateActivity.updateActivity;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
@@ -30,7 +30,7 @@ import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.dilution.DilutedSample;
-import ca.qc.ircm.proview.fractionation.FractionationDetail;
+import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.DeletionType;
@@ -245,10 +245,10 @@ public class ActivityService {
     query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(treatment);
     query.where(activity.recordId.eq(treatment.id));
-    query.from(fractionationDetail);
-    query.where(fractionationDetail._super.in(treatment.treatmentSamples));
+    query.from(fraction);
+    query.where(fraction._super.in(treatment.treatmentSamples));
     query.from(well);
-    query.where(well.eq(fractionationDetail.destinationContainer));
+    query.where(well.eq(fraction.destinationContainer));
     query.where(activity.tableName.eq("treatment"));
     query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());
@@ -551,10 +551,10 @@ public class ActivityService {
             && wellIds.contains(transferedSample.getDestinationContainer().getId())) {
           treatmentSamples.add(treatmentSample);
         }
-      } else if (treatmentSample instanceof FractionationDetail) {
-        FractionationDetail fractionationDetail = (FractionationDetail) treatmentSample;
-        if (fractionationDetail.getDestinationContainer() instanceof Well
-            && wellIds.contains(fractionationDetail.getDestinationContainer().getId())) {
+      } else if (treatmentSample instanceof Fraction) {
+        Fraction fraction = (Fraction) treatmentSample;
+        if (fraction.getDestinationContainer() instanceof Well
+            && wellIds.contains(fraction.getDestinationContainer().getId())) {
           treatmentSamples.add(treatmentSample);
         }
       }
@@ -587,13 +587,13 @@ public class ActivityService {
           break;
         }
         case FRACTIONATION: {
-          FractionationDetail fractionationDetail = (FractionationDetail) treatmentSample;
+          Fraction fraction = (Fraction) treatmentSample;
           String destinationContainer =
-              containerMessage(bundle, fractionationDetail.getDestinationContainer());
+              containerMessage(bundle, fraction.getDestinationContainer());
           message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
-              fractionationDetail.getContainer().getType().ordinal(), container,
-              fractionationDetail.getDestinationContainer().getType().ordinal(),
-              destinationContainer, fractionationDetail.getPosition()));
+              fraction.getContainer().getType().ordinal(), container,
+              fraction.getDestinationContainer().getType().ordinal(), destinationContainer,
+              fraction.getPosition()));
           break;
         }
         case SOLUBILISATION: {

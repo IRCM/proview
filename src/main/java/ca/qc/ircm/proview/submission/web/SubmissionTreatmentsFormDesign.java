@@ -34,7 +34,7 @@ public class SubmissionTreatmentsFormDesign extends VerticalLayout {
   protected Panel dilutionsPanel;
   protected Grid<ca.qc.ircm.proview.dilution.DilutedSample> dilutions;
   protected Panel fractionationsPanel;
-  protected Grid<ca.qc.ircm.proview.fractionation.FractionationDetail> fractionations;
+  protected Grid<ca.qc.ircm.proview.fractionation.Fraction> fractionations;
 
   public SubmissionTreatmentsFormDesign() {
     Design.read(this);

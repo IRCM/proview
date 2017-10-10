@@ -33,7 +33,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @DiscriminatorValue("FRACTIONATION")
-public class FractionationDetail extends TreatmentSample implements Named {
+public class Fraction extends TreatmentSample implements Named {
   /**
    * Fractionation.
    */
@@ -78,7 +78,7 @@ public class FractionationDetail extends TreatmentSample implements Named {
 
   @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("FractionationDetail(");
+    StringBuilder buff = new StringBuilder("fraction(");
     buff.append(getId());
     buff.append(")");
     return buff.toString();

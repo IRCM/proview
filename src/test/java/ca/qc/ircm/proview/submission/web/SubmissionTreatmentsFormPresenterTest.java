@@ -87,8 +87,8 @@ import ca.qc.ircm.proview.enrichment.EnrichedSample;
 import ca.qc.ircm.proview.enrichment.Enrichment;
 import ca.qc.ircm.proview.enrichment.EnrichmentProtocol;
 import ca.qc.ircm.proview.enrichment.EnrichmentService;
+import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.Fractionation;
-import ca.qc.ircm.proview.fractionation.FractionationDetail;
 import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
@@ -177,9 +177,9 @@ public class SubmissionTreatmentsFormPresenterTest {
   private Dilution plateDilution;
   private DilutedSample plateDilutedSample;
   private Fractionation tubeFractionation;
-  private FractionationDetail tubeFractionatedSample;
+  private Fraction tubeFractionatedSample;
   private Fractionation plateFractionation;
-  private FractionationDetail plateFractionatedSample;
+  private Fraction plateFractionatedSample;
   private Transfer tubeTransfer;
   private TransferedSample tubeTransferedSample;
   private Transfer plateTransfer;
@@ -343,7 +343,7 @@ public class SubmissionTreatmentsFormPresenterTest {
         .thenReturn(Arrays.asList(tubeDilution, plateDilution));
     tubeFractionation = new Fractionation();
     tubeFractionation.setFractionationType(FractionationType.MUDPIT);
-    tubeFractionatedSample = new FractionationDetail();
+    tubeFractionatedSample = new Fraction();
     tubeFractionatedSample.setFractionation(tubeFractionation);
     tubeFractionatedSample.setSample(sample1);
     tubeFractionatedSample.setPosition(1);
@@ -356,7 +356,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeFractionation.setTreatmentSamples(Arrays.asList(tubeFractionatedSample));
     plateFractionation = new Fractionation();
     plateFractionation.setFractionationType(FractionationType.PI);
-    plateFractionatedSample = new FractionationDetail();
+    plateFractionatedSample = new Fraction();
     plateFractionatedSample.setFractionation(plateFractionation);
     plateFractionatedSample.setPosition(0);
     plateFractionatedSample.setPiInterval("2-3");
@@ -858,8 +858,7 @@ public class SubmissionTreatmentsFormPresenterTest {
         .getColumn(FRACTIONATION_COMMENTS).getValueProvider().apply(plateFractionatedSample));
 
     assertTrue(design.fractionationsPanel.isVisible());
-    Collection<FractionationDetail> fractionatedSamples =
-        dataProvider(design.fractionations).getItems();
+    Collection<Fraction> fractionatedSamples = dataProvider(design.fractionations).getItems();
     assertEquals(2, fractionatedSamples.size());
     assertTrue(fractionatedSamples.contains(tubeFractionatedSample));
     assertTrue(fractionatedSamples.contains(plateFractionatedSample));

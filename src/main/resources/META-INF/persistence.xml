@@ -34,7 +34,7 @@
     <class>ca.qc.ircm.proview.enrichment.Enrichment</class>
     <class>ca.qc.ircm.proview.enrichment.EnrichmentProtocol</class>
     <class>ca.qc.ircm.proview.fractionation.Fractionation</class>
-    <class>ca.qc.ircm.proview.fractionation.FractionationDetail</class>
+    <class>ca.qc.ircm.proview.fractionation.Fraction</class>
     <class>ca.qc.ircm.proview.history.Activity</class>
     <class>ca.qc.ircm.proview.history.UpdateActivity</class>
     <class>ca.qc.ircm.proview.user.Laboratory</class>

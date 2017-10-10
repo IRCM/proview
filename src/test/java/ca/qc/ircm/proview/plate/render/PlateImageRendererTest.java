@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.plate.render;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.fractionation.FractionationDetail;
+import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -53,12 +53,12 @@ public class PlateImageRendererTest {
   public void render() throws Exception {
     Plate plate = entityManager.find(Plate.class, 26L);
     when(fractionationService.search(any(SampleContainer.class)))
-        .thenAnswer(new Answer<FractionationDetail>() {
+        .thenAnswer(new Answer<Fraction>() {
           @Override
-          public FractionationDetail answer(InvocationOnMock invocation) throws Throwable {
+          public Fraction answer(InvocationOnMock invocation) throws Throwable {
             SampleContainer container = (SampleContainer) invocation.getArguments()[0];
             if (container != null && container.getId() == 129L) {
-              FractionationDetail detail = new FractionationDetail();
+              Fraction detail = new Fraction();
               detail.setSample(container.getSample());
               detail.setPosition(2);
               return detail;

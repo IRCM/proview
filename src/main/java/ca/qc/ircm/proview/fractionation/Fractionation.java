@@ -31,7 +31,7 @@ import javax.persistence.Enumerated;
  */
 @Entity
 @DiscriminatorValue("FRACTIONATION")
-public class Fractionation extends Treatment<FractionationDetail> {
+public class Fractionation extends Treatment<Fraction> {
   /**
    * How samples where split.
    */

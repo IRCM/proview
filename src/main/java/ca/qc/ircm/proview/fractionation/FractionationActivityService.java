@@ -74,7 +74,7 @@ public class FractionationActivityService {
 
     // Update of well's sample.
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (FractionationDetail detail : fractionation.getTreatmentSamples()) {
+    for (Fraction detail : fractionation.getTreatmentSamples()) {
       updateBuilders.add(new AddSampleToSampleContainerUpdateActivityBuilder()
           .newContainer(detail.getDestinationContainer()));
     }
