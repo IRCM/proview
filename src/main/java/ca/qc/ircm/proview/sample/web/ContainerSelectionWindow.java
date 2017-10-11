@@ -66,7 +66,7 @@ public class ContainerSelectionWindow extends Window implements BaseComponent {
   @Override
   public void attach() {
     super.attach();
-    logger.debug("Sample selection window");
+    logger.debug("Container selection window");
     setCaption(getResources().message(TITLE));
     view.addSaveListener(e -> close());
   }
