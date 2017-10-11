@@ -905,6 +905,10 @@ public class SubmissionsViewPresenterTest {
     containersSaveListenerCaptor.getValue().saved(saveEvent);
     verify(saveEvent).getSavedObject();
     verify(view).saveContainers(containers);
+    assertEquals(
+        resources.message(SELECT_SAMPLES_LABEL,
+            submission1.getSamples().size() + submission2.getSamples().size()),
+        design.selectedSamplesLabel.getValue());
     assertEquals(resources.message(SELECT_CONTAINERS_LABEL, containers.size()),
         design.selectedContainersLabel.getValue());
   }
@@ -936,6 +940,10 @@ public class SubmissionsViewPresenterTest {
     assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
     assertTrue(samples.containsAll(submission1.getSamples()));
     assertTrue(samples.containsAll(submission2.getSamples()));
+    assertEquals(
+        resources.message(SELECT_SAMPLES_LABEL,
+            submission1.getSamples().size() + submission2.getSamples().size()),
+        design.selectedSamplesLabel.getValue());
     verify(view).navigateTo(SampleStatusView.VIEW_NAME);
   }
 

@@ -461,16 +461,17 @@ public class SubmissionsViewPresenter {
       view.saveSamples(selectedSamples);
       design.selectedSamplesLabel
           .setValue(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
-      design.selectContainers.setEnabled(!selectedSamples.isEmpty());
       logger.debug("Selected samples {}", selectedSamples);
     });
   }
 
   private void saveSelectedSamples() {
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
+      MessageResource resources = view.getResources();
       List<Sample> samples = design.submissionsGrid.getSelectedItems().stream()
           .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
       view.saveSamples(samples);
+      design.selectedSamplesLabel.setValue(resources.message(SELECT_SAMPLES_LABEL, samples.size()));
     }
   }
 
