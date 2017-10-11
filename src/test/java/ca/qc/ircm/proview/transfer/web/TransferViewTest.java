@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.transfer.web;
 
+import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
+import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
 import static ca.qc.ircm.proview.transfer.QTransfer.transfer;
 import static org.junit.Assert.assertEquals;
@@ -106,60 +108,61 @@ public class TransferViewTest extends TransferViewPageObject {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
-    openWithSamples();
+  public void fieldsExistence_Wells() throws Throwable {
+    openWithWells();
 
     assertTrue(optional(() -> header()).isPresent());
     assertTrue(optional(() -> transferTypePanel()).isPresent());
     assertTrue(optional(() -> transferType()).isPresent());
-    assertFalse(optional(() -> transfersPanel()).isPresent());
-    assertFalse(optional(() -> transfers()).isPresent());
+    assertTrue(optional(() -> transfersPanel()).isPresent());
+    assertTrue(optional(() -> transfers()).isPresent());
     assertFalse(optional(() -> down()).isPresent());
-    assertTrue(optional(() -> sourcePanel()).isPresent());
-    assertTrue(optional(() -> sourcePlates()).isPresent());
-    assertTrue(optional(() -> sourcePlatePanel()).isPresent());
-    assertTrue(optional(() -> sourcePlate()).isPresent());
     assertTrue(optional(() -> destinationPanel()).isPresent());
     assertTrue(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());
     assertFalse(optional(() -> destinationPlate()).isPresent());
-    setTransferType(TransferType.TUBES_TO_PLATE);
+    String plateName = "test_plate";
+    setDestinationPlate(plateName);
+    assertTrue(optional(() -> destinationPlatePanel()).isPresent());
+    assertTrue(optional(() -> destinationPlate()).isPresent());
+  }
+
+  @Test
+  public void fieldsExistence_Tubes() throws Throwable {
+    openWithTubes();
+
     assertTrue(optional(() -> header()).isPresent());
     assertTrue(optional(() -> transferTypePanel()).isPresent());
     assertTrue(optional(() -> transferType()).isPresent());
     assertTrue(optional(() -> transfersPanel()).isPresent());
     assertTrue(optional(() -> transfers()).isPresent());
     assertTrue(optional(() -> down()).isPresent());
-    assertFalse(optional(() -> sourcePanel()).isPresent());
-    assertFalse(optional(() -> sourcePlates()).isPresent());
-    assertFalse(optional(() -> sourcePlatePanel()).isPresent());
-    assertFalse(optional(() -> sourcePlate()).isPresent());
     assertTrue(optional(() -> destinationPanel()).isPresent());
     assertTrue(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());
     assertFalse(optional(() -> destinationPlate()).isPresent());
-    setTransferType(TransferType.TUBES_TO_TUBES);
+    setTransferType(TUBE);
     assertTrue(optional(() -> header()).isPresent());
     assertTrue(optional(() -> transferTypePanel()).isPresent());
     assertTrue(optional(() -> transferType()).isPresent());
     assertTrue(optional(() -> transfersPanel()).isPresent());
     assertTrue(optional(() -> transfers()).isPresent());
     assertFalse(optional(() -> down()).isPresent());
-    assertFalse(optional(() -> sourcePanel()).isPresent());
-    assertFalse(optional(() -> sourcePlates()).isPresent());
-    assertFalse(optional(() -> sourcePlatePanel()).isPresent());
-    assertFalse(optional(() -> sourcePlate()).isPresent());
     assertFalse(optional(() -> destinationPanel()).isPresent());
     assertFalse(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());
     assertFalse(optional(() -> destinationPlate()).isPresent());
+    setTransferType(WELL);
+    String plateName = "test_plate";
+    setDestinationPlate(plateName);
+    assertTrue(optional(() -> destinationPlatePanel()).isPresent());
+    assertTrue(optional(() -> destinationPlate()).isPresent());
   }
 
   @Test
   public void save_Error() throws Throwable {
-    openWithSamples();
+    openWithTubes();
     String plateName = "test_plate";
-    setTransferType(TransferType.TUBES_TO_PLATE);
     setDestinationPlate(plateName);
 
     clickSave();
@@ -171,7 +174,7 @@ public class TransferViewTest extends TransferViewPageObject {
 
   @Test
   public void save_PlateToPlate() throws Throwable {
-    openWithSamples();
+    openWithWells();
     String plateName = "test_plate";
     setDestinationPlate(plateName);
 
@@ -220,9 +223,8 @@ public class TransferViewTest extends TransferViewPageObject {
 
   @Test
   public void save_TubesToPlate() throws Throwable {
-    openWithSamples();
+    openWithTubes();
     String plateName = "test_plate";
-    setTransferType(TransferType.TUBES_TO_PLATE);
     setDestinationPlate(plateName);
     setDestinationWell(0, "A-1");
     setDestinationWell(1, "B-1");
@@ -270,8 +272,8 @@ public class TransferViewTest extends TransferViewPageObject {
 
   @Test
   public void save_TubesToTubes() throws Throwable {
-    openWithSamples();
-    setTransferType(TransferType.TUBES_TO_TUBES);
+    openWithTubes();
+    setTransferType(TUBE);
     setDestinationTube(0, "test_tube_1");
     setDestinationTube(1, "test_tube_2");
     setDestinationTube(2, "test_tube_3");

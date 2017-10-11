@@ -25,15 +25,10 @@ import com.vaadin.ui.declarative.Design;
 public class TransferViewDesign extends VerticalLayout {
   protected Label headerLabel;
   protected Panel typePanel;
-  protected RadioButtonGroup<ca.qc.ircm.proview.transfer.web.TransferType> type;
+  protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleContainerType> type;
   protected Panel transfersPanel;
   protected Grid<ca.qc.ircm.proview.transfer.TransferedSample> transfers;
   protected Button down;
-  protected Panel source;
-  protected VerticalLayout sourcePlateLayout;
-  protected ComboBox<ca.qc.ircm.proview.plate.Plate> sourcePlatesField;
-  protected Panel sourcePlatePanel;
-  protected VerticalLayout sourcePlateFormLayout;
   protected Panel destination;
   protected VerticalLayout destinationPlateLayout;
   protected ComboBox<ca.qc.ircm.proview.plate.Plate> destinationPlatesField;

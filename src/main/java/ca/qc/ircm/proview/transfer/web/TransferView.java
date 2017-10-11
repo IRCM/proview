@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.transfer.web;
 
 import ca.qc.ircm.proview.plate.web.PlateComponent;
-import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
+import ca.qc.ircm.proview.web.component.SavedContainersComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
@@ -33,12 +33,10 @@ import javax.inject.Inject;
  */
 @SpringView(name = TransferView.VIEW_NAME)
 @RolesAllowed({ "ADMIN" })
-public class TransferView extends CustomComponent implements BaseView, SavedSamplesComponent {
+public class TransferView extends CustomComponent implements BaseView, SavedContainersComponent {
   public static final String VIEW_NAME = "transfer";
   private static final long serialVersionUID = -4719228370965227442L;
   protected TransferViewDesign design = new TransferViewDesign();
-  @Inject
-  protected PlateComponent sourcePlateForm;
   @Inject
   protected PlateComponent destinationPlateForm;
   @Inject
@@ -50,8 +48,6 @@ public class TransferView extends CustomComponent implements BaseView, SavedSamp
   @PostConstruct
   public void init() {
     setCompositionRoot(design);
-    sourcePlateForm.setWidth("100%");
-    design.sourcePlateFormLayout.addComponent(sourcePlateForm);
     destinationPlateForm.setWidth("100%");
     design.destinationPlateFormLayout.addComponent(destinationPlateForm);
   }

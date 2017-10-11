@@ -26,10 +26,6 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DOWN;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.HEADER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAVE;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATES;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SOURCE_PLATE_PANEL;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TEST;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFERS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFERS_PANEL;
@@ -37,6 +33,7 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYP
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYPE_PANEL;
 import static org.openqa.selenium.By.className;
 
+import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
@@ -51,8 +48,12 @@ public abstract class TransferViewPageObject extends AbstractTestBenchTestCase {
     openView(TransferView.VIEW_NAME);
   }
 
-  protected void openWithSamples() {
-    openView(TransferView.VIEW_NAME, "samples/559,560,444");
+  protected void openWithWells() {
+    openView(TransferView.VIEW_NAME, "containers/224,236,248");
+  }
+
+  protected void openWithTubes() {
+    openView(TransferView.VIEW_NAME, "containers/11,12,4");
   }
 
   protected LabelElement header() {
@@ -67,8 +68,8 @@ public abstract class TransferViewPageObject extends AbstractTestBenchTestCase {
     return wrap(RadioButtonGroupElement.class, findElement(className(TRANSFER_TYPE)));
   }
 
-  protected void setTransferType(TransferType transferType) {
-    transferType().selectByText(transferType.getLabel(currentLocale()));
+  protected void setTransferType(SampleContainerType type) {
+    transferType().selectByText(type.getLabel(currentLocale()));
   }
 
   protected PanelElement transfersPanel() {
@@ -95,22 +96,6 @@ public abstract class TransferViewPageObject extends AbstractTestBenchTestCase {
 
   protected ButtonElement down() {
     return wrap(ButtonElement.class, findElement(className(DOWN)));
-  }
-
-  protected PanelElement sourcePanel() {
-    return wrap(PanelElement.class, findElement(className(SOURCE)));
-  }
-
-  protected ComboBoxElement sourcePlates() {
-    return wrap(ComboBoxElement.class, findElement(className(SOURCE_PLATES)));
-  }
-
-  protected PanelElement sourcePlatePanel() {
-    return wrap(PanelElement.class, findElement(className(SOURCE_PLATE_PANEL)));
-  }
-
-  protected WebElement sourcePlate() {
-    return findElement(className(SOURCE_PLATE)).findElement(className("v-spreadsheet"));
   }
 
   protected PanelElement destinationPanel() {
