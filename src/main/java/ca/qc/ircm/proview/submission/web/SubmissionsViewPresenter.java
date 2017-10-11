@@ -25,7 +25,9 @@ import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -95,8 +97,12 @@ public class SubmissionsViewPresenter {
   public static final String ALL = "all";
   public static final String SELECT_SAMPLES = "selectSamples";
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
+  public static final String SELECT_CONTAINERS = "selectContainers";
+  public static final String SELECT_CONTAINERS_NO_SAMPLES = "selectContainers.noSamples";
+  public static final String SELECT_CONTAINERS_LABEL = "selectContainersLabel";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final String TRANSFER = "transfer";
+  public static final String TRANSFER_NO_CONTAINERS = "transfer.noContainers";
   public static final String CONDITION_FALSE = "condition-false";
   public static final String COLUMN_ORDER = "columnOrder";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
@@ -121,6 +127,8 @@ public class SubmissionsViewPresenter {
   private Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider;
   @Inject
   private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
+  @Inject
+  private Provider<ContainerSelectionWindow> containerSelectionWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -134,7 +142,8 @@ public class SubmissionsViewPresenter {
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
       Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider,
       Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider,
-      Provider<SampleSelectionWindow> sampleSelectionWindowProvider, String applicationName) {
+      Provider<SampleSelectionWindow> sampleSelectionWindowProvider,
+      Provider<ContainerSelectionWindow> containerSelectionWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
     this.userPreferenceService = userPreferenceService;
@@ -144,6 +153,7 @@ public class SubmissionsViewPresenter {
     this.submissionTreatmentsWindowProvider = submissionTreatmentsWindowProvider;
     this.submissionHistoryWindowProvider = submissionHistoryWindowProvider;
     this.sampleSelectionWindowProvider = sampleSelectionWindowProvider;
+    this.containerSelectionWindowProvider = containerSelectionWindowProvider;
     this.applicationName = applicationName;
   }
 
@@ -169,13 +179,19 @@ public class SubmissionsViewPresenter {
     design.headerLabel.addStyleName(HEADER);
     design.headerLabel.setValue(resources.message(HEADER));
     prepareSumissionsGrid();
+    design.sampleSelectionLayout.setVisible(authorizationService.hasAdminRole());
     design.selectSamplesButton.addStyleName(SELECT_SAMPLES);
     design.selectSamplesButton.setCaption(resources.message(SELECT_SAMPLES));
-    design.selectSamplesButton.setVisible(authorizationService.hasAdminRole());
     design.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
     design.selectedSamplesLabel
         .setValue(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
-    design.selectedSamplesLabel.setVisible(authorizationService.hasAdminRole());
+    design.containerSelectionLayout.setVisible(authorizationService.hasAdminRole());
+    design.selectContainers.addStyleName(SELECT_CONTAINERS);
+    design.selectContainers.setCaption(resources.message(SELECT_CONTAINERS));
+    design.selectContainers.addClickListener(e -> selectContainers());
+    design.selectedContainersLabel.addStyleName(SELECT_CONTAINERS_LABEL);
+    design.selectedContainersLabel
+        .setValue(resources.message(SELECT_CONTAINERS_LABEL, view.savedSamples().size()));
     design.updateStatusButton.addStyleName(UPDATE_STATUS);
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
@@ -440,31 +456,58 @@ public class SubmissionsViewPresenter {
     window.center();
     window.addSaveListener(e -> {
       MessageResource resources = view.getResources();
-      List<Sample> selectedSamples = window.getItems();
+      List<Sample> selectedSamples = e.getSavedObject();
       design.submissionsGrid.deselectAll();
       view.saveSamples(selectedSamples);
       design.selectedSamplesLabel
           .setValue(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
+      design.selectContainers.setEnabled(!selectedSamples.isEmpty());
       logger.debug("Selected samples {}", selectedSamples);
     });
   }
 
-  private void updateStatus() {
+  private void saveSelectedSamples() {
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
       List<Sample> samples = design.submissionsGrid.getSelectedItems().stream()
           .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
       view.saveSamples(samples);
     }
+  }
+
+  private void selectContainers() {
+    saveSelectedSamples();
+    if (view.savedSamples().isEmpty()) {
+      MessageResource resources = view.getResources();
+      view.showError(resources.message(SELECT_CONTAINERS_NO_SAMPLES));
+    } else {
+      ContainerSelectionWindow window = containerSelectionWindowProvider.get();
+      view.addWindow(window);
+      List<Sample> samples = view.savedSamples();
+      window.setSamples(samples);
+      window.center();
+      window.addSaveListener(e -> {
+        MessageResource resources = view.getResources();
+        List<SampleContainer> selectedContainers = e.getSavedObject();
+        view.saveContainers(selectedContainers);
+        design.selectedContainersLabel
+            .setValue(resources.message(SELECT_CONTAINERS_LABEL, selectedContainers.size()));
+        logger.debug("Selected containers {}", selectedContainers);
+      });
+    }
+  }
+
+  private void updateStatus() {
+    saveSelectedSamples();
     view.navigateTo(SampleStatusView.VIEW_NAME);
   }
 
   private void transfer() {
-    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      List<Sample> samples = design.submissionsGrid.getSelectedItems().stream()
-          .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
-      view.saveSamples(samples);
+    if (!view.savedContainers().isEmpty()) {
+      view.navigateTo(TransferView.VIEW_NAME);
+    } else {
+      MessageResource resources = view.getResources();
+      view.showError(resources.message(TRANSFER_NO_CONTAINERS));
     }
-    view.navigateTo(TransferView.VIEW_NAME);
   }
 
   SubmissionWebFilter getFilter() {

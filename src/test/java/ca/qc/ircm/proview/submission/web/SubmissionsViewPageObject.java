@@ -21,6 +21,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIE
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_CONTAINERS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_CONTAINERS_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
@@ -123,6 +125,18 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected LabelElement selectedSamplesLabel() {
     return wrap(LabelElement.class, findElement(className(SELECT_SAMPLES_LABEL)));
+  }
+
+  protected ButtonElement selectContainersButton() {
+    return wrap(ButtonElement.class, findElement(className(SELECT_CONTAINERS)));
+  }
+
+  protected void clickSelectContainersButton() {
+    selectContainersButton().click();
+  }
+
+  protected LabelElement selectedContainersLabel() {
+    return wrap(LabelElement.class, findElement(className(SELECT_CONTAINERS_LABEL)));
   }
 
   protected ButtonElement updateStatusButton() {

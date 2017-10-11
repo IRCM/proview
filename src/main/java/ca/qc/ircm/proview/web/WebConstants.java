@@ -47,6 +47,7 @@ public class WebConstants {
   public static final String OVER_MAXIMUM_SIZE = "overMaximumSize";
   public static final String SAVED_SUBMISSIONS = "savedSubmissions";
   public static final String SAVED_SAMPLES = "savedSamples";
+  public static final String SAVED_CONTAINERS = "savedContainers";
   public static final Method VALUE_CHANGE_LISTENER_METHOD =
       ReflectTools.findMethod(ValueChangeListener.class, "valueChange", ValueChangeEvent.class);
 
