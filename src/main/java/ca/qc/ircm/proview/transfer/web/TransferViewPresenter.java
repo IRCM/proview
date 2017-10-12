@@ -220,9 +220,9 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfers
         .addColumn(ts -> ts.getContainer() != null ? ts.getContainer().getFullName() : "")
         .setId(CONTAINER).setCaption(resources.message(CONTAINER));
-    design.transfers
-        .addColumn(ts -> ts.getDestinationContainer() != null
-            ? ts.getDestinationContainer().getFullName() : "")
+    design.transfers.addColumn(
+        ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
+            : "")
         .setId(DESTINATION).setCaption(resources.message(DESTINATION));
     design.transfers.addColumn(ts -> destinationTube(ts), new ComponentRenderer())
         .setId(DESTINATION_TUBE).setCaption(resources.message(DESTINATION_TUBE));
@@ -267,7 +267,8 @@ public class TransferViewPresenter implements BinderValidator {
       field.setRequiredIndicatorVisible(true);
       field.setItemCaptionGenerator(well -> well.getName());
       field.setItems(design.destinationPlatesField.getValue() != null
-          ? design.destinationPlatesField.getValue().getWells() : Collections.emptyList());
+          ? design.destinationPlatesField.getValue().getWells()
+          : Collections.emptyList());
       destinationWells.put(ts, field);
       return field;
     }
@@ -479,7 +480,8 @@ public class TransferViewPresenter implements BinderValidator {
       if (design.type.getValue() == WELL) {
         // Reset samples.
         Plate database = plateService.get(design.destinationPlatesField.getValue() != null
-            ? design.destinationPlatesField.getValue().getId() : null);
+            ? design.destinationPlatesField.getValue().getId()
+            : null);
         if (database == null) {
           design.destinationPlatesField.getValue().getWells().forEach(well -> well.setSample(null));
         } else {
@@ -518,6 +520,8 @@ public class TransferViewPresenter implements BinderValidator {
       transferService.insert(transfer);
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED, transfers.size()));
+      view.saveContainers(transferedSamples.stream().map(ts -> ts.getDestinationContainer())
+          .collect(Collectors.toList()));
       view.navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
     }
   }

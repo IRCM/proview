@@ -1084,6 +1084,8 @@ public class TransferViewPresenterTest {
           transferedSample.getDestinationContainer().getName());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view).saveContainers(transfer.getTreatmentSamples().stream()
+        .map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
   }
 
@@ -1131,6 +1133,8 @@ public class TransferViewPresenterTest {
       assertEquals(0, destinationWell.getColumn());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view).saveContainers(transfer.getTreatmentSamples().stream()
+        .map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
   }
 
@@ -1172,6 +1176,8 @@ public class TransferViewPresenterTest {
       assertEquals(4, destinationWell.getColumn());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view).saveContainers(transfer.getTreatmentSamples().stream()
+        .map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
   }
 
@@ -1212,6 +1218,8 @@ public class TransferViewPresenterTest {
       assertEquals("test" + i, transferedSample.getDestinationContainer().getName());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view).saveContainers(transfer.getTreatmentSamples().stream()
+        .map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
   }
 
@@ -1250,6 +1258,8 @@ public class TransferViewPresenterTest {
       assertEquals(0, destinationWell.getColumn());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view).saveContainers(transfer.getTreatmentSamples().stream()
+        .map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
   }
 
@@ -1287,6 +1297,8 @@ public class TransferViewPresenterTest {
       assertEquals(4, destinationWell.getColumn());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view).saveContainers(transfer.getTreatmentSamples().stream()
+        .map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
   }
 
@@ -1340,6 +1352,8 @@ public class TransferViewPresenterTest {
       assertEquals("test" + count++, transferedSample.getDestinationContainer().getName());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view).saveContainers(transfer.getTreatmentSamples().stream()
+        .map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
   }
 
@@ -1388,6 +1402,8 @@ public class TransferViewPresenterTest {
       assertEquals(0, destinationWell.getColumn());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size() * 2));
+    verify(view).saveContainers(transfer.getTreatmentSamples().stream()
+        .map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
   }
 
@@ -1435,6 +1451,8 @@ public class TransferViewPresenterTest {
       assertEquals(4, destinationWell.getColumn());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size() * 2));
+    verify(view).saveContainers(transfer.getTreatmentSamples().stream()
+        .map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
     verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
   }
 
