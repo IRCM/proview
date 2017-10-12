@@ -246,7 +246,7 @@ public class SampleStatusViewPresenterTest {
     ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample2);
     newStatus1.setValue(SampleStatus.ANALYSED);
-    newStatus2.setValue(SampleStatus.TO_DIGEST);
+    newStatus2.setValue(SampleStatus.DIGESTED);
     when(submissionSampleService.get(any()))
         .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
 
@@ -260,7 +260,7 @@ public class SampleStatusViewPresenterTest {
     sample1 = find(samples, sample1.getId()).orElse(null);
     sample2 = find(samples, sample2.getId()).orElse(null);
     assertEquals(SampleStatus.ANALYSED, sample1.getStatus());
-    assertEquals(SampleStatus.TO_DIGEST, sample2.getStatus());
+    assertEquals(SampleStatus.DIGESTED, sample2.getStatus());
     verify(view).showTrayNotification(resources.message(SAVE + ".done", 2));
     samples = dataProvider(design.samplesGrid).getItems();
     sample1 = find(samples, sample1.getId()).orElse(null);

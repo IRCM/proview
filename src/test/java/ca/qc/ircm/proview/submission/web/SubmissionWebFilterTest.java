@@ -20,9 +20,9 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
 import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
 import static ca.qc.ircm.proview.sample.SampleStatus.DATA_ANALYSIS;
+import static ca.qc.ircm.proview.sample.SampleStatus.DIGESTED;
 import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
-import static ca.qc.ircm.proview.sample.SampleStatus.TO_ANALYSE;
-import static ca.qc.ircm.proview.sample.SampleStatus.TO_DIGEST;
+import static ca.qc.ircm.proview.sample.SampleStatus.TO_RECEIVE;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -202,20 +202,20 @@ public class SubmissionWebFilterTest {
   public void anySampleStatus() {
     filter.anySampleStatus = ANALYSED;
 
-    assertTrue(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
-    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
+    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertFalse(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertFalse(filter.test(sampleStatuses(RECEIVED, TO_DIGEST, TO_ANALYSE)));
+    assertFalse(filter.test(sampleStatuses(RECEIVED, DIGESTED, TO_RECEIVE)));
   }
 
   @Test
   public void anySampleStatus_Null() {
     filter.anySampleStatus = null;
 
-    assertTrue(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
-    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
+    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertTrue(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertTrue(filter.test(sampleStatuses(RECEIVED, TO_DIGEST, TO_ANALYSE)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, TO_RECEIVE)));
   }
 
   @Test
@@ -248,30 +248,30 @@ public class SubmissionWebFilterTest {
   public void result_True() {
     filter.results = true;
 
-    assertTrue(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
-    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
+    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertTrue(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertFalse(filter.test(sampleStatuses(RECEIVED, TO_DIGEST, TO_ANALYSE)));
+    assertFalse(filter.test(sampleStatuses(RECEIVED, DIGESTED, TO_RECEIVE)));
   }
 
   @Test
   public void result_False() {
     filter.results = false;
 
-    assertFalse(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
-    assertFalse(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
+    assertFalse(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
+    assertFalse(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertFalse(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertTrue(filter.test(sampleStatuses(RECEIVED, TO_DIGEST, TO_ANALYSE)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, TO_RECEIVE)));
   }
 
   @Test
   public void result_Null() {
     filter.results = null;
 
-    assertTrue(filter.test(sampleStatuses(TO_ANALYSE, ANALYSED)));
-    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, TO_DIGEST)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
+    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertTrue(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertTrue(filter.test(sampleStatuses(RECEIVED, TO_DIGEST, TO_ANALYSE)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, TO_RECEIVE)));
   }
 
   @Test

@@ -38,17 +38,13 @@ public enum SampleStatus {
    */
   RECEIVED,
   /**
-   * Sample must be digested.
+   * Sample was digested.
    */
-  TO_DIGEST,
+  DIGESTED,
   /**
-   * Sample must be enriched.
+   * Sample was enriched.
    */
-  TO_ENRICH,
-  /**
-   * Sample must be analysed.
-   */
-  TO_ANALYSE,
+  ENRICHED,
   /**
    * Result data must be manually analysed.
    */

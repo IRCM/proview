@@ -6450,7 +6450,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
     assertEquals(standardComment2, standard.getComments());
-    assertEquals(SampleStatus.TO_ANALYSE, sample.getStatus());
+    assertEquals(SampleStatus.DIGESTED, sample.getStatus());
     assertEquals(submission, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
@@ -6482,7 +6482,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
     assertEquals(standardComment2, standard.getComments());
-    assertEquals(SampleStatus.TO_ANALYSE, sample.getStatus());
+    assertEquals(SampleStatus.DIGESTED, sample.getStatus());
     assertEquals(submission, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);

@@ -20,11 +20,10 @@ package ca.qc.ircm.proview.sample;
 import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
 import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
 import static ca.qc.ircm.proview.sample.SampleStatus.DATA_ANALYSIS;
+import static ca.qc.ircm.proview.sample.SampleStatus.DIGESTED;
+import static ca.qc.ircm.proview.sample.SampleStatus.ENRICHED;
 import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
-import static ca.qc.ircm.proview.sample.SampleStatus.TO_ANALYSE;
 import static ca.qc.ircm.proview.sample.SampleStatus.TO_APPROVE;
-import static ca.qc.ircm.proview.sample.SampleStatus.TO_DIGEST;
-import static ca.qc.ircm.proview.sample.SampleStatus.TO_ENRICH;
 import static ca.qc.ircm.proview.sample.SampleStatus.TO_RECEIVE;
 import static org.junit.Assert.assertEquals;
 
@@ -58,21 +57,15 @@ public class SampleStatusTest {
   }
 
   @Test
-  public void getLabel_Todigest() {
-    assertEquals("To digest", TO_DIGEST.getLabel(Locale.ENGLISH));
-    assertEquals("À digérer", TO_DIGEST.getLabel(Locale.FRENCH));
+  public void getLabel_Digest() {
+    assertEquals("Digested", DIGESTED.getLabel(Locale.ENGLISH));
+    assertEquals("Digéré", DIGESTED.getLabel(Locale.FRENCH));
   }
 
   @Test
-  public void getLabel_ToEnrich() {
-    assertEquals("To enrich", TO_ENRICH.getLabel(Locale.ENGLISH));
-    assertEquals("À enrichir", TO_ENRICH.getLabel(Locale.FRENCH));
-  }
-
-  @Test
-  public void getLabel_Toanalyse() {
-    assertEquals("To analyse", TO_ANALYSE.getLabel(Locale.ENGLISH));
-    assertEquals("À analyser", TO_ANALYSE.getLabel(Locale.FRENCH));
+  public void getLabel_Enrich() {
+    assertEquals("Enriched", ENRICHED.getLabel(Locale.ENGLISH));
+    assertEquals("Enrichit", ENRICHED.getLabel(Locale.FRENCH));
   }
 
   @Test
