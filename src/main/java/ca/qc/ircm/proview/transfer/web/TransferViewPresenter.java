@@ -514,7 +514,8 @@ public class TransferViewPresenter implements BinderValidator {
       transfer.setTreatmentSamples(transferedSamples);
       transferService.insert(transfer);
       MessageResource resources = view.getResources();
-      view.showTrayNotification(resources.message(SAVED, transfers.size()));
+      view.showTrayNotification(resources.message(SAVED,
+          transfers.stream().map(ts -> ts.getSample().getId()).distinct().count()));
       view.saveContainers(transferedSamples.stream().map(ts -> ts.getDestinationContainer())
           .collect(Collectors.toList()));
       view.navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
