@@ -360,7 +360,6 @@ public class TransferViewPresenter implements BinderValidator {
   private boolean validate() {
     logger.trace("Validate transfer");
     final MessageResource resources = view.getResources();
-    System.out.println(transfers);
     if (transfers.isEmpty()) {
       String message = resources.message(NO_CONTAINERS);
       logger.debug("Validation error: {}", message);
