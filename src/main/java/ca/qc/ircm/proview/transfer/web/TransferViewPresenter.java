@@ -165,7 +165,7 @@ public class TransferViewPresenter implements BinderValidator {
   private void prepareComponents() {
     final MessageResource resources = view.getResources();
     final Locale locale = view.getLocale();
-    view.setTitle(resources.message("title", applicationName));
+    view.setTitle(resources.message(TITLE, applicationName));
     design.headerLabel.addStyleName(HEADER);
     design.headerLabel.addStyleName(ValoTheme.LABEL_H1);
     design.headerLabel.setValue(resources.message(HEADER));
