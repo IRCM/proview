@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -28,23 +27,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
-import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
-import ca.qc.ircm.proview.dataanalysis.QDataAnalysis;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis;
-import ca.qc.ircm.proview.msanalysis.QAcquisition;
-import ca.qc.ircm.proview.msanalysis.QMsAnalysis;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.treatment.QTreatment;
-import ca.qc.ircm.proview.treatment.QTreatmentSample;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,48 +82,6 @@ public class SubmissionSampleServiceTest {
     submissionSampleService = new SubmissionSampleService(entityManager, queryFactory,
         sampleActivityService, activityService, authorizationService);
     optionalActivity = Optional.of(activity);
-  }
-
-  @Test
-  public void test() throws Throwable {
-    JPAQuery<SubmissionSample> samplesQuery = queryFactory.select(submissionSample);
-    samplesQuery.from(submissionSample);
-    List<SubmissionSample> samples = samplesQuery.fetch();
-    for (SubmissionSample sample : samples) {
-      JPAQuery<DataAnalysis> dataAnalysisQuery = queryFactory.select(QDataAnalysis.dataAnalysis);
-      dataAnalysisQuery.from(QDataAnalysis.dataAnalysis);
-      dataAnalysisQuery.where(QDataAnalysis.dataAnalysis.sample.eq(sample));
-      dataAnalysisQuery.where(QDataAnalysis.dataAnalysis.status.eq(DataAnalysisStatus.TO_DO));
-      if (dataAnalysisQuery.fetchCount() > 0) {
-        System.out.println(sample.getId() + "\tDATA_ANALYSIS");
-        continue;
-      }
-      JPAQuery<MsAnalysis> analysisQuery = queryFactory.select(QMsAnalysis.msAnalysis);
-      analysisQuery.from(QMsAnalysis.msAnalysis);
-      analysisQuery.from(QMsAnalysis.msAnalysis.acquisitions, QAcquisition.acquisition);
-      analysisQuery.where(QAcquisition.acquisition.sample.eq(sample));
-      if (analysisQuery.fetchCount() > 0) {
-        System.out.println(sample.getId() + "\tANALYSED");
-        continue;
-      }
-      JPAQuery<Treatment<?>> treatmentQuery = queryFactory.select(QTreatment.treatment);
-      treatmentQuery.from(QTreatment.treatment);
-      treatmentQuery.from(QTreatment.treatment.treatmentSamples, QTreatmentSample.treatmentSample);
-      treatmentQuery.where(QTreatmentSample.treatmentSample.sample.eq(sample));
-      treatmentQuery.where(QTreatment.treatment.deleted.isFalse());
-      treatmentQuery.orderBy(QTreatment.treatment.insertTime.desc());
-      List<Treatment<?>> treatments = treatmentQuery.fetch();
-      Optional<Treatment<?>> optionalTreatment =
-          treatments.stream().filter(treatment -> treatment.getType() == Treatment.Type.DIGESTION
-              || treatment.getType() == Treatment.Type.ENRICHMENT).findFirst();
-      if (optionalTreatment.isPresent()) {
-        System.out.println(sample.getId() + "\t"
-            + (optionalTreatment.get().getType() == Treatment.Type.DIGESTION ? "DIGESTED"
-                : "ENRICHED"));
-      } else {
-        System.out.println(sample.getId() + "\tAPPROVED");
-      }
-    }
   }
 
   @Test
