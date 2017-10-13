@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.transfer.web;
 
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
-import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
 import static ca.qc.ircm.proview.transfer.QTransfer.transfer;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -121,10 +121,12 @@ public class TransferViewTest extends TransferViewPageObject {
     assertTrue(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());
     assertFalse(optional(() -> destinationPlate()).isPresent());
+    assertTrue(optional(() -> save()).isPresent());
     String plateName = "test_plate";
     setDestinationPlate(plateName);
     assertTrue(optional(() -> destinationPlatePanel()).isPresent());
     assertTrue(optional(() -> destinationPlate()).isPresent());
+    assertTrue(optional(() -> save()).isPresent());
   }
 
   @Test
@@ -141,6 +143,7 @@ public class TransferViewTest extends TransferViewPageObject {
     assertTrue(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());
     assertFalse(optional(() -> destinationPlate()).isPresent());
+    assertTrue(optional(() -> save()).isPresent());
     setTransferType(TUBE);
     assertTrue(optional(() -> header()).isPresent());
     assertTrue(optional(() -> transferTypePanel()).isPresent());
@@ -152,11 +155,13 @@ public class TransferViewTest extends TransferViewPageObject {
     assertFalse(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());
     assertFalse(optional(() -> destinationPlate()).isPresent());
+    assertTrue(optional(() -> save()).isPresent());
     setTransferType(WELL);
     String plateName = "test_plate";
     setDestinationPlate(plateName);
     assertTrue(optional(() -> destinationPlatePanel()).isPresent());
     assertTrue(optional(() -> destinationPlate()).isPresent());
+    assertTrue(optional(() -> save()).isPresent());
   }
 
   @Test
