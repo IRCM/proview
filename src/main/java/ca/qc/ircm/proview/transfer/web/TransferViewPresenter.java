@@ -107,6 +107,7 @@ public class TransferViewPresenter implements BinderValidator {
       DESTINATION_SAMPLE + "." + sample.name.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String DOWN_STYLE = "skip-row";
+  public static final String NO_CONTAINERS = "containers.empty";
   public static final String INVALID_CONTAINERS = "containers.invalid";
   public static final String SPLIT_CONTAINER_PARAMETERS = ",";
   public static final String INVALID_TRANSFER = "transfer.invalid";
@@ -358,6 +359,14 @@ public class TransferViewPresenter implements BinderValidator {
 
   private boolean validate() {
     logger.trace("Validate transfer");
+    final MessageResource resources = view.getResources();
+    System.out.println(transfers);
+    if (transfers.isEmpty()) {
+      String message = resources.message(NO_CONTAINERS);
+      logger.debug("Validation error: {}", message);
+      view.showError(message);
+      return false;
+    }
     boolean valid = true;
     if (sourceType() == TUBE) {
       for (Binder<TransferedSample> binder : transferBinders.values()) {

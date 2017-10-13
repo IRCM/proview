@@ -39,6 +39,7 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DOWN_STYLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.HEADER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.INVALID_CONTAINERS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.INVALID_TRANSFER;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAVE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAVED;
@@ -827,6 +828,18 @@ public class TransferViewPresenterTest {
     for (Well well : plate.wells(new WellLocation(0, 4), new WellLocation(7, 11))) {
       assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
     }
+  }
+
+  @Test
+  public void save_NoContainers() {
+    when(view.savedContainers()).thenReturn(new ArrayList<>());
+    presenter.init(view);
+    presenter.enter("");
+
+    design.save.click();
+
+    verify(view).showError(resources.message(NO_CONTAINERS));
+    verify(transferService, never()).insert(any());
   }
 
   @Test
