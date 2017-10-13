@@ -64,13 +64,13 @@ public class Plate implements Data, Serializable, Named {
   /**
    * Number of columns.
    */
-  @Column(name = "columns", nullable = false)
+  @Column(name = "columnCount", nullable = false)
   @Min(1)
   private int columnCount = 12;
   /**
    * Number of rows.
    */
-  @Column(name = "rows", nullable = false)
+  @Column(name = "rowCount", nullable = false)
   @Min(1)
   private int rowCount = 8;
   /**
