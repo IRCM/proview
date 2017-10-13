@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +36,7 @@ import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -71,6 +73,8 @@ public class EnrichmentServiceTest {
   @Inject
   private JPAQueryFactory queryFactory;
   @Mock
+  private EnrichmentProtocolService enrichmentProtocolService;
+  @Mock
   private EnrichmentActivityService enrichmentActivityService;
   @Mock
   private ActivityService activityService;
@@ -87,8 +91,9 @@ public class EnrichmentServiceTest {
    */
   @Before
   public void beforeTest() {
-    enrichmentService = new EnrichmentService(entityManager, queryFactory,
-        enrichmentActivityService, activityService, authorizationService);
+    enrichmentService =
+        new EnrichmentService(entityManager, queryFactory, enrichmentProtocolService,
+            enrichmentActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -153,7 +158,8 @@ public class EnrichmentServiceTest {
     Enrichment enrichment = new Enrichment();
     enrichment.setProtocol(new EnrichmentProtocol(2L));
     final List<EnrichedSample> enrichedSamples = new ArrayList<>();
-    Sample sample = new SubmissionSample(1L);
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    entityManager.detach(sample);
     Tube tube = new Tube(1L);
     EnrichedSample enrichedSample = new EnrichedSample();
     enrichedSample.setComments("unit test");
@@ -186,6 +192,8 @@ public class EnrichmentServiceTest {
     assertEquals((Long) 1L, enrichedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
     assertEquals((Long) 1L, enrichedSample.getContainer().getId());
+    sample = entityManager.find(SubmissionSample.class, 1L);
+    assertEquals(SampleStatus.ENRICHED, sample.getStatus());
   }
 
   @Test
@@ -193,7 +201,8 @@ public class EnrichmentServiceTest {
     Enrichment enrichment = new Enrichment();
     enrichment.setProtocol(new EnrichmentProtocol(2L));
     final List<EnrichedSample> enrichedSamples = new ArrayList<>();
-    SubmissionSample sample = new SubmissionSample(1L);
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    entityManager.detach(sample);
     Well well = new Well(128L);
     EnrichedSample enrichedSample = new EnrichedSample();
     enrichedSample.setComments("unit test");
@@ -226,6 +235,55 @@ public class EnrichmentServiceTest {
     assertEquals((Long) 1L, enrichedSample.getSample().getId());
     assertEquals(SampleContainerType.WELL, enrichedSample.getContainer().getType());
     assertEquals((Long) 128L, enrichedSample.getContainer().getId());
+    sample = entityManager.find(SubmissionSample.class, 1L);
+    assertEquals(SampleStatus.ENRICHED, sample.getStatus());
+  }
+
+  @Test
+  public void insert_NewProtocol() {
+    Enrichment enrichment = new Enrichment();
+    EnrichmentProtocol protocol = new EnrichmentProtocol(null, "test protocol");
+    enrichment.setProtocol(protocol);
+    final List<EnrichedSample> enrichedSamples = new ArrayList<>();
+    Sample sample = new SubmissionSample(1L);
+    Tube tube = new Tube(1L);
+    EnrichedSample enrichedSample = new EnrichedSample();
+    enrichedSample.setComments("unit test");
+    enrichedSample.setSample(sample);
+    enrichedSample.setContainer(tube);
+    enrichedSamples.add(enrichedSample);
+    enrichment.setTreatmentSamples(enrichedSamples);
+    doAnswer(i -> {
+      entityManager.persist(i.getArgumentAt(0, EnrichmentProtocol.class));
+      return null;
+    }).when(enrichmentProtocolService).insert(any());
+    when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
+
+    enrichmentService.insert(enrichment);
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(enrichmentProtocolService).insert(eq(protocol));
+    verify(enrichmentActivityService).insert(eq(enrichment));
+    verify(activityService).insert(eq(activity));
+    assertNotNull(enrichment.getId());
+    enrichment = enrichmentService.get(enrichment.getId());
+    assertEquals(false, enrichment.isDeleted());
+    assertEquals(null, enrichment.getDeletionType());
+    assertEquals(null, enrichment.getDeletionExplanation());
+    assertEquals(user, enrichment.getUser());
+    Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    assertTrue(before.isBefore(enrichment.getInsertTime()));
+    Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    assertTrue(after.isAfter(enrichment.getInsertTime()));
+    assertNotNull(enrichment.getProtocol().getId());
+    assertEquals(protocol.getName(), enrichment.getProtocol().getName());
+    assertEquals(1, enrichment.getTreatmentSamples().size());
+    enrichedSample = enrichment.getTreatmentSamples().get(0);
+    assertEquals("unit test", enrichedSample.getComments());
+    assertEquals((Long) 1L, enrichedSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
+    assertEquals((Long) 1L, enrichedSample.getContainer().getId());
   }
 
   @Test

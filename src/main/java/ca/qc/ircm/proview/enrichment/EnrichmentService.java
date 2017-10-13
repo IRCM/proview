@@ -23,6 +23,8 @@ import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
@@ -54,6 +56,8 @@ public class EnrichmentService extends BaseTreatmentService {
   @Inject
   private JPAQueryFactory queryFactory;
   @Inject
+  private EnrichmentProtocolService enrichmentProtocolService;
+  @Inject
   private EnrichmentActivityService enrichmentActivityService;
   @Inject
   private ActivityService activityService;
@@ -64,11 +68,13 @@ public class EnrichmentService extends BaseTreatmentService {
   }
 
   protected EnrichmentService(EntityManager entityManager, JPAQueryFactory queryFactory,
+      EnrichmentProtocolService enrichmentProtocolService,
       EnrichmentActivityService enrichmentActivityService, ActivityService activityService,
       AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
+    this.enrichmentProtocolService = enrichmentProtocolService;
     this.enrichmentActivityService = enrichmentActivityService;
     this.activityService = activityService;
     this.authorizationService = authorizationService;
@@ -124,7 +130,16 @@ public class EnrichmentService extends BaseTreatmentService {
     enrichment.setInsertTime(Instant.now());
     enrichment.setUser(user);
 
+    if (enrichment.getProtocol().getId() == null) {
+      enrichmentProtocolService.insert(enrichment.getProtocol());
+    }
     entityManager.persist(enrichment);
+    enrichment.getTreatmentSamples().stream().map(ts -> ts.getSample())
+        .filter(sample -> sample instanceof SubmissionSample)
+        .map(sample -> (SubmissionSample) sample).forEach(sample -> {
+          sample.setStatus(SampleStatus.ENRICHED);
+          entityManager.merge(sample);
+        });
 
     // Log insertion of enrichment.
     entityManager.flush();
