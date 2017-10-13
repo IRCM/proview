@@ -23,6 +23,8 @@ import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
@@ -54,6 +56,8 @@ public class DigestionService extends BaseTreatmentService {
   @Inject
   private JPAQueryFactory queryFactory;
   @Inject
+  private DigestionProtocolService digestionProtocolService;
+  @Inject
   private DigestionActivityService digestionActivityService;
   @Inject
   private ActivityService activityService;
@@ -64,11 +68,13 @@ public class DigestionService extends BaseTreatmentService {
   }
 
   protected DigestionService(EntityManager entityManager, JPAQueryFactory queryFactory,
+      DigestionProtocolService digestionProtocolService,
       DigestionActivityService digestionActivityService, ActivityService activityService,
       AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
+    this.digestionProtocolService = digestionProtocolService;
     this.digestionActivityService = digestionActivityService;
     this.activityService = activityService;
     this.authorizationService = authorizationService;
@@ -124,7 +130,16 @@ public class DigestionService extends BaseTreatmentService {
     digestion.setUser(user);
     digestion.setInsertTime(Instant.now());
 
+    if (digestion.getProtocol().getId() == null) {
+      digestionProtocolService.insert(digestion.getProtocol());
+    }
     entityManager.persist(digestion);
+    digestion.getTreatmentSamples().stream().map(ts -> ts.getSample())
+        .filter(sample -> sample instanceof SubmissionSample)
+        .map(sample -> (SubmissionSample) sample).forEach(sample -> {
+          sample.setStatus(SampleStatus.DIGESTED);
+          entityManager.merge(sample);
+        });
 
     // Log insertion of digestion.
     entityManager.flush();

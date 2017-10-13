@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +34,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -69,6 +71,8 @@ public class DigestionServiceTest {
   @Inject
   private JPAQueryFactory queryFactory;
   @Mock
+  private DigestionProtocolService digestionProtocolService;
+  @Mock
   private DigestionActivityService digestionActivityService;
   @Mock
   private ActivityService activityService;
@@ -85,8 +89,8 @@ public class DigestionServiceTest {
    */
   @Before
   public void beforeTest() {
-    digestionService = new DigestionService(entityManager, queryFactory, digestionActivityService,
-        activityService, authorizationService);
+    digestionService = new DigestionService(entityManager, queryFactory, digestionProtocolService,
+        digestionActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -146,7 +150,8 @@ public class DigestionServiceTest {
   public void insert_Tube() {
     Digestion digestion = new Digestion();
     digestion.setProtocol(new DigestionProtocol(1L));
-    SubmissionSample sample = new SubmissionSample(1L);
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    entityManager.detach(sample);
     Tube tube = new Tube(1L);
     final List<DigestedSample> digestedSamples = new ArrayList<>();
     DigestedSample digestedSample = new DigestedSample();
@@ -180,13 +185,16 @@ public class DigestionServiceTest {
     assertEquals((Long) 1L, digestedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
     assertEquals((Long) 1L, digestedSample.getContainer().getId());
+    sample = entityManager.find(SubmissionSample.class, 1L);
+    assertEquals(SampleStatus.DIGESTED, sample.getStatus());
   }
 
   @Test
   public void insert_Well() {
     Digestion digestion = new Digestion();
     digestion.setProtocol(new DigestionProtocol(1L));
-    SubmissionSample sample = new SubmissionSample(1L);
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    entityManager.detach(sample);
     Well well = new Well(128L);
     final List<DigestedSample> digestedSamples = new ArrayList<>();
     DigestedSample digestedSample = new DigestedSample();
@@ -220,6 +228,58 @@ public class DigestionServiceTest {
     assertEquals((Long) 1L, digestedSample.getSample().getId());
     assertEquals(SampleContainerType.WELL, digestedSample.getContainer().getType());
     assertEquals((Long) 128L, digestedSample.getContainer().getId());
+    sample = entityManager.find(SubmissionSample.class, 1L);
+    assertEquals(SampleStatus.DIGESTED, sample.getStatus());
+  }
+
+  @Test
+  public void insert_NewProtocol() {
+    Digestion digestion = new Digestion();
+    DigestionProtocol protocol = new DigestionProtocol(null, "test protocol");
+    digestion.setProtocol(protocol);
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    entityManager.detach(sample);
+    Tube tube = new Tube(1L);
+    final List<DigestedSample> digestedSamples = new ArrayList<>();
+    DigestedSample digestedSample = new DigestedSample();
+    digestedSample.setComments("unit test");
+    digestedSample.setSample(sample);
+    digestedSample.setContainer(tube);
+    digestedSamples.add(digestedSample);
+    digestion.setTreatmentSamples(digestedSamples);
+    doAnswer(i -> {
+      entityManager.persist(i.getArgumentAt(0, any()));
+      return null;
+    }).when(digestionProtocolService).insert(any());
+    when(digestionActivityService.insert(any(Digestion.class))).thenReturn(activity);
+
+    digestionService.insert(digestion);
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(digestionProtocolService).insert(eq(protocol));
+    verify(digestionActivityService).insert(eq(digestion));
+    verify(activityService).insert(activity);
+    assertNotNull(digestion.getId());
+    digestion = entityManager.find(Digestion.class, digestion.getId());
+    assertEquals(false, digestion.isDeleted());
+    assertEquals(null, digestion.getDeletionType());
+    assertEquals(null, digestion.getDeletionExplanation());
+    assertEquals(user, digestion.getUser());
+    Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    assertTrue(before.isBefore(digestion.getInsertTime()));
+    Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    assertTrue(after.isAfter(digestion.getInsertTime()));
+    assertNotNull(digestion.getProtocol().getId());
+    assertEquals(protocol.getName(), digestion.getProtocol().getName());
+    assertEquals(1, digestion.getTreatmentSamples().size());
+    digestedSample = digestion.getTreatmentSamples().get(0);
+    assertEquals("unit test", digestedSample.getComments());
+    assertEquals((Long) 1L, digestedSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
+    assertEquals((Long) 1L, digestedSample.getContainer().getId());
+    sample = entityManager.find(SubmissionSample.class, 1L);
+    assertEquals(SampleStatus.DIGESTED, sample.getStatus());
   }
 
   @Test
