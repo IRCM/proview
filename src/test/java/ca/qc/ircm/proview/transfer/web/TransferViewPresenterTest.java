@@ -212,7 +212,8 @@ public class TransferViewPresenterTest {
     assertTrue(design.destinationPlatePanel.getStyleName().contains(DESTINATION_PLATE_PANEL));
     verify(view.destinationPlateForm).addStyleName(DESTINATION_PLATE);
     assertTrue(design.test.getStyleName().contains(TEST));
-    assertTrue(design.saveButton.getStyleName().contains(SAVE));
+    assertTrue(design.save.getStyleName().contains(SAVE));
+    assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }
 
   @Test
@@ -230,7 +231,7 @@ public class TransferViewPresenterTest {
     assertEquals(resources.message(DESTINATION), design.destination.getCaption());
     assertEquals(resources.message(DESTINATION_PLATES), design.destinationPlatesField.getCaption());
     assertEquals(resources.message(TEST), design.test.getCaption());
-    assertEquals(resources.message(SAVE), design.saveButton.getCaption());
+    assertEquals(resources.message(SAVE), design.save.getCaption());
   }
 
   @Test
@@ -844,7 +845,7 @@ public class TransferViewPresenterTest {
     ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
         .getValueProvider().apply(transfers.get(0));
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
@@ -870,7 +871,7 @@ public class TransferViewPresenterTest {
     field.setValue(new Tube(null, "test"));
     when(tubeService.get("test")).thenReturn(new Tube(null, "test"));
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, "test")),
@@ -899,7 +900,7 @@ public class TransferViewPresenterTest {
         .getValueProvider().apply(transfers.get(1));
     field2.setValue(new Tube(null, "test"));
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(
@@ -931,7 +932,7 @@ public class TransferViewPresenterTest {
     ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
         .getValueProvider().apply(transfers.iterator().next());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(
@@ -954,7 +955,7 @@ public class TransferViewPresenterTest {
     ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
         .getValueProvider().apply(transfers.iterator().next());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
@@ -984,7 +985,7 @@ public class TransferViewPresenterTest {
         .getValueProvider().apply(transfers.get(1));
     field2.setValue(field1.getValue());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(resources.message(DESTINATION_CONTAINER_DUPLICATE, WELL.ordinal(),
@@ -1000,7 +1001,7 @@ public class TransferViewPresenterTest {
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(resources.message(DESTINATION_PLATE_NO_SELECTION)),
@@ -1018,7 +1019,7 @@ public class TransferViewPresenterTest {
     when(view.destinationPlateForm.getSelectedWell())
         .thenReturn(plate.well(plate.getRowCount() - 2, plate.getColumnCount() - 1));
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(
@@ -1037,7 +1038,7 @@ public class TransferViewPresenterTest {
     design.destinationPlatesField.setValue(plate);
     when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(
@@ -1066,7 +1067,7 @@ public class TransferViewPresenterTest {
       return null;
     }).when(transferService).insert(any());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
@@ -1113,7 +1114,7 @@ public class TransferViewPresenterTest {
       return null;
     }).when(transferService).insert(any());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
@@ -1155,7 +1156,7 @@ public class TransferViewPresenterTest {
       field.setValue(plate.well(count++, 4));
     }
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
@@ -1201,7 +1202,7 @@ public class TransferViewPresenterTest {
       return null;
     }).when(transferService).insert(any());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
@@ -1238,7 +1239,7 @@ public class TransferViewPresenterTest {
       return null;
     }).when(transferService).insert(any());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
@@ -1277,7 +1278,7 @@ public class TransferViewPresenterTest {
       return null;
     }).when(transferService).insert(any());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
@@ -1329,7 +1330,7 @@ public class TransferViewPresenterTest {
       return null;
     }).when(transferService).insert(any());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
@@ -1381,7 +1382,7 @@ public class TransferViewPresenterTest {
       return null;
     }).when(transferService).insert(any());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
@@ -1430,7 +1431,7 @@ public class TransferViewPresenterTest {
       return null;
     }).when(transferService).insert(any());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
@@ -1483,6 +1484,7 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.isVisible());
     assertFalse(design.destination.isVisible());
     assertFalse(design.down.isVisible());
+    assertFalse(design.save.isVisible());
     List<TransferedSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
     assertEquals(transfer.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < transfer.getTreatmentSamples().size(); i++) {

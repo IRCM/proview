@@ -35,7 +35,7 @@ public class TransferViewDesign extends VerticalLayout {
   protected Panel destinationPlatePanel;
   protected VerticalLayout destinationPlateFormLayout;
   protected Button test;
-  protected Button saveButton;
+  protected Button save;
 
   public TransferViewDesign() {
     Design.read(this);

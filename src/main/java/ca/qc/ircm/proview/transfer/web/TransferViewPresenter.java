@@ -156,7 +156,6 @@ public class TransferViewPresenter implements BinderValidator {
     this.view = view;
     design = view.design;
     prepareComponents();
-    addListeners();
     design.type.setValue(WELL);
     updateVisibility();
   }
@@ -201,14 +200,16 @@ public class TransferViewPresenter implements BinderValidator {
       design.destinationPlatesField.setValue(plate);
     });
     design.destinationPlatesField.setItems(plateService.all(new PlateFilterBuilder().build()));
+    design.destinationPlatesField.addValueChangeListener(e -> updateDestinationPlate());
     design.destinationPlatePanel.addStyleName(DESTINATION_PLATE_PANEL);
     design.destinationPlatePanel.setVisible(false);
     view.destinationPlateForm.addStyleName(DESTINATION_PLATE);
     design.test.addStyleName(TEST);
     design.test.setCaption(resources.message(TEST));
     design.test.addClickListener(e -> test());
-    design.saveButton.addStyleName(SAVE);
-    design.saveButton.setCaption(resources.message(SAVE));
+    design.save.addStyleName(SAVE);
+    design.save.setCaption(resources.message(SAVE));
+    design.save.addClickListener(e -> save());
   }
 
   private void prepareTransfersGrid() {
@@ -220,9 +221,9 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfers
         .addColumn(ts -> ts.getContainer() != null ? ts.getContainer().getFullName() : "")
         .setId(CONTAINER).setCaption(resources.message(CONTAINER));
-    design.transfers.addColumn(
-        ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
-            : "")
+    design.transfers
+        .addColumn(ts -> ts.getDestinationContainer() != null
+            ? ts.getDestinationContainer().getFullName() : "")
         .setId(DESTINATION).setCaption(resources.message(DESTINATION));
     design.transfers.addColumn(ts -> destinationTube(ts), new ComponentRenderer())
         .setId(DESTINATION_TUBE).setCaption(resources.message(DESTINATION_TUBE));
@@ -267,16 +268,10 @@ public class TransferViewPresenter implements BinderValidator {
       field.setRequiredIndicatorVisible(true);
       field.setItemCaptionGenerator(well -> well.getName());
       field.setItems(design.destinationPlatesField.getValue() != null
-          ? design.destinationPlatesField.getValue().getWells()
-          : Collections.emptyList());
+          ? design.destinationPlatesField.getValue().getWells() : Collections.emptyList());
       destinationWells.put(ts, field);
       return field;
     }
-  }
-
-  private void addListeners() {
-    design.destinationPlatesField.addValueChangeListener(e -> updateDestinationPlate());
-    design.saveButton.addClickListener(e -> save());
   }
 
   private void updateType() {
@@ -307,6 +302,7 @@ public class TransferViewPresenter implements BinderValidator {
         .setHidden(readOnly || sourceType != TUBE || destinationType != WELL);
     design.down.setVisible(!readOnly && sourceType == TUBE && destinationType == WELL);
     design.destination.setVisible(!readOnly && destinationType == WELL);
+    design.save.setVisible(!readOnly);
   }
 
   private void updateDestinationPlate() {
@@ -480,8 +476,7 @@ public class TransferViewPresenter implements BinderValidator {
       if (design.type.getValue() == WELL) {
         // Reset samples.
         Plate database = plateService.get(design.destinationPlatesField.getValue() != null
-            ? design.destinationPlatesField.getValue().getId()
-            : null);
+            ? design.destinationPlatesField.getValue().getId() : null);
         if (database == null) {
           design.destinationPlatesField.getValue().getWells().forEach(well -> well.setSample(null));
         } else {
