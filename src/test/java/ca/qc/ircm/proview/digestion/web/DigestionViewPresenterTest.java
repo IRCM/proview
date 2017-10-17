@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DIGESTIONS
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.HEADER;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.INVALID_CONTAINERS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.INVALID_DIGESTION;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.PROTOCOL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.PROTOCOL_PANEL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAMPLE;
@@ -14,7 +15,6 @@ import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAVED;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;

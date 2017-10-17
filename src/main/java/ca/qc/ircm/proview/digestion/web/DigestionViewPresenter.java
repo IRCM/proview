@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.digestion.web;
 
+import static ca.qc.ircm.proview.digestion.QDigestedSample.digestedSample;
 import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -42,8 +43,8 @@ public class DigestionViewPresenter implements BinderValidator {
   public static final String PROTOCOL = digestion.protocol.getMetadata().getName();
   public static final String DIGESTIONS_PANEL = "digestionsPanel";
   public static final String DIGESTIONS = "digestions";
-  public static final String SAMPLE = "sample";
-  public static final String CONTAINER = "container";
+  public static final String SAMPLE = digestedSample.sample.getMetadata().getName();
+  public static final String CONTAINER = digestedSample.container.getMetadata().getName();
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
   public static final String NO_CONTAINERS = "containers.empty";
@@ -145,7 +146,7 @@ public class DigestionViewPresenter implements BinderValidator {
     valid &= validate(binder);
     if (!valid) {
       final MessageResource generalResources = view.getGeneralResources();
-      logger.trace("Transfer validation failed");
+      logger.trace("Digestion validation failed");
       view.showError(generalResources.message(FIELD_NOTIFICATION));
     }
     return valid;
