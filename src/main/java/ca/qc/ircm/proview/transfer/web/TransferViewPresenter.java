@@ -184,7 +184,7 @@ public class TransferViewPresenter implements BinderValidator {
     design.down.addStyleName(DOWN_STYLE);
     design.down.setCaption(resources.message(DOWN));
     design.down.setVisible(false);
-    design.down.addClickListener(e -> fillDestinationWells());
+    design.down.addClickListener(e -> down());
     design.destination.addStyleName(DESTINATION);
     design.destination.setCaption(resources.message(DESTINATION));
     design.destinationPlatesField.addStyleName(DESTINATION_PLATES);
@@ -326,7 +326,7 @@ public class TransferViewPresenter implements BinderValidator {
     updateType();
   }
 
-  private void fillDestinationWells() {
+  private void down() {
     Well firstWell = destinationWells.get(transfers.get(0)).getValue();
     Plate plate = design.destinationPlatesField.getValue();
     List<Well> wells = plate.wells(new WellLocation(firstWell.getRow(), firstWell.getColumn()),
