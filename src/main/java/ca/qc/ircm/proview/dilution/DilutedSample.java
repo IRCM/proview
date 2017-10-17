@@ -25,6 +25,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
 
 /**
  * A sample that was diluted.
@@ -42,6 +43,7 @@ public class DilutedSample extends TreatmentSample implements Data {
    * Volume of source transfered.
    */
   @Column(name = "sourceVolume", nullable = false)
+  @Min(0)
   private Double sourceVolume;
   /**
    * Solvent used for dilution.
@@ -52,6 +54,7 @@ public class DilutedSample extends TreatmentSample implements Data {
    * Volume of solvent used.
    */
   @Column(name = "solventVolume", nullable = false)
+  @Min(0)
   private Double solventVolume;
 
   public Double getSourceVolume() {
