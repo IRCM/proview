@@ -40,6 +40,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -145,6 +148,38 @@ public class DigestionService extends BaseTreatmentService {
     entityManager.flush();
     Activity activity = digestionActivityService.insert(digestion);
     activityService.insert(activity);
+  }
+
+  /**
+   * Updates digestion's information in database.
+   *
+   * @param digestion
+   *          digestion containing new information
+   * @param explanation
+   *          explanation
+   */
+  public void update(Digestion digestion, String explanation) {
+    authorizationService.checkAdminRole();
+
+    Digestion old = entityManager.find(Digestion.class, digestion.getId());
+    Set<Long> digestedSampleIds =
+        digestion.getTreatmentSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
+    if (old.getTreatmentSamples().stream().filter(ts -> !digestedSampleIds.contains(ts.getId()))
+        .findAny().isPresent()) {
+      throw new IllegalArgumentException("Cannot remove " + DigestedSample.class.getSimpleName()
+          + " from " + Digestion.class.getSimpleName() + " on update");
+    }
+
+    if (digestion.getProtocol().getId() == null) {
+      digestionProtocolService.insert(digestion.getProtocol());
+    }
+
+    Optional<Activity> activity = digestionActivityService.update(digestion, explanation);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
+    }
+
+    entityManager.merge(digestion);
   }
 
   /**

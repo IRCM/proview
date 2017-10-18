@@ -35,7 +35,6 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_WELL;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_WELL_IN_USE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DOWN;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DOWN_STYLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.HEADER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.INVALID_CONTAINERS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.INVALID_TRANSFER;
@@ -50,6 +49,7 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFERS_PA
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYPE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYPE_PANEL;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -207,7 +207,7 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfers.getStyleName().contains(TRANSFERS));
     assertTrue(design.transfers.getStyleName().contains(COMPONENTS));
     assertTrue(design.down.getStyleName().contains(DOWN));
-    assertTrue(design.down.getStyleName().contains(DOWN_STYLE));
+    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.destination.getStyleName().contains(DESTINATION));
     assertTrue(design.destinationPlatesField.getStyleName().contains(DESTINATION_PLATES));
     assertTrue(design.destinationPlatePanel.getStyleName().contains(DESTINATION_PLATE_PANEL));

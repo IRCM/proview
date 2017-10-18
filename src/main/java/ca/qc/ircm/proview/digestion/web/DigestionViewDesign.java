@@ -7,6 +7,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 
@@ -27,6 +28,9 @@ public class DigestionViewDesign extends VerticalLayout {
   protected ComboBox<ca.qc.ircm.proview.digestion.DigestionProtocol> protocol;
   protected Panel digestionsPanel;
   protected Grid<ca.qc.ircm.proview.digestion.DigestedSample> digestions;
+  protected Button down;
+  protected Panel explanationPanel;
+  protected TextArea explanation;
   protected Button save;
 
   public DigestionViewDesign() {

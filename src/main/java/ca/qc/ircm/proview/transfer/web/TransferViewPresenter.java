@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -106,7 +107,6 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String DESTINATION_SAMPLE_NAME =
       DESTINATION_SAMPLE + "." + sample.name.getMetadata().getName();
   public static final String DOWN = "down";
-  public static final String DOWN_STYLE = "skip-row";
   public static final String NO_CONTAINERS = "containers.empty";
   public static final String INVALID_CONTAINERS = "containers.invalid";
   public static final String SPLIT_CONTAINER_PARAMETERS = ",";
@@ -181,7 +181,7 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfersPanel.setCaption(resources.message(TRANSFERS_PANEL));
     prepareTransfersGrid();
     design.down.addStyleName(DOWN);
-    design.down.addStyleName(DOWN_STYLE);
+    design.down.addStyleName(BUTTON_SKIP_ROW);
     design.down.setCaption(resources.message(DOWN));
     design.down.setVisible(false);
     design.down.addClickListener(e -> down());
@@ -222,9 +222,9 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfers
         .addColumn(ts -> ts.getContainer() != null ? ts.getContainer().getFullName() : "")
         .setId(CONTAINER).setCaption(resources.message(CONTAINER));
-    design.transfers
-        .addColumn(ts -> ts.getDestinationContainer() != null
-            ? ts.getDestinationContainer().getFullName() : "")
+    design.transfers.addColumn(
+        ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
+            : "")
         .setId(DESTINATION).setCaption(resources.message(DESTINATION));
     design.transfers.addColumn(ts -> destinationTube(ts), new ComponentRenderer())
         .setId(DESTINATION_TUBE).setCaption(resources.message(DESTINATION_TUBE));
@@ -269,7 +269,8 @@ public class TransferViewPresenter implements BinderValidator {
       field.setRequiredIndicatorVisible(true);
       field.setItemCaptionGenerator(well -> well.getName());
       field.setItems(design.destinationPlatesField.getValue() != null
-          ? design.destinationPlatesField.getValue().getWells() : Collections.emptyList());
+          ? design.destinationPlatesField.getValue().getWells()
+          : Collections.emptyList());
       destinationWells.put(ts, field);
       return field;
     }
@@ -484,7 +485,8 @@ public class TransferViewPresenter implements BinderValidator {
       if (design.type.getValue() == WELL) {
         // Reset samples.
         Plate database = plateService.get(design.destinationPlatesField.getValue() != null
-            ? design.destinationPlatesField.getValue().getId() : null);
+            ? design.destinationPlatesField.getValue().getId()
+            : null);
         if (database == null) {
           design.destinationPlatesField.getValue().getWells().forEach(well -> well.setSample(null));
         } else {

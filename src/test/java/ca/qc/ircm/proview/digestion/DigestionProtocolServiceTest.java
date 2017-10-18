@@ -95,8 +95,9 @@ public class DigestionProtocolServiceTest {
     List<DigestionProtocol> protocols = digestionProtocolService.all();
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(1, protocols.size());
+    assertEquals(2, protocols.size());
     assertEquals(true, protocols.contains(digestionProtocolService.get(1L)));
+    assertEquals(true, protocols.contains(digestionProtocolService.get(3L)));
   }
 
   @Test

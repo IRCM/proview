@@ -18,12 +18,15 @@
 package ca.qc.ircm.proview.digestion;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -42,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -61,8 +65,7 @@ public class DigestionActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    digestionActivityService =
-        new DigestionActivityService(entityManager, authorizationService);
+    digestionActivityService = new DigestionActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -75,7 +78,7 @@ public class DigestionActivityServiceTest {
     DigestedSample digestedSample = new DigestedSample();
     digestedSample.setSample(sample);
     digestedSample.setContainer(sourceTube);
-    List<DigestedSample> digestedSamples = new ArrayList<DigestedSample>();
+    List<DigestedSample> digestedSamples = new ArrayList<>();
     digestedSamples.add(digestedSample);
     Digestion digestion = new Digestion();
     digestion.setId(123456L);
@@ -90,6 +93,83 @@ public class DigestionActivityServiceTest {
     assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
+  }
+
+  @Test
+  public void update() {
+    Digestion digestion = entityManager.find(Digestion.class, 195L);
+    entityManager.detach(digestion);
+    digestion.getTreatmentSamples().forEach(ts -> entityManager.detach(ts));
+    digestion.setProtocol(entityManager.find(DigestionProtocol.class, 3L));
+    digestion.getTreatmentSamples().get(0).setContainer(new Well(248L));
+    digestion.getTreatmentSamples().get(0).setSample(new Control(444L));
+    digestion.getTreatmentSamples().get(0).setComments("test");
+    DigestedSample newDigestedSample = new DigestedSample();
+    newDigestedSample.setId(400L);
+    newDigestedSample.setContainer(new Tube(14L));
+    newDigestedSample.setSample(new SubmissionSample(562L));
+    digestion.getTreatmentSamples().add(newDigestedSample);
+
+    Optional<Activity> optionalActivity =
+        digestionActivityService.update(digestion, "test explanation");
+
+    assertTrue(optionalActivity.isPresent());
+    Activity activity = optionalActivity.get();
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals("treatment", activity.getTableName());
+    assertEquals(digestion.getId(), activity.getRecordId());
+    assertEquals("test explanation", activity.getExplanation());
+    assertEquals(user, activity.getUser());
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity protocolActivity = new UpdateActivity();
+    protocolActivity.setActionType(ActionType.UPDATE);
+    protocolActivity.setTableName("treatment");
+    protocolActivity.setRecordId(digestion.getId());
+    protocolActivity.setColumn("protocol");
+    protocolActivity.setOldValue("1");
+    protocolActivity.setNewValue("3");
+    expecteds.add(protocolActivity);
+    UpdateActivity newDigestedSampleActivity = new UpdateActivity();
+    newDigestedSampleActivity.setActionType(ActionType.INSERT);
+    newDigestedSampleActivity.setTableName("treatmentsample");
+    newDigestedSampleActivity.setRecordId(400L);
+    expecteds.add(newDigestedSampleActivity);
+    UpdateActivity updateDigestedSampleSampleActivity = new UpdateActivity();
+    updateDigestedSampleSampleActivity.setActionType(ActionType.UPDATE);
+    updateDigestedSampleSampleActivity.setTableName("treatmentsample");
+    updateDigestedSampleSampleActivity.setRecordId(196L);
+    updateDigestedSampleSampleActivity.setColumn("sampleId");
+    updateDigestedSampleSampleActivity.setOldValue("559");
+    updateDigestedSampleSampleActivity.setNewValue("444");
+    expecteds.add(updateDigestedSampleSampleActivity);
+    UpdateActivity updateDigestedSampleContainerActivity = new UpdateActivity();
+    updateDigestedSampleContainerActivity.setActionType(ActionType.UPDATE);
+    updateDigestedSampleContainerActivity.setTableName("treatmentsample");
+    updateDigestedSampleContainerActivity.setRecordId(196L);
+    updateDigestedSampleContainerActivity.setColumn("containerId");
+    updateDigestedSampleContainerActivity.setOldValue("224");
+    updateDigestedSampleContainerActivity.setNewValue("248");
+    expecteds.add(updateDigestedSampleContainerActivity);
+    UpdateActivity updateDigestedSampleCommentsActivity = new UpdateActivity();
+    updateDigestedSampleCommentsActivity.setActionType(ActionType.UPDATE);
+    updateDigestedSampleCommentsActivity.setTableName("treatmentsample");
+    updateDigestedSampleCommentsActivity.setRecordId(196L);
+    updateDigestedSampleCommentsActivity.setColumn("comments");
+    updateDigestedSampleCommentsActivity.setOldValue(null);
+    updateDigestedSampleCommentsActivity.setNewValue("test");
+    expecteds.add(updateDigestedSampleCommentsActivity);
+    LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
+  }
+
+  @Test
+  public void update_NoChanges() {
+    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    entityManager.detach(digestion);
+
+    Optional<Activity> optionalActivity =
+        digestionActivityService.update(digestion, "test explanation");
+
+    assertFalse(optionalActivity.isPresent());
   }
 
   @Test
@@ -125,7 +205,7 @@ public class DigestionActivityServiceTest {
     Digestion digestion = new Digestion(6L);
     Tube sourceTube = new Tube(4L);
     Well well = new Well(130L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     bannedContainers.add(well);
 
@@ -137,7 +217,7 @@ public class DigestionActivityServiceTest {
     assertEquals(digestion.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity bannedTubeActivity = new UpdateActivity();
     bannedTubeActivity.setActionType(ActionType.UPDATE);
     bannedTubeActivity.setTableName("samplecontainer");
@@ -161,7 +241,7 @@ public class DigestionActivityServiceTest {
   public void undoFailed_LongDescription() throws Throwable {
     Digestion digestion = new Digestion(6L);
     Tube sourceTube = new Tube(352L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     String reason = "long reason having more than 255 characters "
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -169,8 +249,7 @@ public class DigestionActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-    Activity activity =
-        digestionActivityService.undoFailed(digestion, reason, bannedContainers);
+    Activity activity = digestionActivityService.undoFailed(digestion, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

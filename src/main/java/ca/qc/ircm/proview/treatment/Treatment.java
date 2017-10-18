@@ -109,7 +109,7 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
   /**
    * List of all treatments done on samples.
    */
-  @OneToMany(cascade = CascadeType.PERSIST, targetEntity = TreatmentSample.class)
+  @OneToMany(cascade = CascadeType.ALL, targetEntity = TreatmentSample.class)
   @JoinColumn(name = "treatmentId", nullable = false)
   private List<S> treatmentSamples;
 

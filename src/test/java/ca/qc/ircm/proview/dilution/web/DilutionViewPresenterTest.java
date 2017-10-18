@@ -4,7 +4,6 @@ import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.CONTAINER;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DILUTIONS;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DILUTIONS_PANEL;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DOWN;
-import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DOWN_STYLE;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.HEADER;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.INVALID_CONTAINERS;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.INVALID_DILUTION;
@@ -19,6 +18,7 @@ import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
@@ -157,7 +157,7 @@ public class DilutionViewPresenterTest {
     assertTrue(design.dilutions.getStyleName().contains(DILUTIONS));
     assertTrue(design.dilutions.getStyleName().contains(COMPONENTS));
     assertTrue(design.down.getStyleName().contains(DOWN));
-    assertTrue(design.down.getStyleName().contains(DOWN_STYLE));
+    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }

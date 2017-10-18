@@ -33,6 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -78,6 +81,69 @@ public class DigestionActivityService {
     activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
+  }
+
+  /**
+   * Creates an activity about update of digestion.
+   *
+   * @param digestion
+   *          digestion containing new properties/values
+   * @param explanation
+   *          explanation
+   * @return activity about update of digestion
+   */
+  @CheckReturnValue
+  public Optional<Activity> update(Digestion digestion, String explanation) {
+    User user = authorizationService.getCurrentUser();
+    final Digestion oldDigestion = entityManager.find(Digestion.class, digestion.getId());
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    updateBuilders.add(digestionUpdate(digestion).column("protocol")
+        .oldValue(oldDigestion.getProtocol().getId()).newValue(digestion.getProtocol().getId()));
+    Map<Long, DigestedSample> oldDigestedSampleIds = oldDigestion.getTreatmentSamples().stream()
+        .collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
+    digestion.getTreatmentSamples().stream()
+        .filter(ts -> !oldDigestedSampleIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(digestedSampleAction(ts, ActionType.INSERT)));
+    digestion.getTreatmentSamples().stream()
+        .filter(ts -> oldDigestedSampleIds.containsKey(ts.getId())).forEach(ts -> {
+          updateBuilders.add(digestedSampleAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldDigestedSampleIds.get(ts.getId()).getSample().getId())
+              .newValue(ts.getSample().getId()));
+          updateBuilders.add(digestedSampleAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldDigestedSampleIds.get(ts.getId()).getContainer().getId())
+              .newValue(ts.getContainer().getId()));
+          updateBuilders.add(digestedSampleAction(ts, ActionType.UPDATE).column("comments")
+              .oldValue(oldDigestedSampleIds.get(ts.getId()).getComments())
+              .newValue(ts.getComments()));
+        });
+
+    Collection<UpdateActivity> updates =
+        updateBuilders.stream().filter(builder -> builder.isChanged())
+            .map(builder -> builder.build()).collect(Collectors.toList());
+
+    if (!updates.isEmpty()) {
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(digestion.getId());
+      activity.setUser(user);
+      activity.setTableName("treatment");
+      activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
+      activity.setUpdates(new LinkedList<>(updates));
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  private UpdateActivityBuilder digestionUpdate(Digestion digestion) {
+    return new UpdateActivityBuilder().tableName("treatment").recordId(digestion.getId())
+        .actionType(ActionType.UPDATE);
+  }
+
+  private UpdateActivityBuilder digestedSampleAction(DigestedSample ts, ActionType actionType) {
+    return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
+        .actionType(actionType);
   }
 
   /**

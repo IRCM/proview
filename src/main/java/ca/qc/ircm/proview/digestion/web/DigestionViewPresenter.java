@@ -2,6 +2,8 @@ package ca.qc.ircm.proview.digestion.web;
 
 import static ca.qc.ircm.proview.digestion.QDigestedSample.digestedSample;
 import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -18,6 +20,8 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +30,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -45,6 +51,10 @@ public class DigestionViewPresenter implements BinderValidator {
   public static final String DIGESTIONS = "digestions";
   public static final String SAMPLE = digestedSample.sample.getMetadata().getName();
   public static final String CONTAINER = digestedSample.container.getMetadata().getName();
+  public static final String COMMENT = digestedSample.comments.getMetadata().getName();
+  public static final String EXPLANATION = "explanation";
+  public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
+  public static final String DOWN = "down";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
   public static final String NO_CONTAINERS = "containers.empty";
@@ -54,10 +64,11 @@ public class DigestionViewPresenter implements BinderValidator {
   private static final Logger logger = LoggerFactory.getLogger(DigestionViewPresenter.class);
   private DigestionView view;
   private DigestionViewDesign design;
-  private boolean readOnly;
   private Binder<Digestion> binder = new BeanValidationBinder<>(Digestion.class);
   private ListDataProvider<DigestionProtocol> protocolsProvider;
   private List<DigestedSample> digestions = new ArrayList<>();
+  private Map<DigestedSample, Binder<DigestedSample>> digestionBinders = new HashMap<>();
+  private Map<DigestedSample, TextField> commentsFields = new HashMap<>();
   @Inject
   private DigestionService digestionService;
   @Inject
@@ -119,18 +130,49 @@ public class DigestionViewPresenter implements BinderValidator {
     design.digestionsPanel.addStyleName(DIGESTIONS_PANEL);
     design.digestionsPanel.setCaption(resources.message(DIGESTIONS_PANEL));
     design.digestions.addStyleName(DIGESTIONS);
+    design.digestions.addStyleName(COMPONENTS);
     design.digestions.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.digestions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
         .setCaption(resources.message(CONTAINER));
+    design.digestions.addColumn(ts -> commentsField(ts), new ComponentRenderer()).setId(COMMENT)
+        .setCaption(resources.message(COMMENT));
+    design.down.addStyleName(DOWN);
+    design.down.addStyleName(BUTTON_SKIP_ROW);
+    design.down.addClickListener(e -> down());
+    design.explanationPanel.addStyleName(EXPLANATION_PANEL);
+    design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
+    design.explanationPanel.setVisible(false);
+    design.explanation.addStyleName(EXPLANATION);
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));
     design.save.addClickListener(e -> save());
   }
 
-  private void updateReadOnly() {
-    design.protocol.setReadOnly(readOnly);
-    design.save.setVisible(!readOnly);
+  private TextField commentsField(DigestedSample ts) {
+    if (commentsFields.get(ts) != null) {
+      return commentsFields.get(ts);
+    } else {
+      TextField field = new TextField();
+      field.addStyleName(COMMENT);
+      commentsFields.put(ts, field);
+      return field;
+    }
+  }
+
+  private Binder<DigestedSample> binder(DigestedSample ts) {
+    Binder<DigestedSample> binder = new BeanValidationBinder<>(DigestedSample.class);
+    binder.setBean(ts);
+    digestionBinders.put(ts, binder);
+    binder.forField(commentsField(ts)).withNullRepresentation("").bind(COMMENT);
+    return binder;
+  }
+
+  private void down() {
+    if (!digestions.isEmpty()) {
+      String comments = commentsFields.get(digestions.get(0)).getValue();
+      commentsFields.values().forEach(field -> field.setValue(comments));
+    }
   }
 
   private boolean validate() {
@@ -157,7 +199,11 @@ public class DigestionViewPresenter implements BinderValidator {
       logger.debug("Saving new digestion");
       Digestion digestion = binder.getBean();
       digestion.setTreatmentSamples(digestions);
-      digestionService.insert(digestion);
+      if (digestion.getId() != null) {
+        digestionService.update(digestion, design.explanation.getValue());
+      } else {
+        digestionService.insert(digestion);
+      }
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED,
           digestions.stream().map(ts -> ts.getSample().getId()).distinct().count()));
@@ -224,16 +270,18 @@ public class DigestionViewPresenter implements BinderValidator {
         binder.setBean(digestion);
         if (digestion != null) {
           digestions = digestion.getTreatmentSamples();
-          readOnly = true;
         } else {
           view.showWarning(view.getResources().message(INVALID_DIGESTION));
         }
+        design.explanationPanel.setVisible(true);
       } catch (NumberFormatException e) {
         view.showWarning(view.getResources().message(INVALID_DIGESTION));
       }
     }
 
     design.digestions.setItems(digestions);
-    updateReadOnly();
+    digestions.stream().forEach(ts -> {
+      binder(ts);
+    });
   }
 }

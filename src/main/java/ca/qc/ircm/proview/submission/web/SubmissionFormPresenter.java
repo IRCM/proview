@@ -42,6 +42,7 @@ import static ca.qc.ircm.proview.treatment.Solvent.ACETONITRILE;
 import static ca.qc.ircm.proview.treatment.Solvent.CHCL3;
 import static ca.qc.ircm.proview.treatment.Solvent.METHANOL;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -285,7 +286,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String UPDATE_ERROR = "updateError";
   public static final int NULL_ID = -1;
   public static final String EXAMPLE = "example";
-  public static final String FILL_BUTTON_STYLE = "skip-row";
   public static final String HIDE_REQUIRED_STYLE = "hide-required";
   private static final int MAX_SAMPLE_COUNT = 200;
   private static final int MAX_STANDARD_COUNT = 10;
@@ -546,7 +546,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setId(PROTEIN_WEIGHT_PROPERTY).setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY))
         .setWidth(230);
     design.fillSamplesButton.addStyleName(FILL_SAMPLES_PROPERTY);
-    design.fillSamplesButton.addStyleName(FILL_BUTTON_STYLE);
+    design.fillSamplesButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
     view.plateComponent.addStyleName(SAMPLES_PLATE);
   }
@@ -703,7 +703,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setId(STANDARD_COMMENTS_PROPERTY)
         .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENTS_PROPERTY));
     design.fillStandardsButton.addStyleName(FILL_STANDARDS_PROPERTY);
-    design.fillStandardsButton.addStyleName(FILL_BUTTON_STYLE);
+    design.fillStandardsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS_PROPERTY));
   }
 
@@ -797,7 +797,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setId(CONTAMINANT_COMMENTS_PROPERTY)
         .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENTS_PROPERTY));
     design.fillContaminantsButton.addStyleName(FILL_CONTAMINANTS_PROPERTY);
-    design.fillContaminantsButton.addStyleName(FILL_BUTTON_STYLE);
+    design.fillContaminantsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillContaminantsButton.setCaption(resources.message(FILL_CONTAMINANTS_PROPERTY));
   }
 

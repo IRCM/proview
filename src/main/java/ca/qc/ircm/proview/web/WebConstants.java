@@ -43,6 +43,7 @@ public class WebConstants {
   public static final String OUT_OF_RANGE = "outOfRange";
   public static final String ONLY_WORDS = "onlyWords";
   public static final String CANCEL = "cancel";
+  public static final String BUTTON_SKIP_ROW = "skip-row";
   public static final String UPLOAD_STATUS = "uploadStatus";
   public static final String OVER_MAXIMUM_SIZE = "overMaximumSize";
   public static final String SAVED_SUBMISSIONS = "savedSubmissions";

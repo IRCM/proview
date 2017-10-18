@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.QControl.control;
 import static ca.qc.ircm.proview.sample.QStandard.standard;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -84,7 +85,6 @@ public class ControlFormPresenter implements BinderValidator {
   public static final String STANDARD_COMMENTS = standard.comments.getMetadata().getName();
   public static final String FILL_STANDARDS = "fillStandards";
   public static final String EXAMPLE = "example";
-  public static final String FILL_BUTTON_STYLE = "skip-row";
   public static final String EXPLANATION_PANEL = "explanationPanel";
   public static final String EXPLANATION = "explanation";
   public static final String SAVE = "save";
@@ -198,7 +198,7 @@ public class ControlFormPresenter implements BinderValidator {
         .addColumn(standard -> standardCommentsTextField(standard), new ComponentRenderer())
         .setId(STANDARD_COMMENTS).setCaption(resources.message(STANDARD + "." + STANDARD_COMMENTS));
     design.fillStandardsButton.addStyleName(FILL_STANDARDS);
-    design.fillStandardsButton.addStyleName(FILL_BUTTON_STYLE);
+    design.fillStandardsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS));
     design.fillStandardsButton.setIcon(VaadinIcons.ARROW_DOWN);
     design.fillStandardsButton.addClickListener(e -> fillStandards());

@@ -1,8 +1,8 @@
 package ca.qc.ircm.proview.digestion.web;
 
-import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -13,7 +13,6 @@ import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import org.junit.Test;
@@ -25,14 +24,15 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithSubject
 public class DigestionViewTest extends DigestionViewPageObject {
-  @Inject
-  private JPAQueryFactory jpaQueryFactory;
+  @PersistenceContext
+  private EntityManager entityManager;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -93,11 +93,27 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> digestionsPanel()).isPresent());
     assertTrue(optional(() -> digestions()).isPresent());
+    assertFalse(optional(() -> explanationPanel()).isPresent());
+    assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
   }
 
   @Test
-  public void save_Error() throws Throwable {
+  public void fieldsExistence_Update() throws Throwable {
+    openWithDigestion();
+
+    assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> protocolPanel()).isPresent());
+    assertTrue(optional(() -> protocol()).isPresent());
+    assertTrue(optional(() -> digestionsPanel()).isPresent());
+    assertTrue(optional(() -> digestions()).isPresent());
+    assertTrue(optional(() -> explanationPanel()).isPresent());
+    assertTrue(optional(() -> explanation()).isPresent());
+    assertTrue(optional(() -> save()).isPresent());
+  }
+
+  @Test
+  public void add_Error() throws Throwable {
     open();
 
     clickSave();
@@ -108,16 +124,17 @@ public class DigestionViewTest extends DigestionViewPageObject {
   }
 
   @Test
-  public void save_Tubes() throws Throwable {
+  public void add_Tubes() throws Throwable {
     openWithTubes();
+    setComment(0, "test comment");
+    clickDown();
 
     clickSave();
 
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(DigestionView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(DigestionView.VIEW_NAME).length() + 1));
-    Digestion savedDigestion =
-        jpaQueryFactory.select(digestion).from(digestion).where(digestion.id.eq(id)).fetchOne();
+    Digestion savedDigestion = entityManager.find(Digestion.class, id);
     assertEquals((Long) 1L, savedDigestion.getProtocol().getId());
     assertEquals(3, savedDigestion.getTreatmentSamples().size());
     Optional<DigestedSample> opTs = find(savedDigestion.getTreatmentSamples(), 559);
@@ -125,29 +142,33 @@ public class DigestionViewTest extends DigestionViewPageObject {
     DigestedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComments());
     opTs = find(savedDigestion.getTreatmentSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 12L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComments());
     opTs = find(savedDigestion.getTreatmentSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
     assertEquals((Long) 4L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComments());
   }
 
   @Test
-  public void save_Wells() throws Throwable {
+  public void add_Wells() throws Throwable {
     openWithWells();
+    setComment(0, "test comment");
+    clickDown();
 
     clickSave();
 
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(DigestionView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(DigestionView.VIEW_NAME).length() + 1));
-    Digestion savedDigestion =
-        jpaQueryFactory.select(digestion).from(digestion).where(digestion.id.eq(id)).fetchOne();
+    Digestion savedDigestion = entityManager.find(Digestion.class, id);
     assertEquals((Long) 1L, savedDigestion.getProtocol().getId());
     assertEquals(3, savedDigestion.getTreatmentSamples().size());
     Optional<DigestedSample> opTs = find(savedDigestion.getTreatmentSamples(), 559);
@@ -155,15 +176,45 @@ public class DigestionViewTest extends DigestionViewPageObject {
     DigestedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComments());
     opTs = find(savedDigestion.getTreatmentSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 236L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComments());
     opTs = find(savedDigestion.getTreatmentSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
     assertEquals((Long) 248L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComments());
+  }
+
+  @Test
+  public void update() throws Throwable {
+    openWithDigestion();
+    setComment(0, "test comment");
+    setProtocol("digestion_protocol_2");
+    clickDown();
+
+    clickSave();
+
+    assertEquals(viewUrl(DigestionView.VIEW_NAME, "195"), getDriver().getCurrentUrl());
+    Digestion savedDigestion = entityManager.find(Digestion.class, 195L);
+    assertEquals((Long) 3L, savedDigestion.getProtocol().getId());
+    assertEquals(2, savedDigestion.getTreatmentSamples().size());
+    Optional<DigestedSample> opTs = find(savedDigestion.getTreatmentSamples(), 559);
+    assertTrue(opTs.isPresent());
+    DigestedSample ts = opTs.get();
+    assertEquals((Long) 559L, ts.getSample().getId());
+    assertEquals((Long) 224L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComments());
+    opTs = find(savedDigestion.getTreatmentSamples(), 560);
+    assertTrue(opTs.isPresent());
+    ts = opTs.get();
+    assertEquals((Long) 560L, ts.getSample().getId());
+    assertEquals((Long) 236L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComments());
   }
 }

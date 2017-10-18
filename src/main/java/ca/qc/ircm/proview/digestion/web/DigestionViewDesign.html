@@ -19,7 +19,15 @@
     <vaadin-vertical-layout>
      <vaadin-horizontal-layout width-full>
       <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.digestion.DigestedSample" _id="digestions" :expand></vaadin-grid>
+      <vaadin-button plain-text _id="down">
+        Down 
+      </vaadin-button>
      </vaadin-horizontal-layout>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Explanation" size-auto _id="explanationPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-text-area _id="explanation"></vaadin-text-area>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-button style-name="primary" plain-text _id="save">

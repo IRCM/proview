@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.dilution.web;
 
 import static ca.qc.ircm.proview.dilution.QDilutedSample.dilutedSample;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
@@ -49,7 +50,6 @@ public class DilutionViewPresenter implements BinderValidator {
   public static final String SOLVENT = dilutedSample.solvent.getMetadata().getName();
   public static final String SOLVENT_VOLUME = dilutedSample.solventVolume.getMetadata().getName();
   public static final String DOWN = "down";
-  public static final String DOWN_STYLE = "skip-row";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
   public static final String NO_CONTAINERS = "containers.empty";
@@ -117,7 +117,7 @@ public class DilutionViewPresenter implements BinderValidator {
     design.dilutions.addColumn(ts -> solventVolumeField(ts), new ComponentRenderer())
         .setId(SOLVENT_VOLUME).setCaption(resources.message(SOLVENT_VOLUME));
     design.down.addStyleName(DOWN);
-    design.down.addStyleName(DOWN_STYLE);
+    design.down.addStyleName(BUTTON_SKIP_ROW);
     design.down.setCaption(resources.message(DOWN));
     design.down.addClickListener(e -> down());
     design.save.addStyleName(SAVE);

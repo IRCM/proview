@@ -1,8 +1,11 @@
 package ca.qc.ircm.proview.digestion.web;
 
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.CONTAINER;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DIGESTIONS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DIGESTIONS_PANEL;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.EXPLANATION;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.HEADER;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.INVALID_CONTAINERS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.INVALID_DIGESTION;
@@ -13,8 +16,10 @@ import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAVE;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAVED;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.TITLE;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
@@ -22,6 +27,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -40,6 +46,8 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +63,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -88,6 +97,7 @@ public class DigestionViewPresenterTest {
   private List<Sample> samples = new ArrayList<>();
   private List<SampleContainer> containers = new ArrayList<>();
   private List<DigestionProtocol> protocols;
+  private List<String> comments = new ArrayList<>();
 
   /**
    * Before test.
@@ -112,8 +122,20 @@ public class DigestionViewPresenterTest {
       return Arrays.asList(tube1, tube2).stream();
     }).collect(Collectors.toList());
     protocols = realDigestionProtocolService.all();
+    comments = IntStream.range(0, containers.size()).mapToObj(i -> "comment" + i)
+        .collect(Collectors.toList());
     when(digestionProtocolService.all()).thenReturn(new ArrayList<>(protocols));
     when(view.savedContainers()).thenReturn(new ArrayList<>(containers));
+  }
+
+  private void setFields() {
+    final ListDataProvider<DigestedSample> treatments = dataProvider(design.digestions);
+    int count = 0;
+    for (DigestedSample ts : treatments.getItems()) {
+      TextField field =
+          (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      field.setValue(comments.get(count++));
+    }
   }
 
   @Test
@@ -126,6 +148,9 @@ public class DigestionViewPresenterTest {
     assertTrue(design.protocol.getStyleName().contains(PROTOCOL));
     assertTrue(design.digestionsPanel.getStyleName().contains(DIGESTIONS_PANEL));
     assertTrue(design.digestions.getStyleName().contains(DIGESTIONS));
+    assertTrue(design.digestions.getStyleName().contains(COMPONENTS));
+    assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
+    assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }
@@ -138,6 +163,7 @@ public class DigestionViewPresenterTest {
     assertEquals(resources.message(HEADER), design.header.getValue());
     assertEquals(resources.message(PROTOCOL_PANEL), design.protocolPanel.getCaption());
     assertEquals(resources.message(DIGESTIONS_PANEL), design.digestionsPanel.getCaption());
+    assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());
   }
 
@@ -168,7 +194,7 @@ public class DigestionViewPresenterTest {
     presenter.enter("");
 
     final ListDataProvider<DigestedSample> treatments = dataProvider(design.digestions);
-    assertEquals(2, design.digestions.getColumns().size());
+    assertEquals(3, design.digestions.getColumns().size());
     assertEquals(SAMPLE, design.digestions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.digestions.getColumn(SAMPLE).getCaption());
     for (DigestedSample ts : treatments.getItems()) {
@@ -181,12 +207,39 @@ public class DigestionViewPresenterTest {
       assertEquals(ts.getContainer().getFullName(),
           design.digestions.getColumn(CONTAINER).getValueProvider().apply(ts));
     }
+    assertEquals(COMMENT, design.digestions.getColumns().get(2).getId());
+    assertEquals(resources.message(COMMENT), design.digestions.getColumn(COMMENT).getCaption());
+    assertTrue(containsInstanceOf(design.digestions.getColumn(COMMENT).getExtensions(),
+        ComponentRenderer.class));
+    for (DigestedSample ts : treatments.getItems()) {
+      assertTrue(ts.getContainer().getFullName(),
+          design.digestions.getColumn(COMMENT).getValueProvider().apply(ts) instanceof TextField);
+    }
     assertEquals(containers.size(), treatments.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(treatments.getItems().stream().filter(ts -> ts.getContainer().equals(container))
           .findAny().isPresent());
       assertTrue(treatments.getItems().stream()
           .filter(ts -> ts.getSample().equals(container.getSample())).findAny().isPresent());
+    }
+  }
+
+  @Test
+  public void down() {
+    presenter.init(view);
+    presenter.enter("");
+    final ListDataProvider<DigestedSample> treatments = dataProvider(design.digestions);
+    DigestedSample firstTs = treatments.getItems().iterator().next();
+    String comments = "test";
+    TextField field =
+        (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
+    field.setValue(comments);
+
+    design.down.click();
+
+    for (DigestedSample ts : treatments.getItems()) {
+      field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comments, field.getValue());
     }
   }
 
@@ -220,6 +273,7 @@ public class DigestionViewPresenterTest {
   public void save() {
     presenter.init(view);
     presenter.enter("");
+    setFields();
     doAnswer(i -> {
       Digestion digestion = i.getArgumentAt(0, Digestion.class);
       assertNull(digestion.getId());
@@ -239,9 +293,44 @@ public class DigestionViewPresenterTest {
       DigestedSample digested = digestion.getTreatmentSamples().get(i);
       assertEquals(container.getSample(), digested.getSample());
       assertEquals(container, digested.getContainer());
+      assertEquals(comments.get(i), digested.getComments());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
     verify(view).navigateTo(DigestionView.VIEW_NAME, "4");
+  }
+
+  @Test
+  public void save_Update() {
+    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+        sampleContainerService, applicationName);
+    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    when(digestionService.get(any())).thenReturn(digestion);
+    presenter.init(view);
+    presenter.enter("6");
+    design.protocol.setValue(entityManager.find(DigestionProtocol.class, 3L));
+    setFields();
+    design.explanation.setValue("test explanation");
+
+    design.save.click();
+
+    verify(view, never()).showError(any());
+    verify(digestionService).update(digestionCaptor.capture(), eq("test explanation"));
+    Digestion savedDigestion = digestionCaptor.getValue();
+    assertEquals((Long) 6L, savedDigestion.getId());
+    assertEquals((Long) 3L, savedDigestion.getProtocol().getId());
+    assertEquals(digestion.getTreatmentSamples().size(),
+        savedDigestion.getTreatmentSamples().size());
+    for (int i = 0; i < digestion.getTreatmentSamples().size(); i++) {
+      DigestedSample original = digestion.getTreatmentSamples().get(i);
+      DigestedSample digested = savedDigestion.getTreatmentSamples().get(i);
+      assertEquals(original.getId(), digested.getId());
+      assertEquals(original.getSample(), digested.getSample());
+      assertEquals(original.getContainer(), digested.getContainer());
+      assertEquals(comments.get(i), digested.getComments());
+    }
+    verify(view).showTrayNotification(resources.message(SAVED, digestion.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(DigestionView.VIEW_NAME, "6");
   }
 
   @Test
@@ -250,6 +339,7 @@ public class DigestionViewPresenterTest {
     presenter.enter("");
 
     List<DigestedSample> tss = new ArrayList<>(dataProvider(design.digestions).getItems());
+    assertFalse(design.explanationPanel.isVisible());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
@@ -269,9 +359,7 @@ public class DigestionViewPresenterTest {
     presenter.enter("6");
 
     verify(digestionService).get(6L);
-    assertTrue(design.protocol.isReadOnly());
-    assertEquals(digestion.getProtocol(), design.protocol.getValue());
-    assertFalse(design.save.isVisible());
+    assertTrue(design.explanationPanel.isVisible());
     List<DigestedSample> tss = new ArrayList<>(dataProvider(design.digestions).getItems());
     assertEquals(digestion.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < digestion.getTreatmentSamples().size(); i++) {

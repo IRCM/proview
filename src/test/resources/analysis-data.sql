@@ -19,6 +19,8 @@ INSERT INTO protocol (id,name,type)
 VALUES (1,'digestion_protocol_1','DIGESTION');
 INSERT INTO protocol (id,name,type)
 VALUES (2,'enrichment_protocol_1','ENRICHMENT');
+INSERT INTO protocol (id,name,type)
+VALUES (3,'digestion_protocol_2','DIGESTION');
 INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
 VALUES (1,'SOLUBILISATION',NULL,NULL,4,'2011-10-13 11:45:00',0,NULL,NULL);
 INSERT INTO treatment (id,type,protocolId,fractionationType,userId,insertTime,deleted,deletionType,deletionExplanation)
