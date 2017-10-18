@@ -180,6 +180,10 @@ public class DilutionViewPresenter implements BinderValidator {
   }
 
   private void updateReadOnly() {
+    sourceVolumeFields.values().forEach(field -> field.setReadOnly(readOnly));
+    solventFields.values().forEach(field -> field.setReadOnly(readOnly));
+    solventVolumeFields.values().forEach(field -> field.setReadOnly(readOnly));
+    design.down.setVisible(!readOnly);
     design.save.setVisible(!readOnly);
   }
 

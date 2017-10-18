@@ -462,10 +462,20 @@ public class DilutionViewPresenterTest {
 
     verify(dilutionService).get(4L);
     assertFalse(design.save.isVisible());
+    assertFalse(design.down.isVisible());
     List<DilutedSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
     assertEquals(dilution.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < dilution.getTreatmentSamples().size(); i++) {
       assertEquals(dilution.getTreatmentSamples().get(i), tss.get(i));
+    }
+    for (DilutedSample ts : tss) {
+      TextField field =
+          (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
+      assertTrue(field.isReadOnly());
+      field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
+      assertTrue(field.isReadOnly());
+      field = (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
+      assertTrue(field.isReadOnly());
     }
   }
 
