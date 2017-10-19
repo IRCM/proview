@@ -25,7 +25,7 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COMMENTS;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COMMENT;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COUNT;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_QUANTITY;
@@ -46,7 +46,7 @@ import com.vaadin.testbench.elements.TextFieldElement;
 public class ControlViewPageObject extends AbstractTestBenchTestCase {
   private static final int NAME_COLUMN = 0;
   private static final int QUANTITY_COLUMN = 1;
-  private static final int COMMENTS_COLUMN = 2;
+  private static final int COMMENT_COLUMN = 2;
 
   protected void open() {
     openView(ControlView.VIEW_NAME);
@@ -162,17 +162,17 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
     standardQuantityField(row).setValue(quantity);
   }
 
-  protected TextFieldElement standardCommentsField(int row) {
-    return wrap(TextFieldElement.class, standardsGrid().getCell(row, COMMENTS_COLUMN)
-        .findElement(className(STANDARDS + "." + STANDARD_COMMENTS)));
+  protected TextFieldElement standardCommentField(int row) {
+    return wrap(TextFieldElement.class, standardsGrid().getCell(row, COMMENT_COLUMN)
+        .findElement(className(STANDARDS + "." + STANDARD_COMMENT)));
   }
 
-  protected String getStandardComments(int row) {
-    return standardCommentsField(row).getValue();
+  protected String getStandardComment(int row) {
+    return standardCommentField(row).getValue();
   }
 
-  protected void setStandardComments(int row, String comment) {
-    standardCommentsField(row).setValue(comment);
+  protected void setStandardComment(int row, String comment) {
+    standardCommentField(row).setValue(comment);
   }
 
   protected ButtonElement fillStandardsButton() {

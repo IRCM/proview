@@ -19,13 +19,13 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DIGESTIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DIGESTIONS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DIGESTION_COMMENTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DIGESTION_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DIGESTION_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DIGESTION_PROTOCOL;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DIGESTION_SAMPLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DILUTIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DILUTIONS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DILUTION_COMMENTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DILUTION_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DILUTION_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DILUTION_SAMPLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DILUTION_SOLVENT;
@@ -33,13 +33,13 @@ import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresente
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.DILUTION_SOURCE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.ENRICHMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.ENRICHMENTS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.ENRICHMENT_COMMENTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.ENRICHMENT_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.ENRICHMENT_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.ENRICHMENT_PROTOCOL;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.ENRICHMENT_SAMPLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.FRACTIONATIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.FRACTIONATIONS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.FRACTIONATION_COMMENTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.FRACTIONATION_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.FRACTIONATION_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.FRACTIONATION_DESTINATION_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.FRACTIONATION_SAMPLE;
@@ -51,21 +51,21 @@ import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresente
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SOLUBILISATIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SOLUBILISATIONS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SOLUBILISATION_COMMENTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SOLUBILISATION_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SOLUBILISATION_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SOLUBILISATION_SAMPLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SOLUBILISATION_SOLVENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SOLUBILISATION_SOLVENT_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.STANDARD_ADDITIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.STANDARD_ADDITIONS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.STANDARD_ADDITION_COMMENTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.STANDARD_ADDITION_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.STANDARD_ADDITION_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.STANDARD_ADDITION_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.STANDARD_ADDITION_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.STANDARD_ADDITION_SAMPLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFERS;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFERS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_COMMENTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_DESTINATION_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TRANSFER_SAMPLE;
@@ -230,7 +230,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeSolubilisedSample.setSample(sample1);
     tubeSolubilisedSample.setSolvent("ch3oh");
     tubeSolubilisedSample.setSolventVolume(10.0);
-    tubeSolubilisedSample.setComments("tube_digestion_comment_1");
+    tubeSolubilisedSample.setComment("tube_digestion_comment_1");
     tubeSolubilisedSample.setContainer(new Tube());
     ((Tube) tubeSolubilisedSample.getContainer()).setName("tube_1");
     tubeSolubilisation.setTreatmentSamples(Arrays.asList(tubeSolubilisedSample));
@@ -240,7 +240,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateSolubilisedSample.setSample(sample2);
     tubeSolubilisedSample.setSolvent("ch2oh2");
     tubeSolubilisedSample.setSolventVolume(20.0);
-    plateSolubilisedSample.setComments("plate_digestion_comment_1");
+    plateSolubilisedSample.setComment("plate_digestion_comment_1");
     plateSolubilisedSample.setContainer(new Well(1, 2));
     ((Well) plateSolubilisedSample.getContainer()).setPlate(new Plate());
     ((Well) plateSolubilisedSample.getContainer()).getPlate().setName("plate_1");
@@ -253,7 +253,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeDigestedSample = new DigestedSample();
     tubeDigestedSample.setDigestion(tubeDigestion);
     tubeDigestedSample.setSample(sample1);
-    tubeDigestedSample.setComments("tube_digestion_comment_1");
+    tubeDigestedSample.setComment("tube_digestion_comment_1");
     tubeDigestedSample.setContainer(new Tube());
     ((Tube) tubeDigestedSample.getContainer()).setName("tube_1");
     tubeDigestion.setTreatmentSamples(Arrays.asList(tubeDigestedSample));
@@ -263,7 +263,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateDigestedSample = new DigestedSample();
     plateDigestedSample.setDigestion(plateDigestion);
     plateDigestedSample.setSample(sample2);
-    plateDigestedSample.setComments("plate_digestion_comment_1");
+    plateDigestedSample.setComment("plate_digestion_comment_1");
     plateDigestedSample.setContainer(new Well(1, 2));
     ((Well) plateDigestedSample.getContainer()).setPlate(new Plate());
     ((Well) plateDigestedSample.getContainer()).getPlate().setName("plate_1");
@@ -276,7 +276,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeAddedStandard.setSample(sample1);
     tubeAddedStandard.setName("std1");
     tubeAddedStandard.setQuantity("1 ug");
-    tubeAddedStandard.setComments("tube_digestion_comment_1");
+    tubeAddedStandard.setComment("tube_digestion_comment_1");
     tubeAddedStandard.setContainer(new Tube());
     ((Tube) tubeAddedStandard.getContainer()).setName("tube_1");
     tubeStandardAddition.setTreatmentSamples(Arrays.asList(tubeAddedStandard));
@@ -286,7 +286,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateAddedStandard.setSample(sample2);
     tubeAddedStandard.setName("std2");
     tubeAddedStandard.setQuantity("2 ug");
-    plateAddedStandard.setComments("plate_digestion_comment_1");
+    plateAddedStandard.setComment("plate_digestion_comment_1");
     plateAddedStandard.setContainer(new Well(1, 2));
     ((Well) plateAddedStandard.getContainer()).setPlate(new Plate());
     ((Well) plateAddedStandard.getContainer()).getPlate().setName("plate_1");
@@ -299,7 +299,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeEnrichedSample = new EnrichedSample();
     tubeEnrichedSample.setEnrichment(tubeEnrichment);
     tubeEnrichedSample.setSample(sample1);
-    tubeEnrichedSample.setComments("tube_enrichment_comment_1");
+    tubeEnrichedSample.setComment("tube_enrichment_comment_1");
     tubeEnrichedSample.setContainer(new Tube());
     ((Tube) tubeEnrichedSample.getContainer()).setName("tube_1");
     tubeEnrichment.setTreatmentSamples(Arrays.asList(tubeEnrichedSample));
@@ -309,7 +309,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateEnrichedSample = new EnrichedSample();
     plateEnrichedSample.setEnrichment(plateEnrichment);
     plateEnrichedSample.setSample(sample2);
-    plateEnrichedSample.setComments("plate_enrichment_comment_1");
+    plateEnrichedSample.setComment("plate_enrichment_comment_1");
     plateEnrichedSample.setContainer(new Well(1, 2));
     ((Well) plateEnrichedSample.getContainer()).setPlate(new Plate());
     ((Well) plateEnrichedSample.getContainer()).getPlate().setName("plate_1");
@@ -323,7 +323,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeDilutedSample.setSolventVolume(2.0);
     tubeDilutedSample.setSolvent("CH3OH");
     tubeDilutedSample.setSolventVolume(18.0);
-    tubeDilutedSample.setComments("tube_dilution_comment_1");
+    tubeDilutedSample.setComment("tube_dilution_comment_1");
     tubeDilutedSample.setContainer(new Tube());
     ((Tube) tubeDilutedSample.getContainer()).setName("tube_1");
     tubeDilution.setTreatmentSamples(Arrays.asList(tubeDilutedSample));
@@ -334,7 +334,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateDilutedSample.setSolvent("H2O");
     plateDilutedSample.setSolventVolume(19.0);
     plateDilutedSample.setSample(sample2);
-    plateDilutedSample.setComments("plate_dilution_comment_1");
+    plateDilutedSample.setComment("plate_dilution_comment_1");
     plateDilutedSample.setContainer(new Well(1, 2));
     ((Well) plateDilutedSample.getContainer()).setPlate(new Plate());
     ((Well) plateDilutedSample.getContainer()).getPlate().setName("plate_1");
@@ -348,7 +348,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeFractionatedSample.setSample(sample1);
     tubeFractionatedSample.setPosition(1);
     tubeFractionatedSample.setNumber(1);
-    tubeFractionatedSample.setComments("tube_fractionation_comment_1");
+    tubeFractionatedSample.setComment("tube_fractionation_comment_1");
     tubeFractionatedSample.setContainer(new Tube());
     tubeFractionatedSample.setDestinationContainer(new Tube());
     ((Tube) tubeFractionatedSample.getContainer()).setName("tube_1");
@@ -361,7 +361,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateFractionatedSample.setPosition(0);
     plateFractionatedSample.setPiInterval("2-3");
     plateFractionatedSample.setSample(sample2);
-    plateFractionatedSample.setComments("plate_fractionation_comment_1");
+    plateFractionatedSample.setComment("plate_fractionation_comment_1");
     plateFractionatedSample.setContainer(new Well(1, 2));
     plateFractionatedSample.setDestinationContainer(new Well(2, 2));
     ((Well) plateFractionatedSample.getContainer()).setPlate(new Plate());
@@ -375,7 +375,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeTransferedSample = new TransferedSample();
     tubeTransferedSample.setTransfer(tubeTransfer);
     tubeTransferedSample.setSample(sample1);
-    tubeTransferedSample.setComments("tube_transfer_comment_1");
+    tubeTransferedSample.setComment("tube_transfer_comment_1");
     tubeTransferedSample.setContainer(new Tube());
     tubeTransferedSample.setDestinationContainer(new Tube());
     ((Tube) tubeTransferedSample.getContainer()).setName("tube_1");
@@ -385,7 +385,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateTransferedSample = new TransferedSample();
     plateTransferedSample.setTransfer(plateTransfer);
     plateTransferedSample.setSample(sample2);
-    plateTransferedSample.setComments("plate_transfer_comment_2");
+    plateTransferedSample.setComment("plate_transfer_comment_2");
     plateTransferedSample.setContainer(new Well(1, 2));
     plateTransferedSample.setDestinationContainer(new Well(2, 2));
     ((Well) plateTransferedSample.getContainer()).setPlate(new Plate());
@@ -478,7 +478,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(SOLUBILISATION_SOLVENT, design.solubilisations.getColumns().get(1).getId());
     assertEquals(SOLUBILISATION_SOLVENT_VOLUME, design.solubilisations.getColumns().get(2).getId());
     assertEquals(SOLUBILISATION_CONTAINER, design.solubilisations.getColumns().get(3).getId());
-    assertEquals(SOLUBILISATION_COMMENTS, design.solubilisations.getColumns().get(4).getId());
+    assertEquals(SOLUBILISATION_COMMENT, design.solubilisations.getColumns().get(4).getId());
     assertEquals(resources.message(SOLUBILISATION_SAMPLE),
         design.solubilisations.getColumn(SOLUBILISATION_SAMPLE).getCaption());
     assertEquals(tubeSolubilisedSample.getSample().getName(), design.solubilisations
@@ -503,12 +503,12 @@ public class SubmissionTreatmentsFormPresenterTest {
         .getColumn(SOLUBILISATION_CONTAINER).getValueProvider().apply(tubeSolubilisedSample));
     assertEquals(plateSolubilisedSample.getContainer().getFullName(), design.solubilisations
         .getColumn(SOLUBILISATION_CONTAINER).getValueProvider().apply(plateSolubilisedSample));
-    assertEquals(resources.message(SOLUBILISATION_COMMENTS),
-        design.solubilisations.getColumn(SOLUBILISATION_COMMENTS).getCaption());
-    assertEquals(tubeSolubilisedSample.getComments(), design.solubilisations
-        .getColumn(SOLUBILISATION_COMMENTS).getValueProvider().apply(tubeSolubilisedSample));
-    assertEquals(plateSolubilisedSample.getComments(), design.solubilisations
-        .getColumn(SOLUBILISATION_COMMENTS).getValueProvider().apply(plateSolubilisedSample));
+    assertEquals(resources.message(SOLUBILISATION_COMMENT),
+        design.solubilisations.getColumn(SOLUBILISATION_COMMENT).getCaption());
+    assertEquals(tubeSolubilisedSample.getComment(), design.solubilisations
+        .getColumn(SOLUBILISATION_COMMENT).getValueProvider().apply(tubeSolubilisedSample));
+    assertEquals(plateSolubilisedSample.getComment(), design.solubilisations
+        .getColumn(SOLUBILISATION_COMMENT).getValueProvider().apply(plateSolubilisedSample));
 
     assertTrue(design.solubilisationsPanel.isVisible());
     Collection<SolubilisedSample> solubilisedSamples =
@@ -536,7 +536,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(TRANSFER_SAMPLE, design.transfers.getColumns().get(0).getId());
     assertEquals(TRANSFER_CONTAINER, design.transfers.getColumns().get(1).getId());
     assertEquals(TRANSFER_DESTINATION_CONTAINER, design.transfers.getColumns().get(2).getId());
-    assertEquals(TRANSFER_COMMENTS, design.transfers.getColumns().get(3).getId());
+    assertEquals(TRANSFER_COMMENT, design.transfers.getColumns().get(3).getId());
     assertEquals(resources.message(TRANSFER_SAMPLE),
         design.transfers.getColumn(TRANSFER_SAMPLE).getCaption());
     assertEquals(tubeTransferedSample.getSample().getName(),
@@ -555,11 +555,11 @@ public class SubmissionTreatmentsFormPresenterTest {
         .getColumn(TRANSFER_DESTINATION_CONTAINER).getValueProvider().apply(tubeTransferedSample));
     assertEquals(plateTransferedSample.getDestinationContainer().getFullName(), design.transfers
         .getColumn(TRANSFER_DESTINATION_CONTAINER).getValueProvider().apply(plateTransferedSample));
-    assertEquals(resources.message(TRANSFER_COMMENTS),
-        design.transfers.getColumn(TRANSFER_COMMENTS).getCaption());
-    assertEquals(tubeTransferedSample.getComments(), design.transfers.getColumn(TRANSFER_COMMENTS)
+    assertEquals(resources.message(TRANSFER_COMMENT),
+        design.transfers.getColumn(TRANSFER_COMMENT).getCaption());
+    assertEquals(tubeTransferedSample.getComment(), design.transfers.getColumn(TRANSFER_COMMENT)
         .getValueProvider().apply(tubeTransferedSample));
-    assertEquals(plateTransferedSample.getComments(), design.transfers.getColumn(TRANSFER_COMMENTS)
+    assertEquals(plateTransferedSample.getComment(), design.transfers.getColumn(TRANSFER_COMMENT)
         .getValueProvider().apply(plateTransferedSample));
 
     assertTrue(design.transfersPanel.isVisible());
@@ -587,7 +587,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(DIGESTION_SAMPLE, design.digestions.getColumns().get(0).getId());
     assertEquals(DIGESTION_PROTOCOL, design.digestions.getColumns().get(1).getId());
     assertEquals(DIGESTION_CONTAINER, design.digestions.getColumns().get(2).getId());
-    assertEquals(DIGESTION_COMMENTS, design.digestions.getColumns().get(3).getId());
+    assertEquals(DIGESTION_COMMENT, design.digestions.getColumns().get(3).getId());
     assertEquals(resources.message(DIGESTION_SAMPLE),
         design.digestions.getColumn(DIGESTION_SAMPLE).getCaption());
     assertEquals(tubeDigestedSample.getSample().getName(),
@@ -606,11 +606,11 @@ public class SubmissionTreatmentsFormPresenterTest {
         .getColumn(DIGESTION_CONTAINER).getValueProvider().apply(tubeDigestedSample));
     assertEquals(plateDigestedSample.getContainer().getFullName(), design.digestions
         .getColumn(DIGESTION_CONTAINER).getValueProvider().apply(plateDigestedSample));
-    assertEquals(resources.message(DIGESTION_COMMENTS),
-        design.digestions.getColumn(DIGESTION_COMMENTS).getCaption());
-    assertEquals(tubeDigestedSample.getComments(), design.digestions.getColumn(DIGESTION_COMMENTS)
+    assertEquals(resources.message(DIGESTION_COMMENT),
+        design.digestions.getColumn(DIGESTION_COMMENT).getCaption());
+    assertEquals(tubeDigestedSample.getComment(), design.digestions.getColumn(DIGESTION_COMMENT)
         .getValueProvider().apply(tubeDigestedSample));
-    assertEquals(plateDigestedSample.getComments(), design.digestions.getColumn(DIGESTION_COMMENTS)
+    assertEquals(plateDigestedSample.getComment(), design.digestions.getColumn(DIGESTION_COMMENT)
         .getValueProvider().apply(plateDigestedSample));
 
     assertTrue(design.digestionsPanel.isVisible());
@@ -639,7 +639,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(STANDARD_ADDITION_NAME, design.standardAdditions.getColumns().get(1).getId());
     assertEquals(STANDARD_ADDITION_QUANTITY, design.standardAdditions.getColumns().get(2).getId());
     assertEquals(STANDARD_ADDITION_CONTAINER, design.standardAdditions.getColumns().get(3).getId());
-    assertEquals(STANDARD_ADDITION_COMMENTS, design.standardAdditions.getColumns().get(4).getId());
+    assertEquals(STANDARD_ADDITION_COMMENT, design.standardAdditions.getColumns().get(4).getId());
     assertEquals(resources.message(STANDARD_ADDITION_SAMPLE),
         design.standardAdditions.getColumn(STANDARD_ADDITION_SAMPLE).getCaption());
     assertEquals(tubeAddedStandard.getSample().getName(), design.standardAdditions
@@ -664,12 +664,12 @@ public class SubmissionTreatmentsFormPresenterTest {
         .getColumn(STANDARD_ADDITION_CONTAINER).getValueProvider().apply(tubeAddedStandard));
     assertEquals(plateAddedStandard.getContainer().getFullName(), design.standardAdditions
         .getColumn(STANDARD_ADDITION_CONTAINER).getValueProvider().apply(plateAddedStandard));
-    assertEquals(resources.message(STANDARD_ADDITION_COMMENTS),
-        design.standardAdditions.getColumn(STANDARD_ADDITION_COMMENTS).getCaption());
-    assertEquals(tubeAddedStandard.getComments(), design.standardAdditions
-        .getColumn(STANDARD_ADDITION_COMMENTS).getValueProvider().apply(tubeAddedStandard));
-    assertEquals(plateAddedStandard.getComments(), design.standardAdditions
-        .getColumn(STANDARD_ADDITION_COMMENTS).getValueProvider().apply(plateAddedStandard));
+    assertEquals(resources.message(STANDARD_ADDITION_COMMENT),
+        design.standardAdditions.getColumn(STANDARD_ADDITION_COMMENT).getCaption());
+    assertEquals(tubeAddedStandard.getComment(), design.standardAdditions
+        .getColumn(STANDARD_ADDITION_COMMENT).getValueProvider().apply(tubeAddedStandard));
+    assertEquals(plateAddedStandard.getComment(), design.standardAdditions
+        .getColumn(STANDARD_ADDITION_COMMENT).getValueProvider().apply(plateAddedStandard));
 
     assertTrue(design.standardAdditionsPanel.isVisible());
     Collection<AddedStandard> addedStandards = dataProvider(design.standardAdditions).getItems();
@@ -696,7 +696,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(ENRICHMENT_SAMPLE, design.enrichments.getColumns().get(0).getId());
     assertEquals(ENRICHMENT_PROTOCOL, design.enrichments.getColumns().get(1).getId());
     assertEquals(ENRICHMENT_CONTAINER, design.enrichments.getColumns().get(2).getId());
-    assertEquals(ENRICHMENT_COMMENTS, design.enrichments.getColumns().get(3).getId());
+    assertEquals(ENRICHMENT_COMMENT, design.enrichments.getColumns().get(3).getId());
     assertEquals(resources.message(ENRICHMENT_SAMPLE),
         design.enrichments.getColumn(ENRICHMENT_SAMPLE).getCaption());
     assertEquals(tubeEnrichedSample.getSample().getName(), design.enrichments
@@ -715,12 +715,12 @@ public class SubmissionTreatmentsFormPresenterTest {
         .getColumn(ENRICHMENT_CONTAINER).getValueProvider().apply(tubeEnrichedSample));
     assertEquals(plateEnrichedSample.getContainer().getFullName(), design.enrichments
         .getColumn(ENRICHMENT_CONTAINER).getValueProvider().apply(plateEnrichedSample));
-    assertEquals(resources.message(ENRICHMENT_COMMENTS),
-        design.enrichments.getColumn(ENRICHMENT_COMMENTS).getCaption());
-    assertEquals(tubeEnrichedSample.getComments(), design.enrichments.getColumn(ENRICHMENT_COMMENTS)
+    assertEquals(resources.message(ENRICHMENT_COMMENT),
+        design.enrichments.getColumn(ENRICHMENT_COMMENT).getCaption());
+    assertEquals(tubeEnrichedSample.getComment(), design.enrichments.getColumn(ENRICHMENT_COMMENT)
         .getValueProvider().apply(tubeEnrichedSample));
-    assertEquals(plateEnrichedSample.getComments(), design.enrichments
-        .getColumn(ENRICHMENT_COMMENTS).getValueProvider().apply(plateEnrichedSample));
+    assertEquals(plateEnrichedSample.getComment(), design.enrichments
+        .getColumn(ENRICHMENT_COMMENT).getValueProvider().apply(plateEnrichedSample));
 
     assertTrue(design.enrichmentsPanel.isVisible());
     Collection<EnrichedSample> enrichedSamples = dataProvider(design.enrichments).getItems();
@@ -749,7 +749,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(DILUTION_SOLVENT, design.dilutions.getColumns().get(2).getId());
     assertEquals(DILUTION_SOLVENT_VOLUME, design.dilutions.getColumns().get(3).getId());
     assertEquals(DILUTION_CONTAINER, design.dilutions.getColumns().get(4).getId());
-    assertEquals(DILUTION_COMMENTS, design.dilutions.getColumns().get(5).getId());
+    assertEquals(DILUTION_COMMENT, design.dilutions.getColumns().get(5).getId());
     assertEquals(resources.message(DILUTION_SAMPLE),
         design.dilutions.getColumn(DILUTION_SAMPLE).getCaption());
     assertEquals(tubeDilutedSample.getSample().getName(),
@@ -780,12 +780,12 @@ public class SubmissionTreatmentsFormPresenterTest {
         design.dilutions.getColumn(DILUTION_CONTAINER).getValueProvider().apply(tubeDilutedSample));
     assertEquals(plateDilutedSample.getContainer().getFullName(), design.dilutions
         .getColumn(DILUTION_CONTAINER).getValueProvider().apply(plateDilutedSample));
-    assertEquals(resources.message(DILUTION_COMMENTS),
-        design.dilutions.getColumn(DILUTION_COMMENTS).getCaption());
-    assertEquals(tubeDilutedSample.getComments(),
-        design.dilutions.getColumn(DILUTION_COMMENTS).getValueProvider().apply(tubeDilutedSample));
-    assertEquals(plateDilutedSample.getComments(),
-        design.dilutions.getColumn(DILUTION_COMMENTS).getValueProvider().apply(plateDilutedSample));
+    assertEquals(resources.message(DILUTION_COMMENT),
+        design.dilutions.getColumn(DILUTION_COMMENT).getCaption());
+    assertEquals(tubeDilutedSample.getComment(),
+        design.dilutions.getColumn(DILUTION_COMMENT).getValueProvider().apply(tubeDilutedSample));
+    assertEquals(plateDilutedSample.getComment(),
+        design.dilutions.getColumn(DILUTION_COMMENT).getValueProvider().apply(plateDilutedSample));
 
     assertTrue(design.dilutionsPanel.isVisible());
     Collection<DilutedSample> dilutedSamples = dataProvider(design.dilutions).getItems();
@@ -815,7 +815,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(FRACTIONATION_CONTAINER, design.fractionations.getColumns().get(3).getId());
     assertEquals(FRACTIONATION_DESTINATION_CONTAINER,
         design.fractionations.getColumns().get(4).getId());
-    assertEquals(FRACTIONATION_COMMENTS, design.fractionations.getColumns().get(5).getId());
+    assertEquals(FRACTIONATION_COMMENT, design.fractionations.getColumns().get(5).getId());
     assertEquals(resources.message(FRACTIONATION_SAMPLE),
         design.fractionations.getColumn(FRACTIONATION_SAMPLE).getCaption());
     assertEquals(tubeFractionatedSample.getSample().getName(), design.fractionations
@@ -850,12 +850,12 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(plateFractionatedSample.getDestinationContainer().getFullName(),
         design.fractionations.getColumn(FRACTIONATION_DESTINATION_CONTAINER).getValueProvider()
             .apply(plateFractionatedSample));
-    assertEquals(resources.message(FRACTIONATION_COMMENTS),
-        design.fractionations.getColumn(FRACTIONATION_COMMENTS).getCaption());
-    assertEquals(tubeFractionatedSample.getComments(), design.fractionations
-        .getColumn(FRACTIONATION_COMMENTS).getValueProvider().apply(tubeFractionatedSample));
-    assertEquals(plateFractionatedSample.getComments(), design.fractionations
-        .getColumn(FRACTIONATION_COMMENTS).getValueProvider().apply(plateFractionatedSample));
+    assertEquals(resources.message(FRACTIONATION_COMMENT),
+        design.fractionations.getColumn(FRACTIONATION_COMMENT).getCaption());
+    assertEquals(tubeFractionatedSample.getComment(), design.fractionations
+        .getColumn(FRACTIONATION_COMMENT).getValueProvider().apply(tubeFractionatedSample));
+    assertEquals(plateFractionatedSample.getComment(), design.fractionations
+        .getColumn(FRACTIONATION_COMMENT).getValueProvider().apply(plateFractionatedSample));
 
     assertTrue(design.fractionationsPanel.isVisible());
     Collection<Fraction> fractionatedSamples = dataProvider(design.fractionations).getItems();

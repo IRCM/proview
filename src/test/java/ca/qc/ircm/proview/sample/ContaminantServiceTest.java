@@ -64,7 +64,7 @@ public class ContaminantServiceTest {
     assertEquals((Long) 2L, contaminant.getId());
     assertEquals("keratin1", contaminant.getName());
     assertEquals("1.5 μg", contaminant.getQuantity());
-    assertEquals(null, contaminant.getComments());
+    assertEquals(null, contaminant.getComment());
   }
 
   @Test

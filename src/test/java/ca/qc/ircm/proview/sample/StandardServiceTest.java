@@ -51,8 +51,7 @@ public class StandardServiceTest {
 
   @Before
   public void beforeTest() {
-    standardService =
-        new StandardService(entityManager, queryFactory, authorizationService);
+    standardService = new StandardService(entityManager, queryFactory, authorizationService);
   }
 
   @Test
@@ -64,7 +63,7 @@ public class StandardServiceTest {
     assertEquals((Long) 4L, standard.getId());
     assertEquals("std1", standard.getName());
     assertEquals("2 μg", standard.getQuantity());
-    assertEquals(null, standard.getComments());
+    assertEquals(null, standard.getComment());
   }
 
   @Test
@@ -76,7 +75,7 @@ public class StandardServiceTest {
     assertEquals((Long) 6L, standard.getId());
     assertEquals("cap_standard", standard.getName());
     assertEquals("3 μg", standard.getQuantity());
-    assertEquals("some_comments", standard.getComments());
+    assertEquals("some_comment", standard.getComment());
   }
 
   @Test

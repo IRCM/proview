@@ -60,7 +60,7 @@ public class AcquisitionServiceTest {
     assertEquals("XL_20100614_COU_09", acquisition.getAcquisitionFile());
     assertEquals((Integer) 1, acquisition.getPosition());
     assertEquals((Integer) 1, acquisition.getListIndex());
-    assertEquals(null, acquisition.getComments());
+    assertEquals(null, acquisition.getComment());
   }
 
   @Test

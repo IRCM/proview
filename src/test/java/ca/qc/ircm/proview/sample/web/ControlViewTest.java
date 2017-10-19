@@ -61,10 +61,10 @@ public class ControlViewTest extends ControlViewPageObject {
   private final int standardCount = 2;
   private final String standardName1 = "std-test-1";
   private final String standardQuantity1 = "1 ng";
-  private final String standardComments1 = "std1-comment";
+  private final String standardComment1 = "std1-comment";
   private final String standardName2 = "std-test-2";
   private final String standardQuantity2 = "1.2 ng";
-  private final String standardComments2 = "std2-comment";
+  private final String standardComment2 = "std2-comment";
   private final String explanation = "explanation-test";
 
   private void setFields() {
@@ -78,10 +78,10 @@ public class ControlViewTest extends ControlViewPageObject {
     waitFor(() -> standardNameField(0));
     setStandardName(0, standardName1);
     setStandardQuantity(0, standardQuantity1);
-    setStandardComments(0, standardComments1);
+    setStandardComment(0, standardComment1);
     setStandardName(1, standardName2);
     setStandardQuantity(1, standardQuantity2);
-    setStandardComments(1, standardComments2);
+    setStandardComment(1, standardComment2);
     if (optional(() -> explanationField()).isPresent()) {
       setExplanation(explanation);
     }
@@ -199,10 +199,10 @@ public class ControlViewTest extends ControlViewPageObject {
     assertEquals(standardCount, control.getStandards().size());
     assertEquals(standardName1, control.getStandards().get(0).getName());
     assertEquals(standardQuantity1, control.getStandards().get(0).getQuantity());
-    assertEquals(standardComments1, control.getStandards().get(0).getComments());
+    assertEquals(standardComment1, control.getStandards().get(0).getComment());
     assertEquals(standardName2, control.getStandards().get(1).getName());
     assertEquals(standardQuantity2, control.getStandards().get(1).getQuantity());
-    assertEquals(standardComments2, control.getStandards().get(1).getComments());
+    assertEquals(standardComment2, control.getStandards().get(1).getComment());
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
     assertNotNull(notification.getCaption());

@@ -115,7 +115,7 @@ public class SolubilisationServiceTest {
     assertEquals((Long) 1L, solubilisedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, solubilisedSample.getContainer().getType());
     assertEquals((Long) 1L, solubilisedSample.getContainer().getId());
-    assertEquals(null, solubilisedSample.getComments());
+    assertEquals(null, solubilisedSample.getComment());
     assertEquals("Methanol", solubilisedSample.getSolvent());
     assertEquals(20.0, solubilisedSample.getSolventVolume(), 0.01);
   }
@@ -167,7 +167,7 @@ public class SolubilisationServiceTest {
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
     SolubilisedSample solubilisedSample = new SolubilisedSample();
-    solubilisedSample.setComments("unit test");
+    solubilisedSample.setComment("unit test");
     solubilisedSample.setSample(sample);
     solubilisedSample.setContainer(tube);
     solubilisedSample.setSolvent("Methanol");
@@ -195,7 +195,7 @@ public class SolubilisationServiceTest {
     assertTrue(after.isAfter(solubilisation.getInsertTime()));
     assertEquals(1, solubilisation.getTreatmentSamples().size());
     solubilisedSample = solubilisation.getTreatmentSamples().get(0);
-    assertEquals("unit test", solubilisedSample.getComments());
+    assertEquals("unit test", solubilisedSample.getComment());
     assertEquals((Long) 1L, solubilisedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, solubilisedSample.getContainer().getType());
     assertEquals((Long) 1L, solubilisedSample.getContainer().getId());
@@ -209,7 +209,7 @@ public class SolubilisationServiceTest {
     SubmissionSample sample = new SubmissionSample(1L);
     Well well = new Well(128L);
     SolubilisedSample solubilisedSample = new SolubilisedSample();
-    solubilisedSample.setComments("unit test");
+    solubilisedSample.setComment("unit test");
     solubilisedSample.setSample(sample);
     solubilisedSample.setContainer(well);
     solubilisedSample.setSolvent("Methanol");
@@ -237,7 +237,7 @@ public class SolubilisationServiceTest {
     assertTrue(after.isAfter(solubilisation.getInsertTime()));
     assertEquals(1, solubilisation.getTreatmentSamples().size());
     solubilisedSample = solubilisation.getTreatmentSamples().get(0);
-    assertEquals("unit test", solubilisedSample.getComments());
+    assertEquals("unit test", solubilisedSample.getComment());
     assertEquals((Long) 1L, solubilisedSample.getSample().getId());
     assertEquals(SampleContainerType.WELL, solubilisedSample.getContainer().getType());
     assertEquals((Long) 128L, solubilisedSample.getContainer().getId());

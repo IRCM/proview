@@ -122,7 +122,7 @@ public class TransferServiceTest {
     assertEquals((Long) 1L, transferedSample.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, transferedSample.getDestinationContainer().getType());
     assertEquals((Long) 7L, transferedSample.getDestinationContainer().getId());
-    assertEquals(null, transferedSample.getComments());
+    assertEquals(null, transferedSample.getComment());
   }
 
   @Test

@@ -96,11 +96,11 @@ public class Acquisition implements Data, Named, Serializable {
   @Column(name = "listIndex")
   private Integer listIndex;
   /**
-   * Any comments on this acquisition.
+   * Any comment on this acquisition.
    */
-  @Column(name = "comments")
+  @Column(name = "comment")
   @Size(max = 255)
-  private String comments;
+  private String comment;
 
   public Acquisition() {
   }
@@ -179,12 +179,12 @@ public class Acquisition implements Data, Named, Serializable {
     this.position = position;
   }
 
-  public String getComments() {
-    return comments;
+  public String getComment() {
+    return comment;
   }
 
-  public void setComments(String comments) {
-    this.comments = comments;
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   public Integer getListIndex() {

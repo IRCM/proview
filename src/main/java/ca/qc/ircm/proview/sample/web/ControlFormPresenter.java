@@ -82,7 +82,7 @@ public class ControlFormPresenter implements BinderValidator {
   public static final int STANDARDS_TABLE_LENGTH = 4;
   public static final String STANDARD_NAME = standard.name.getMetadata().getName();
   public static final String STANDARD_QUANTITY = standard.quantity.getMetadata().getName();
-  public static final String STANDARD_COMMENTS = standard.comments.getMetadata().getName();
+  public static final String STANDARD_COMMENT = standard.comment.getMetadata().getName();
   public static final String FILL_STANDARDS = "fillStandards";
   public static final String EXAMPLE = "example";
   public static final String EXPLANATION_PANEL = "explanationPanel";
@@ -101,7 +101,7 @@ public class ControlFormPresenter implements BinderValidator {
   private Map<Standard, Binder<Standard>> standardBinders = new HashMap<>();
   private Map<Standard, TextField> standardNameFields = new HashMap<>();
   private Map<Standard, TextField> standardQuantityFields = new HashMap<>();
-  private Map<Standard, TextField> standardCommentsFields = new HashMap<>();
+  private Map<Standard, TextField> standardCommentFields = new HashMap<>();
   @Inject
   private ControlService controlService;
 
@@ -195,8 +195,8 @@ public class ControlFormPresenter implements BinderValidator {
         .addColumn(standard -> standardQuantityTextField(standard), new ComponentRenderer())
         .setId(STANDARD_QUANTITY).setCaption(resources.message(STANDARD + "." + STANDARD_QUANTITY));
     design.standardsGrid
-        .addColumn(standard -> standardCommentsTextField(standard), new ComponentRenderer())
-        .setId(STANDARD_COMMENTS).setCaption(resources.message(STANDARD + "." + STANDARD_COMMENTS));
+        .addColumn(standard -> standardCommentTextField(standard), new ComponentRenderer())
+        .setId(STANDARD_COMMENT).setCaption(resources.message(STANDARD + "." + STANDARD_COMMENT));
     design.fillStandardsButton.addStyleName(FILL_STANDARDS);
     design.fillStandardsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS));
@@ -250,9 +250,9 @@ public class ControlFormPresenter implements BinderValidator {
     }
   }
 
-  private TextField standardCommentsTextField(Standard standard) {
-    if (standardCommentsFields.containsKey(standard)) {
-      return standardCommentsFields.get(standard);
+  private TextField standardCommentTextField(Standard standard) {
+    if (standardCommentFields.containsKey(standard)) {
+      return standardCommentFields.get(standard);
     } else {
       Binder<Standard> binder = standardBinders.get(standard);
       if (binder == null) {
@@ -260,12 +260,12 @@ public class ControlFormPresenter implements BinderValidator {
         binder.setBean(standard);
       }
       TextField field = new TextField();
-      field.addStyleName(STANDARD + "." + STANDARD_COMMENTS);
+      field.addStyleName(STANDARD + "." + STANDARD_COMMENT);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
-      binder.forField(field).withNullRepresentation("").bind(STANDARD_COMMENTS);
+      binder.forField(field).withNullRepresentation("").bind(STANDARD_COMMENT);
       standardBinders.put(standard, binder);
-      standardCommentsFields.put(standard, field);
+      standardCommentFields.put(standard, field);
       return field;
     }
   }
@@ -295,11 +295,11 @@ public class ControlFormPresenter implements BinderValidator {
     Standard first = standardsDataProvider.getItems().iterator().next();
     String name = first.getName();
     String quantity = first.getQuantity();
-    String comments = first.getComments();
+    String comment = first.getComment();
     standardsDataProvider.getItems().forEach(standard -> {
       standard.setName(name);
       standard.setQuantity(quantity);
-      standard.setComments(comments);
+      standard.setComment(comment);
       standardBinders.get(standard).setBean(standard);
     });
     standardsDataProvider.refreshAll();
@@ -322,7 +322,7 @@ public class ControlFormPresenter implements BinderValidator {
           .ifPresent(binding -> binding.getField().setReadOnly(readOnly));
       binder.getBinding(STANDARD_QUANTITY)
           .ifPresent(binding -> binding.getField().setReadOnly(readOnly));
-      binder.getBinding(STANDARD_COMMENTS)
+      binder.getBinding(STANDARD_COMMENT)
           .ifPresent(binding -> binding.getField().setReadOnly(readOnly));
     });
   }
@@ -387,7 +387,7 @@ public class ControlFormPresenter implements BinderValidator {
       Standard copy = new Standard();
       copy.setName(standard.getName());
       copy.setQuantity(standard.getQuantity());
-      copy.setComments(standard.getComments());
+      copy.setComment(standard.getComment());
       sample.getStandards().add(copy);
     }
   }

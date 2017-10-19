@@ -106,8 +106,8 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected CheckBox otherSolventsField;
   protected TextField otherSolventField;
   protected Label otherSolventNoteLabel;
-  protected Panel commentsPanel;
-  protected TextArea commentsField;
+  protected Panel commentPanel;
+  protected TextArea commentField;
   protected Panel filesPanel;
   protected VerticalLayout filesUploaderLayout;
   protected Grid<ca.qc.ircm.proview.submission.SubmissionFile> filesGrid;

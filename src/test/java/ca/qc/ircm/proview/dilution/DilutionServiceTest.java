@@ -114,7 +114,7 @@ public class DilutionServiceTest {
     assertEquals((Long) 442L, dilutedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, dilutedSample.getContainer().getType());
     assertEquals((Long) 2L, dilutedSample.getContainer().getId());
-    assertEquals(null, dilutedSample.getComments());
+    assertEquals(null, dilutedSample.getComment());
   }
 
   @Test
@@ -152,7 +152,7 @@ public class DilutionServiceTest {
     Tube tube = new Tube(1L);
     final List<DilutedSample> dilutedSamples = new ArrayList<>();
     DilutedSample dilutedSample = new DilutedSample();
-    dilutedSample.setComments("unit test");
+    dilutedSample.setComment("unit test");
     dilutedSample.setSample(sample);
     dilutedSample.setContainer(tube);
     dilutedSample.setSourceVolume(10.0);
@@ -181,7 +181,7 @@ public class DilutionServiceTest {
     assertTrue(after.isAfter(dilution.getInsertTime()));
     assertEquals(1, dilution.getTreatmentSamples().size());
     dilutedSample = dilution.getTreatmentSamples().get(0);
-    assertEquals("unit test", dilutedSample.getComments());
+    assertEquals("unit test", dilutedSample.getComment());
     assertEquals((Long) 1L, dilutedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, dilutedSample.getContainer().getType());
     assertEquals((Long) 1L, dilutedSample.getContainer().getId());
@@ -196,7 +196,7 @@ public class DilutionServiceTest {
     Well well = new Well(128L);
     final List<DilutedSample> dilutedSamples = new ArrayList<>();
     DilutedSample dilutedSample = new DilutedSample();
-    dilutedSample.setComments("unit test");
+    dilutedSample.setComment("unit test");
     dilutedSample.setSample(sample);
     dilutedSample.setContainer(well);
     dilutedSample.setSourceVolume(10.0);
@@ -225,7 +225,7 @@ public class DilutionServiceTest {
     assertTrue(after.isAfter(dilution.getInsertTime()));
     assertEquals(1, dilution.getTreatmentSamples().size());
     dilutedSample = dilution.getTreatmentSamples().get(0);
-    assertEquals("unit test", dilutedSample.getComments());
+    assertEquals("unit test", dilutedSample.getComment());
     assertEquals((Long) 1L, dilutedSample.getSample().getId());
     assertEquals(SampleContainerType.WELL, dilutedSample.getContainer().getType());
     assertEquals((Long) 128L, dilutedSample.getContainer().getId());

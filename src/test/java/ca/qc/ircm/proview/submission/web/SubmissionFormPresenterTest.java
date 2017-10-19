@@ -30,10 +30,10 @@ import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENTS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENTS_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COMMENTS_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COMMENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COUNT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_NAME_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_PROPERTY;
@@ -106,7 +106,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COMMENTS_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COMMENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COUNT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_NAME_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_PROPERTY;
@@ -345,7 +345,7 @@ public class SubmissionFormPresenterTest {
   private boolean chclSolvents = true;
   private boolean otherSolvents = true;
   private String otherSolvent = "acetone";
-  private String comments = "my comment\nmy comment second line";
+  private String comment = "my comment\nmy comment second line";
   private String filesFilename1 = "protocol.txt";
   private String filesMimeType1 = "txt";
   private byte[] filesContent1 = new byte[1024];
@@ -445,7 +445,7 @@ public class SubmissionFormPresenterTest {
     design.chclSolventsField.setValue(chclSolvents);
     design.otherSolventsField.setValue(otherSolvents);
     design.otherSolventField.setValue(otherSolvent);
-    design.commentsField.setValue(comments);
+    design.commentField.setValue(comment);
     design.explanation.setValue(explanation);
   }
 
@@ -484,12 +484,12 @@ public class SubmissionFormPresenterTest {
     standardNameField1 = setValueInStandardsGrid(standard, standardName1, STANDARD_NAME_PROPERTY);
     standardQuantityField1 =
         setValueInStandardsGrid(standard, standardQuantity1, STANDARD_QUANTITY_PROPERTY);
-    setValueInStandardsGrid(standard, standardComment1, STANDARD_COMMENTS_PROPERTY);
+    setValueInStandardsGrid(standard, standardComment1, STANDARD_COMMENT_PROPERTY);
     standard = standards.get(1);
     standardNameField2 = setValueInStandardsGrid(standard, standardName2, STANDARD_NAME_PROPERTY);
     standardQuantityField2 =
         setValueInStandardsGrid(standard, standardQuantity2, STANDARD_QUANTITY_PROPERTY);
-    setValueInStandardsGrid(standard, standardComment2, STANDARD_COMMENTS_PROPERTY);
+    setValueInStandardsGrid(standard, standardComment2, STANDARD_COMMENT_PROPERTY);
   }
 
   private TextField setValueInStandardsGrid(Standard standard, String value, String columnId) {
@@ -507,13 +507,13 @@ public class SubmissionFormPresenterTest {
         setValueInContaminantsGrid(contaminant, contaminantName1, CONTAMINANT_NAME_PROPERTY);
     contaminantQuantityField1 = setValueInContaminantsGrid(contaminant, contaminantQuantity1,
         CONTAMINANT_QUANTITY_PROPERTY);
-    setValueInContaminantsGrid(contaminant, contaminantComment1, CONTAMINANT_COMMENTS_PROPERTY);
+    setValueInContaminantsGrid(contaminant, contaminantComment1, CONTAMINANT_COMMENT_PROPERTY);
     contaminant = contaminants.get(1);
     contaminantNameField2 =
         setValueInContaminantsGrid(contaminant, contaminantName2, CONTAMINANT_NAME_PROPERTY);
     contaminantQuantityField2 = setValueInContaminantsGrid(contaminant, contaminantQuantity2,
         CONTAMINANT_QUANTITY_PROPERTY);
-    setValueInContaminantsGrid(contaminant, contaminantComment2, CONTAMINANT_COMMENTS_PROPERTY);
+    setValueInContaminantsGrid(contaminant, contaminantComment2, CONTAMINANT_COMMENT_PROPERTY);
   }
 
   private TextField setValueInContaminantsGrid(Contaminant contaminant, String value,
@@ -618,7 +618,7 @@ public class SubmissionFormPresenterTest {
     submission.setStorageTemperature(storageTemperature);
     submission.setQuantification(quantification);
     submission.setQuantificationLabels(quantificationLabels);
-    submission.setComments(comments);
+    submission.setComment(comment);
     submission.setSubmissionDate(Instant.now());
     User user = entityManager.find(User.class, 3L);
     submission.setUser(user);
@@ -640,13 +640,13 @@ public class SubmissionFormPresenterTest {
     standard.setId(30L);
     standard.setName(standardName1);
     standard.setQuantity(standardQuantity1);
-    standard.setComments(standardComment1);
+    standard.setComment(standardComment1);
     standards.add(standard);
     standard = new Standard();
     standard.setId(31L);
     standard.setName(standardName2);
     standard.setQuantity(standardQuantity2);
-    standard.setComments(standardComment2);
+    standard.setComment(standardComment2);
     standards.add(standard);
     List<Contaminant> contaminants = new ArrayList<>();
     sample.setContaminants(contaminants);
@@ -654,13 +654,13 @@ public class SubmissionFormPresenterTest {
     contaminant.setId(30L);
     contaminant.setName(contaminantName1);
     contaminant.setQuantity(contaminantQuantity1);
-    contaminant.setComments(contaminantComment1);
+    contaminant.setComment(contaminantComment1);
     contaminants.add(contaminant);
     contaminant = new Contaminant();
     contaminant.setId(31L);
     contaminant.setName(contaminantName2);
     contaminant.setQuantity(contaminantQuantity2);
-    contaminant.setComments(contaminantComment2);
+    contaminant.setComment(contaminantComment2);
     contaminants.add(contaminant);
     sample.setStatus(SampleStatus.TO_APPROVE);
     sample.setSubmission(submission);
@@ -680,13 +680,13 @@ public class SubmissionFormPresenterTest {
     standard.setId(32L);
     standard.setName(standardName1);
     standard.setQuantity(standardQuantity1);
-    standard.setComments(standardComment1);
+    standard.setComment(standardComment1);
     standards.add(standard);
     standard = new Standard();
     standard.setId(33L);
     standard.setName(standardName2);
     standard.setQuantity(standardQuantity2);
-    standard.setComments(standardComment2);
+    standard.setComment(standardComment2);
     standards.add(standard);
     contaminants = new ArrayList<>();
     sample.setContaminants(contaminants);
@@ -694,13 +694,13 @@ public class SubmissionFormPresenterTest {
     contaminant.setId(32L);
     contaminant.setName(contaminantName1);
     contaminant.setQuantity(contaminantQuantity1);
-    contaminant.setComments(contaminantComment1);
+    contaminant.setComment(contaminantComment1);
     contaminants.add(contaminant);
     contaminant = new Contaminant();
     contaminant.setId(33L);
     contaminant.setName(contaminantName2);
     contaminant.setQuantity(contaminantQuantity2);
-    contaminant.setComments(contaminantComment2);
+    contaminant.setComment(contaminantComment2);
     contaminants.add(contaminant);
     List<GelImage> gelImages = new ArrayList<>();
     submission.setGelImages(gelImages);
@@ -766,7 +766,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(3, design.standardsGrid.getColumns().size());
     assertEquals(STANDARD_NAME_PROPERTY, design.standardsGrid.getColumns().get(0).getId());
     assertEquals(STANDARD_QUANTITY_PROPERTY, design.standardsGrid.getColumns().get(1).getId());
-    assertEquals(STANDARD_COMMENTS_PROPERTY, design.standardsGrid.getColumns().get(2).getId());
+    assertEquals(STANDARD_COMMENT_PROPERTY, design.standardsGrid.getColumns().get(2).getId());
   }
 
   @Test
@@ -777,8 +777,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(CONTAMINANT_NAME_PROPERTY, design.contaminantsGrid.getColumns().get(0).getId());
     assertEquals(CONTAMINANT_QUANTITY_PROPERTY,
         design.contaminantsGrid.getColumns().get(1).getId());
-    assertEquals(CONTAMINANT_COMMENTS_PROPERTY,
-        design.contaminantsGrid.getColumns().get(2).getId());
+    assertEquals(CONTAMINANT_COMMENT_PROPERTY, design.contaminantsGrid.getColumns().get(2).getId());
   }
 
   @Test
@@ -878,9 +877,9 @@ public class SubmissionFormPresenterTest {
     TextField standardQuantityTableField = (TextField) design.standardsGrid
         .getColumn(STANDARD_QUANTITY_PROPERTY).getValueProvider().apply(firstStandard);
     assertTrue(standardQuantityTableField.isRequiredIndicatorVisible());
-    TextField standardCommentsTableField = (TextField) design.standardsGrid
-        .getColumn(STANDARD_COMMENTS_PROPERTY).getValueProvider().apply(firstStandard);
-    assertFalse(standardCommentsTableField.isRequiredIndicatorVisible());
+    TextField standardCommentTableField = (TextField) design.standardsGrid
+        .getColumn(STANDARD_COMMENT_PROPERTY).getValueProvider().apply(firstStandard);
+    assertFalse(standardCommentTableField.isRequiredIndicatorVisible());
     assertFalse(design.contaminantCountField.isRequiredIndicatorVisible());
     ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminantsGrid);
     if (contaminantsDataProvider.getItems().size() < 1) {
@@ -893,9 +892,9 @@ public class SubmissionFormPresenterTest {
     TextField contaminantQuantityTableField = (TextField) design.contaminantsGrid
         .getColumn(CONTAMINANT_QUANTITY_PROPERTY).getValueProvider().apply(firstContaminant);
     assertTrue(contaminantQuantityTableField.isRequiredIndicatorVisible());
-    TextField contaminantCommentsTableField = (TextField) design.contaminantsGrid
-        .getColumn(CONTAMINANT_COMMENTS_PROPERTY).getValueProvider().apply(firstContaminant);
-    assertFalse(contaminantCommentsTableField.isRequiredIndicatorVisible());
+    TextField contaminantCommentTableField = (TextField) design.contaminantsGrid
+        .getColumn(CONTAMINANT_COMMENT_PROPERTY).getValueProvider().apply(firstContaminant);
+    assertFalse(contaminantCommentTableField.isRequiredIndicatorVisible());
     assertTrue(design.separationField.isRequiredIndicatorVisible());
     assertTrue(design.thicknessField.isRequiredIndicatorVisible());
     assertFalse(design.colorationField.isRequiredIndicatorVisible());
@@ -1213,8 +1212,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.otherSolventField.getStyleName().contains(OTHER_SOLVENT_PROPERTY));
     assertTrue(design.otherSolventField.getStyleName().contains(ValoTheme.TEXTFIELD_SMALL));
     assertTrue(design.otherSolventNoteLabel.getStyleName().contains(OTHER_SOLVENT_NOTE));
-    assertTrue(design.commentsPanel.getStyleName().contains(COMMENTS_PANEL));
-    assertTrue(design.commentsField.getStyleName().contains(COMMENTS_PROPERTY));
+    assertTrue(design.commentPanel.getStyleName().contains(COMMENT_PANEL));
+    assertTrue(design.commentField.getStyleName().contains(COMMENT_PROPERTY));
     assertTrue(design.filesPanel.getStyleName().contains(FILES_PROPERTY));
     verify(view.filesUploader).addStyleName(FILES_UPLOADER);
     assertTrue(design.filesGrid.getStyleName().contains(FILES_GRID));
@@ -1305,8 +1304,8 @@ public class SubmissionFormPresenterTest {
         design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).getCaption());
     assertEquals(resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY),
         design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY).getCaption());
-    assertEquals(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENTS_PROPERTY),
-        design.standardsGrid.getColumn(STANDARD_COMMENTS_PROPERTY).getCaption());
+    assertEquals(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENT_PROPERTY),
+        design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_STANDARDS_PROPERTY),
         design.fillStandardsButton.getCaption());
     assertEquals(resources.message(CONTAMINANTS_PANEL), design.contaminantsPanel.getCaption());
@@ -1317,8 +1316,8 @@ public class SubmissionFormPresenterTest {
         design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY).getCaption());
     assertEquals(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY),
         design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY).getCaption());
-    assertEquals(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENTS_PROPERTY),
-        design.contaminantsGrid.getColumn(CONTAMINANT_COMMENTS_PROPERTY).getCaption());
+    assertEquals(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENT_PROPERTY),
+        design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_CONTAMINANTS_PROPERTY),
         design.fillContaminantsButton.getCaption());
     assertEquals(resources.message(GEL_PANEL), design.gelPanel.getCaption());
@@ -1437,8 +1436,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(Solvent.OTHER.getLabel(locale), design.otherSolventsField.getCaption());
     assertEquals(resources.message(OTHER_SOLVENT_PROPERTY), design.otherSolventField.getCaption());
     assertEquals(resources.message(OTHER_SOLVENT_NOTE), design.otherSolventNoteLabel.getValue());
-    assertEquals(resources.message(COMMENTS_PANEL), design.commentsPanel.getCaption());
-    assertEquals(null, design.commentsField.getCaption());
+    assertEquals(resources.message(COMMENT_PANEL), design.commentPanel.getCaption());
+    assertEquals(null, design.commentField.getCaption());
     assertEquals(resources.message(FILES_PROPERTY), design.filesPanel.getCaption());
     verify(view.filesUploader).setUploadButtonCaption(resources.message(FILES_UPLOADER));
     assertEquals(null, design.filesGrid.getCaption());
@@ -1498,7 +1497,7 @@ public class SubmissionFormPresenterTest {
         .getValueProvider().apply(firstStandard)).isReadOnly());
     assertTrue(((TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY)
         .getValueProvider().apply(firstStandard)).isReadOnly());
-    assertTrue(((TextField) design.standardsGrid.getColumn(STANDARD_COMMENTS_PROPERTY)
+    assertTrue(((TextField) design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY)
         .getValueProvider().apply(firstStandard)).isReadOnly());
     assertTrue(design.contaminantCountField.isReadOnly());
     Contaminant firstContaminant =
@@ -1507,7 +1506,7 @@ public class SubmissionFormPresenterTest {
         .getValueProvider().apply(firstContaminant)).isReadOnly());
     assertTrue(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY)
         .getValueProvider().apply(firstContaminant)).isReadOnly());
-    assertTrue(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_COMMENTS_PROPERTY)
+    assertTrue(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY)
         .getValueProvider().apply(firstContaminant)).isReadOnly());
     assertTrue(design.separationField.isReadOnly());
     assertTrue(design.thicknessField.isReadOnly());
@@ -1535,7 +1534,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.chclSolventsField.isReadOnly());
     assertTrue(design.otherSolventsField.isReadOnly());
     assertTrue(design.otherSolventField.isReadOnly());
-    assertTrue(design.commentsField.isReadOnly());
+    assertTrue(design.commentField.isReadOnly());
     assertTrue(design.filesGrid.getColumn(REMOVE_FILE).isHidden());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.buttonsLayout.isVisible());
@@ -1588,7 +1587,7 @@ public class SubmissionFormPresenterTest {
         .getValueProvider().apply(firstStandard)).isReadOnly());
     assertFalse(((TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY)
         .getValueProvider().apply(firstStandard)).isReadOnly());
-    assertFalse(((TextField) design.standardsGrid.getColumn(STANDARD_COMMENTS_PROPERTY)
+    assertFalse(((TextField) design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY)
         .getValueProvider().apply(firstStandard)).isReadOnly());
     assertFalse(design.contaminantCountField.isReadOnly());
     Contaminant firstContaminant =
@@ -1597,7 +1596,7 @@ public class SubmissionFormPresenterTest {
         .getValueProvider().apply(firstContaminant)).isReadOnly());
     assertFalse(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY)
         .getValueProvider().apply(firstContaminant)).isReadOnly());
-    assertFalse(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_COMMENTS_PROPERTY)
+    assertFalse(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY)
         .getValueProvider().apply(firstContaminant)).isReadOnly());
     assertFalse(design.separationField.isReadOnly());
     assertFalse(design.thicknessField.isReadOnly());
@@ -1625,7 +1624,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.chclSolventsField.isReadOnly());
     assertFalse(design.otherSolventsField.isReadOnly());
     assertFalse(design.otherSolventField.isReadOnly());
-    assertFalse(design.commentsField.isReadOnly());
+    assertFalse(design.commentField.isReadOnly());
     assertFalse(design.filesGrid.getColumn(REMOVE_FILE).isHidden());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.buttonsLayout.isVisible());
@@ -4763,7 +4762,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
     assertEquals(quantificationLabels, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -4784,22 +4783,22 @@ public class SubmissionFormPresenterTest {
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
@@ -4813,22 +4812,22 @@ public class SubmissionFormPresenterTest {
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
@@ -4902,7 +4901,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
     assertEquals(quantificationLabels, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -4929,22 +4928,22 @@ public class SubmissionFormPresenterTest {
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
@@ -4964,22 +4963,22 @@ public class SubmissionFormPresenterTest {
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
@@ -5055,7 +5054,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
     assertEquals(quantificationLabels, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -5076,22 +5075,22 @@ public class SubmissionFormPresenterTest {
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
@@ -5105,22 +5104,22 @@ public class SubmissionFormPresenterTest {
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
@@ -5194,7 +5193,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
     assertEquals(quantificationLabels, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -5215,22 +5214,22 @@ public class SubmissionFormPresenterTest {
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
@@ -5244,22 +5243,22 @@ public class SubmissionFormPresenterTest {
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
@@ -5334,7 +5333,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
     assertEquals(quantificationLabels, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -5361,22 +5360,22 @@ public class SubmissionFormPresenterTest {
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
@@ -5396,22 +5395,22 @@ public class SubmissionFormPresenterTest {
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
@@ -5484,7 +5483,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
     assertEquals(quantificationLabels, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -5597,7 +5596,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
     assertEquals(quantificationLabels, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -5736,7 +5735,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(storageTemperature, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -5848,7 +5847,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(storageTemperature, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -5966,7 +5965,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -5987,22 +5986,22 @@ public class SubmissionFormPresenterTest {
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
@@ -6016,22 +6015,22 @@ public class SubmissionFormPresenterTest {
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
@@ -6105,7 +6104,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -6126,22 +6125,22 @@ public class SubmissionFormPresenterTest {
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
@@ -6155,22 +6154,22 @@ public class SubmissionFormPresenterTest {
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
@@ -6277,7 +6276,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
     assertEquals(quantificationLabels, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(LocalDate.of(2011, 11, 16), toLocalDate(submission.getSubmissionDate()));
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -6301,22 +6300,22 @@ public class SubmissionFormPresenterTest {
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(submission, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
@@ -6330,22 +6329,22 @@ public class SubmissionFormPresenterTest {
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
@@ -6421,7 +6420,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
     assertEquals(quantificationLabels, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(LocalDate.of(2014, 10, 8), toLocalDate(submission.getSubmissionDate()));
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
@@ -6445,22 +6444,22 @@ public class SubmissionFormPresenterTest {
     Standard standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
     assertEquals(submission, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     sample = submission.getSamples().get(1);
     assertEquals((Long) 560L, sample.getId());
     assertEquals(sampleName2, sample.getName());
@@ -6477,22 +6476,22 @@ public class SubmissionFormPresenterTest {
     standard = sample.getStandards().get(0);
     assertEquals(standardName1, standard.getName());
     assertEquals(standardQuantity1, standard.getQuantity());
-    assertEquals(standardComment1, standard.getComments());
+    assertEquals(standardComment1, standard.getComment());
     standard = sample.getStandards().get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals(standardComment2, standard.getComments());
+    assertEquals(standardComment2, standard.getComment());
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
     assertEquals(submission, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     contaminant = sample.getContaminants().get(0);
     assertEquals(contaminantName1, contaminant.getName());
     assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    assertEquals(contaminantComment1, contaminant.getComments());
+    assertEquals(contaminantComment1, contaminant.getComment());
     contaminant = sample.getContaminants().get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(contaminantComment2, contaminant.getComments());
+    assertEquals(contaminantComment2, contaminant.getComment());
     assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
     assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
@@ -6612,7 +6611,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(chclSolvents, design.chclSolventsField.getValue());
     assertEquals(otherSolvents, design.otherSolventsField.getValue());
     assertEquals(otherSolvent, design.otherSolventField.getValue());
-    assertEquals(comments, design.commentsField.getValue());
+    assertEquals(comment, design.commentField.getValue());
   }
 
   @Test
@@ -6706,7 +6705,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(chclSolvents, design.chclSolventsField.getValue());
     assertEquals(otherSolvents, design.otherSolventsField.getValue());
     assertEquals(otherSolvent, design.otherSolventField.getValue());
-    assertEquals(comments, design.commentsField.getValue());
+    assertEquals(comment, design.commentField.getValue());
   }
 
   @Test
@@ -6795,7 +6794,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(chclSolvents, design.chclSolventsField.getValue());
     assertEquals(otherSolvents, design.otherSolventsField.getValue());
     assertEquals(otherSolvent, design.otherSolventField.getValue());
-    assertEquals(comments, design.commentsField.getValue());
+    assertEquals(comment, design.commentField.getValue());
   }
 
   @Test
@@ -6884,6 +6883,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(chclSolvents, design.chclSolventsField.getValue());
     assertEquals(otherSolvents, design.otherSolventsField.getValue());
     assertEquals(otherSolvent, design.otherSolventField.getValue());
-    assertEquals(comments, design.commentsField.getValue());
+    assertEquals(comment, design.commentField.getValue());
   }
 }

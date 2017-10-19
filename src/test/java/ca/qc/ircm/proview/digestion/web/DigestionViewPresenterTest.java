@@ -248,16 +248,16 @@ public class DigestionViewPresenterTest {
     presenter.enter("");
     final ListDataProvider<DigestedSample> treatments = dataProvider(design.digestions);
     DigestedSample firstTs = treatments.getItems().iterator().next();
-    String comments = "test";
+    String comment = "test";
     TextField field =
         (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
-    field.setValue(comments);
+    field.setValue(comment);
 
     design.down.click();
 
     for (DigestedSample ts : treatments.getItems()) {
       field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
-      assertEquals(comments, field.getValue());
+      assertEquals(comment, field.getValue());
     }
   }
 
@@ -311,7 +311,7 @@ public class DigestionViewPresenterTest {
       DigestedSample digested = digestion.getTreatmentSamples().get(i);
       assertEquals(container.getSample(), digested.getSample());
       assertEquals(container, digested.getContainer());
-      assertEquals(comments.get(i), digested.getComments());
+      assertEquals(comments.get(i), digested.getComment());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
     verify(view).navigateTo(DigestionView.VIEW_NAME, "4");
@@ -344,7 +344,7 @@ public class DigestionViewPresenterTest {
       assertEquals(original.getId(), digested.getId());
       assertEquals(original.getSample(), digested.getSample());
       assertEquals(original.getContainer(), digested.getContainer());
-      assertEquals(comments.get(i), digested.getComments());
+      assertEquals(comments.get(i), digested.getComment());
     }
     verify(view).showTrayNotification(resources.message(SAVED, digestion.getTreatmentSamples()
         .stream().map(ts -> ts.getSample().getId()).distinct().count()));

@@ -78,7 +78,7 @@ public class TreatmentServiceTest {
     assertEquals((Long) 1L, solubilisedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, solubilisedSample.getContainer().getType());
     assertEquals((Long) 1L, solubilisedSample.getContainer().getId());
-    assertEquals(null, solubilisedSample.getComments());
+    assertEquals(null, solubilisedSample.getComment());
     assertEquals("Methanol", solubilisedSample.getSolvent());
     assertEquals(20.0, solubilisedSample.getSolventVolume(), 0.01);
   }
@@ -106,7 +106,7 @@ public class TreatmentServiceTest {
     assertEquals((Long) 1L, fraction.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, fraction.getDestinationContainer().getType());
     assertEquals((Long) 6L, fraction.getDestinationContainer().getId());
-    assertEquals(null, fraction.getComments());
+    assertEquals(null, fraction.getComment());
     assertEquals((Integer) 1, fraction.getPosition());
     assertEquals((Integer) 1, fraction.getNumber());
     assertEquals(null, fraction.getPiInterval());

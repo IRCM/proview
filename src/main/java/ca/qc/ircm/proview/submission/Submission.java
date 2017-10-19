@@ -321,10 +321,10 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Column(name = "quantificationLabels")
   private String quantificationLabels;
   /**
-   * Any comments on this sample.
+   * Any comment on this sample.
    */
-  @Column(name = "comments")
-  private String comments;
+  @Column(name = "comment")
+  private String comment;
   /**
    * Date of Submission submission.
    */
@@ -462,12 +462,12 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.goal = goal;
   }
 
-  public String getComments() {
-    return comments;
+  public String getComment() {
+    return comment;
   }
 
-  public void setComments(String comments) {
-    this.comments = comments;
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   public MassDetectionInstrumentSource getSource() {

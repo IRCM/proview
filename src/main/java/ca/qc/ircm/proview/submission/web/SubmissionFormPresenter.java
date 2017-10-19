@@ -201,7 +201,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final int STANDARDS_TABLE_LENGTH = 4;
   public static final String STANDARD_NAME_PROPERTY = standard.name.getMetadata().getName();
   public static final String STANDARD_QUANTITY_PROPERTY = standard.quantity.getMetadata().getName();
-  public static final String STANDARD_COMMENTS_PROPERTY = standard.comments.getMetadata().getName();
+  public static final String STANDARD_COMMENT_PROPERTY = standard.comment.getMetadata().getName();
   public static final String FILL_STANDARDS_PROPERTY = "fillStandards";
   public static final String CONTAMINANTS_PANEL = "contaminantsPanel";
   public static final String CONTAMINANT_COUNT_PROPERTY = "contaminantCount";
@@ -211,8 +211,8 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String CONTAMINANT_NAME_PROPERTY = contaminant.name.getMetadata().getName();
   public static final String CONTAMINANT_QUANTITY_PROPERTY =
       contaminant.quantity.getMetadata().getName();
-  public static final String CONTAMINANT_COMMENTS_PROPERTY =
-      contaminant.comments.getMetadata().getName();
+  public static final String CONTAMINANT_COMMENT_PROPERTY =
+      contaminant.comment.getMetadata().getName();
   public static final String FILL_CONTAMINANTS_PROPERTY = "fillContaminants";
   public static final String GEL_PANEL = "gelPanel";
   public static final String SEPARATION_PROPERTY = submission.separation.getMetadata().getName();
@@ -269,8 +269,8 @@ public class SubmissionFormPresenter implements BinderValidator {
       submission.otherSolvent.getMetadata().getName();
   public static final String OTHER_SOLVENT_NOTE =
       submission.otherSolvent.getMetadata().getName() + ".note";
-  public static final String COMMENTS_PANEL = "commentsPanel";
-  public static final String COMMENTS_PROPERTY = submission.comments.getMetadata().getName();
+  public static final String COMMENT_PANEL = "commentPanel";
+  public static final String COMMENT_PROPERTY = submission.comment.getMetadata().getName();
   public static final String FILES_PROPERTY = submission.files.getMetadata().getName();
   public static final String FILES_UPLOADER = submission.files.getMetadata().getName() + "Uploader";
   public static final String FILES_GRID = FILES_PROPERTY + "Grid";
@@ -312,13 +312,13 @@ public class SubmissionFormPresenter implements BinderValidator {
   private Map<Standard, Binder<Standard>> standardBinders = new HashMap<>();
   private Map<Standard, TextField> standardNameFields = new HashMap<>();
   private Map<Standard, TextField> standardQuantityFields = new HashMap<>();
-  private Map<Standard, TextField> standardCommentsFields = new HashMap<>();
+  private Map<Standard, TextField> standardCommentFields = new HashMap<>();
   private ListDataProvider<Contaminant> contaminantsDataProvider =
       DataProvider.ofCollection(new ArrayList<>());
   private Map<Contaminant, Binder<Contaminant>> contaminantBinders = new HashMap<>();
   private Map<Contaminant, TextField> contaminantNameFields = new HashMap<>();
   private Map<Contaminant, TextField> contaminantQuantityFields = new HashMap<>();
-  private Map<Contaminant, TextField> contaminantCommentsFields = new HashMap<>();
+  private Map<Contaminant, TextField> contaminantCommentFields = new HashMap<>();
   private ListDataProvider<GelImage> gelImagesDataProvider =
       DataProvider.ofCollection(new ArrayList<>());
   private ListDataProvider<SubmissionFile> filesDataProvider =
@@ -396,11 +396,11 @@ public class SubmissionFormPresenter implements BinderValidator {
     prepareContaminantsComponents();
     prepareGelComponents();
     prepareServicesComponents();
-    design.commentsPanel.setCaption(resources.message(COMMENTS_PANEL));
-    design.commentsPanel.addStyleName(COMMENTS_PANEL);
-    design.commentsField.addStyleName(COMMENTS_PROPERTY);
-    submissionBinder.forField(design.commentsField).withNullRepresentation("")
-        .bind(COMMENTS_PROPERTY);
+    design.commentPanel.setCaption(resources.message(COMMENT_PANEL));
+    design.commentPanel.addStyleName(COMMENT_PANEL);
+    design.commentField.addStyleName(COMMENT_PROPERTY);
+    submissionBinder.forField(design.commentField).withNullRepresentation("")
+        .bind(COMMENT_PROPERTY);
     design.filesPanel.addStyleName(FILES_PROPERTY);
     design.filesPanel.setCaption(resources.message(FILES_PROPERTY));
     view.filesUploader.addStyleName(FILES_UPLOADER);
@@ -699,9 +699,9 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setId(STANDARD_QUANTITY_PROPERTY)
         .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY));
     design.standardsGrid
-        .addColumn(standard -> standardCommentsTextField(standard), new ComponentRenderer())
-        .setId(STANDARD_COMMENTS_PROPERTY)
-        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENTS_PROPERTY));
+        .addColumn(standard -> standardCommentTextField(standard), new ComponentRenderer())
+        .setId(STANDARD_COMMENT_PROPERTY)
+        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENT_PROPERTY));
     design.fillStandardsButton.addStyleName(FILL_STANDARDS_PROPERTY);
     design.fillStandardsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS_PROPERTY));
@@ -752,9 +752,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
   }
 
-  private TextField standardCommentsTextField(Standard standard) {
-    if (standardCommentsFields.containsKey(standard)) {
-      return standardCommentsFields.get(standard);
+  private TextField standardCommentTextField(Standard standard) {
+    if (standardCommentFields.containsKey(standard)) {
+      return standardCommentFields.get(standard);
     } else {
       Binder<Standard> binder = standardBinders.get(standard);
       if (binder == null) {
@@ -764,9 +764,9 @@ public class SubmissionFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
-      binder.forField(field).withNullRepresentation("").bind(STANDARD_COMMENTS_PROPERTY);
+      binder.forField(field).withNullRepresentation("").bind(STANDARD_COMMENT_PROPERTY);
       standardBinders.put(standard, binder);
-      standardCommentsFields.put(standard, field);
+      standardCommentFields.put(standard, field);
       return field;
     }
   }
@@ -793,9 +793,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.contaminantsGrid.addColumn(contaminant -> contaminantQuantityTextField(contaminant))
         .setId(CONTAMINANT_QUANTITY_PROPERTY)
         .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY));
-    design.contaminantsGrid.addColumn(contaminant -> contaminantCommentsTextField(contaminant))
-        .setId(CONTAMINANT_COMMENTS_PROPERTY)
-        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENTS_PROPERTY));
+    design.contaminantsGrid.addColumn(contaminant -> contaminantCommentTextField(contaminant))
+        .setId(CONTAMINANT_COMMENT_PROPERTY)
+        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENT_PROPERTY));
     design.fillContaminantsButton.addStyleName(FILL_CONTAMINANTS_PROPERTY);
     design.fillContaminantsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillContaminantsButton.setCaption(resources.message(FILL_CONTAMINANTS_PROPERTY));
@@ -846,9 +846,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
   }
 
-  private TextField contaminantCommentsTextField(Contaminant contaminant) {
-    if (contaminantCommentsFields.containsKey(contaminant)) {
-      return contaminantCommentsFields.get(contaminant);
+  private TextField contaminantCommentTextField(Contaminant contaminant) {
+    if (contaminantCommentFields.containsKey(contaminant)) {
+      return contaminantCommentFields.get(contaminant);
     } else {
       Binder<Contaminant> binder = contaminantBinders.get(contaminant);
       if (binder == null) {
@@ -858,9 +858,9 @@ public class SubmissionFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
-      binder.forField(field).withNullRepresentation("").bind(CONTAMINANT_COMMENTS_PROPERTY);
+      binder.forField(field).withNullRepresentation("").bind(CONTAMINANT_COMMENT_PROPERTY);
       contaminantBinders.put(contaminant, binder);
-      contaminantCommentsFields.put(contaminant, field);
+      contaminantCommentFields.put(contaminant, field);
       return field;
     }
   }
@@ -1022,9 +1022,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
     design.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
     design.instrumentOptions.setItems(instrumentValues());
-    design.instrumentOptions
-        .setItemCaptionGenerator(instrument -> instrument != null ? instrument.getLabel(locale)
-            : MassDetectionInstrument.getNullLabel(locale));
+    design.instrumentOptions.setItemCaptionGenerator(instrument -> instrument != null
+        ? instrument.getLabel(locale) : MassDetectionInstrument.getNullLabel(locale));
     design.instrumentOptions
         .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : true);
     submissionBinder.forField(design.instrumentOptions)
@@ -1051,9 +1050,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.quantificationOptions.addStyleName(QUANTIFICATION_PROPERTY);
     design.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
     design.quantificationOptions.setItems(quantificationValues());
-    design.quantificationOptions.setItemCaptionGenerator(
-        quantification -> quantification != null ? quantification.getLabel(locale)
-            : Quantification.getNullLabel(locale));
+    design.quantificationOptions.setItemCaptionGenerator(quantification -> quantification != null
+        ? quantification.getLabel(locale) : Quantification.getNullLabel(locale));
     submissionBinder.forField(design.quantificationOptions)
         .withNullRepresentation(Quantification.NULL).bind(QUANTIFICATION_PROPERTY);
     design.quantificationLabelsField.addStyleName(QUANTIFICATION_LABELS_PROPERTY);
@@ -1321,7 +1319,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.chclSolventsField.setReadOnly(readOnly);
     design.otherSolventsField.setReadOnly(readOnly);
     design.otherSolventField.setReadOnly(readOnly);
-    design.commentsField.setReadOnly(readOnly);
+    design.commentField.setReadOnly(readOnly);
     design.filesGrid.getColumn(REMOVE_FILE).setHidden(readOnly);
   }
 
@@ -1400,11 +1398,11 @@ public class SubmissionFormPresenter implements BinderValidator {
     Standard first = standardsDataProvider.getItems().iterator().next();
     String name = first.getName();
     String quantity = first.getQuantity();
-    String comments = first.getComments();
+    String comment = first.getComment();
     standardsDataProvider.getItems().forEach(standard -> {
       standard.setName(name);
       standard.setQuantity(quantity);
-      standard.setComments(comments);
+      standard.setComment(comment);
     });
     standardsDataProvider.refreshAll();
   }
@@ -1413,11 +1411,11 @@ public class SubmissionFormPresenter implements BinderValidator {
     Contaminant first = contaminantsDataProvider.getItems().iterator().next();
     String name = first.getName();
     String quantity = first.getQuantity();
-    String comments = first.getComments();
+    String comment = first.getComment();
     contaminantsDataProvider.getItems().forEach(contaminant -> {
       contaminant.setName(name);
       contaminant.setQuantity(quantity);
-      contaminant.setComments(comments);
+      contaminant.setComment(comment);
     });
     contaminantsDataProvider.refreshAll();
   }
@@ -1733,13 +1731,13 @@ public class SubmissionFormPresenter implements BinderValidator {
     if (!design.standardsGrid.isVisible()) {
       standardNameFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
       standardQuantityFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
-      standardCommentsFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
+      standardCommentFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
     }
     clearInvisibleField(design.contaminantCountField);
     if (!design.contaminantsGrid.isVisible()) {
       contaminantNameFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
       contaminantQuantityFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
-      contaminantCommentsFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
+      contaminantCommentFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
     }
     clearInvisibleField(design.separationField);
     clearInvisibleField(design.thicknessField);
@@ -1898,7 +1896,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       Standard copy = new Standard();
       copy.setName(standard.getName());
       copy.setQuantity(standard.getQuantity());
-      copy.setComments(standard.getComments());
+      copy.setComment(standard.getComment());
       sample.getStandards().add(copy);
     }
   }
@@ -1909,7 +1907,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       Contaminant copy = new Contaminant();
       copy.setName(contaminant.getName());
       copy.setQuantity(contaminant.getQuantity());
-      copy.setComments(contaminant.getComments());
+      copy.setComment(contaminant.getComment());
       sample.getContaminants().add(copy);
     }
   }

@@ -93,7 +93,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
   private ProteinContent proteinContent = LARGE;
   private MassDetectionInstrument instrument = ORBITRAP_FUSION;
   private ProteinIdentification proteinIdentification = REFSEQ;
-  private String comments = "my comment\ntest";
+  private String comment = "my comment\ntest";
   private Path additionalFile1;
 
   @Before
@@ -126,7 +126,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setProteinContent(proteinContent);
     setInstrument(instrument);
     setProteinIdentification(proteinIdentification);
-    setComments(comments);
+    setComment(comment);
     uploadFile(additionalFile1);
   }
 
@@ -248,8 +248,8 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertTrue(optional(() -> otherSolventField()).isPresent());
     assertTrue(optional(() -> otherSolventNoteLabel()).isPresent());
     setService(LC_MS_MS);
-    assertTrue(optional(() -> commentsPanel()).isPresent());
-    assertTrue(optional(() -> commentsField()).isPresent());
+    assertTrue(optional(() -> commentPanel()).isPresent());
+    assertTrue(optional(() -> commentField()).isPresent());
     assertTrue(optional(() -> filesPanel()).isPresent());
     assertTrue(optional(() -> filesUploader()).isPresent());
     assertTrue(optional(() -> filesGrid()).isPresent());
@@ -286,7 +286,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertEquals(proteinIdentification, submission.getProteinIdentification());
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationLabels());
-    assertEquals(comments, submission.getComments());
+    assertEquals(comment, submission.getComment());
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(support, sample.getSupport());

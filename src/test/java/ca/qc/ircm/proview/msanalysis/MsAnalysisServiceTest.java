@@ -196,7 +196,7 @@ public class MsAnalysisServiceTest {
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
     acquisition.setListIndex(0);
-    acquisition.setComments("unit_test_comments");
+    acquisition.setComment("unit_test_comment");
     List<Acquisition> acquisitions = new ArrayList<>();
     acquisitions.add(acquisition);
     final MsAnalysis finalMsAnalysis = msAnalysis;
@@ -242,7 +242,7 @@ public class MsAnalysisServiceTest {
     assertEquals("unit_test_sample_list", acquisition.getSampleListName());
     assertEquals("XL_20100614_COU_09", acquisition.getAcquisitionFile());
     assertEquals((Integer) 0, acquisition.getListIndex());
-    assertEquals("unit_test_comments", acquisition.getComments());
+    assertEquals("unit_test_comment", acquisition.getComment());
     SubmissionSample sampleStatus = entityManager.find(SubmissionSample.class, sample.getId());
     assertEquals(SampleStatus.ANALYSED, sampleStatus.getStatus());
     MsAnalysisAggregate msAnalysisAggregate = msAnalysisAggregateCaptor.getValue();
@@ -256,7 +256,7 @@ public class MsAnalysisServiceTest {
     assertEquals("unit_test_sample_list", acquisition.getSampleListName());
     assertEquals("XL_20100614_COU_09", acquisition.getAcquisitionFile());
     assertEquals((Integer) 0, acquisition.getListIndex());
-    assertEquals("unit_test_comments", acquisition.getComments());
+    assertEquals("unit_test_comment", acquisition.getComment());
   }
 
   @Test
@@ -276,7 +276,7 @@ public class MsAnalysisServiceTest {
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
     acquisition.setListIndex(0);
-    acquisition.setComments("unit_test_comments");
+    acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
     Tube tube2 = new Tube(8L);
     tube2.setSample(sample2);
@@ -287,7 +287,7 @@ public class MsAnalysisServiceTest {
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
     acquisition.setListIndex(0);
-    acquisition.setComments("unit_test_comments");
+    acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
     MsAnalysisAggregate insertAggregate = new MsAnalysisAggregate() {
       @Override
@@ -330,7 +330,7 @@ public class MsAnalysisServiceTest {
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
     acquisition.setListIndex(0);
-    acquisition.setComments("unit_test_comments");
+    acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
     acquisition = new Acquisition();
     acquisition.setContainer(tube2);
@@ -339,7 +339,7 @@ public class MsAnalysisServiceTest {
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
     acquisition.setListIndex(0);
-    acquisition.setComments("unit_test_comments");
+    acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
 
     // Insert MS analysis.

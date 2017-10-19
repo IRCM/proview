@@ -212,7 +212,7 @@ public class SubmissionSampleServiceTest {
     Contaminant insert = new Contaminant();
     insert.setName("my_new_contaminant");
     insert.setQuantity("3 μg");
-    insert.setComments("some_comments");
+    insert.setComment("some_comment");
     sample.getContaminants().add(insert);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -230,7 +230,7 @@ public class SubmissionSampleServiceTest {
     Contaminant testContaminant = test.getContaminants().get(0);
     assertEquals("my_new_contaminant", testContaminant.getName());
     assertEquals("3 μg", testContaminant.getQuantity());
-    assertEquals("some_comments", testContaminant.getComments());
+    assertEquals("some_comment", testContaminant.getComment());
     // Validate activity log.
     Sample newSample = sampleCaptor.getValue();
     assertTrue(newSample instanceof SubmissionSample);
@@ -239,7 +239,7 @@ public class SubmissionSampleServiceTest {
     testContaminant = newSubmissionSample.getContaminants().get(0);
     assertEquals("my_new_contaminant", testContaminant.getName());
     assertEquals("3 μg", testContaminant.getQuantity());
-    assertEquals("some_comments", testContaminant.getComments());
+    assertEquals("some_comment", testContaminant.getComment());
   }
 
   @Test
@@ -252,7 +252,7 @@ public class SubmissionSampleServiceTest {
     Contaminant update = sample.getContaminants().get(0);
     update.setName("new_contaminant_name");
     update.setQuantity("1 pmol");
-    update.setComments("new_comments");
+    update.setComment("new_comment");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
@@ -269,7 +269,7 @@ public class SubmissionSampleServiceTest {
     Contaminant testContaminant = test.getContaminants().get(0);
     assertEquals("new_contaminant_name", testContaminant.getName());
     assertEquals("1 pmol", testContaminant.getQuantity());
-    assertEquals("new_comments", testContaminant.getComments());
+    assertEquals("new_comment", testContaminant.getComment());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
     assertTrue(newSample instanceof SubmissionSample);
@@ -278,7 +278,7 @@ public class SubmissionSampleServiceTest {
     testContaminant = newSubmissionSample.getContaminants().get(0);
     assertEquals("new_contaminant_name", testContaminant.getName());
     assertEquals("1 pmol", testContaminant.getQuantity());
-    assertEquals("new_comments", testContaminant.getComments());
+    assertEquals("new_comment", testContaminant.getComment());
   }
 
   @Test
@@ -314,7 +314,7 @@ public class SubmissionSampleServiceTest {
     Standard standard = new Standard();
     standard.setName("my_new_standard");
     standard.setQuantity("3 μg");
-    standard.setComments("some_comments");
+    standard.setComment("some_comment");
     sample.getStandards().add(standard);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -333,7 +333,7 @@ public class SubmissionSampleServiceTest {
     Standard testStandard = test.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
     assertEquals("3 μg", testStandard.getQuantity());
-    assertEquals("some_comments", testStandard.getComments());
+    assertEquals("some_comment", testStandard.getComment());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
     assertTrue(newSample instanceof SubmissionSample);
@@ -342,7 +342,7 @@ public class SubmissionSampleServiceTest {
     testStandard = newSubmissionSample.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
     assertEquals("3 μg", testStandard.getQuantity());
-    assertEquals("some_comments", testStandard.getComments());
+    assertEquals("some_comment", testStandard.getComment());
   }
 
   @Test
@@ -355,7 +355,7 @@ public class SubmissionSampleServiceTest {
     Standard standard = sample.getStandards().get(0);
     standard.setName("new_standard_name");
     standard.setQuantity("1 pmol");
-    standard.setComments("new_comments");
+    standard.setComment("new_comment");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
@@ -372,7 +372,7 @@ public class SubmissionSampleServiceTest {
     Standard testStandard = test.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
     assertEquals("1 pmol", testStandard.getQuantity());
-    assertEquals("new_comments", testStandard.getComments());
+    assertEquals("new_comment", testStandard.getComment());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
     assertTrue(newSample instanceof SubmissionSample);
@@ -381,7 +381,7 @@ public class SubmissionSampleServiceTest {
     testStandard = newSubmissionSample.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
     assertEquals("1 pmol", testStandard.getQuantity());
-    assertEquals("new_comments", testStandard.getComments());
+    assertEquals("new_comment", testStandard.getComment());
   }
 
   @Test

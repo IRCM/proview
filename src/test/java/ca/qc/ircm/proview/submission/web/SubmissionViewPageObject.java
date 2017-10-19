@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENTS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENTS_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COUNT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_PROPERTY;
@@ -550,20 +550,20 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(LabelElement.class, findElement(className(OTHER_SOLVENT_NOTE)));
   }
 
-  protected PanelElement commentsPanel() {
-    return wrap(PanelElement.class, findElement(className(COMMENTS_PANEL)));
+  protected PanelElement commentPanel() {
+    return wrap(PanelElement.class, findElement(className(COMMENT_PANEL)));
   }
 
-  protected TextAreaElement commentsField() {
-    return wrap(TextAreaElement.class, findElement(className(COMMENTS_PROPERTY)));
+  protected TextAreaElement commentField() {
+    return wrap(TextAreaElement.class, findElement(className(COMMENT_PROPERTY)));
   }
 
-  protected String getComments() {
-    return commentsField().getValue();
+  protected String getComment() {
+    return commentField().getValue();
   }
 
-  protected void setComments(String comments) {
-    commentsField().setValue(comments);
+  protected void setComment(String comment) {
+    commentField().setValue(comment);
   }
 
   protected PanelElement filesPanel() {

@@ -62,10 +62,10 @@ public abstract class TreatmentSample implements Data {
   @JoinColumn(name = "containerId", nullable = false)
   private SampleContainer container;
   /**
-   * Comments about sample's treatment.
+   * Comment about sample's treatment.
    */
-  @Column(name = "comments")
-  private String comments;
+  @Column(name = "comment")
+  private String comment;
 
   public Sample getSample() {
     return sample;
@@ -75,12 +75,12 @@ public abstract class TreatmentSample implements Data {
     this.sample = sample;
   }
 
-  public String getComments() {
-    return comments;
+  public String getComment() {
+    return comment;
   }
 
-  public void setComments(String comments) {
-    this.comments = comments;
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   @Override

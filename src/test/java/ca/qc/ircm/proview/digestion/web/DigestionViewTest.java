@@ -148,19 +148,19 @@ public class DigestionViewTest extends DigestionViewPageObject {
     DigestedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
-    assertEquals("test comment", ts.getComments());
+    assertEquals("test comment", ts.getComment());
     opTs = find(savedDigestion.getTreatmentSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 12L, ts.getContainer().getId());
-    assertEquals("test comment", ts.getComments());
+    assertEquals("test comment", ts.getComment());
     opTs = find(savedDigestion.getTreatmentSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
     assertEquals((Long) 4L, ts.getContainer().getId());
-    assertEquals("test comment", ts.getComments());
+    assertEquals("test comment", ts.getComment());
   }
 
   @Test
@@ -182,19 +182,19 @@ public class DigestionViewTest extends DigestionViewPageObject {
     DigestedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
-    assertEquals("test comment", ts.getComments());
+    assertEquals("test comment", ts.getComment());
     opTs = find(savedDigestion.getTreatmentSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 236L, ts.getContainer().getId());
-    assertEquals("test comment", ts.getComments());
+    assertEquals("test comment", ts.getComment());
     opTs = find(savedDigestion.getTreatmentSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
     assertEquals((Long) 248L, ts.getContainer().getId());
-    assertEquals("test comment", ts.getComments());
+    assertEquals("test comment", ts.getComment());
   }
 
   @Test
@@ -215,12 +215,12 @@ public class DigestionViewTest extends DigestionViewPageObject {
     DigestedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
-    assertEquals("test comment", ts.getComments());
+    assertEquals("test comment", ts.getComment());
     opTs = find(savedDigestion.getTreatmentSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 236L, ts.getContainer().getId());
-    assertEquals("test comment", ts.getComments());
+    assertEquals("test comment", ts.getComment());
   }
 }

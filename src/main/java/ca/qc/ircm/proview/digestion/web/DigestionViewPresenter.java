@@ -53,7 +53,7 @@ public class DigestionViewPresenter implements BinderValidator {
   public static final String DIGESTIONS = "digestions";
   public static final String SAMPLE = digestedSample.sample.getMetadata().getName();
   public static final String CONTAINER = digestedSample.container.getMetadata().getName();
-  public static final String COMMENT = digestedSample.comments.getMetadata().getName();
+  public static final String COMMENT = digestedSample.comment.getMetadata().getName();
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
   public static final String DOWN = "down";
@@ -73,7 +73,7 @@ public class DigestionViewPresenter implements BinderValidator {
   private ListDataProvider<DigestionProtocol> protocolsProvider;
   private List<DigestedSample> digestions = new ArrayList<>();
   private Map<DigestedSample, Binder<DigestedSample>> digestionBinders = new HashMap<>();
-  private Map<DigestedSample, TextField> commentsFields = new HashMap<>();
+  private Map<DigestedSample, TextField> commentFields = new HashMap<>();
   @Inject
   private DigestionService digestionService;
   @Inject
@@ -143,7 +143,7 @@ public class DigestionViewPresenter implements BinderValidator {
         .setCaption(resources.message(SAMPLE));
     design.digestions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
         .setCaption(resources.message(CONTAINER));
-    design.digestions.addColumn(ts -> commentsField(ts), new ComponentRenderer()).setId(COMMENT)
+    design.digestions.addColumn(ts -> commentField(ts), new ComponentRenderer()).setId(COMMENT)
         .setCaption(resources.message(COMMENT));
     design.down.addStyleName(DOWN);
     design.down.addStyleName(BUTTON_SKIP_ROW);
@@ -164,14 +164,14 @@ public class DigestionViewPresenter implements BinderValidator {
     design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
-  private TextField commentsField(DigestedSample ts) {
-    if (commentsFields.get(ts) != null) {
-      return commentsFields.get(ts);
+  private TextField commentField(DigestedSample ts) {
+    if (commentFields.get(ts) != null) {
+      return commentFields.get(ts);
     } else {
       TextField field = new TextField();
       field.addStyleName(COMMENT);
       field.setReadOnly(binder.getBean().isDeleted());
-      commentsFields.put(ts, field);
+      commentFields.put(ts, field);
       return field;
     }
   }
@@ -180,14 +180,14 @@ public class DigestionViewPresenter implements BinderValidator {
     Binder<DigestedSample> binder = new BeanValidationBinder<>(DigestedSample.class);
     binder.setBean(ts);
     digestionBinders.put(ts, binder);
-    binder.forField(commentsField(ts)).withNullRepresentation("").bind(COMMENT);
+    binder.forField(commentField(ts)).withNullRepresentation("").bind(COMMENT);
     return binder;
   }
 
   private void down() {
     if (!digestions.isEmpty()) {
-      String comments = commentsFields.get(digestions.get(0)).getValue();
-      commentsFields.values().forEach(field -> field.setValue(comments));
+      String comment = commentFields.get(digestions.get(0)).getValue();
+      commentFields.values().forEach(field -> field.setValue(comment));
     }
   }
 

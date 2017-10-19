@@ -79,8 +79,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
       TRANSFERS + "." + transferedSample.container.getMetadata().getName();
   public static final String TRANSFER_DESTINATION_CONTAINER =
       TRANSFERS + "." + transferedSample.destinationContainer.getMetadata().getName();
-  public static final String TRANSFER_COMMENTS =
-      TRANSFERS + "." + transferedSample.comments.getMetadata().getName();
+  public static final String TRANSFER_COMMENT =
+      TRANSFERS + "." + transferedSample.comment.getMetadata().getName();
   public static final String SOLUBILISATIONS_PANEL = "solubilisationsPanel";
   public static final String SOLUBILISATIONS = "solubilisations";
   public static final String SOLUBILISATION_SAMPLE =
@@ -91,8 +91,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
       SOLUBILISATIONS + "." + solubilisedSample.solventVolume.getMetadata().getName();
   public static final String SOLUBILISATION_CONTAINER =
       SOLUBILISATIONS + "." + solubilisedSample.container.getMetadata().getName();
-  public static final String SOLUBILISATION_COMMENTS =
-      SOLUBILISATIONS + "." + solubilisedSample.comments.getMetadata().getName();
+  public static final String SOLUBILISATION_COMMENT =
+      SOLUBILISATIONS + "." + solubilisedSample.comment.getMetadata().getName();
   public static final String DIGESTIONS_PANEL = "digestionsPanel";
   public static final String DIGESTIONS = "digestions";
   public static final String DIGESTION_SAMPLE =
@@ -101,8 +101,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
       DIGESTIONS + "." + digestion.protocol.getMetadata().getName();
   public static final String DIGESTION_CONTAINER =
       DIGESTIONS + "." + digestedSample.container.getMetadata().getName();
-  public static final String DIGESTION_COMMENTS =
-      DIGESTIONS + "." + digestedSample.comments.getMetadata().getName();
+  public static final String DIGESTION_COMMENT =
+      DIGESTIONS + "." + digestedSample.comment.getMetadata().getName();
   public static final String STANDARD_ADDITIONS_PANEL = "standardAdditionsPanel";
   public static final String STANDARD_ADDITIONS = "standardAdditions";
   public static final String STANDARD_ADDITION_SAMPLE =
@@ -113,8 +113,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
       STANDARD_ADDITIONS + "." + addedStandard.quantity.getMetadata().getName();
   public static final String STANDARD_ADDITION_CONTAINER =
       STANDARD_ADDITIONS + "." + addedStandard.container.getMetadata().getName();
-  public static final String STANDARD_ADDITION_COMMENTS =
-      STANDARD_ADDITIONS + "." + addedStandard.comments.getMetadata().getName();
+  public static final String STANDARD_ADDITION_COMMENT =
+      STANDARD_ADDITIONS + "." + addedStandard.comment.getMetadata().getName();
   public static final String ENRICHMENTS_PANEL = "enrichmentsPanel";
   public static final String ENRICHMENTS = "enrichments";
   public static final String ENRICHMENT_SAMPLE =
@@ -123,8 +123,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
       ENRICHMENTS + "." + enrichment.protocol.getMetadata().getName();
   public static final String ENRICHMENT_CONTAINER =
       ENRICHMENTS + "." + enrichedSample.container.getMetadata().getName();
-  public static final String ENRICHMENT_COMMENTS =
-      ENRICHMENTS + "." + enrichedSample.comments.getMetadata().getName();
+  public static final String ENRICHMENT_COMMENT =
+      ENRICHMENTS + "." + enrichedSample.comment.getMetadata().getName();
   public static final String DILUTIONS_PANEL = "dilutionsPanel";
   public static final String DILUTIONS = "dilutions";
   public static final String DILUTION_SAMPLE =
@@ -137,8 +137,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
       DILUTIONS + "." + dilutedSample.solventVolume.getMetadata().getName();
   public static final String DILUTION_CONTAINER =
       DILUTIONS + "." + dilutedSample.container.getMetadata().getName();
-  public static final String DILUTION_COMMENTS =
-      DILUTIONS + "." + dilutedSample.comments.getMetadata().getName();
+  public static final String DILUTION_COMMENT =
+      DILUTIONS + "." + dilutedSample.comment.getMetadata().getName();
   public static final String FRACTIONATIONS_PANEL = "fractionationsPanel";
   public static final String FRACTIONATIONS = "fractionations";
   public static final String FRACTIONATION_SAMPLE =
@@ -150,8 +150,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
       FRACTIONATIONS + "." + fraction.container.getMetadata().getName();
   public static final String FRACTIONATION_DESTINATION_CONTAINER =
       FRACTIONATIONS + "." + fraction.destinationContainer.getMetadata().getName();
-  public static final String FRACTIONATION_COMMENTS =
-      FRACTIONATIONS + "." + fraction.comments.getMetadata().getName();
+  public static final String FRACTIONATION_COMMENT =
+      FRACTIONATIONS + "." + fraction.comment.getMetadata().getName();
   private SubmissionTreatmentsForm view;
   private SubmissionTreatmentsFormDesign design;
   private Submission submission;
@@ -256,8 +256,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
     design.transfers.addColumn(ts -> ts.getDestinationContainer().getFullName())
         .setId(TRANSFER_DESTINATION_CONTAINER)
         .setCaption(resources.message(TRANSFER_DESTINATION_CONTAINER));
-    design.transfers.addColumn(ts -> ts.getComments()).setId(TRANSFER_COMMENTS)
-        .setCaption(resources.message(TRANSFER_COMMENTS));
+    design.transfers.addColumn(ts -> ts.getComment()).setId(TRANSFER_COMMENT)
+        .setCaption(resources.message(TRANSFER_COMMENT));
   }
 
   private void prepareSolubilisationGrid() {
@@ -271,8 +271,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
         .setCaption(resources.message(SOLUBILISATION_SOLVENT_VOLUME));
     design.solubilisations.addColumn(ts -> ts.getContainer().getFullName())
         .setId(SOLUBILISATION_CONTAINER).setCaption(resources.message(SOLUBILISATION_CONTAINER));
-    design.solubilisations.addColumn(ts -> ts.getComments()).setId(SOLUBILISATION_COMMENTS)
-        .setCaption(resources.message(SOLUBILISATION_COMMENTS));
+    design.solubilisations.addColumn(ts -> ts.getComment()).setId(SOLUBILISATION_COMMENT)
+        .setCaption(resources.message(SOLUBILISATION_COMMENT));
   }
 
   private void prepareDigestionsGrid() {
@@ -283,8 +283,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
         .setId(DIGESTION_PROTOCOL).setCaption(resources.message(DIGESTION_PROTOCOL));
     design.digestions.addColumn(ts -> ts.getContainer().getFullName()).setId(DIGESTION_CONTAINER)
         .setCaption(resources.message(DIGESTION_CONTAINER));
-    design.digestions.addColumn(ts -> ts.getComments()).setId(DIGESTION_COMMENTS)
-        .setCaption(resources.message(DIGESTION_COMMENTS));
+    design.digestions.addColumn(ts -> ts.getComment()).setId(DIGESTION_COMMENT)
+        .setCaption(resources.message(DIGESTION_COMMENT));
   }
 
   private void prepareStandardAdditionsGrid() {
@@ -298,8 +298,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
     design.standardAdditions.addColumn(ts -> ts.getContainer().getFullName())
         .setId(STANDARD_ADDITION_CONTAINER)
         .setCaption(resources.message(STANDARD_ADDITION_CONTAINER));
-    design.standardAdditions.addColumn(ts -> ts.getComments()).setId(STANDARD_ADDITION_COMMENTS)
-        .setCaption(resources.message(STANDARD_ADDITION_COMMENTS));
+    design.standardAdditions.addColumn(ts -> ts.getComment()).setId(STANDARD_ADDITION_COMMENT)
+        .setCaption(resources.message(STANDARD_ADDITION_COMMENT));
   }
 
   private void prepareEnrichmentsGrid() {
@@ -310,8 +310,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
         .setId(ENRICHMENT_PROTOCOL).setCaption(resources.message(ENRICHMENT_PROTOCOL));
     design.enrichments.addColumn(ts -> ts.getContainer().getFullName()).setId(ENRICHMENT_CONTAINER)
         .setCaption(resources.message(ENRICHMENT_CONTAINER));
-    design.enrichments.addColumn(ts -> ts.getComments()).setId(ENRICHMENT_COMMENTS)
-        .setCaption(resources.message(ENRICHMENT_COMMENTS));
+    design.enrichments.addColumn(ts -> ts.getComment()).setId(ENRICHMENT_COMMENT)
+        .setCaption(resources.message(ENRICHMENT_COMMENT));
   }
 
   private void prepareDilutionsGrid() {
@@ -326,8 +326,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
         .setCaption(resources.message(DILUTION_SOLVENT_VOLUME));
     design.dilutions.addColumn(ts -> ts.getContainer().getFullName()).setId(DILUTION_CONTAINER)
         .setCaption(resources.message(DILUTION_CONTAINER));
-    design.dilutions.addColumn(ts -> ts.getComments()).setId(DILUTION_COMMENTS)
-        .setCaption(resources.message(DILUTION_COMMENTS));
+    design.dilutions.addColumn(ts -> ts.getComment()).setId(DILUTION_COMMENT)
+        .setCaption(resources.message(DILUTION_COMMENT));
   }
 
   private void prepareFractionationsGrid() {
@@ -353,8 +353,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
     design.fractionations.addColumn(ts -> ts.getDestinationContainer().getFullName())
         .setId(FRACTIONATION_DESTINATION_CONTAINER)
         .setCaption(resources.message(FRACTIONATION_DESTINATION_CONTAINER));
-    design.fractionations.addColumn(ts -> ts.getComments()).setId(FRACTIONATION_COMMENTS)
-        .setCaption(resources.message(FRACTIONATION_COMMENTS));
+    design.fractionations.addColumn(ts -> ts.getComment()).setId(FRACTIONATION_COMMENT)
+        .setCaption(resources.message(FRACTIONATION_COMMENT));
   }
 
   private void updateSubmission() {

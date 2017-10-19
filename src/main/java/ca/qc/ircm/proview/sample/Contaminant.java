@@ -59,10 +59,10 @@ public class Contaminant implements Data, Named, Serializable {
   @Size(max = 100)
   private String quantity;
   /**
-   * Comments about contaminant.
+   * Comment about contaminant.
    */
-  @Column(name = "comments")
-  private String comments;
+  @Column(name = "comment")
+  private String comment;
   /**
    * True if contaminant was deleted.
    */
@@ -100,12 +100,12 @@ public class Contaminant implements Data, Named, Serializable {
     this.quantity = quantity;
   }
 
-  public String getComments() {
-    return comments;
+  public String getComment() {
+    return comment;
   }
 
-  public void setComments(String comments) {
-    this.comments = comments;
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   public boolean isDeleted() {

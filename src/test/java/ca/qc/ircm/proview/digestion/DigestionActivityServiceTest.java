@@ -103,7 +103,7 @@ public class DigestionActivityServiceTest {
     digestion.setProtocol(entityManager.find(DigestionProtocol.class, 3L));
     digestion.getTreatmentSamples().get(0).setContainer(new Well(248L));
     digestion.getTreatmentSamples().get(0).setSample(new Control(444L));
-    digestion.getTreatmentSamples().get(0).setComments("test");
+    digestion.getTreatmentSamples().get(0).setComment("test");
     DigestedSample newDigestedSample = new DigestedSample();
     newDigestedSample.setId(400L);
     newDigestedSample.setContainer(new Tube(14L));
@@ -150,14 +150,14 @@ public class DigestionActivityServiceTest {
     updateDigestedSampleContainerActivity.setOldValue("224");
     updateDigestedSampleContainerActivity.setNewValue("248");
     expecteds.add(updateDigestedSampleContainerActivity);
-    UpdateActivity updateDigestedSampleCommentsActivity = new UpdateActivity();
-    updateDigestedSampleCommentsActivity.setActionType(ActionType.UPDATE);
-    updateDigestedSampleCommentsActivity.setTableName("treatmentsample");
-    updateDigestedSampleCommentsActivity.setRecordId(196L);
-    updateDigestedSampleCommentsActivity.setColumn("comments");
-    updateDigestedSampleCommentsActivity.setOldValue(null);
-    updateDigestedSampleCommentsActivity.setNewValue("test");
-    expecteds.add(updateDigestedSampleCommentsActivity);
+    UpdateActivity updateDigestedSampleCommentActivity = new UpdateActivity();
+    updateDigestedSampleCommentActivity.setActionType(ActionType.UPDATE);
+    updateDigestedSampleCommentActivity.setTableName("treatmentsample");
+    updateDigestedSampleCommentActivity.setRecordId(196L);
+    updateDigestedSampleCommentActivity.setColumn("comment");
+    updateDigestedSampleCommentActivity.setOldValue(null);
+    updateDigestedSampleCommentActivity.setNewValue("test");
+    expecteds.add(updateDigestedSampleCommentActivity);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
 

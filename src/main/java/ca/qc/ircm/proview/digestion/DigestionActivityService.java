@@ -113,9 +113,9 @@ public class DigestionActivityService {
           updateBuilders.add(digestedSampleAction(ts, ActionType.UPDATE).column("containerId")
               .oldValue(oldDigestedSampleIds.get(ts.getId()).getContainer().getId())
               .newValue(ts.getContainer().getId()));
-          updateBuilders.add(digestedSampleAction(ts, ActionType.UPDATE).column("comments")
-              .oldValue(oldDigestedSampleIds.get(ts.getId()).getComments())
-              .newValue(ts.getComments()));
+          updateBuilders.add(digestedSampleAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldDigestedSampleIds.get(ts.getId()).getComment())
+              .newValue(ts.getComment()));
         });
 
     Collection<UpdateActivity> updates =

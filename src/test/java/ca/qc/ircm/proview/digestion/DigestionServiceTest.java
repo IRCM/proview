@@ -120,7 +120,7 @@ public class DigestionServiceTest {
     assertEquals((Long) 444L, digestedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
     assertEquals((Long) 4L, digestedSample.getContainer().getId());
-    assertEquals(null, digestedSample.getComments());
+    assertEquals(null, digestedSample.getComment());
   }
 
   @Test
@@ -158,7 +158,7 @@ public class DigestionServiceTest {
     Tube tube = new Tube(1L);
     final List<DigestedSample> digestedSamples = new ArrayList<>();
     DigestedSample digestedSample = new DigestedSample();
-    digestedSample.setComments("unit test");
+    digestedSample.setComment("unit test");
     digestedSample.setSample(sample);
     digestedSample.setContainer(tube);
     digestedSamples.add(digestedSample);
@@ -184,7 +184,7 @@ public class DigestionServiceTest {
     assertEquals((Long) 1L, digestion.getProtocol().getId());
     assertEquals(1, digestion.getTreatmentSamples().size());
     digestedSample = digestion.getTreatmentSamples().get(0);
-    assertEquals("unit test", digestedSample.getComments());
+    assertEquals("unit test", digestedSample.getComment());
     assertEquals((Long) 1L, digestedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
     assertEquals((Long) 1L, digestedSample.getContainer().getId());
@@ -201,7 +201,7 @@ public class DigestionServiceTest {
     Well well = new Well(128L);
     final List<DigestedSample> digestedSamples = new ArrayList<>();
     DigestedSample digestedSample = new DigestedSample();
-    digestedSample.setComments("unit test");
+    digestedSample.setComment("unit test");
     digestedSample.setSample(sample);
     digestedSample.setContainer(well);
     digestedSamples.add(digestedSample);
@@ -227,7 +227,7 @@ public class DigestionServiceTest {
     assertEquals((Long) 1L, digestion.getProtocol().getId());
     assertEquals(1, digestion.getTreatmentSamples().size());
     digestedSample = digestion.getTreatmentSamples().get(0);
-    assertEquals("unit test", digestedSample.getComments());
+    assertEquals("unit test", digestedSample.getComment());
     assertEquals((Long) 1L, digestedSample.getSample().getId());
     assertEquals(SampleContainerType.WELL, digestedSample.getContainer().getType());
     assertEquals((Long) 128L, digestedSample.getContainer().getId());
@@ -245,7 +245,7 @@ public class DigestionServiceTest {
     Tube tube = new Tube(1L);
     final List<DigestedSample> digestedSamples = new ArrayList<>();
     DigestedSample digestedSample = new DigestedSample();
-    digestedSample.setComments("unit test");
+    digestedSample.setComment("unit test");
     digestedSample.setSample(sample);
     digestedSample.setContainer(tube);
     digestedSamples.add(digestedSample);
@@ -277,7 +277,7 @@ public class DigestionServiceTest {
     assertEquals(protocol.getName(), digestion.getProtocol().getName());
     assertEquals(1, digestion.getTreatmentSamples().size());
     digestedSample = digestion.getTreatmentSamples().get(0);
-    assertEquals("unit test", digestedSample.getComments());
+    assertEquals("unit test", digestedSample.getComment());
     assertEquals((Long) 1L, digestedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
     assertEquals((Long) 1L, digestedSample.getContainer().getId());
@@ -291,7 +291,7 @@ public class DigestionServiceTest {
     entityManager.detach(digestion);
     digestion.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
     digestion.setProtocol(entityManager.find(DigestionProtocol.class, 3L));
-    digestion.getTreatmentSamples().get(0).setComments("test update");
+    digestion.getTreatmentSamples().get(0).setComment("test update");
     digestion.getTreatmentSamples().get(0).setContainer(new Well(248L));
     digestion.getTreatmentSamples().get(0).setSample(new Control(444L));
     when(digestionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
@@ -307,7 +307,7 @@ public class DigestionServiceTest {
     assertEquals((Long) 3L, digestion.getProtocol().getId());
     assertEquals((Long) 248L, digestion.getTreatmentSamples().get(0).getContainer().getId());
     assertEquals((Long) 444L, digestion.getTreatmentSamples().get(0).getSample().getId());
-    assertEquals("test update", digestion.getTreatmentSamples().get(0).getComments());
+    assertEquals("test update", digestion.getTreatmentSamples().get(0).getComment());
   }
 
   @Test

@@ -121,7 +121,7 @@ public class EnrichmentServiceTest {
     assertEquals((Long) 444L, enrichedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
     assertEquals((Long) 4L, enrichedSample.getContainer().getId());
-    assertEquals(null, enrichedSample.getComments());
+    assertEquals(null, enrichedSample.getComment());
   }
 
   @Test
@@ -162,7 +162,7 @@ public class EnrichmentServiceTest {
     entityManager.detach(sample);
     Tube tube = new Tube(1L);
     EnrichedSample enrichedSample = new EnrichedSample();
-    enrichedSample.setComments("unit test");
+    enrichedSample.setComment("unit test");
     enrichedSample.setSample(sample);
     enrichedSample.setContainer(tube);
     enrichedSamples.add(enrichedSample);
@@ -188,7 +188,7 @@ public class EnrichmentServiceTest {
     assertEquals((Long) 2L, enrichment.getProtocol().getId());
     assertEquals(1, enrichment.getTreatmentSamples().size());
     enrichedSample = enrichment.getTreatmentSamples().get(0);
-    assertEquals("unit test", enrichedSample.getComments());
+    assertEquals("unit test", enrichedSample.getComment());
     assertEquals((Long) 1L, enrichedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
     assertEquals((Long) 1L, enrichedSample.getContainer().getId());
@@ -205,7 +205,7 @@ public class EnrichmentServiceTest {
     entityManager.detach(sample);
     Well well = new Well(128L);
     EnrichedSample enrichedSample = new EnrichedSample();
-    enrichedSample.setComments("unit test");
+    enrichedSample.setComment("unit test");
     enrichedSample.setSample(sample);
     enrichedSample.setContainer(well);
     enrichedSamples.add(enrichedSample);
@@ -231,7 +231,7 @@ public class EnrichmentServiceTest {
     assertEquals((Long) 2L, enrichment.getProtocol().getId());
     assertEquals(1, enrichment.getTreatmentSamples().size());
     enrichedSample = enrichment.getTreatmentSamples().get(0);
-    assertEquals("unit test", enrichedSample.getComments());
+    assertEquals("unit test", enrichedSample.getComment());
     assertEquals((Long) 1L, enrichedSample.getSample().getId());
     assertEquals(SampleContainerType.WELL, enrichedSample.getContainer().getType());
     assertEquals((Long) 128L, enrichedSample.getContainer().getId());
@@ -248,7 +248,7 @@ public class EnrichmentServiceTest {
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
     EnrichedSample enrichedSample = new EnrichedSample();
-    enrichedSample.setComments("unit test");
+    enrichedSample.setComment("unit test");
     enrichedSample.setSample(sample);
     enrichedSample.setContainer(tube);
     enrichedSamples.add(enrichedSample);
@@ -280,7 +280,7 @@ public class EnrichmentServiceTest {
     assertEquals(protocol.getName(), enrichment.getProtocol().getName());
     assertEquals(1, enrichment.getTreatmentSamples().size());
     enrichedSample = enrichment.getTreatmentSamples().get(0);
-    assertEquals("unit test", enrichedSample.getComments());
+    assertEquals("unit test", enrichedSample.getComment());
     assertEquals((Long) 1L, enrichedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
     assertEquals((Long) 1L, enrichedSample.getContainer().getId());

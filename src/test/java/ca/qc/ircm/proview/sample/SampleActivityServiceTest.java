@@ -161,7 +161,7 @@ public class SampleActivityServiceTest {
     contaminant.setId(57894121L);
     contaminant.setName("my_new_contaminant");
     contaminant.setQuantity("3 μg");
-    contaminant.setComments("some_comments");
+    contaminant.setComment("some_comment");
     submissionSample.getContaminants().add(contaminant);
 
     Optional<Activity> optionalActivity =
@@ -193,7 +193,7 @@ public class SampleActivityServiceTest {
     Contaminant contaminant = submissionSample.getContaminants().get(0);
     contaminant.setName("new_contaminant_name");
     contaminant.setQuantity("1 pmol");
-    contaminant.setComments("new_comments");
+    contaminant.setComment("new_comment");
 
     Optional<Activity> optionalActivity =
         sampleActivityService.update(submissionSample, "unit_test");
@@ -222,14 +222,14 @@ public class SampleActivityServiceTest {
     quantityActivity.setOldValue("3 μg");
     quantityActivity.setNewValue("1 pmol");
     expectedUpdateActivities.add(quantityActivity);
-    UpdateActivity commentsActivity = new UpdateActivity();
-    commentsActivity.setActionType(ActionType.UPDATE);
-    commentsActivity.setTableName("contaminant");
-    commentsActivity.setRecordId(contaminant.getId());
-    commentsActivity.setColumn("comments");
-    commentsActivity.setOldValue("some_comments");
-    commentsActivity.setNewValue("new_comments");
-    expectedUpdateActivities.add(commentsActivity);
+    UpdateActivity commentActivity = new UpdateActivity();
+    commentActivity.setActionType(ActionType.UPDATE);
+    commentActivity.setTableName("contaminant");
+    commentActivity.setRecordId(contaminant.getId());
+    commentActivity.setColumn("comment");
+    commentActivity.setOldValue("some_comment");
+    commentActivity.setNewValue("new_comment");
+    expectedUpdateActivities.add(commentActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 
@@ -267,7 +267,7 @@ public class SampleActivityServiceTest {
     standard.setId(57894121L);
     standard.setName("my_new_standard");
     standard.setQuantity("3 μg");
-    standard.setComments("some_comments");
+    standard.setComment("some_comment");
     submissionSample.getStandards().add(standard);
 
     Optional<Activity> optionalActivity =
@@ -299,7 +299,7 @@ public class SampleActivityServiceTest {
     Standard standard = submissionSample.getStandards().get(0);
     standard.setName("new_standard_name");
     standard.setQuantity("1 pmol");
-    standard.setComments("new_comments");
+    standard.setComment("new_comment");
 
     Optional<Activity> optionalActivity =
         sampleActivityService.update(submissionSample, "unit_test");
@@ -328,14 +328,14 @@ public class SampleActivityServiceTest {
     quantityActivity.setOldValue("3 μg");
     quantityActivity.setNewValue("1 pmol");
     expectedUpdateActivities.add(quantityActivity);
-    UpdateActivity commentsActivity = new UpdateActivity();
-    commentsActivity.setActionType(ActionType.UPDATE);
-    commentsActivity.setTableName("standard");
-    commentsActivity.setRecordId(standard.getId());
-    commentsActivity.setColumn("comments");
-    commentsActivity.setOldValue("some_comments");
-    commentsActivity.setNewValue("new_comments");
-    expectedUpdateActivities.add(commentsActivity);
+    UpdateActivity commentActivity = new UpdateActivity();
+    commentActivity.setActionType(ActionType.UPDATE);
+    commentActivity.setTableName("standard");
+    commentActivity.setRecordId(standard.getId());
+    commentActivity.setColumn("comment");
+    commentActivity.setOldValue("some_comment");
+    commentActivity.setNewValue("new_comment");
+    expectedUpdateActivities.add(commentActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 
@@ -436,7 +436,7 @@ public class SampleActivityServiceTest {
     standard.setId(57894121L);
     standard.setName("my_new_standard");
     standard.setQuantity("3 μg");
-    standard.setComments("some_comments");
+    standard.setComment("some_comment");
     control.getStandards().add(standard);
 
     Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
@@ -467,7 +467,7 @@ public class SampleActivityServiceTest {
     Standard standard = control.getStandards().get(0);
     standard.setName("new_standard_name");
     standard.setQuantity("1 pmol");
-    standard.setComments("new_comments");
+    standard.setComment("new_comment");
 
     Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
 
@@ -495,14 +495,14 @@ public class SampleActivityServiceTest {
     quantityActivity.setOldValue("3 μg");
     quantityActivity.setNewValue("1 pmol");
     expectedUpdateActivities.add(quantityActivity);
-    UpdateActivity commentsActivity = new UpdateActivity();
-    commentsActivity.setActionType(ActionType.UPDATE);
-    commentsActivity.setTableName("standard");
-    commentsActivity.setRecordId(standard.getId());
-    commentsActivity.setColumn("comments");
-    commentsActivity.setOldValue("some_comments");
-    commentsActivity.setNewValue("new_comments");
-    expectedUpdateActivities.add(commentsActivity);
+    UpdateActivity commentActivity = new UpdateActivity();
+    commentActivity.setActionType(ActionType.UPDATE);
+    commentActivity.setTableName("standard");
+    commentActivity.setRecordId(standard.getId());
+    commentActivity.setColumn("comment");
+    commentActivity.setOldValue("some_comment");
+    commentActivity.setNewValue("new_comment");
+    expectedUpdateActivities.add(commentActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

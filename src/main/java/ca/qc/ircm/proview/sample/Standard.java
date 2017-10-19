@@ -59,10 +59,10 @@ public class Standard implements Data, Serializable, Named {
   @Size(max = 100)
   private String quantity;
   /**
-   * Comments about standard.
+   * Comment about standard.
    */
-  @Column(name = "comments")
-  private String comments;
+  @Column(name = "comment")
+  private String comment;
   /**
    * True if standard was deleted.
    */
@@ -100,12 +100,12 @@ public class Standard implements Data, Serializable, Named {
     this.quantity = quantity;
   }
 
-  public String getComments() {
-    return comments;
+  public String getComment() {
+    return comment;
   }
 
-  public void setComments(String comments) {
-    this.comments = comments;
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   public boolean isDeleted() {

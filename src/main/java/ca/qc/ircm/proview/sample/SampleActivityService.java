@@ -171,8 +171,8 @@ public class SampleActivityService {
               .add(new StandardUpdateActivityBuilder().newStandard(newStandard).column("quantity")
                   .oldValue(oldStandard.getQuantity()).newValue(newStandard.getQuantity()));
           updateBuilders
-              .add(new StandardUpdateActivityBuilder().newStandard(newStandard).column("comments")
-                  .oldValue(oldStandard.getComments()).newValue(newStandard.getComments()));
+              .add(new StandardUpdateActivityBuilder().newStandard(newStandard).column("comment")
+                  .oldValue(oldStandard.getComment()).newValue(newStandard.getComment()));
         }
       }
     }
@@ -199,12 +199,10 @@ public class SampleActivityService {
           .oldValue(oldSubmission.getMolecularWeight())
           .newValue(newSubmission.getMolecularWeight()));
       // Contaminants.
-      List<Contaminant> oldContaminants =
-          oldSubmission.getContaminants() != null ? oldSubmission.getContaminants()
-              : new ArrayList<>();
-      List<Contaminant> newContaminants =
-          newSubmission.getContaminants() != null ? newSubmission.getContaminants()
-              : new ArrayList<>();
+      List<Contaminant> oldContaminants = oldSubmission.getContaminants() != null
+          ? oldSubmission.getContaminants() : new ArrayList<>();
+      List<Contaminant> newContaminants = newSubmission.getContaminants() != null
+          ? newSubmission.getContaminants() : new ArrayList<>();
       for (Contaminant oldContaminant : oldContaminants) {
         boolean deleted = true;
         for (Contaminant newContaminant : newContaminants) {
@@ -227,8 +225,8 @@ public class SampleActivityService {
                 .column("quantity").oldValue(oldContaminant.getQuantity())
                 .newValue(newContaminant.getQuantity()));
             updateBuilders.add(new ContaminantUpdateActivityBuilder().newContaminant(newContaminant)
-                .column("comments").oldValue(oldContaminant.getComments())
-                .newValue(newContaminant.getComments()));
+                .column("comment").oldValue(oldContaminant.getComment())
+                .newValue(newContaminant.getComment()));
           }
         }
       }

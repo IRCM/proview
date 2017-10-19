@@ -132,12 +132,12 @@ public class ControlServiceTest {
     Standard standard1 = new Standard();
     standard1.setName("std1");
     standard1.setQuantity("1 ug");
-    standard1.setComments("com1");
+    standard1.setComment("com1");
     control.getStandards().add(standard1);
     Standard standard2 = new Standard();
     standard2.setName("std2");
     standard2.setQuantity("2 ug");
-    standard2.setComments("com2");
+    standard2.setComment("com2");
     control.getStandards().add(standard2);
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
         .thenReturn("nc_test_000001");
@@ -161,12 +161,12 @@ public class ControlServiceTest {
     assertNotNull(standard.getId());
     assertEquals("std1", standard.getName());
     assertEquals("1 ug", standard.getQuantity());
-    assertEquals("com1", standard.getComments());
+    assertEquals("com1", standard.getComment());
     standard = testControl.getStandards().get(1);
     assertNotNull(standard.getId());
     assertEquals("std2", standard.getName());
     assertEquals("2 ug", standard.getQuantity());
-    assertEquals("com2", standard.getComments());
+    assertEquals("com2", standard.getComment());
     // Validate log.
     testControl = controlCaptor.getValue();
     assertEquals("nc_test_000001", testControl.getName());
@@ -178,12 +178,12 @@ public class ControlServiceTest {
     assertNotNull(standard.getId());
     assertEquals("std1", standard.getName());
     assertEquals("1 ug", standard.getQuantity());
-    assertEquals("com1", standard.getComments());
+    assertEquals("com1", standard.getComment());
     standard = testControl.getStandards().get(1);
     assertNotNull(standard.getId());
     assertEquals("std2", standard.getName());
     assertEquals("2 ug", standard.getQuantity());
-    assertEquals("com2", standard.getComments());
+    assertEquals("com2", standard.getComment());
   }
 
   @Test
@@ -231,7 +231,7 @@ public class ControlServiceTest {
     Standard standard = new Standard();
     standard.setName("my_new_standard");
     standard.setQuantity("3 μg");
-    standard.setComments("some_comments");
+    standard.setComment("some_comment");
     control.getStandards().add(standard);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -249,7 +249,7 @@ public class ControlServiceTest {
     Standard testStandard = test.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
     assertEquals("3 μg", testStandard.getQuantity());
-    assertEquals("some_comments", testStandard.getComments());
+    assertEquals("some_comment", testStandard.getComment());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
     assertTrue(newSample instanceof Control);
@@ -258,7 +258,7 @@ public class ControlServiceTest {
     testStandard = newControl.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
     assertEquals("3 μg", testStandard.getQuantity());
-    assertEquals("some_comments", testStandard.getComments());
+    assertEquals("some_comment", testStandard.getComment());
   }
 
   @Test
@@ -272,7 +272,7 @@ public class ControlServiceTest {
     Standard standard = control.getStandards().get(0);
     standard.setName("new_standard_name");
     standard.setQuantity("1 pmol");
-    standard.setComments("new_comments");
+    standard.setComment("new_comment");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
@@ -289,7 +289,7 @@ public class ControlServiceTest {
     Standard testStandard = test.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
     assertEquals("1 pmol", testStandard.getQuantity());
-    assertEquals("new_comments", testStandard.getComments());
+    assertEquals("new_comment", testStandard.getComment());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
     assertTrue(newSample instanceof Control);
@@ -298,7 +298,7 @@ public class ControlServiceTest {
     testStandard = newControl.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
     assertEquals("1 pmol", testStandard.getQuantity());
-    assertEquals("new_comments", testStandard.getComments());
+    assertEquals("new_comment", testStandard.getComment());
   }
 
   @Test

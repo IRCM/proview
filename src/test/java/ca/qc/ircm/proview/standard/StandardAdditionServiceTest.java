@@ -115,7 +115,7 @@ public class StandardAdditionServiceTest {
     assertEquals((Long) 444L, addedStandard.getSample().getId());
     assertEquals(SampleContainerType.TUBE, addedStandard.getContainer().getType());
     assertEquals((Long) 4L, addedStandard.getContainer().getId());
-    assertEquals(null, addedStandard.getComments());
+    assertEquals(null, addedStandard.getComment());
     assertEquals("unit_test_added_standard", addedStandard.getName());
     assertEquals("20.0 μg", addedStandard.getQuantity());
   }
@@ -155,7 +155,7 @@ public class StandardAdditionServiceTest {
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
     AddedStandard addedStandard = new AddedStandard();
-    addedStandard.setComments("unit test");
+    addedStandard.setComment("unit test");
     addedStandard.setSample(sample);
     addedStandard.setContainer(tube);
     addedStandard.setName("unit_test_added_standard");
@@ -183,7 +183,7 @@ public class StandardAdditionServiceTest {
     assertTrue(after.isAfter(standardAddition.getInsertTime()));
     assertEquals(1, standardAddition.getTreatmentSamples().size());
     addedStandard = standardAddition.getTreatmentSamples().get(0);
-    assertEquals("unit test", addedStandard.getComments());
+    assertEquals("unit test", addedStandard.getComment());
     assertEquals((Long) 1L, addedStandard.getSample().getId());
     assertEquals(SampleContainerType.TUBE, addedStandard.getContainer().getType());
     assertEquals((Long) 1L, addedStandard.getContainer().getId());
@@ -197,7 +197,7 @@ public class StandardAdditionServiceTest {
     SubmissionSample sample = new SubmissionSample(1L);
     Well well = new Well(128L);
     AddedStandard addedStandard = new AddedStandard();
-    addedStandard.setComments("unit test");
+    addedStandard.setComment("unit test");
     addedStandard.setSample(sample);
     addedStandard.setContainer(well);
     addedStandard.setName("unit_test_added_standard");
@@ -225,7 +225,7 @@ public class StandardAdditionServiceTest {
     assertTrue(after.isAfter(standardAddition.getInsertTime()));
     assertEquals(1, standardAddition.getTreatmentSamples().size());
     addedStandard = standardAddition.getTreatmentSamples().get(0);
-    assertEquals("unit test", addedStandard.getComments());
+    assertEquals("unit test", addedStandard.getComment());
     assertEquals((Long) 1L, addedStandard.getSample().getId());
     assertEquals(SampleContainerType.WELL, addedStandard.getContainer().getType());
     assertEquals((Long) 128L, addedStandard.getContainer().getId());

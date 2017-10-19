@@ -237,8 +237,8 @@ public class SubmissionActivityService {
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantificationLabels")
         .oldValue(oldSubmission.getQuantificationLabels())
         .newValue(newSubmission.getQuantificationLabels()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("comments")
-        .oldValue(oldSubmission.getComments()).newValue(newSubmission.getComments()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("comment")
+        .oldValue(oldSubmission.getComment()).newValue(newSubmission.getComment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("additionalPrice")
         .oldValue(oldSubmission.getAdditionalPrice()).newValue(newSubmission.getAdditionalPrice()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("userId")

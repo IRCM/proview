@@ -118,7 +118,7 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, fraction.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, fraction.getDestinationContainer().getType());
     assertEquals((Long) 6L, fraction.getDestinationContainer().getId());
-    assertEquals(null, fraction.getComments());
+    assertEquals(null, fraction.getComment());
     assertEquals((Integer) 1, fraction.getPosition());
     assertEquals((Integer) 1, fraction.getNumber());
     assertEquals(null, fraction.getPiInterval());
