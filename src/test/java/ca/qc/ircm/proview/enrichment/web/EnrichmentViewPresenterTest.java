@@ -1,6 +1,8 @@
 package ca.qc.ircm.proview.enrichment.web;
 
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.CONTAINER;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.DOWN;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS_PANEL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.HEADER;
@@ -13,8 +15,11 @@ import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAVE;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAVED;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.TITLE;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
@@ -40,6 +45,9 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +63,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -88,6 +97,7 @@ public class EnrichmentViewPresenterTest {
   private List<Sample> samples = new ArrayList<>();
   private List<SampleContainer> containers = new ArrayList<>();
   private List<EnrichmentProtocol> protocols;
+  private List<String> comments = new ArrayList<>();
 
   /**
    * Before test.
@@ -112,8 +122,20 @@ public class EnrichmentViewPresenterTest {
       return Arrays.asList(tube1, tube2).stream();
     }).collect(Collectors.toList());
     protocols = realEnrichmentProtocolService.all();
+    comments = IntStream.range(0, containers.size()).mapToObj(i -> "comment" + i)
+        .collect(Collectors.toList());
     when(enrichmentProtocolService.all()).thenReturn(new ArrayList<>(protocols));
     when(view.savedContainers()).thenReturn(new ArrayList<>(containers));
+  }
+
+  private void setFields() {
+    final ListDataProvider<EnrichedSample> treatments = dataProvider(design.enrichments);
+    int count = 0;
+    for (EnrichedSample ts : treatments.getItems()) {
+      TextField field =
+          (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      field.setValue(comments.get(count++));
+    }
   }
 
   @Test
@@ -126,6 +148,9 @@ public class EnrichmentViewPresenterTest {
     assertTrue(design.protocol.getStyleName().contains(PROTOCOL));
     assertTrue(design.enrichmentsPanel.getStyleName().contains(ENRICHMENTS_PANEL));
     assertTrue(design.enrichments.getStyleName().contains(ENRICHMENTS));
+    assertTrue(design.enrichments.getStyleName().contains(COMPONENTS));
+    assertTrue(design.down.getStyleName().contains(DOWN));
+    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }
@@ -138,6 +163,8 @@ public class EnrichmentViewPresenterTest {
     assertEquals(resources.message(HEADER), design.header.getValue());
     assertEquals(resources.message(PROTOCOL_PANEL), design.protocolPanel.getCaption());
     assertEquals(resources.message(ENRICHMENTS_PANEL), design.enrichmentsPanel.getCaption());
+    assertEquals(resources.message(DOWN), design.down.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(SAVE), design.save.getCaption());
   }
 
@@ -168,7 +195,7 @@ public class EnrichmentViewPresenterTest {
     presenter.enter("");
 
     final ListDataProvider<EnrichedSample> treatments = dataProvider(design.enrichments);
-    assertEquals(2, design.enrichments.getColumns().size());
+    assertEquals(3, design.enrichments.getColumns().size());
     assertEquals(SAMPLE, design.enrichments.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.enrichments.getColumn(SAMPLE).getCaption());
     for (EnrichedSample ts : treatments.getItems()) {
@@ -182,12 +209,40 @@ public class EnrichmentViewPresenterTest {
       assertEquals(ts.getContainer().getFullName(),
           design.enrichments.getColumn(CONTAINER).getValueProvider().apply(ts));
     }
+    assertEquals(COMMENT, design.enrichments.getColumns().get(2).getId());
+    assertEquals(resources.message(COMMENT), design.enrichments.getColumn(COMMENT).getCaption());
+    assertTrue(containsInstanceOf(design.enrichments.getColumn(COMMENT).getExtensions(),
+        ComponentRenderer.class));
+    for (EnrichedSample ts : treatments.getItems()) {
+      TextField field =
+          (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertTrue(field.getStyleName().contains(COMMENT));
+    }
     assertEquals(containers.size(), treatments.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(treatments.getItems().stream().filter(ts -> ts.getContainer().equals(container))
           .findAny().isPresent());
       assertTrue(treatments.getItems().stream()
           .filter(ts -> ts.getSample().equals(container.getSample())).findAny().isPresent());
+    }
+  }
+
+  @Test
+  public void down() {
+    presenter.init(view);
+    presenter.enter("");
+    final ListDataProvider<EnrichedSample> treatments = dataProvider(design.enrichments);
+    EnrichedSample firstTs = treatments.getItems().iterator().next();
+    String comment = "test";
+    TextField field =
+        (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(firstTs);
+    field.setValue(comment);
+
+    design.down.click();
+
+    for (EnrichedSample ts : treatments.getItems()) {
+      field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
     }
   }
 
@@ -221,6 +276,7 @@ public class EnrichmentViewPresenterTest {
   public void save() {
     presenter.init(view);
     presenter.enter("");
+    setFields();
     doAnswer(i -> {
       Enrichment enrichment = i.getArgumentAt(0, Enrichment.class);
       assertNull(enrichment.getId());
@@ -240,6 +296,7 @@ public class EnrichmentViewPresenterTest {
       EnrichedSample enriched = enrichment.getTreatmentSamples().get(i);
       assertEquals(container.getSample(), enriched.getSample());
       assertEquals(container, enriched.getContainer());
+      assertEquals(comments.get(i), enriched.getComment());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
     verify(view).navigateTo(EnrichmentView.VIEW_NAME, "4");

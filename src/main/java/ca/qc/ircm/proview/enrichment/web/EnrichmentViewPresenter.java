@@ -2,6 +2,8 @@ package ca.qc.ircm.proview.enrichment.web;
 
 import static ca.qc.ircm.proview.enrichment.QEnrichedSample.enrichedSample;
 import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
+import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -18,6 +20,9 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +31,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -45,6 +52,8 @@ public class EnrichmentViewPresenter implements BinderValidator {
   public static final String ENRICHMENTS = "enrichments";
   public static final String SAMPLE = enrichedSample.sample.getMetadata().getName();
   public static final String CONTAINER = enrichedSample.container.getMetadata().getName();
+  public static final String COMMENT = enrichedSample.comment.getMetadata().getName();
+  public static final String DOWN = "down";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
   public static final String NO_CONTAINERS = "containers.empty";
@@ -58,6 +67,8 @@ public class EnrichmentViewPresenter implements BinderValidator {
   private Binder<Enrichment> binder = new BeanValidationBinder<>(Enrichment.class);
   private ListDataProvider<EnrichmentProtocol> protocolsProvider;
   private List<EnrichedSample> enrichments = new ArrayList<>();
+  private Map<EnrichedSample, Binder<EnrichedSample>> enrichmentBinders = new HashMap<>();
+  private Map<EnrichedSample, TextField> commentFields = new HashMap<>();
   @Inject
   private EnrichmentService enrichmentService;
   @Inject
@@ -119,18 +130,54 @@ public class EnrichmentViewPresenter implements BinderValidator {
     design.enrichmentsPanel.addStyleName(ENRICHMENTS_PANEL);
     design.enrichmentsPanel.setCaption(resources.message(ENRICHMENTS_PANEL));
     design.enrichments.addStyleName(ENRICHMENTS);
+    design.enrichments.addStyleName(COMPONENTS);
     design.enrichments.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.enrichments.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
         .setCaption(resources.message(CONTAINER));
+    design.enrichments.addColumn(ts -> commentField(ts), new ComponentRenderer()).setId(COMMENT)
+        .setCaption(resources.message(COMMENT));
+    design.down.addStyleName(DOWN);
+    design.down.addStyleName(BUTTON_SKIP_ROW);
+    design.down.setCaption(resources.message(DOWN));
+    design.down.setIcon(VaadinIcons.ARROW_DOWN);
+    design.down.addClickListener(e -> down());
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));
     design.save.addClickListener(e -> save());
   }
 
+  private TextField commentField(EnrichedSample ts) {
+    if (commentFields.get(ts) != null) {
+      return commentFields.get(ts);
+    } else {
+      TextField field = new TextField();
+      field.addStyleName(COMMENT);
+      field.setReadOnly(binder.getBean().isDeleted());
+      commentFields.put(ts, field);
+      return field;
+    }
+  }
+
+  private Binder<EnrichedSample> binder(EnrichedSample ts) {
+    Binder<EnrichedSample> binder = new BeanValidationBinder<>(EnrichedSample.class);
+    binder.setBean(ts);
+    enrichmentBinders.put(ts, binder);
+    binder.forField(commentField(ts)).withNullRepresentation("").bind(COMMENT);
+    return binder;
+  }
+
   private void updateReadOnly() {
     design.protocol.setReadOnly(readOnly);
+    commentFields.values().forEach(field -> field.setReadOnly(readOnly));
     design.save.setVisible(!readOnly);
+  }
+
+  private void down() {
+    if (!enrichments.isEmpty()) {
+      String comment = commentFields.get(enrichments.get(0)).getValue();
+      commentFields.values().forEach(field -> field.setValue(comment));
+    }
   }
 
   private boolean validate() {
@@ -234,6 +281,9 @@ public class EnrichmentViewPresenter implements BinderValidator {
     }
 
     design.enrichments.setItems(enrichments);
+    enrichments.stream().forEach(ts -> {
+      binder(ts);
+    });
     updateReadOnly();
   }
 }

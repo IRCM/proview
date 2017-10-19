@@ -1,5 +1,7 @@
 package ca.qc.ircm.proview.enrichment.web;
 
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.COMMENT;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.DOWN;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS_PANEL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.HEADER;
@@ -14,8 +16,11 @@ import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
+import com.vaadin.testbench.elements.TextFieldElement;
 
 public class EnrichmentViewPageObject extends AbstractTestBenchTestCase {
+  private static final int COMMENT_COLUMN = 2;
+
   protected void open() {
     openView(EnrichmentView.VIEW_NAME);
   }
@@ -46,6 +51,20 @@ public class EnrichmentViewPageObject extends AbstractTestBenchTestCase {
 
   protected GridElement enrichments() {
     return wrap(GridElement.class, findElement(className(ENRICHMENTS)));
+  }
+
+  protected void setComment(int row, String comment) {
+    TextFieldElement field = wrap(TextFieldElement.class,
+        enrichments().getRow(row).getCell(COMMENT_COLUMN).findElement(className(COMMENT)));
+    field.setValue(comment);
+  }
+
+  protected ButtonElement down() {
+    return wrap(ButtonElement.class, findElement(className(DOWN)));
+  }
+
+  protected void clickDown() {
+    down().click();
   }
 
   protected ButtonElement save() {

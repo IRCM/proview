@@ -93,6 +93,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> enrichmentsPanel()).isPresent());
     assertTrue(optional(() -> enrichments()).isPresent());
+    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
   }
 
@@ -110,6 +111,8 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
   @Test
   public void save_Tubes() throws Throwable {
     openWithTubes();
+    setComment(0, "test comment");
+    clickDown();
 
     clickSave();
 
@@ -125,21 +128,26 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     EnrichedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComment());
     opTs = find(savedEnrichment.getTreatmentSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 12L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComment());
     opTs = find(savedEnrichment.getTreatmentSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
     assertEquals((Long) 4L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComment());
   }
 
   @Test
   public void save_Wells() throws Throwable {
     openWithWells();
+    setComment(0, "test comment");
+    clickDown();
 
     clickSave();
 
@@ -155,15 +163,18 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     EnrichedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComment());
     opTs = find(savedEnrichment.getTreatmentSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 236L, ts.getContainer().getId());
     opTs = find(savedEnrichment.getTreatmentSamples(), 444);
+    assertEquals("test comment", ts.getComment());
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
     assertEquals((Long) 248L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComment());
   }
 }

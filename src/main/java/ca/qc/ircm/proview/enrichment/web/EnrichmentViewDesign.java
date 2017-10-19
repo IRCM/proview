@@ -27,6 +27,7 @@ public class EnrichmentViewDesign extends VerticalLayout {
   protected ComboBox<ca.qc.ircm.proview.enrichment.EnrichmentProtocol> protocol;
   protected Panel enrichmentsPanel;
   protected Grid<ca.qc.ircm.proview.enrichment.EnrichedSample> enrichments;
+  protected Button down;
   protected Button save;
 
   public EnrichmentViewDesign() {
