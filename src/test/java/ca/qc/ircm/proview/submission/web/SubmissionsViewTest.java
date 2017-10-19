@@ -27,6 +27,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
+import ca.qc.ircm.proview.digestion.web.DigestionView;
+import ca.qc.ircm.proview.dilution.web.DilutionView;
+import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.sample.web.ContainerSelectionFormPresenter;
 import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter;
@@ -102,6 +105,10 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertFalse(optional(() -> selectContainersButton()).isPresent());
     assertFalse(optional(() -> selectedContainersLabel()).isPresent());
     assertFalse(optional(() -> updateStatusButton()).isPresent());
+    assertFalse(optional(() -> transferButton()).isPresent());
+    assertFalse(optional(() -> digestionButton()).isPresent());
+    assertFalse(optional(() -> enrichmentButton()).isPresent());
+    assertFalse(optional(() -> dilutionButton()).isPresent());
   }
 
   @Test
@@ -116,6 +123,10 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> selectContainersButton()).isPresent());
     assertTrue(optional(() -> selectedContainersLabel()).isPresent());
     assertTrue(optional(() -> updateStatusButton()).isPresent());
+    assertTrue(optional(() -> transferButton()).isPresent());
+    assertTrue(optional(() -> digestionButton()).isPresent());
+    assertTrue(optional(() -> enrichmentButton()).isPresent());
+    assertTrue(optional(() -> dilutionButton()).isPresent());
   }
 
   @Test
@@ -249,5 +260,53 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     clickTransferButton();
 
     assertEquals(viewUrl(TransferView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void digestion() throws Throwable {
+    admin = true;
+    open();
+    selectSubmissions(3);
+    clickSelectContainersButton();
+    WindowElement containerSelectionWindow =
+        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
+    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
+
+    clickDigestionButton();
+
+    assertEquals(viewUrl(DigestionView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void enrichment() throws Throwable {
+    admin = true;
+    open();
+    selectSubmissions(3);
+    clickSelectContainersButton();
+    WindowElement containerSelectionWindow =
+        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
+    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
+
+    clickEnrichmentButton();
+
+    assertEquals(viewUrl(EnrichmentView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void dilution() throws Throwable {
+    admin = true;
+    open();
+    selectSubmissions(3);
+    clickSelectContainersButton();
+    WindowElement containerSelectionWindow =
+        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
+    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
+
+    clickDilutionButton();
+
+    assertEquals(viewUrl(DilutionView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

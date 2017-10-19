@@ -24,6 +24,9 @@ import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import com.google.common.collect.Range;
 
+import ca.qc.ircm.proview.digestion.web.DigestionView;
+import ca.qc.ircm.proview.dilution.web.DilutionView;
+import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -102,7 +105,10 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_CONTAINERS_LABEL = "selectContainersLabel";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final String TRANSFER = "transfer";
-  public static final String TRANSFER_NO_CONTAINERS = "transfer.noContainers";
+  public static final String DIGESTION = "digestion";
+  public static final String ENRICHMENT = "enrichment";
+  public static final String DILUTION = "dilution";
+  public static final String NO_CONTAINERS = "noContainers";
   public static final String CONDITION_FALSE = "condition-false";
   public static final String COLUMN_ORDER = "columnOrder";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
@@ -199,6 +205,18 @@ public class SubmissionsViewPresenter {
     design.transfer.setCaption(resources.message(TRANSFER));
     design.transfer.setVisible(authorizationService.hasAdminRole());
     design.transfer.addClickListener(e -> transfer());
+    design.digestion.addStyleName(DIGESTION);
+    design.digestion.setCaption(resources.message(DIGESTION));
+    design.digestion.setVisible(authorizationService.hasAdminRole());
+    design.digestion.addClickListener(e -> digestion());
+    design.enrichment.addStyleName(ENRICHMENT);
+    design.enrichment.setCaption(resources.message(ENRICHMENT));
+    design.enrichment.setVisible(authorizationService.hasAdminRole());
+    design.enrichment.addClickListener(e -> enrichment());
+    design.dilution.addStyleName(DILUTION);
+    design.dilution.setCaption(resources.message(DILUTION));
+    design.dilution.setVisible(authorizationService.hasAdminRole());
+    design.dilution.addClickListener(e -> dilution());
   }
 
   private void prepareSumissionsGrid() {
@@ -507,7 +525,34 @@ public class SubmissionsViewPresenter {
       view.navigateTo(TransferView.VIEW_NAME);
     } else {
       MessageResource resources = view.getResources();
-      view.showError(resources.message(TRANSFER_NO_CONTAINERS));
+      view.showError(resources.message(NO_CONTAINERS));
+    }
+  }
+
+  private void digestion() {
+    if (!view.savedContainers().isEmpty()) {
+      view.navigateTo(DigestionView.VIEW_NAME);
+    } else {
+      MessageResource resources = view.getResources();
+      view.showError(resources.message(NO_CONTAINERS));
+    }
+  }
+
+  private void enrichment() {
+    if (!view.savedContainers().isEmpty()) {
+      view.navigateTo(EnrichmentView.VIEW_NAME);
+    } else {
+      MessageResource resources = view.getResources();
+      view.showError(resources.message(NO_CONTAINERS));
+    }
+  }
+
+  private void dilution() {
+    if (!view.savedContainers().isEmpty()) {
+      view.navigateTo(DilutionView.VIEW_NAME);
+    } else {
+      MessageResource resources = view.getResources();
+      view.showError(resources.message(NO_CONTAINERS));
     }
   }
 

@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
@@ -153,5 +156,29 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickTransferButton() {
     transferButton().click();
+  }
+
+  protected ButtonElement digestionButton() {
+    return wrap(ButtonElement.class, findElement(className(DIGESTION)));
+  }
+
+  protected void clickDigestionButton() {
+    digestionButton().click();
+  }
+
+  protected ButtonElement enrichmentButton() {
+    return wrap(ButtonElement.class, findElement(className(ENRICHMENT)));
+  }
+
+  protected void clickEnrichmentButton() {
+    enrichmentButton().click();
+  }
+
+  protected ButtonElement dilutionButton() {
+    return wrap(ButtonElement.class, findElement(className(DILUTION)));
+  }
+
+  protected void clickDilutionButton() {
+    dilutionButton().click();
   }
 }

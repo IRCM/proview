@@ -21,11 +21,15 @@ import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE_GOAL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES;
@@ -38,7 +42,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TITLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TRANSFER;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TRANSFER_NO_CONTAINERS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.USER;
@@ -58,6 +61,9 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
+import ca.qc.ircm.proview.digestion.web.DigestionView;
+import ca.qc.ircm.proview.dilution.web.DilutionView;
+import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -633,6 +639,9 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.selectedContainersLabel.getStyleName().contains(SELECT_CONTAINERS_LABEL));
     assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
     assertTrue(design.transfer.getStyleName().contains(TRANSFER));
+    assertTrue(design.digestion.getStyleName().contains(DIGESTION));
+    assertTrue(design.enrichment.getStyleName().contains(ENRICHMENT));
+    assertTrue(design.dilution.getStyleName().contains(DILUTION));
   }
 
   @Test
@@ -655,6 +664,9 @@ public class SubmissionsViewPresenterTest {
         design.selectedContainersLabel.getValue());
     assertEquals(resources.message(UPDATE_STATUS), design.updateStatusButton.getCaption());
     assertEquals(resources.message(TRANSFER), design.transfer.getCaption());
+    assertEquals(resources.message(DIGESTION), design.digestion.getCaption());
+    assertEquals(resources.message(ENRICHMENT), design.enrichment.getCaption());
+    assertEquals(resources.message(DILUTION), design.dilution.getCaption());
   }
 
   @Test
@@ -666,6 +678,9 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.containerSelectionLayout.isVisible());
     assertFalse(design.updateStatusButton.isVisible());
     assertFalse(design.transfer.isVisible());
+    assertFalse(design.digestion.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.dilution.isVisible());
   }
 
   @Test
@@ -678,6 +693,9 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.containerSelectionLayout.isVisible());
     assertTrue(design.updateStatusButton.isVisible());
     assertTrue(design.transfer.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertTrue(design.enrichment.isVisible());
+    assertTrue(design.dilution.isVisible());
   }
 
   @Test
@@ -968,7 +986,82 @@ public class SubmissionsViewPresenterTest {
 
     design.transfer.click();
 
-    verify(view).showError(resources.message(TRANSFER_NO_CONTAINERS));
+    verify(view).showError(resources.message(NO_CONTAINERS));
     verify(view, never()).navigateTo(TransferView.VIEW_NAME);
+  }
+
+  @Test
+  public void digestion() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    List<SampleContainer> containers = Arrays.asList(new Tube(), new Tube());
+    when(view.savedContainers()).thenReturn(containers);
+
+    design.digestion.click();
+
+    verify(view, never()).saveSamples(any());
+    verify(view, never()).saveContainers(any());
+    verify(view).navigateTo(DigestionView.VIEW_NAME);
+  }
+
+  @Test
+  public void digestion_NoContainers() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+
+    design.digestion.click();
+
+    verify(view).showError(resources.message(NO_CONTAINERS));
+    verify(view, never()).navigateTo(DigestionView.VIEW_NAME);
+  }
+
+  @Test
+  public void enrichment() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    List<SampleContainer> containers = Arrays.asList(new Tube(), new Tube());
+    when(view.savedContainers()).thenReturn(containers);
+
+    design.enrichment.click();
+
+    verify(view, never()).saveSamples(any());
+    verify(view, never()).saveContainers(any());
+    verify(view).navigateTo(EnrichmentView.VIEW_NAME);
+  }
+
+  @Test
+  public void enrichment_NoContainers() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+
+    design.enrichment.click();
+
+    verify(view).showError(resources.message(NO_CONTAINERS));
+    verify(view, never()).navigateTo(EnrichmentView.VIEW_NAME);
+  }
+
+  @Test
+  public void dilution() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    List<SampleContainer> containers = Arrays.asList(new Tube(), new Tube());
+    when(view.savedContainers()).thenReturn(containers);
+
+    design.dilution.click();
+
+    verify(view, never()).saveSamples(any());
+    verify(view, never()).saveContainers(any());
+    verify(view).navigateTo(DilutionView.VIEW_NAME);
+  }
+
+  @Test
+  public void dilution_NoContainers() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+
+    design.dilution.click();
+
+    verify(view).showError(resources.message(NO_CONTAINERS));
+    verify(view, never()).navigateTo(DilutionView.VIEW_NAME);
   }
 }
