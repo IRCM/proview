@@ -55,6 +55,7 @@ import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.components.grid.NoSelectionModel;
@@ -171,7 +172,8 @@ public class SampleStatusViewPresenterTest {
       assertEquals(status.getLabel(locale), newStatus.getItemCaptionGenerator().apply(status));
     }
     Button down = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample);
-    assertEquals(resources.message(DOWN), down.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, down.getIcon());
+    assertEquals(resources.message(DOWN), down.getIconAlternateText());
   }
 
   @Test

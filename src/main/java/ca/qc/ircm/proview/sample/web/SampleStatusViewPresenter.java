@@ -34,6 +34,7 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.SelectionMode;
@@ -166,7 +167,8 @@ public class SampleStatusViewPresenter implements BinderValidator {
     MessageResource resources = view.getResources();
     Button down = new Button();
     down.addStyleName(DOWN);
-    down.setCaption(resources.message(DOWN));
+    down.setIcon(VaadinIcons.ARROW_DOWN);
+    down.setIconAlternateText(resources.message(DOWN));
     down.addClickListener(e -> copyStatusDown(sample));
     return down;
   }
