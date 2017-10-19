@@ -87,6 +87,7 @@ import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -229,6 +230,7 @@ public class TransferViewPresenterTest {
     }
     assertEquals(resources.message(TRANSFERS_PANEL), design.transfersPanel.getCaption());
     assertEquals(resources.message(DOWN), design.down.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(DESTINATION), design.destination.getCaption());
     assertEquals(resources.message(DESTINATION_PLATES), design.destinationPlatesField.getCaption());
     assertEquals(resources.message(TEST), design.test.getCaption());

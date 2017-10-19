@@ -45,6 +45,7 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -170,6 +171,7 @@ public class DilutionViewPresenterTest {
     assertEquals(resources.message(HEADER), design.header.getValue());
     assertEquals(resources.message(DILUTIONS_PANEL), design.dilutionsPanel.getCaption());
     assertEquals(resources.message(DOWN), design.down.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(SAVE), design.save.getCaption());
   }
 

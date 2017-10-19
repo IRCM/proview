@@ -20,6 +20,7 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -148,6 +149,7 @@ public class DigestionViewPresenter implements BinderValidator {
     design.down.addStyleName(DOWN);
     design.down.addStyleName(BUTTON_SKIP_ROW);
     design.down.setCaption(resources.message(DOWN));
+    design.down.setIcon(VaadinIcons.ARROW_DOWN);
     design.down.addClickListener(e -> down());
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));

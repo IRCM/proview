@@ -191,6 +191,7 @@ import com.vaadin.data.converter.AbstractStringToNumberConverter;
 import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.ui.TextField;
@@ -1280,6 +1281,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(PROTEIN_WEIGHT_PROPERTY),
         design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_SAMPLES_PROPERTY), design.fillSamplesButton.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.fillSamplesButton.getIcon());
     assertEquals(null, view.plateComponent.getCaption());
     assertEquals(resources.message(EXPERIENCE_PANEL), design.experiencePanel.getCaption());
     assertEquals(resources.message(EXPERIENCE_PROPERTY), design.experienceField.getCaption());
@@ -1308,6 +1310,7 @@ public class SubmissionFormPresenterTest {
         design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_STANDARDS_PROPERTY),
         design.fillStandardsButton.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.fillStandardsButton.getIcon());
     assertEquals(resources.message(CONTAMINANTS_PANEL), design.contaminantsPanel.getCaption());
     assertEquals(resources.message(CONTAMINANT_COUNT_PROPERTY),
         design.contaminantCountField.getCaption());
@@ -1320,6 +1323,7 @@ public class SubmissionFormPresenterTest {
         design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY).getCaption());
     assertEquals(resources.message(FILL_CONTAMINANTS_PROPERTY),
         design.fillContaminantsButton.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.fillContaminantsButton.getIcon());
     assertEquals(resources.message(GEL_PANEL), design.gelPanel.getCaption());
     assertEquals(resources.message(SEPARATION_PROPERTY), design.separationField.getCaption());
     for (GelSeparation separation : GelSeparation.values()) {

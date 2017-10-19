@@ -17,6 +17,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
@@ -119,6 +120,7 @@ public class DilutionViewPresenter implements BinderValidator {
     design.down.addStyleName(DOWN);
     design.down.addStyleName(BUTTON_SKIP_ROW);
     design.down.setCaption(resources.message(DOWN));
+    design.down.setIcon(VaadinIcons.ARROW_DOWN);
     design.down.addClickListener(e -> down());
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));

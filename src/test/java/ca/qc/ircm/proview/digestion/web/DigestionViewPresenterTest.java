@@ -53,6 +53,7 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -180,6 +181,7 @@ public class DigestionViewPresenterTest {
     assertEquals(resources.message(DIGESTIONS_PANEL), design.digestionsPanel.getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(resources.message(DOWN), design.down.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(SAVE), design.save.getCaption());
     assertEquals(resources.message(REMOVE), design.remove.getCaption());
     assertEquals(resources.message(BAN_CONTAINERS), design.banContainers.getCaption());
@@ -230,8 +232,9 @@ public class DigestionViewPresenterTest {
     assertTrue(containsInstanceOf(design.digestions.getColumn(COMMENT).getExtensions(),
         ComponentRenderer.class));
     for (DigestedSample ts : treatments.getItems()) {
-      assertTrue(ts.getContainer().getFullName(),
-          design.digestions.getColumn(COMMENT).getValueProvider().apply(ts) instanceof TextField);
+      TextField field =
+          (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertTrue(field.getStyleName().contains(COMMENT));
     }
     assertEquals(containers.size(), treatments.getItems().size());
     for (SampleContainer container : containers) {

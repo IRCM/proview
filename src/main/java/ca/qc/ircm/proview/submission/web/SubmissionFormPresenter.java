@@ -548,6 +548,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.fillSamplesButton.addStyleName(FILL_SAMPLES_PROPERTY);
     design.fillSamplesButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
+    design.fillSamplesButton.setIcon(VaadinIcons.ARROW_DOWN);
     view.plateComponent.addStyleName(SAMPLES_PLATE);
   }
 
@@ -705,6 +706,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.fillStandardsButton.addStyleName(FILL_STANDARDS_PROPERTY);
     design.fillStandardsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS_PROPERTY));
+    design.fillStandardsButton.setIcon(VaadinIcons.ARROW_DOWN);
   }
 
   private TextField standardNameTextField(Standard standard) {
@@ -799,6 +801,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.fillContaminantsButton.addStyleName(FILL_CONTAMINANTS_PROPERTY);
     design.fillContaminantsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillContaminantsButton.setCaption(resources.message(FILL_CONTAMINANTS_PROPERTY));
+    design.fillContaminantsButton.setIcon(VaadinIcons.ARROW_DOWN);
   }
 
   private TextField contaminantNameTextField(Contaminant contaminant) {
