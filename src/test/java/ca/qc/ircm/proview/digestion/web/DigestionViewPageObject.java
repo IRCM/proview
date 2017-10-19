@@ -1,6 +1,8 @@
 package ca.qc.ircm.proview.digestion.web;
 
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.BAN_CONTAINERS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.COMMENT;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DELETED;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DIGESTIONS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DIGESTIONS_PANEL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DOWN;
@@ -9,11 +11,13 @@ import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.EXPLANATIO
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.HEADER;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.PROTOCOL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.PROTOCOL_PANEL;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAVE;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
@@ -42,6 +46,10 @@ public class DigestionViewPageObject extends AbstractTestBenchTestCase {
 
   protected LabelElement header() {
     return wrap(LabelElement.class, findElement(className(HEADER)));
+  }
+
+  protected LabelElement deleted() {
+    return wrap(LabelElement.class, findElement(className(DELETED)));
   }
 
   protected PanelElement protocolPanel() {
@@ -93,5 +101,13 @@ public class DigestionViewPageObject extends AbstractTestBenchTestCase {
 
   protected void clickSave() {
     save().click();
+  }
+
+  protected ButtonElement remove() {
+    return wrap(ButtonElement.class, findElement(className(REMOVE)));
+  }
+
+  protected CheckBoxElement banContainers() {
+    return wrap(CheckBoxElement.class, findElement(className(BAN_CONTAINERS)));
   }
 }

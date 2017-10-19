@@ -20,6 +20,7 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import javax.inject.Inject;
 public class DigestionViewPresenter implements BinderValidator {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
+  public static final String DELETED = "deleted";
   public static final String PROTOCOL_PANEL = "protocolPanel";
   public static final String PROTOCOL = digestion.protocol.getMetadata().getName();
   public static final String DIGESTIONS_PANEL = "digestionsPanel";
@@ -57,6 +59,9 @@ public class DigestionViewPresenter implements BinderValidator {
   public static final String DOWN = "down";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
+  public static final String REMOVE = "remove";
+  public static final String REMOVED = "removed";
+  public static final String BAN_CONTAINERS = "banContainers";
   public static final String NO_CONTAINERS = "containers.empty";
   public static final String INVALID_CONTAINERS = "containers.invalid";
   public static final String SPLIT_CONTAINER_PARAMETERS = ",";
@@ -110,6 +115,9 @@ public class DigestionViewPresenter implements BinderValidator {
     view.setTitle(resources.message(TITLE, applicationName));
     design.header.addStyleName(HEADER);
     design.header.setValue(resources.message(HEADER));
+    design.deleted.addStyleName(DELETED);
+    design.deleted.setValue(resources.message(DELETED));
+    design.deleted.setVisible(false);
     design.protocolPanel.addStyleName(PROTOCOL_PANEL);
     design.protocolPanel.setCaption(resources.message(PROTOCOL_PANEL));
     design.protocol.addStyleName(PROTOCOL);
@@ -139,6 +147,7 @@ public class DigestionViewPresenter implements BinderValidator {
         .setCaption(resources.message(COMMENT));
     design.down.addStyleName(DOWN);
     design.down.addStyleName(BUTTON_SKIP_ROW);
+    design.down.setCaption(resources.message(DOWN));
     design.down.addClickListener(e -> down());
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
@@ -147,6 +156,12 @@ public class DigestionViewPresenter implements BinderValidator {
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));
     design.save.addClickListener(e -> save());
+    design.removeLayout.setVisible(false);
+    design.remove.addStyleName(REMOVE);
+    design.remove.setCaption(resources.message(REMOVE));
+    design.remove.addClickListener(e -> remove());
+    design.banContainers.addStyleName(BAN_CONTAINERS);
+    design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
   private TextField commentsField(DigestedSample ts) {
@@ -155,6 +170,7 @@ public class DigestionViewPresenter implements BinderValidator {
     } else {
       TextField field = new TextField();
       field.addStyleName(COMMENT);
+      field.setReadOnly(binder.getBean().isDeleted());
       commentsFields.put(ts, field);
       return field;
     }
@@ -196,7 +212,7 @@ public class DigestionViewPresenter implements BinderValidator {
 
   private void save() {
     if (validate()) {
-      logger.debug("Saving new digestion");
+      logger.debug("Saving digestion");
       Digestion digestion = binder.getBean();
       digestion.setTreatmentSamples(digestions);
       if (digestion.getId() != null) {
@@ -206,6 +222,32 @@ public class DigestionViewPresenter implements BinderValidator {
       }
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED,
+          digestions.stream().map(ts -> ts.getSample().getId()).distinct().count()));
+      view.navigateTo(DigestionView.VIEW_NAME, String.valueOf(digestion.getId()));
+    }
+  }
+
+  private boolean validateRemove() {
+    logger.trace("Validate remove digestion {}", binder.getBean());
+    if (design.explanation.getValue().isEmpty()) {
+      final MessageResource generalResources = view.getGeneralResources();
+      String message = generalResources.message(REQUIRED);
+      logger.debug("Validation error: {}", message);
+      design.explanation.setComponentError(new UserError(message));
+      view.showError(generalResources.message(FIELD_NOTIFICATION));
+      return false;
+    }
+    return true;
+  }
+
+  private void remove() {
+    if (validateRemove()) {
+      logger.debug("Removing digestion {}", binder.getBean());
+      Digestion digestion = binder.getBean();
+      digestionService.undoFailed(digestion, design.explanation.getValue(),
+          design.banContainers.getValue());
+      MessageResource resources = view.getResources();
+      view.showTrayNotification(resources.message(REMOVED,
           digestions.stream().map(ts -> ts.getSample().getId()).distinct().count()));
       view.navigateTo(DigestionView.VIEW_NAME, String.valueOf(digestion.getId()));
     }
@@ -269,11 +311,16 @@ public class DigestionViewPresenter implements BinderValidator {
         Digestion digestion = digestionService.get(id);
         binder.setBean(digestion);
         if (digestion != null) {
+          logger.debug("Digestion deleted? {}", digestion.isDeleted());
           digestions = digestion.getTreatmentSamples();
+          design.protocol.setReadOnly(digestion.isDeleted());
+          design.deleted.setVisible(digestion.isDeleted());
+          design.explanationPanel.setVisible(!digestion.isDeleted());
+          design.save.setVisible(!digestion.isDeleted());
+          design.removeLayout.setVisible(!digestion.isDeleted());
         } else {
           view.showWarning(view.getResources().message(INVALID_DIGESTION));
         }
-        design.explanationPanel.setVisible(true);
       } catch (NumberFormatException e) {
         view.showWarning(view.getResources().message(INVALID_DIGESTION));
       }

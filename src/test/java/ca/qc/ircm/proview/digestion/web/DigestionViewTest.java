@@ -89,6 +89,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
     open();
 
     assertTrue(optional(() -> header()).isPresent());
+    assertFalse(optional(() -> deleted()).isPresent());
     assertTrue(optional(() -> protocolPanel()).isPresent());
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> digestionsPanel()).isPresent());
@@ -96,6 +97,8 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertFalse(optional(() -> explanationPanel()).isPresent());
     assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
+    assertFalse(optional(() -> remove()).isPresent());
+    assertFalse(optional(() -> banContainers()).isPresent());
   }
 
   @Test
@@ -103,6 +106,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
     openWithDigestion();
 
     assertTrue(optional(() -> header()).isPresent());
+    assertFalse(optional(() -> deleted()).isPresent());
     assertTrue(optional(() -> protocolPanel()).isPresent());
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> digestionsPanel()).isPresent());
@@ -110,6 +114,8 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertTrue(optional(() -> explanationPanel()).isPresent());
     assertTrue(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
+    assertTrue(optional(() -> remove()).isPresent());
+    assertTrue(optional(() -> banContainers()).isPresent());
   }
 
   @Test

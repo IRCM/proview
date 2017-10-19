@@ -1,9 +1,12 @@
 package ca.qc.ircm.proview.digestion.web;
 
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.BAN_CONTAINERS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.CONTAINER;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DELETED;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DIGESTIONS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DIGESTIONS_PANEL;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DOWN;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.HEADER;
@@ -12,6 +15,8 @@ import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.INVALID_DI
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.PROTOCOL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.PROTOCOL_PANEL;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.REMOVE;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.REMOVED;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAVE;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAVED;
@@ -19,6 +24,7 @@ import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -27,6 +33,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
@@ -144,6 +151,8 @@ public class DigestionViewPresenterTest {
 
     assertTrue(design.header.getStyleName().contains(HEADER));
     assertTrue(design.header.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.deleted.getStyleName().contains(DELETED));
+    assertTrue(design.deleted.getStyleName().contains(ValoTheme.LABEL_FAILURE));
     assertTrue(design.protocolPanel.getStyleName().contains(PROTOCOL_PANEL));
     assertTrue(design.protocol.getStyleName().contains(PROTOCOL));
     assertTrue(design.digestionsPanel.getStyleName().contains(DIGESTIONS_PANEL));
@@ -151,8 +160,13 @@ public class DigestionViewPresenterTest {
     assertTrue(design.digestions.getStyleName().contains(COMPONENTS));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
+    assertTrue(design.down.getStyleName().contains(DOWN));
+    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
+    assertTrue(design.remove.getStyleName().contains(REMOVE));
+    assertTrue(design.remove.getStyleName().contains(ValoTheme.BUTTON_DANGER));
+    assertTrue(design.banContainers.getStyleName().contains(BAN_CONTAINERS));
   }
 
   @Test
@@ -161,10 +175,14 @@ public class DigestionViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
+    assertEquals(resources.message(DELETED), design.deleted.getValue());
     assertEquals(resources.message(PROTOCOL_PANEL), design.protocolPanel.getCaption());
     assertEquals(resources.message(DIGESTIONS_PANEL), design.digestionsPanel.getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
+    assertEquals(resources.message(DOWN), design.down.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());
+    assertEquals(resources.message(REMOVE), design.remove.getCaption());
+    assertEquals(resources.message(BAN_CONTAINERS), design.banContainers.getCaption());
   }
 
   @Test
@@ -334,18 +352,92 @@ public class DigestionViewPresenterTest {
   }
 
   @Test
+  public void remove_NoExplanation() {
+    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+        sampleContainerService, applicationName);
+    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    when(digestionService.get(any())).thenReturn(digestion);
+    presenter.init(view);
+    presenter.enter("6");
+
+    design.remove.click();
+
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        design.explanation.getErrorMessage().getFormattedHtmlMessage());
+    verify(digestionService, never()).undoFailed(any(), any(), anyBoolean());
+  }
+
+  @Test
+  public void remove() {
+    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+        sampleContainerService, applicationName);
+    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    when(digestionService.get(any())).thenReturn(digestion);
+    presenter.init(view);
+    presenter.enter("6");
+    design.protocol.setValue(entityManager.find(DigestionProtocol.class, 3L));
+    setFields();
+    design.explanation.setValue("test explanation");
+
+    design.remove.click();
+
+    verify(view, never()).showError(any());
+    verify(digestionService).undoFailed(digestionCaptor.capture(), eq("test explanation"),
+        eq(false));
+    Digestion savedDigestion = digestionCaptor.getValue();
+    assertEquals((Long) 6L, savedDigestion.getId());
+    verify(view).showTrayNotification(resources.message(REMOVED, digestion.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(DigestionView.VIEW_NAME, "6");
+  }
+
+  @Test
+  public void remove_BanContainers() {
+    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+        sampleContainerService, applicationName);
+    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    when(digestionService.get(any())).thenReturn(digestion);
+    presenter.init(view);
+    presenter.enter("6");
+    design.protocol.setValue(entityManager.find(DigestionProtocol.class, 3L));
+    setFields();
+    design.explanation.setValue("test explanation");
+    design.banContainers.setValue(true);
+
+    design.remove.click();
+
+    verify(view, never()).showError(any());
+    verify(digestionService).undoFailed(digestionCaptor.capture(), eq("test explanation"),
+        eq(true));
+    Digestion savedDigestion = digestionCaptor.getValue();
+    assertEquals((Long) 6L, savedDigestion.getId());
+    verify(view).showTrayNotification(resources.message(REMOVED, digestion.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(DigestionView.VIEW_NAME, "6");
+  }
+
+  @Test
   public void enter() {
     presenter.init(view);
     presenter.enter("");
 
     List<DigestedSample> tss = new ArrayList<>(dataProvider(design.digestions).getItems());
+    assertFalse(design.deleted.isVisible());
+    assertFalse(design.protocol.isReadOnly());
     assertFalse(design.explanationPanel.isVisible());
-    assertEquals(containers.size(), tss.size());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.removeLayout.isVisible());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
       DigestedSample digested = tss.get(i);
       assertEquals(container.getSample(), digested.getSample());
       assertEquals(container, digested.getContainer());
+    }
+    for (DigestedSample ts : tss) {
+      TextField field =
+          (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
     }
   }
 
@@ -359,11 +451,48 @@ public class DigestionViewPresenterTest {
     presenter.enter("6");
 
     verify(digestionService).get(6L);
+    assertFalse(design.deleted.isVisible());
+    assertFalse(design.protocol.isReadOnly());
     assertTrue(design.explanationPanel.isVisible());
+    assertTrue(design.save.isVisible());
+    assertTrue(design.removeLayout.isVisible());
     List<DigestedSample> tss = new ArrayList<>(dataProvider(design.digestions).getItems());
     assertEquals(digestion.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < digestion.getTreatmentSamples().size(); i++) {
       assertEquals(digestion.getTreatmentSamples().get(i), tss.get(i));
+    }
+    for (DigestedSample ts : tss) {
+      TextField field =
+          (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+    }
+  }
+
+  @Test
+  public void enter_DigestionDeleted() {
+    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+        sampleContainerService, applicationName);
+    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    digestion.setDeleted(true);
+    when(digestionService.get(any())).thenReturn(digestion);
+    presenter.init(view);
+    presenter.enter("6");
+
+    verify(digestionService).get(6L);
+    assertTrue(design.deleted.isVisible());
+    assertTrue(design.protocol.isReadOnly());
+    assertFalse(design.explanationPanel.isVisible());
+    assertFalse(design.save.isVisible());
+    assertFalse(design.removeLayout.isVisible());
+    List<DigestedSample> tss = new ArrayList<>(dataProvider(design.digestions).getItems());
+    assertEquals(digestion.getTreatmentSamples().size(), tss.size());
+    for (int i = 0; i < digestion.getTreatmentSamples().size(); i++) {
+      assertEquals(digestion.getTreatmentSamples().get(i), tss.get(i));
+    }
+    for (DigestedSample ts : tss) {
+      TextField field =
+          (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertTrue(field.isReadOnly());
     }
   }
 
