@@ -28,6 +28,7 @@ import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -52,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -82,9 +84,10 @@ public class SampleStatusViewPresenter implements BinderValidator {
   private static final Logger logger = LoggerFactory.getLogger(SampleStatusViewPresenter.class);
   private SampleStatusView view;
   private SampleStatusViewDesign design;
+  private Map<Long, SubmissionSample> databaseSamples;
   private ListDataProvider<SubmissionSample> dataProvider;
-  private Map<Object, Binder<SubmissionSample>> sampleBinders = new HashMap<>();
-  private Map<Object, ComboBox<SampleStatus>> sampleStatusFields = new HashMap<>();
+  private Map<SubmissionSample, Binder<SubmissionSample>> sampleBinders = new HashMap<>();
+  private Map<SubmissionSample, ComboBox<SampleStatus>> sampleStatusFields = new HashMap<>();
   @Inject
   private SampleService sampleService;
   @Inject
@@ -127,8 +130,9 @@ public class SampleStatusViewPresenter implements BinderValidator {
     design.samplesGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
     design.samplesGrid.addColumn(sample -> sample.getSubmission().getExperience()).setId(EXPERIENCE)
         .setCaption(resources.message(EXPERIENCE));
-    design.samplesGrid.addColumn(sample -> sample.getStatus().getLabel(locale)).setId(STATUS)
-        .setCaption(resources.message(STATUS));
+    design.samplesGrid
+        .addColumn(sample -> databaseSamples.get(sample.getId()).getStatus().getLabel(locale))
+        .setId(STATUS).setCaption(resources.message(STATUS));
     design.samplesGrid.addColumn(sample -> statusesComboBox(sample), new ComponentRenderer())
         .setId(NEW_STATUS).setCaption(resources.message(NEW_STATUS));
     design.samplesGrid.addColumn(sample -> downButton(sample), new ComponentRenderer()).setId(DOWN)
@@ -176,7 +180,8 @@ public class SampleStatusViewPresenter implements BinderValidator {
   private void copyStatusDown(SubmissionSample sample) {
     boolean copy = false;
     SampleStatus value = sampleStatusFields.get(sample).getValue();
-    for (SubmissionSample other : dataProvider.getItems()) {
+    for (SubmissionSample other : VaadinUtils.gridItems(design.samplesGrid)
+        .collect(Collectors.toList())) {
       if (sample.equals(other)) {
         copy = true;
       }
@@ -204,7 +209,7 @@ public class SampleStatusViewPresenter implements BinderValidator {
     List<SubmissionSample> samples = sampleBinders.values().stream().map(binder -> binder.getBean())
         .collect(Collectors.toList());
     for (SubmissionSample sample : samples) {
-      SampleStatus currentStatus = submissionSampleService.get(sample.getId()).getStatus();
+      SampleStatus currentStatus = databaseSamples.get(sample.getId()).getStatus();
       SampleStatus newStatus = sample.getStatus();
       regress |= newStatus.ordinal() < currentStatus.ordinal();
     }
@@ -245,6 +250,8 @@ public class SampleStatusViewPresenter implements BinderValidator {
   }
 
   private void refresh() {
+    databaseSamples = dataProvider.getItems().stream()
+        .collect(Collectors.toMap(sample -> sample.getId(), Function.identity()));
     List<SubmissionSample> samples = dataProvider.getItems().stream()
         .map(sample -> submissionSampleService.get(sample.getId())).collect(Collectors.toList());
     dataProvider = DataProvider.ofCollection(samples);
@@ -299,7 +306,10 @@ public class SampleStatusViewPresenter implements BinderValidator {
     List<SubmissionSample> samples =
         samplesParameters.stream().filter(s -> s instanceof SubmissionSample)
             .map(s -> (SubmissionSample) s).collect(Collectors.toList());
-    dataProvider = DataProvider.ofCollection(samples);
+    databaseSamples =
+        samples.stream().collect(Collectors.toMap(sample -> sample.getId(), Function.identity()));
+    dataProvider = DataProvider
+        .fromStream(samples.stream().map(sample -> submissionSampleService.get(sample.getId())));
     design.samplesGrid.setDataProvider(dataProvider);
   }
 }

@@ -56,6 +56,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.components.grid.NoSelectionModel;
@@ -76,7 +77,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -126,6 +126,8 @@ public class SampleStatusViewPresenterTest {
     samples.add(entityManager.find(SubmissionSample.class, 443L));
     samples.forEach(s -> entityManager.detach(s));
     when(view.savedSamples()).thenReturn(new ArrayList<>(samples));
+    when(submissionSampleService.get(any()))
+        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
   }
 
   @Test
@@ -197,6 +199,7 @@ public class SampleStatusViewPresenterTest {
   public void down() {
     presenter.init(view);
     presenter.enter("");
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samplesGrid).getItems());
     SubmissionSample sample1 = samples.get(0);
     SubmissionSample sample2 = samples.get(1);
     final ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
@@ -214,9 +217,76 @@ public class SampleStatusViewPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
+  public void down_OrderedByNameDesc() {
+    presenter.init(view);
+    presenter.enter("");
+    design.samplesGrid.sort(NAME, SortDirection.DESCENDING);
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samplesGrid).getItems());
+    SubmissionSample sample1 = samples.get(0);
+    SubmissionSample sample2 = samples.get(1);
+    final ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
+        .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
+    final ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) design.samplesGrid
+        .getColumn(NEW_STATUS).getValueProvider().apply(sample2);
+    Button down2 = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample2);
+    newStatus2.setValue(SampleStatus.ANALYSED);
+
+    down2.click();
+
+    assertEquals(SampleStatus.ANALYSED, newStatus1.getValue());
+    assertEquals(SampleStatus.ANALYSED, newStatus2.getValue());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void down_OrderedByExperienceDesc() {
+    presenter.init(view);
+    presenter.enter("");
+    design.samplesGrid.sort(EXPERIENCE, SortDirection.DESCENDING);
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samplesGrid).getItems());
+    SubmissionSample sample1 = samples.get(0);
+    SubmissionSample sample2 = samples.get(1);
+    final ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
+        .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
+    final ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) design.samplesGrid
+        .getColumn(NEW_STATUS).getValueProvider().apply(sample2);
+    Button down2 = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample2);
+    newStatus2.setValue(SampleStatus.ANALYSED);
+
+    down2.click();
+
+    assertEquals(SampleStatus.ANALYSED, newStatus1.getValue());
+    assertEquals(SampleStatus.ANALYSED, newStatus2.getValue());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void down_OrderedByStatusDesc() {
+    presenter.init(view);
+    presenter.enter("");
+    design.samplesGrid.sort(STATUS, SortDirection.DESCENDING);
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samplesGrid).getItems());
+    SubmissionSample sample1 = samples.get(0);
+    SubmissionSample sample2 = samples.get(1);
+    final ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
+        .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
+    final ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) design.samplesGrid
+        .getColumn(NEW_STATUS).getValueProvider().apply(sample2);
+    Button down2 = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample2);
+    newStatus2.setValue(SampleStatus.ANALYSED);
+
+    down2.click();
+
+    assertEquals(SampleStatus.ANALYSED, newStatus1.getValue());
+    assertEquals(SampleStatus.ANALYSED, newStatus2.getValue());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
   public void updateStatus_Null() {
     presenter.init(view);
     presenter.enter("");
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samplesGrid).getItems());
     SubmissionSample sample = samples.get(0);
     ComboBox<SampleStatus> newStatus = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample);
@@ -224,8 +294,6 @@ public class SampleStatusViewPresenterTest {
       design.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(otherSample);
     });
     newStatus.setValue(null);
-    when(submissionSampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
 
     design.saveButton.click();
 
@@ -238,19 +306,41 @@ public class SampleStatusViewPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void updateStatus() {
+  public void updateStatus_NotSaved() {
     presenter.init(view);
     presenter.enter("");
     SubmissionSample sample1 = samples.get(0);
     SubmissionSample sample2 = samples.get(1);
+    final SampleStatus status1 = sample1.getStatus();
+    final SampleStatus status2 = sample2.getStatus();
+    List<SubmissionSample> gridSamples =
+        new ArrayList<>(dataProvider(design.samplesGrid).getItems());
+    ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
+        .getColumn(NEW_STATUS).getValueProvider().apply(gridSamples.get(0));
+    ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) design.samplesGrid
+        .getColumn(NEW_STATUS).getValueProvider().apply(gridSamples.get(1));
+    newStatus1.setValue(SampleStatus.ANALYSED);
+    newStatus2.setValue(SampleStatus.DIGESTED);
+
+    assertEquals(status1, sample1.getStatus());
+    assertEquals(status2, sample2.getStatus());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void updateStatus() {
+    presenter.init(view);
+    presenter.enter("");
+    List<SubmissionSample> gridSamples =
+        new ArrayList<>(dataProvider(design.samplesGrid).getItems());
+    SubmissionSample sample1 = gridSamples.get(0);
+    SubmissionSample sample2 = gridSamples.get(1);
     ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
     ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample2);
     newStatus1.setValue(SampleStatus.ANALYSED);
     newStatus2.setValue(SampleStatus.DIGESTED);
-    when(submissionSampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
 
     design.saveButton.click();
 
@@ -267,9 +357,9 @@ public class SampleStatusViewPresenterTest {
     samples = dataProvider(design.samplesGrid).getItems();
     sample1 = find(samples, sample1.getId()).orElse(null);
     sample2 = find(samples, sample2.getId()).orElse(null);
-    assertEquals(sample1.getStatus().getLabel(locale),
+    assertEquals(SampleStatus.ANALYSED.getLabel(locale),
         design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample1));
-    assertEquals(sample2.getStatus().getLabel(locale),
+    assertEquals(SampleStatus.DIGESTED.getLabel(locale),
         design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample2));
   }
 
@@ -278,14 +368,14 @@ public class SampleStatusViewPresenterTest {
   public void updateStatus_Regress_Confirm() {
     presenter.init(view);
     presenter.enter("");
-    SubmissionSample sample1 = samples.get(0);
-    SubmissionSample sample2 = samples.get(1);
+    List<SubmissionSample> gridSamples =
+        new ArrayList<>(dataProvider(design.samplesGrid).getItems());
+    SubmissionSample sample1 = gridSamples.get(0);
+    SubmissionSample sample2 = gridSamples.get(1);
     ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
     design.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(sample2);
     newStatus1.setValue(SampleStatus.TO_APPROVE);
-    when(submissionSampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
     final ConfirmDialog confirmDialog = new TestConfirmDialog(true);
 
     design.saveButton.click();
@@ -314,14 +404,14 @@ public class SampleStatusViewPresenterTest {
   public void updateStatus_Regress_Cancel() {
     presenter.init(view);
     presenter.enter("");
-    SubmissionSample sample1 = samples.get(0);
-    SubmissionSample sample2 = samples.get(1);
+    List<SubmissionSample> gridSamples =
+        new ArrayList<>(dataProvider(design.samplesGrid).getItems());
+    SubmissionSample sample1 = gridSamples.get(0);
+    SubmissionSample sample2 = gridSamples.get(1);
     ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
     design.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(sample2);
     newStatus1.setValue(SampleStatus.TO_APPROVE);
-    when(submissionSampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
     final ConfirmDialog confirmDialog = new TestConfirmDialog(false);
 
     design.saveButton.click();
@@ -340,19 +430,13 @@ public class SampleStatusViewPresenterTest {
   public void enter_Empty() {
     presenter.init(view);
     presenter.enter("");
-    Collection<SubmissionSample> expectedSamples =
-        samples.stream().map(s -> s).collect(Collectors.toSet());
 
-    Collection<?> itemIds = dataProvider(design.samplesGrid).getItems();
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samplesGrid).getItems());
 
-    Set<SubmissionSample> samples = new HashSet<>();
-    for (Object itemId : itemIds) {
-      assertTrue(itemId instanceof SubmissionSample);
-      SubmissionSample sample = (SubmissionSample) itemId;
-      samples.add(sample);
+    assertEquals(this.samples.size(), samples.size());
+    for (int i = 0; i < this.samples.size(); i++) {
+      assertEquals(this.samples.get(i).getId(), samples.get(i).getId());
     }
-    assertTrue(expectedSamples.containsAll(samples));
-    assertTrue(samples.containsAll(expectedSamples));
   }
 
   @Test
