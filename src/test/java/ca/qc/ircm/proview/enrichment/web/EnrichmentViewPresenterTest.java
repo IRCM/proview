@@ -46,6 +46,7 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -213,6 +214,7 @@ public class EnrichmentViewPresenterTest {
     assertEquals(resources.message(COMMENT), design.enrichments.getColumn(COMMENT).getCaption());
     assertTrue(containsInstanceOf(design.enrichments.getColumn(COMMENT).getExtensions(),
         ComponentRenderer.class));
+    assertFalse(design.enrichments.getColumn(COMMENT).isSortable());
     for (EnrichedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
@@ -241,6 +243,46 @@ public class EnrichmentViewPresenterTest {
     design.down.click();
 
     for (EnrichedSample ts : treatments.getItems()) {
+      field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
+    }
+  }
+
+  @Test
+  public void down_OrderedBySampleDesc() {
+    presenter.init(view);
+    presenter.enter("");
+    design.enrichments.sort(SAMPLE, SortDirection.DESCENDING);
+    final List<EnrichedSample> treatments =
+        new ArrayList<>(dataProvider(design.enrichments).getItems());
+    String comment = "test";
+    TextField field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider()
+        .apply(treatments.get(4));
+    field.setValue(comment);
+
+    design.down.click();
+
+    for (EnrichedSample ts : treatments) {
+      field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
+    }
+  }
+
+  @Test
+  public void down_OrderedByContainerDesc() {
+    presenter.init(view);
+    presenter.enter("");
+    design.enrichments.sort(CONTAINER, SortDirection.DESCENDING);
+    final List<EnrichedSample> treatments =
+        new ArrayList<>(dataProvider(design.enrichments).getItems());
+    String comment = "test";
+    TextField field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider()
+        .apply(treatments.get(5));
+    field.setValue(comment);
+
+    design.down.click();
+
+    for (EnrichedSample ts : treatments) {
       field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertEquals(comment, field.getValue());
     }

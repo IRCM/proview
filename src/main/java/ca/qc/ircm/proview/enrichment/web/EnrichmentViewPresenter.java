@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.enrichment.web;
 
 import static ca.qc.ircm.proview.enrichment.QEnrichedSample.enrichedSample;
 import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -136,7 +137,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
     design.enrichments.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
         .setCaption(resources.message(CONTAINER));
     design.enrichments.addColumn(ts -> commentField(ts), new ComponentRenderer()).setId(COMMENT)
-        .setCaption(resources.message(COMMENT));
+        .setCaption(resources.message(COMMENT)).setSortable(false);
     design.down.addStyleName(DOWN);
     design.down.addStyleName(BUTTON_SKIP_ROW);
     design.down.setCaption(resources.message(DOWN));
@@ -175,7 +176,8 @@ public class EnrichmentViewPresenter implements BinderValidator {
 
   private void down() {
     if (!enrichments.isEmpty()) {
-      String comment = commentFields.get(enrichments.get(0)).getValue();
+      String comment =
+          commentFields.get(gridItems(design.enrichments).findFirst().orElse(null)).getValue();
       commentFields.values().forEach(field -> field.setValue(comment));
     }
   }
