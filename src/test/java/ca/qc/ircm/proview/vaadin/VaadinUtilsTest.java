@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import ca.qc.ircm.proview.sample.QSubmissionSample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import com.vaadin.data.provider.GridSortOrderBuilder;
+import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid;
 import org.junit.Before;
@@ -62,32 +62,28 @@ public class VaadinUtilsTest {
     assertEquals(sample2, samples.get(1));
     assertEquals(sample3, samples.get(2));
 
-    grid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>().thenAsc(grid.getColumn(name))
-        .thenAsc(grid.getColumn(status)));
+    grid.setSortOrder(GridSortOrder.asc(grid.getColumn(name)).thenAsc(grid.getColumn(status)));
     comparator = VaadinUtils.gridComparator(grid);
     samples.sort(comparator);
     assertEquals(sample1, samples.get(0));
     assertEquals(sample3, samples.get(1));
     assertEquals(sample2, samples.get(2));
 
-    grid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>().thenAsc(grid.getColumn(name))
-        .thenDesc(grid.getColumn(status)));
+    grid.setSortOrder(GridSortOrder.asc(grid.getColumn(name)).thenDesc(grid.getColumn(status)));
     comparator = VaadinUtils.gridComparator(grid);
     samples.sort(comparator);
     assertEquals(sample1, samples.get(0));
     assertEquals(sample2, samples.get(1));
     assertEquals(sample3, samples.get(2));
 
-    grid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>().thenDesc(grid.getColumn(name))
-        .thenAsc(grid.getColumn(status)));
+    grid.setSortOrder(GridSortOrder.desc(grid.getColumn(name)).thenAsc(grid.getColumn(status)));
     comparator = VaadinUtils.gridComparator(grid);
     samples.sort(comparator);
     assertEquals(sample3, samples.get(0));
     assertEquals(sample2, samples.get(1));
     assertEquals(sample1, samples.get(2));
 
-    grid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>().thenDesc(grid.getColumn(name))
-        .thenDesc(grid.getColumn(status)));
+    grid.setSortOrder(GridSortOrder.desc(grid.getColumn(name)).thenDesc(grid.getColumn(status)));
     comparator = VaadinUtils.gridComparator(grid);
     samples.sort(comparator);
     assertEquals(sample2, samples.get(0));
@@ -114,29 +110,25 @@ public class VaadinUtilsTest {
     assertEquals(sample2, samples.get(1));
     assertEquals(sample3, samples.get(2));
 
-    grid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>().thenAsc(grid.getColumn(name))
-        .thenAsc(grid.getColumn(status)));
+    grid.setSortOrder(GridSortOrder.asc(grid.getColumn(name)).thenAsc(grid.getColumn(status)));
     samples = VaadinUtils.gridItems(grid).collect(Collectors.toList());
     assertEquals(sample1, samples.get(0));
     assertEquals(sample3, samples.get(1));
     assertEquals(sample2, samples.get(2));
 
-    grid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>().thenAsc(grid.getColumn(name))
-        .thenDesc(grid.getColumn(status)));
+    grid.setSortOrder(GridSortOrder.asc(grid.getColumn(name)).thenDesc(grid.getColumn(status)));
     samples = VaadinUtils.gridItems(grid).collect(Collectors.toList());
     assertEquals(sample1, samples.get(0));
     assertEquals(sample2, samples.get(1));
     assertEquals(sample3, samples.get(2));
 
-    grid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>().thenDesc(grid.getColumn(name))
-        .thenAsc(grid.getColumn(status)));
+    grid.setSortOrder(GridSortOrder.desc(grid.getColumn(name)).thenAsc(grid.getColumn(status)));
     samples = VaadinUtils.gridItems(grid).collect(Collectors.toList());
     assertEquals(sample3, samples.get(0));
     assertEquals(sample2, samples.get(1));
     assertEquals(sample1, samples.get(2));
 
-    grid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>().thenDesc(grid.getColumn(name))
-        .thenDesc(grid.getColumn(status)));
+    grid.setSortOrder(GridSortOrder.desc(grid.getColumn(name)).thenDesc(grid.getColumn(status)));
     samples = VaadinUtils.gridItems(grid).collect(Collectors.toList());
     assertEquals(sample2, samples.get(0));
     assertEquals(sample3, samples.get(1));

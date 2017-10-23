@@ -30,7 +30,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.data.provider.GridSortOrderBuilder;
+import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -113,8 +113,7 @@ public class SampleSelectionFormPresenter {
         .setId(SAMPLES_LAST_CONTAINER).setCaption(resources.message(SAMPLES_LAST_CONTAINER));
     design.samplesGrid.setSelectionMode(SelectionMode.MULTI);
     design.samplesGrid.setFrozenColumnCount(1);
-    design.samplesGrid.setSortOrder(new GridSortOrderBuilder<SubmissionSample>()
-        .thenAsc(design.samplesGrid.getColumn(EXPERIENCE))
+    design.samplesGrid.setSortOrder(GridSortOrder.asc(design.samplesGrid.getColumn(EXPERIENCE))
         .thenAsc(design.samplesGrid.getColumn(NAME)));
     design.controlsPanel.addStyleName(CONTROLS_PANEL);
     design.controlsPanel.setCaption(resources.message(CONTROLS_PANEL));
