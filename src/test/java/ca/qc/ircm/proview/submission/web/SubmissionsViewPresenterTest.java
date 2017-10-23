@@ -289,13 +289,22 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(LINKED_TO_RESULTS),
         design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getCaption());
     boolean results = submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
-        .filter(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0).count() > 0;
+        .filter(sample -> SampleStatus.ANALYSED.equals(sample.getStatus())
+            || SampleStatus.DATA_ANALYSIS.equals(sample.getStatus()))
+        .count() > 0;
     Button resultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
         .getValueProvider().apply(submission);
-    assertTrue(resultsButton.getStyleName().contains(LINKED_TO_RESULTS));
     assertEquals(resources.message(LINKED_TO_RESULTS + "." + results), resultsButton.getCaption());
+    assertTrue(resultsButton.getStyleName().contains(LINKED_TO_RESULTS));
+    assertEquals(!results, resultsButton.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
+    assertEquals(!results, resultsButton.getStyleName().contains(CONDITION_FALSE));
+    resultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getValueProvider()
+        .apply(entityManager.find(Submission.class, 35L));
+    assertTrue(resultsButton.getStyleName().contains(LINKED_TO_RESULTS));
     assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
     assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isSortable());
+    assertFalse(resultsButton.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
+    assertFalse(resultsButton.getStyleName().contains(CONDITION_FALSE));
     assertEquals(Boolean.compare(true, false),
         design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getComparator(SortDirection.ASCENDING)
             .compare(entityManager.find(Submission.class, 156L),

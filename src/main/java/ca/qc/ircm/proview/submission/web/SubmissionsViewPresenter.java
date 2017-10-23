@@ -370,7 +370,9 @@ public class SubmissionsViewPresenter {
 
   private boolean linkedToResults(Submission submission) {
     return submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
-        .filter(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0).count() > 0;
+        .filter(sample -> SampleStatus.ANALYSED.equals(sample.getStatus())
+            || SampleStatus.DATA_ANALYSIS.equals(sample.getStatus()))
+        .count() > 0;
   }
 
   private Button viewTreatmentsButton(Submission submission) {
