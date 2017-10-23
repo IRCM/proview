@@ -128,7 +128,7 @@ public class SampleSelectionFormPresenter {
     design.controlsGrid.addColumn(control -> control.getOriginalContainer().getName())
         .setId(ORIGINAL_CONTAINER_NAME).setCaption(resources.message(ORIGINAL_CONTAINER_NAME));
     design.controlsGrid.addColumn(control -> updateButton(control), new ComponentRenderer())
-        .setId(UPDATE);
+        .setId(UPDATE).setSortable(false);
     design.controlsGrid.setSelectionMode(SelectionMode.MULTI);
     design.controlsGrid.setFrozenColumnCount(1);
     design.controlsGrid.sort(NAME);
