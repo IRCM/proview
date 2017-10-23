@@ -50,7 +50,6 @@ import com.vaadin.data.SelectionModel;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
@@ -123,35 +122,50 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
-  public void usersGridColumns() {
+  public void usersGrid() {
     presenter.init(view);
 
-    List<Column<User, ?>> columns = design.usersGrid.getColumns();
-
-    assertEquals(EMAIL, columns.get(0).getId());
-    assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
-    assertEquals(NAME, columns.get(1).getId());
-    assertEquals(LABORATORY_NAME, columns.get(2).getId());
-    assertEquals(ORGANIZATION, columns.get(3).getId());
-    assertEquals(VALIDATE, columns.get(4).getId());
-    assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
-  }
-
-  @Test
-  public void usersGridSelection() {
-    presenter.init(view);
-
+    assertEquals(EMAIL, design.usersGrid.getColumns().get(0).getId());
+    assertTrue(containsInstanceOf(design.usersGrid.getColumns().get(0).getExtensions(),
+        ComponentRenderer.class));
+    assertEquals(NAME, design.usersGrid.getColumns().get(1).getId());
+    assertEquals(LABORATORY_NAME, design.usersGrid.getColumns().get(2).getId());
+    assertEquals(ORGANIZATION, design.usersGrid.getColumns().get(3).getId());
+    assertEquals(VALIDATE, design.usersGrid.getColumns().get(4).getId());
+    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
+    assertTrue(containsInstanceOf(design.usersGrid.getColumn(EMAIL).getExtensions(),
+        ComponentRenderer.class));
+    for (User user : usersToValidate) {
+      Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+      assertEquals(user.getEmail(), button.getCaption());
+      assertTrue(user.getEmail(), button.getStyleName().contains(EMAIL));
+    }
+    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
+    for (User user : usersToValidate) {
+      assertEquals(user.getName(), design.usersGrid.getColumn(NAME).getValueProvider().apply(user));
+    }
+    assertEquals(resources.message(LABORATORY_NAME),
+        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
+    for (User user : usersToValidate) {
+      assertEquals(user.getLaboratory().getName(),
+          design.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
+    }
+    assertEquals(resources.message(ORGANIZATION),
+        design.usersGrid.getColumn(ORGANIZATION).getCaption());
+    for (User user : usersToValidate) {
+      assertEquals(user.getLaboratory().getOrganization(),
+          design.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
+    }
+    assertEquals(resources.message(VALIDATE), design.usersGrid.getColumn(VALIDATE).getCaption());
+    assertFalse(design.usersGrid.getColumn(VALIDATE).isSortable());
+    for (User user : usersToValidate) {
+      Button button = (Button) design.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
+      assertEquals(resources.message(VALIDATE), button.getCaption());
+      assertTrue(user.getEmail(), button.getStyleName().contains(VALIDATE));
+    }
     SelectionModel<User> selectionModel = design.usersGrid.getSelectionModel();
-
     assertTrue(selectionModel instanceof SelectionModel.Multi);
-  }
-
-  @Test
-  public void usersGridOrder() {
-    presenter.init(view);
-
     List<GridSortOrder<User>> sortOrders = design.usersGrid.getSortOrder();
-
     assertFalse(sortOrders.isEmpty());
     GridSortOrder<User> sortOrder = sortOrders.get(0);
     assertEquals(EMAIL, sortOrder.getSorted().getId());
@@ -165,12 +179,6 @@ public class ValidateViewPresenterTest {
     assertTrue(design.headerLabel.getStyleName().contains(HEADER));
     assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
     assertTrue(design.usersGrid.getStyleName().contains(USERS_GRID));
-    final User user = usersToValidate.get(0);
-    Button viewButton = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
-    assertTrue(viewButton.getStyleName().contains(EMAIL));
-    Button validateButton =
-        (Button) design.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
-    assertTrue(validateButton.getStyleName().contains(VALIDATE));
     assertTrue(design.validateSelectedButton.getStyleName().contains(VALIDATE_SELECTED_BUTTON));
   }
 
@@ -180,23 +188,6 @@ public class ValidateViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.headerLabel.getValue());
-    final User user = usersToValidate.get(0);
-    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
-    Button email = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
-    assertEquals(user.getEmail(), email.getCaption());
-    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
-    assertEquals(user.getName(), design.usersGrid.getColumn(NAME).getValueProvider().apply(user));
-    assertEquals(resources.message(LABORATORY_NAME),
-        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
-    assertEquals(user.getLaboratory().getName(),
-        design.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
-    assertEquals(resources.message(ORGANIZATION),
-        design.usersGrid.getColumn(ORGANIZATION).getCaption());
-    assertEquals(user.getLaboratory().getOrganization(),
-        design.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
-    assertEquals(resources.message(VALIDATE), design.usersGrid.getColumn(VALIDATE).getCaption());
-    Button validate = (Button) design.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
-    assertEquals(resources.message(VALIDATE), validate.getCaption());
     assertEquals(resources.message(VALIDATE_SELECTED_BUTTON),
         design.validateSelectedButton.getCaption());
   }

@@ -126,7 +126,7 @@ public class ValidateViewPresenter {
         .setCaption(resources.message(ORGANIZATION));
     design.usersGrid.setFrozenColumnCount(2);
     design.usersGrid.addColumn(user -> validateButton(user), new ComponentRenderer())
-        .setId(VALIDATE).setCaption(resources.message(VALIDATE));
+        .setId(VALIDATE).setCaption(resources.message(VALIDATE)).setSortable(false);
     design.usersGrid.setSelectionMode(SelectionMode.MULTI);
     design.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
     design.usersGrid.addStyleName(COMPONENTS);
