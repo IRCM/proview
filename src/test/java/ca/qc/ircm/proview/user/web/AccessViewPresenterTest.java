@@ -60,7 +60,6 @@ import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderCell;
@@ -76,6 +75,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -139,37 +139,66 @@ public class AccessViewPresenterTest {
   }
 
   @Test
-  public void usersGridColumns() {
+  public void usersGrid() {
     presenter.init(view);
 
-    List<Column<User, ?>> columns = design.usersGrid.getColumns();
-
-    assertEquals(SELECT, columns.get(0).getId());
-    assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
-    assertEquals(EMAIL, columns.get(1).getId());
-    assertTrue(containsInstanceOf(columns.get(1).getExtensions(), ComponentRenderer.class));
-    assertEquals(NAME, columns.get(2).getId());
-    assertEquals(LABORATORY_NAME, columns.get(3).getId());
-    assertEquals(ORGANIZATION, columns.get(4).getId());
-    assertEquals(ACTIVE, columns.get(5).getId());
-    assertTrue(containsInstanceOf(columns.get(5).getExtensions(), ComponentRenderer.class));
-  }
-
-  @Test
-  public void usersGridSelection() {
-    presenter.init(view);
-
+    assertEquals(SELECT, design.usersGrid.getColumns().get(0).getId());
+    assertEquals(EMAIL, design.usersGrid.getColumns().get(1).getId());
+    assertEquals(NAME, design.usersGrid.getColumns().get(2).getId());
+    assertEquals(LABORATORY_NAME, design.usersGrid.getColumns().get(3).getId());
+    assertEquals(ORGANIZATION, design.usersGrid.getColumns().get(4).getId());
+    assertEquals(ACTIVE, design.usersGrid.getColumns().get(5).getId());
+    assertEquals(resources.message(SELECT), design.usersGrid.getColumn(SELECT).getCaption());
+    assertTrue(containsInstanceOf(design.usersGrid.getColumn(SELECT).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.usersGrid.getColumn(SELECT).isSortable());
+    for (User user : users) {
+      CheckBox field = (CheckBox) design.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
+      assertTrue(field.getStyleName().contains(SELECT));
+    }
+    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
+    assertTrue(containsInstanceOf(design.usersGrid.getColumn(EMAIL).getExtensions(),
+        ComponentRenderer.class));
+    Collator collator = Collator.getInstance(locale);
+    List<User> expectedSortedUsers = new ArrayList<>(users);
+    List<User> sortedUsers = new ArrayList<>(users);
+    expectedSortedUsers.sort((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
+    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.ASCENDING));
+    assertEquals(expectedSortedUsers, sortedUsers);
+    expectedSortedUsers.sort((u1, u2) -> -collator.compare(u1.getEmail(), u2.getEmail()));
+    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.DESCENDING));
+    assertEquals(expectedSortedUsers, sortedUsers);
+    for (User user : users) {
+      Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+      assertEquals(user.getEmail(), button.getCaption());
+      assertTrue(button.getStyleName().contains(EMAIL));
+    }
+    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
+    assertEquals(resources.message(LABORATORY_NAME),
+        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
+    assertEquals(resources.message(ORGANIZATION),
+        design.usersGrid.getColumn(ORGANIZATION).getCaption());
+    assertEquals(resources.message(ACTIVE), design.usersGrid.getColumn(ACTIVE).getCaption());
+    assertTrue(containsInstanceOf(design.usersGrid.getColumn(ACTIVE).getExtensions(),
+        ComponentRenderer.class));
+    expectedSortedUsers.sort((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
+    sortedUsers.sort(design.usersGrid.getColumn(ACTIVE).getComparator(SortDirection.ASCENDING));
+    assertEquals(expectedSortedUsers, sortedUsers);
+    expectedSortedUsers.sort((u1, u2) -> -Boolean.compare(u1.isActive(), u2.isActive()));
+    sortedUsers.sort(design.usersGrid.getColumn(ACTIVE).getComparator(SortDirection.DESCENDING));
+    assertEquals(expectedSortedUsers, sortedUsers);
+    for (User user : users) {
+      Label label = (Label) design.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
+      assertTrue(label.getStyleName().contains(ACTIVE));
+      assertEquals(ContentMode.HTML, label.getContentMode());
+      VaadinIcons activeIcon = user.isActive() ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
+      String activeValue =
+          activeIcon.getHtml() + " " + resources.message(ACTIVE + "." + user.isActive());
+      assertEquals(activeValue, label.getValue());
+    }
     SelectionModel<User> selectionModel = design.usersGrid.getSelectionModel();
-
     assertTrue(selectionModel instanceof SelectionModel.Multi);
-  }
-
-  @Test
-  public void usersGridOrder() {
-    presenter.init(view);
-
     List<GridSortOrder<User>> sortOrders = design.usersGrid.getSortOrder();
-
     assertFalse(sortOrders.isEmpty());
     GridSortOrder<User> sortOrder = sortOrders.get(0);
     assertEquals(EMAIL, sortOrder.getSorted().getId());
@@ -314,17 +343,10 @@ public class AccessViewPresenterTest {
   @Test
   public void styles() {
     presenter.init(view);
-    final User user = users.get(0);
 
     assertTrue(design.headerLabel.getStyleName().contains(HEADER));
     assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
     assertTrue(design.usersGrid.getStyleName().contains(USERS_GRID));
-    CheckBox select = (CheckBox) design.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
-    assertTrue(select.getStyleName().contains(SELECT));
-    Button viewButton = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
-    assertTrue(viewButton.getStyleName().contains(EMAIL));
-    Label active = (Label) design.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
-    assertTrue(active.getStyleName().contains(ACTIVE));
     assertTrue(design.activateButton.getStyleName().contains(ACTIVATE));
     assertTrue(design.deactivateButton.getStyleName().contains(DEACTIVATE));
     assertTrue(design.clearButton.getStyleName().contains(CLEAR));
@@ -333,30 +355,9 @@ public class AccessViewPresenterTest {
   @Test
   public void captions() {
     presenter.init(view);
-    final User user = users.get(0);
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.headerLabel.getValue());
-    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
-    Button email = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
-    assertEquals(user.getEmail(), email.getCaption());
-    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
-    assertEquals(user.getName(), design.usersGrid.getColumn(NAME).getValueProvider().apply(user));
-    assertEquals(resources.message(LABORATORY_NAME),
-        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
-    assertEquals(user.getLaboratory().getName(),
-        design.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
-    assertEquals(resources.message(ORGANIZATION),
-        design.usersGrid.getColumn(ORGANIZATION).getCaption());
-    assertEquals(user.getLaboratory().getOrganization(),
-        design.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
-    assertEquals(resources.message(ACTIVE), design.usersGrid.getColumn(ACTIVE).getCaption());
-    Label active = (Label) design.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
-    assertEquals(ContentMode.HTML, active.getContentMode());
-    VaadinIcons activeIcon = user.isActive() ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
-    String activeValue =
-        activeIcon.getHtml() + " " + resources.message(ACTIVE + "." + user.isActive());
-    assertEquals(activeValue, active.getValue());
     assertEquals(resources.message(ACTIVATE), design.activateButton.getCaption());
     assertEquals(resources.message(DEACTIVATE), design.deactivateButton.getCaption());
     assertEquals(resources.message(CLEAR), design.clearButton.getCaption());

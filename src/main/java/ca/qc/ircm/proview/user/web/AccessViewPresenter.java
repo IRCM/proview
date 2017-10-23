@@ -49,6 +49,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -140,11 +141,13 @@ public class AccessViewPresenter {
 
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
+    final Collator collator = Collator.getInstance(view.getLocale());
     design.usersGrid.setDataProvider(searchUsers());
     design.usersGrid.addColumn(user -> selectCheckBox(user), new ComponentRenderer()).setId(SELECT)
-        .setCaption(resources.message(SELECT)).setWidth(56);
+        .setCaption(resources.message(SELECT)).setWidth(56).setSortable(false);
     design.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
-        .setCaption(resources.message(EMAIL));
+        .setCaption(resources.message(EMAIL))
+        .setComparator((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
     design.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
     design.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
         .setCaption(resources.message(LABORATORY_NAME));
@@ -152,7 +155,8 @@ public class AccessViewPresenter {
         .setCaption(resources.message(ORGANIZATION));
     design.usersGrid.setFrozenColumnCount(2);
     design.usersGrid.addColumn(user -> activeLabel(user), new ComponentRenderer()).setId(ACTIVE)
-        .setCaption(resources.message(ACTIVE));
+        .setCaption(resources.message(ACTIVE))
+        .setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
     design.usersGrid.setSelectionMode(SelectionMode.MULTI);
     design.usersGrid.addStyleName(HIDE_SELECTION);
     design.usersGrid.addStyleName(COMPONENTS);
