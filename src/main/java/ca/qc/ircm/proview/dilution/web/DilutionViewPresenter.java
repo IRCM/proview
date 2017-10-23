@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.dilution.web;
 
 import static ca.qc.ircm.proview.dilution.QDilutedSample.dilutedSample;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -50,6 +51,7 @@ public class DilutionViewPresenter implements BinderValidator {
   public static final String SOURCE_VOLUME = dilutedSample.sourceVolume.getMetadata().getName();
   public static final String SOLVENT = dilutedSample.solvent.getMetadata().getName();
   public static final String SOLVENT_VOLUME = dilutedSample.solventVolume.getMetadata().getName();
+  public static final String COMMENT = dilutedSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
@@ -67,6 +69,7 @@ public class DilutionViewPresenter implements BinderValidator {
   private Map<DilutedSample, TextField> sourceVolumeFields = new HashMap<>();
   private Map<DilutedSample, TextField> solventFields = new HashMap<>();
   private Map<DilutedSample, TextField> solventVolumeFields = new HashMap<>();
+  private Map<DilutedSample, TextField> commentFields = new HashMap<>();
   @Inject
   private DilutionService dilutionService;
   @Inject
@@ -112,11 +115,13 @@ public class DilutionViewPresenter implements BinderValidator {
     design.dilutions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
         .setCaption(resources.message(CONTAINER));
     design.dilutions.addColumn(ts -> sourceVolumeField(ts), new ComponentRenderer())
-        .setId(SOURCE_VOLUME).setCaption(resources.message(SOURCE_VOLUME));
+        .setId(SOURCE_VOLUME).setCaption(resources.message(SOURCE_VOLUME)).setSortable(false);
     design.dilutions.addColumn(ts -> solventField(ts), new ComponentRenderer()).setId(SOLVENT)
-        .setCaption(resources.message(SOLVENT));
+        .setCaption(resources.message(SOLVENT)).setSortable(false);
     design.dilutions.addColumn(ts -> solventVolumeField(ts), new ComponentRenderer())
-        .setId(SOLVENT_VOLUME).setCaption(resources.message(SOLVENT_VOLUME));
+        .setId(SOLVENT_VOLUME).setCaption(resources.message(SOLVENT_VOLUME)).setSortable(false);
+    design.dilutions.addColumn(ts -> commentField(ts), new ComponentRenderer()).setId(COMMENT)
+        .setCaption(resources.message(COMMENT)).setSortable(false);
     design.down.addStyleName(DOWN);
     design.down.addStyleName(BUTTON_SKIP_ROW);
     design.down.setCaption(resources.message(DOWN));
@@ -142,6 +147,7 @@ public class DilutionViewPresenter implements BinderValidator {
         .withNullRepresentation("")
         .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
         .bind(SOLVENT_VOLUME);
+    binder.forField(commentField(ts)).withNullRepresentation("").bind(COMMENT);
     return binder;
   }
 
@@ -181,6 +187,18 @@ public class DilutionViewPresenter implements BinderValidator {
     }
   }
 
+  private TextField commentField(DilutedSample ts) {
+    if (commentFields.get(ts) != null) {
+      return commentFields.get(ts);
+    } else {
+      TextField field = new TextField();
+      field.addStyleName(COMMENT);
+      field.setReadOnly(binder.getBean().isDeleted());
+      commentFields.put(ts, field);
+      return field;
+    }
+  }
+
   private void updateReadOnly() {
     sourceVolumeFields.values().forEach(field -> field.setReadOnly(readOnly));
     solventFields.values().forEach(field -> field.setReadOnly(readOnly));
@@ -191,12 +209,15 @@ public class DilutionViewPresenter implements BinderValidator {
 
   private void down() {
     if (!dilutions.isEmpty()) {
-      String sourceVolume = sourceVolumeFields.get(dilutions.get(0)).getValue();
-      String solvent = solventFields.get(dilutions.get(0)).getValue();
-      String solventVolume = solventVolumeFields.get(dilutions.get(0)).getValue();
+      DilutedSample first = gridItems(design.dilutions).findFirst().orElse(null);
+      String sourceVolume = sourceVolumeFields.get(first).getValue();
+      String solvent = solventFields.get(first).getValue();
+      String solventVolume = solventVolumeFields.get(first).getValue();
+      String comment = commentFields.get(first).getValue();
       sourceVolumeFields.values().forEach(field -> field.setValue(sourceVolume));
       solventFields.values().forEach(field -> field.setValue(solvent));
       solventVolumeFields.values().forEach(field -> field.setValue(solventVolume));
+      commentFields.values().forEach(field -> field.setValue(comment));
     }
   }
 
