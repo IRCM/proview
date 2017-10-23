@@ -174,10 +174,21 @@ public class AccessViewPresenterTest {
       assertTrue(button.getStyleName().contains(EMAIL));
     }
     assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
+    for (User user : users) {
+      assertEquals(user.getName(), design.usersGrid.getColumn(NAME).getValueProvider().apply(user));
+    }
     assertEquals(resources.message(LABORATORY_NAME),
         design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
+    for (User user : users) {
+      assertEquals(user.getLaboratory().getName(),
+          design.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
+    }
     assertEquals(resources.message(ORGANIZATION),
         design.usersGrid.getColumn(ORGANIZATION).getCaption());
+    for (User user : users) {
+      assertEquals(user.getLaboratory().getOrganization(),
+          design.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
+    }
     assertEquals(resources.message(ACTIVE), design.usersGrid.getColumn(ACTIVE).getCaption());
     assertTrue(containsInstanceOf(design.usersGrid.getColumn(ACTIVE).getExtensions(),
         ComponentRenderer.class));
