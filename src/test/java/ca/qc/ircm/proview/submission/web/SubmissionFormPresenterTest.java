@@ -740,10 +740,13 @@ public class SubmissionFormPresenterTest {
     assertEquals(3, design.samplesGrid.getColumns().size());
     assertEquals(SAMPLE_NAME_PROPERTY, design.samplesGrid.getColumns().get(0).getId());
     assertFalse(design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isHidden());
+    assertFalse(design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isSortable());
     assertEquals(SAMPLE_NUMBER_PROTEIN_PROPERTY, design.samplesGrid.getColumns().get(1).getId());
     assertTrue(design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isHidden());
+    assertFalse(design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isSortable());
     assertEquals(PROTEIN_WEIGHT_PROPERTY, design.samplesGrid.getColumns().get(2).getId());
     assertTrue(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
+    assertFalse(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isSortable());
   }
 
   @Test
@@ -754,10 +757,13 @@ public class SubmissionFormPresenterTest {
     assertEquals(3, design.samplesGrid.getColumns().size());
     assertEquals(SAMPLE_NAME_PROPERTY, design.samplesGrid.getColumns().get(0).getId());
     assertFalse(design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isHidden());
+    assertFalse(design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isSortable());
     assertEquals(SAMPLE_NUMBER_PROTEIN_PROPERTY, design.samplesGrid.getColumns().get(1).getId());
     assertFalse(design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isHidden());
+    assertFalse(design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isSortable());
     assertEquals(PROTEIN_WEIGHT_PROPERTY, design.samplesGrid.getColumns().get(2).getId());
     assertFalse(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
+    assertFalse(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isSortable());
   }
 
   @Test
@@ -766,8 +772,11 @@ public class SubmissionFormPresenterTest {
 
     assertEquals(3, design.standardsGrid.getColumns().size());
     assertEquals(STANDARD_NAME_PROPERTY, design.standardsGrid.getColumns().get(0).getId());
+    assertFalse(design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).isSortable());
     assertEquals(STANDARD_QUANTITY_PROPERTY, design.standardsGrid.getColumns().get(1).getId());
+    assertFalse(design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY).isSortable());
     assertEquals(STANDARD_COMMENT_PROPERTY, design.standardsGrid.getColumns().get(2).getId());
+    assertFalse(design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY).isSortable());
   }
 
   @Test
@@ -776,9 +785,12 @@ public class SubmissionFormPresenterTest {
 
     assertEquals(3, design.contaminantsGrid.getColumns().size());
     assertEquals(CONTAMINANT_NAME_PROPERTY, design.contaminantsGrid.getColumns().get(0).getId());
+    assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY).isSortable());
     assertEquals(CONTAMINANT_QUANTITY_PROPERTY,
         design.contaminantsGrid.getColumns().get(1).getId());
+    assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY).isSortable());
     assertEquals(CONTAMINANT_COMMENT_PROPERTY, design.contaminantsGrid.getColumns().get(2).getId());
+    assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY).isSortable());
   }
 
   @Test
@@ -789,8 +801,10 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, design.gelImagesGrid.getColumns().size());
     assertEquals(GEL_IMAGE_FILENAME_PROPERTY, design.gelImagesGrid.getColumns().get(0).getId());
     assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isHidden());
+    assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isSortable());
     assertEquals(REMOVE_GEL_IMAGE, design.gelImagesGrid.getColumns().get(1).getId());
     assertTrue(design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
+    assertFalse(design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isSortable());
   }
 
   @Test
@@ -800,8 +814,10 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, design.gelImagesGrid.getColumns().size());
     assertEquals(GEL_IMAGE_FILENAME_PROPERTY, design.gelImagesGrid.getColumns().get(0).getId());
     assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isHidden());
+    assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isSortable());
     assertEquals(REMOVE_GEL_IMAGE, design.gelImagesGrid.getColumns().get(1).getId());
     assertFalse(design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
+    assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isSortable());
   }
 
   @Test
@@ -812,8 +828,10 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, design.filesGrid.getColumns().size());
     assertEquals(FILE_FILENAME_PROPERTY, design.filesGrid.getColumns().get(0).getId());
     assertFalse(design.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isHidden());
+    assertFalse(design.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isSortable());
     assertEquals(REMOVE_FILE, design.filesGrid.getColumns().get(1).getId());
     assertTrue(design.filesGrid.getColumn(REMOVE_FILE).isHidden());
+    assertFalse(design.filesGrid.getColumn(REMOVE_FILE).isSortable());
   }
 
   @Test
@@ -823,8 +841,10 @@ public class SubmissionFormPresenterTest {
     assertEquals(2, design.filesGrid.getColumns().size());
     assertEquals(FILE_FILENAME_PROPERTY, design.filesGrid.getColumns().get(0).getId());
     assertFalse(design.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isHidden());
+    assertFalse(design.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isSortable());
     assertEquals(REMOVE_FILE, design.filesGrid.getColumns().get(1).getId());
     assertFalse(design.filesGrid.getColumn(REMOVE_FILE).isHidden());
+    assertFalse(design.filesGrid.getColumn(REMOVE_FILE).isSortable());
   }
 
   @Test

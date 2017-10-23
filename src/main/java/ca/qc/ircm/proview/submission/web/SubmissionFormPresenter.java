@@ -411,9 +411,11 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.filesGrid.addStyleName(COMPONENTS);
     design.filesGrid.addColumn(file -> downloadFileButton(file), new ComponentRenderer())
         .setId(FILE_FILENAME_PROPERTY)
-        .setCaption(resources.message(FILES_PROPERTY + "." + FILE_FILENAME_PROPERTY));
+        .setCaption(resources.message(FILES_PROPERTY + "." + FILE_FILENAME_PROPERTY))
+        .setSortable(false);
     design.filesGrid.addColumn(file -> removeFileButton(file), new ComponentRenderer())
-        .setId(REMOVE_FILE).setCaption(resources.message(FILES_PROPERTY + "." + REMOVE_FILE));
+        .setId(REMOVE_FILE).setCaption(resources.message(FILES_PROPERTY + "." + REMOVE_FILE))
+        .setSortable(false);
     design.filesGrid.setDataProvider(filesDataProvider);
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.addStyleName(REQUIRED);
@@ -537,14 +539,15 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.samplesGrid.setDataProvider(samplesDataProvider);
     design.samplesGrid.addColumn(sample -> sampleNameTextField(sample), new ComponentRenderer())
         .setId(SAMPLE_NAME_PROPERTY).setCaption(resources.message(SAMPLE_NAME_PROPERTY))
-        .setWidth(230);
+        .setWidth(230).setSortable(false);
     design.samplesGrid
         .addColumn(sample -> sampleNumberProteinTextField(sample), new ComponentRenderer())
         .setId(SAMPLE_NUMBER_PROTEIN_PROPERTY)
-        .setCaption(resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY)).setWidth(230);
+        .setCaption(resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY)).setWidth(230)
+        .setSortable(false);
     design.samplesGrid.addColumn(sample -> proteinWeightTextField(sample), new ComponentRenderer())
         .setId(PROTEIN_WEIGHT_PROPERTY).setCaption(resources.message(PROTEIN_WEIGHT_PROPERTY))
-        .setWidth(230);
+        .setWidth(230).setSortable(false);
     design.fillSamplesButton.addStyleName(FILL_SAMPLES_PROPERTY);
     design.fillSamplesButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillSamplesButton.setCaption(resources.message(FILL_SAMPLES_PROPERTY));
@@ -694,15 +697,18 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.standardsGrid
         .addColumn(standard -> standardNameTextField(standard), new ComponentRenderer())
         .setId(STANDARD_NAME_PROPERTY)
-        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_NAME_PROPERTY));
+        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_NAME_PROPERTY))
+        .setSortable(false);
     design.standardsGrid
         .addColumn(standard -> standardQuantityTextField(standard), new ComponentRenderer())
         .setId(STANDARD_QUANTITY_PROPERTY)
-        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY));
+        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY))
+        .setSortable(false);
     design.standardsGrid
         .addColumn(standard -> standardCommentTextField(standard), new ComponentRenderer())
         .setId(STANDARD_COMMENT_PROPERTY)
-        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENT_PROPERTY));
+        .setCaption(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENT_PROPERTY))
+        .setSortable(false);
     design.fillStandardsButton.addStyleName(FILL_STANDARDS_PROPERTY);
     design.fillStandardsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS_PROPERTY));
@@ -791,13 +797,16 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.contaminantsGrid.setDataProvider(contaminantsDataProvider);
     design.contaminantsGrid.addColumn(contaminant -> contaminantNameTextField(contaminant))
         .setId(CONTAMINANT_NAME_PROPERTY)
-        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_NAME_PROPERTY));
+        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_NAME_PROPERTY))
+        .setSortable(false);
     design.contaminantsGrid.addColumn(contaminant -> contaminantQuantityTextField(contaminant))
         .setId(CONTAMINANT_QUANTITY_PROPERTY)
-        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY));
+        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY))
+        .setSortable(false);
     design.contaminantsGrid.addColumn(contaminant -> contaminantCommentTextField(contaminant))
         .setId(CONTAMINANT_COMMENT_PROPERTY)
-        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENT_PROPERTY));
+        .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENT_PROPERTY))
+        .setSortable(false);
     design.fillContaminantsButton.addStyleName(FILL_CONTAMINANTS_PROPERTY);
     design.fillContaminantsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillContaminantsButton.setCaption(resources.message(FILL_CONTAMINANTS_PROPERTY));
@@ -935,9 +944,11 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.gelImagesGrid.addStyleName(COMPONENTS);
     design.gelImagesGrid.addColumn(image -> downloadGelImageButton(image))
         .setId(GEL_IMAGE_FILENAME_PROPERTY)
-        .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + GEL_IMAGE_FILENAME_PROPERTY));
+        .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + GEL_IMAGE_FILENAME_PROPERTY))
+        .setSortable(false);
     design.gelImagesGrid.addColumn(image -> removeGelImageButton(image)).setId(REMOVE_GEL_IMAGE)
-        .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE));
+        .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE))
+        .setSortable(false);
     design.gelImagesGrid.setDataProvider(gelImagesDataProvider);
   }
 
@@ -1025,8 +1036,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.instrumentOptions.addStyleName(INSTRUMENT_PROPERTY);
     design.instrumentOptions.setCaption(resources.message(INSTRUMENT_PROPERTY));
     design.instrumentOptions.setItems(instrumentValues());
-    design.instrumentOptions.setItemCaptionGenerator(instrument -> instrument != null
-        ? instrument.getLabel(locale) : MassDetectionInstrument.getNullLabel(locale));
+    design.instrumentOptions
+        .setItemCaptionGenerator(instrument -> instrument != null ? instrument.getLabel(locale)
+            : MassDetectionInstrument.getNullLabel(locale));
     design.instrumentOptions
         .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : true);
     submissionBinder.forField(design.instrumentOptions)
@@ -1053,8 +1065,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.quantificationOptions.addStyleName(QUANTIFICATION_PROPERTY);
     design.quantificationOptions.setCaption(resources.message(QUANTIFICATION_PROPERTY));
     design.quantificationOptions.setItems(quantificationValues());
-    design.quantificationOptions.setItemCaptionGenerator(quantification -> quantification != null
-        ? quantification.getLabel(locale) : Quantification.getNullLabel(locale));
+    design.quantificationOptions.setItemCaptionGenerator(
+        quantification -> quantification != null ? quantification.getLabel(locale)
+            : Quantification.getNullLabel(locale));
     submissionBinder.forField(design.quantificationOptions)
         .withNullRepresentation(Quantification.NULL).bind(QUANTIFICATION_PROPERTY);
     design.quantificationLabelsField.addStyleName(QUANTIFICATION_LABELS_PROPERTY);
@@ -1984,7 +1997,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     sampleCountBinder.setBean(new ItemCount(samples.size()));
     design.sampleContainerTypeOptions.setReadOnly(false);
     design.sampleContainerTypeOptions.setValue(firstSample.getOriginalContainer().getType());
-    design.samplesGrid.sort(SAMPLE_NAME_PROPERTY);
     Structure structure = submission.getStructure();
     updateStructureButton(structure);
     List<Standard> standards = firstSample.getStandards();
