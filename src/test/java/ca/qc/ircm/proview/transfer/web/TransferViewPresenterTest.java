@@ -84,10 +84,12 @@ import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
+import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -336,6 +338,7 @@ public class TransferViewPresenterTest {
     assertEquals(resources.message(DESTINATION_TUBE),
         design.transfers.getColumn(DESTINATION_TUBE).getCaption());
     assertTrue(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
+    assertFalse(design.transfers.getColumn(DESTINATION_TUBE).isSortable());
     for (TransferedSample ts : transfers) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
@@ -358,6 +361,7 @@ public class TransferViewPresenterTest {
     assertEquals(resources.message(DESTINATION_WELL),
         design.transfers.getColumn(DESTINATION_WELL).getCaption());
     assertTrue(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertFalse(design.transfers.getColumn(DESTINATION_WELL).isSortable());
     for (TransferedSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
@@ -520,6 +524,91 @@ public class TransferViewPresenterTest {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 3), field.getValue());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void down_NoWell() {
+    sourceTubes();
+    presenter.init(view);
+    presenter.enter("");
+    Plate plate = new Plate(null, "test");
+    plate.initWells();
+    design.destinationPlatesField.setValue(plate);
+    when(plateService.get(any(Long.class))).thenReturn(null);
+    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    for (TransferedSample ts : transfers) {
+      design.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+    }
+
+    design.down.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      assertEquals(null, field.getValue());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void down_OrderedBySampleDesc() {
+    sourceTubes();
+    presenter.init(view);
+    presenter.enter("");
+    Plate plate = new Plate(null, "test");
+    plate.initWells();
+    design.destinationPlatesField.setValue(plate);
+    when(plateService.get(any(Long.class))).thenReturn(null);
+    design.transfers.sort(SAMPLE, SortDirection.DESCENDING);
+    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    for (TransferedSample ts : transfers) {
+      design.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+    }
+
+    ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
+        .apply(transfers.get(2))).setValue(plate.well(0, 0));
+    design.down.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    int count = 0;
+    for (TransferedSample ts : VaadinUtils.gridItems(design.transfers)
+        .collect(Collectors.toList())) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      assertEquals(plate.well(count++, 0), field.getValue());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void down_OrderedBySourceDesc() {
+    sourceTubes();
+    presenter.init(view);
+    presenter.enter("");
+    Plate plate = new Plate(null, "test");
+    plate.initWells();
+    design.destinationPlatesField.setValue(plate);
+    when(plateService.get(any(Long.class))).thenReturn(null);
+    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    for (TransferedSample ts : transfers) {
+      design.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
+    }
+    design.transfers.sort(CONTAINER, SortDirection.DESCENDING);
+
+    ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
+        .apply(transfers.get(2))).setValue(plate.well(0, 0));
+    design.down.click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    int count = 0;
+    for (TransferedSample ts : VaadinUtils.gridItems(design.transfers)
+        .collect(Collectors.toList())) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      assertEquals(plate.well(count++, 0), field.getValue());
     }
   }
 

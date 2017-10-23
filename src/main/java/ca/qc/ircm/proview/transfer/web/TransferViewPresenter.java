@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
@@ -224,14 +225,14 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfers
         .addColumn(ts -> ts.getContainer() != null ? ts.getContainer().getFullName() : "")
         .setId(CONTAINER).setCaption(resources.message(CONTAINER));
-    design.transfers
-        .addColumn(ts -> ts.getDestinationContainer() != null
-            ? ts.getDestinationContainer().getFullName() : "")
+    design.transfers.addColumn(
+        ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
+            : "")
         .setId(DESTINATION).setCaption(resources.message(DESTINATION));
     design.transfers.addColumn(ts -> destinationTube(ts), new ComponentRenderer())
-        .setId(DESTINATION_TUBE).setCaption(resources.message(DESTINATION_TUBE));
+        .setId(DESTINATION_TUBE).setCaption(resources.message(DESTINATION_TUBE)).setSortable(false);
     design.transfers.addColumn(ts -> destinationWell(ts), new ComponentRenderer())
-        .setId(DESTINATION_WELL).setCaption(resources.message(DESTINATION_WELL));
+        .setId(DESTINATION_WELL).setCaption(resources.message(DESTINATION_WELL)).setSortable(false);
   }
 
   private Binder<TransferedSample> binder(TransferedSample ts) {
@@ -271,7 +272,8 @@ public class TransferViewPresenter implements BinderValidator {
       field.setRequiredIndicatorVisible(true);
       field.setItemCaptionGenerator(well -> well.getName());
       field.setItems(design.destinationPlatesField.getValue() != null
-          ? design.destinationPlatesField.getValue().getWells() : Collections.emptyList());
+          ? design.destinationPlatesField.getValue().getWells()
+          : Collections.emptyList());
       destinationWells.put(ts, field);
       return field;
     }
@@ -329,15 +331,18 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private void down() {
-    Well firstWell = destinationWells.get(transfers.get(0)).getValue();
-    Plate plate = design.destinationPlatesField.getValue();
-    List<Well> wells = plate.wells(new WellLocation(firstWell.getRow(), firstWell.getColumn()),
-        new WellLocation(plate.getRowCount() - 1, plate.getColumnCount() - 1));
-    wells.sort(new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
-    int index = 0;
-    for (TransferedSample ts : transfers) {
-      ComboBox<Well> field = destinationWells.get(ts);
-      field.setValue(wells.get(index++));
+    List<TransferedSample> tss = gridItems(design.transfers).collect(Collectors.toList());
+    Well firstWell = destinationWells.get(tss.get(0)).getValue();
+    if (firstWell != null) {
+      Plate plate = design.destinationPlatesField.getValue();
+      List<Well> wells = plate.wells(new WellLocation(firstWell.getRow(), firstWell.getColumn()),
+          new WellLocation(plate.getRowCount() - 1, plate.getColumnCount() - 1));
+      wells.sort(new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
+      int index = 0;
+      for (TransferedSample ts : tss) {
+        ComboBox<Well> field = destinationWells.get(ts);
+        field.setValue(wells.get(index++));
+      }
     }
   }
 
@@ -486,7 +491,8 @@ public class TransferViewPresenter implements BinderValidator {
       if (design.type.getValue() == WELL) {
         // Reset samples.
         Plate database = plateService.get(design.destinationPlatesField.getValue() != null
-            ? design.destinationPlatesField.getValue().getId() : null);
+            ? design.destinationPlatesField.getValue().getId()
+            : null);
         if (database == null) {
           design.destinationPlatesField.getValue().getWells().forEach(well -> well.setSample(null));
         } else {
