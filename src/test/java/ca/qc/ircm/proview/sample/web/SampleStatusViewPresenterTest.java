@@ -131,7 +131,6 @@ public class SampleStatusViewPresenterTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void styles() {
     presenter.init(view);
     presenter.enter("");
@@ -140,58 +139,70 @@ public class SampleStatusViewPresenterTest {
     assertTrue(design.samplesGrid.getStyleName().contains(SAMPLES));
     assertTrue(design.samplesGrid.getStyleName().contains(COMPONENTS));
     assertTrue(design.saveButton.getStyleName().contains(SAVE));
-    SubmissionSample sample = samples.get(0);
-    ComboBox<SampleStatus> newStatus = (ComboBox<SampleStatus>) design.samplesGrid
-        .getColumn(NEW_STATUS).getValueProvider().apply(sample);
-    assertTrue(newStatus.getStyleName().contains(NEW_STATUS));
-    Button down = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample);
-    assertTrue(down.getStyleName().contains(DOWN));
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void captions() {
     presenter.init(view);
     presenter.enter("");
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.headerLabel.getValue());
-    assertEquals(resources.message(NAME), design.samplesGrid.getColumn(NAME).getCaption());
-    assertEquals(resources.message(EXPERIENCE),
-        design.samplesGrid.getColumn(EXPERIENCE).getCaption());
-    assertEquals(resources.message(STATUS), design.samplesGrid.getColumn(STATUS).getCaption());
-    assertEquals(resources.message(NEW_STATUS),
-        design.samplesGrid.getColumn(NEW_STATUS).getCaption());
-    assertEquals(resources.message(DOWN), design.samplesGrid.getColumn(DOWN).getCaption());
     assertEquals(resources.message(SAVE), design.saveButton.getCaption());
-    SubmissionSample sample = samples.get(0);
-    Object statusValue = design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample);
-    assertEquals(sample.getStatus().getLabel(locale), statusValue);
-    ComboBox<SampleStatus> newStatus = (ComboBox<SampleStatus>) design.samplesGrid
-        .getColumn(NEW_STATUS).getValueProvider().apply(sample);
-    for (SampleStatus status : SampleStatus.values()) {
-      assertTrue(dataProvider(newStatus).getItems().contains(status));
-      assertEquals(status.getLabel(locale), newStatus.getItemCaptionGenerator().apply(status));
-    }
-    Button down = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample);
-    assertEquals(VaadinIcons.ARROW_DOWN, down.getIcon());
-    assertEquals(resources.message(DOWN), down.getIconAlternateText());
   }
 
   @Test
-  public void samplesGrid_Column() {
+  @SuppressWarnings("unchecked")
+  public void samplesGrid() {
     presenter.init(view);
+    presenter.enter("");
 
     assertTrue(design.samplesGrid.getSelectionModel() instanceof NoSelectionModel);
     assertEquals(NAME, design.samplesGrid.getColumns().get(0).getId());
     assertEquals(EXPERIENCE, design.samplesGrid.getColumns().get(1).getId());
     assertEquals(STATUS, design.samplesGrid.getColumns().get(2).getId());
     assertEquals(NEW_STATUS, design.samplesGrid.getColumns().get(3).getId());
-    assertTrue(containsInstanceOf(design.samplesGrid.getColumns().get(3).getExtensions(),
-        ComponentRenderer.class));
     assertEquals(DOWN, design.samplesGrid.getColumns().get(4).getId());
-    assertTrue(containsInstanceOf(design.samplesGrid.getColumns().get(4).getExtensions(),
+    assertEquals(resources.message(NAME), design.samplesGrid.getColumn(NAME).getCaption());
+    for (SubmissionSample sample : samples) {
+      assertEquals(sample.getName(),
+          design.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
+    }
+    assertEquals(resources.message(EXPERIENCE),
+        design.samplesGrid.getColumn(EXPERIENCE).getCaption());
+    for (SubmissionSample sample : samples) {
+      assertEquals(sample.getSubmission().getExperience(),
+          design.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
+    }
+    assertEquals(resources.message(STATUS), design.samplesGrid.getColumn(STATUS).getCaption());
+    for (SubmissionSample sample : samples) {
+      assertEquals(sample.getStatus().getLabel(locale),
+          design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
+    }
+    assertEquals(resources.message(NEW_STATUS),
+        design.samplesGrid.getColumn(NEW_STATUS).getCaption());
+    assertTrue(containsInstanceOf(design.samplesGrid.getColumn(NEW_STATUS).getExtensions(),
         ComponentRenderer.class));
+    for (SubmissionSample sample : samples) {
+      ComboBox<SampleStatus> field = (ComboBox<SampleStatus>) design.samplesGrid
+          .getColumn(NEW_STATUS).getValueProvider().apply(sample);
+      assertTrue(field.getStyleName().contains(NEW_STATUS));
+      assertEquals(sample.getStatus(), field.getValue());
+      for (SampleStatus status : SampleStatus.values()) {
+        assertTrue(dataProvider(field).getItems().contains(status));
+        assertEquals(status.getLabel(locale), field.getItemCaptionGenerator().apply(status));
+      }
+    }
+    assertEquals(resources.message(DOWN), design.samplesGrid.getColumn(DOWN).getCaption());
+    assertTrue(containsInstanceOf(design.samplesGrid.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    for (SubmissionSample sample : samples) {
+      Button button = (Button) design.samplesGrid.getColumn(DOWN).getValueProvider().apply(sample);
+      assertTrue(button.getStyleName().contains(DOWN));
+      assertEquals(null, button.getCaption());
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(DOWN), button.getIconAlternateText());
+    }
   }
 
   @Test

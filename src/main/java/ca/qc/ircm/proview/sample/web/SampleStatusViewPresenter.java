@@ -134,9 +134,9 @@ public class SampleStatusViewPresenter implements BinderValidator {
         .addColumn(sample -> databaseSamples.get(sample.getId()).getStatus().getLabel(locale))
         .setId(STATUS).setCaption(resources.message(STATUS));
     design.samplesGrid.addColumn(sample -> statusesComboBox(sample), new ComponentRenderer())
-        .setId(NEW_STATUS).setCaption(resources.message(NEW_STATUS));
+        .setId(NEW_STATUS).setCaption(resources.message(NEW_STATUS)).setSortable(false);
     design.samplesGrid.addColumn(sample -> downButton(sample), new ComponentRenderer()).setId(DOWN)
-        .setCaption(resources.message(DOWN));
+        .setCaption(resources.message(DOWN)).setSortable(false);
     design.samplesGrid.setSelectionMode(SelectionMode.NONE);
     design.saveButton.addStyleName(SAVE);
     design.saveButton.setCaption(resources.message(SAVE));
