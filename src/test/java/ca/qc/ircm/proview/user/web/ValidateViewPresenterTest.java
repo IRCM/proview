@@ -61,6 +61,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -135,6 +136,15 @@ public class ValidateViewPresenterTest {
     assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
     assertTrue(containsInstanceOf(design.usersGrid.getColumn(EMAIL).getExtensions(),
         ComponentRenderer.class));
+    Collator collator = Collator.getInstance(locale);
+    List<User> expectedSortedUsers = new ArrayList<>(usersToValidate);
+    List<User> sortedUsers = new ArrayList<>(usersToValidate);
+    expectedSortedUsers.sort((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
+    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.ASCENDING));
+    assertEquals(expectedSortedUsers, sortedUsers);
+    expectedSortedUsers.sort((u1, u2) -> -collator.compare(u1.getEmail(), u2.getEmail()));
+    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.DESCENDING));
+    assertEquals(expectedSortedUsers, sortedUsers);
     for (User user : usersToValidate) {
       Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
       assertEquals(user.getEmail(), button.getCaption());
