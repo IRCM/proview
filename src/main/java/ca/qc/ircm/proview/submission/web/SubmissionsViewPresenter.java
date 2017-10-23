@@ -245,13 +245,14 @@ public class SubmissionsViewPresenter {
         .setCaption(resources.message(DATE));
     design.submissionsGrid
         .addColumn(submission -> viewResultsButton(submission), new ComponentRenderer())
-        .setId(LINKED_TO_RESULTS).setCaption(resources.message(LINKED_TO_RESULTS));
+        .setId(LINKED_TO_RESULTS).setCaption(resources.message(LINKED_TO_RESULTS))
+        .setComparator((s1, s2) -> Boolean.compare(linkedToResults(s1), linkedToResults(s2)));
     design.submissionsGrid
         .addColumn(submission -> viewTreatmentsButton(submission), new ComponentRenderer())
-        .setId(TREATMENTS).setCaption(resources.message(TREATMENTS));
+        .setId(TREATMENTS).setCaption(resources.message(TREATMENTS)).setSortable(false);
     design.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
-        .setId(HISTORY).setCaption(resources.message(HISTORY));
+        .setId(HISTORY).setCaption(resources.message(HISTORY)).setSortable(false);
     if (authorizationService.hasManagerRole() || authorizationService.hasAdminRole()) {
       design.submissionsGrid.getColumn(USER).setHidable(true);
       design.submissionsGrid.getColumn(USER)
@@ -354,8 +355,7 @@ public class SubmissionsViewPresenter {
 
   private Button viewResultsButton(Submission submission) {
     MessageResource resources = view.getResources();
-    boolean results = submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
-        .filter(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0).count() > 0;
+    boolean results = linkedToResults(submission);
     Button button = new Button();
     button.addStyleName(LINKED_TO_RESULTS);
     button.setCaption(resources.message(LINKED_TO_RESULTS + "." + results));
@@ -366,6 +366,11 @@ public class SubmissionsViewPresenter {
       button.addStyleName(CONDITION_FALSE);
     }
     return button;
+  }
+
+  private boolean linkedToResults(Submission submission) {
+    return submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
+        .filter(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0).count() > 0;
   }
 
   private Button viewTreatmentsButton(Submission submission) {
