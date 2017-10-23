@@ -501,6 +501,7 @@ public class DigestionViewPresenterTest {
     assertTrue(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertTrue(design.removeLayout.isVisible());
+    assertEquals(digestion.getProtocol(), design.protocol.getValue());
     List<DigestedSample> tss = new ArrayList<>(dataProvider(design.digestions).getItems());
     assertEquals(digestion.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < digestion.getTreatmentSamples().size(); i++) {
