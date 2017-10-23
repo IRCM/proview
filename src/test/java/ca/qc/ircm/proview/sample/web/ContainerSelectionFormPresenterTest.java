@@ -151,10 +151,12 @@ public class ContainerSelectionFormPresenterTest {
       sourceWells.put(sample, wellsMap);
     });
     when(wellService.location(any(), any())).thenAnswer(i -> i.getArguments()[0] != null
-        ? sourceWells.get(i.getArguments()[0]).get(i.getArguments()[1]) : null);
+        ? sourceWells.get(i.getArguments()[0]).get(i.getArguments()[1])
+        : null);
     when(wellService.last(any()))
         .thenAnswer(i -> i.getArguments()[0] != null && !sourcePlates.isEmpty()
-            ? sourceWells.get(i.getArguments()[0]).get(sourcePlates.get(0)).get(0) : null);
+            ? sourceWells.get(i.getArguments()[0]).get(sourcePlates.get(0)).get(0)
+            : null);
     when(sampleService.get(any())).thenAnswer(i -> {
       Long id = i.getArgumentAt(0, Long.class);
       return id != null ? entityManager.find(Sample.class, id) : null;
@@ -255,6 +257,7 @@ public class ContainerSelectionFormPresenterTest {
         ComponentRenderer.class));
     assertEquals(resources.message(CONTAINER_TUBE),
         design.tubes.getColumn(CONTAINER_TUBE).getCaption());
+    assertFalse(design.tubes.getColumn(CONTAINER_TUBE).isSortable());
     for (Sample sample : samples) {
       ComboBox<Tube> field =
           (ComboBox<Tube>) design.tubes.getColumn(CONTAINER_TUBE).getValueProvider().apply(sample);

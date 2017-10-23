@@ -125,7 +125,7 @@ public class ContainerSelectionFormPresenter {
     design.tubes.addStyleName(COMPONENTS);
     design.tubes.addColumn(Sample::getName).setId(SAMPLE).setCaption(resources.message(SAMPLE));
     design.tubes.addColumn(sample -> tubesField(sample), new ComponentRenderer())
-        .setId(CONTAINER_TUBE).setCaption(resources.message(CONTAINER_TUBE));
+        .setId(CONTAINER_TUBE).setCaption(resources.message(CONTAINER_TUBE)).setSortable(false);
     design.platesPanel.addStyleName(PLATES_PANEL);
     design.platesPanel.setCaption(resources.message(PLATES_PANEL));
     design.plates.addStyleName(PLATES);
