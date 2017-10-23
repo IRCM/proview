@@ -54,6 +54,7 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -231,6 +232,7 @@ public class DigestionViewPresenterTest {
     assertEquals(resources.message(COMMENT), design.digestions.getColumn(COMMENT).getCaption());
     assertTrue(containsInstanceOf(design.digestions.getColumn(COMMENT).getExtensions(),
         ComponentRenderer.class));
+    assertFalse(design.digestions.getColumn(COMMENT).isSortable());
     for (DigestedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
@@ -259,6 +261,46 @@ public class DigestionViewPresenterTest {
     design.down.click();
 
     for (DigestedSample ts : treatments.getItems()) {
+      field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
+    }
+  }
+
+  @Test
+  public void down_OrderedBySampleDesc() {
+    presenter.init(view);
+    presenter.enter("");
+    design.digestions.sort(SAMPLE, SortDirection.DESCENDING);
+    final List<DigestedSample> treatments =
+        new ArrayList<>(dataProvider(design.digestions).getItems());
+    String comment = "test";
+    TextField field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider()
+        .apply(treatments.get(4));
+    field.setValue(comment);
+
+    design.down.click();
+
+    for (DigestedSample ts : treatments) {
+      field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
+    }
+  }
+
+  @Test
+  public void down_OrderedByContainerDesc() {
+    presenter.init(view);
+    presenter.enter("");
+    design.digestions.sort(CONTAINER, SortDirection.DESCENDING);
+    final List<DigestedSample> treatments =
+        new ArrayList<>(dataProvider(design.digestions).getItems());
+    String comment = "test";
+    TextField field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider()
+        .apply(treatments.get(5));
+    field.setValue(comment);
+
+    design.down.click();
+
+    for (DigestedSample ts : treatments) {
       field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertEquals(comment, field.getValue());
     }

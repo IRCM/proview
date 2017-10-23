@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.digestion.web;
 
 import static ca.qc.ircm.proview.digestion.QDigestedSample.digestedSample;
 import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -145,7 +146,7 @@ public class DigestionViewPresenter implements BinderValidator {
     design.digestions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
         .setCaption(resources.message(CONTAINER));
     design.digestions.addColumn(ts -> commentField(ts), new ComponentRenderer()).setId(COMMENT)
-        .setCaption(resources.message(COMMENT));
+        .setCaption(resources.message(COMMENT)).setSortable(false);
     design.down.addStyleName(DOWN);
     design.down.addStyleName(BUTTON_SKIP_ROW);
     design.down.setCaption(resources.message(DOWN));
@@ -188,7 +189,8 @@ public class DigestionViewPresenter implements BinderValidator {
 
   private void down() {
     if (!digestions.isEmpty()) {
-      String comment = commentFields.get(digestions.get(0)).getValue();
+      String comment =
+          commentFields.get(gridItems(design.digestions).findFirst().orElse(null)).getValue();
       commentFields.values().forEach(field -> field.setValue(comment));
     }
   }
