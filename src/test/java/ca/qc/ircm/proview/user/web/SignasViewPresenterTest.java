@@ -49,11 +49,11 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,6 +63,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -125,22 +126,54 @@ public class SignasViewPresenterTest {
   }
 
   @Test
-  public void usersGridColumns() {
-    List<Column<User, ?>> columns = design.usersGrid.getColumns();
-
-    assertEquals(EMAIL, columns.get(0).getId());
-    assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
-    assertEquals(NAME, columns.get(1).getId());
-    assertEquals(LABORATORY_NAME, columns.get(2).getId());
-    assertEquals(ORGANIZATION, columns.get(3).getId());
-    assertEquals(SIGN_AS, columns.get(4).getId());
-    assertTrue(containsInstanceOf(columns.get(4).getExtensions(), ComponentRenderer.class));
-  }
-
-  @Test
-  public void usersGridOrder() {
+  public void usersGrid() {
+    assertEquals(EMAIL, design.usersGrid.getColumns().get(0).getId());
+    assertEquals(NAME, design.usersGrid.getColumns().get(1).getId());
+    assertEquals(LABORATORY_NAME, design.usersGrid.getColumns().get(2).getId());
+    assertEquals(ORGANIZATION, design.usersGrid.getColumns().get(3).getId());
+    assertEquals(SIGN_AS, design.usersGrid.getColumns().get(4).getId());
+    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
+    assertTrue(containsInstanceOf(design.usersGrid.getColumn(EMAIL).getExtensions(),
+        ComponentRenderer.class));
+    Collator collator = Collator.getInstance(locale);
+    List<User> expectedSortedUsers = new ArrayList<>(users);
+    List<User> sortedUsers = new ArrayList<>(users);
+    expectedSortedUsers.sort((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
+    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.ASCENDING));
+    assertEquals(expectedSortedUsers, sortedUsers);
+    expectedSortedUsers.sort((u1, u2) -> -collator.compare(u1.getEmail(), u2.getEmail()));
+    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.DESCENDING));
+    assertEquals(expectedSortedUsers, sortedUsers);
+    for (User user : users) {
+      Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+      assertEquals(user.getEmail(), button.getCaption());
+      assertTrue(button.getStyleName().contains(EMAIL));
+    }
+    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
+    for (User user : users) {
+      assertEquals(user.getName(), design.usersGrid.getColumn(NAME).getValueProvider().apply(user));
+    }
+    assertEquals(resources.message(LABORATORY_NAME),
+        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
+    for (User user : users) {
+      assertEquals(user.getLaboratory().getName(),
+          design.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
+    }
+    assertEquals(resources.message(ORGANIZATION),
+        design.usersGrid.getColumn(ORGANIZATION).getCaption());
+    for (User user : users) {
+      assertEquals(user.getLaboratory().getOrganization(),
+          design.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
+    }
+    assertTrue(containsInstanceOf(design.usersGrid.getColumn(SIGN_AS).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.usersGrid.getColumn(SIGN_AS).isSortable());
+    for (User user : users) {
+      Button button = (Button) design.usersGrid.getColumn(SIGN_AS).getValueProvider().apply(user);
+      assertEquals(resources.message(SIGN_AS), button.getCaption());
+      assertTrue(button.getStyleName().contains(SIGN_AS));
+    }
     List<GridSortOrder<User>> sortOrders = design.usersGrid.getSortOrder();
-
     assertFalse(sortOrders.isEmpty());
     GridSortOrder<User> sortOrder = sortOrders.get(0);
     assertEquals(EMAIL, sortOrder.getSorted().getId());
@@ -230,7 +263,7 @@ public class SignasViewPresenterTest {
   @Test
   public void styles() {
     assertTrue(design.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(design.headerLabel.getStyleName().contains("h1"));
+    assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
     assertTrue(design.usersGrid.getStyleName().contains(USERS_GRID));
   }
 
@@ -238,21 +271,6 @@ public class SignasViewPresenterTest {
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.headerLabel.getValue());
-    final User user = users.get(0);
-    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
-    Button viewButton = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
-    assertTrue(viewButton.getStyleName().contains(EMAIL));
-    assertEquals(user.getEmail(), viewButton.getCaption());
-    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
-    assertEquals(resources.message(LABORATORY_NAME),
-        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
-    assertEquals(resources.message(ORGANIZATION),
-        design.usersGrid.getColumn(ORGANIZATION).getCaption());
-    assertEquals(resources.message(SIGN_AS), design.usersGrid.getColumn(SIGN_AS).getCaption());
-    Button signasButton =
-        (Button) design.usersGrid.getColumn(SIGN_AS).getValueProvider().apply(user);
-    assertTrue(signasButton.getStyleName().contains(SIGN_AS));
-    assertEquals(resources.message(SIGN_AS), signasButton.getCaption());
   }
 
   @Test

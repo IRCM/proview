@@ -42,6 +42,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import java.text.Collator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -117,9 +118,11 @@ public class SignasViewPresenter {
 
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
+    final Collator collator = Collator.getInstance(view.getLocale());
     design.usersGrid.setDataProvider(searchUsers());
     design.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
-        .setCaption(resources.message(EMAIL));
+        .setCaption(resources.message(EMAIL))
+        .setComparator((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
     design.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
     design.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
         .setCaption(resources.message(LABORATORY_NAME));
@@ -127,7 +130,7 @@ public class SignasViewPresenter {
         .setCaption(resources.message(ORGANIZATION));
     design.usersGrid.setFrozenColumnCount(2);
     design.usersGrid.addColumn(user -> signasButton(user), new ComponentRenderer()).setId(SIGN_AS)
-        .setCaption(resources.message(SIGN_AS));
+        .setCaption(resources.message(SIGN_AS)).setSortable(false);
     design.usersGrid.setFrozenColumnCount(2);
     design.usersGrid.addStyleName(COMPONENTS);
     design.usersGrid.sort(EMAIL, SortDirection.ASCENDING);
