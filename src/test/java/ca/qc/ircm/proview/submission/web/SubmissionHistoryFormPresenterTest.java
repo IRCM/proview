@@ -29,6 +29,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.S
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_LAST_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_STATUS;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static org.junit.Assert.assertEquals;
@@ -182,13 +183,20 @@ public class SubmissionHistoryFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertEquals(2, design.samples.getColumns().size());
+    assertEquals(3, design.samples.getColumns().size());
     assertEquals(SAMPLE_NAME, design.samples.getColumns().get(0).getId());
-    assertEquals(SAMPLE_LAST_CONTAINER, design.samples.getColumns().get(1).getId());
+    assertEquals(SAMPLE_STATUS, design.samples.getColumns().get(1).getId());
+    assertEquals(SAMPLE_LAST_CONTAINER, design.samples.getColumns().get(2).getId());
     assertEquals(resources.message(SAMPLE_NAME),
         design.samples.getColumn(SAMPLE_NAME).getCaption());
     assertEquals(sample1.getName(),
         design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample1));
+    assertEquals(sample2.getName(),
+        design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample2));
+    assertEquals(resources.message(SAMPLE_STATUS),
+        design.samples.getColumn(SAMPLE_STATUS).getCaption());
+    assertEquals(sample1.getStatus().getLabel(locale),
+        design.samples.getColumn(SAMPLE_STATUS).getValueProvider().apply(sample1));
     assertEquals(sample2.getName(),
         design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample2));
     assertEquals(resources.message(SAMPLE_LAST_CONTAINER),

@@ -47,6 +47,8 @@ public class SubmissionHistoryFormPresenter {
   public static final String SAMPLES = "samples";
   public static final String SAMPLE_NAME =
       SAMPLES + "." + submissionSample.name.getMetadata().getName();
+  public static final String SAMPLE_STATUS =
+      SAMPLES + "." + submissionSample.status.getMetadata().getName();
   public static final String SAMPLE_LAST_CONTAINER = SAMPLES + "." + "lastContainer";
   public static final String ACTIVITIES_PANEL = "activitiesPanel";
   public static final String ACTIVITIES = "activities";
@@ -103,8 +105,11 @@ public class SubmissionHistoryFormPresenter {
 
   private void prepareSamplesGrid() {
     MessageResource resources = view.getResources();
+    Locale locale = view.getLocale();
     design.samples.addColumn(sa -> sa.getName()).setId(SAMPLE_NAME)
         .setCaption(resources.message(SAMPLE_NAME));
+    design.samples.addColumn(sa -> sa.getStatus().getLabel(locale)).setId(SAMPLE_STATUS)
+        .setCaption(resources.message(SAMPLE_STATUS));
     design.samples.addColumn(sa -> sampleContainerService.last(sa).getFullName())
         .setId(SAMPLE_LAST_CONTAINER).setCaption(resources.message(SAMPLE_LAST_CONTAINER));
   }
