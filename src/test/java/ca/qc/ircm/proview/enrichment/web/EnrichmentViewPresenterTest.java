@@ -1,16 +1,22 @@
 package ca.qc.ircm.proview.enrichment.web;
 
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DELETED;
+import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.REMOVED;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.BAN_CONTAINERS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.CONTAINER;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.DOWN;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS_PANEL;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.EXPLANATION;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.HEADER;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.INVALID_CONTAINERS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.INVALID_ENRICHMENT;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.PROTOCOL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.PROTOCOL_PANEL;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAVE;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAVED;
@@ -27,6 +33,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -145,15 +153,22 @@ public class EnrichmentViewPresenterTest {
 
     assertTrue(design.header.getStyleName().contains(HEADER));
     assertTrue(design.header.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.deleted.getStyleName().contains(DELETED));
+    assertTrue(design.deleted.getStyleName().contains(ValoTheme.LABEL_FAILURE));
     assertTrue(design.protocolPanel.getStyleName().contains(PROTOCOL_PANEL));
     assertTrue(design.protocol.getStyleName().contains(PROTOCOL));
     assertTrue(design.enrichmentsPanel.getStyleName().contains(ENRICHMENTS_PANEL));
     assertTrue(design.enrichments.getStyleName().contains(ENRICHMENTS));
     assertTrue(design.enrichments.getStyleName().contains(COMPONENTS));
+    assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
+    assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
     assertTrue(design.down.getStyleName().contains(DOWN));
     assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
+    assertTrue(design.remove.getStyleName().contains(REMOVE));
+    assertTrue(design.remove.getStyleName().contains(ValoTheme.BUTTON_DANGER));
+    assertTrue(design.banContainers.getStyleName().contains(BAN_CONTAINERS));
   }
 
   @Test
@@ -162,11 +177,15 @@ public class EnrichmentViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
+    assertEquals(resources.message(DELETED), design.deleted.getValue());
     assertEquals(resources.message(PROTOCOL_PANEL), design.protocolPanel.getCaption());
     assertEquals(resources.message(ENRICHMENTS_PANEL), design.enrichmentsPanel.getCaption());
     assertEquals(resources.message(DOWN), design.down.getCaption());
     assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
+    assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());
+    assertEquals(resources.message(REMOVE), design.remove.getCaption());
+    assertEquals(resources.message(BAN_CONTAINERS), design.banContainers.getCaption());
   }
 
   @Test
@@ -345,10 +364,115 @@ public class EnrichmentViewPresenterTest {
   }
 
   @Test
+  public void save_Update() {
+    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+        sampleContainerService, applicationName);
+    Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
+    when(enrichmentService.get(any())).thenReturn(enrichment);
+    presenter.init(view);
+    presenter.enter("7");
+    design.protocol.setValue(entityManager.find(EnrichmentProtocol.class, 4L));
+    setFields();
+    design.explanation.setValue("test explanation");
+
+    design.save.click();
+
+    verify(view, never()).showError(any());
+    verify(enrichmentService).update(enrichmentCaptor.capture(), eq("test explanation"));
+    Enrichment savedEnrichment = enrichmentCaptor.getValue();
+    assertEquals((Long) 7L, savedEnrichment.getId());
+    assertEquals((Long) 4L, savedEnrichment.getProtocol().getId());
+    assertEquals(enrichment.getTreatmentSamples().size(),
+        savedEnrichment.getTreatmentSamples().size());
+    for (int i = 0; i < enrichment.getTreatmentSamples().size(); i++) {
+      EnrichedSample original = enrichment.getTreatmentSamples().get(i);
+      EnrichedSample digested = savedEnrichment.getTreatmentSamples().get(i);
+      assertEquals(original.getId(), digested.getId());
+      assertEquals(original.getSample(), digested.getSample());
+      assertEquals(original.getContainer(), digested.getContainer());
+      assertEquals(comments.get(i), digested.getComment());
+    }
+    verify(view).showTrayNotification(resources.message(SAVED, enrichment.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(EnrichmentView.VIEW_NAME, "7");
+  }
+
+  @Test
+  public void remove_NoExplanation() {
+    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+        sampleContainerService, applicationName);
+    Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
+    when(enrichmentService.get(any())).thenReturn(enrichment);
+    presenter.init(view);
+    presenter.enter("7");
+
+    design.remove.click();
+
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        design.explanation.getErrorMessage().getFormattedHtmlMessage());
+    verify(enrichmentService, never()).undoFailed(any(), any(), anyBoolean());
+  }
+
+  @Test
+  public void remove() {
+    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+        sampleContainerService, applicationName);
+    Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
+    when(enrichmentService.get(any())).thenReturn(enrichment);
+    presenter.init(view);
+    presenter.enter("7");
+    design.protocol.setValue(entityManager.find(EnrichmentProtocol.class, 4L));
+    setFields();
+    design.explanation.setValue("test explanation");
+
+    design.remove.click();
+
+    verify(view, never()).showError(any());
+    verify(enrichmentService).undoFailed(enrichmentCaptor.capture(), eq("test explanation"),
+        eq(false));
+    Enrichment savedEnrichment = enrichmentCaptor.getValue();
+    assertEquals((Long) 7L, savedEnrichment.getId());
+    verify(view).showTrayNotification(resources.message(REMOVED, enrichment.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(EnrichmentView.VIEW_NAME, "7");
+  }
+
+  @Test
+  public void remove_BanContainers() {
+    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+        sampleContainerService, applicationName);
+    Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
+    when(enrichmentService.get(any())).thenReturn(enrichment);
+    presenter.init(view);
+    presenter.enter("7");
+    design.protocol.setValue(entityManager.find(EnrichmentProtocol.class, 4L));
+    setFields();
+    design.explanation.setValue("test explanation");
+    design.banContainers.setValue(true);
+
+    design.remove.click();
+
+    verify(view, never()).showError(any());
+    verify(enrichmentService).undoFailed(enrichmentCaptor.capture(), eq("test explanation"),
+        eq(true));
+    Enrichment savedEnrichment = enrichmentCaptor.getValue();
+    assertEquals((Long) 7L, savedEnrichment.getId());
+    verify(view).showTrayNotification(resources.message(REMOVED, enrichment.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(EnrichmentView.VIEW_NAME, "7");
+  }
+
+  @Test
   public void enter() {
     presenter.init(view);
     presenter.enter("");
 
+    assertFalse(design.deleted.isVisible());
+    assertFalse(design.protocol.isReadOnly());
+    assertFalse(design.explanationPanel.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.removeLayout.isVisible());
     List<EnrichedSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
@@ -369,13 +493,44 @@ public class EnrichmentViewPresenterTest {
     presenter.enter("7");
 
     verify(enrichmentService).get(7L);
-    assertTrue(design.protocol.isReadOnly());
+    assertFalse(design.deleted.isVisible());
+    assertFalse(design.protocol.isReadOnly());
+    assertTrue(design.explanationPanel.isVisible());
+    assertTrue(design.save.isVisible());
+    assertTrue(design.removeLayout.isVisible());
     assertEquals(enrichment.getProtocol(), design.protocol.getValue());
-    assertFalse(design.save.isVisible());
     List<EnrichedSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
     assertEquals(enrichment.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < enrichment.getTreatmentSamples().size(); i++) {
       assertEquals(enrichment.getTreatmentSamples().get(i), tss.get(i));
+    }
+  }
+
+  @Test
+  public void enter_EnrichmentDeleted() {
+    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+        sampleContainerService, applicationName);
+    Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
+    enrichment.setDeleted(true);
+    when(enrichmentService.get(any())).thenReturn(enrichment);
+    presenter.init(view);
+    presenter.enter("7");
+
+    verify(enrichmentService).get(7L);
+    assertTrue(design.deleted.isVisible());
+    assertTrue(design.protocol.isReadOnly());
+    assertFalse(design.explanationPanel.isVisible());
+    assertFalse(design.save.isVisible());
+    assertFalse(design.removeLayout.isVisible());
+    List<EnrichedSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
+    assertEquals(enrichment.getTreatmentSamples().size(), tss.size());
+    for (int i = 0; i < enrichment.getTreatmentSamples().size(); i++) {
+      assertEquals(enrichment.getTreatmentSamples().get(i), tss.get(i));
+    }
+    for (EnrichedSample ts : tss) {
+      TextField field =
+          (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertTrue(field.isReadOnly());
     }
   }
 

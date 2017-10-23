@@ -22,8 +22,10 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +49,7 @@ import javax.inject.Inject;
 public class EnrichmentViewPresenter implements BinderValidator {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
+  public static final String DELETED = "deleted";
   public static final String PROTOCOL_PANEL = "protocolPanel";
   public static final String PROTOCOL = enrichment.protocol.getMetadata().getName();
   public static final String ENRICHMENTS_PANEL = "enrichmentsPanel";
@@ -55,8 +58,13 @@ public class EnrichmentViewPresenter implements BinderValidator {
   public static final String CONTAINER = enrichedSample.container.getMetadata().getName();
   public static final String COMMENT = enrichedSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
+  public static final String EXPLANATION = "explanation";
+  public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
+  public static final String REMOVE = "remove";
+  public static final String REMOVED = "removed";
+  public static final String BAN_CONTAINERS = "banContainers";
   public static final String NO_CONTAINERS = "containers.empty";
   public static final String INVALID_CONTAINERS = "containers.invalid";
   public static final String SPLIT_CONTAINER_PARAMETERS = ",";
@@ -64,7 +72,6 @@ public class EnrichmentViewPresenter implements BinderValidator {
   private static final Logger logger = LoggerFactory.getLogger(EnrichmentViewPresenter.class);
   private EnrichmentView view;
   private EnrichmentViewDesign design;
-  private boolean readOnly;
   private Binder<Enrichment> binder = new BeanValidationBinder<>(Enrichment.class);
   private ListDataProvider<EnrichmentProtocol> protocolsProvider;
   private List<EnrichedSample> enrichments = new ArrayList<>();
@@ -111,6 +118,10 @@ public class EnrichmentViewPresenter implements BinderValidator {
     view.setTitle(resources.message(TITLE, applicationName));
     design.header.addStyleName(HEADER);
     design.header.setValue(resources.message(HEADER));
+    design.deleted.addStyleName(DELETED);
+    design.deleted.addStyleName(ValoTheme.LABEL_FAILURE);
+    design.deleted.setValue(resources.message(DELETED));
+    design.deleted.setVisible(false);
     design.protocolPanel.addStyleName(PROTOCOL_PANEL);
     design.protocolPanel.setCaption(resources.message(PROTOCOL_PANEL));
     design.protocol.addStyleName(PROTOCOL);
@@ -143,9 +154,19 @@ public class EnrichmentViewPresenter implements BinderValidator {
     design.down.setCaption(resources.message(DOWN));
     design.down.setIcon(VaadinIcons.ARROW_DOWN);
     design.down.addClickListener(e -> down());
+    design.explanationPanel.addStyleName(EXPLANATION_PANEL);
+    design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
+    design.explanationPanel.setVisible(false);
+    design.explanation.addStyleName(EXPLANATION);
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));
     design.save.addClickListener(e -> save());
+    design.removeLayout.setVisible(false);
+    design.remove.addStyleName(REMOVE);
+    design.remove.setCaption(resources.message(REMOVE));
+    design.remove.addClickListener(e -> remove());
+    design.banContainers.addStyleName(BAN_CONTAINERS);
+    design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
   private TextField commentField(EnrichedSample ts) {
@@ -166,12 +187,6 @@ public class EnrichmentViewPresenter implements BinderValidator {
     enrichmentBinders.put(ts, binder);
     binder.forField(commentField(ts)).withNullRepresentation("").bind(COMMENT);
     return binder;
-  }
-
-  private void updateReadOnly() {
-    design.protocol.setReadOnly(readOnly);
-    commentFields.values().forEach(field -> field.setReadOnly(readOnly));
-    design.save.setVisible(!readOnly);
   }
 
   private void down() {
@@ -206,9 +221,39 @@ public class EnrichmentViewPresenter implements BinderValidator {
       logger.debug("Saving new enrichment");
       Enrichment enrichment = binder.getBean();
       enrichment.setTreatmentSamples(enrichments);
-      enrichmentService.insert(enrichment);
+      if (enrichment.getId() != null) {
+        enrichmentService.update(enrichment, design.explanation.getValue());
+      } else {
+        enrichmentService.insert(enrichment);
+      }
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED,
+          enrichments.stream().map(ts -> ts.getSample().getId()).distinct().count()));
+      view.navigateTo(EnrichmentView.VIEW_NAME, String.valueOf(enrichment.getId()));
+    }
+  }
+
+  private boolean validateRemove() {
+    logger.trace("Validate remove enrichment {}", binder.getBean());
+    if (design.explanation.getValue().isEmpty()) {
+      final MessageResource generalResources = view.getGeneralResources();
+      String message = generalResources.message(REQUIRED);
+      logger.debug("Validation error: {}", message);
+      design.explanation.setComponentError(new UserError(message));
+      view.showError(generalResources.message(FIELD_NOTIFICATION));
+      return false;
+    }
+    return true;
+  }
+
+  private void remove() {
+    if (validateRemove()) {
+      logger.debug("Removing enrichment {}", binder.getBean());
+      Enrichment enrichment = binder.getBean();
+      enrichmentService.undoFailed(enrichment, design.explanation.getValue(),
+          design.banContainers.getValue());
+      MessageResource resources = view.getResources();
+      view.showTrayNotification(resources.message(REMOVED,
           enrichments.stream().map(ts -> ts.getSample().getId()).distinct().count()));
       view.navigateTo(EnrichmentView.VIEW_NAME, String.valueOf(enrichment.getId()));
     }
@@ -273,7 +318,11 @@ public class EnrichmentViewPresenter implements BinderValidator {
         binder.setBean(enrichment);
         if (enrichment != null) {
           enrichments = enrichment.getTreatmentSamples();
-          readOnly = true;
+          design.protocol.setReadOnly(enrichment.isDeleted());
+          design.deleted.setVisible(enrichment.isDeleted());
+          design.explanationPanel.setVisible(!enrichment.isDeleted());
+          design.save.setVisible(!enrichment.isDeleted());
+          design.removeLayout.setVisible(!enrichment.isDeleted());
         } else {
           view.showWarning(view.getResources().message(INVALID_ENRICHMENT));
         }
@@ -286,6 +335,5 @@ public class EnrichmentViewPresenter implements BinderValidator {
     enrichments.stream().forEach(ts -> {
       binder(ts);
     });
-    updateReadOnly();
   }
 }

@@ -1,21 +1,28 @@
 package ca.qc.ircm.proview.enrichment.web;
 
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.BAN_CONTAINERS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.COMMENT;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.DELETED;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.DOWN;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS_PANEL;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.EXPLANATION;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.HEADER;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.PROTOCOL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.PROTOCOL_PANEL;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAVE;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
+import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 public class EnrichmentViewPageObject extends AbstractTestBenchTestCase {
@@ -23,6 +30,10 @@ public class EnrichmentViewPageObject extends AbstractTestBenchTestCase {
 
   protected void open() {
     openView(EnrichmentView.VIEW_NAME);
+  }
+
+  protected void openWithEnrichment() {
+    openView(EnrichmentView.VIEW_NAME, "223");
   }
 
   protected void openWithWells() {
@@ -37,12 +48,20 @@ public class EnrichmentViewPageObject extends AbstractTestBenchTestCase {
     return wrap(LabelElement.class, findElement(className(HEADER)));
   }
 
+  protected LabelElement deleted() {
+    return wrap(LabelElement.class, findElement(className(DELETED)));
+  }
+
   protected PanelElement protocolPanel() {
     return wrap(PanelElement.class, findElement(className(PROTOCOL_PANEL)));
   }
 
   protected ComboBoxElement protocol() {
     return wrap(ComboBoxElement.class, findElement(className(PROTOCOL)));
+  }
+
+  protected void setProtocol(String name) {
+    protocol().selectByText(name);
   }
 
   protected PanelElement enrichmentsPanel() {
@@ -67,11 +86,31 @@ public class EnrichmentViewPageObject extends AbstractTestBenchTestCase {
     down().click();
   }
 
+  protected PanelElement explanationPanel() {
+    return wrap(PanelElement.class, findElement(className(EXPLANATION_PANEL)));
+  }
+
+  protected TextAreaElement explanation() {
+    return wrap(TextAreaElement.class, findElement(className(EXPLANATION)));
+  }
+
   protected ButtonElement save() {
     return wrap(ButtonElement.class, findElement(className(SAVE)));
   }
 
   protected void clickSave() {
     save().click();
+  }
+
+  protected ButtonElement remove() {
+    return wrap(ButtonElement.class, findElement(className(REMOVE)));
+  }
+
+  protected void clickRemove() {
+    remove().click();
+  }
+
+  protected CheckBoxElement banContainers() {
+    return wrap(CheckBoxElement.class, findElement(className(BAN_CONTAINERS)));
   }
 }

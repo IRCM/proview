@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.enrichment.web;
 import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -26,11 +27,15 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithSubject
 public class EnrichmentViewTest extends EnrichmentViewPageObject {
+  @PersistenceContext
+  private EntityManager entityManager;
   @Inject
   private JPAQueryFactory jpaQueryFactory;
   @Value("${spring.application.name}")
@@ -89,12 +94,33 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     open();
 
     assertTrue(optional(() -> header()).isPresent());
+    assertFalse(optional(() -> deleted()).isPresent());
     assertTrue(optional(() -> protocolPanel()).isPresent());
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> enrichmentsPanel()).isPresent());
     assertTrue(optional(() -> enrichments()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
+    assertFalse(optional(() -> explanationPanel()).isPresent());
+    assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
+    assertFalse(optional(() -> remove()).isPresent());
+    assertFalse(optional(() -> banContainers()).isPresent());
+  }
+
+  @Test
+  public void fieldsExistence_Update() throws Throwable {
+    openWithEnrichment();
+
+    assertTrue(optional(() -> header()).isPresent());
+    assertFalse(optional(() -> deleted()).isPresent());
+    assertTrue(optional(() -> protocolPanel()).isPresent());
+    assertTrue(optional(() -> protocol()).isPresent());
+    assertTrue(optional(() -> enrichmentsPanel()).isPresent());
+    assertTrue(optional(() -> enrichments()).isPresent());
+    assertTrue(optional(() -> explanationPanel()).isPresent());
+    assertTrue(optional(() -> explanation()).isPresent());
+    assertTrue(optional(() -> save()).isPresent());
+    assertTrue(optional(() -> remove()).isPresent());
+    assertTrue(optional(() -> banContainers()).isPresent());
   }
 
   @Test
@@ -175,6 +201,33 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
     assertEquals((Long) 248L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComment());
+  }
+
+  @Test
+  public void update() throws Throwable {
+    openWithEnrichment();
+    setComment(0, "test comment");
+    setProtocol("enrichment_protocol_2");
+    clickDown();
+
+    clickSave();
+
+    assertEquals(viewUrl(EnrichmentView.VIEW_NAME, "223"), getDriver().getCurrentUrl());
+    Enrichment savedEnrichment = entityManager.find(Enrichment.class, 223L);
+    assertEquals((Long) 4L, savedEnrichment.getProtocol().getId());
+    assertEquals(2, savedEnrichment.getTreatmentSamples().size());
+    Optional<EnrichedSample> opTs = find(savedEnrichment.getTreatmentSamples(), 579);
+    assertTrue(opTs.isPresent());
+    EnrichedSample ts = opTs.get();
+    assertEquals((Long) 579L, ts.getSample().getId());
+    assertEquals((Long) 800L, ts.getContainer().getId());
+    assertEquals("test comment", ts.getComment());
+    opTs = find(savedEnrichment.getTreatmentSamples(), 580);
+    assertTrue(opTs.isPresent());
+    ts = opTs.get();
+    assertEquals((Long) 580L, ts.getSample().getId());
+    assertEquals((Long) 812L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
   }
 }
