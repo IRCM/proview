@@ -106,14 +106,17 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.text.Collator;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -236,6 +239,20 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidable());
     assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());
     assertTrue(design.submissionsGrid.getColumn(EXPERIENCE).isSortable());
+    Collator collator = Collator.getInstance(locale);
+    Comparator<Submission> experienceComparator =
+        (s1, s2) -> collator.compare(Objects.toString(s1.getExperience(), ""),
+            Objects.toString(s2.getExperience(), ""));
+    List<Submission> expectedSortedSubmissions = new ArrayList<>(submissions);
+    List<Submission> sortedSubmissions = new ArrayList<>(submissions);
+    expectedSortedSubmissions.sort(experienceComparator);
+    sortedSubmissions
+        .sort(design.submissionsGrid.getColumn(EXPERIENCE).getComparator(SortDirection.ASCENDING));
+    assertEquals(expectedSortedSubmissions, sortedSubmissions);
+    expectedSortedSubmissions.sort(experienceComparator.reversed());
+    sortedSubmissions
+        .sort(design.submissionsGrid.getColumn(EXPERIENCE).getComparator(SortDirection.DESCENDING));
+    assertEquals(expectedSortedSubmissions, sortedSubmissions);
     assertEquals(USER, columns.get(1).getId());
     assertEquals(resources.message(USER), design.submissionsGrid.getColumn(USER).getCaption());
     assertEquals(submission.getUser().getName(),

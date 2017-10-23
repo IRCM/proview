@@ -61,11 +61,13 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import java.text.Collator;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -224,11 +226,14 @@ public class SubmissionsViewPresenter {
     final Locale locale = view.getLocale();
     final DateTimeFormatter dateFormatter =
         DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
+    final Collator collator = Collator.getInstance(locale);
     design.submissionsGrid.addStyleName(SUBMISSIONS);
     design.submissionsGrid.addStyleName(COMPONENTS);
     design.submissionsGrid.setDataProvider(searchSubmissions());
     design.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
-        .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE));
+        .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE))
+        .setComparator((s1, s2) -> collator.compare(Objects.toString(s1.getExperience(), ""),
+            Objects.toString(s2.getExperience(), "")));
     design.submissionsGrid.addColumn(submission -> submission.getUser().getName()).setId(USER)
         .setCaption(resources.message(USER))
         .setDescriptionGenerator(submission -> submission.getUser().getEmail());
