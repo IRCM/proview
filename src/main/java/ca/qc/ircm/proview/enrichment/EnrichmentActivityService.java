@@ -33,6 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -78,6 +81,69 @@ public class EnrichmentActivityService {
     activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
+  }
+
+  /**
+   * Creates an activity about update of enrichment.
+   *
+   * @param enrichment
+   *          enrichment containing new properties/values
+   * @param explanation
+   *          explanation
+   * @return activity about update of enrichment
+   */
+  @CheckReturnValue
+  public Optional<Activity> update(Enrichment enrichment, String explanation) {
+    User user = authorizationService.getCurrentUser();
+    final Enrichment oldEnrichment = entityManager.find(Enrichment.class, enrichment.getId());
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    updateBuilders.add(enrichmentUpdate(enrichment).column("protocol")
+        .oldValue(oldEnrichment.getProtocol().getId()).newValue(enrichment.getProtocol().getId()));
+    Map<Long, EnrichedSample> oldEnrichedSampleIds = oldEnrichment.getTreatmentSamples().stream()
+        .collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
+    enrichment.getTreatmentSamples().stream()
+        .filter(ts -> !oldEnrichedSampleIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(enrichedSampleAction(ts, ActionType.INSERT)));
+    enrichment.getTreatmentSamples().stream()
+        .filter(ts -> oldEnrichedSampleIds.containsKey(ts.getId())).forEach(ts -> {
+          updateBuilders.add(enrichedSampleAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldEnrichedSampleIds.get(ts.getId()).getSample().getId())
+              .newValue(ts.getSample().getId()));
+          updateBuilders.add(enrichedSampleAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldEnrichedSampleIds.get(ts.getId()).getContainer().getId())
+              .newValue(ts.getContainer().getId()));
+          updateBuilders.add(enrichedSampleAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldEnrichedSampleIds.get(ts.getId()).getComment())
+              .newValue(ts.getComment()));
+        });
+
+    Collection<UpdateActivity> updates =
+        updateBuilders.stream().filter(builder -> builder.isChanged())
+            .map(builder -> builder.build()).collect(Collectors.toList());
+
+    if (!updates.isEmpty()) {
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(enrichment.getId());
+      activity.setUser(user);
+      activity.setTableName("treatment");
+      activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
+      activity.setUpdates(new LinkedList<>(updates));
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  private UpdateActivityBuilder enrichmentUpdate(Enrichment enrichment) {
+    return new UpdateActivityBuilder().tableName("treatment").recordId(enrichment.getId())
+        .actionType(ActionType.UPDATE);
+  }
+
+  private UpdateActivityBuilder enrichedSampleAction(EnrichedSample ts, ActionType actionType) {
+    return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
+        .actionType(actionType);
   }
 
   /**

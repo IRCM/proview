@@ -69,8 +69,8 @@ public class EnrichmentProtocolServiceTest {
    */
   @Before
   public void beforeTest() {
-    enrichmentProtocolService = new EnrichmentProtocolService(entityManager,
-        queryFactory, protocolActivityService, activityService, authorizationService);
+    enrichmentProtocolService = new EnrichmentProtocolService(entityManager, queryFactory,
+        protocolActivityService, activityService, authorizationService);
   }
 
   @Test
@@ -95,8 +95,9 @@ public class EnrichmentProtocolServiceTest {
     List<EnrichmentProtocol> protocols = enrichmentProtocolService.all();
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(1, protocols.size());
+    assertEquals(2, protocols.size());
     assertEquals(true, protocols.contains(enrichmentProtocolService.get(2L)));
+    assertEquals(true, protocols.contains(enrichmentProtocolService.get(4L)));
   }
 
   @Test

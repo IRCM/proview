@@ -18,12 +18,15 @@
 package ca.qc.ircm.proview.enrichment;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -42,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -61,8 +65,7 @@ public class EnrichmentActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    enrichmentActivityService =
-        new EnrichmentActivityService(entityManager, authorizationService);
+    enrichmentActivityService = new EnrichmentActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -75,7 +78,7 @@ public class EnrichmentActivityServiceTest {
     EnrichedSample enrichedSample = new EnrichedSample();
     enrichedSample.setSample(sample);
     enrichedSample.setContainer(sourceTube);
-    List<EnrichedSample> enrichedSamples = new ArrayList<EnrichedSample>();
+    List<EnrichedSample> enrichedSamples = new ArrayList<>();
     enrichedSamples.add(enrichedSample);
     Enrichment enrichment = new Enrichment();
     enrichment.setId(123456L);
@@ -90,6 +93,83 @@ public class EnrichmentActivityServiceTest {
     assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
+  }
+
+  @Test
+  public void update() {
+    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
+    entityManager.detach(enrichment);
+    enrichment.getTreatmentSamples().forEach(ts -> entityManager.detach(ts));
+    enrichment.setProtocol(entityManager.find(EnrichmentProtocol.class, 4L));
+    enrichment.getTreatmentSamples().get(0).setContainer(new Well(248L));
+    enrichment.getTreatmentSamples().get(0).setSample(new Control(444L));
+    enrichment.getTreatmentSamples().get(0).setComment("test");
+    EnrichedSample newEnrichedSample = new EnrichedSample();
+    newEnrichedSample.setId(400L);
+    newEnrichedSample.setContainer(new Tube(14L));
+    newEnrichedSample.setSample(new SubmissionSample(562L));
+    enrichment.getTreatmentSamples().add(newEnrichedSample);
+
+    Optional<Activity> optionalActivity =
+        enrichmentActivityService.update(enrichment, "test explanation");
+
+    assertTrue(optionalActivity.isPresent());
+    Activity activity = optionalActivity.get();
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals("treatment", activity.getTableName());
+    assertEquals(enrichment.getId(), activity.getRecordId());
+    assertEquals("test explanation", activity.getExplanation());
+    assertEquals(user, activity.getUser());
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity protocolActivity = new UpdateActivity();
+    protocolActivity.setActionType(ActionType.UPDATE);
+    protocolActivity.setTableName("treatment");
+    protocolActivity.setRecordId(enrichment.getId());
+    protocolActivity.setColumn("protocol");
+    protocolActivity.setOldValue("2");
+    protocolActivity.setNewValue("4");
+    expecteds.add(protocolActivity);
+    UpdateActivity newEnrichedSampleActivity = new UpdateActivity();
+    newEnrichedSampleActivity.setActionType(ActionType.INSERT);
+    newEnrichedSampleActivity.setTableName("treatmentsample");
+    newEnrichedSampleActivity.setRecordId(400L);
+    expecteds.add(newEnrichedSampleActivity);
+    UpdateActivity updateEnrichedSampleSampleActivity = new UpdateActivity();
+    updateEnrichedSampleSampleActivity.setActionType(ActionType.UPDATE);
+    updateEnrichedSampleSampleActivity.setTableName("treatmentsample");
+    updateEnrichedSampleSampleActivity.setRecordId(272L);
+    updateEnrichedSampleSampleActivity.setColumn("sampleId");
+    updateEnrichedSampleSampleActivity.setOldValue("579");
+    updateEnrichedSampleSampleActivity.setNewValue("444");
+    expecteds.add(updateEnrichedSampleSampleActivity);
+    UpdateActivity updateEnrichedSampleContainerActivity = new UpdateActivity();
+    updateEnrichedSampleContainerActivity.setActionType(ActionType.UPDATE);
+    updateEnrichedSampleContainerActivity.setTableName("treatmentsample");
+    updateEnrichedSampleContainerActivity.setRecordId(272L);
+    updateEnrichedSampleContainerActivity.setColumn("containerId");
+    updateEnrichedSampleContainerActivity.setOldValue("800");
+    updateEnrichedSampleContainerActivity.setNewValue("248");
+    expecteds.add(updateEnrichedSampleContainerActivity);
+    UpdateActivity updateEnrichedSampleCommentActivity = new UpdateActivity();
+    updateEnrichedSampleCommentActivity.setActionType(ActionType.UPDATE);
+    updateEnrichedSampleCommentActivity.setTableName("treatmentsample");
+    updateEnrichedSampleCommentActivity.setRecordId(272L);
+    updateEnrichedSampleCommentActivity.setColumn("comment");
+    updateEnrichedSampleCommentActivity.setOldValue(null);
+    updateEnrichedSampleCommentActivity.setNewValue("test");
+    expecteds.add(updateEnrichedSampleCommentActivity);
+    LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
+  }
+
+  @Test
+  public void update_NoChanges() {
+    Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
+    entityManager.detach(enrichment);
+
+    Optional<Activity> optionalActivity =
+        enrichmentActivityService.update(enrichment, "test explanation");
+
+    assertFalse(optionalActivity.isPresent());
   }
 
   @Test
@@ -125,7 +205,7 @@ public class EnrichmentActivityServiceTest {
     Enrichment enrichment = new Enrichment(7L);
     Tube sourceTube = new Tube(4L);
     Well well = new Well(130L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     bannedContainers.add(well);
 
@@ -137,7 +217,7 @@ public class EnrichmentActivityServiceTest {
     assertEquals(enrichment.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity bannedTubeActivity = new UpdateActivity();
     bannedTubeActivity.setActionType(ActionType.UPDATE);
     bannedTubeActivity.setTableName("samplecontainer");
@@ -161,7 +241,7 @@ public class EnrichmentActivityServiceTest {
   public void undoFailed_LongDescription() throws Throwable {
     Enrichment enrichment = new Enrichment(7L);
     Tube sourceTube = new Tube(4L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     String reason = "long reason having more than 255 characters "
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -169,8 +249,7 @@ public class EnrichmentActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-    Activity activity =
-        enrichmentActivityService.undoFailed(enrichment, reason, bannedContainers);
+    Activity activity = enrichmentActivityService.undoFailed(enrichment, reason, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

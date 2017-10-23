@@ -27,12 +27,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -59,6 +61,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -284,6 +287,83 @@ public class EnrichmentServiceTest {
     assertEquals((Long) 1L, enrichedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
     assertEquals((Long) 1L, enrichedSample.getContainer().getId());
+  }
+
+  @Test
+  public void update() {
+    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
+    entityManager.detach(enrichment);
+    enrichment.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
+    enrichment.setProtocol(entityManager.find(EnrichmentProtocol.class, 4L));
+    enrichment.getTreatmentSamples().get(0).setComment("test update");
+    enrichment.getTreatmentSamples().get(0).setContainer(new Well(248L));
+    enrichment.getTreatmentSamples().get(0).setSample(new Control(444L));
+    when(enrichmentActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+
+    enrichmentService.update(enrichment, "test explanation");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(enrichmentActivityService).update(eq(enrichment), eq("test explanation"));
+    verify(activityService).insert(activity);
+    enrichment = entityManager.find(Enrichment.class, 223L);
+    assertNotNull(enrichment);
+    assertEquals((Long) 4L, enrichment.getProtocol().getId());
+    assertEquals((Long) 248L, enrichment.getTreatmentSamples().get(0).getContainer().getId());
+    assertEquals((Long) 444L, enrichment.getTreatmentSamples().get(0).getSample().getId());
+    assertEquals("test update", enrichment.getTreatmentSamples().get(0).getComment());
+  }
+
+  @Test
+  public void update_NewProtocol() {
+    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
+    entityManager.detach(enrichment);
+    EnrichmentProtocol protocol = new EnrichmentProtocol(null, "test protocol");
+    enrichment.setProtocol(protocol);
+    when(enrichmentActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+    doAnswer(i -> {
+      entityManager.persist(i.getArgumentAt(0, EnrichmentProtocol.class));
+      return null;
+    }).when(enrichmentProtocolService).insert(any());
+
+    enrichmentService.update(enrichment, "test explanation");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(enrichmentProtocolService).insert(eq(protocol));
+    verify(enrichmentActivityService).update(eq(enrichment), eq("test explanation"));
+    verify(activityService).insert(activity);
+    enrichment = entityManager.find(Enrichment.class, 223L);
+    assertNotNull(enrichment);
+    assertNotNull(enrichment.getProtocol().getId());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_RemoveDigestedSample() {
+    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
+    entityManager.detach(enrichment);
+    enrichment.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
+    enrichment.getTreatmentSamples().remove(1);
+    when(enrichmentActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+
+    enrichmentService.update(enrichment, "test explanation");
+  }
+
+  @Test
+  public void update_NoActivity() {
+    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
+    entityManager.detach(enrichment);
+    when(enrichmentActivityService.update(any(), any())).thenReturn(Optional.empty());
+
+    enrichmentService.update(enrichment, "test explanation");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(enrichmentActivityService).update(eq(enrichment), eq("test explanation"));
+    verify(activityService, never()).insert(any());
+    enrichment = entityManager.find(Enrichment.class, 223L);
+    assertNotNull(enrichment);
+    assertEquals((Long) 2L, enrichment.getProtocol().getId());
   }
 
   @Test

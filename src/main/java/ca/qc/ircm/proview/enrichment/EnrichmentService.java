@@ -20,6 +20,8 @@ package ca.qc.ircm.proview.enrichment;
 import static ca.qc.ircm.proview.enrichment.QEnrichedSample.enrichedSample;
 import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
 
+import ca.qc.ircm.proview.digestion.DigestedSample;
+import ca.qc.ircm.proview.digestion.Digestion;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -40,6 +42,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -145,6 +150,38 @@ public class EnrichmentService extends BaseTreatmentService {
     entityManager.flush();
     Activity activity = enrichmentActivityService.insert(enrichment);
     activityService.insert(activity);
+  }
+
+  /**
+   * Updates enrichment's information in database.
+   *
+   * @param enrichment
+   *          enrichment containing new information
+   * @param explanation
+   *          explanation
+   */
+  public void update(Enrichment enrichment, String explanation) {
+    authorizationService.checkAdminRole();
+
+    Enrichment old = entityManager.find(Enrichment.class, enrichment.getId());
+    Set<Long> enrichedSampleIds =
+        enrichment.getTreatmentSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
+    if (old.getTreatmentSamples().stream().filter(ts -> !enrichedSampleIds.contains(ts.getId()))
+        .findAny().isPresent()) {
+      throw new IllegalArgumentException("Cannot remove " + DigestedSample.class.getSimpleName()
+          + " from " + Digestion.class.getSimpleName() + " on update");
+    }
+
+    if (enrichment.getProtocol().getId() == null) {
+      enrichmentProtocolService.insert(enrichment.getProtocol());
+    }
+
+    Optional<Activity> activity = enrichmentActivityService.update(enrichment, explanation);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
+    }
+
+    entityManager.merge(enrichment);
   }
 
   /**
