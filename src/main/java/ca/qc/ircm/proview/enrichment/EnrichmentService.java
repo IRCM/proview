@@ -20,8 +20,6 @@ package ca.qc.ircm.proview.enrichment;
 import static ca.qc.ircm.proview.enrichment.QEnrichedSample.enrichedSample;
 import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
 
-import ca.qc.ircm.proview.digestion.DigestedSample;
-import ca.qc.ircm.proview.digestion.Digestion;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -168,8 +166,8 @@ public class EnrichmentService extends BaseTreatmentService {
         enrichment.getTreatmentSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
     if (old.getTreatmentSamples().stream().filter(ts -> !enrichedSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
-      throw new IllegalArgumentException("Cannot remove " + DigestedSample.class.getSimpleName()
-          + " from " + Digestion.class.getSimpleName() + " on update");
+      throw new IllegalArgumentException("Cannot remove " + EnrichedSample.class.getSimpleName()
+          + " from " + Enrichment.class.getSimpleName() + " on update");
     }
 
     if (enrichment.getProtocol().getId() == null) {
