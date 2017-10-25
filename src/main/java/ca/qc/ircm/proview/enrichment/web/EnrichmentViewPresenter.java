@@ -25,7 +25,6 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
-import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -119,7 +118,6 @@ public class EnrichmentViewPresenter implements BinderValidator {
     design.header.addStyleName(HEADER);
     design.header.setValue(resources.message(HEADER));
     design.deleted.addStyleName(DELETED);
-    design.deleted.addStyleName(ValoTheme.LABEL_FAILURE);
     design.deleted.setValue(resources.message(DELETED));
     design.deleted.setVisible(false);
     design.protocolPanel.addStyleName(PROTOCOL_PANEL);
