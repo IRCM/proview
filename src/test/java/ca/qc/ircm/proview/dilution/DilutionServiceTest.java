@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -56,6 +57,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -232,6 +234,46 @@ public class DilutionServiceTest {
     assertEquals((Double) 10.0, dilutedSample.getSourceVolume());
     assertEquals("Methanol", dilutedSample.getSolvent());
     assertEquals((Double) 20.0, dilutedSample.getSolventVolume());
+  }
+
+  @Test
+  public void update() {
+    Dilution dilution = entityManager.find(Dilution.class, 210L);
+    entityManager.detach(dilution);
+    dilution.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
+    dilution.getTreatmentSamples().get(0).setSourceVolume(3.5);
+    dilution.getTreatmentSamples().get(0).setSolvent("ch3oh");
+    dilution.getTreatmentSamples().get(0).setSolventVolume(7.0);
+    dilution.getTreatmentSamples().get(0).setComment("test update");
+    dilution.getTreatmentSamples().get(0).setContainer(new Well(248L));
+    dilution.getTreatmentSamples().get(0).setSample(new Control(444L));
+    when(dilutionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+
+    dilutionService.update(dilution, "test explanation");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(dilutionActivityService).update(eq(dilution), eq("test explanation"));
+    verify(activityService).insert(activity);
+    dilution = entityManager.find(Dilution.class, 210L);
+    assertNotNull(dilution);
+    assertEquals((Long) 248L, dilution.getTreatmentSamples().get(0).getContainer().getId());
+    assertEquals((Long) 444L, dilution.getTreatmentSamples().get(0).getSample().getId());
+    assertEquals(3.5, dilution.getTreatmentSamples().get(0).getSourceVolume(), 0.0001);
+    assertEquals("ch3oh", dilution.getTreatmentSamples().get(0).getSolvent());
+    assertEquals(7.0, dilution.getTreatmentSamples().get(0).getSolventVolume(), 0.0001);
+    assertEquals("test update", dilution.getTreatmentSamples().get(0).getComment());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_RemoveDilutedSample() {
+    Dilution dilution = entityManager.find(Dilution.class, 210L);
+    entityManager.detach(dilution);
+    dilution.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
+    dilution.getTreatmentSamples().remove(1);
+    when(dilutionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+
+    dilutionService.update(dilution, "test explanation");
   }
 
   @Test

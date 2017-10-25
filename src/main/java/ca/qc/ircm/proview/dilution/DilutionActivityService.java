@@ -33,6 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -78,6 +81,71 @@ public class DilutionActivityService {
     activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
+  }
+
+  /**
+   * Creates an activity about update of dilution.
+   *
+   * @param dilution
+   *          dilution containing new properties/values
+   * @param explanation
+   *          explanation
+   * @return activity about update of dilution
+   */
+  @CheckReturnValue
+  public Optional<Activity> update(Dilution dilution, String explanation) {
+    User user = authorizationService.getCurrentUser();
+    final Dilution oldDilution = entityManager.find(Dilution.class, dilution.getId());
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    Map<Long, DilutedSample> oldDilutedSampleIds = oldDilution.getTreatmentSamples().stream()
+        .collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
+    dilution.getTreatmentSamples().stream()
+        .filter(ts -> !oldDilutedSampleIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(dilutedSampleAction(ts, ActionType.INSERT)));
+    dilution.getTreatmentSamples().stream()
+        .filter(ts -> oldDilutedSampleIds.containsKey(ts.getId())).forEach(ts -> {
+          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldDilutedSampleIds.get(ts.getId()).getSample().getId())
+              .newValue(ts.getSample().getId()));
+          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldDilutedSampleIds.get(ts.getId()).getContainer().getId())
+              .newValue(ts.getContainer().getId()));
+          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("sourceVolume")
+              .oldValue(oldDilutedSampleIds.get(ts.getId()).getSourceVolume())
+              .newValue(ts.getSourceVolume()));
+          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("solvent")
+              .oldValue(oldDilutedSampleIds.get(ts.getId()).getSolvent())
+              .newValue(ts.getSolvent()));
+          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("solventVolume")
+              .oldValue(oldDilutedSampleIds.get(ts.getId()).getSolventVolume())
+              .newValue(ts.getSolventVolume()));
+          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldDilutedSampleIds.get(ts.getId()).getComment())
+              .newValue(ts.getComment()));
+        });
+
+    Collection<UpdateActivity> updates =
+        updateBuilders.stream().filter(builder -> builder.isChanged())
+            .map(builder -> builder.build()).collect(Collectors.toList());
+
+    if (!updates.isEmpty()) {
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(dilution.getId());
+      activity.setUser(user);
+      activity.setTableName("treatment");
+      activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
+      activity.setUpdates(new LinkedList<>(updates));
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  private UpdateActivityBuilder dilutedSampleAction(DilutedSample ts, ActionType actionType) {
+    return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
+        .actionType(actionType);
   }
 
   /**

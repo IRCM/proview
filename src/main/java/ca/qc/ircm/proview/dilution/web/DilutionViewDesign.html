@@ -10,6 +10,9 @@
    <vaadin-label style-name="h1" plain-text _id="header">
      Dilution 
    </vaadin-label>
+   <vaadin-label style-name="failure" plain-text _id="deleted">
+     Dilution was removed 
+   </vaadin-label>
    <vaadin-panel _id="dilutionsPanel">
     <vaadin-vertical-layout>
      <vaadin-horizontal-layout width-full>
@@ -20,9 +23,20 @@
      </vaadin-horizontal-layout>
     </vaadin-vertical-layout>
    </vaadin-panel>
+   <vaadin-panel caption="Explanation" size-auto _id="explanationPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-text-area _id="explanation"></vaadin-text-area>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
    <vaadin-button style-name="primary" plain-text _id="save">
      Save 
    </vaadin-button>
+   <vaadin-horizontal-layout _id="removeLayout">
+    <vaadin-button style-name="danger" plain-text _id="remove">
+      Undo 
+    </vaadin-button>
+    <vaadin-check-box caption="Ban containers" _id="banContainers"></vaadin-check-box>
+   </vaadin-horizontal-layout>
   </vaadin-vertical-layout>
  </body>
 </html>

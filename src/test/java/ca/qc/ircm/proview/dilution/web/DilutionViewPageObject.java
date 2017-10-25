@@ -1,9 +1,15 @@
 package ca.qc.ircm.proview.dilution.web;
 
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.BAN_CONTAINERS;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.COMMENT;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DELETED;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DILUTIONS;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DILUTIONS_PANEL;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DOWN;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.EXPLANATION;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.HEADER;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SAVE;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SOLVENT;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SOLVENT_VOLUME;
@@ -12,9 +18,11 @@ import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
+import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 import java.util.Objects;
@@ -23,9 +31,14 @@ public class DilutionViewPageObject extends AbstractTestBenchTestCase {
   private static final int SOURCE_VOLUME_COLUMN = 2;
   private static final int SOLVENT_COLUMN = 3;
   private static final int SOLVENT_VOLUME_COLUMN = 4;
+  private static final int COMMENT_COLUMN = 5;
 
   protected void open() {
     openView(DilutionView.VIEW_NAME);
+  }
+
+  protected void openWithDilution() {
+    openView(DilutionView.VIEW_NAME, "210");
   }
 
   protected void openWithWells() {
@@ -38,6 +51,10 @@ public class DilutionViewPageObject extends AbstractTestBenchTestCase {
 
   protected LabelElement header() {
     return wrap(LabelElement.class, findElement(className(HEADER)));
+  }
+
+  protected LabelElement deleted() {
+    return wrap(LabelElement.class, findElement(className(DELETED)));
   }
 
   protected PanelElement dilutionsPanel() {
@@ -66,6 +83,12 @@ public class DilutionViewPageObject extends AbstractTestBenchTestCase {
     field.setValue(Objects.toString(solventVolume, ""));
   }
 
+  protected void setComment(int row, String comment) {
+    TextFieldElement field = wrap(TextFieldElement.class,
+        dilutions().getRow(row).getCell(COMMENT_COLUMN).findElement(className(COMMENT)));
+    field.setValue(Objects.toString(comment, ""));
+  }
+
   protected ButtonElement down() {
     return wrap(ButtonElement.class, findElement(className(DOWN)));
   }
@@ -74,11 +97,31 @@ public class DilutionViewPageObject extends AbstractTestBenchTestCase {
     down().click();
   }
 
+  protected PanelElement explanationPanel() {
+    return wrap(PanelElement.class, findElement(className(EXPLANATION_PANEL)));
+  }
+
+  protected TextAreaElement explanation() {
+    return wrap(TextAreaElement.class, findElement(className(EXPLANATION)));
+  }
+
   protected ButtonElement save() {
     return wrap(ButtonElement.class, findElement(className(SAVE)));
   }
 
   protected void clickSave() {
     save().click();
+  }
+
+  protected ButtonElement remove() {
+    return wrap(ButtonElement.class, findElement(className(REMOVE)));
+  }
+
+  protected void clickRemove() {
+    remove().click();
+  }
+
+  protected CheckBoxElement banContainers() {
+    return wrap(CheckBoxElement.class, findElement(className(BAN_CONTAINERS)));
   }
 }

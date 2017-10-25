@@ -1,14 +1,20 @@
 package ca.qc.ircm.proview.dilution.web;
 
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.BAN_CONTAINERS;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.CONTAINER;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DELETED;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DILUTIONS;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DILUTIONS_PANEL;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DOWN;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.EXPLANATION;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.HEADER;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.INVALID_CONTAINERS;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.INVALID_DILUTION;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.NO_CONTAINERS;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.REMOVE;
+import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.REMOVED;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SAVE;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SAVED;
@@ -30,6 +36,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -97,6 +105,7 @@ public class DilutionViewPresenterTest {
   private List<Double> sourceVolumes = new ArrayList<>();
   private List<String> solvents = new ArrayList<>();
   private List<Double> solventVolumes = new ArrayList<>();
+  private List<String> comments = new ArrayList<>();
 
   /**
    * Before test.
@@ -125,6 +134,8 @@ public class DilutionViewPresenterTest {
         .collect(Collectors.toList());
     solventVolumes =
         IntStream.range(0, containers.size()).mapToObj(i -> i * 5.0).collect(Collectors.toList());
+    comments = IntStream.range(0, containers.size()).mapToObj(i -> "comment" + i)
+        .collect(Collectors.toList());
     when(view.savedContainers()).thenReturn(new ArrayList<>(containers));
   }
 
@@ -148,6 +159,12 @@ public class DilutionViewPresenterTest {
           (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
       field.setValue(Objects.toString(solventVolumes.get(count++), ""));
     }
+    count = 0;
+    for (DilutedSample ts : treatments.getItems()) {
+      TextField field =
+          (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(ts);
+      field.setValue(Objects.toString(comments.get(count++), ""));
+    }
   }
 
   @Test
@@ -156,13 +173,20 @@ public class DilutionViewPresenterTest {
 
     assertTrue(design.header.getStyleName().contains(HEADER));
     assertTrue(design.header.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.deleted.getStyleName().contains(DELETED));
+    assertTrue(design.deleted.getStyleName().contains(ValoTheme.LABEL_FAILURE));
     assertTrue(design.dilutionsPanel.getStyleName().contains(DILUTIONS_PANEL));
     assertTrue(design.dilutions.getStyleName().contains(DILUTIONS));
     assertTrue(design.dilutions.getStyleName().contains(COMPONENTS));
     assertTrue(design.down.getStyleName().contains(DOWN));
     assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
+    assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
+    assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
+    assertTrue(design.remove.getStyleName().contains(REMOVE));
+    assertTrue(design.remove.getStyleName().contains(ValoTheme.BUTTON_DANGER));
+    assertTrue(design.banContainers.getStyleName().contains(BAN_CONTAINERS));
   }
 
   @Test
@@ -171,10 +195,14 @@ public class DilutionViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
+    assertEquals(resources.message(DELETED), design.deleted.getValue());
     assertEquals(resources.message(DILUTIONS_PANEL), design.dilutionsPanel.getCaption());
     assertEquals(resources.message(DOWN), design.down.getCaption());
     assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
+    assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());
+    assertEquals(resources.message(REMOVE), design.remove.getCaption());
+    assertEquals(resources.message(BAN_CONTAINERS), design.banContainers.getCaption());
   }
 
   @Test
@@ -529,9 +557,102 @@ public class DilutionViewPresenterTest {
       assertEquals(sourceVolumes.get(count), diluted.getSourceVolume(), 0.0001);
       assertEquals(solvents.get(count), diluted.getSolvent());
       assertEquals(solventVolumes.get(count), diluted.getSolventVolume(), 0.0001);
+      assertEquals(comments.get(count), diluted.getComment());
       count++;
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view).navigateTo(DilutionView.VIEW_NAME, "4");
+  }
+
+  @Test
+  public void save_Update() {
+    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
+    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    when(dilutionService.get(any())).thenReturn(dilution);
+    presenter.init(view);
+    presenter.enter("4");
+    setFields();
+    design.explanation.setValue("test explanation");
+
+    design.save.click();
+
+    verify(view, never()).showError(any());
+    verify(dilutionService).update(dilutionCaptor.capture(), eq("test explanation"));
+    Dilution savedDilution = dilutionCaptor.getValue();
+    assertEquals((Long) 4L, savedDilution.getId());
+    assertEquals(dilution.getTreatmentSamples().size(), savedDilution.getTreatmentSamples().size());
+    for (int i = 0; i < dilution.getTreatmentSamples().size(); i++) {
+      DilutedSample original = dilution.getTreatmentSamples().get(i);
+      DilutedSample diluted = savedDilution.getTreatmentSamples().get(i);
+      assertEquals(original.getId(), diluted.getId());
+      assertEquals(original.getSample(), diluted.getSample());
+      assertEquals(original.getContainer(), diluted.getContainer());
+      assertEquals(sourceVolumes.get(i), diluted.getSourceVolume(), 0.0001);
+      assertEquals(solvents.get(i), diluted.getSolvent());
+      assertEquals(solventVolumes.get(i), diluted.getSolventVolume(), 0.0001);
+      assertEquals(comments.get(i), diluted.getComment());
+    }
+    verify(view).showTrayNotification(resources.message(SAVED, dilution.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(DilutionView.VIEW_NAME, "4");
+  }
+
+  @Test
+  public void remove_NoExplanation() {
+    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
+    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    when(dilutionService.get(any())).thenReturn(dilution);
+    presenter.init(view);
+    presenter.enter("4");
+
+    design.remove.click();
+
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        design.explanation.getErrorMessage().getFormattedHtmlMessage());
+    verify(dilutionService, never()).undoFailed(any(), any(), anyBoolean());
+  }
+
+  @Test
+  public void remove() {
+    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
+    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    when(dilutionService.get(any())).thenReturn(dilution);
+    presenter.init(view);
+    presenter.enter("4");
+    setFields();
+    design.explanation.setValue("test explanation");
+
+    design.remove.click();
+
+    verify(view, never()).showError(any());
+    verify(dilutionService).undoFailed(dilutionCaptor.capture(), eq("test explanation"), eq(false));
+    Dilution savedDilution = dilutionCaptor.getValue();
+    assertEquals((Long) 4L, savedDilution.getId());
+    verify(view).showTrayNotification(resources.message(REMOVED, dilution.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(DilutionView.VIEW_NAME, "4");
+  }
+
+  @Test
+  public void remove_BanContainers() {
+    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
+    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    when(dilutionService.get(any())).thenReturn(dilution);
+    presenter.init(view);
+    presenter.enter("4");
+    setFields();
+    design.explanation.setValue("test explanation");
+    design.banContainers.setValue(true);
+
+    design.remove.click();
+
+    verify(view, never()).showError(any());
+    verify(dilutionService).undoFailed(dilutionCaptor.capture(), eq("test explanation"), eq(true));
+    Dilution savedDilution = dilutionCaptor.getValue();
+    assertEquals((Long) 4L, savedDilution.getId());
+    verify(view).showTrayNotification(resources.message(REMOVED, dilution.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(DilutionView.VIEW_NAME, "4");
   }
 
@@ -540,6 +661,10 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
+    assertFalse(design.deleted.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.removeLayout.isVisible());
     List<DilutedSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
@@ -547,6 +672,17 @@ public class DilutionViewPresenterTest {
       DilutedSample diluted = tss.get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
+    }
+    for (DilutedSample ts : tss) {
+      TextField field =
+          (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+      field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+      field = (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+      field = (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
     }
   }
 
@@ -559,8 +695,42 @@ public class DilutionViewPresenterTest {
     presenter.enter("4");
 
     verify(dilutionService).get(4L);
+    assertFalse(design.deleted.isVisible());
+    assertTrue(design.explanationPanel.isVisible());
+    assertTrue(design.save.isVisible());
+    assertTrue(design.removeLayout.isVisible());
+    List<DilutedSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
+    assertEquals(dilution.getTreatmentSamples().size(), tss.size());
+    for (int i = 0; i < dilution.getTreatmentSamples().size(); i++) {
+      assertEquals(dilution.getTreatmentSamples().get(i), tss.get(i));
+    }
+    for (DilutedSample ts : tss) {
+      TextField field =
+          (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+      field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+      field = (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+      field = (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+    }
+  }
+
+  @Test
+  public void enter_DilutionDeleted() {
+    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
+    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    dilution.setDeleted(true);
+    when(dilutionService.get(any())).thenReturn(dilution);
+    presenter.init(view);
+    presenter.enter("4");
+
+    verify(dilutionService).get(4L);
+    assertTrue(design.deleted.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
-    assertFalse(design.down.isVisible());
+    assertFalse(design.removeLayout.isVisible());
     List<DilutedSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
     assertEquals(dilution.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < dilution.getTreatmentSamples().size(); i++) {
@@ -573,6 +743,8 @@ public class DilutionViewPresenterTest {
       field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertTrue(field.isReadOnly());
       field = (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
+      assertTrue(field.isReadOnly());
+      field = (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.isReadOnly());
     }
   }

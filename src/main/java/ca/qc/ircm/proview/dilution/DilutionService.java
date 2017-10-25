@@ -38,6 +38,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -130,6 +133,34 @@ public class DilutionService extends BaseTreatmentService {
     entityManager.flush();
     Activity activity = dilutionActivityService.insert(dilution);
     activityService.insert(activity);
+  }
+
+  /**
+   * Updates dilution's information in database.
+   *
+   * @param dilution
+   *          dilution containing new information
+   * @param explanation
+   *          explanation
+   */
+  public void update(Dilution dilution, String explanation) {
+    authorizationService.checkAdminRole();
+
+    Dilution old = entityManager.find(Dilution.class, dilution.getId());
+    Set<Long> dilutedSampleIds =
+        dilution.getTreatmentSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
+    if (old.getTreatmentSamples().stream().filter(ts -> !dilutedSampleIds.contains(ts.getId()))
+        .findAny().isPresent()) {
+      throw new IllegalArgumentException("Cannot remove " + DilutedSample.class.getSimpleName()
+          + " from " + Dilution.class.getSimpleName() + " on update");
+    }
+
+    Optional<Activity> activity = dilutionActivityService.update(dilution, explanation);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
+    }
+
+    entityManager.merge(dilution);
   }
 
   /**

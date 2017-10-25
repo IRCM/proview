@@ -19,6 +19,7 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ import javax.inject.Inject;
 public class DilutionViewPresenter implements BinderValidator {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
+  public static final String DELETED = "deleted";
   public static final String DILUTIONS_PANEL = "dilutionsPanel";
   public static final String DILUTIONS = "dilutions";
   public static final String SAMPLE = dilutedSample.sample.getMetadata().getName();
@@ -53,8 +55,13 @@ public class DilutionViewPresenter implements BinderValidator {
   public static final String SOLVENT_VOLUME = dilutedSample.solventVolume.getMetadata().getName();
   public static final String COMMENT = dilutedSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
+  public static final String EXPLANATION = "explanation";
+  public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
+  public static final String REMOVE = "remove";
+  public static final String REMOVED = "removed";
+  public static final String BAN_CONTAINERS = "banContainers";
   public static final String NO_CONTAINERS = "containers.empty";
   public static final String INVALID_CONTAINERS = "containers.invalid";
   public static final String SPLIT_CONTAINER_PARAMETERS = ",";
@@ -62,7 +69,6 @@ public class DilutionViewPresenter implements BinderValidator {
   private static final Logger logger = LoggerFactory.getLogger(DilutionViewPresenter.class);
   private DilutionView view;
   private DilutionViewDesign design;
-  private boolean readOnly;
   private Binder<Dilution> binder = new BeanValidationBinder<>(Dilution.class);
   private List<DilutedSample> dilutions = new ArrayList<>();
   private Map<DilutedSample, Binder<DilutedSample>> dilutionBinders = new HashMap<>();
@@ -106,6 +112,9 @@ public class DilutionViewPresenter implements BinderValidator {
     view.setTitle(resources.message(TITLE, applicationName));
     design.header.addStyleName(HEADER);
     design.header.setValue(resources.message(HEADER));
+    design.deleted.addStyleName(DELETED);
+    design.deleted.setValue(resources.message(DELETED));
+    design.deleted.setVisible(false);
     design.dilutionsPanel.addStyleName(DILUTIONS_PANEL);
     design.dilutionsPanel.setCaption(resources.message(DILUTIONS_PANEL));
     design.dilutions.addStyleName(DILUTIONS);
@@ -127,9 +136,19 @@ public class DilutionViewPresenter implements BinderValidator {
     design.down.setCaption(resources.message(DOWN));
     design.down.setIcon(VaadinIcons.ARROW_DOWN);
     design.down.addClickListener(e -> down());
+    design.explanationPanel.addStyleName(EXPLANATION_PANEL);
+    design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
+    design.explanationPanel.setVisible(false);
+    design.explanation.addStyleName(EXPLANATION);
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));
     design.save.addClickListener(e -> save());
+    design.removeLayout.setVisible(false);
+    design.remove.addStyleName(REMOVE);
+    design.remove.setCaption(resources.message(REMOVE));
+    design.remove.addClickListener(e -> remove());
+    design.banContainers.addStyleName(BAN_CONTAINERS);
+    design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
   private Binder<DilutedSample> binder(DilutedSample ts) {
@@ -158,6 +177,7 @@ public class DilutionViewPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(SOURCE_VOLUME);
       field.setRequiredIndicatorVisible(true);
+      field.setReadOnly(binder.getBean().isDeleted());
       sourceVolumeFields.put(ts, field);
       return field;
     }
@@ -170,6 +190,7 @@ public class DilutionViewPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(SOLVENT);
       field.setRequiredIndicatorVisible(true);
+      field.setReadOnly(binder.getBean().isDeleted());
       solventFields.put(ts, field);
       return field;
     }
@@ -182,6 +203,7 @@ public class DilutionViewPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(SOLVENT_VOLUME);
       field.setRequiredIndicatorVisible(true);
+      field.setReadOnly(binder.getBean().isDeleted());
       solventVolumeFields.put(ts, field);
       return field;
     }
@@ -197,14 +219,6 @@ public class DilutionViewPresenter implements BinderValidator {
       commentFields.put(ts, field);
       return field;
     }
-  }
-
-  private void updateReadOnly() {
-    sourceVolumeFields.values().forEach(field -> field.setReadOnly(readOnly));
-    solventFields.values().forEach(field -> field.setReadOnly(readOnly));
-    solventVolumeFields.values().forEach(field -> field.setReadOnly(readOnly));
-    design.down.setVisible(!readOnly);
-    design.save.setVisible(!readOnly);
   }
 
   private void down() {
@@ -248,9 +262,39 @@ public class DilutionViewPresenter implements BinderValidator {
       logger.debug("Saving new dilution");
       Dilution dilution = binder.getBean();
       dilution.setTreatmentSamples(dilutions);
-      dilutionService.insert(dilution);
+      if (dilution.getId() != null) {
+        dilutionService.update(dilution, design.explanation.getValue());
+      } else {
+        dilutionService.insert(dilution);
+      }
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED,
+          dilutions.stream().map(ts -> ts.getSample().getId()).distinct().count()));
+      view.navigateTo(DilutionView.VIEW_NAME, String.valueOf(dilution.getId()));
+    }
+  }
+
+  private boolean validateRemove() {
+    logger.trace("Validate remove dilution {}", binder.getBean());
+    if (design.explanation.getValue().isEmpty()) {
+      final MessageResource generalResources = view.getGeneralResources();
+      String message = generalResources.message(REQUIRED);
+      logger.debug("Validation error: {}", message);
+      design.explanation.setComponentError(new UserError(message));
+      view.showError(generalResources.message(FIELD_NOTIFICATION));
+      return false;
+    }
+    return true;
+  }
+
+  private void remove() {
+    if (validateRemove()) {
+      logger.debug("Removing dilution {}", binder.getBean());
+      Dilution dilution = binder.getBean();
+      dilutionService.undoFailed(dilution, design.explanation.getValue(),
+          design.banContainers.getValue());
+      MessageResource resources = view.getResources();
+      view.showTrayNotification(resources.message(REMOVED,
           dilutions.stream().map(ts -> ts.getSample().getId()).distinct().count()));
       view.navigateTo(DilutionView.VIEW_NAME, String.valueOf(dilution.getId()));
     }
@@ -315,7 +359,10 @@ public class DilutionViewPresenter implements BinderValidator {
         binder.setBean(dilution);
         if (dilution != null) {
           dilutions = dilution.getTreatmentSamples();
-          readOnly = true;
+          design.deleted.setVisible(dilution.isDeleted());
+          design.explanationPanel.setVisible(!dilution.isDeleted());
+          design.save.setVisible(!dilution.isDeleted());
+          design.removeLayout.setVisible(!dilution.isDeleted());
         } else {
           view.showWarning(view.getResources().message(INVALID_DILUTION));
         }
@@ -328,6 +375,5 @@ public class DilutionViewPresenter implements BinderValidator {
     dilutions.stream().forEach(ts -> {
       binder(ts);
     });
-    updateReadOnly();
   }
 }

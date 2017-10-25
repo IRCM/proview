@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.dilution.web;
 import static ca.qc.ircm.proview.dilution.QDilution.dilution;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -26,11 +27,15 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithSubject
 public class DilutionViewTest extends DilutionViewPageObject {
+  @PersistenceContext
+  private EntityManager entityManager;
   @Inject
   private JPAQueryFactory jpaQueryFactory;
   @Value("${spring.application.name}")
@@ -89,10 +94,31 @@ public class DilutionViewTest extends DilutionViewPageObject {
     open();
 
     assertTrue(optional(() -> header()).isPresent());
+    assertFalse(optional(() -> deleted()).isPresent());
     assertTrue(optional(() -> dilutionsPanel()).isPresent());
     assertTrue(optional(() -> dilutions()).isPresent());
     assertTrue(optional(() -> down()).isPresent());
+    assertFalse(optional(() -> explanationPanel()).isPresent());
+    assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
+    assertFalse(optional(() -> remove()).isPresent());
+    assertFalse(optional(() -> banContainers()).isPresent());
+  }
+
+  @Test
+  public void fieldsExistence_Update() throws Throwable {
+    openWithDilution();
+
+    assertTrue(optional(() -> header()).isPresent());
+    assertFalse(optional(() -> deleted()).isPresent());
+    assertTrue(optional(() -> dilutionsPanel()).isPresent());
+    assertTrue(optional(() -> dilutions()).isPresent());
+    assertTrue(optional(() -> down()).isPresent());
+    assertTrue(optional(() -> explanationPanel()).isPresent());
+    assertTrue(optional(() -> explanation()).isPresent());
+    assertTrue(optional(() -> save()).isPresent());
+    assertTrue(optional(() -> remove()).isPresent());
+    assertTrue(optional(() -> banContainers()).isPresent());
   }
 
   @Test
@@ -110,11 +136,13 @@ public class DilutionViewTest extends DilutionViewPageObject {
   public void save_Tubes() throws Throwable {
     openWithTubes();
     double sourceVolume = 2.0;
-    String solvent = "ch3oh";
-    double solventVolume = 10.0;
     setSourceVolume(0, sourceVolume);
+    String solvent = "ch3oh";
     setSolvent(0, solvent);
+    double solventVolume = 10.0;
     setSolventVolume(0, solventVolume);
+    String comment = "test comment";
+    setComment(0, comment);
     clickDown();
 
     clickSave();
@@ -133,6 +161,7 @@ public class DilutionViewTest extends DilutionViewPageObject {
     assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
+    assertEquals(comment, ts.getComment());
     opTs = find(savedDilution.getTreatmentSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
@@ -141,6 +170,7 @@ public class DilutionViewTest extends DilutionViewPageObject {
     assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
+    assertEquals(comment, ts.getComment());
     opTs = find(savedDilution.getTreatmentSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
@@ -149,17 +179,20 @@ public class DilutionViewTest extends DilutionViewPageObject {
     assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
+    assertEquals(comment, ts.getComment());
   }
 
   @Test
   public void save_Wells() throws Throwable {
     openWithWells();
     double sourceVolume = 2.0;
-    String solvent = "ch3oh";
-    double solventVolume = 10.0;
     setSourceVolume(0, sourceVolume);
+    String solvent = "ch3oh";
     setSolvent(0, solvent);
+    double solventVolume = 10.0;
     setSolventVolume(0, solventVolume);
+    String comment = "test comment";
+    setComment(0, comment);
     clickDown();
 
     clickSave();
@@ -178,6 +211,7 @@ public class DilutionViewTest extends DilutionViewPageObject {
     assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
+    assertEquals(comment, ts.getComment());
     opTs = find(savedDilution.getTreatmentSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
@@ -186,6 +220,7 @@ public class DilutionViewTest extends DilutionViewPageObject {
     assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
+    assertEquals(comment, ts.getComment());
     opTs = find(savedDilution.getTreatmentSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
@@ -194,5 +229,44 @@ public class DilutionViewTest extends DilutionViewPageObject {
     assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
+    assertEquals(comment, ts.getComment());
+  }
+
+  @Test
+  public void update() throws Throwable {
+    openWithDilution();
+    double sourceVolume = 2.0;
+    setSourceVolume(0, sourceVolume);
+    String solvent = "ch3oh";
+    setSolvent(0, solvent);
+    double solventVolume = 10.0;
+    setSolventVolume(0, solventVolume);
+    String comment = "test comment";
+    setComment(0, comment);
+    clickDown();
+
+    clickSave();
+
+    assertEquals(viewUrl(DilutionView.VIEW_NAME, "210"), getDriver().getCurrentUrl());
+    Dilution savedDilution = entityManager.find(Dilution.class, 210L);
+    assertEquals(2, savedDilution.getTreatmentSamples().size());
+    Optional<DilutedSample> opTs = find(savedDilution.getTreatmentSamples(), 569);
+    assertTrue(opTs.isPresent());
+    DilutedSample ts = opTs.get();
+    assertEquals((Long) 569L, ts.getSample().getId());
+    assertEquals((Long) 608L, ts.getContainer().getId());
+    assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
+    assertEquals(solvent, ts.getSolvent());
+    assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
+    assertEquals(comment, ts.getComment());
+    opTs = find(savedDilution.getTreatmentSamples(), 570);
+    assertTrue(opTs.isPresent());
+    ts = opTs.get();
+    assertEquals((Long) 570L, ts.getSample().getId());
+    assertEquals((Long) 620L, ts.getContainer().getId());
+    assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
+    assertEquals(solvent, ts.getSolvent());
+    assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
+    assertEquals(comment, ts.getComment());
   }
 }
