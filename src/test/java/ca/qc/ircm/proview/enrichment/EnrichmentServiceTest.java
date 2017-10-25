@@ -339,7 +339,7 @@ public class EnrichmentServiceTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void update_RemoveDigestedSample() {
+  public void update_RemoveEnrichedSample() {
     Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
     entityManager.detach(enrichment);
     enrichment.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
