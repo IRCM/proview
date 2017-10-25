@@ -11,7 +11,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
 /**
- * Digestion view.
+ * Enrichment view.
  */
 @SpringView(name = EnrichmentView.VIEW_NAME)
 @RolesAllowed({ "ADMIN" })

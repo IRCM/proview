@@ -11,7 +11,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
 /**
- * Digestion view.
+ * Dilution view.
  */
 @SpringView(name = DilutionView.VIEW_NAME)
 @RolesAllowed({ "ADMIN" })
