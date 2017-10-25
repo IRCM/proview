@@ -1,10 +1,9 @@
 package ca.qc.ircm.proview.enrichment.web;
 
-import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DELETED;
-import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.REMOVED;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.BAN_CONTAINERS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.CONTAINER;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.DELETED;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.DOWN;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS_PANEL;
@@ -17,6 +16,7 @@ import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.NO_CONTA
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.PROTOCOL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.PROTOCOL_PANEL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.REMOVE;
+import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.REMOVED;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAVE;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAVED;
@@ -386,11 +386,11 @@ public class EnrichmentViewPresenterTest {
         savedEnrichment.getTreatmentSamples().size());
     for (int i = 0; i < enrichment.getTreatmentSamples().size(); i++) {
       EnrichedSample original = enrichment.getTreatmentSamples().get(i);
-      EnrichedSample digested = savedEnrichment.getTreatmentSamples().get(i);
-      assertEquals(original.getId(), digested.getId());
-      assertEquals(original.getSample(), digested.getSample());
-      assertEquals(original.getContainer(), digested.getContainer());
-      assertEquals(comments.get(i), digested.getComment());
+      EnrichedSample enriched = savedEnrichment.getTreatmentSamples().get(i);
+      assertEquals(original.getId(), enriched.getId());
+      assertEquals(original.getSample(), enriched.getSample());
+      assertEquals(original.getContainer(), enriched.getContainer());
+      assertEquals(comments.get(i), enriched.getComment());
     }
     verify(view).showTrayNotification(resources.message(SAVED, enrichment.getTreatmentSamples()
         .stream().map(ts -> ts.getSample().getId()).distinct().count()));
@@ -481,6 +481,11 @@ public class EnrichmentViewPresenterTest {
       assertEquals(container.getSample(), enriched.getSample());
       assertEquals(container, enriched.getContainer());
     }
+    for (EnrichedSample ts : tss) {
+      TextField field =
+          (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+    }
   }
 
   @Test
@@ -503,6 +508,11 @@ public class EnrichmentViewPresenterTest {
     assertEquals(enrichment.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < enrichment.getTreatmentSamples().size(); i++) {
       assertEquals(enrichment.getTreatmentSamples().get(i), tss.get(i));
+    }
+    for (EnrichedSample ts : tss) {
+      TextField field =
+          (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
     }
   }
 
