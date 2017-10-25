@@ -33,6 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -81,6 +84,68 @@ public class StandardAdditionActivityService {
   }
 
   /**
+   * Creates an activity about update of standardAddition.
+   *
+   * @param standardAddition
+   *          standardAddition containing new properties/values
+   * @param explanation
+   *          explanation
+   * @return activity about update of standardAddition
+   */
+  @CheckReturnValue
+  public Optional<Activity> update(StandardAddition standardAddition, String explanation) {
+    User user = authorizationService.getCurrentUser();
+    final StandardAddition oldStandardAddition =
+        entityManager.find(StandardAddition.class, standardAddition.getId());
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    Map<Long, AddedStandard> oldAddedStandardIds = oldStandardAddition.getTreatmentSamples()
+        .stream().collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
+    standardAddition.getTreatmentSamples().stream()
+        .filter(ts -> !oldAddedStandardIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(addedStandardAction(ts, ActionType.INSERT)));
+    standardAddition.getTreatmentSamples().stream()
+        .filter(ts -> oldAddedStandardIds.containsKey(ts.getId())).forEach(ts -> {
+          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldAddedStandardIds.get(ts.getId()).getSample().getId())
+              .newValue(ts.getSample().getId()));
+          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldAddedStandardIds.get(ts.getId()).getContainer().getId())
+              .newValue(ts.getContainer().getId()));
+          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("name")
+              .oldValue(oldAddedStandardIds.get(ts.getId()).getName()).newValue(ts.getName()));
+          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("quantity")
+              .oldValue(oldAddedStandardIds.get(ts.getId()).getQuantity())
+              .newValue(ts.getQuantity()));
+          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldAddedStandardIds.get(ts.getId()).getComment())
+              .newValue(ts.getComment()));
+        });
+
+    Collection<UpdateActivity> updates =
+        updateBuilders.stream().filter(builder -> builder.isChanged())
+            .map(builder -> builder.build()).collect(Collectors.toList());
+
+    if (!updates.isEmpty()) {
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(standardAddition.getId());
+      activity.setUser(user);
+      activity.setTableName("treatment");
+      activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
+      activity.setUpdates(new LinkedList<>(updates));
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  private UpdateActivityBuilder addedStandardAction(AddedStandard ts, ActionType actionType) {
+    return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
+        .actionType(actionType);
+  }
+
+  /**
    * Creates an activity about insertion of addition of standards.
    *
    * @param standardAddition
@@ -90,8 +155,7 @@ public class StandardAdditionActivityService {
    * @return activity about insertion of addition of standards
    */
   @CheckReturnValue
-  public Activity undoErroneous(final StandardAddition standardAddition,
-      final String explanation) {
+  public Activity undoErroneous(final StandardAddition standardAddition, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
     Activity activity = new Activity();

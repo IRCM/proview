@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -57,6 +58,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -231,6 +233,44 @@ public class StandardAdditionServiceTest {
     assertEquals((Long) 128L, addedStandard.getContainer().getId());
     assertEquals("unit_test_added_standard", addedStandard.getName());
     assertEquals("20.0 μg", addedStandard.getQuantity());
+  }
+
+  @Test
+  public void update() {
+    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 248L);
+    entityManager.detach(standardAddition);
+    standardAddition.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
+    standardAddition.getTreatmentSamples().get(0).setName("std1");
+    standardAddition.getTreatmentSamples().get(0).setQuantity("10 μg");
+    standardAddition.getTreatmentSamples().get(0).setComment("test update");
+    standardAddition.getTreatmentSamples().get(0).setContainer(new Well(248L));
+    standardAddition.getTreatmentSamples().get(0).setSample(new Control(444L));
+    when(standardAdditionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+
+    standardAdditionService.update(standardAddition, "test explanation");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(standardAdditionActivityService).update(eq(standardAddition), eq("test explanation"));
+    verify(activityService).insert(activity);
+    standardAddition = entityManager.find(StandardAddition.class, 248L);
+    assertNotNull(standardAddition);
+    assertEquals((Long) 248L, standardAddition.getTreatmentSamples().get(0).getContainer().getId());
+    assertEquals((Long) 444L, standardAddition.getTreatmentSamples().get(0).getSample().getId());
+    assertEquals("std1", standardAddition.getTreatmentSamples().get(0).getName());
+    assertEquals("10 μg", standardAddition.getTreatmentSamples().get(0).getQuantity());
+    assertEquals("test update", standardAddition.getTreatmentSamples().get(0).getComment());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_RemoveAddedStandard() {
+    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 248L);
+    entityManager.detach(standardAddition);
+    standardAddition.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
+    standardAddition.getTreatmentSamples().remove(1);
+    when(standardAdditionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+
+    standardAdditionService.update(standardAddition, "test explanation");
   }
 
   @Test

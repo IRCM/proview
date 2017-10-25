@@ -38,6 +38,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -131,6 +134,35 @@ public class StandardAdditionService extends BaseTreatmentService {
     entityManager.flush();
     Activity activity = standardAdditionActivityService.insert(standardAddition);
     activityService.insert(activity);
+  }
+
+  /**
+   * Updates standard addition's information in database.
+   *
+   * @param standardAddition
+   *          standard addition containing new information
+   * @param explanation
+   *          explanation
+   */
+  public void update(StandardAddition standardAddition, String explanation) {
+    authorizationService.checkAdminRole();
+
+    StandardAddition old = entityManager.find(StandardAddition.class, standardAddition.getId());
+    Set<Long> addedStandardIds = standardAddition.getTreatmentSamples().stream()
+        .map(ts -> ts.getId()).collect(Collectors.toSet());
+    if (old.getTreatmentSamples().stream().filter(ts -> !addedStandardIds.contains(ts.getId()))
+        .findAny().isPresent()) {
+      throw new IllegalArgumentException("Cannot remove " + AddedStandard.class.getSimpleName()
+          + " from " + StandardAddition.class.getSimpleName() + " on update");
+    }
+
+    Optional<Activity> activity =
+        standardAdditionActivityService.update(standardAddition, explanation);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
+    }
+
+    entityManager.merge(standardAddition);
   }
 
   /**
