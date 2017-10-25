@@ -94,6 +94,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> digestionsPanel()).isPresent());
     assertTrue(optional(() -> digestions()).isPresent());
+    assertTrue(optional(() -> down()).isPresent());
     assertFalse(optional(() -> explanationPanel()).isPresent());
     assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -111,6 +112,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> digestionsPanel()).isPresent());
     assertTrue(optional(() -> digestions()).isPresent());
+    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> explanationPanel()).isPresent());
     assertTrue(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());

@@ -99,6 +99,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> enrichmentsPanel()).isPresent());
     assertTrue(optional(() -> enrichments()).isPresent());
+    assertTrue(optional(() -> down()).isPresent());
     assertFalse(optional(() -> explanationPanel()).isPresent());
     assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -116,6 +117,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> enrichmentsPanel()).isPresent());
     assertTrue(optional(() -> enrichments()).isPresent());
+    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> explanationPanel()).isPresent());
     assertTrue(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
