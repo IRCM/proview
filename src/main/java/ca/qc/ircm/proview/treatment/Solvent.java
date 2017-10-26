@@ -26,15 +26,13 @@ import java.util.ResourceBundle;
 public enum Solvent {
   ACETONITRILE, METHANOL, CHCL3, OTHER;
 
-  private static final String MESSAGE_BASE = "solvent.";
-
   public String getLabel(Locale locale) {
     ResourceBundle bundle = ResourceBundle.getBundle(Solvent.class.getName(), locale);
-    return bundle.getString(MESSAGE_BASE + name());
+    return bundle.getString(name());
   }
 
   public static String getNullLabel(Locale locale) {
     ResourceBundle bundle = ResourceBundle.getBundle(Solvent.class.getName(), locale);
-    return bundle.getString(MESSAGE_BASE + "NULL");
+    return bundle.getString("NULL");
   }
 }

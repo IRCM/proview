@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.dilution;
 
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -41,7 +42,7 @@ public class Dilution extends Treatment<DilutedSample> {
   }
 
   @Override
-  public Type getType() {
-    return Type.DILUTION;
+  public TreatmentType getType() {
+    return TreatmentType.DILUTION;
   }
 }

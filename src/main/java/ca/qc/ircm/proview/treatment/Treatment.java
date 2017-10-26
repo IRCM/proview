@@ -49,13 +49,6 @@ import javax.persistence.Table;
 @DiscriminatorColumn(name = "type")
 public abstract class Treatment<S extends TreatmentSample> implements Data {
   /**
-   * Type of treatment.
-   */
-  public static enum Type {
-    DIGESTION, DILUTION, ENRICHMENT, FRACTIONATION, SOLUBILISATION, STANDARD_ADDITION, TRANSFER
-  }
-
-  /**
    * Type of errors that forces Digestion to be deleted.
    */
   public static enum DeletionType {
@@ -120,7 +113,7 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
     this.id = id;
   }
 
-  public abstract Type getType();
+  public abstract TreatmentType getType();
 
   @Override
   public Long getId() {

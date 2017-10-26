@@ -40,6 +40,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -101,7 +102,7 @@ public class DilutionServiceTest {
     verify(authorizationService).checkAdminRole();
     assertNotNull(dilution);
     assertEquals((Long) 4L, dilution.getId());
-    assertEquals(Treatment.Type.DILUTION, dilution.getType());
+    assertEquals(TreatmentType.DILUTION, dilution.getType());
     assertEquals((Long) 2L, dilution.getUser().getId());
     assertEquals(
         LocalDateTime.of(2011, 11, 9, 15, 3, 54).atZone(ZoneId.systemDefault()).toInstant(),

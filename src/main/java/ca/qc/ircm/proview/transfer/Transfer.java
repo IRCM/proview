@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.transfer;
 
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -42,7 +43,7 @@ public class Transfer extends Treatment<TransferedSample> {
   }
 
   @Override
-  public Type getType() {
-    return Type.TRANSFER;
+  public TreatmentType getType() {
+    return TreatmentType.TRANSFER;
   }
 }

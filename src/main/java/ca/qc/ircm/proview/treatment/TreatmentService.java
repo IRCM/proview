@@ -17,9 +17,18 @@
 
 package ca.qc.ircm.proview.treatment;
 
+import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
+import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
+
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -34,14 +43,17 @@ public class TreatmentService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
+  private JPAQueryFactory queryFactory;
+  @Inject
   private AuthorizationService authorizationService;
 
   protected TreatmentService() {
   }
 
-  protected TreatmentService(EntityManager entityManager,
+  protected TreatmentService(EntityManager entityManager, JPAQueryFactory queryFactory,
       AuthorizationService authorizationService) {
     this.entityManager = entityManager;
+    this.queryFactory = queryFactory;
     this.authorizationService = authorizationService;
   }
 
@@ -59,5 +71,26 @@ public class TreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Treatment.class, id);
+  }
+
+  /**
+   * Returns all treatments where one of the submission's samples was treated.
+   *
+   * @param submission
+   *          submission
+   * @return all treatments where one of the submission's samples was treated
+   */
+  public List<Treatment<?>> all(Submission submission) {
+    if (submission == null) {
+      return new ArrayList<>();
+    }
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Treatment<?>> query = queryFactory.select(treatment);
+    query.from(treatment, treatmentSample);
+    query.where(treatmentSample.in(treatment.treatmentSamples));
+    query.where(treatmentSample.sample.in(submission.getSamples()));
+    query.where(treatment.deleted.eq(false));
+    return query.distinct().fetch();
   }
 }

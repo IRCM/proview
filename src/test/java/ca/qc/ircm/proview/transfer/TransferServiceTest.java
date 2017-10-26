@@ -44,6 +44,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -105,7 +106,7 @@ public class TransferServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 3L, transfer.getId());
-    assertEquals(Treatment.Type.TRANSFER, transfer.getType());
+    assertEquals(TreatmentType.TRANSFER, transfer.getType());
     assertEquals((Long) 4L, transfer.getUser().getId());
     assertEquals(
         LocalDateTime.of(2011, 10, 19, 15, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),

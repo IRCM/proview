@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.enrichment;
 
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -51,8 +52,8 @@ public class Enrichment extends Treatment<EnrichedSample> {
   }
 
   @Override
-  public Type getType() {
-    return Type.ENRICHMENT;
+  public TreatmentType getType() {
+    return TreatmentType.ENRICHMENT;
   }
 
   public EnrichmentProtocol getProtocol() {

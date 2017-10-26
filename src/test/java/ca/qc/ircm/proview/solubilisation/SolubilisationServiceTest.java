@@ -40,6 +40,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -100,7 +101,7 @@ public class SolubilisationServiceTest {
     verify(authorizationService).checkAdminRole();
     assertNotNull(solubilisation);
     assertEquals((Long) 1L, solubilisation.getId());
-    assertEquals(Treatment.Type.SOLUBILISATION, solubilisation.getType());
+    assertEquals(TreatmentType.SOLUBILISATION, solubilisation.getType());
     assertEquals((Long) 4L, solubilisation.getUser().getId());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 11, 45, 0).atZone(ZoneId.systemDefault()).toInstant(),

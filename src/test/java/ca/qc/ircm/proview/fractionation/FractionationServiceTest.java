@@ -43,6 +43,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.DestinationUsedInTreatmentException;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -102,7 +103,7 @@ public class FractionationServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, fractionation.getId());
-    assertEquals(Treatment.Type.FRACTIONATION, fractionation.getType());
+    assertEquals(TreatmentType.FRACTIONATION, fractionation.getType());
     assertEquals(FractionationType.MUDPIT, fractionation.getFractionationType());
     assertEquals((Long) 4L, fractionation.getUser().getId());
     assertEquals(

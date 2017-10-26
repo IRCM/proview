@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.fractionation;
 import static javax.persistence.EnumType.STRING;
 
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -48,8 +49,8 @@ public class Fractionation extends Treatment<Fraction> {
   }
 
   @Override
-  public Type getType() {
-    return Type.FRACTIONATION;
+  public TreatmentType getType() {
+    return TreatmentType.FRACTIONATION;
   }
 
   public FractionationType getFractionationType() {

@@ -44,6 +44,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -108,7 +109,7 @@ public class EnrichmentServiceTest {
     verify(authorizationService).checkAdminRole();
     assertNotNull(enrichment);
     assertEquals((Long) 7L, enrichment.getId());
-    assertEquals(Treatment.Type.ENRICHMENT, enrichment.getType());
+    assertEquals(TreatmentType.ENRICHMENT, enrichment.getType());
     assertEquals((Long) 2L, enrichment.getUser().getId());
     assertEquals((Long) 2L, enrichment.getProtocol().getId());
     assertEquals(

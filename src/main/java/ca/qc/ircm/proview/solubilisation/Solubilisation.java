@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.solubilisation;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -43,7 +44,7 @@ public class Solubilisation extends Treatment<SolubilisedSample> implements Data
   }
 
   @Override
-  public Type getType() {
-    return Type.SOLUBILISATION;
+  public TreatmentType getType() {
+    return TreatmentType.SOLUBILISATION;
   }
 }

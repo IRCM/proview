@@ -42,6 +42,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -105,7 +106,7 @@ public class DigestionServiceTest {
     verify(authorizationService).checkAdminRole();
     assertNotNull(digestion);
     assertEquals((Long) 6L, digestion.getId());
-    assertEquals(Treatment.Type.DIGESTION, digestion.getType());
+    assertEquals(TreatmentType.DIGESTION, digestion.getType());
     assertEquals((Long) 2L, digestion.getUser().getId());
     assertEquals(
         LocalDateTime.of(2011, 11, 9, 15, 15, 20).atZone(ZoneId.systemDefault()).toInstant(),

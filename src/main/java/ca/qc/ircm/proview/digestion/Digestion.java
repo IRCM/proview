@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.digestion;
 
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -50,8 +51,8 @@ public class Digestion extends Treatment<DigestedSample> {
   }
 
   @Override
-  public Type getType() {
-    return Type.DIGESTION;
+  public TreatmentType getType() {
+    return TreatmentType.DIGESTION;
   }
 
   public DigestionProtocol getProtocol() {

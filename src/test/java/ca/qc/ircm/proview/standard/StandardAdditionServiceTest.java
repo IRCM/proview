@@ -41,6 +41,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -102,7 +103,7 @@ public class StandardAdditionServiceTest {
     verify(authorizationService).checkAdminRole();
     assertNotNull(standardAddition);
     assertEquals((Long) 5L, standardAddition.getId());
-    assertEquals(Treatment.Type.STANDARD_ADDITION, standardAddition.getType());
+    assertEquals(TreatmentType.STANDARD_ADDITION, standardAddition.getType());
     assertEquals((Long) 2L, standardAddition.getUser().getId());
     assertEquals(
         LocalDateTime.of(2011, 11, 9, 15, 12, 2).atZone(ZoneId.systemDefault()).toInstant(),

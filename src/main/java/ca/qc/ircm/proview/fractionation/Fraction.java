@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.fractionation;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -52,12 +53,12 @@ public class Fraction extends TreatmentSample implements Named {
   @Column(name = "position", nullable = false)
   private Integer position;
   /**
-   * Fraction number. Used with {@link Fractionation.Type#MUDPIT}.
+   * Fraction number. Used with {@link TreatmentType#MUDPIT}.
    */
   @Column(name = "number")
   private Integer number;
   /**
-   * PI interval. Used with {@link Fractionation.Type#PI}
+   * PI interval. Used with {@link TreatmentType#PI}
    */
   @Column(name = "piInterval")
   @Size(max = 255)
