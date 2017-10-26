@@ -336,7 +336,5 @@ public class SampleSelectionFormPresenterTest {
     button.click();
 
     verify(view).navigateTo(ControlView.VIEW_NAME, String.valueOf(control.getId()));
-    verify(view).fireSaveEvent(samplesCaptor.capture());
-    assertEquals(selectedSamples, samplesCaptor.getValue());
   }
 }

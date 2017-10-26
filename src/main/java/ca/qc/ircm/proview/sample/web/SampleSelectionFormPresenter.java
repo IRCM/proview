@@ -121,9 +121,8 @@ public class SampleSelectionFormPresenter {
     design.controlsGrid.setItems(controlService.all());
     design.controlsGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
     design.controlsGrid
-        .addColumn(
-            control -> control.getControlType() != null ? control.getControlType().getLabel(locale)
-                : ControlType.getNullLabel(locale))
+        .addColumn(control -> control.getControlType() != null
+            ? control.getControlType().getLabel(locale) : ControlType.getNullLabel(locale))
         .setId(CONTROL_TYPE).setCaption(resources.message(CONTROL_TYPE));
     design.controlsGrid.addColumn(control -> control.getOriginalContainer().getName())
         .setId(ORIGINAL_CONTAINER_NAME).setCaption(resources.message(ORIGINAL_CONTAINER_NAME));
@@ -163,7 +162,6 @@ public class SampleSelectionFormPresenter {
     button.setCaption(resources.message(UPDATE));
     button.addClickListener(e -> {
       view.navigateTo(ControlView.VIEW_NAME, String.valueOf(control.getId()));
-      view.fireSaveEvent(selectedSamples);
     });
     return button;
   }

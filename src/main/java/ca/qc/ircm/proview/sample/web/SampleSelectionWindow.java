@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.FindbugsExplanations.DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD;
+import static ca.qc.ircm.proview.web.CloseWindowOnViewChange.closeWindowOnViewChange;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.web.SaveListener;
@@ -68,6 +69,7 @@ public class SampleSelectionWindow extends Window implements BaseComponent {
     logger.debug("Sample selection window");
     setCaption(getResources().message(TITLE));
     view.addSaveListener(e -> close());
+    closeWindowOnViewChange(this);
   }
 
   public Registration addSaveListener(SaveListener<List<Sample>> listener) {
