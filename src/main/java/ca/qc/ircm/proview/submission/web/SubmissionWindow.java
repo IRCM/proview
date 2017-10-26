@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.FindbugsExplanations.DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD;
+import static ca.qc.ircm.proview.web.CloseWindowOnViewChange.closeWindowOnViewChange;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -70,6 +71,7 @@ public class SubmissionWindow extends Window implements BaseComponent {
     super.attach();
     MessageResource resources = getResources();
     view.update.setCaption(resources.message(UPDATE));
+    closeWindowOnViewChange(this);
   }
 
   /**

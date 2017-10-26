@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.FindbugsExplanations.DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD;
+import static ca.qc.ircm.proview.web.CloseWindowOnViewChange.closeWindowOnViewChange;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
@@ -71,6 +72,7 @@ public class UserWindow extends Window implements BaseComponent {
     final MessageResource resources = getResources();
     userForm.addSaveListener(e -> close());
     design.update.setCaption(resources.message(UPDATE));
+    closeWindowOnViewChange(this);
   }
 
   /**
