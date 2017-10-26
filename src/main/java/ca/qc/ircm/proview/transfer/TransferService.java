@@ -17,9 +17,6 @@
 
 package ca.qc.ircm.proview.transfer;
 
-import static ca.qc.ircm.proview.transfer.QTransfer.transfer;
-import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Plate;
@@ -27,12 +24,10 @@ import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +35,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -62,8 +55,6 @@ public class TransferService extends BaseTreatmentService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Inject
   private TransferActivityService transferActivityService;
   @Inject
   private ActivityService activityService;
@@ -80,7 +71,6 @@ public class TransferService extends BaseTreatmentService {
       PlateService plateService, AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
     this.transferActivityService = transferActivityService;
     this.activityService = activityService;
     this.plateService = plateService;
@@ -101,27 +91,6 @@ public class TransferService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Transfer.class, id);
-  }
-
-  /**
-   * Returns all transfers involving one of submission's samples.
-   *
-   * @param submission
-   *          submission
-   * @return all transfers involving one of submission's samples
-   */
-  public List<Transfer> all(Submission submission) {
-    if (submission == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Transfer> query = queryFactory.select(transfer);
-    query.from(transfer, transferedSample);
-    query.where(transferedSample._super.in(transfer.treatmentSamples));
-    query.where(transferedSample.sample.in(submission.getSamples()));
-    query.where(transfer.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   /**

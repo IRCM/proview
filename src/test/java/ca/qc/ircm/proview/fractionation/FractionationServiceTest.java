@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.fractionation;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,7 +38,6 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.DestinationUsedInTreatmentException;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -163,25 +161,6 @@ public class FractionationServiceTest {
     Fraction detail = fractionationService.search(null);
 
     assertNull(detail);
-  }
-
-  @Test
-  public void all() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-
-    List<Fractionation> fractionations = fractionationService.all(submission);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(2, fractionations.size());
-    assertTrue(find(fractionations, 2).isPresent());
-    assertTrue(find(fractionations, 8).isPresent());
-  }
-
-  @Test
-  public void all_Null() {
-    List<Fractionation> fractionations = fractionationService.all(null);
-
-    assertEquals(0, fractionations.size());
   }
 
   @Test

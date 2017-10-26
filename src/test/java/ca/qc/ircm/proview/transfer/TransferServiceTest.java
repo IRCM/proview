@@ -41,7 +41,6 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
@@ -131,25 +130,6 @@ public class TransferServiceTest {
     Transfer transfer = transferService.get(null);
 
     assertNull(transfer);
-  }
-
-  @Test
-  public void all() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-
-    List<Transfer> transfers = transferService.all(submission);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(2, transfers.size());
-    Transfer transfer = transfers.get(0);
-    assertEquals((Long) 3L, transfer.getId());
-  }
-
-  @Test
-  public void all_Null() {
-    List<Transfer> transfers = transferService.all(null);
-
-    assertEquals(0, transfers.size());
   }
 
   @Test

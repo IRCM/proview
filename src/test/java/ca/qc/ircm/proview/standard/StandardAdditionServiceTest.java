@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.standard;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -38,7 +37,6 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
@@ -128,28 +126,6 @@ public class StandardAdditionServiceTest {
     StandardAddition standardAddition = standardAdditionService.get(null);
 
     assertNull(standardAddition);
-  }
-
-  @Test
-  public void all() {
-    Submission submission = entityManager.find(Submission.class, 152L);
-
-    List<StandardAddition> standardAdditions = standardAdditionService.all(submission);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(5, standardAdditions.size());
-    assertTrue(find(standardAdditions, 248).isPresent());
-    assertTrue(find(standardAdditions, 249).isPresent());
-    assertTrue(find(standardAdditions, 250).isPresent());
-    assertTrue(find(standardAdditions, 251).isPresent());
-    assertTrue(find(standardAdditions, 252).isPresent());
-  }
-
-  @Test
-  public void all_Null() {
-    List<StandardAddition> standardAdditions = standardAdditionService.all(null);
-
-    assertEquals(0, standardAdditions.size());
   }
 
   @Test

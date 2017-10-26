@@ -39,7 +39,6 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
@@ -129,25 +128,6 @@ public class DigestionServiceTest {
     Digestion digestion = digestionService.get(null);
 
     assertNull(digestion);
-  }
-
-  @Test
-  public void all() {
-    Submission submission = entityManager.find(Submission.class, 147L);
-
-    List<Digestion> digestions = digestionService.all(submission);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(1, digestions.size());
-    Digestion digestion = digestions.get(0);
-    assertEquals((Long) 195L, digestion.getId());
-  }
-
-  @Test
-  public void all_Null() {
-    List<Digestion> digestions = digestionService.all(null);
-
-    assertTrue(digestions.isEmpty());
   }
 
   @Test

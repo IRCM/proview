@@ -17,27 +17,20 @@
 
 package ca.qc.ircm.proview.solubilisation;
 
-import static ca.qc.ircm.proview.solubilisation.QSolubilisation.solubilisation;
-import static ca.qc.ircm.proview.solubilisation.QSolubilisedSample.solubilisedSample;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -51,8 +44,6 @@ import javax.persistence.PersistenceContext;
 public class SolubilisationService extends BaseTreatmentService {
   @PersistenceContext
   private EntityManager entityManager;
-  @Inject
-  private JPAQueryFactory queryFactory;
   @Inject
   private SolubilisationActivityService solubilisationActivityService;
   @Inject
@@ -68,7 +59,6 @@ public class SolubilisationService extends BaseTreatmentService {
       AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
     this.solubilisationActivityService = solubilisationActivityService;
     this.activityService = activityService;
     this.authorizationService = authorizationService;
@@ -88,27 +78,6 @@ public class SolubilisationService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Solubilisation.class, id);
-  }
-
-  /**
-   * Returns solubilisations where any of submission's sample was solubilized.
-   *
-   * @param submission
-   *          submission
-   * @return solubilisations where any of submission's sample was solubilized
-   */
-  public List<Solubilisation> all(Submission submission) {
-    if (submission == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Solubilisation> query = queryFactory.select(solubilisation);
-    query.from(solubilisation, solubilisedSample);
-    query.where(solubilisedSample._super.in(solubilisation.treatmentSamples));
-    query.where(solubilisedSample.sample.in(submission.getSamples()));
-    query.where(solubilisation.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   /**

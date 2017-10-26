@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.dilution;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,7 +36,6 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
@@ -125,28 +123,6 @@ public class DilutionServiceTest {
     Dilution dilution = dilutionService.get(null);
 
     assertNull(dilution);
-  }
-
-  @Test
-  public void all() {
-    Submission submission = entityManager.find(Submission.class, 149L);
-
-    List<Dilution> dilutions = dilutionService.all(submission);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(5, dilutions.size());
-    assertTrue(find(dilutions, 210).isPresent());
-    assertTrue(find(dilutions, 211).isPresent());
-    assertTrue(find(dilutions, 213).isPresent());
-    assertTrue(find(dilutions, 216).isPresent());
-    assertTrue(find(dilutions, 219).isPresent());
-  }
-
-  @Test
-  public void all_Null() {
-    List<Dilution> dilutions = dilutionService.all(null);
-
-    assertEquals(0, dilutions.size());
   }
 
   @Test

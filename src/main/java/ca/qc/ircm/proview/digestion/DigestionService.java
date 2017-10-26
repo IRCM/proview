@@ -17,29 +17,22 @@
 
 package ca.qc.ircm.proview.digestion;
 
-import static ca.qc.ircm.proview.digestion.QDigestedSample.digestedSample;
-import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,8 +49,6 @@ import javax.persistence.PersistenceContext;
 public class DigestionService extends BaseTreatmentService {
   @PersistenceContext
   private EntityManager entityManager;
-  @Inject
-  private JPAQueryFactory queryFactory;
   @Inject
   private DigestionProtocolService digestionProtocolService;
   @Inject
@@ -76,7 +67,6 @@ public class DigestionService extends BaseTreatmentService {
       AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
     this.digestionProtocolService = digestionProtocolService;
     this.digestionActivityService = digestionActivityService;
     this.activityService = activityService;
@@ -97,27 +87,6 @@ public class DigestionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Digestion.class, id);
-  }
-
-  /**
-   * Returns all digestions where one of the submission's samples was digested.
-   *
-   * @param submission
-   *          submission
-   * @return all digestions where one of the submission's samples was digested
-   */
-  public List<Digestion> all(Submission submission) {
-    if (submission == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Digestion> query = queryFactory.select(digestion);
-    query.from(digestion, digestedSample);
-    query.where(digestedSample._super.in(digestion.treatmentSamples));
-    query.where(digestedSample.sample.in(submission.getSamples()));
-    query.where(digestion.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   /**

@@ -17,27 +17,20 @@
 
 package ca.qc.ircm.proview.standard;
 
-import static ca.qc.ircm.proview.standard.QAddedStandard.addedStandard;
-import static ca.qc.ircm.proview.standard.QStandardAddition.standardAddition;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,8 +48,6 @@ public class StandardAdditionService extends BaseTreatmentService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Inject
   private StandardAdditionActivityService standardAdditionActivityService;
   @Inject
   private ActivityService activityService;
@@ -71,7 +62,6 @@ public class StandardAdditionService extends BaseTreatmentService {
       ActivityService activityService, AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
     this.standardAdditionActivityService = standardAdditionActivityService;
     this.activityService = activityService;
     this.authorizationService = authorizationService;
@@ -91,27 +81,6 @@ public class StandardAdditionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(StandardAddition.class, id);
-  }
-
-  /**
-   * Returns all standard additions done on any of submission's samples.
-   *
-   * @param submission
-   *          submission
-   * @return all standard additions done on any of submission's samples
-   */
-  public List<StandardAddition> all(Submission submission) {
-    if (submission == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<StandardAddition> query = queryFactory.select(standardAddition);
-    query.from(standardAddition, addedStandard);
-    query.where(addedStandard._super.in(standardAddition.treatmentSamples));
-    query.where(addedStandard.sample.in(submission.getSamples()));
-    query.where(standardAddition.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   /**

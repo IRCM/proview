@@ -17,29 +17,22 @@
 
 package ca.qc.ircm.proview.enrichment;
 
-import static ca.qc.ircm.proview.enrichment.QEnrichedSample.enrichedSample;
-import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,8 +49,6 @@ import javax.persistence.PersistenceContext;
 public class EnrichmentService extends BaseTreatmentService {
   @PersistenceContext
   private EntityManager entityManager;
-  @Inject
-  private JPAQueryFactory queryFactory;
   @Inject
   private EnrichmentProtocolService enrichmentProtocolService;
   @Inject
@@ -76,7 +67,6 @@ public class EnrichmentService extends BaseTreatmentService {
       AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
     this.enrichmentProtocolService = enrichmentProtocolService;
     this.enrichmentActivityService = enrichmentActivityService;
     this.activityService = activityService;
@@ -97,27 +87,6 @@ public class EnrichmentService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Enrichment.class, id);
-  }
-
-  /**
-   * Returns all enrichments where one of submission's samples was enriched.
-   *
-   * @param submission
-   *          submission
-   * @return all enrichments where one of submission's samples was enriched
-   */
-  public List<Enrichment> all(Submission submission) {
-    if (submission == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Enrichment> query = queryFactory.select(enrichment);
-    query.from(enrichment, enrichedSample);
-    query.where(enrichedSample._super.in(enrichment.treatmentSamples));
-    query.where(enrichedSample.sample.in(submission.getSamples()));
-    query.where(enrichment.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   /**

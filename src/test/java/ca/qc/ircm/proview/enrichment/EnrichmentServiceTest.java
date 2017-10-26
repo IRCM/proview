@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.enrichment;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -41,7 +40,6 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
@@ -133,28 +131,6 @@ public class EnrichmentServiceTest {
     Enrichment enrichment = enrichmentService.get(null);
 
     assertNull(enrichment);
-  }
-
-  @Test
-  public void all() {
-    Submission submission = entityManager.find(Submission.class, 150L);
-
-    List<Enrichment> enrichments = enrichmentService.all(submission);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(5, enrichments.size());
-    assertTrue(find(enrichments, 223).isPresent());
-    assertTrue(find(enrichments, 225).isPresent());
-    assertTrue(find(enrichments, 226).isPresent());
-    assertTrue(find(enrichments, 227).isPresent());
-    assertTrue(find(enrichments, 228).isPresent());
-  }
-
-  @Test
-  public void all_Null() {
-    List<Enrichment> enrichments = enrichmentService.all(null);
-
-    assertEquals(0, enrichments.size());
   }
 
   @Test

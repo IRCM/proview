@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.fractionation;
 
 import static ca.qc.ircm.proview.fractionation.QFraction.fraction;
-import static ca.qc.ircm.proview.fractionation.QFractionation.fractionation;
 import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 
 import ca.qc.ircm.proview.history.Activity;
@@ -26,7 +25,6 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.transfer.DestinationUsedInTreatmentException;
 import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
@@ -39,11 +37,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -136,27 +132,6 @@ public class FractionationService extends BaseTreatmentService {
         return null;
       }
     }
-  }
-
-  /**
-   * Selects all fractionations involving one of submission's samples.
-   *
-   * @param submission
-   *          submission
-   * @return all fractionations involving one of submission's samples
-   */
-  public List<Fractionation> all(Submission submission) {
-    if (submission == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Fractionation> query = queryFactory.select(fractionation);
-    query.from(fractionation, fraction);
-    query.where(fraction._super.in(fractionation.treatmentSamples));
-    query.where(fraction.sample.in(submission.getSamples()));
-    query.where(fractionation.deleted.eq(false));
-    return query.distinct().fetch();
   }
 
   private void validateWellDestination(Fractionation fractionation) {
