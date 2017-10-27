@@ -28,6 +28,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_CONTAINERS_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SOLUBILISATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TRANSFER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
@@ -174,11 +176,27 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     enrichmentButton().click();
   }
 
+  protected ButtonElement solubilisationButton() {
+    return wrap(ButtonElement.class, findElement(className(SOLUBILISATION)));
+  }
+
+  protected void clickSolubilisationButton() {
+    solubilisationButton().click();
+  }
+
   protected ButtonElement dilutionButton() {
     return wrap(ButtonElement.class, findElement(className(DILUTION)));
   }
 
   protected void clickDilutionButton() {
     dilutionButton().click();
+  }
+
+  protected ButtonElement standardAdditionButton() {
+    return wrap(ButtonElement.class, findElement(className(STANDARD_ADDITION)));
+  }
+
+  protected void clickStandardAdditionButton() {
+    standardAdditionButton().click();
   }
 }

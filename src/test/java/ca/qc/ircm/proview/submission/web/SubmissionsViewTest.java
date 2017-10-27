@@ -36,6 +36,8 @@ import ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
+import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
+import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.transfer.web.TransferView;
@@ -108,7 +110,9 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertFalse(optional(() -> transferButton()).isPresent());
     assertFalse(optional(() -> digestionButton()).isPresent());
     assertFalse(optional(() -> enrichmentButton()).isPresent());
+    assertFalse(optional(() -> solubilisationButton()).isPresent());
     assertFalse(optional(() -> dilutionButton()).isPresent());
+    assertFalse(optional(() -> standardAdditionButton()).isPresent());
   }
 
   @Test
@@ -126,7 +130,9 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> transferButton()).isPresent());
     assertTrue(optional(() -> digestionButton()).isPresent());
     assertTrue(optional(() -> enrichmentButton()).isPresent());
+    assertTrue(optional(() -> solubilisationButton()).isPresent());
     assertTrue(optional(() -> dilutionButton()).isPresent());
+    assertTrue(optional(() -> standardAdditionButton()).isPresent());
   }
 
   @Test
@@ -296,6 +302,22 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
 
   @Test
   @WithSubject
+  public void solubilisation() throws Throwable {
+    admin = true;
+    open();
+    selectSubmissions(3);
+    clickSelectContainersButton();
+    WindowElement containerSelectionWindow =
+        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
+    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
+
+    clickSolubilisationButton();
+
+    assertEquals(viewUrl(SolubilisationView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
   public void dilution() throws Throwable {
     admin = true;
     open();
@@ -308,5 +330,21 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     clickDilutionButton();
 
     assertEquals(viewUrl(DilutionView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void standardAddition() throws Throwable {
+    admin = true;
+    open();
+    selectSubmissions(3);
+    clickSelectContainersButton();
+    WindowElement containerSelectionWindow =
+        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
+    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
+
+    clickStandardAdditionButton();
+
+    assertEquals(viewUrl(StandardAdditionView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

@@ -33,7 +33,9 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected Button transfer;
   protected Button digestion;
   protected Button enrichment;
+  protected Button solubilisation;
   protected Button dilution;
+  protected Button standardAddition;
 
   public SubmissionsViewDesign() {
     Design.read(this);

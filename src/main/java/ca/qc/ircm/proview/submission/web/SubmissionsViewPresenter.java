@@ -34,6 +34,8 @@ import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
+import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.transfer.web.TransferView;
@@ -109,7 +111,9 @@ public class SubmissionsViewPresenter {
   public static final String TRANSFER = "transfer";
   public static final String DIGESTION = "digestion";
   public static final String ENRICHMENT = "enrichment";
+  public static final String SOLUBILISATION = "solubilisation";
   public static final String DILUTION = "dilution";
+  public static final String STANDARD_ADDITION = "standardAddition";
   public static final String NO_CONTAINERS = "noContainers";
   public static final String CONDITION_FALSE = "condition-false";
   public static final String COLUMN_ORDER = "columnOrder";
@@ -215,10 +219,18 @@ public class SubmissionsViewPresenter {
     design.enrichment.setCaption(resources.message(ENRICHMENT));
     design.enrichment.setVisible(authorizationService.hasAdminRole());
     design.enrichment.addClickListener(e -> enrichment());
+    design.solubilisation.addStyleName(SOLUBILISATION);
+    design.solubilisation.setCaption(resources.message(SOLUBILISATION));
+    design.solubilisation.setVisible(authorizationService.hasAdminRole());
+    design.solubilisation.addClickListener(e -> solubilisation());
     design.dilution.addStyleName(DILUTION);
     design.dilution.setCaption(resources.message(DILUTION));
     design.dilution.setVisible(authorizationService.hasAdminRole());
     design.dilution.addClickListener(e -> dilution());
+    design.standardAddition.addStyleName(STANDARD_ADDITION);
+    design.standardAddition.setCaption(resources.message(STANDARD_ADDITION));
+    design.standardAddition.setVisible(authorizationService.hasAdminRole());
+    design.standardAddition.addClickListener(e -> standardAddition());
   }
 
   private void prepareSumissionsGrid() {
@@ -559,9 +571,27 @@ public class SubmissionsViewPresenter {
     }
   }
 
+  private void solubilisation() {
+    if (!view.savedContainers().isEmpty()) {
+      view.navigateTo(SolubilisationView.VIEW_NAME);
+    } else {
+      MessageResource resources = view.getResources();
+      view.showError(resources.message(NO_CONTAINERS));
+    }
+  }
+
   private void dilution() {
     if (!view.savedContainers().isEmpty()) {
       view.navigateTo(DilutionView.VIEW_NAME);
+    } else {
+      MessageResource resources = view.getResources();
+      view.showError(resources.message(NO_CONTAINERS));
+    }
+  }
+
+  private void standardAddition() {
+    if (!view.savedContainers().isEmpty()) {
+      view.navigateTo(StandardAdditionView.VIEW_NAME);
     } else {
       MessageResource resources = view.getResources();
       view.showError(resources.message(NO_CONTAINERS));
