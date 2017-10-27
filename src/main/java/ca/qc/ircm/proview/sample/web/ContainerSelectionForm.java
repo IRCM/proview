@@ -42,7 +42,7 @@ public class ContainerSelectionForm extends CustomComponent implements BaseCompo
   @Inject
   protected PlateComponent plateComponent;
   @Inject
-  private ContainerSelectionFormPresenter presenter;
+  private transient ContainerSelectionFormPresenter presenter;
 
   protected ContainerSelectionForm() {
   }

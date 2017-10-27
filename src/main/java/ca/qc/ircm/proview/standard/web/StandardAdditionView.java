@@ -21,7 +21,7 @@ public class StandardAdditionView extends CustomComponent
   private static final long serialVersionUID = -7132037846809810772L;
   protected StandardAdditionViewDesign design = new StandardAdditionViewDesign();
   @Inject
-  private StandardAdditionViewPresenter presenter;
+  private transient StandardAdditionViewPresenter presenter;
 
   /**
    * Initializes view.

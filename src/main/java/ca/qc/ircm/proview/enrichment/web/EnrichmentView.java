@@ -20,7 +20,7 @@ public class EnrichmentView extends CustomComponent implements BaseView, SavedCo
   private static final long serialVersionUID = 4368044044162024836L;
   protected EnrichmentViewDesign design = new EnrichmentViewDesign();
   @Inject
-  private EnrichmentViewPresenter presenter;
+  private transient EnrichmentViewPresenter presenter;
 
   /**
    * Initializes view.

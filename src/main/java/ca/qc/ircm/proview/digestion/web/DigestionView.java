@@ -20,7 +20,7 @@ public class DigestionView extends CustomComponent implements BaseView, SavedCon
   private static final long serialVersionUID = -9198529755000983897L;
   protected DigestionViewDesign design = new DigestionViewDesign();
   @Inject
-  private DigestionViewPresenter presenter;
+  private transient DigestionViewPresenter presenter;
 
   /**
    * Initializes view.

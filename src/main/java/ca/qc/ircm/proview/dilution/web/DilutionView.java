@@ -20,7 +20,7 @@ public class DilutionView extends CustomComponent implements BaseView, SavedCont
   private static final long serialVersionUID = 5304010135654041113L;
   protected DilutionViewDesign design = new DilutionViewDesign();
   @Inject
-  private DilutionViewPresenter presenter;
+  private transient DilutionViewPresenter presenter;
 
   /**
    * Initializes view.
