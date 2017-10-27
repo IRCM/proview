@@ -33,6 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -78,6 +81,70 @@ public class SolubilisationActivityService {
     activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
+  }
+
+  /**
+   * Creates an activity about update of solubilisation.
+   *
+   * @param solubilisation
+   *          solubilisation containing new properties/values
+   * @param explanation
+   *          explanation
+   * @return activity about update of solubilisation
+   */
+  @CheckReturnValue
+  public Optional<Activity> update(Solubilisation solubilisation, String explanation) {
+    User user = authorizationService.getCurrentUser();
+    final Solubilisation oldSolubilisation =
+        entityManager.find(Solubilisation.class, solubilisation.getId());
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    Map<Long, SolubilisedSample> oldSolubilisedSampleIds = oldSolubilisation.getTreatmentSamples()
+        .stream().collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
+    solubilisation.getTreatmentSamples().stream()
+        .filter(ts -> !oldSolubilisedSampleIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(solubilisedSampleAction(ts, ActionType.INSERT)));
+    solubilisation.getTreatmentSamples().stream()
+        .filter(ts -> oldSolubilisedSampleIds.containsKey(ts.getId())).forEach(ts -> {
+          updateBuilders.add(solubilisedSampleAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldSolubilisedSampleIds.get(ts.getId()).getSample().getId())
+              .newValue(ts.getSample().getId()));
+          updateBuilders.add(solubilisedSampleAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldSolubilisedSampleIds.get(ts.getId()).getContainer().getId())
+              .newValue(ts.getContainer().getId()));
+          updateBuilders.add(solubilisedSampleAction(ts, ActionType.UPDATE).column("solvent")
+              .oldValue(oldSolubilisedSampleIds.get(ts.getId()).getSolvent())
+              .newValue(ts.getSolvent()));
+          updateBuilders.add(solubilisedSampleAction(ts, ActionType.UPDATE).column("solventVolume")
+              .oldValue(oldSolubilisedSampleIds.get(ts.getId()).getSolventVolume())
+              .newValue(ts.getSolventVolume()));
+          updateBuilders.add(solubilisedSampleAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldSolubilisedSampleIds.get(ts.getId()).getComment())
+              .newValue(ts.getComment()));
+        });
+
+    Collection<UpdateActivity> updates =
+        updateBuilders.stream().filter(builder -> builder.isChanged())
+            .map(builder -> builder.build()).collect(Collectors.toList());
+
+    if (!updates.isEmpty()) {
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(solubilisation.getId());
+      activity.setUser(user);
+      activity.setTableName("treatment");
+      activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
+      activity.setUpdates(new LinkedList<>(updates));
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  private UpdateActivityBuilder solubilisedSampleAction(SolubilisedSample ts,
+      ActionType actionType) {
+    return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
+        .actionType(actionType);
   }
 
   /**

@@ -25,6 +25,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
 
 /**
  * A dried sample that was solubilised.
@@ -47,6 +48,7 @@ public class SolubilisedSample extends TreatmentSample implements Data {
    * Volume of solvent used.
    */
   @Column(name = "solventVolume", nullable = false)
+  @Min(0)
   private Double solventVolume;
 
   @Override

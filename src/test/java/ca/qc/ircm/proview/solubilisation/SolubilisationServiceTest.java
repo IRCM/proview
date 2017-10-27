@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -56,6 +57,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -208,6 +210,44 @@ public class SolubilisationServiceTest {
     assertEquals((Long) 128L, solubilisedSample.getContainer().getId());
     assertEquals("Methanol", solubilisedSample.getSolvent());
     assertEquals((Double) 20.0, solubilisedSample.getSolventVolume());
+  }
+
+  @Test
+  public void update() {
+    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 236L);
+    entityManager.detach(solubilisation);
+    solubilisation.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
+    solubilisation.getTreatmentSamples().get(0).setSolvent("ch3oh");
+    solubilisation.getTreatmentSamples().get(0).setSolventVolume(7.0);
+    solubilisation.getTreatmentSamples().get(0).setComment("test update");
+    solubilisation.getTreatmentSamples().get(0).setContainer(new Well(248L));
+    solubilisation.getTreatmentSamples().get(0).setSample(new Control(444L));
+    when(solubilisationActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+
+    solubilisationService.update(solubilisation, "test explanation");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(solubilisationActivityService).update(eq(solubilisation), eq("test explanation"));
+    verify(activityService).insert(activity);
+    solubilisation = entityManager.find(Solubilisation.class, 236L);
+    assertNotNull(solubilisation);
+    assertEquals((Long) 248L, solubilisation.getTreatmentSamples().get(0).getContainer().getId());
+    assertEquals((Long) 444L, solubilisation.getTreatmentSamples().get(0).getSample().getId());
+    assertEquals("ch3oh", solubilisation.getTreatmentSamples().get(0).getSolvent());
+    assertEquals(7.0, solubilisation.getTreatmentSamples().get(0).getSolventVolume(), 0.0001);
+    assertEquals("test update", solubilisation.getTreatmentSamples().get(0).getComment());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_RemoveSolubilisedSample() {
+    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 236L);
+    entityManager.detach(solubilisation);
+    solubilisation.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
+    solubilisation.getTreatmentSamples().remove(1);
+    when(solubilisationActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+
+    solubilisationService.update(solubilisation, "test explanation");
   }
 
   @Test

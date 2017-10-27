@@ -18,12 +18,15 @@
 package ca.qc.ircm.proview.solubilisation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -42,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -76,7 +80,7 @@ public class SolubilisationActivityServiceTest {
     solubilisedSample.setSolvent("Methanol");
     solubilisedSample.setSolventVolume(20.0);
     solubilisedSample.setContainer(sourceTube);
-    List<SolubilisedSample> solubilisedSamples = new ArrayList<SolubilisedSample>();
+    List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
     solubilisedSamples.add(solubilisedSample);
     Solubilisation solubilisation = new Solubilisation();
     solubilisation.setId(123456L);
@@ -93,11 +97,96 @@ public class SolubilisationActivityServiceTest {
   }
 
   @Test
+  public void update() {
+    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 236L);
+    entityManager.detach(solubilisation);
+    solubilisation.getTreatmentSamples().forEach(ts -> entityManager.detach(ts));
+    solubilisation.getTreatmentSamples().get(0).setContainer(new Well(248L));
+    solubilisation.getTreatmentSamples().get(0).setSample(new Control(444L));
+    solubilisation.getTreatmentSamples().get(0).setSolvent("ch3oh");
+    solubilisation.getTreatmentSamples().get(0).setSolventVolume(7.0);
+    solubilisation.getTreatmentSamples().get(0).setComment("test");
+    SolubilisedSample newSolubilisedSample = new SolubilisedSample();
+    newSolubilisedSample.setId(400L);
+    newSolubilisedSample.setContainer(new Tube(14L));
+    newSolubilisedSample.setSample(new SubmissionSample(562L));
+    solubilisation.getTreatmentSamples().add(newSolubilisedSample);
+
+    Optional<Activity> optionalActivity =
+        solubilisationActivityService.update(solubilisation, "test explanation");
+
+    assertTrue(optionalActivity.isPresent());
+    Activity activity = optionalActivity.get();
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals("treatment", activity.getTableName());
+    assertEquals(solubilisation.getId(), activity.getRecordId());
+    assertEquals("test explanation", activity.getExplanation());
+    assertEquals(user, activity.getUser());
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity newSolubilisedSampleActivity = new UpdateActivity();
+    newSolubilisedSampleActivity.setActionType(ActionType.INSERT);
+    newSolubilisedSampleActivity.setTableName("treatmentsample");
+    newSolubilisedSampleActivity.setRecordId(400L);
+    expecteds.add(newSolubilisedSampleActivity);
+    UpdateActivity updateSolubilisedSampleSampleActivity = new UpdateActivity();
+    updateSolubilisedSampleSampleActivity.setActionType(ActionType.UPDATE);
+    updateSolubilisedSampleSampleActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleSampleActivity.setRecordId(312L);
+    updateSolubilisedSampleSampleActivity.setColumn("sampleId");
+    updateSolubilisedSampleSampleActivity.setOldValue("589");
+    updateSolubilisedSampleSampleActivity.setNewValue("444");
+    expecteds.add(updateSolubilisedSampleSampleActivity);
+    UpdateActivity updateSolubilisedSampleContainerActivity = new UpdateActivity();
+    updateSolubilisedSampleContainerActivity.setActionType(ActionType.UPDATE);
+    updateSolubilisedSampleContainerActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleContainerActivity.setRecordId(312L);
+    updateSolubilisedSampleContainerActivity.setColumn("containerId");
+    updateSolubilisedSampleContainerActivity.setOldValue("992");
+    updateSolubilisedSampleContainerActivity.setNewValue("248");
+    expecteds.add(updateSolubilisedSampleContainerActivity);
+    UpdateActivity updateSolubilisedSampleSolventActivity = new UpdateActivity();
+    updateSolubilisedSampleSolventActivity.setActionType(ActionType.UPDATE);
+    updateSolubilisedSampleSolventActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleSolventActivity.setRecordId(312L);
+    updateSolubilisedSampleSolventActivity.setColumn("solvent");
+    updateSolubilisedSampleSolventActivity.setOldValue("Methanol");
+    updateSolubilisedSampleSolventActivity.setNewValue("ch3oh");
+    expecteds.add(updateSolubilisedSampleSolventActivity);
+    UpdateActivity updateSolubilisedSampleSolventVolumeActivity = new UpdateActivity();
+    updateSolubilisedSampleSolventVolumeActivity.setActionType(ActionType.UPDATE);
+    updateSolubilisedSampleSolventVolumeActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleSolventVolumeActivity.setRecordId(312L);
+    updateSolubilisedSampleSolventVolumeActivity.setColumn("solventVolume");
+    updateSolubilisedSampleSolventVolumeActivity.setOldValue("20.0");
+    updateSolubilisedSampleSolventVolumeActivity.setNewValue("7.0");
+    expecteds.add(updateSolubilisedSampleSolventVolumeActivity);
+    UpdateActivity updateSolubilisedSampleCommentActivity = new UpdateActivity();
+    updateSolubilisedSampleCommentActivity.setActionType(ActionType.UPDATE);
+    updateSolubilisedSampleCommentActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleCommentActivity.setRecordId(312L);
+    updateSolubilisedSampleCommentActivity.setColumn("comment");
+    updateSolubilisedSampleCommentActivity.setOldValue(null);
+    updateSolubilisedSampleCommentActivity.setNewValue("test");
+    expecteds.add(updateSolubilisedSampleCommentActivity);
+    LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
+  }
+
+  @Test
+  public void update_NoChanges() {
+    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 1L);
+    entityManager.detach(solubilisation);
+
+    Optional<Activity> optionalActivity =
+        solubilisationActivityService.update(solubilisation, "test explanation");
+
+    assertFalse(optionalActivity.isPresent());
+  }
+
+  @Test
   public void undoErroneous() {
     Solubilisation solubilisation = new Solubilisation(1L);
 
-    Activity activity =
-        solubilisationActivityService.undoErroneous(solubilisation, "unit_test");
+    Activity activity = solubilisationActivityService.undoErroneous(solubilisation, "unit_test");
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -111,8 +200,7 @@ public class SolubilisationActivityServiceTest {
   public void undoFailed_NoBan() {
     Solubilisation solubilisation = new Solubilisation(1L);
 
-    Activity activity =
-        solubilisationActivityService.undoFailed(solubilisation, "unit_test", null);
+    Activity activity = solubilisationActivityService.undoFailed(solubilisation, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -127,7 +215,7 @@ public class SolubilisationActivityServiceTest {
     Solubilisation solubilisation = new Solubilisation(1L);
     Tube sourceTube = new Tube(1L);
     Well well = new Well(130L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     bannedContainers.add(well);
 
@@ -139,7 +227,7 @@ public class SolubilisationActivityServiceTest {
     assertEquals(solubilisation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expecteds = new HashSet<UpdateActivity>();
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity bannedTubeActivity = new UpdateActivity();
     bannedTubeActivity.setActionType(ActionType.UPDATE);
     bannedTubeActivity.setTableName("samplecontainer");
@@ -163,7 +251,7 @@ public class SolubilisationActivityServiceTest {
   public void undoFailed_LongDescription() throws Throwable {
     Solubilisation solubilisation = new Solubilisation(1L);
     Tube sourceTube = new Tube(1L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<SampleContainer>();
+    Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(sourceTube);
     String reason = "long reason having more than 255 characters "
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"

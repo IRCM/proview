@@ -31,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -99,6 +102,34 @@ public class SolubilisationService extends BaseTreatmentService {
     entityManager.flush();
     Activity activity = solubilisationActivityService.insert(solubilisation);
     activityService.insert(activity);
+  }
+
+  /**
+   * Updates solubilisation's information in database.
+   *
+   * @param solubilisation
+   *          solubilisation containing new information
+   * @param explanation
+   *          explanation
+   */
+  public void update(Solubilisation solubilisation, String explanation) {
+    authorizationService.checkAdminRole();
+
+    Solubilisation old = entityManager.find(Solubilisation.class, solubilisation.getId());
+    Set<Long> solubilisedSampleIds = solubilisation.getTreatmentSamples().stream()
+        .map(ts -> ts.getId()).collect(Collectors.toSet());
+    if (old.getTreatmentSamples().stream().filter(ts -> !solubilisedSampleIds.contains(ts.getId()))
+        .findAny().isPresent()) {
+      throw new IllegalArgumentException("Cannot remove " + SolubilisedSample.class.getSimpleName()
+          + " from " + Solubilisation.class.getSimpleName() + " on update");
+    }
+
+    Optional<Activity> activity = solubilisationActivityService.update(solubilisation, explanation);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
+    }
+
+    entityManager.merge(solubilisation);
   }
 
   /**
