@@ -24,7 +24,6 @@ import ca.qc.ircm.proview.history.DatabaseLogUtil;
 import ca.qc.ircm.proview.history.SampleStatusUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
-import ca.qc.ircm.proview.msanalysis.MsAnalysisService.MsAnalysisAggregate;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -36,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -66,18 +65,16 @@ public class MsAnalysisActivityService {
   /**
    * Creates an activity about insertion of MS analysis.
    *
-   * @param msAnalysisAggregate
-   *          inserted MS analysis
+   * @param msAnalysis
+   *          MS analysis
    * @return activity about insertion of MS analysis
    */
   @CheckReturnValue
-  public Activity insert(final MsAnalysisAggregate msAnalysisAggregate) {
+  public Activity insert(final MsAnalysis msAnalysis) {
     final User user = authorizationService.getCurrentUser();
 
-    final MsAnalysis msAnalysis = msAnalysisAggregate.getMsAnalysis();
-
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (Acquisition acquisition : msAnalysisAggregate.getAcquisitions()) {
+    for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
       Sample newSample = acquisition.getSample();
       Sample oldSample = entityManager.find(Sample.class, acquisition.getSample().getId());
       if (newSample instanceof SubmissionSample) {
@@ -88,8 +85,8 @@ public class MsAnalysisActivityService {
       }
     }
 
-    // Keep updates that did not change.
-    final Collection<UpdateActivity> updates = new ArrayList<>();
+    // Keep updates that changed.
+    final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
         updates.add(builder.build());
@@ -102,7 +99,7 @@ public class MsAnalysisActivityService {
     activity.setUser(user);
     activity.setTableName("msanalysis");
     activity.setExplanation(null);
-    activity.setUpdates(new LinkedList<>(updates));
+    activity.setUpdates(updates);
     return activity;
   }
 
@@ -155,8 +152,8 @@ public class MsAnalysisActivityService {
       }
     }
 
-    // Keep updates that did not change.
-    final Collection<UpdateActivity> updates = new ArrayList<>();
+    // Keep updates that changed.
+    final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
         updates.add(builder.build());
@@ -170,7 +167,7 @@ public class MsAnalysisActivityService {
     activity.setUser(user);
     activity.setTableName("msanalysis");
     activity.setExplanation(explanation);
-    activity.setUpdates(new LinkedList<>(updates));
+    activity.setUpdates(updates);
     return activity;
   }
 }

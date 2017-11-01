@@ -34,7 +34,6 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.msanalysis.MsAnalysisService.MsAnalysisAggregate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
@@ -83,7 +82,7 @@ public class MsAnalysisServiceTest {
   @Mock
   private Activity activity;
   @Captor
-  private ArgumentCaptor<MsAnalysisAggregate> msAnalysisAggregateCaptor;
+  private ArgumentCaptor<MsAnalysis> msAnalysisCaptor;
   @Captor
   private ArgumentCaptor<Collection<SampleContainer>> sampleContainersCaptor;
 
@@ -199,30 +198,18 @@ public class MsAnalysisServiceTest {
     acquisition.setComment("unit_test_comment");
     List<Acquisition> acquisitions = new ArrayList<>();
     acquisitions.add(acquisition);
-    final MsAnalysis finalMsAnalysis = msAnalysis;
-    final List<Acquisition> finalAcquisitions = acquisitions;
-    MsAnalysisAggregate insertAggregate = new MsAnalysisAggregate() {
-      @Override
-      public MsAnalysis getMsAnalysis() {
-        return finalMsAnalysis;
-      }
-
-      @Override
-      public List<Acquisition> getAcquisitions() {
-        return finalAcquisitions;
-      }
-    };
-    when(msAnalysisActivityService.insert(any(MsAnalysisAggregate.class))).thenReturn(activity);
+    msAnalysis.setAcquisitions(acquisitions);
+    when(msAnalysisActivityService.insert(any())).thenReturn(activity);
 
     try {
-      msAnalysisService.insert(insertAggregate);
+      msAnalysisService.insert(msAnalysis);
     } catch (SamplesFromMultipleUserException e) {
       fail("SamplesFromMultipleUserException not expected");
     }
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(msAnalysisActivityService).insert(msAnalysisAggregateCaptor.capture());
+    verify(msAnalysisActivityService).insert(eq(msAnalysis));
     verify(activityService).insert(activity);
     assertNotNull(msAnalysis.getId());
     msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
@@ -245,18 +232,6 @@ public class MsAnalysisServiceTest {
     assertEquals("unit_test_comment", acquisition.getComment());
     SubmissionSample sampleStatus = entityManager.find(SubmissionSample.class, sample.getId());
     assertEquals(SampleStatus.ANALYSED, sampleStatus.getStatus());
-    MsAnalysisAggregate msAnalysisAggregate = msAnalysisAggregateCaptor.getValue();
-    assertEquals(msAnalysis.getId(), msAnalysisAggregate.getMsAnalysis().getId());
-    acquisitions = msAnalysisAggregate.getAcquisitions();
-    assertEquals(1, acquisitions.size());
-    acquisition = acquisitions.get(0);
-    assertEquals((Long) 3L, acquisition.getContainer().getId());
-    assertEquals((Long) 443L, acquisition.getSample().getId());
-    assertEquals(new Integer(1), acquisition.getNumberOfAcquisition());
-    assertEquals("unit_test_sample_list", acquisition.getSampleListName());
-    assertEquals("XL_20100614_COU_09", acquisition.getAcquisitionFile());
-    assertEquals((Integer) 0, acquisition.getListIndex());
-    assertEquals("unit_test_comment", acquisition.getComment());
   }
 
   @Test
@@ -289,23 +264,13 @@ public class MsAnalysisServiceTest {
     acquisition.setListIndex(0);
     acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
-    MsAnalysisAggregate insertAggregate = new MsAnalysisAggregate() {
-      @Override
-      public MsAnalysis getMsAnalysis() {
-        return msAnalysis;
-      }
-
-      @Override
-      public List<Acquisition> getAcquisitions() {
-        return acquisitions;
-      }
-    };
+    msAnalysis.setAcquisitions(acquisitions);
 
     try {
-      msAnalysisService.insert(insertAggregate);
+      msAnalysisService.insert(msAnalysis);
       fail("Expected SamplesFromMultipleUserException");
     } catch (SamplesFromMultipleUserException e) {
-      // Ignore.
+      // Success.
     }
   }
 
@@ -341,21 +306,10 @@ public class MsAnalysisServiceTest {
     acquisition.setListIndex(0);
     acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
+    msAnalysis.setAcquisitions(acquisitions);
 
-    // Insert MS analysis.
-    MsAnalysisAggregate insertAggregate = new MsAnalysisAggregate() {
-      @Override
-      public MsAnalysis getMsAnalysis() {
-        return msAnalysis;
-      }
-
-      @Override
-      public List<Acquisition> getAcquisitions() {
-        return acquisitions;
-      }
-    };
     try {
-      msAnalysisService.insert(insertAggregate);
+      msAnalysisService.insert(msAnalysis);
     } catch (SamplesFromMultipleUserException e) {
       fail("SamplesFromMultipleUserException not expected");
     }

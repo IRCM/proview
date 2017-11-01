@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
-import ca.qc.ircm.proview.msanalysis.MsAnalysisService.MsAnalysisAggregate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -83,21 +82,12 @@ public class MsAnalysisActivityServiceTest {
     acquisition.setContainer(sourceTube);
     final List<Acquisition> acquisitions = new ArrayList<>();
     acquisitions.add(acquisition);
+    msAnalysis.setAcquisitions(acquisitions);
     sample.setStatus(SampleStatus.ANALYSED);
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity = msAnalysisActivityService.insert(new MsAnalysisAggregate() {
-      @Override
-      public MsAnalysis getMsAnalysis() {
-        return msAnalysis;
-      }
-
-      @Override
-      public List<Acquisition> getAcquisitions() {
-        return acquisitions;
-      }
-    });
+    Activity activity = msAnalysisActivityService.insert(msAnalysis);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.INSERT, activity.getActionType());

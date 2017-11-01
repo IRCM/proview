@@ -54,25 +54,6 @@ import javax.persistence.PersistenceContext;
 @Service
 @Transactional
 public class MsAnalysisService extends BaseTreatmentService {
-  /**
-   * Aggregate representing a complete {@link MsAnalysis}.
-   */
-  public static interface MsAnalysisAggregate {
-    /**
-     * Returns MS analysis that was done.
-     *
-     * @return MS analysis that was done
-     */
-    public MsAnalysis getMsAnalysis();
-
-    /**
-     * Returns acquisitions done during MS analysis.
-     *
-     * @return acquisitions done during MS analysis.
-     */
-    public List<Acquisition> getAcquisitions();
-  }
-
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -179,23 +160,20 @@ public class MsAnalysisService extends BaseTreatmentService {
   /**
    * Analyse samples by MS.
    *
-   * @param msAnalysisAggregate
-   *          MS analysis information
+   * @param msAnalysis
+   *          MS analysis
    * @return MS analysis with complete information for acquisitions
    * @throws SamplesFromMultipleUserException
    *           MS analysis contains samples from more than one user
    */
-  public MsAnalysis insert(MsAnalysisAggregate msAnalysisAggregate)
-      throws SamplesFromMultipleUserException {
+  public MsAnalysis insert(MsAnalysis msAnalysis) throws SamplesFromMultipleUserException {
     authorizationService.checkAdminRole();
 
     // Check that all samples where submitted by the same user.
-    chechSameUserForAllSamples(msAnalysisAggregate);
+    chechSameUserForAllSamples(msAnalysis);
 
     // Add MS analysis to database.
-    MsAnalysis msAnalysis = msAnalysisAggregate.getMsAnalysis();
     msAnalysis.setInsertTime(Instant.now());
-    msAnalysis.setAcquisitions(msAnalysisAggregate.getAcquisitions());
     Map<Sample, Integer> positions = new HashMap<>();
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
       Sample sample = acquisition.getSample();
@@ -223,7 +201,7 @@ public class MsAnalysisService extends BaseTreatmentService {
 
     entityManager.flush();
     // Log insertion of MS analysis.
-    Activity activity = msAnalysisActivityService.insert(msAnalysisAggregate);
+    Activity activity = msAnalysisActivityService.insert(msAnalysis);
     activityService.insert(activity);
 
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
@@ -241,10 +219,10 @@ public class MsAnalysisService extends BaseTreatmentService {
     return query.fetchOne();
   }
 
-  private void chechSameUserForAllSamples(MsAnalysisAggregate msAnalysisAggregate)
+  private void chechSameUserForAllSamples(MsAnalysis msAnalysis)
       throws SamplesFromMultipleUserException {
     User expectedUser = null;
-    for (Acquisition acquisition : msAnalysisAggregate.getAcquisitions()) {
+    for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
       if (acquisition.getSample() instanceof SubmissionSample) {
         SubmissionSample sample = (SubmissionSample) acquisition.getSample();
         if (expectedUser == null) {
