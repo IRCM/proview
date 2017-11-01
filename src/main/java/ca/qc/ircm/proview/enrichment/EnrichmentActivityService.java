@@ -217,7 +217,7 @@ public class EnrichmentActivityService {
       }
     }
 
-    // Keep updates that did not change.
+    // Keep updates that changed.
     final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {

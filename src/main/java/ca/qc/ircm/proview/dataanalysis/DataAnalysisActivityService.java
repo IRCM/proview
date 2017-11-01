@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.CheckReturnValue;
@@ -79,8 +79,8 @@ public class DataAnalysisActivityService {
     updateBuilders.add(new SampleStatusUpdateActivityBuilder().oldSample(oldSample)
         .newValue(SampleStatus.DATA_ANALYSIS));
 
-    // Keep updates that did not change.
-    final Collection<UpdateActivity> updates = new ArrayList<>();
+    // Keep updates that changed.
+    final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
         updates.add(builder.build());
@@ -93,7 +93,7 @@ public class DataAnalysisActivityService {
     activity.setUser(user);
     activity.setTableName("dataanalysis");
     activity.setExplanation(null);
-    activity.setUpdates(new LinkedList<>(updates));
+    activity.setUpdates(updates);
     return activity;
   }
 
@@ -139,8 +139,8 @@ public class DataAnalysisActivityService {
     updateBuilders.add(new SampleStatusUpdateActivityBuilder()
         .oldSample(oldDataAnalysis.getSample()).newSample(dataAnalysis.getSample()));
 
-    // Keep updates that did not change.
-    final Collection<UpdateActivity> updates = new ArrayList<>();
+    // Keep updates that changed.
+    final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
         updates.add(builder.build());
@@ -155,7 +155,7 @@ public class DataAnalysisActivityService {
       activity.setUser(user);
       activity.setTableName("dataanalysis");
       activity.setExplanation(explanation);
-      activity.setUpdates(new LinkedList<>(updates));
+      activity.setUpdates(updates);
       return Optional.of(activity);
     } else {
       return Optional.empty();

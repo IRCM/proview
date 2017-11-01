@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -79,8 +79,8 @@ public class FractionationActivityService {
           .newContainer(detail.getDestinationContainer()));
     }
 
-    // Keep updates that did not change.
-    final Collection<UpdateActivity> updates = new ArrayList<>();
+    // Keep updates that changed.
+    final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
         updates.add(builder.build());
@@ -93,7 +93,7 @@ public class FractionationActivityService {
     activity.setUser(user);
     activity.setTableName("treatment");
     activity.setExplanation(null);
-    activity.setUpdates(new LinkedList<>(updates));
+    activity.setUpdates(updates);
     return activity;
   }
 
@@ -121,8 +121,8 @@ public class FractionationActivityService {
           new RemoveSampleFromSampleContainerUpdateActivityBuilder().oldContainer(oldContainer));
     }
 
-    // Keep updates that did not change.
-    final Collection<UpdateActivity> updates = new ArrayList<>();
+    // Keep updates that changed.
+    final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
         updates.add(builder.build());
@@ -135,7 +135,7 @@ public class FractionationActivityService {
     activity.setUser(user);
     activity.setTableName("treatment");
     activity.setExplanation(explanation);
-    activity.setUpdates(new LinkedList<>(updates));
+    activity.setUpdates(updates);
     return activity;
   }
 
@@ -165,8 +165,8 @@ public class FractionationActivityService {
       }
     }
 
-    // Keep updates that did not change.
-    final Collection<UpdateActivity> updates = new ArrayList<>();
+    // Keep updates that changed.
+    final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
         updates.add(builder.build());
@@ -180,7 +180,7 @@ public class FractionationActivityService {
     activity.setUser(user);
     activity.setTableName("treatment");
     activity.setExplanation(explanation);
-    activity.setUpdates(new LinkedList<>(updates));
+    activity.setUpdates(updates);
     return activity;
   }
 }

@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -123,9 +123,8 @@ public class SolubilisationActivityService {
               .newValue(ts.getComment()));
         });
 
-    Collection<UpdateActivity> updates =
-        updateBuilders.stream().filter(builder -> builder.isChanged())
-            .map(builder -> builder.build()).collect(Collectors.toList());
+    List<UpdateActivity> updates = updateBuilders.stream().filter(builder -> builder.isChanged())
+        .map(builder -> builder.build()).collect(Collectors.toList());
 
     if (!updates.isEmpty()) {
       Activity activity = new Activity();
@@ -134,7 +133,7 @@ public class SolubilisationActivityService {
       activity.setUser(user);
       activity.setTableName("treatment");
       activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
-      activity.setUpdates(new LinkedList<>(updates));
+      activity.setUpdates(updates);
       return Optional.of(activity);
     } else {
       return Optional.empty();
@@ -196,8 +195,8 @@ public class SolubilisationActivityService {
       }
     }
 
-    // Keep updates that did not change.
-    final Collection<UpdateActivity> updates = new ArrayList<>();
+    // Keep updates that changed.
+    final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
         updates.add(builder.build());
@@ -211,7 +210,7 @@ public class SolubilisationActivityService {
     activity.setUser(user);
     activity.setTableName("treatment");
     activity.setExplanation(explanation);
-    activity.setUpdates(new LinkedList<>(updates));
+    activity.setUpdates(updates);
     return activity;
   }
 }
