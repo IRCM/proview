@@ -27,8 +27,8 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -73,7 +73,8 @@ public class DigestionActivityServiceTest {
   @Test
   public void insert() {
     final DigestionProtocol protocol = new DigestionProtocol(1L);
-    Sample sample = new SubmissionSample(1L);
+    SubmissionSample sample = new SubmissionSample(1L);
+    sample.setStatus(SampleStatus.DIGESTED);
     Tube sourceTube = new Tube(352L);
     DigestedSample digestedSample = new DigestedSample();
     digestedSample.setSample(sample);
@@ -92,7 +93,16 @@ public class DigestionActivityServiceTest {
     assertEquals(digestion.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
-    LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
+    UpdateActivity sampleStatusActivity = new UpdateActivity();
+    sampleStatusActivity.setActionType(ActionType.UPDATE);
+    sampleStatusActivity.setTableName("sample");
+    sampleStatusActivity.setRecordId(sample.getId());
+    sampleStatusActivity.setColumn("status");
+    sampleStatusActivity.setOldValue(SampleStatus.ANALYSED.name());
+    sampleStatusActivity.setNewValue(SampleStatus.DIGESTED.name());
+    expectedUpdateActivities.add(sampleStatusActivity);
+    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 
   @Test
