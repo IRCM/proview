@@ -43,6 +43,9 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -163,10 +166,10 @@ public class MsAnalysisService extends BaseTreatmentService {
    * @param msAnalysis
    *          MS analysis
    * @return MS analysis with complete information for acquisitions
-   * @throws SamplesFromMultipleUserException
+   * @throws IllegalArgumentException
    *           MS analysis contains samples from more than one user
    */
-  public MsAnalysis insert(MsAnalysis msAnalysis) throws SamplesFromMultipleUserException {
+  public MsAnalysis insert(MsAnalysis msAnalysis) throws IllegalArgumentException {
     authorizationService.checkAdminRole();
 
     // Check that all samples where submitted by the same user.
@@ -174,21 +177,7 @@ public class MsAnalysisService extends BaseTreatmentService {
 
     // Add MS analysis to database.
     msAnalysis.setInsertTime(Instant.now());
-    Map<Sample, Integer> positions = new HashMap<>();
-    for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
-      Sample sample = acquisition.getSample();
-      Integer lastPosition = lastPosition(sample);
-      if (lastPosition == null) {
-        lastPosition = 0;
-      }
-      positions.put(sample, lastPosition + 1);
-    }
-    for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
-      Sample sample = acquisition.getSample();
-      Integer position = positions.get(sample);
-      acquisition.setPosition(position);
-      positions.put(sample, position + 1);
-    }
+    setPositions(msAnalysis.getAcquisitions());
     entityManager.persist(msAnalysis);
 
     // Set status of submission samples to analysed.
@@ -212,6 +201,24 @@ public class MsAnalysisService extends BaseTreatmentService {
     return msAnalysis;
   }
 
+  private void setPositions(List<Acquisition> acquisitions) {
+    Map<Sample, Integer> positions = new HashMap<>();
+    acquisitions.stream().filter(ac -> ac.getPosition() == null).forEach(acquisition -> {
+      Sample sample = acquisition.getSample();
+      Integer lastPosition = lastPosition(sample);
+      if (lastPosition == null) {
+        lastPosition = 0;
+      }
+      positions.put(sample, lastPosition + 1);
+    });
+    acquisitions.stream().filter(ac -> ac.getPosition() == null).forEach(acquisition -> {
+      Sample sample = acquisition.getSample();
+      Integer position = positions.get(sample);
+      acquisition.setPosition(position);
+      positions.put(sample, position + 1);
+    });
+  }
+
   private Integer lastPosition(Sample sample) {
     JPAQuery<Integer> query = queryFactory.select(acquisition.position.max());
     query.from(acquisition);
@@ -219,8 +226,7 @@ public class MsAnalysisService extends BaseTreatmentService {
     return query.fetchOne();
   }
 
-  private void chechSameUserForAllSamples(MsAnalysis msAnalysis)
-      throws SamplesFromMultipleUserException {
+  private void chechSameUserForAllSamples(MsAnalysis msAnalysis) throws IllegalArgumentException {
     User expectedUser = null;
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
       if (acquisition.getSample() instanceof SubmissionSample) {
@@ -228,10 +234,40 @@ public class MsAnalysisService extends BaseTreatmentService {
         if (expectedUser == null) {
           expectedUser = sample.getUser();
         } else if (!expectedUser.equals(sample.getUser())) {
-          throw new SamplesFromMultipleUserException();
+          throw new IllegalArgumentException("Cannot analyse samples from multiple users");
         }
       }
     }
+  }
+
+  /**
+   * Updates MS analysis's information in database.
+   *
+   * @param msAnalysis
+   *          MS analysis containing new information
+   * @param explanation
+   *          explanation
+   */
+  public void update(MsAnalysis msAnalysis, String explanation) {
+    authorizationService.checkAdminRole();
+
+    MsAnalysis old = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+    Set<Long> acquisitionsIds =
+        msAnalysis.getAcquisitions().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
+    if (old.getAcquisitions().stream().filter(ts -> !acquisitionsIds.contains(ts.getId())).findAny()
+        .isPresent()) {
+      throw new IllegalArgumentException("Cannot remove " + Acquisition.class.getSimpleName()
+          + " from " + MsAnalysis.class.getSimpleName() + " on update");
+    }
+
+    setPositions(msAnalysis.getAcquisitions());
+
+    Optional<Activity> activity = msAnalysisActivityService.update(msAnalysis, explanation);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
+    }
+
+    entityManager.merge(msAnalysis);
   }
 
   /**

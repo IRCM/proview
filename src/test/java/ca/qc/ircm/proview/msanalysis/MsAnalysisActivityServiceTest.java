@@ -18,6 +18,8 @@
 package ca.qc.ircm.proview.msanalysis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -105,6 +108,112 @@ public class MsAnalysisActivityServiceTest {
     sampleStatusActivity.setNewValue(SampleStatus.ANALYSED.name());
     expectedUpdateActivities.add(sampleStatusActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
+  }
+
+  @Test
+  public void update() {
+    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    entityManager.detach(msAnalysis);
+    msAnalysis.getAcquisitions().forEach(ac -> entityManager.detach(ac));
+    msAnalysis.setMassDetectionInstrument(MassDetectionInstrument.ORBITRAP_FUSION);
+    msAnalysis.setSource(MassDetectionInstrumentSource.ESI);
+    msAnalysis.getAcquisitions().get(0).setContainer(new Tube(8L));
+    msAnalysis.getAcquisitions().get(0).setSample(new SubmissionSample(446L));
+    msAnalysis.getAcquisitions().get(0).setSampleListName("new_sample_list");
+    msAnalysis.getAcquisitions().get(0).setAcquisitionFile("new_acquisition_file");
+    msAnalysis.getAcquisitions().get(0).setComment("test");
+    Acquisition newAcquisition = new Acquisition();
+    newAcquisition.setId(400L);
+    newAcquisition.setContainer(new Tube(14L));
+    newAcquisition.setSample(new SubmissionSample(562L));
+    msAnalysis.getAcquisitions().add(newAcquisition);
+    User user = new User(1L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
+    Optional<Activity> optionalActivity =
+        msAnalysisActivityService.update(msAnalysis, "test explanation");
+
+    assertTrue(optionalActivity.isPresent());
+    Activity activity = optionalActivity.get();
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals("msanalysis", activity.getTableName());
+    assertEquals(msAnalysis.getId(), activity.getRecordId());
+    assertEquals("test explanation", activity.getExplanation());
+    assertEquals(user, activity.getUser());
+    final Collection<UpdateActivity> expecteds = new HashSet<>();
+    UpdateActivity massDetectionInstrumentActivity = new UpdateActivity();
+    massDetectionInstrumentActivity.setActionType(ActionType.UPDATE);
+    massDetectionInstrumentActivity.setTableName("msanalysis");
+    massDetectionInstrumentActivity.setRecordId(msAnalysis.getId());
+    massDetectionInstrumentActivity.setColumn("massDetectionInstrument");
+    massDetectionInstrumentActivity.setOldValue("LTQ_ORBI_TRAP");
+    massDetectionInstrumentActivity.setNewValue("ORBITRAP_FUSION");
+    expecteds.add(massDetectionInstrumentActivity);
+    UpdateActivity sourceActivity = new UpdateActivity();
+    sourceActivity.setActionType(ActionType.UPDATE);
+    sourceActivity.setTableName("msanalysis");
+    sourceActivity.setRecordId(msAnalysis.getId());
+    sourceActivity.setColumn("source");
+    sourceActivity.setOldValue("LDTD");
+    sourceActivity.setNewValue("ESI");
+    expecteds.add(sourceActivity);
+    UpdateActivity newAcquisitionActivity = new UpdateActivity();
+    newAcquisitionActivity.setActionType(ActionType.INSERT);
+    newAcquisitionActivity.setTableName("acquisition");
+    newAcquisitionActivity.setRecordId(400L);
+    expecteds.add(newAcquisitionActivity);
+    UpdateActivity updateAcquisitionSampleActivity = new UpdateActivity();
+    updateAcquisitionSampleActivity.setActionType(ActionType.UPDATE);
+    updateAcquisitionSampleActivity.setTableName("acquisition");
+    updateAcquisitionSampleActivity.setRecordId(411L);
+    updateAcquisitionSampleActivity.setColumn("sampleId");
+    updateAcquisitionSampleActivity.setOldValue("444");
+    updateAcquisitionSampleActivity.setNewValue("446");
+    expecteds.add(updateAcquisitionSampleActivity);
+    UpdateActivity updateAcquisitionContainerActivity = new UpdateActivity();
+    updateAcquisitionContainerActivity.setActionType(ActionType.UPDATE);
+    updateAcquisitionContainerActivity.setTableName("acquisition");
+    updateAcquisitionContainerActivity.setRecordId(411L);
+    updateAcquisitionContainerActivity.setColumn("containerId");
+    updateAcquisitionContainerActivity.setOldValue("4");
+    updateAcquisitionContainerActivity.setNewValue("8");
+    expecteds.add(updateAcquisitionContainerActivity);
+    UpdateActivity updateAcquisitionSampleListNameActivity = new UpdateActivity();
+    updateAcquisitionSampleListNameActivity.setActionType(ActionType.UPDATE);
+    updateAcquisitionSampleListNameActivity.setTableName("acquisition");
+    updateAcquisitionSampleListNameActivity.setRecordId(411L);
+    updateAcquisitionSampleListNameActivity.setColumn("sampleListName");
+    updateAcquisitionSampleListNameActivity.setOldValue("XL_20111115_01");
+    updateAcquisitionSampleListNameActivity.setNewValue("new_sample_list");
+    expecteds.add(updateAcquisitionSampleListNameActivity);
+    UpdateActivity updateAcquisitionAcquisitionFileActivity = new UpdateActivity();
+    updateAcquisitionAcquisitionFileActivity.setActionType(ActionType.UPDATE);
+    updateAcquisitionAcquisitionFileActivity.setTableName("acquisition");
+    updateAcquisitionAcquisitionFileActivity.setRecordId(411L);
+    updateAcquisitionAcquisitionFileActivity.setColumn("acquisitionFile");
+    updateAcquisitionAcquisitionFileActivity.setOldValue("XL_20111115_COU_01");
+    updateAcquisitionAcquisitionFileActivity.setNewValue("new_acquisition_file");
+    expecteds.add(updateAcquisitionAcquisitionFileActivity);
+    UpdateActivity updateAcquisitionCommentActivity = new UpdateActivity();
+    updateAcquisitionCommentActivity.setActionType(ActionType.UPDATE);
+    updateAcquisitionCommentActivity.setTableName("acquisition");
+    updateAcquisitionCommentActivity.setRecordId(411L);
+    updateAcquisitionCommentActivity.setColumn("comment");
+    updateAcquisitionCommentActivity.setOldValue(null);
+    updateAcquisitionCommentActivity.setNewValue("test");
+    expecteds.add(updateAcquisitionCommentActivity);
+    LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
+  }
+
+  @Test
+  public void update_NoChanges() {
+    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 1L);
+    entityManager.detach(msAnalysis);
+
+    Optional<Activity> optionalActivity =
+        msAnalysisActivityService.update(msAnalysis, "test explanation");
+
+    assertFalse(optionalActivity.isPresent());
   }
 
   @Test

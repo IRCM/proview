@@ -36,6 +36,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -101,6 +104,75 @@ public class MsAnalysisActivityService {
     activity.setExplanation(null);
     activity.setUpdates(updates);
     return activity;
+  }
+
+  /**
+   * Creates an activity about update of MS analysis.
+   *
+   * @param msAnalysis
+   *          MS analysis containing new properties/values
+   * @param explanation
+   *          explanation
+   * @return activity about update of MS analysis
+   */
+  @CheckReturnValue
+  public Optional<Activity> update(MsAnalysis msAnalysis, String explanation) {
+    User user = authorizationService.getCurrentUser();
+    final MsAnalysis oldMsAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    updateBuilders.add(msAnalysisUpdate(msAnalysis).column("massDetectionInstrument")
+        .oldValue(oldMsAnalysis.getMassDetectionInstrument())
+        .newValue(msAnalysis.getMassDetectionInstrument()));
+    updateBuilders.add(msAnalysisUpdate(msAnalysis).column("source")
+        .oldValue(oldMsAnalysis.getSource()).newValue(msAnalysis.getSource()));
+    Map<Long, Acquisition> oldAcquisitionIds = oldMsAnalysis.getAcquisitions().stream()
+        .collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
+    msAnalysis.getAcquisitions().stream().filter(ts -> !oldAcquisitionIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(acquisitionAction(ts, ActionType.INSERT)));
+    msAnalysis.getAcquisitions().stream().filter(ts -> oldAcquisitionIds.containsKey(ts.getId()))
+        .forEach(ts -> {
+          updateBuilders.add(acquisitionAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldAcquisitionIds.get(ts.getId()).getSample().getId())
+              .newValue(ts.getSample().getId()));
+          updateBuilders.add(acquisitionAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldAcquisitionIds.get(ts.getId()).getContainer().getId())
+              .newValue(ts.getContainer().getId()));
+          updateBuilders.add(acquisitionAction(ts, ActionType.UPDATE).column("sampleListName")
+              .oldValue(oldAcquisitionIds.get(ts.getId()).getSampleListName())
+              .newValue(ts.getSampleListName()));
+          updateBuilders.add(acquisitionAction(ts, ActionType.UPDATE).column("acquisitionFile")
+              .oldValue(oldAcquisitionIds.get(ts.getId()).getAcquisitionFile())
+              .newValue(ts.getAcquisitionFile()));
+          updateBuilders.add(acquisitionAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldAcquisitionIds.get(ts.getId()).getComment()).newValue(ts.getComment()));
+        });
+
+    List<UpdateActivity> updates = updateBuilders.stream().filter(builder -> builder.isChanged())
+        .map(builder -> builder.build()).collect(Collectors.toList());
+
+    if (!updates.isEmpty()) {
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(msAnalysis.getId());
+      activity.setUser(user);
+      activity.setTableName("msanalysis");
+      activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
+      activity.setUpdates(updates);
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  private UpdateActivityBuilder msAnalysisUpdate(MsAnalysis msAnalysis) {
+    return new UpdateActivityBuilder().tableName("msanalysis").recordId(msAnalysis.getId())
+        .actionType(ActionType.UPDATE);
+  }
+
+  private UpdateActivityBuilder acquisitionAction(Acquisition ts, ActionType actionType) {
+    return new UpdateActivityBuilder().tableName("acquisition").recordId(ts.getId())
+        .actionType(actionType);
   }
 
   /**

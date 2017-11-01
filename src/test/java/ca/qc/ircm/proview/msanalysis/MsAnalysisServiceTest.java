@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,6 +61,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -201,11 +203,7 @@ public class MsAnalysisServiceTest {
     msAnalysis.setAcquisitions(acquisitions);
     when(msAnalysisActivityService.insert(any())).thenReturn(activity);
 
-    try {
-      msAnalysisService.insert(msAnalysis);
-    } catch (SamplesFromMultipleUserException e) {
-      fail("SamplesFromMultipleUserException not expected");
-    }
+    msAnalysisService.insert(msAnalysis);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -268,8 +266,8 @@ public class MsAnalysisServiceTest {
 
     try {
       msAnalysisService.insert(msAnalysis);
-      fail("Expected SamplesFromMultipleUserException");
-    } catch (SamplesFromMultipleUserException e) {
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
       // Success.
     }
   }
@@ -310,9 +308,91 @@ public class MsAnalysisServiceTest {
 
     try {
       msAnalysisService.insert(msAnalysis);
-    } catch (SamplesFromMultipleUserException e) {
-      fail("SamplesFromMultipleUserException not expected");
+    } catch (IllegalArgumentException e) {
+      fail("IllegalArgumentException not expected");
     }
+  }
+
+  @Test
+  public void update() {
+    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    entityManager.detach(msAnalysis);
+    msAnalysis.getAcquisitions().stream().forEach(ts -> entityManager.detach(ts));
+    msAnalysis.setMassDetectionInstrument(MassDetectionInstrument.ORBITRAP_FUSION);
+    msAnalysis.setSource(MassDetectionInstrumentSource.ESI);
+    msAnalysis.getAcquisitions().get(0).setSampleListName("new_sample_list");
+    msAnalysis.getAcquisitions().get(0).setAcquisitionFile("new_acquisition_file");
+    msAnalysis.getAcquisitions().get(0).setComment("test update");
+    msAnalysis.getAcquisitions().get(0).setContainer(new Tube(8L));
+    msAnalysis.getAcquisitions().get(0).setSample(new SubmissionSample(446L));
+    msAnalysis.getAcquisitions().get(1).setNumberOfAcquisition(2);
+    Acquisition acquisition = new Acquisition();
+    acquisition.setSampleListName("XL_20111115_01");
+    acquisition.setAcquisitionFile("XL_20111115_COU_03");
+    acquisition.setComment("test update new");
+    acquisition.setSample(new SubmissionSample(445L));
+    acquisition.setContainer(new Tube(5L));
+    acquisition.setNumberOfAcquisition(2);
+    acquisition.setListIndex(2);
+    msAnalysis.getAcquisitions().add(acquisition);
+    when(msAnalysisActivityService.update(any(), any())).thenReturn(Optional.of(activity));
+
+    msAnalysisService.update(msAnalysis, "test explanation");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(msAnalysisActivityService).update(eq(msAnalysis), eq("test explanation"));
+    verify(activityService).insert(activity);
+    msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    assertNotNull(msAnalysis);
+    assertEquals(MassDetectionInstrument.ORBITRAP_FUSION, msAnalysis.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrumentSource.ESI, msAnalysis.getSource());
+    assertEquals((Long) 8L, msAnalysis.getAcquisitions().get(0).getContainer().getId());
+    assertEquals((Long) 446L, msAnalysis.getAcquisitions().get(0).getSample().getId());
+    assertEquals("new_sample_list", msAnalysis.getAcquisitions().get(0).getSampleListName());
+    assertEquals("new_acquisition_file", msAnalysis.getAcquisitions().get(0).getAcquisitionFile());
+    assertEquals("test update", msAnalysis.getAcquisitions().get(0).getComment());
+    assertEquals(new Integer(1), msAnalysis.getAcquisitions().get(0).getNumberOfAcquisition());
+    assertEquals((Integer) 0, msAnalysis.getAcquisitions().get(0).getListIndex());
+    assertEquals((Integer) 2, msAnalysis.getAcquisitions().get(0).getPosition());
+    assertEquals(new Integer(2), msAnalysis.getAcquisitions().get(1).getNumberOfAcquisition());
+    assertEquals((Integer) 1, msAnalysis.getAcquisitions().get(1).getListIndex());
+    assertEquals((Integer) 1, msAnalysis.getAcquisitions().get(1).getPosition());
+    assertEquals((Long) 5L, msAnalysis.getAcquisitions().get(2).getContainer().getId());
+    assertEquals((Long) 445L, msAnalysis.getAcquisitions().get(2).getSample().getId());
+    assertEquals("XL_20111115_01", msAnalysis.getAcquisitions().get(2).getSampleListName());
+    assertEquals("XL_20111115_COU_03", msAnalysis.getAcquisitions().get(2).getAcquisitionFile());
+    assertEquals("test update new", msAnalysis.getAcquisitions().get(2).getComment());
+    assertEquals(new Integer(2), msAnalysis.getAcquisitions().get(2).getNumberOfAcquisition());
+    assertEquals((Integer) 2, msAnalysis.getAcquisitions().get(2).getListIndex());
+    assertEquals((Integer) 2, msAnalysis.getAcquisitions().get(2).getPosition());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_RemoveAcquisition() {
+    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    entityManager.detach(msAnalysis);
+    msAnalysis.getAcquisitions().stream().forEach(ts -> entityManager.detach(ts));
+    msAnalysis.getAcquisitions().remove(1);
+
+    msAnalysisService.update(msAnalysis, "test explanation");
+  }
+
+  @Test
+  public void update_NoActivity() {
+    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    entityManager.detach(msAnalysis);
+    when(msAnalysisActivityService.update(any(), any())).thenReturn(Optional.empty());
+
+    msAnalysisService.update(msAnalysis, "test explanation");
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(msAnalysisActivityService).update(eq(msAnalysis), eq("test explanation"));
+    verify(activityService, never()).insert(any());
+    msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    assertNotNull(msAnalysis);
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
   }
 
   @Test

@@ -103,7 +103,7 @@ public class MsAnalysis implements Data, Serializable {
   /**
    * Acquisitions of samples made in this MS analysis.
    */
-  @OneToMany(cascade = CascadeType.PERSIST)
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "msAnalysisId", nullable = false)
   private List<Acquisition> acquisitions;
 
