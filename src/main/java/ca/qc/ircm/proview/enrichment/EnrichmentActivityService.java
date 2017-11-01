@@ -21,9 +21,12 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.BanSampleContainerUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.DatabaseLogUtil;
+import ca.qc.ircm.proview.history.SampleStatusUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;
@@ -32,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -71,7 +74,27 @@ public class EnrichmentActivityService {
    */
   @CheckReturnValue
   public Activity insert(final Enrichment enrichment) {
-    User user = authorizationService.getCurrentUser();
+    final User user = authorizationService.getCurrentUser();
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    for (EnrichedSample ts : enrichment.getTreatmentSamples()) {
+      Sample newSample = ts.getSample();
+      Sample oldSample = entityManager.find(Sample.class, ts.getSample().getId());
+      if (newSample instanceof SubmissionSample) {
+        SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
+        SubmissionSample oldSubmissionSample = (SubmissionSample) oldSample;
+        updateBuilders.add(new SampleStatusUpdateActivityBuilder().oldSample(oldSubmissionSample)
+            .newSample(newSubmissionSample));
+      }
+    }
+
+    // Keep updates that changed.
+    final List<UpdateActivity> updates = new ArrayList<>();
+    for (UpdateActivityBuilder builder : updateBuilders) {
+      if (builder.isChanged()) {
+        updates.add(builder.build());
+      }
+    }
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -79,7 +102,7 @@ public class EnrichmentActivityService {
     activity.setUser(user);
     activity.setTableName("treatment");
     activity.setExplanation(null);
-    activity.setUpdates(null);
+    activity.setUpdates(updates);
     return activity;
   }
 
@@ -118,9 +141,8 @@ public class EnrichmentActivityService {
               .newValue(ts.getComment()));
         });
 
-    Collection<UpdateActivity> updates =
-        updateBuilders.stream().filter(builder -> builder.isChanged())
-            .map(builder -> builder.build()).collect(Collectors.toList());
+    List<UpdateActivity> updates = updateBuilders.stream().filter(builder -> builder.isChanged())
+        .map(builder -> builder.build()).collect(Collectors.toList());
 
     if (!updates.isEmpty()) {
       Activity activity = new Activity();
@@ -129,7 +151,7 @@ public class EnrichmentActivityService {
       activity.setUser(user);
       activity.setTableName("treatment");
       activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
-      activity.setUpdates(new LinkedList<>(updates));
+      activity.setUpdates(updates);
       return Optional.of(activity);
     } else {
       return Optional.empty();
@@ -196,7 +218,7 @@ public class EnrichmentActivityService {
     }
 
     // Keep updates that did not change.
-    final Collection<UpdateActivity> updates = new ArrayList<>();
+    final List<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
         updates.add(builder.build());
@@ -210,7 +232,7 @@ public class EnrichmentActivityService {
     activity.setUser(user);
     activity.setTableName("treatment");
     activity.setExplanation(explanation);
-    activity.setUpdates(new LinkedList<>(updates));
+    activity.setUpdates(updates);
     return activity;
   }
 }
