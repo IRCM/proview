@@ -1063,9 +1063,9 @@ public class SubmissionFormPresenterTest {
   public void instrument_Options() {
     presenter.init(view);
 
-    assertEquals(MassDetectionInstrument.availables().size(),
+    assertEquals(MassDetectionInstrument.userChoices().size(),
         dataProvider(design.instrumentOptions).getItems().size());
-    for (MassDetectionInstrument instrument : MassDetectionInstrument.availables()) {
+    for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertTrue(instrument.name(),
           dataProvider(design.instrumentOptions).getItems().contains(instrument));
     }
@@ -1422,7 +1422,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(INSTRUMENT_PROPERTY), design.instrumentOptions.getCaption());
     assertEquals(MassDetectionInstrument.getNullLabel(locale),
         design.instrumentOptions.getItemCaptionGenerator().apply(null));
-    for (MassDetectionInstrument instrument : MassDetectionInstrument.availables()) {
+    for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
           design.instrumentOptions.getItemCaptionGenerator().apply(instrument));
     }

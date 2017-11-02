@@ -36,22 +36,40 @@ import java.util.Locale;
 
 public class MassDetectionInstrumentTest {
   @Test
-  public void availables() {
-    assertTrue(NULL.available);
-    assertTrue(VELOS.available);
-    assertTrue(Q_EXACTIVE.available);
-    assertFalse(TSQ_VANTAGE.available);
-    assertTrue(ORBITRAP_FUSION.available);
-    assertFalse(LTQ_ORBI_TRAP.available);
-    assertFalse(Q_TOF.available);
-    assertFalse(TOF.available);
+  public void userChoices() {
+    assertTrue(NULL.userChoice);
+    assertTrue(VELOS.userChoice);
+    assertTrue(Q_EXACTIVE.userChoice);
+    assertFalse(TSQ_VANTAGE.userChoice);
+    assertTrue(ORBITRAP_FUSION.userChoice);
+    assertFalse(LTQ_ORBI_TRAP.userChoice);
+    assertFalse(Q_TOF.userChoice);
+    assertFalse(TOF.userChoice);
 
-    List<MassDetectionInstrument> availables = MassDetectionInstrument.availables();
+    List<MassDetectionInstrument> availables = MassDetectionInstrument.userChoices();
     assertEquals(4, availables.size());
     assertEquals(NULL, availables.get(0));
     assertEquals(VELOS, availables.get(1));
     assertEquals(Q_EXACTIVE, availables.get(2));
     assertEquals(ORBITRAP_FUSION, availables.get(3));
+  }
+
+  @Test
+  public void platformChoices() {
+    assertFalse(NULL.platformChoice);
+    assertTrue(VELOS.platformChoice);
+    assertTrue(Q_EXACTIVE.platformChoice);
+    assertFalse(TSQ_VANTAGE.platformChoice);
+    assertTrue(ORBITRAP_FUSION.platformChoice);
+    assertFalse(LTQ_ORBI_TRAP.platformChoice);
+    assertFalse(Q_TOF.platformChoice);
+    assertFalse(TOF.platformChoice);
+
+    List<MassDetectionInstrument> availables = MassDetectionInstrument.platformChoices();
+    assertEquals(3, availables.size());
+    assertEquals(VELOS, availables.get(0));
+    assertEquals(Q_EXACTIVE, availables.get(1));
+    assertEquals(ORBITRAP_FUSION, availables.get(2));
   }
 
   @Test

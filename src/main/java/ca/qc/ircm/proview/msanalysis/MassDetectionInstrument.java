@@ -28,18 +28,33 @@ import java.util.stream.Stream;
  * Instruments available for protein mass detection.
  */
 public enum MassDetectionInstrument {
-  NULL(true), VELOS(true), Q_EXACTIVE(true), TSQ_VANTAGE(false), ORBITRAP_FUSION(true),
-  LTQ_ORBI_TRAP(false), Q_TOF(false), TOF(false);
+  NULL(true, false), VELOS(true), Q_EXACTIVE(true), TSQ_VANTAGE, ORBITRAP_FUSION(true),
+  LTQ_ORBI_TRAP, Q_TOF, TOF;
 
-  public final boolean available;
+  public final boolean userChoice;
+  public final boolean platformChoice;
 
-  MassDetectionInstrument(boolean available) {
-    this.available = available;
+  MassDetectionInstrument() {
+    this(false, false);
   }
 
-  public static List<MassDetectionInstrument> availables() {
-    return Stream.of(MassDetectionInstrument.values()).filter(instrument -> instrument.available)
+  MassDetectionInstrument(boolean available) {
+    this(available, available);
+  }
+
+  MassDetectionInstrument(boolean userChoice, boolean platformChoice) {
+    this.userChoice = userChoice;
+    this.platformChoice = platformChoice;
+  }
+
+  public static List<MassDetectionInstrument> userChoices() {
+    return Stream.of(MassDetectionInstrument.values()).filter(instrument -> instrument.userChoice)
         .collect(Collectors.toList());
+  }
+
+  public static List<MassDetectionInstrument> platformChoices() {
+    return Stream.of(MassDetectionInstrument.values())
+        .filter(instrument -> instrument.platformChoice).collect(Collectors.toList());
   }
 
   public static String getNullLabel(Locale locale) {
