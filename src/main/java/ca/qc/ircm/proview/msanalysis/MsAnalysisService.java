@@ -233,7 +233,7 @@ public class MsAnalysisService extends BaseTreatmentService {
         SubmissionSample sample = (SubmissionSample) acquisition.getSample();
         if (expectedUser == null) {
           expectedUser = sample.getUser();
-        } else if (!expectedUser.equals(sample.getUser())) {
+        } else if (!expectedUser.getId().equals(sample.getUser().getId())) {
           throw new IllegalArgumentException("Cannot analyse samples from multiple users");
         }
       }
