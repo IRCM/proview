@@ -51,6 +51,7 @@ import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -134,7 +135,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1040,7 +1040,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setItemCaptionGenerator(instrument -> instrument != null ? instrument.getLabel(locale)
             : MassDetectionInstrument.getNullLabel(locale));
     design.instrumentOptions
-        .setItemEnabledProvider(instrument -> instrument != null ? instrument.available : true);
+        .setItemEnabledProvider(instrument -> instrument != null ? instrument.userChoice : true);
     submissionBinder.forField(design.instrumentOptions)
         .withNullRepresentation(MassDetectionInstrument.NULL).bind(INSTRUMENT_PROPERTY);
     design.proteinIdentificationOptions.addStyleName(PROTEIN_IDENTIFICATION_PROPERTY);
@@ -1406,7 +1406,8 @@ public class SubmissionFormPresenter implements BinderValidator {
   private void fillSamples() {
     SubmissionSample first = samplesDataProvider.getItems().iterator().next();
     String name = first.getName();
-    samplesDataProvider.getItems().forEach(sample -> sample.setName(incrementLastNumber(name)));
+    samplesDataProvider.getItems()
+        .forEach(sample -> sample.setName(Named.incrementLastNumber(name)));
     samplesDataProvider.refreshAll();
   }
 
@@ -1434,30 +1435,6 @@ public class SubmissionFormPresenter implements BinderValidator {
       contaminant.setComment(comment);
     });
     contaminantsDataProvider.refreshAll();
-  }
-
-  private String incrementLastNumber(String value) {
-    Pattern pattern = Pattern.compile("(.*\\D)?(\\d+)(\\D*)");
-    Matcher matcher = pattern.matcher(value);
-    if (matcher.matches()) {
-      try {
-        StringBuilder builder = new StringBuilder();
-        builder.append(matcher.group(1) != null ? matcher.group(1) : "");
-        int number = Integer.parseInt(matcher.group(2));
-        int length = matcher.group(2).length();
-        String newNumber = String.valueOf(number + 1);
-        while (newNumber.length() < length) {
-          newNumber = "0" + newNumber;
-        }
-        builder.append(newNumber);
-        builder.append(matcher.group(3));
-        return builder.toString();
-      } catch (NumberFormatException e) {
-        return value;
-      }
-    } else {
-      return value;
-    }
   }
 
   private void updateStructureButton(Structure structure) {
@@ -2030,7 +2007,7 @@ public class SubmissionFormPresenter implements BinderValidator {
           Stream.concat(MassDetectionInstrumentSource.availables().stream(), Stream.of(source)));
     }
     MassDetectionInstrument instrument = submission.getMassDetectionInstrument();
-    if (instrument != null && !instrument.available) {
+    if (instrument != null && !instrument.userChoice) {
       design.instrumentOptions
           .setItems(Stream.concat(instrumentValues().stream(), Stream.of(instrument)));
     }
@@ -2079,7 +2056,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private List<MassDetectionInstrument> instrumentValues() {
-    return MassDetectionInstrument.availables();
+    return MassDetectionInstrument.userChoices();
   }
 
   private List<Quantification> quantificationValues() {
