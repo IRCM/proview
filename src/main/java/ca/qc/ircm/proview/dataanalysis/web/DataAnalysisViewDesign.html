@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;proview&quot;}">
+  <meta name="vaadin-version" content="8.0.5">
+ </head>
+ <body>
+  <vaadin-vertical-layout size-full>
+   <vaadin-label style-name="h1" plain-text _id="header">
+     Data Analysis 
+   </vaadin-label>
+   <vaadin-label plain-text _id="proteinAnalysis">
+     Enter gi number of protein to analyse. 
+   </vaadin-label>
+   <vaadin-label plain-text _id="peptideAnalysis">
+     To confirm peptide modification, enter protein gi number and peptide query number (found below "Query" column in Mascot result page). 
+   </vaadin-label>
+   <vaadin-label plain-text _id="multipleProteins">
+     Use comma between numbers to validate many proteins or peptide modifications. 
+   </vaadin-label>
+   <vaadin-grid data-item-type="ca.qc.ircm.proview.dataanalysis.DataAnalysis" _id="analyses"></vaadin-grid>
+   <vaadin-button plain-text _id="save">
+     Save 
+   </vaadin-button>
+  </vaadin-vertical-layout>
+ </body>
+</html>
