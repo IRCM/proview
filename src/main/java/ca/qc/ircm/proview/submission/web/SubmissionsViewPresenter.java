@@ -27,6 +27,7 @@ import com.google.common.collect.Range;
 import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -114,6 +115,7 @@ public class SubmissionsViewPresenter {
   public static final String SOLUBILISATION = "solubilisation";
   public static final String DILUTION = "dilution";
   public static final String STANDARD_ADDITION = "standardAddition";
+  public static final String MS_ANALYSIS = "msAnalysis";
   public static final String NO_CONTAINERS = "noContainers";
   public static final String CONDITION_FALSE = "condition-false";
   public static final String COLUMN_ORDER = "columnOrder";
@@ -181,7 +183,6 @@ public class SubmissionsViewPresenter {
     design = view.design;
     filter = new SubmissionWebFilter(view.getLocale());
     prepareComponents();
-    addListeners();
     searchSubmissions();
   }
 
@@ -194,6 +195,7 @@ public class SubmissionsViewPresenter {
     design.sampleSelectionLayout.setVisible(authorizationService.hasAdminRole());
     design.selectSamplesButton.addStyleName(SELECT_SAMPLES);
     design.selectSamplesButton.setCaption(resources.message(SELECT_SAMPLES));
+    design.selectSamplesButton.addClickListener(e -> selectSamples());
     design.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
     design.selectedSamplesLabel
         .setValue(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
@@ -207,30 +209,30 @@ public class SubmissionsViewPresenter {
     design.updateStatusButton.addStyleName(UPDATE_STATUS);
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
+    design.updateStatusButton.addClickListener(e -> updateStatus());
+    design.treatmentButtons.setVisible(authorizationService.hasAdminRole());
     design.transfer.addStyleName(TRANSFER);
     design.transfer.setCaption(resources.message(TRANSFER));
-    design.transfer.setVisible(authorizationService.hasAdminRole());
     design.transfer.addClickListener(e -> transfer());
     design.digestion.addStyleName(DIGESTION);
     design.digestion.setCaption(resources.message(DIGESTION));
-    design.digestion.setVisible(authorizationService.hasAdminRole());
     design.digestion.addClickListener(e -> digestion());
     design.enrichment.addStyleName(ENRICHMENT);
     design.enrichment.setCaption(resources.message(ENRICHMENT));
-    design.enrichment.setVisible(authorizationService.hasAdminRole());
     design.enrichment.addClickListener(e -> enrichment());
     design.solubilisation.addStyleName(SOLUBILISATION);
     design.solubilisation.setCaption(resources.message(SOLUBILISATION));
-    design.solubilisation.setVisible(authorizationService.hasAdminRole());
     design.solubilisation.addClickListener(e -> solubilisation());
     design.dilution.addStyleName(DILUTION);
     design.dilution.setCaption(resources.message(DILUTION));
-    design.dilution.setVisible(authorizationService.hasAdminRole());
     design.dilution.addClickListener(e -> dilution());
     design.standardAddition.addStyleName(STANDARD_ADDITION);
     design.standardAddition.setCaption(resources.message(STANDARD_ADDITION));
-    design.standardAddition.setVisible(authorizationService.hasAdminRole());
     design.standardAddition.addClickListener(e -> standardAddition());
+    design.analysisButtons.setVisible(authorizationService.hasAdminRole());
+    design.msAnalysis.addStyleName(MS_ANALYSIS);
+    design.msAnalysis.setCaption(resources.message(MS_ANALYSIS));
+    design.msAnalysis.addClickListener(e -> msAnalysis());
   }
 
   private void prepareSumissionsGrid() {
@@ -444,11 +446,6 @@ public class SubmissionsViewPresenter {
     return filter;
   }
 
-  private void addListeners() {
-    design.updateStatusButton.addClickListener(e -> updateStatus());
-    design.selectSamplesButton.addClickListener(e -> selectSamples());
-  }
-
   private ListDataProvider<Submission> searchSubmissions() {
     List<Submission> submissions = submissionService.all();
     ListDataProvider<Submission> dataProvider = DataProvider.ofCollection(submissions);
@@ -592,6 +589,15 @@ public class SubmissionsViewPresenter {
   private void standardAddition() {
     if (!view.savedContainers().isEmpty()) {
       view.navigateTo(StandardAdditionView.VIEW_NAME);
+    } else {
+      MessageResource resources = view.getResources();
+      view.showError(resources.message(NO_CONTAINERS));
+    }
+  }
+
+  private void msAnalysis() {
+    if (!view.savedContainers().isEmpty()) {
+      view.navigateTo(MsAnalysisView.VIEW_NAME);
     } else {
       MessageResource resources = view.getResources();
       view.showError(resources.message(NO_CONTAINERS));

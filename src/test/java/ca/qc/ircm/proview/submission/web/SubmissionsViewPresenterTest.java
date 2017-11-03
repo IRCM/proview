@@ -29,6 +29,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIE
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.MS_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
@@ -66,6 +67,7 @@ import com.google.common.collect.Range;
 import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -678,6 +680,7 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.solubilisation.getStyleName().contains(SOLUBILISATION));
     assertTrue(design.dilution.getStyleName().contains(DILUTION));
     assertTrue(design.standardAddition.getStyleName().contains(STANDARD_ADDITION));
+    assertTrue(design.msAnalysis.getStyleName().contains(MS_ANALYSIS));
   }
 
   @Test
@@ -705,6 +708,7 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(SOLUBILISATION), design.solubilisation.getCaption());
     assertEquals(resources.message(DILUTION), design.dilution.getCaption());
     assertEquals(resources.message(STANDARD_ADDITION), design.standardAddition.getCaption());
+    assertEquals(resources.message(MS_ANALYSIS), design.msAnalysis.getCaption());
   }
 
   @Test
@@ -715,10 +719,8 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.sampleSelectionLayout.isVisible());
     assertFalse(design.containerSelectionLayout.isVisible());
     assertFalse(design.updateStatusButton.isVisible());
-    assertFalse(design.transfer.isVisible());
-    assertFalse(design.digestion.isVisible());
-    assertFalse(design.enrichment.isVisible());
-    assertFalse(design.dilution.isVisible());
+    assertFalse(design.treatmentButtons.isVisible());
+    assertFalse(design.analysisButtons.isVisible());
   }
 
   @Test
@@ -730,10 +732,8 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.sampleSelectionLayout.isVisible());
     assertTrue(design.containerSelectionLayout.isVisible());
     assertTrue(design.updateStatusButton.isVisible());
-    assertTrue(design.transfer.isVisible());
-    assertTrue(design.digestion.isVisible());
-    assertTrue(design.enrichment.isVisible());
-    assertTrue(design.dilution.isVisible());
+    assertTrue(design.treatmentButtons.isVisible());
+    assertTrue(design.analysisButtons.isVisible());
   }
 
   @Test
@@ -1151,5 +1151,30 @@ public class SubmissionsViewPresenterTest {
 
     verify(view).showError(resources.message(NO_CONTAINERS));
     verify(view, never()).navigateTo(StandardAdditionView.VIEW_NAME);
+  }
+
+  @Test
+  public void msAnalysis() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    List<SampleContainer> containers = Arrays.asList(new Tube(), new Tube());
+    when(view.savedContainers()).thenReturn(containers);
+
+    design.msAnalysis.click();
+
+    verify(view, never()).saveSamples(any());
+    verify(view, never()).saveContainers(any());
+    verify(view).navigateTo(MsAnalysisView.VIEW_NAME);
+  }
+
+  @Test
+  public void msAnalysis_NoContainers() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+
+    design.msAnalysis.click();
+
+    verify(view).showError(resources.message(NO_CONTAINERS));
+    verify(view, never()).navigateTo(MsAnalysisView.VIEW_NAME);
   }
 }

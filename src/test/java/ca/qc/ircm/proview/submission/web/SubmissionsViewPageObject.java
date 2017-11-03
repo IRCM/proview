@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIE
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.MS_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_CONTAINERS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_CONTAINERS_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
@@ -198,5 +199,13 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickStandardAdditionButton() {
     standardAdditionButton().click();
+  }
+
+  protected ButtonElement msAnalysisButton() {
+    return wrap(ButtonElement.class, findElement(className(MS_ANALYSIS)));
+  }
+
+  protected void clickMsAnalysisButton() {
+    msAnalysisButton().click();
   }
 }

@@ -30,12 +30,15 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected Button selectContainers;
   protected Label selectedContainersLabel;
   protected Button updateStatusButton;
+  protected HorizontalLayout treatmentButtons;
   protected Button transfer;
   protected Button digestion;
   protected Button enrichment;
   protected Button solubilisation;
   protected Button dilution;
   protected Button standardAddition;
+  protected HorizontalLayout analysisButtons;
+  protected Button msAnalysis;
 
   public SubmissionsViewDesign() {
     Design.read(this);
