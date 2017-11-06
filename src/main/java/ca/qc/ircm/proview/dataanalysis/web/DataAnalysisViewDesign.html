@@ -6,7 +6,7 @@
   <meta name="vaadin-version" content="8.0.5">
  </head>
  <body>
-  <vaadin-vertical-layout size-full>
+  <vaadin-vertical-layout style-name="dataanalysis" size-full>
    <vaadin-label style-name="h1" plain-text _id="header">
      Data Analysis 
    </vaadin-label>
@@ -19,7 +19,7 @@
    <vaadin-label plain-text _id="multipleProteins">
      Use comma between numbers to validate many proteins or peptide modifications. 
    </vaadin-label>
-   <vaadin-grid data-item-type="ca.qc.ircm.proview.dataanalysis.DataAnalysis" _id="analyses"></vaadin-grid>
+   <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.dataanalysis.DataAnalysis" _id="analyses"></vaadin-grid>
    <vaadin-button plain-text _id="save">
      Save 
    </vaadin-button>
