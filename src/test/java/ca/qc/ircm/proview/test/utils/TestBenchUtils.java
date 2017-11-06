@@ -23,6 +23,9 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.RadioButtonGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestBenchUtils {
   @SuppressWarnings("unchecked")
   public static <V> ListDataProvider<V> dataProvider(Grid<V> grid) {
@@ -37,6 +40,18 @@ public class TestBenchUtils {
   @SuppressWarnings("unchecked")
   public static <V> ListDataProvider<V> dataProvider(RadioButtonGroup<V> radios) {
     return (ListDataProvider<V>) radios.getDataProvider();
+  }
+
+  public static <V> List<V> items(Grid<V> grid) {
+    return new ArrayList<>(dataProvider(grid).getItems());
+  }
+
+  public static <V> List<V> items(ComboBox<V> comboBox) {
+    return new ArrayList<>(dataProvider(comboBox).getItems());
+  }
+
+  public static <V> List<V> items(RadioButtonGroup<V> radios) {
+    return new ArrayList<>(dataProvider(radios).getItems());
   }
 
   public static String errorMessage(String message) {

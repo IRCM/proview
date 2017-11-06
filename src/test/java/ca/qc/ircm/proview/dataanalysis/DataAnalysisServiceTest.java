@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -177,60 +176,6 @@ public class DataAnalysisServiceTest {
   }
 
   @Test
-  public void analyse() {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
-    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
-    DataAnalysis dataAnalysis = dataAnalysisService.get(4L);
-    entityManager.detach(dataAnalysis);
-    assertEquals((Long) 4L, dataAnalysis.getId());
-    assertEquals(sample.getId(), dataAnalysis.getSample().getId());
-    assertEquals("123456, 58774", dataAnalysis.getProtein());
-    assertEquals("3, 4", dataAnalysis.getPeptide());
-    assertEquals((Double) 4.0, dataAnalysis.getMaxWorkTime());
-    assertEquals(null, dataAnalysis.getScore());
-    assertEquals(null, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysisStatus.TO_DO, dataAnalysis.getStatus());
-    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
-    dataAnalysis.setScore("123456, 3: 85%\n12456, 4: 83%\n58774: 68%");
-    dataAnalysis.setWorkTime(3.50);
-    dataAnalysis.setStatus(DataAnalysisStatus.ANALYSED);
-    Collection<DataAnalysis> dataAnalyses = new LinkedList<>();
-    dataAnalyses.add(dataAnalysis);
-    when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
-        .thenReturn(optionalActivity);
-
-    dataAnalysisService.analyse(dataAnalyses);
-
-    entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    dataAnalysis = dataAnalysisService.get(4L);
-    assertEquals((Long) 4L, dataAnalysis.getId());
-    assertEquals(sample.getId(), dataAnalysis.getSample().getId());
-    assertEquals("123456, 58774", dataAnalysis.getProtein());
-    assertEquals("3, 4", dataAnalysis.getPeptide());
-    assertEquals((Double) 4.0, dataAnalysis.getMaxWorkTime());
-    assertEquals("123456, 3: 85%\n12456, 4: 83%\n58774: 68%", dataAnalysis.getScore());
-    assertEquals((Double) 3.5, dataAnalysis.getWorkTime());
-    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
-    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
-    sample = entityManager.find(SubmissionSample.class, 442L);
-    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
-    verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), isNull(String.class));
-    verify(activityService).insert(activity);
-    DataAnalysis dataAnalysisLog = dataAnalysisCaptor.getValue();
-    assertEquals((Long) 4L, dataAnalysisLog.getId());
-    assertEquals(sample.getId(), dataAnalysisLog.getSample().getId());
-    assertEquals("123456, 58774", dataAnalysisLog.getProtein());
-    assertEquals("3, 4", dataAnalysisLog.getPeptide());
-    assertEquals((Double) 4.0, dataAnalysisLog.getMaxWorkTime());
-    assertEquals("123456, 3: 85%\n12456, 4: 83%\n58774: 68%", dataAnalysisLog.getScore());
-    assertEquals((Double) 3.5, dataAnalysisLog.getWorkTime());
-    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysisLog.getStatus());
-    assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysisLog.getType());
-    assertEquals(SampleStatus.ANALYSED, dataAnalysisLog.getSample().getStatus());
-  }
-
-  @Test
   public void update() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
@@ -283,7 +228,7 @@ public class DataAnalysisServiceTest {
   }
 
   @Test
-  public void update_Status_Todo() {
+  public void update_StatusTodo() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     DataAnalysis dataAnalysis = dataAnalysisService.get(3L);
@@ -334,7 +279,7 @@ public class DataAnalysisServiceTest {
   }
 
   @Test
-  public void updateToAnalysed() {
+  public void update_StatusAnalysed() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     DataAnalysis dataAnalysis = dataAnalysisService.get(4L);

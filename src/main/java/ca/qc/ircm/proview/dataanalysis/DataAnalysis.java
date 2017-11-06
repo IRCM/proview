@@ -33,6 +33,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Size;
 
 /**
@@ -79,6 +80,7 @@ public class DataAnalysis implements Data, Serializable {
    * Maximum amount of time to work.
    */
   @Column(name = "maxWorkTime", nullable = false)
+  @DecimalMin("0.5")
   private Double maxWorkTime;
   /**
    * Score given to elements that were analysed.
@@ -89,6 +91,7 @@ public class DataAnalysis implements Data, Serializable {
    * Work time spent on analysis.
    */
   @Column(name = "workTime")
+  @DecimalMin("0.0")
   private Double workTime;
   /**
    * Analyse status.
