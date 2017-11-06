@@ -134,36 +134,6 @@ public class DataAnalysisService {
     }
   }
 
-  /**
-   * Data analysis was performed by proteomic.
-   * <p>
-   * Sample's status is changed to {@link ca.qc.ircm.proview.sample.SampleStatus#ANALYSED} .
-   * </p>
-   *
-   * @param dataAnalyses
-   *          data analysis that were analysed
-   */
-  public void analyse(Collection<DataAnalysis> dataAnalyses) {
-    authorizationService.checkAdminRole();
-
-    // Update analysed DataAnalysis.
-    for (DataAnalysis dataAnalysis : dataAnalyses) {
-      // Update sample status.
-      if (!existsTodoBySampleWithExclude(dataAnalysis)) {
-        dataAnalysis.getSample().setStatus(SampleStatus.ANALYSED);
-      }
-
-      // Log update of data analysis.
-      Optional<Activity> activity = dataAnalysisActivityService.update(dataAnalysis, null);
-      if (activity.isPresent()) {
-        activityService.insert(activity.get());
-      }
-
-      entityManager.merge(dataAnalysis);
-      entityManager.merge(dataAnalysis.getSample());
-    }
-  }
-
   private boolean existsTodoBySampleWithExclude(DataAnalysis dataAnalysisParam) {
     JPAQuery<Long> query = queryFactory.select(dataAnalysis.id);
     query.from(dataAnalysis);
