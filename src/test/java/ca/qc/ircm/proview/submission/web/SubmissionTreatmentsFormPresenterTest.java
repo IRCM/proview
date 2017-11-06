@@ -446,7 +446,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    Collection<Treatment<?>> treatments =
+    Collection<Treatment> treatments =
         new ArrayList<>(dataProvider(design.treatments).getItems());
     assertEquals(3, design.treatments.getColumns().size());
     assertEquals(TREATMENT_TYPE, design.treatments.getColumns().get(0).getId());
