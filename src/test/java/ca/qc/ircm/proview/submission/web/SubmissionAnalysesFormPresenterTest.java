@@ -24,34 +24,50 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSES;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSIS_TYPE;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.MAX_WORK_TIME;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.PEPTIDE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.PROTEIN;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.SCORE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.STATUS;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME_VALUES;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.items;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
+import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisService;
+import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.BindingValidationStatus;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.components.grid.EditorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,15 +76,17 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.lang.reflect.Field;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -84,11 +102,15 @@ public class SubmissionAnalysesFormPresenterTest {
   private MsAnalysisService msAnalysisService;
   @Mock
   private DataAnalysisService dataAnalysisService;
+  @Inject
+  private AuthorizationService authorizationService;
   @Captor
   private ArgumentCaptor<Panel> panelCaptor;
   private SubmissionAnalysesFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SubmissionAnalysesForm.class, locale);
+  private MessageResource generalResources =
+      new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private Submission submission;
   private List<MsAnalysis> analyses = new ArrayList<>();
   private List<DataAnalysis> dataAnalyses = new ArrayList<>();
@@ -98,11 +120,13 @@ public class SubmissionAnalysesFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionAnalysesFormPresenter(msAnalysisService, dataAnalysisService);
+    presenter = new SubmissionAnalysesFormPresenter(msAnalysisService, dataAnalysisService,
+        authorizationService);
     design = new SubmissionAnalysesFormDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     submission = entityManager.find(Submission.class, 1L);
     analyses.add(entityManager.find(MsAnalysis.class, 20L));
     analyses.add(entityManager.find(MsAnalysis.class, 21L));
@@ -121,6 +145,17 @@ public class SubmissionAnalysesFormPresenterTest {
   private List<Grid<Acquisition>> viewGrids() {
     return viewPanels().stream().map(panel -> (VerticalLayout) panel.getContent())
         .map(layout -> (Grid<Acquisition>) layout.getComponent(0)).collect(Collectors.toList());
+  }
+
+  private void doEdit(DataAnalysis analysis) {
+    try {
+      Field field = EditorImpl.class.getDeclaredField("edited");
+      field.setAccessible(true);
+      field.set(design.dataAnalyses.getEditor(), analysis);
+    } catch (SecurityException | IllegalAccessException | IllegalArgumentException
+        | NoSuchFieldException e) {
+      throw new IllegalStateException("Could not call doEdit", e);
+    }
   }
 
   @Test
@@ -186,66 +221,236 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    final DataAnalysis dataAnalysis1 = dataAnalyses.get(0);
-    final DataAnalysis dataAnalysis2 = dataAnalyses.get(1);
-    assertEquals(8, design.dataAnalyses.getColumns().size());
+    final List<DataAnalysis> analyses =
+        new ArrayList<>(dataProvider(design.dataAnalyses).getItems());
+    assertEquals(7, design.dataAnalyses.getColumns().size());
     assertEquals(NAME, design.dataAnalyses.getColumns().get(0).getId());
     assertEquals(resources.message(NAME), design.dataAnalyses.getColumn(NAME).getCaption());
-    assertEquals(dataAnalysis1.getSample().getName(),
-        design.dataAnalyses.getColumn(NAME).getValueProvider().apply(dataAnalysis1));
-    assertEquals(dataAnalysis2.getSample().getName(),
-        design.dataAnalyses.getColumn(NAME).getValueProvider().apply(dataAnalysis2));
+    for (DataAnalysis analysis : analyses) {
+      assertEquals(analysis.getSample().getName(),
+          design.dataAnalyses.getColumn(NAME).getValueProvider().apply(analysis));
+    }
     assertEquals(PROTEIN, design.dataAnalyses.getColumns().get(1).getId());
     assertEquals(resources.message(PROTEIN), design.dataAnalyses.getColumn(PROTEIN).getCaption());
-    assertEquals(dataAnalysis1.getProtein(),
-        design.dataAnalyses.getColumn(PROTEIN).getValueProvider().apply(dataAnalysis1));
-    assertEquals(dataAnalysis2.getProtein(),
-        design.dataAnalyses.getColumn(PROTEIN).getValueProvider().apply(dataAnalysis2));
+    for (DataAnalysis analysis : analyses) {
+      assertEquals(analysis.getProtein(),
+          design.dataAnalyses.getColumn(PROTEIN).getValueProvider().apply(analysis));
+      assertEquals(resources.message(PROTEIN + "." + DESCRIPTION),
+          design.dataAnalyses.getColumn(PROTEIN).getDescriptionGenerator().apply(analysis));
+    }
     assertEquals(PEPTIDE, design.dataAnalyses.getColumns().get(2).getId());
     assertEquals(resources.message(PEPTIDE), design.dataAnalyses.getColumn(PEPTIDE).getCaption());
-    assertEquals(dataAnalysis1.getPeptide(),
-        design.dataAnalyses.getColumn(PEPTIDE).getValueProvider().apply(dataAnalysis1));
-    assertEquals(dataAnalysis2.getPeptide(),
-        design.dataAnalyses.getColumn(PEPTIDE).getValueProvider().apply(dataAnalysis2));
+    for (DataAnalysis analysis : analyses) {
+      assertEquals(analysis.getPeptide(),
+          design.dataAnalyses.getColumn(PEPTIDE).getValueProvider().apply(analysis));
+      assertEquals(resources.message(PEPTIDE + "." + DESCRIPTION),
+          design.dataAnalyses.getColumn(PEPTIDE).getDescriptionGenerator().apply(analysis));
+    }
     assertEquals(DATA_ANALYSIS_TYPE, design.dataAnalyses.getColumns().get(3).getId());
     assertEquals(resources.message(DATA_ANALYSIS_TYPE),
         design.dataAnalyses.getColumn(DATA_ANALYSIS_TYPE).getCaption());
-    assertEquals(dataAnalysis1.getType().getLabel(locale),
-        design.dataAnalyses.getColumn(DATA_ANALYSIS_TYPE).getValueProvider().apply(dataAnalysis1));
-    assertEquals(dataAnalysis2.getType().getLabel(locale),
-        design.dataAnalyses.getColumn(DATA_ANALYSIS_TYPE).getValueProvider().apply(dataAnalysis2));
-    assertEquals(MAX_WORK_TIME, design.dataAnalyses.getColumns().get(4).getId());
-    assertEquals(resources.message(MAX_WORK_TIME),
-        design.dataAnalyses.getColumn(MAX_WORK_TIME).getCaption());
-    assertEquals(dataAnalysis1.getMaxWorkTime(),
-        design.dataAnalyses.getColumn(MAX_WORK_TIME).getValueProvider().apply(dataAnalysis1));
-    assertEquals(dataAnalysis2.getMaxWorkTime(),
-        design.dataAnalyses.getColumn(MAX_WORK_TIME).getValueProvider().apply(dataAnalysis2));
-    assertEquals(SCORE, design.dataAnalyses.getColumns().get(5).getId());
+    for (DataAnalysis analysis : analyses) {
+      assertEquals(analysis.getType().getLabel(locale),
+          design.dataAnalyses.getColumn(DATA_ANALYSIS_TYPE).getValueProvider().apply(analysis));
+    }
+    assertEquals(SCORE, design.dataAnalyses.getColumns().get(4).getId());
     assertEquals(resources.message(SCORE), design.dataAnalyses.getColumn(SCORE).getCaption());
-    assertEquals(dataAnalysis1.getScore(),
-        design.dataAnalyses.getColumn(SCORE).getValueProvider().apply(dataAnalysis1));
-    assertEquals(dataAnalysis2.getScore(),
-        design.dataAnalyses.getColumn(SCORE).getValueProvider().apply(dataAnalysis2));
-    assertEquals(WORK_TIME, design.dataAnalyses.getColumns().get(6).getId());
+    assertNull(design.dataAnalyses.getColumn(SCORE).getEditorBinding());
+    for (DataAnalysis analysis : analyses) {
+      assertEquals(analysis.getScore(),
+          design.dataAnalyses.getColumn(SCORE).getValueProvider().apply(analysis));
+      assertEquals(analysis.getScore(),
+          design.dataAnalyses.getColumn(SCORE).getDescriptionGenerator().apply(analysis));
+    }
+    assertEquals(WORK_TIME, design.dataAnalyses.getColumns().get(5).getId());
     assertEquals(resources.message(WORK_TIME),
         design.dataAnalyses.getColumn(WORK_TIME).getCaption());
-    assertEquals(dataAnalysis1.getWorkTime(),
-        design.dataAnalyses.getColumn(WORK_TIME).getValueProvider().apply(dataAnalysis1));
-    assertEquals(dataAnalysis2.getWorkTime(),
-        design.dataAnalyses.getColumn(WORK_TIME).getValueProvider().apply(dataAnalysis2));
-    assertEquals(STATUS, design.dataAnalyses.getColumns().get(7).getId());
+    assertNull(design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding());
+    for (DataAnalysis analysis : analyses) {
+      assertEquals(
+          resources.message(WORK_TIME + "." + VALUE, Objects.toString(analysis.getWorkTime(), "0"),
+              analysis.getMaxWorkTime()),
+          design.dataAnalyses.getColumn(WORK_TIME).getValueProvider().apply(analysis));
+      assertEquals(
+          resources.message(WORK_TIME + "." + DESCRIPTION,
+              Objects.toString(analysis.getWorkTime(), "0"), analysis.getMaxWorkTime()),
+          design.dataAnalyses.getColumn(WORK_TIME).getDescriptionGenerator().apply(analysis));
+    }
+    assertEquals(STATUS, design.dataAnalyses.getColumns().get(6).getId());
     assertEquals(resources.message(STATUS), design.dataAnalyses.getColumn(STATUS).getCaption());
-    assertEquals(dataAnalysis1.getStatus().getLabel(locale),
-        design.dataAnalyses.getColumn(STATUS).getValueProvider().apply(dataAnalysis1));
-    assertEquals(dataAnalysis2.getStatus().getLabel(locale),
-        design.dataAnalyses.getColumn(STATUS).getValueProvider().apply(dataAnalysis2));
-
+    assertNull(design.dataAnalyses.getColumn(STATUS).getEditorBinding());
+    for (DataAnalysis analysis : analyses) {
+      assertEquals(analysis.getStatus().getLabel(locale),
+          design.dataAnalyses.getColumn(STATUS).getValueProvider().apply(analysis));
+    }
     assertTrue(design.dataAnalysesPanel.isVisible());
-    Collection<DataAnalysis> dataAnalyses = dataProvider(design.dataAnalyses).getItems();
-    assertEquals(2, dataAnalyses.size());
-    assertTrue(dataAnalyses.contains(dataAnalysis1));
-    assertTrue(dataAnalyses.contains(dataAnalysis2));
+    assertEquals(dataAnalyses.size(), analyses.size());
+    for (DataAnalysis analysis : dataAnalyses) {
+      assertTrue(analyses.contains(analysis));
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_Admin() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+
+    assertNotNull(design.dataAnalyses.getColumn(SCORE).getEditorBinding());
+    assertTrue(
+        design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField() instanceof TextArea);
+    TextArea scoreEditor =
+        (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
+    assertTrue(scoreEditor.getStyleName().contains(SCORE));
+    assertEquals(3, scoreEditor.getRows());
+    assertNotNull(design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding());
+    assertTrue(
+        design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField() instanceof ComboBox);
+    ComboBox<Double> workTimeEditor =
+        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    assertTrue(workTimeEditor.getStyleName().contains(WORK_TIME));
+    assertFalse(workTimeEditor.isEmptySelectionAllowed());
+    List<Double> workTimeValues = items(workTimeEditor);
+    assertEquals(WORK_TIME_VALUES.length, workTimeValues.size());
+    for (Double value : WORK_TIME_VALUES) {
+      assertTrue(workTimeValues.contains(value));
+    }
+    assertNotNull(design.dataAnalyses.getColumn(STATUS).getEditorBinding());
+    assertTrue(
+        design.dataAnalyses.getColumn(STATUS).getEditorBinding().getField() instanceof ComboBox);
+    ComboBox<DataAnalysisStatus> statusEditor = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
+        .getColumn(STATUS).getEditorBinding().getField();
+    assertTrue(statusEditor.getStyleName().contains(STATUS));
+    assertFalse(statusEditor.isEmptySelectionAllowed());
+    List<DataAnalysisStatus> statusEditorValues = items(statusEditor);
+    assertEquals(DataAnalysisStatus.values().length, statusEditorValues.size());
+    for (DataAnalysisStatus value : DataAnalysisStatus.values()) {
+      assertTrue(statusEditorValues.contains(value));
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_NewValue() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+
+    ComboBox<Double> field =
+        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    field.getNewItemHandler().accept("8.0");
+    List<Double> values = items(field);
+    assertEquals(WORK_TIME_VALUES.length + 1, values.size());
+    assertTrue(values.contains(8.0));
+    for (Double value : WORK_TIME_VALUES) {
+      assertTrue(values.contains(value));
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_NewValueInvalid() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+
+    ComboBox<Double> field =
+        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    field.getNewItemHandler().accept("a");
+    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
+        field.getErrorMessage().getFormattedHtmlMessage());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_NewValueBelowMinimum() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+
+    ComboBox<Double> field =
+        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    field.getNewItemHandler().accept("-1.0");
+    BindingValidationStatus<?> validation =
+        design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().validate();
+    assertTrue(validation.isError());
+    assertNotNull(validation.getMessage().get());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_SaveAnalysedNoScore() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+    DataAnalysis dataAnalysis = dataAnalyses.get(0);
+    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
+    doEdit(dataAnalysis);
+    TextArea scoreField =
+        (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
+    scoreField.setValue("");
+    ComboBox<Double> workTimeField =
+        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue(1.25);
+    ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
+        .getColumn(STATUS).getEditorBinding().getField();
+    statusField.setValue(DataAnalysisStatus.ANALYSED);
+    design.dataAnalyses.getEditor().save();
+
+    verify(dataAnalysisService, never()).update(any(), any());
+    BindingValidationStatus<?> validation =
+        design.dataAnalyses.getColumn(SCORE).getEditorBinding().validate();
+    assertTrue(validation.isError());
+    assertEquals(generalResources.message(REQUIRED), validation.getMessage().get());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_Save() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+    DataAnalysis dataAnalysis = dataAnalyses.get(0);
+    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
+    doEdit(dataAnalysis);
+    TextArea scoreField =
+        (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
+    scoreField.setValue("Test");
+    ComboBox<Double> workTimeField =
+        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue(1.25);
+    ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
+        .getColumn(STATUS).getEditorBinding().getField();
+    statusField.setValue(DataAnalysisStatus.ANALYSED);
+    design.dataAnalyses.getEditor().save();
+
+    verify(dataAnalysisService).update(dataAnalysis, null);
+    assertEquals("Test", dataAnalysis.getScore());
+    assertEquals(1.25, dataAnalysis.getWorkTime(), 0.000001);
+    assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_Cancel() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+    DataAnalysis dataAnalysis = dataAnalyses.get(0);
+    doEdit(dataAnalysis);
+    TextArea scoreField =
+        (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
+    scoreField.setValue("Test");
+    ComboBox<Double> workTimeField =
+        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue(1.25);
+    ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
+        .getColumn(STATUS).getEditorBinding().getField();
+    statusField.setValue(DataAnalysisStatus.ANALYSED);
+    design.dataAnalyses.getEditor().cancel();
+
+    verify(dataAnalysisService, never()).update(any(), any());
   }
 
   @Test
