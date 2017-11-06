@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -272,6 +273,19 @@ public class DataAnalysisViewPresenterTest {
     for (Double value : MAX_WORK_TIME_VALUES) {
       assertTrue(values.contains(value));
     }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void maxWorkTime_NewValueBelowMinimum() {
+    presenter.init(view);
+    presenter.enter("");
+
+    List<DataAnalysis> analyses = new ArrayList<>(dataProvider(design.analyses).getItems());
+    ComboBox<Double> field = (ComboBox<Double>) design.analyses.getColumn(MAX_WORK_TIME)
+        .getValueProvider().apply(analyses.get(0));
+    field.getNewItemHandler().accept("0.25");
+    assertNotNull(field.getErrorMessage().getFormattedHtmlMessage());
   }
 
   @Test
