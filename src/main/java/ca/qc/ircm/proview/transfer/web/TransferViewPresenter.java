@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -225,7 +226,8 @@ public class TransferViewPresenter implements BinderValidator {
         .setCaption(resources.message(SAMPLE));
     design.transfers
         .addColumn(ts -> ts.getContainer() != null ? ts.getContainer().getFullName() : "")
-        .setId(CONTAINER).setCaption(resources.message(CONTAINER));
+        .setId(CONTAINER).setCaption(resources.message(CONTAINER))
+        .setStyleGenerator(ts -> ts.getContainer().isBanned() ? BANNED : "");
     design.transfers.addColumn(
         ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
             : "")

@@ -63,6 +63,7 @@ import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.junit.Before;
@@ -242,6 +243,7 @@ public class ContainerSelectionFormPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void tubes() {
+    samples.forEach(sample -> sourceTubes.get(sample).get(2).setBanned(true));
     presenter.init(view);
     presenter.setSamples(samples);
 
@@ -268,6 +270,8 @@ public class ContainerSelectionFormPresenterTest {
       for (Tube tube : sourceTubes.get(sample)) {
         assertTrue(dataProvider.getItems().contains(tube));
         assertEquals(tube.getName(), field.getItemCaptionGenerator().apply(tube));
+        assertEquals(tube.isBanned() ? VaadinIcons.BAN : null,
+            field.getItemIconGenerator().apply(tube));
       }
     }
     ListDataProvider<Sample> dataProvider = dataProvider(design.tubes);

@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.dilution.web;
 
 import static ca.qc.ircm.proview.dilution.QDilutedSample.dilutedSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -123,7 +124,8 @@ public class DilutionViewPresenter implements BinderValidator {
     design.dilutions.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.dilutions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
-        .setCaption(resources.message(CONTAINER));
+        .setCaption(resources.message(CONTAINER))
+        .setStyleGenerator(ts -> ts.getContainer().isBanned() ? BANNED : "");
     design.dilutions.addColumn(ts -> sourceVolumeField(ts), new ComponentRenderer())
         .setId(SOURCE_VOLUME).setCaption(resources.message(SOURCE_VOLUME)).setSortable(false);
     design.dilutions.addColumn(ts -> solventField(ts), new ComponentRenderer()).setId(SOLVENT)

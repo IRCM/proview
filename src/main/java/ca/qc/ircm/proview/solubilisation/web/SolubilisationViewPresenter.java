@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.solubilisation.web;
 
 import static ca.qc.ircm.proview.solubilisation.QSolubilisedSample.solubilisedSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -122,7 +123,8 @@ public class SolubilisationViewPresenter implements BinderValidator {
     design.solubilisations.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.solubilisations.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
-        .setCaption(resources.message(CONTAINER));
+        .setCaption(resources.message(CONTAINER))
+        .setStyleGenerator(ts -> ts.getContainer().isBanned() ? BANNED : "");
     design.solubilisations.addColumn(ts -> solventField(ts), new ComponentRenderer()).setId(SOLVENT)
         .setCaption(resources.message(SOLVENT)).setSortable(false);
     design.solubilisations.addColumn(ts -> solventVolumeField(ts), new ComponentRenderer())

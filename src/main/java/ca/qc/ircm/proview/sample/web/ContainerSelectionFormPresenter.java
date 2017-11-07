@@ -38,6 +38,7 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeComparator;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -152,6 +153,7 @@ public class ContainerSelectionFormPresenter {
       ComboBox<Tube> field = new ComboBox<>();
       field.addStyleName(TUBES);
       field.setItemCaptionGenerator(Tube::getName);
+      field.setItemIconGenerator(tube -> tube.isBanned() ? VaadinIcons.BAN : null);
       field.setRequiredIndicatorVisible(true);
       field.setEmptySelectionAllowed(false);
       tubes.put(sample, field);

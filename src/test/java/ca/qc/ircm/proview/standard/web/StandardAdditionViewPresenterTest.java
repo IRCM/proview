@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.TITL
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -199,6 +200,7 @@ public class StandardAdditionViewPresenterTest {
 
   @Test
   public void standardAdditions() {
+    containers.get(1).setBanned(true);
     presenter.init(view);
     presenter.enter("");
 
@@ -217,6 +219,8 @@ public class StandardAdditionViewPresenterTest {
     for (AddedStandard ts : treatments.getItems()) {
       assertEquals(ts.getContainer().getFullName(),
           design.standardAdditions.getColumn(CONTAINER).getValueProvider().apply(ts));
+      assertEquals(ts.getContainer().isBanned() ? BANNED : "",
+          design.standardAdditions.getColumn(CONTAINER).getStyleGenerator().apply(ts));
     }
     assertEquals(NAME, design.standardAdditions.getColumns().get(2).getId());
     assertEquals(resources.message(NAME), design.standardAdditions.getColumn(NAME).getCaption());

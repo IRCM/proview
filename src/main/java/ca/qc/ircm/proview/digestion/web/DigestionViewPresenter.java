@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.digestion.web;
 import static ca.qc.ircm.proview.digestion.QDigestedSample.digestedSample;
 import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -145,7 +146,8 @@ public class DigestionViewPresenter implements BinderValidator {
     design.digestions.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.digestions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
-        .setCaption(resources.message(CONTAINER));
+        .setCaption(resources.message(CONTAINER))
+        .setStyleGenerator(ts -> ts.getContainer().isBanned() ? BANNED : "");
     design.digestions.addColumn(ts -> commentField(ts), new ComponentRenderer()).setId(COMMENT)
         .setCaption(resources.message(COMMENT)).setSortable(false);
     design.down.addStyleName(DOWN);

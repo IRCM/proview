@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -213,6 +214,7 @@ public class EnrichmentViewPresenterTest {
 
   @Test
   public void enrichments() {
+    containers.get(1).setBanned(true);
     presenter.init(view);
     presenter.enter("");
 
@@ -230,6 +232,8 @@ public class EnrichmentViewPresenterTest {
     for (EnrichedSample ts : treatments.getItems()) {
       assertEquals(ts.getContainer().getFullName(),
           design.enrichments.getColumn(CONTAINER).getValueProvider().apply(ts));
+      assertEquals(ts.getContainer().isBanned() ? BANNED : "",
+          design.enrichments.getColumn(CONTAINER).getStyleGenerator().apply(ts));
     }
     assertEquals(COMMENT, design.enrichments.getColumns().get(2).getId());
     assertEquals(resources.message(COMMENT), design.enrichments.getColumn(COMMENT).getCaption());

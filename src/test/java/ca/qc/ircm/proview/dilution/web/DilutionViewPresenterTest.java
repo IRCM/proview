@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -209,6 +210,7 @@ public class DilutionViewPresenterTest {
 
   @Test
   public void dilutions() {
+    containers.get(1).setBanned(true);
     presenter.init(view);
     presenter.enter("");
 
@@ -225,6 +227,8 @@ public class DilutionViewPresenterTest {
     for (DilutedSample ts : treatments.getItems()) {
       assertEquals(ts.getContainer().getFullName(),
           design.dilutions.getColumn(CONTAINER).getValueProvider().apply(ts));
+      assertEquals(ts.getContainer().isBanned() ? BANNED : "",
+          design.dilutions.getColumn(CONTAINER).getStyleGenerator().apply(ts));
     }
     assertEquals(SOURCE_VOLUME, design.dilutions.getColumns().get(2).getId());
     assertEquals(resources.message(SOURCE_VOLUME),

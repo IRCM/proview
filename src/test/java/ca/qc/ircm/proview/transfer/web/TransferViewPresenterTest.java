@@ -49,6 +49,7 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFERS_PA
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYPE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYPE_PANEL;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -322,10 +323,11 @@ public class TransferViewPresenterTest {
     assertEquals(CONTAINER, design.transfers.getColumns().get(1).getId());
     assertEquals(resources.message(CONTAINER), design.transfers.getColumn(CONTAINER).getCaption());
     assertFalse(design.transfers.getColumn(CONTAINER).isHidden());
-    int count = 0;
     for (TransferedSample ts : transfers) {
-      assertEquals(sourceWells.get(count++).getFullName(),
+      assertEquals(ts.getContainer().getFullName(),
           design.transfers.getColumn(CONTAINER).getValueProvider().apply(ts));
+      assertEquals(ts.getContainer().isBanned() ? BANNED : "",
+          design.transfers.getColumn(CONTAINER).getStyleGenerator().apply(ts));
     }
     assertEquals(DESTINATION, design.transfers.getColumns().get(2).getId());
     assertEquals(resources.message(DESTINATION),
@@ -410,6 +412,8 @@ public class TransferViewPresenterTest {
     for (TransferedSample ts : transfers) {
       assertEquals(ts.getContainer().getFullName(),
           design.transfers.getColumn(CONTAINER).getValueProvider().apply(ts));
+      assertEquals(ts.getContainer().isBanned() ? BANNED : "",
+          design.transfers.getColumn(CONTAINER).getStyleGenerator().apply(ts));
     }
     assertEquals(DESTINATION, design.transfers.getColumns().get(2).getId());
     assertEquals(resources.message(DESTINATION),

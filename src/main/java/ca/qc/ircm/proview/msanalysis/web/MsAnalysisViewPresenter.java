@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.msanalysis.web;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -160,7 +161,8 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     design.containers.addColumn(container -> container.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.containers.addColumn(container -> container.getFullName()).setId(CONTAINER)
-        .setCaption(resources.message(CONTAINER));
+        .setCaption(resources.message(CONTAINER))
+        .setStyleGenerator(container -> container.isBanned() ? BANNED : "");
     design.containers
         .addColumn(container -> acquisitionCountField(container), new ComponentRenderer())
         .setId(ACQUISITION_COUNT).setCaption(resources.message(ACQUISITION_COUNT))
@@ -172,7 +174,8 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     design.acquisitions.addColumn(acquisition -> acquisition.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.acquisitions.addColumn(acquisition -> acquisition.getContainer().getFullName())
-        .setId(CONTAINER).setCaption(resources.message(CONTAINER));
+        .setId(CONTAINER).setCaption(resources.message(CONTAINER))
+        .setStyleGenerator(acquisition -> acquisition.getContainer().isBanned() ? BANNED : "");
     design.acquisitions
         .addColumn(acquisition -> sampleListNameField(acquisition), new ComponentRenderer())
         .setId(SAMPLE_LIST_NAME).setCaption(resources.message(SAMPLE_LIST_NAME)).setSortable(false);

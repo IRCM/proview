@@ -117,6 +117,10 @@
     height: 45px;
     line-height: 45px;
   }
+  // Banned containers
+  .v-grid-cell.banned {
+    color: red;
+  }
   
   // Plate.
   .v-spreadsheet-plate .top-right-pane .ch, .v-spreadsheet-plate .corner {

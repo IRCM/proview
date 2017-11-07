@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -263,6 +264,8 @@ public class MsAnalysisViewPresenterTest {
     for (SampleContainer container : containers.getItems()) {
       assertEquals(container.getFullName(),
           design.containers.getColumn(CONTAINER).getValueProvider().apply(container));
+      assertEquals(container.isBanned() ? BANNED : "",
+          design.containers.getColumn(CONTAINER).getStyleGenerator().apply(container));
     }
     assertEquals(ACQUISITION_COUNT, design.containers.getColumns().get(2).getId());
     assertEquals(resources.message(ACQUISITION_COUNT),
@@ -304,6 +307,8 @@ public class MsAnalysisViewPresenterTest {
     for (Acquisition acquisition : acquisitions.getItems()) {
       assertEquals(acquisition.getContainer().getFullName(),
           design.acquisitions.getColumn(CONTAINER).getValueProvider().apply(acquisition));
+      assertEquals(acquisition.getContainer().isBanned() ? BANNED : "",
+          design.acquisitions.getColumn(CONTAINER).getStyleGenerator().apply(acquisition));
     }
     assertEquals(SAMPLE_LIST_NAME, design.acquisitions.getColumns().get(2).getId());
     assertEquals(resources.message(SAMPLE_LIST_NAME),

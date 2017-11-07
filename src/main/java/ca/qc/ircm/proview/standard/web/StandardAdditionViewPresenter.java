@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.standard.web;
 
 import static ca.qc.ircm.proview.standard.QAddedStandard.addedStandard;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -119,7 +120,8 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     design.standardAdditions.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.standardAdditions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
-        .setCaption(resources.message(CONTAINER));
+        .setCaption(resources.message(CONTAINER))
+        .setStyleGenerator(ts -> ts.getContainer().isBanned() ? BANNED : "");
     design.standardAdditions.addColumn(ts -> nameField(ts), new ComponentRenderer()).setId(NAME)
         .setCaption(resources.message(NAME)).setSortable(false);
     design.standardAdditions.addColumn(ts -> quantityField(ts), new ComponentRenderer())

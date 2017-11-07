@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.tube.QTube.tube;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
@@ -110,7 +111,8 @@ public class SampleSelectionFormPresenter {
     design.samplesGrid.addColumn(sample -> sample.getStatus().getLabel(locale)).setId(STATUS)
         .setCaption(resources.message(STATUS));
     design.samplesGrid.addColumn(sample -> sampleContainerService.last(sample).getFullName())
-        .setId(SAMPLES_LAST_CONTAINER).setCaption(resources.message(SAMPLES_LAST_CONTAINER));
+        .setId(SAMPLES_LAST_CONTAINER).setCaption(resources.message(SAMPLES_LAST_CONTAINER))
+        .setStyleGenerator(sample -> sampleContainerService.last(sample).isBanned() ? BANNED : "");
     design.samplesGrid.setSelectionMode(SelectionMode.MULTI);
     design.samplesGrid.setFrozenColumnCount(1);
     design.samplesGrid.setSortOrder(GridSortOrder.asc(design.samplesGrid.getColumn(EXPERIENCE))
@@ -121,8 +123,9 @@ public class SampleSelectionFormPresenter {
     design.controlsGrid.setItems(controlService.all());
     design.controlsGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
     design.controlsGrid
-        .addColumn(control -> control.getControlType() != null
-            ? control.getControlType().getLabel(locale) : ControlType.getNullLabel(locale))
+        .addColumn(
+            control -> control.getControlType() != null ? control.getControlType().getLabel(locale)
+                : ControlType.getNullLabel(locale))
         .setId(CONTROL_TYPE).setCaption(resources.message(CONTROL_TYPE));
     design.controlsGrid.addColumn(control -> control.getOriginalContainer().getName())
         .setId(ORIGINAL_CONTAINER_NAME).setCaption(resources.message(ORIGINAL_CONTAINER_NAME));

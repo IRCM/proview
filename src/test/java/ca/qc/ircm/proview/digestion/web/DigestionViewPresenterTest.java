@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -213,6 +214,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void digestions() {
+    containers.get(1).setBanned(true);
     presenter.init(view);
     presenter.enter("");
 
@@ -229,6 +231,8 @@ public class DigestionViewPresenterTest {
     for (DigestedSample ts : treatments.getItems()) {
       assertEquals(ts.getContainer().getFullName(),
           design.digestions.getColumn(CONTAINER).getValueProvider().apply(ts));
+      assertEquals(ts.getContainer().isBanned() ? BANNED : "",
+          design.digestions.getColumn(CONTAINER).getStyleGenerator().apply(ts));
     }
     assertEquals(COMMENT, design.digestions.getColumns().get(2).getId());
     assertEquals(resources.message(COMMENT), design.digestions.getColumn(COMMENT).getCaption());

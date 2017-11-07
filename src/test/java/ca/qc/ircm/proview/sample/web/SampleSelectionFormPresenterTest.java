@@ -31,6 +31,7 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SELECT;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.UPDATE;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -151,6 +152,7 @@ public class SampleSelectionFormPresenterTest {
 
   @Test
   public void samplesGrid() {
+    lastContainers.get(1).setBanned(true);
     presenter.init(view);
 
     List<Column<SubmissionSample, ?>> columns = design.samplesGrid.getColumns();
@@ -175,6 +177,8 @@ public class SampleSelectionFormPresenterTest {
         design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
     assertEquals(lastContainers.get(0).getFullName(),
         design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample));
+    assertEquals("",
+        design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getStyleGenerator().apply(sample));
     sample = selectedSamples.get(1);
     assertEquals(sample.getName(),
         design.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
@@ -184,6 +188,8 @@ public class SampleSelectionFormPresenterTest {
         design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
     assertEquals(lastContainers.get(1).getFullName(),
         design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample));
+    assertEquals(BANNED,
+        design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getStyleGenerator().apply(sample));
   }
 
   @Test

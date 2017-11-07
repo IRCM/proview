@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.enrichment.web;
 import static ca.qc.ircm.proview.enrichment.QEnrichedSample.enrichedSample;
 import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
+import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -145,7 +146,8 @@ public class EnrichmentViewPresenter implements BinderValidator {
     design.enrichments.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.enrichments.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
-        .setCaption(resources.message(CONTAINER));
+        .setCaption(resources.message(CONTAINER))
+        .setStyleGenerator(ts -> ts.getContainer().isBanned() ? BANNED : "");
     design.enrichments.addColumn(ts -> commentField(ts), new ComponentRenderer()).setId(COMMENT)
         .setCaption(resources.message(COMMENT)).setSortable(false);
     design.down.addStyleName(DOWN);
