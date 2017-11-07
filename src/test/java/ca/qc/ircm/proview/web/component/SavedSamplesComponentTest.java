@@ -37,6 +37,7 @@ package ca.qc.ircm.proview.web.component;
 
 import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLES;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -44,7 +45,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
@@ -58,8 +60,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 public class SavedSamplesComponentTest {
   private SavedSamplesComponent component;
   @Mock
@@ -68,6 +73,8 @@ public class SavedSamplesComponentTest {
   private ConnectorTracker connectorTracker;
   @Mock
   private VaadinSession session;
+  @PersistenceContext
+  private EntityManager entityManager;
   private Collection<Sample> samples = new ArrayList<>();
   private Sample sample1;
   private Sample sample2;
@@ -127,6 +134,59 @@ public class SavedSamplesComponentTest {
     samples = component.savedSamples();
 
     assertEquals(size, samples.size());
+  }
+
+  @Test
+  public void savedSampleFromMultipleUsers_True() {
+    Collection<Sample> samples = new ArrayList<>();
+    samples.add(entityManager.find(Sample.class, 442L));
+    samples.add(entityManager.find(Sample.class, 443L));
+    samples.add(entityManager.find(Sample.class, 444L));
+    samples.add(entityManager.find(Sample.class, 446L));
+    when(session.getAttribute(any(String.class))).thenReturn(samples);
+
+    boolean multipleUsers = component.savedSampleFromMultipleUsers();
+
+    assertTrue(multipleUsers);
+  }
+
+  @Test
+  public void savedSampleFromMultipleUsers_False() {
+    Collection<Sample> samples = new ArrayList<>();
+    samples.add(entityManager.find(Sample.class, 442L));
+    samples.add(entityManager.find(Sample.class, 443L));
+    samples.add(entityManager.find(Sample.class, 444L));
+    when(session.getAttribute(any(String.class))).thenReturn(samples);
+
+    boolean multipleUsers = component.savedSampleFromMultipleUsers();
+
+    assertFalse(multipleUsers);
+  }
+
+  @Test
+  public void savedSampleFromMultipleUsers_FalseDueToNullUser() {
+    Collection<Sample> samples = new ArrayList<>();
+    samples.add(entityManager.find(Sample.class, 442L));
+    samples.add(entityManager.find(Sample.class, 443L));
+    samples.add(entityManager.find(Sample.class, 444L));
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 446L);
+    sample.getSubmission().setUser(null);
+    samples.add(sample);
+    when(session.getAttribute(any(String.class))).thenReturn(samples);
+
+    boolean multipleUsers = component.savedSampleFromMultipleUsers();
+
+    assertFalse(multipleUsers);
+  }
+
+  @Test
+  public void savedSampleFromMultipleUsers_Emtpy() {
+    Collection<Sample> samples = new ArrayList<>();
+    when(session.getAttribute(any(String.class))).thenReturn(samples);
+
+    boolean multipleUsers = component.savedSampleFromMultipleUsers();
+
+    assertFalse(multipleUsers);
   }
 
   @SuppressWarnings("serial")

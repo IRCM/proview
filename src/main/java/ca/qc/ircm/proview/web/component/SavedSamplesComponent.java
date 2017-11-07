@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.web.component;
 import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLES;
 
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import com.vaadin.ui.Component;
 
 import java.util.ArrayList;
@@ -44,5 +45,17 @@ public interface SavedSamplesComponent extends Component {
     Collection<Sample> samples =
         (Collection<Sample>) getUI().getSession().getAttribute(SAVED_SAMPLES);
     return samples == null ? new ArrayList<>() : new ArrayList<>(samples);
+  }
+
+  /**
+   * Returns true if saved samples are from multiple users, false otherwise.
+   * 
+   * @return true if saved samples are from multiple users, false otherwise
+   */
+  default boolean savedSampleFromMultipleUsers() {
+    List<Sample> samples = savedSamples();
+    return samples.stream().filter(sample -> sample instanceof SubmissionSample)
+        .map(sample -> ((SubmissionSample) sample).getSubmission().getUser())
+        .filter(user -> user != null).map(user -> user.getId()).distinct().count() > 1;
   }
 }

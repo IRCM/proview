@@ -37,6 +37,7 @@ package ca.qc.ircm.proview.web.component;
 
 import static ca.qc.ircm.proview.web.WebConstants.SAVED_CONTAINERS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -44,7 +45,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
@@ -58,8 +60,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 public class SavedContainersComponentTest {
   private SavedContainersComponent component;
   @Mock
@@ -68,6 +73,8 @@ public class SavedContainersComponentTest {
   private ConnectorTracker connectorTracker;
   @Mock
   private VaadinSession session;
+  @PersistenceContext
+  private EntityManager entityManager;
   private Collection<SampleContainer> containers = new ArrayList<>();
   private SampleContainer container1;
   private SampleContainer container2;
@@ -127,6 +134,73 @@ public class SavedContainersComponentTest {
     containers = component.savedContainers();
 
     assertEquals(size, containers.size());
+  }
+
+  @Test
+  public void savedContainersFromMultipleUsers_True() {
+    Collection<SampleContainer> containers = new ArrayList<>();
+    containers.add(entityManager.find(SampleContainer.class, 2L));
+    containers.add(entityManager.find(SampleContainer.class, 3L));
+    containers.add(entityManager.find(SampleContainer.class, 4L));
+    containers.add(entityManager.find(SampleContainer.class, 8L));
+    when(session.getAttribute(any(String.class))).thenReturn(containers);
+
+    boolean multipleUsers = component.savedContainersFromMultipleUsers();
+
+    assertTrue(multipleUsers);
+  }
+
+  @Test
+  public void savedContainersFromMultipleUsers_False() {
+    Collection<SampleContainer> containers = new ArrayList<>();
+    containers.add(entityManager.find(SampleContainer.class, 2L));
+    containers.add(entityManager.find(SampleContainer.class, 3L));
+    containers.add(entityManager.find(SampleContainer.class, 4L));
+    when(session.getAttribute(any(String.class))).thenReturn(containers);
+
+    boolean multipleUsers = component.savedContainersFromMultipleUsers();
+
+    assertFalse(multipleUsers);
+  }
+
+  @Test
+  public void savedContainersFromMultipleUsers_FalseDueToNullUser() {
+    Collection<SampleContainer> containers = new ArrayList<>();
+    containers.add(entityManager.find(SampleContainer.class, 2L));
+    containers.add(entityManager.find(SampleContainer.class, 3L));
+    containers.add(entityManager.find(SampleContainer.class, 4L));
+    SampleContainer container = entityManager.find(SampleContainer.class, 8L);
+    ((SubmissionSample) container.getSample()).getSubmission().setUser(null);
+    containers.add(container);
+    when(session.getAttribute(any(String.class))).thenReturn(containers);
+
+    boolean multipleUsers = component.savedContainersFromMultipleUsers();
+
+    assertFalse(multipleUsers);
+  }
+
+  @Test
+  public void savedContainersFromMultipleUsers_FalseDueToNullSample() {
+    Collection<SampleContainer> containers = new ArrayList<>();
+    containers.add(entityManager.find(SampleContainer.class, 2L));
+    containers.add(entityManager.find(SampleContainer.class, 3L));
+    containers.add(entityManager.find(SampleContainer.class, 4L));
+    containers.add(entityManager.find(SampleContainer.class, 130L));
+    when(session.getAttribute(any(String.class))).thenReturn(containers);
+
+    boolean multipleUsers = component.savedContainersFromMultipleUsers();
+
+    assertFalse(multipleUsers);
+  }
+
+  @Test
+  public void savedContainersFromMultipleUsers_Emtpy() {
+    Collection<SampleContainer> containers = new ArrayList<>();
+    when(session.getAttribute(any(String.class))).thenReturn(containers);
+
+    boolean multipleUsers = component.savedContainersFromMultipleUsers();
+
+    assertFalse(multipleUsers);
   }
 
   @SuppressWarnings("serial")
