@@ -21,8 +21,10 @@ import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.utils.MessageResource;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -34,9 +36,9 @@ import org.springframework.stereotype.Controller;
 import java.util.Collection;
 import java.util.IntSummaryStatistics;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Plate component presenter.
@@ -49,6 +51,8 @@ public class PlateComponentPresenter {
   private boolean multiSelect = false;
   private boolean readOnly = false;
   private Plate plate;
+  private CellStyle normalStyle;
+  private CellStyle bannedStyle;
 
   /**
    * Initializes presenter.
@@ -65,6 +69,16 @@ public class PlateComponentPresenter {
     view.spreadsheet.setSheetSelectionBarVisible(false);
     view.spreadsheet.getActiveSheet().getRow(0).getCell(0).setCellValue(resources.message(PLATE));
     view.spreadsheet.setSelection(1, 1);
+    Font normalFont = view.spreadsheet.getWorkbook().createFont();
+    normalFont.setColor(HSSFColor.BLACK.index);
+    normalStyle = view.spreadsheet.getWorkbook().createCellStyle();
+    normalStyle.setFillBackgroundColor(HSSFColor.WHITE.index);
+    normalStyle.setFont(normalFont);
+    Font bannedFont = view.spreadsheet.getWorkbook().createFont();
+    bannedFont.setColor(HSSFColor.WHITE.index);
+    bannedStyle = view.spreadsheet.getWorkbook().createCellStyle();
+    bannedStyle.setFillBackgroundColor(HSSFColor.RED.index);
+    bannedStyle.setFont(bannedFont);
     plate = new Plate();
     plate.initWells();
     updatePlate();
@@ -89,38 +103,38 @@ public class PlateComponentPresenter {
     clearPlate();
     view.spreadsheet.setMaxColumns(plate.getColumnCount() + 1);
     view.spreadsheet.setMaxRows(plate.getRowCount() + 1);
-    forEachCell(cell -> {
+    cells().forEach(cell -> {
       int row = cell.getRowIndex() - 1;
       int col = cell.getColumnIndex() - 1;
       Well well = plate.well(row, col);
       if (well.getSample() != null) {
         cell.setCellValue(well.getSample().getName());
       }
+      cell.setCellStyle(well.isBanned() ? bannedStyle : normalStyle);
     });
-    view.spreadsheet.refreshAllCellValues();
+    view.spreadsheet.refreshCells(cells().collect(Collectors.toList()));
   }
 
   private void updateReadOnly() {
     CellStyle locked = view.spreadsheet.getWorkbook().createCellStyle();
     locked.setLocked(readOnly);
-    forEachCell(cell -> cell.setCellStyle(locked));
+    cells().forEach(cell -> cell.setCellStyle(locked));
   }
 
-  private void forEachCell(Consumer<Cell> consumer) {
+  private Stream<Cell> cells() {
     Sheet sheet = view.spreadsheet.getActiveSheet();
-    IntStream.range(1, view.spreadsheet.getRows()).mapToObj(rowIndex -> {
+    return IntStream.range(1, view.spreadsheet.getRows()).mapToObj(rowIndex -> {
       Row row = sheet.getRow(rowIndex);
       if (row == null) {
         sheet.createRow(rowIndex);
       }
       return row;
-    }).forEach(row -> IntStream.range(1, view.spreadsheet.getColumns()).forEach(col -> {
-      consumer.accept(row.getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK));
-    }));
+    }).flatMap(row -> IntStream.range(1, view.spreadsheet.getColumns())
+        .mapToObj(col -> row.getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK)));
   }
 
   private void clearPlate() {
-    forEachCell(cell -> cell.setCellValue(""));
+    cells().forEach(cell -> cell.setCellValue(""));
   }
 
   private void deselectAllWells() {

@@ -38,6 +38,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.addon.spreadsheet.Spreadsheet.CellValueChangeEvent;
 import com.vaadin.addon.spreadsheet.Spreadsheet.CellValueChangeListener;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -383,6 +384,54 @@ public class PlateComponentPresenterTest {
         .getCellValue(sheet.getRow(well3.getRow() + 1).getCell(well3.getColumn() + 1)));
     assertEquals(well4.getSample().getName(), view.spreadsheet
         .getCellValue(sheet.getRow(well4.getRow() + 1).getCell(well4.getColumn() + 1)));
+  }
+
+  @Test
+  public void setValue_BannedContainers() {
+    presenter.init(view);
+    Plate plate = new Plate();
+    plate.initWells();
+    Well well1 = plate.well(0, 0);
+    well1.setSample(new SubmissionSample(1L, "test 1"));
+    Well well2 = plate.well(0, 1);
+    well2.setSample(new Control(1L, "test control 1"));
+    well2.setBanned(true);
+    Well well3 = plate.well(0, 2);
+    well3.setSample(new SubmissionSample(2L, "test control 2"));
+    well3.setBanned(true);
+    Well well4 = plate.well(1, 0);
+    well4.setSample(new SubmissionSample(4L, "test control 4"));
+    well4.setBanned(true);
+
+    presenter.setValue(plate);
+
+    assertSame(plate, presenter.getValue());
+    Sheet sheet = view.spreadsheet.getActiveSheet();
+    assertEquals(well1.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)));
+    CellStyle style =
+        view.spreadsheet.getCell(well1.getRow() + 1, well1.getColumn() + 1).getCellStyle();
+    assertEquals(HSSFColor.WHITE.index, style.getFillBackgroundColor());
+    assertEquals(HSSFColor.BLACK.index,
+        view.spreadsheet.getWorkbook().getFontAt(style.getFontIndex()).getColor());
+    assertEquals(well2.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(well2.getRow() + 1).getCell(well2.getColumn() + 1)));
+    style = view.spreadsheet.getCell(well2.getRow() + 1, well2.getColumn() + 1).getCellStyle();
+    assertEquals(HSSFColor.RED.index, style.getFillBackgroundColor());
+    assertEquals(HSSFColor.WHITE.index,
+        view.spreadsheet.getWorkbook().getFontAt(style.getFontIndex()).getColor());
+    assertEquals(well3.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(well3.getRow() + 1).getCell(well3.getColumn() + 1)));
+    style = view.spreadsheet.getCell(well3.getRow() + 1, well3.getColumn() + 1).getCellStyle();
+    assertEquals(HSSFColor.RED.index, style.getFillBackgroundColor());
+    assertEquals(HSSFColor.WHITE.index,
+        view.spreadsheet.getWorkbook().getFontAt(style.getFontIndex()).getColor());
+    assertEquals(well4.getSample().getName(), view.spreadsheet
+        .getCellValue(sheet.getRow(well4.getRow() + 1).getCell(well4.getColumn() + 1)));
+    style = view.spreadsheet.getCell(well4.getRow() + 1, well4.getColumn() + 1).getCellStyle();
+    assertEquals(HSSFColor.RED.index, style.getFillBackgroundColor());
+    assertEquals(HSSFColor.WHITE.index,
+        view.spreadsheet.getWorkbook().getFontAt(style.getFontIndex()).getColor());
   }
 
   @Test
