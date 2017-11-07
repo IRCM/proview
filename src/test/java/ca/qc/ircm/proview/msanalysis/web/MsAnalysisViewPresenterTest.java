@@ -656,8 +656,8 @@ public class MsAnalysisViewPresenterTest {
     design.save.click();
 
     verify(view).showError(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
-    verify(view, never()).showTrayNotification(resources.message(SAVED, samples.size()));
-    verify(view, never()).navigateTo(MsAnalysisView.VIEW_NAME, "4");
+    verify(view, never()).showTrayNotification(any());
+    verify(view, never()).navigateTo(any(), any());
   }
 
   @Test
@@ -807,9 +807,8 @@ public class MsAnalysisViewPresenterTest {
     design.save.click();
 
     verify(view).showError(resources.message(SAVE_ACQUISITION_REMOVED));
-    verify(view, never()).showTrayNotification(resources.message(SAVED, msAnalysis.getAcquisitions()
-        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
-    verify(view, never()).navigateTo(MsAnalysisView.VIEW_NAME, "14");
+    verify(view, never()).showTrayNotification(any());
+    verify(view, never()).navigateTo(any(), any());
   }
 
   @Test

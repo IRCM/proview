@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
@@ -238,14 +239,20 @@ public class SolubilisationViewPresenter implements BinderValidator {
   private void save() {
     if (validate()) {
       logger.debug("Saving new standard addition");
+      final MessageResource resources = view.getResources();
+      final MessageResource generalResources = view.getGeneralResources();
       Solubilisation solubilisation = binder.getBean();
       solubilisation.setTreatmentSamples(solubilisations);
       if (solubilisation.getId() != null) {
         solubilisationService.update(solubilisation, design.explanation.getValue());
       } else {
-        solubilisationService.insert(solubilisation);
+        try {
+          solubilisationService.insert(solubilisation);
+        } catch (IllegalArgumentException e) {
+          view.showError(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+          return;
+        }
       }
-      MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED,
           solubilisations.stream().map(ts -> ts.getSample().getId()).distinct().count()));
       view.navigateTo(SolubilisationView.VIEW_NAME, String.valueOf(solubilisation.getId()));
@@ -304,6 +311,8 @@ public class SolubilisationViewPresenter implements BinderValidator {
    *          view parameters
    */
   public void enter(String parameters) {
+    final MessageResource resources = view.getResources();
+    final MessageResource generalResources = view.getGeneralResources();
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       solubilisations = view.savedContainers().stream().map(container -> {
@@ -312,6 +321,9 @@ public class SolubilisationViewPresenter implements BinderValidator {
         ts.setContainer(container);
         return ts;
       }).collect(Collectors.toList());
+      if (view.savedContainersFromMultipleUsers()) {
+        view.showWarning(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+      }
     } else if (parameters.startsWith("containers/")) {
       parameters = parameters.substring("containers/".length());
       logger.trace("Parsing containers from parameters");
@@ -327,7 +339,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
           solubilisations.add(ts);
         }
       } else {
-        view.showWarning(view.getResources().message(INVALID_CONTAINERS));
+        view.showWarning(resources.message(INVALID_CONTAINERS));
       }
     } else {
       try {
@@ -342,10 +354,10 @@ public class SolubilisationViewPresenter implements BinderValidator {
           design.save.setVisible(!solubilisation.isDeleted());
           design.removeLayout.setVisible(!solubilisation.isDeleted());
         } else {
-          view.showWarning(view.getResources().message(INVALID_SOLUBILISATION));
+          view.showWarning(resources.message(INVALID_SOLUBILISATION));
         }
       } catch (NumberFormatException e) {
-        view.showWarning(view.getResources().message(INVALID_SOLUBILISATION));
+        view.showWarning(resources.message(INVALID_SOLUBILISATION));
       }
     }
 

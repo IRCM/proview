@@ -27,6 +27,7 @@ import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateFilterBuilder;
@@ -514,6 +515,8 @@ public class TransferViewPresenter implements BinderValidator {
 
   private void save() {
     if (validate()) {
+      final MessageResource resources = view.getResources();
+      final MessageResource generalResources = view.getGeneralResources();
       List<SampleContainer> sources = sources();
       List<SampleContainer> destinations = destinations();
       List<TransferedSample> transferedSamples = new ArrayList<>();
@@ -528,8 +531,12 @@ public class TransferViewPresenter implements BinderValidator {
       }
       Transfer transfer = new Transfer();
       transfer.setTreatmentSamples(transferedSamples);
-      transferService.insert(transfer);
-      MessageResource resources = view.getResources();
+      try {
+        transferService.insert(transfer);
+      } catch (IllegalArgumentException e) {
+        view.showError(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+        return;
+      }
       view.showTrayNotification(resources.message(SAVED,
           transfers.stream().map(ts -> ts.getSample().getId()).distinct().count()));
       view.saveContainers(transferedSamples.stream().map(ts -> ts.getDestinationContainer())
@@ -564,6 +571,8 @@ public class TransferViewPresenter implements BinderValidator {
    *          view parameters
    */
   public void enter(String parameters) {
+    final MessageResource resources = view.getResources();
+    final MessageResource generalResources = view.getGeneralResources();
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       transfers = view.savedContainers().stream().map(container -> {
@@ -572,6 +581,9 @@ public class TransferViewPresenter implements BinderValidator {
         ts.setContainer(container);
         return ts;
       }).collect(Collectors.toList());
+      if (view.savedContainersFromMultipleUsers()) {
+        view.showWarning(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+      }
     } else if (parameters.startsWith("containers/")) {
       parameters = parameters.substring("containers/".length());
       logger.trace("Parsing containers from parameters");
@@ -587,7 +599,7 @@ public class TransferViewPresenter implements BinderValidator {
           transfers.add(ts);
         }
       } else {
-        view.showWarning(view.getResources().message(INVALID_CONTAINERS));
+        view.showWarning(resources.message(INVALID_CONTAINERS));
       }
     } else {
       try {
@@ -598,10 +610,10 @@ public class TransferViewPresenter implements BinderValidator {
           transfers = transfer.getTreatmentSamples();
           readOnly = true;
         } else {
-          view.showWarning(view.getResources().message(INVALID_TRANSFER));
+          view.showWarning(resources.message(INVALID_TRANSFER));
         }
       } catch (NumberFormatException e) {
-        view.showWarning(view.getResources().message(INVALID_TRANSFER));
+        view.showWarning(resources.message(INVALID_TRANSFER));
       }
     }
 

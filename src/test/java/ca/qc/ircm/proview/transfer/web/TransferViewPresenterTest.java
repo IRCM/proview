@@ -53,6 +53,7 @@ import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -61,6 +62,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -1562,10 +1564,47 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void save_IllegalArgumentException() {
+    sourceTubes();
+    presenter.init(view);
+    presenter.enter("");
+    design.type.setValue(TUBE);
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    for (TransferedSample ts : transfers) {
+      ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
+          .getValueProvider().apply(ts);
+      field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
+    }
+    doThrow(new IllegalArgumentException()).when(transferService).insert(any());
+
+    design.save.click();
+
+    verify(view).showError(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+    verify(view, never()).showTrayNotification(any());
+    verify(view, never()).navigateTo(any(), any());
+  }
+
+  @Test
   public void enter_Empty() {
     presenter.init(view);
     presenter.enter("");
 
+    ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
+    assertEquals(samples.size(), tss.getItems().size());
+    for (Sample sample : samples) {
+      assertTrue(tss.getItems().stream().filter(ts -> sample.equals(ts.getSample())).findAny()
+          .isPresent());
+    }
+  }
+
+  @Test
+  public void enter_SavedContainersFromMultipleUsers() {
+    when(view.savedContainersFromMultipleUsers()).thenReturn(true);
+    presenter.init(view);
+    presenter.enter("");
+
+    verify(view).showWarning(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
     ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
     assertEquals(samples.size(), tss.getItems().size());
     for (Sample sample : samples) {

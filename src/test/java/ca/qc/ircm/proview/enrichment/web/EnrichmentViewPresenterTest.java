@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -36,6 +37,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -364,6 +366,20 @@ public class EnrichmentViewPresenterTest {
   }
 
   @Test
+  public void save_IllegalArgumentException() {
+    presenter.init(view);
+    presenter.enter("");
+    setFields();
+    doThrow(new IllegalArgumentException()).when(enrichmentService).insert(any());
+
+    design.save.click();
+
+    verify(view).showError(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+    verify(view, never()).showTrayNotification(any());
+    verify(view, never()).navigateTo(any(), any());
+  }
+
+  @Test
   public void save_Update() {
     presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
         sampleContainerService, applicationName);
@@ -468,6 +484,33 @@ public class EnrichmentViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
+    assertFalse(design.deleted.isVisible());
+    assertFalse(design.protocol.isReadOnly());
+    assertFalse(design.explanationPanel.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.removeLayout.isVisible());
+    List<EnrichedSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
+    assertEquals(containers.size(), tss.size());
+    for (int i = 0; i < containers.size(); i++) {
+      SampleContainer container = containers.get(i);
+      EnrichedSample enriched = tss.get(i);
+      assertEquals(container.getSample(), enriched.getSample());
+      assertEquals(container, enriched.getContainer());
+    }
+    for (EnrichedSample ts : tss) {
+      TextField field =
+          (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertFalse(field.isReadOnly());
+    }
+  }
+
+  @Test
+  public void enter_SavedContainersFromMultipleUsers() {
+    when(view.savedContainersFromMultipleUsers()).thenReturn(true);
+    presenter.init(view);
+    presenter.enter("");
+
+    verify(view).showWarning(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
     assertFalse(design.deleted.isVisible());
     assertFalse(design.protocol.isReadOnly());
     assertFalse(design.explanationPanel.isVisible());

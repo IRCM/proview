@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 
 import ca.qc.ircm.proview.dilution.DilutedSample;
 import ca.qc.ircm.proview.dilution.Dilution;
@@ -260,14 +261,20 @@ public class DilutionViewPresenter implements BinderValidator {
   private void save() {
     if (validate()) {
       logger.debug("Saving new dilution");
+      final MessageResource resources = view.getResources();
+      final MessageResource generalResources = view.getGeneralResources();
       Dilution dilution = binder.getBean();
       dilution.setTreatmentSamples(dilutions);
       if (dilution.getId() != null) {
         dilutionService.update(dilution, design.explanation.getValue());
       } else {
-        dilutionService.insert(dilution);
+        try {
+          dilutionService.insert(dilution);
+        } catch (IllegalArgumentException e) {
+          view.showError(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+          return;
+        }
       }
-      MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED,
           dilutions.stream().map(ts -> ts.getSample().getId()).distinct().count()));
       view.navigateTo(DilutionView.VIEW_NAME, String.valueOf(dilution.getId()));
@@ -326,6 +333,8 @@ public class DilutionViewPresenter implements BinderValidator {
    *          view parameters
    */
   public void enter(String parameters) {
+    final MessageResource resources = view.getResources();
+    final MessageResource generalResources = view.getGeneralResources();
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       dilutions = view.savedContainers().stream().map(container -> {
@@ -334,6 +343,9 @@ public class DilutionViewPresenter implements BinderValidator {
         ts.setContainer(container);
         return ts;
       }).collect(Collectors.toList());
+      if (view.savedContainersFromMultipleUsers()) {
+        view.showWarning(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+      }
     } else if (parameters.startsWith("containers/")) {
       parameters = parameters.substring("containers/".length());
       logger.trace("Parsing containers from parameters");
@@ -349,7 +361,7 @@ public class DilutionViewPresenter implements BinderValidator {
           dilutions.add(ts);
         }
       } else {
-        view.showWarning(view.getResources().message(INVALID_CONTAINERS));
+        view.showWarning(resources.message(INVALID_CONTAINERS));
       }
     } else {
       try {
@@ -364,10 +376,10 @@ public class DilutionViewPresenter implements BinderValidator {
           design.save.setVisible(!dilution.isDeleted());
           design.removeLayout.setVisible(!dilution.isDeleted());
         } else {
-          view.showWarning(view.getResources().message(INVALID_DILUTION));
+          view.showWarning(resources.message(INVALID_DILUTION));
         }
       } catch (NumberFormatException e) {
-        view.showWarning(view.getResources().message(INVALID_DILUTION));
+        view.showWarning(resources.message(INVALID_DILUTION));
       }
     }
 
