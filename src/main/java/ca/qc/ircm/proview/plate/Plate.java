@@ -44,9 +44,9 @@ import javax.validation.constraints.Min;
  * Treatment Plate.
  */
 @Entity
-@Table(name = "plate")
+@Table(name = Plate.TABLE_NAME)
 public class Plate implements Data, Serializable, Named {
-
+  public static final String TABLE_NAME = "plate";
   private static final long serialVersionUID = 342820436770987756L;
 
   /**

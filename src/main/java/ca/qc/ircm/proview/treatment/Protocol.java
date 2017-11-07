@@ -38,7 +38,7 @@ import javax.validation.constraints.Size;
  * A Protocol.
  */
 @Entity
-@Table(name = "protocol")
+@Table(name = Protocol.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
 public abstract class Protocol implements Data, Serializable, Named {
@@ -49,6 +49,7 @@ public abstract class Protocol implements Data, Serializable, Named {
     DIGESTION, ENRICHMENT;
   }
 
+  public static final String TABLE_NAME = "protocol";
   private static final long serialVersionUID = -7624493017948317986L;
 
   /**

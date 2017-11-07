@@ -25,12 +25,24 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
+import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
+import ca.qc.ircm.proview.digestion.Digestion;
+import ca.qc.ircm.proview.digestion.DigestionProtocol;
+import ca.qc.ircm.proview.dilution.Dilution;
+import ca.qc.ircm.proview.enrichment.Enrichment;
+import ca.qc.ircm.proview.enrichment.EnrichmentProtocol;
+import ca.qc.ircm.proview.fractionation.Fractionation;
+import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.solubilisation.Solubilisation;
+import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -78,6 +90,186 @@ public class ActivityServiceTest {
   private ActivityService create(boolean useFailsafeDescription) {
     return new ActivityService(entityManager, queryFactory, authorizationService,
         useFailsafeDescription);
+  }
+
+  @Test
+  public void record_Submission() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5543L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Submission);
+    Submission submission = (Submission) object;
+    assertEquals((Long) 1L, submission.getId());
+  }
+
+  @Test
+  public void record_Sample() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5635L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof SubmissionSample);
+    SubmissionSample sample = (SubmissionSample) object;
+    assertEquals((Long) 559L, sample.getId());
+  }
+
+  @Test
+  public void record_Plate() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5559L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Plate);
+    Plate plate = (Plate) object;
+    assertEquals((Long) 26L, plate.getId());
+  }
+
+  @Test
+  public void record_DigestionProtocol() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5545L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof DigestionProtocol);
+    DigestionProtocol protocol = (DigestionProtocol) object;
+    assertEquals((Long) 1L, protocol.getId());
+  }
+
+  @Test
+  public void record_EnrichmentProtocol() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5546L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof EnrichmentProtocol);
+    EnrichmentProtocol protocol = (EnrichmentProtocol) object;
+    assertEquals((Long) 2L, protocol.getId());
+  }
+
+  @Test
+  public void record_Digestion() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5639L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Digestion);
+    Digestion digestion = (Digestion) object;
+    assertEquals((Long) 195L, digestion.getId());
+  }
+
+  @Test
+  public void record_Dilution() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5680L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Dilution);
+    Dilution dilution = (Dilution) object;
+    assertEquals((Long) 210L, dilution.getId());
+  }
+
+  @Test
+  public void record_Enrichment() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5719L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Enrichment);
+    Enrichment enrichment = (Enrichment) object;
+    assertEquals((Long) 225L, enrichment.getId());
+  }
+
+  @Test
+  public void record_Fractionation() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5659L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Fractionation);
+    Fractionation fractionation = (Fractionation) object;
+    assertEquals((Long) 203L, fractionation.getId());
+  }
+
+  @Test
+  public void record_Solubilisation() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5763L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Solubilisation);
+    Solubilisation solubilisation = (Solubilisation) object;
+    assertEquals((Long) 236L, solubilisation.getId());
+  }
+
+  @Test
+  public void record_StandardAddition() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5796L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof StandardAddition);
+    StandardAddition standardAddition = (StandardAddition) object;
+    assertEquals((Long) 248L, standardAddition.getId());
+  }
+
+  @Test
+  public void record_Transfer() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5657L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Transfer);
+    Transfer transfer = (Transfer) object;
+    assertEquals((Long) 201L, transfer.getId());
+  }
+
+  @Test
+  public void record_MsAnalysis() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5828L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof MsAnalysis);
+    MsAnalysis msAnalysis = (MsAnalysis) object;
+    assertEquals((Long) 19L, msAnalysis.getId());
+  }
+
+  @Test
+  public void record_DataAnalysis() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5566L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof DataAnalysis);
+    DataAnalysis dataAnalysis = (DataAnalysis) object;
+    assertEquals((Long) 5L, dataAnalysis.getId());
+  }
+
+  @Test
+  public void record_Null() throws Exception {
+    assertNull(activityService.record(null));
+  }
+
+  @Test
+  public void record_TableNameNull() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5566L);
+    activity.setTableName(null);
+    assertNull(activityService.record(activity));
   }
 
   @Test

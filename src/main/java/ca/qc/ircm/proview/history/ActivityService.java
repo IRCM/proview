@@ -23,8 +23,12 @@ import static ca.qc.ircm.proview.history.QActivity.activity;
 import static ca.qc.ircm.proview.history.QUpdateActivity.updateActivity;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
+import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.plate.QWell.well;
+import static ca.qc.ircm.proview.sample.QSample.sample;
+import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
+import static ca.qc.ircm.proview.treatment.QProtocol.protocol;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 
@@ -47,6 +51,7 @@ import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
 import ca.qc.ircm.proview.standard.AddedStandard;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.transfer.TransferedSample;
+import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.tube.Tube;
@@ -103,6 +108,68 @@ public class ActivityService {
 
   private ResourceBundle resourceBundle(Locale locale) {
     return ResourceBundle.getBundle(ActivityService.class.getName(), locale);
+  }
+
+  /**
+   * Returns object associated with this activity.
+   *
+   * @param activity
+   *          activity
+   * @return object associated with this activity
+   */
+  public Object record(Activity activity) {
+    if (activity == null || activity.getTableName() == null) {
+      return null;
+    }
+    authorizationService.checkAdminRole();
+
+    switch (activity.getTableName()) {
+      case Submission.TABLE_NAME: {
+        JPAQuery<Submission> query = queryFactory.select(submission);
+        query.from(submission);
+        query.where(submission.id.eq(activity.getRecordId()));
+        return query.fetchOne();
+      }
+      case Sample.TABLE_NAME: {
+        JPAQuery<Sample> query = queryFactory.select(sample);
+        query.from(sample);
+        query.where(sample.id.eq(activity.getRecordId()));
+        return query.fetchOne();
+      }
+      case Plate.TABLE_NAME: {
+        JPAQuery<Plate> query = queryFactory.select(plate);
+        query.from(plate);
+        query.where(plate.id.eq(activity.getRecordId()));
+        return query.fetchOne();
+      }
+      case Protocol.TABLE_NAME: {
+        JPAQuery<Protocol> query = queryFactory.select(protocol);
+        query.from(protocol);
+        query.where(protocol.id.eq(activity.getRecordId()));
+        return query.fetchOne();
+      }
+      case Treatment.TABLE_NAME: {
+        JPAQuery<Treatment<?>> query = queryFactory.select(treatment);
+        query.from(treatment);
+        query.where(treatment.id.eq(activity.getRecordId()));
+        return query.fetchOne();
+      }
+      case MsAnalysis.TABLE_NAME: {
+        JPAQuery<MsAnalysis> query = queryFactory.select(msAnalysis);
+        query.from(msAnalysis);
+        query.where(msAnalysis.id.eq(activity.getRecordId()));
+        return query.fetchOne();
+      }
+      case DataAnalysis.TABLE_NAME: {
+        JPAQuery<DataAnalysis> query = queryFactory.select(dataAnalysis);
+        query.from(dataAnalysis);
+        query.where(dataAnalysis.id.eq(activity.getRecordId()));
+        return query.fetchOne();
+      }
+      default:
+        throw new AssertionError(
+            "Record type " + activity.getTableName() + " not covered in switch");
+    }
   }
 
   /**
