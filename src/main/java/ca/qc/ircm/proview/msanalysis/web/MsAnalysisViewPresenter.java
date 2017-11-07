@@ -9,6 +9,7 @@ import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
@@ -73,6 +74,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
+  public static final String SAVE_ACQUISITION_REMOVED = "save.acquisitionRemoved";
   public static final String REMOVE = "remove";
   public static final String REMOVED = "removed";
   public static final String BAN_CONTAINERS = "banContainers";
@@ -356,6 +358,8 @@ public class MsAnalysisViewPresenter implements BinderValidator {
   private void save() {
     if (validate()) {
       logger.debug("Saving new MS analysis");
+      final MessageResource resources = view.getResources();
+      final MessageResource generalResources = view.getGeneralResources();
       MsAnalysis msAnalysis = binder.getBean();
       msAnalysis.setAcquisitions(acquisitions);
       int listIndex = 0;
@@ -365,11 +369,20 @@ public class MsAnalysisViewPresenter implements BinderValidator {
         acquisition.setListIndex(listIndex++);
       }
       if (msAnalysis.getId() != null) {
-        msAnalysisService.update(msAnalysis, design.explanation.getValue());
+        try {
+          msAnalysisService.update(msAnalysis, design.explanation.getValue());
+        } catch (IllegalArgumentException e) {
+          view.showError(resources.message(SAVE_ACQUISITION_REMOVED));
+          return;
+        }
       } else {
-        msAnalysisService.insert(msAnalysis);
+        try {
+          msAnalysisService.insert(msAnalysis);
+        } catch (IllegalArgumentException e) {
+          view.showError(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+          return;
+        }
       }
-      MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(SAVED,
           acquisitions.stream().map(ts -> ts.getSample().getId()).distinct().count()));
       view.navigateTo(MsAnalysisView.VIEW_NAME, String.valueOf(msAnalysis.getId()));
@@ -428,6 +441,8 @@ public class MsAnalysisViewPresenter implements BinderValidator {
    *          view parameters
    */
   public void enter(String parameters) {
+    final MessageResource resources = view.getResources();
+    final MessageResource generalResources = view.getGeneralResources();
     List<SampleContainer> containers = new ArrayList<>();
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
@@ -438,6 +453,9 @@ public class MsAnalysisViewPresenter implements BinderValidator {
         acquisition.setContainer(container);
         return acquisition;
       }).collect(Collectors.toList());
+      if (view.savedContainersFromMultipleUsers()) {
+        view.showWarning(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+      }
     } else if (parameters.startsWith("containers/")) {
       parameters = parameters.substring("containers/".length());
       logger.trace("Parsing containers from parameters");
@@ -454,7 +472,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
           acquisitions.add(acquisition);
         }
       } else {
-        view.showWarning(view.getResources().message(INVALID_CONTAINERS));
+        view.showWarning(resources.message(INVALID_CONTAINERS));
       }
     } else {
       try {
@@ -473,10 +491,10 @@ public class MsAnalysisViewPresenter implements BinderValidator {
           design.save.setVisible(!msAnalysis.isDeleted());
           design.removeLayout.setVisible(!msAnalysis.isDeleted());
         } else {
-          view.showWarning(view.getResources().message(INVALID_MS_ANALYSIS));
+          view.showWarning(resources.message(INVALID_MS_ANALYSIS));
         }
       } catch (NumberFormatException e) {
-        view.showWarning(view.getResources().message(INVALID_MS_ANALYSIS));
+        view.showWarning(resources.message(INVALID_MS_ANALYSIS));
       }
     }
 

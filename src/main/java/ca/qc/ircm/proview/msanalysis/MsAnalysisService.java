@@ -247,6 +247,8 @@ public class MsAnalysisService extends BaseTreatmentService {
    *          MS analysis containing new information
    * @param explanation
    *          explanation
+   * @throws IllegalArgumentException
+   *           Acquisitions cannot be removed from MS analysis
    */
   public void update(MsAnalysis msAnalysis, String explanation) {
     authorizationService.checkAdminRole();

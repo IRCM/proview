@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SAMPLE_LIST_NAME;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SAVE;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SAVED;
+import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SAVE_ACQUISITION_REMOVED;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SOURCE;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
@@ -37,6 +38,7 @@ import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
+import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -45,6 +47,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -644,6 +647,20 @@ public class MsAnalysisViewPresenterTest {
   }
 
   @Test
+  public void save_IllegalArgumentException() {
+    presenter.init(view);
+    presenter.enter("");
+    setFields();
+    doThrow(new IllegalArgumentException()).when(msAnalysisService).insert(any());
+
+    design.save.click();
+
+    verify(view).showError(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
+    verify(view, never()).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view, never()).navigateTo(MsAnalysisView.VIEW_NAME, "4");
+  }
+
+  @Test
   public void save_MultipleAcquisitions() {
     presenter.init(view);
     presenter.enter("");
@@ -777,6 +794,25 @@ public class MsAnalysisViewPresenterTest {
   }
 
   @Test
+  public void save_Update_IllegalArgumentException() {
+    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
+    doThrow(new IllegalArgumentException()).when(msAnalysisService).update(any(), any());
+    presenter.init(view);
+    presenter.enter("14");
+    design.massDetectionInstrument.setValue(MassDetectionInstrument.ORBITRAP_FUSION);
+    setFields();
+    design.explanation.setValue("test explanation");
+
+    design.save.click();
+
+    verify(view).showError(resources.message(SAVE_ACQUISITION_REMOVED));
+    verify(view, never()).showTrayNotification(resources.message(SAVED, msAnalysis.getAcquisitions()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view, never()).navigateTo(MsAnalysisView.VIEW_NAME, "14");
+  }
+
+  @Test
   public void remove_NoExplanation() {
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
@@ -845,6 +881,45 @@ public class MsAnalysisViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
+    List<SampleContainer> containers = new ArrayList<>(dataProvider(design.containers).getItems());
+    for (int i = 0; i < this.containers.size(); i++) {
+      SampleContainer container = this.containers.get(i);
+      SampleContainer gridContainer = containers.get(i);
+      assertEquals(container.getSample(), gridContainer.getSample());
+      assertEquals(container, gridContainer);
+    }
+    for (SampleContainer container : containers) {
+      TextField field = (TextField) design.containers.getColumn(ACQUISITION_COUNT)
+          .getValueProvider().apply(container);
+      assertFalse(field.isReadOnly());
+    }
+    List<Acquisition> acquisitions = new ArrayList<>(dataProvider(design.acquisitions).getItems());
+    for (int i = 0; i < this.containers.size(); i++) {
+      SampleContainer container = this.containers.get(i);
+      Acquisition acquisition = acquisitions.get(i);
+      assertEquals(container.getSample(), acquisition.getSample());
+      assertEquals(container, acquisition.getContainer());
+    }
+    for (Acquisition acquisition : acquisitions) {
+      TextField field = (TextField) design.acquisitions.getColumn(SAMPLE_LIST_NAME)
+          .getValueProvider().apply(acquisition);
+      assertFalse(field.isReadOnly());
+      field = (TextField) design.acquisitions.getColumn(ACQUISITION_FILE).getValueProvider()
+          .apply(acquisition);
+      assertFalse(field.isReadOnly());
+      field =
+          (TextField) design.acquisitions.getColumn(COMMENT).getValueProvider().apply(acquisition);
+      assertFalse(field.isReadOnly());
+    }
+  }
+
+  @Test
+  public void enter_SavedContainersFromMultipleUsers() {
+    when(view.savedContainersFromMultipleUsers()).thenReturn(true);
+    presenter.init(view);
+    presenter.enter("");
+
+    verify(view).showWarning(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
     List<SampleContainer> containers = new ArrayList<>(dataProvider(design.containers).getItems());
     for (int i = 0; i < this.containers.size(); i++) {
       SampleContainer container = this.containers.get(i);
