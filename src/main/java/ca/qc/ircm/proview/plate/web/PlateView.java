@@ -17,42 +17,46 @@
 
 package ca.qc.ircm.proview.plate.web;
 
-import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.web.view.BaseView;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
 /**
- * View for a plate.
+ * Plate view.
  */
 @SpringView(name = PlateView.VIEW_NAME)
 @RolesAllowed("USER")
-public class PlateView extends PlateViewDesign implements BaseView {
+public class PlateView extends CustomComponent implements BaseView {
   public static final String VIEW_NAME = "plate";
   private static final long serialVersionUID = -7006664525905554582L;
+  protected PlateViewDesign design = new PlateViewDesign();
   @Inject
-  private PlateComponent plateComponent;
+  protected PlateComponent plateComponent;
   @Inject
-  private transient PlateService plateService;
+  private transient PlateViewPresenter presenter;
 
   /**
    * Initializes view.
    */
   @PostConstruct
   public void init() {
-    plateComponentPanel.setContent(plateComponent);
+    setCompositionRoot(design);
+    design.plateComponentPanel.setContent(plateComponent);
   }
 
   @Override
   public void attach() {
     super.attach();
-    Plate plate = plateService.get(1L);
-    plateComponent.setValue(plate);
-    plateComponent.setMultiSelect(true);
-    plateComponentPanel.setCaption(plate.getName());
+    presenter.init(this);
+  }
+
+  @Override
+  public void enter(ViewChangeEvent event) {
+    presenter.enter(event.getParameters());
   }
 }

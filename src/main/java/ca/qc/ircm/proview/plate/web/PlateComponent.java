@@ -35,7 +35,7 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 /**
- * Plate component that allows selection.
+ * Plate component that shows plate content.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)

@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Plate component that allows selection and drag and drop.
+ * Plate component presenter.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
