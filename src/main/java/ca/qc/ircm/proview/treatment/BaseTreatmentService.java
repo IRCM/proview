@@ -28,8 +28,10 @@ import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 
 import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.treatment.Treatment.DeletionType;
+import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -55,6 +57,22 @@ public abstract class BaseTreatmentService {
   protected BaseTreatmentService(EntityManager entityManager, JPAQueryFactory queryFactory) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
+  }
+
+  protected void chechSameUserForAllSamples(Treatment<?> treatment)
+      throws IllegalArgumentException {
+    User expectedUser = null;
+    for (TreatmentSample ts : treatment.getTreatmentSamples()) {
+      if (ts.getSample() instanceof SubmissionSample) {
+        SubmissionSample sample = (SubmissionSample) ts.getSample();
+        if (expectedUser == null) {
+          expectedUser = sample.getUser();
+        } else if (!expectedUser.getId().equals(sample.getUser().getId())) {
+          throw new IllegalArgumentException(
+              "Cannot add treatment with samples from multiple users");
+        }
+      }
+    }
   }
 
   protected boolean containerUsedByTreatmentOrAnalysis(SampleContainer source) {

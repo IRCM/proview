@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
@@ -211,6 +212,71 @@ public class DilutionServiceTest {
     assertEquals((Double) 10.0, dilutedSample.getSourceVolume());
     assertEquals("Methanol", dilutedSample.getSolvent());
     assertEquals((Double) 20.0, dilutedSample.getSolventVolume());
+  }
+
+  @Test
+  public void insert_SamplesFromMultipleUser() {
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 8L);
+    final List<DilutedSample> dilutedSamples = new ArrayList<>();
+    DilutedSample dilutedSample1 = new DilutedSample();
+    dilutedSample1.setComment("unit test");
+    dilutedSample1.setSample(tube1.getSample());
+    dilutedSample1.setContainer(tube1);
+    dilutedSample1.setSourceVolume(10.0);
+    dilutedSample1.setSolvent("Methanol");
+    dilutedSample1.setSolventVolume(20.0);
+    dilutedSamples.add(dilutedSample1);
+    DilutedSample dilutedSample2 = new DilutedSample();
+    dilutedSample2.setComment("unit test");
+    dilutedSample2.setSample(tube2.getSample());
+    dilutedSample2.setContainer(tube2);
+    dilutedSample2.setSourceVolume(10.0);
+    dilutedSample2.setSolvent("Methanol");
+    dilutedSample2.setSolventVolume(20.0);
+    dilutedSamples.add(dilutedSample2);
+    Dilution dilution = new Dilution();
+    dilution.setTreatmentSamples(dilutedSamples);
+    when(dilutionActivityService.insert(any(Dilution.class))).thenReturn(activity);
+
+    try {
+      dilutionService.insert(dilution);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // Success.
+    }
+  }
+
+  @Test
+  public void insert_SamplesFromOneUserAndControl() {
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 4L);
+    final List<DilutedSample> dilutedSamples = new ArrayList<>();
+    DilutedSample dilutedSample1 = new DilutedSample();
+    dilutedSample1.setComment("unit test");
+    dilutedSample1.setSample(tube1.getSample());
+    dilutedSample1.setContainer(tube1);
+    dilutedSample1.setSourceVolume(10.0);
+    dilutedSample1.setSolvent("Methanol");
+    dilutedSample1.setSolventVolume(20.0);
+    dilutedSamples.add(dilutedSample1);
+    DilutedSample dilutedSample2 = new DilutedSample();
+    dilutedSample2.setComment("unit test");
+    dilutedSample2.setSample(tube2.getSample());
+    dilutedSample2.setContainer(tube2);
+    dilutedSample2.setSourceVolume(10.0);
+    dilutedSample2.setSolvent("Methanol");
+    dilutedSample2.setSolventVolume(20.0);
+    dilutedSamples.add(dilutedSample2);
+    Dilution dilution = new Dilution();
+    dilution.setTreatmentSamples(dilutedSamples);
+    when(dilutionActivityService.insert(any(Dilution.class))).thenReturn(activity);
+
+    try {
+      dilutionService.insert(dilution);
+    } catch (IllegalArgumentException e) {
+      fail("IllegalArgumentException not expected");
+    }
   }
 
   @Test

@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
@@ -214,6 +215,69 @@ public class DigestionServiceTest {
     assertEquals((Long) 128L, digestedSample.getContainer().getId());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
+  }
+
+  @Test
+  public void insert_SamplesFromMultipleUser() {
+    Digestion digestion = new Digestion();
+    digestion.setProtocol(new DigestionProtocol(1L));
+    Tube tube1 = entityManager.find(Tube.class, 3L);
+    Tube tube2 = entityManager.find(Tube.class, 8L);
+    entityManager.detach(tube1);
+    entityManager.detach(tube1.getSample());
+    entityManager.detach(tube2);
+    entityManager.detach(tube2.getSample());
+    final List<DigestedSample> digestedSamples = new ArrayList<>();
+    DigestedSample digestedSample1 = new DigestedSample();
+    digestedSample1.setComment("unit test");
+    digestedSample1.setSample(tube1.getSample());
+    digestedSample1.setContainer(tube1);
+    digestedSamples.add(digestedSample1);
+    DigestedSample digestedSample2 = new DigestedSample();
+    digestedSample2.setComment("unit test");
+    digestedSample2.setSample(tube2.getSample());
+    digestedSample2.setContainer(tube2);
+    digestedSamples.add(digestedSample2);
+    digestion.setTreatmentSamples(digestedSamples);
+    when(digestionActivityService.insert(any())).thenReturn(activity);
+
+    try {
+      digestionService.insert(digestion);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // Success.
+    }
+  }
+
+  @Test
+  public void insert_SamplesFromOneUserAndControl() {
+    Digestion digestion = new Digestion();
+    digestion.setProtocol(new DigestionProtocol(1L));
+    Tube tube1 = entityManager.find(Tube.class, 3L);
+    Tube tube2 = entityManager.find(Tube.class, 4L);
+    entityManager.detach(tube1);
+    entityManager.detach(tube1.getSample());
+    entityManager.detach(tube2);
+    entityManager.detach(tube2.getSample());
+    final List<DigestedSample> digestedSamples = new ArrayList<>();
+    DigestedSample digestedSample1 = new DigestedSample();
+    digestedSample1.setComment("unit test");
+    digestedSample1.setSample(tube1.getSample());
+    digestedSample1.setContainer(tube1);
+    digestedSamples.add(digestedSample1);
+    DigestedSample digestedSample2 = new DigestedSample();
+    digestedSample2.setComment("unit test");
+    digestedSample2.setSample(tube2.getSample());
+    digestedSample2.setContainer(tube2);
+    digestedSamples.add(digestedSample2);
+    digestion.setTreatmentSamples(digestedSamples);
+    when(digestionActivityService.insert(any())).thenReturn(activity);
+
+    try {
+      digestionService.insert(digestion);
+    } catch (IllegalArgumentException e) {
+      fail("IllegalArgumentException not expected");
+    }
   }
 
   @Test

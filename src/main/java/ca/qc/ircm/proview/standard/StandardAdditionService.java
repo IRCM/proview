@@ -91,6 +91,7 @@ public class StandardAdditionService extends BaseTreatmentService {
    */
   public void insert(StandardAddition standardAddition) {
     authorizationService.checkAdminRole();
+    chechSameUserForAllSamples(standardAddition);
     User user = authorizationService.getCurrentUser();
 
     standardAddition.setInsertTime(Instant.now());

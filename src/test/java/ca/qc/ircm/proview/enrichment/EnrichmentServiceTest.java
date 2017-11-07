@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
@@ -217,6 +218,69 @@ public class EnrichmentServiceTest {
     assertEquals((Long) 128L, enrichedSample.getContainer().getId());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.ENRICHED, sample.getStatus());
+  }
+
+  @Test
+  public void insert_SamplesFromMultipleUser() {
+    Enrichment enrichment = new Enrichment();
+    enrichment.setProtocol(new EnrichmentProtocol(2L));
+    Tube tube1 = entityManager.find(Tube.class, 3L);
+    Tube tube2 = entityManager.find(Tube.class, 8L);
+    entityManager.detach(tube1);
+    entityManager.detach(tube1.getSample());
+    entityManager.detach(tube2);
+    entityManager.detach(tube2.getSample());
+    final List<EnrichedSample> enrichedSamples = new ArrayList<>();
+    EnrichedSample enrichedSample1 = new EnrichedSample();
+    enrichedSample1.setComment("unit test");
+    enrichedSample1.setSample(tube1.getSample());
+    enrichedSample1.setContainer(tube1);
+    enrichedSamples.add(enrichedSample1);
+    EnrichedSample enrichedSample2 = new EnrichedSample();
+    enrichedSample2.setComment("unit test");
+    enrichedSample2.setSample(tube2.getSample());
+    enrichedSample2.setContainer(tube2);
+    enrichedSamples.add(enrichedSample2);
+    enrichment.setTreatmentSamples(enrichedSamples);
+    when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
+
+    try {
+      enrichmentService.insert(enrichment);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // Success.
+    }
+  }
+
+  @Test
+  public void insert_SamplesFromOneUserAndControl() {
+    Enrichment enrichment = new Enrichment();
+    enrichment.setProtocol(new EnrichmentProtocol(2L));
+    Tube tube1 = entityManager.find(Tube.class, 3L);
+    Tube tube2 = entityManager.find(Tube.class, 4L);
+    entityManager.detach(tube1);
+    entityManager.detach(tube1.getSample());
+    entityManager.detach(tube2);
+    entityManager.detach(tube2.getSample());
+    final List<EnrichedSample> enrichedSamples = new ArrayList<>();
+    EnrichedSample enrichedSample1 = new EnrichedSample();
+    enrichedSample1.setComment("unit test");
+    enrichedSample1.setSample(tube1.getSample());
+    enrichedSample1.setContainer(tube1);
+    enrichedSamples.add(enrichedSample1);
+    EnrichedSample enrichedSample2 = new EnrichedSample();
+    enrichedSample2.setComment("unit test");
+    enrichedSample2.setSample(tube2.getSample());
+    enrichedSample2.setContainer(tube2);
+    enrichedSamples.add(enrichedSample2);
+    enrichment.setTreatmentSamples(enrichedSamples);
+    when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
+
+    try {
+      enrichmentService.insert(enrichment);
+    } catch (IllegalArgumentException e) {
+      fail("IllegalArgumentException not expected");
+    }
   }
 
   @Test

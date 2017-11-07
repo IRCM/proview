@@ -97,6 +97,7 @@ public class EnrichmentService extends BaseTreatmentService {
    */
   public void insert(Enrichment enrichment) {
     authorizationService.checkAdminRole();
+    chechSameUserForAllSamples(enrichment);
     User user = authorizationService.getCurrentUser();
 
     enrichment.setInsertTime(Instant.now());

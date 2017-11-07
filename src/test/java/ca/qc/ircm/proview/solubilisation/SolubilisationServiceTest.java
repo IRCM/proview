@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
@@ -210,6 +211,67 @@ public class SolubilisationServiceTest {
     assertEquals((Long) 128L, solubilisedSample.getContainer().getId());
     assertEquals("Methanol", solubilisedSample.getSolvent());
     assertEquals((Double) 20.0, solubilisedSample.getSolventVolume());
+  }
+
+  @Test
+  public void insert_SamplesFromMultipleUser() {
+    final List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 8L);
+    SolubilisedSample solubilisedSample1 = new SolubilisedSample();
+    solubilisedSample1.setComment("unit test");
+    solubilisedSample1.setSample(tube1.getSample());
+    solubilisedSample1.setContainer(tube1);
+    solubilisedSample1.setSolvent("Methanol");
+    solubilisedSample1.setSolventVolume(20.0);
+    solubilisedSamples.add(solubilisedSample1);
+    SolubilisedSample solubilisedSample2 = new SolubilisedSample();
+    solubilisedSample2.setComment("unit test");
+    solubilisedSample2.setSample(tube2.getSample());
+    solubilisedSample2.setContainer(tube2);
+    solubilisedSample2.setSolvent("Methanol");
+    solubilisedSample2.setSolventVolume(20.0);
+    solubilisedSamples.add(solubilisedSample2);
+    Solubilisation solubilisation = new Solubilisation();
+    solubilisation.setTreatmentSamples(solubilisedSamples);
+    when(solubilisationActivityService.insert(any(Solubilisation.class))).thenReturn(activity);
+
+    try {
+      solubilisationService.insert(solubilisation);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // Success.
+    }
+  }
+
+  @Test
+  public void insert_SamplesFromOneUserAndControl() {
+    final List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 4L);
+    SolubilisedSample solubilisedSample1 = new SolubilisedSample();
+    solubilisedSample1.setComment("unit test");
+    solubilisedSample1.setSample(tube1.getSample());
+    solubilisedSample1.setContainer(tube1);
+    solubilisedSample1.setSolvent("Methanol");
+    solubilisedSample1.setSolventVolume(20.0);
+    solubilisedSamples.add(solubilisedSample1);
+    SolubilisedSample solubilisedSample2 = new SolubilisedSample();
+    solubilisedSample2.setComment("unit test");
+    solubilisedSample2.setSample(tube2.getSample());
+    solubilisedSample2.setContainer(tube2);
+    solubilisedSample2.setSolvent("Methanol");
+    solubilisedSample2.setSolventVolume(20.0);
+    solubilisedSamples.add(solubilisedSample2);
+    Solubilisation solubilisation = new Solubilisation();
+    solubilisation.setTreatmentSamples(solubilisedSamples);
+    when(solubilisationActivityService.insert(any(Solubilisation.class))).thenReturn(activity);
+
+    try {
+      solubilisationService.insert(solubilisation);
+    } catch (IllegalArgumentException e) {
+      fail("IllegalArgumentException not expected");
+    }
   }
 
   @Test

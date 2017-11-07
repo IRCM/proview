@@ -91,6 +91,7 @@ public class DilutionService extends BaseTreatmentService {
    */
   public void insert(Dilution dilution) {
     authorizationService.checkAdminRole();
+    chechSameUserForAllSamples(dilution);
     User user = authorizationService.getCurrentUser();
 
     dilution.setInsertTime(Instant.now());

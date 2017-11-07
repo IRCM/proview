@@ -101,6 +101,7 @@ public class TransferService extends BaseTreatmentService {
    */
   public void insert(Transfer transfer) {
     authorizationService.checkAdminRole();
+    chechSameUserForAllSamples(transfer);
     final User user = authorizationService.getCurrentUser();
     Instant now = Instant.now();
 

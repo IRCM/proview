@@ -97,6 +97,7 @@ public class DigestionService extends BaseTreatmentService {
    */
   public void insert(Digestion digestion) {
     authorizationService.checkAdminRole();
+    chechSameUserForAllSamples(digestion);
     User user = authorizationService.getCurrentUser();
 
     digestion.setUser(user);

@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
@@ -210,6 +211,67 @@ public class StandardAdditionServiceTest {
     assertEquals((Long) 128L, addedStandard.getContainer().getId());
     assertEquals("unit_test_added_standard", addedStandard.getName());
     assertEquals("20.0 μg", addedStandard.getQuantity());
+  }
+
+  @Test
+  public void insert_SamplesFromMultipleUser() {
+    final List<AddedStandard> addedStandards = new ArrayList<>();
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 8L);
+    AddedStandard addedStandard1 = new AddedStandard();
+    addedStandard1.setComment("unit test");
+    addedStandard1.setSample(tube1.getSample());
+    addedStandard1.setContainer(tube1);
+    addedStandard1.setName("unit_test_added_standard");
+    addedStandard1.setQuantity("20.0 μg");
+    addedStandards.add(addedStandard1);
+    AddedStandard addedStandard2 = new AddedStandard();
+    addedStandard2.setComment("unit test");
+    addedStandard2.setSample(tube2.getSample());
+    addedStandard2.setContainer(tube2);
+    addedStandard2.setName("unit_test_added_standard");
+    addedStandard2.setQuantity("20.0 μg");
+    addedStandards.add(addedStandard2);
+    StandardAddition standardAddition = new StandardAddition();
+    standardAddition.setTreatmentSamples(addedStandards);
+    when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
+
+    try {
+      standardAdditionService.insert(standardAddition);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // Success.
+    }
+  }
+
+  @Test
+  public void insert_SamplesFromOneUserAndControl() {
+    final List<AddedStandard> addedStandards = new ArrayList<>();
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 4L);
+    AddedStandard addedStandard1 = new AddedStandard();
+    addedStandard1.setComment("unit test");
+    addedStandard1.setSample(tube1.getSample());
+    addedStandard1.setContainer(tube1);
+    addedStandard1.setName("unit_test_added_standard");
+    addedStandard1.setQuantity("20.0 μg");
+    addedStandards.add(addedStandard1);
+    AddedStandard addedStandard2 = new AddedStandard();
+    addedStandard2.setComment("unit test");
+    addedStandard2.setSample(tube2.getSample());
+    addedStandard2.setContainer(tube2);
+    addedStandard2.setName("unit_test_added_standard");
+    addedStandard2.setQuantity("20.0 μg");
+    addedStandards.add(addedStandard2);
+    StandardAddition standardAddition = new StandardAddition();
+    standardAddition.setTreatmentSamples(addedStandards);
+    when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
+
+    try {
+      standardAdditionService.insert(standardAddition);
+    } catch (IllegalArgumentException e) {
+      fail("IllegalArgumentException not expected");
+    }
   }
 
   @Test

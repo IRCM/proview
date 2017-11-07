@@ -410,6 +410,67 @@ public class TransferServiceTest {
   }
 
   @Test
+  public void insert_SamplesFromMultipleUser() {
+    final List<TransferedSample> transferedSamples = new ArrayList<>();
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 8L);
+    Tube destinationTube1 = new Tube();
+    destinationTube1.setName("unit_test_tube_" + tube1.getSample().getName());
+    TransferedSample transferedSample1 = new TransferedSample();
+    transferedSample1.setSample(tube1.getSample());
+    transferedSample1.setContainer(tube1);
+    transferedSample1.setDestinationContainer(destinationTube1);
+    transferedSamples.add(transferedSample1);
+    Tube destinationTube2 = new Tube();
+    destinationTube2.setName("unit_test_tube_" + tube2.getSample().getName());
+    TransferedSample transferedSample2 = new TransferedSample();
+    transferedSample2.setSample(tube2.getSample());
+    transferedSample2.setContainer(tube2);
+    transferedSample2.setDestinationContainer(destinationTube2);
+    transferedSamples.add(transferedSample2);
+    Transfer transfer = new Transfer();
+    transfer.setTreatmentSamples(transferedSamples);
+    when(transferActivityService.insert(any(Transfer.class))).thenReturn(activity);
+
+    try {
+      transferService.insert(transfer);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // Success.
+    }
+  }
+
+  @Test
+  public void insert_SamplesFromOneUserAndControl() {
+    final List<TransferedSample> transferedSamples = new ArrayList<>();
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 4L);
+    Tube destinationTube1 = new Tube();
+    destinationTube1.setName("unit_test_tube_" + tube1.getSample().getName());
+    TransferedSample transferedSample1 = new TransferedSample();
+    transferedSample1.setSample(tube1.getSample());
+    transferedSample1.setContainer(tube1);
+    transferedSample1.setDestinationContainer(destinationTube1);
+    transferedSamples.add(transferedSample1);
+    Tube destinationTube2 = new Tube();
+    destinationTube2.setName("unit_test_tube_" + tube2.getSample().getName());
+    TransferedSample transferedSample2 = new TransferedSample();
+    transferedSample2.setSample(tube2.getSample());
+    transferedSample2.setContainer(tube2);
+    transferedSample2.setDestinationContainer(destinationTube2);
+    transferedSamples.add(transferedSample2);
+    Transfer transfer = new Transfer();
+    transfer.setTreatmentSamples(transferedSamples);
+    when(transferActivityService.insert(any(Transfer.class))).thenReturn(activity);
+  
+    try {
+      transferService.insert(transfer);
+    } catch (IllegalArgumentException e) {
+      fail("IllegalArgumentException not expected");
+    }
+  }
+
+  @Test
   public void undoErroneous_TubeDestination() throws Throwable {
     Transfer transfer = entityManager.find(Transfer.class, 3L);
     entityManager.detach(transfer);

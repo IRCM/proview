@@ -212,9 +212,9 @@ public class FractionationServiceTest {
     Fractionation fractionation = new Fractionation();
     fractionation.setTreatmentSamples(fractions);
     when(fractionationActivityService.insert(any(Fractionation.class))).thenReturn(activity);
-
+  
     fractionationService.insert(fractionation);
-
+  
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).insert(eq(fractionation));
@@ -248,6 +248,63 @@ public class FractionationServiceTest {
     assertEquals((Integer) 4, fraction.getPosition());
     assertTrue(before.isBefore(fraction.getDestinationContainer().getTimestamp()));
     assertTrue(after.isAfter(fraction.getDestinationContainer().getTimestamp()));
+  }
+
+  @Test
+  public void insert_SamplesFromMultipleUser() {
+    Fractionation fractionation = new Fractionation();
+    fractionation.setFractionationType(FractionationType.MUDPIT);
+    final List<Fraction> fractions = new ArrayList<>();
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 8L);
+    Well destinationWell1 = new Well(134L);
+    Fraction fraction1 = new Fraction();
+    fraction1.setSample(tube1.getSample());
+    fraction1.setContainer(tube1);
+    fraction1.setDestinationContainer(destinationWell1);
+    fractions.add(fraction1);
+    Well destinationWell2 = new Well(135L);
+    Fraction fraction2 = new Fraction();
+    fraction2.setSample(tube2.getSample());
+    fraction2.setContainer(tube2);
+    fraction2.setDestinationContainer(destinationWell2);
+    fractions.add(fraction2);
+    fractionation.setTreatmentSamples(fractions);
+
+    try {
+      fractionationService.insert(fractionation);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // Success.
+    }
+  }
+
+  @Test
+  public void insert_SamplesFromOneUserAndControl() {
+    Fractionation fractionation = new Fractionation();
+    fractionation.setFractionationType(FractionationType.MUDPIT);
+    final List<Fraction> fractions = new ArrayList<>();
+    final Tube tube1 = entityManager.find(Tube.class, 3L);
+    final Tube tube2 = entityManager.find(Tube.class, 4L);
+    Well destinationWell1 = new Well(134L);
+    Fraction fraction1 = new Fraction();
+    fraction1.setSample(tube1.getSample());
+    fraction1.setContainer(tube1);
+    fraction1.setDestinationContainer(destinationWell1);
+    fractions.add(fraction1);
+    Well destinationWell2 = new Well(135L);
+    Fraction fraction2 = new Fraction();
+    fraction2.setSample(tube2.getSample());
+    fraction2.setContainer(tube2);
+    fraction2.setDestinationContainer(destinationWell2);
+    fractions.add(fraction2);
+    fractionation.setTreatmentSamples(fractions);
+
+    try {
+      fractionationService.insert(fractionation);
+    } catch (IllegalArgumentException e) {
+      fail("IllegalArgumentException not expected");
+    }
   }
 
   @Test

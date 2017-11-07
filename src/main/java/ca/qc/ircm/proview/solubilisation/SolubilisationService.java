@@ -91,6 +91,7 @@ public class SolubilisationService extends BaseTreatmentService {
    */
   public void insert(Solubilisation solubilisation) {
     authorizationService.checkAdminRole();
+    chechSameUserForAllSamples(solubilisation);
     User user = authorizationService.getCurrentUser();
 
     solubilisation.setInsertTime(Instant.now());
