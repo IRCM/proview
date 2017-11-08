@@ -106,52 +106,6 @@ public class TubeServiceTest {
   }
 
   @Test
-  public void original() throws Throwable {
-    Sample sample = new SubmissionSample(1L);
-
-    Tube tube = tubeService.original(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals((Long) 1L, tube.getId());
-    assertEquals("FAM119A_band_01", tube.getName());
-    assertEquals((Long) 1L, tube.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, tube.getType());
-    assertEquals(
-        LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        tube.getTimestamp());
-  }
-
-  @Test
-  public void original_Null() throws Throwable {
-    Tube tube = tubeService.original(null);
-
-    assertNull(tube);
-  }
-
-  @Test
-  public void last() throws Throwable {
-    Sample sample = new SubmissionSample(1L);
-
-    Tube tube = tubeService.last(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals((Long) 7L, tube.getId());
-    assertEquals("FAM119A_band_01_T1", tube.getName());
-    assertEquals((Long) 1L, tube.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, tube.getType());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 19, 15, 1, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        tube.getTimestamp());
-  }
-
-  @Test
-  public void last_Null() throws Throwable {
-    Tube tube = tubeService.last(null);
-
-    assertNull(tube);
-  }
-
-  @Test
   public void all() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
@@ -170,25 +124,6 @@ public class TubeServiceTest {
     List<Tube> tubes = tubeService.all(null);
 
     assertEquals(0, tubes.size());
-  }
-
-  @Test
-  public void selectNameSuggestion() throws Throwable {
-    List<String> tubeNames = tubeService.selectNameSuggestion("FAM");
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(3, tubeNames.size());
-    assertEquals(true, tubeNames.contains("FAM119A_band_01"));
-    assertEquals(true, tubeNames.contains("FAM119A_band_01_F1"));
-    assertEquals(true, tubeNames.contains("FAM119A_band_01_T1"));
-    assertEquals(false, tubeNames.contains("CAP_20111017_01"));
-  }
-
-  @Test
-  public void selectNameSuggestion_Null() throws Throwable {
-    List<String> tubeNames = tubeService.selectNameSuggestion(null);
-
-    assertEquals(0, tubeNames.size());
   }
 
   @Test

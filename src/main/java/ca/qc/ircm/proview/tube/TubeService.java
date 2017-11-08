@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.tube;
 
-import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.tube.QTube.tube;
 
 import ca.qc.ircm.proview.sample.Sample;
@@ -101,48 +100,6 @@ public class TubeService {
   }
 
   /**
-   * Selects sample's original (first) tube. For submitted samples, this returns the tube in which
-   * sample was submitted.
-   *
-   * @param sampleParam
-   *          sample
-   * @return sample's original tube
-   */
-  public Tube original(Sample sampleParam) {
-    if (sampleParam == null) {
-      return null;
-    }
-
-    authorizationService.checkSampleReadPermission(sampleParam);
-    JPAQuery<Tube> query = queryFactory.select(tube);
-    query.from(sample, tube);
-    query.where(tube.eq(sample.originalContainer));
-    query.where(sample.eq(sampleParam));
-    return query.fetchOne();
-  }
-
-  /**
-   * Selects last tube in which sample was put.
-   *
-   * @param sample
-   *          sample
-   * @return last tube in which sample was put
-   */
-  public Tube last(Sample sample) {
-    if (sample == null) {
-      return null;
-    }
-    authorizationService.checkSampleReadPermission(sample);
-
-    JPAQuery<Tube> query = queryFactory.select(tube);
-    query.from(tube);
-    query.where(tube.sample.eq(sample));
-    query.orderBy(tube.timestamp.desc());
-    query.limit(1);
-    return query.fetchOne();
-  }
-
-  /**
    * <p>
    * Returns digestion tubes used for sample.
    * </p>
@@ -163,25 +120,6 @@ public class TubeService {
     JPAQuery<Tube> query = queryFactory.select(tube);
     query.from(tube);
     query.where(tube.sample.eq(sample));
-    return query.fetch();
-  }
-
-  /**
-   * Selects all tube names beginning with specified string.
-   *
-   * @param beginning
-   *          beginning of tube's name
-   * @return all tube names beginning with specified string
-   */
-  public List<String> selectNameSuggestion(String beginning) {
-    if (beginning == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<String> query = queryFactory.select(tube.name);
-    query.from(tube);
-    query.where(tube.name.startsWith(beginning));
     return query.fetch();
   }
 
