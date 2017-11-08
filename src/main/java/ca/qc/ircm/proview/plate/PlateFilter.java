@@ -24,6 +24,6 @@ import java.util.List;
 /**
  * Filters plate search.
  */
-public interface PlateFilter {
-  public List<Sample> containsAnySamples();
+public class PlateFilter {
+  public List<Sample> containsAnySamples;
 }

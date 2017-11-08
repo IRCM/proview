@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.utils.MessageResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,21 +39,25 @@ public class PlateViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
   public static final String PLATE_PANEL = "platePanel";
+  public static final String PLATE = "plate";
   public static final String INVALID_PLATE = "plate.invalid";
   private static final Logger logger = LoggerFactory.getLogger(PlateViewPresenter.class);
   private PlateView view;
   private PlateViewDesign design;
-  private Plate plate;
   @Inject
   private PlateService plateService;
+  @Inject
+  private AuthorizationService authorizationService;
   @Value("${spring.application.name}")
   private String applicationName;
 
   protected PlateViewPresenter() {
   }
 
-  protected PlateViewPresenter(PlateService plateService, String applicationName) {
+  protected PlateViewPresenter(PlateService plateService, AuthorizationService authorizationService,
+      String applicationName) {
     this.plateService = plateService;
+    this.authorizationService = authorizationService;
     this.applicationName = applicationName;
   }
 
@@ -73,18 +78,21 @@ public class PlateViewPresenter {
     MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));
     design.header.addStyleName(HEADER);
-    design.header.setValue(resources.message(HEADER, ""));
+    design.header.setValue(resources.message(HEADER));
+    design.plate.addStyleName(PLATE);
+    design.plate.setVisible(authorizationService.hasAdminRole());
+    design.plate.setEmptySelectionAllowed(false);
+    design.plate.setItemCaptionGenerator(plate -> plate.getName());
+    design.plate.setItems(plateService.all(null));
+    design.plate.addValueChangeListener(e -> updatePlate(e.getValue()));
     design.plateComponentPanel.addStyleName(PLATE_PANEL);
   }
 
-  private void updatePlate() {
-    MessageResource resources = view.getResources();
+  private void updatePlate(Plate plate) {
     if (plate != null) {
-      design.header.setValue(resources.message(HEADER, plate.getName()));
       design.plateComponentPanel.setCaption(plate.getName());
       view.plateComponent.setValue(plate);
     } else {
-      design.header.setValue(resources.message(HEADER, ""));
       design.plateComponentPanel.setCaption("");
     }
   }
@@ -100,11 +108,10 @@ public class PlateViewPresenter {
       try {
         Long id = Long.valueOf(parameters);
         logger.debug("Set plate {}", id);
-        plate = plateService.get(id);
+        design.plate.setValue(plateService.get(id));
       } catch (NumberFormatException e) {
         view.showWarning(view.getResources().message(INVALID_PLATE));
       }
     }
-    updatePlate();
   }
 }

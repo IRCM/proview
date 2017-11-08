@@ -18,10 +18,13 @@
 package ca.qc.ircm.proview.plate.web;
 
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.HEADER;
+import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PLATE;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PLATE_PANEL;
 import static org.openqa.selenium.By.className;
+import static org.openqa.selenium.By.cssSelector;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
 
@@ -36,6 +39,10 @@ public class PlateViewPageObject extends AbstractTestBenchTestCase {
 
   protected LabelElement header() {
     return wrap(LabelElement.class, findElement(className(HEADER)));
+  }
+
+  protected ComboBoxElement plate() {
+    return wrap(ComboBoxElement.class, findElement(cssSelector("." + PLATE + ".v-filterselect")));
   }
 
   protected PanelElement platePanel() {

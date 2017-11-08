@@ -659,6 +659,8 @@ INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5933,2,'treatment',323,'DELETE','2015-05-27 14:41:16','Erroneous transfer test');
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5934,2,'treatment',324,'DELETE','2015-05-27 14:41:52','Erroneous fractionation test');
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
+VALUES (5935,10,'submission',163,'INSERT','2017-11-08 10:30:15',NULL);
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
 VALUES (1020,5551,'sample',442,'UPDATE','status','TO_APPROVE','ANALYSED');
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)

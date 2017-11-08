@@ -82,9 +82,10 @@ public class PlateService {
     if (id == null) {
       return null;
     }
-    authorizationService.checkAdminRole();
 
-    return entityManager.find(Plate.class, id);
+    Plate plate = entityManager.find(Plate.class, id);
+    authorizationService.checkPlateReadPermission(plate);
+    return plate;
   }
 
   /**
@@ -98,12 +99,13 @@ public class PlateService {
     if (name == null) {
       return null;
     }
-    authorizationService.checkAdminRole();
 
     JPAQuery<Plate> query = queryFactory.select(plate);
     query.from(plate);
     query.where(plate.name.eq(name));
-    return query.fetchOne();
+    Plate plate = query.fetchOne();
+    authorizationService.checkPlateReadPermission(plate);
+    return plate;
   }
 
   /**
@@ -117,13 +119,13 @@ public class PlateService {
     authorizationService.checkAdminRole();
 
     if (filter == null) {
-      filter = new PlateFilterBuilder().build();
+      filter = new PlateFilter();
     }
     JPAQuery<Plate> query = queryFactory.select(plate);
     query.from(plate);
-    if (filter.containsAnySamples() != null) {
+    if (filter.containsAnySamples != null) {
       query.from(plate.wells, well);
-      query.where(well.sample.in(filter.containsAnySamples()));
+      query.where(well.sample.in(filter.containsAnySamples));
     }
     return query.distinct().fetch();
   }

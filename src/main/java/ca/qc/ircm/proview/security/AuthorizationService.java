@@ -20,7 +20,9 @@ package ca.qc.ircm.proview.security;
 import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
+import static ca.qc.ircm.proview.plate.QWell.well;
 import static ca.qc.ircm.proview.sample.QSample.sample;
+import static ca.qc.ircm.proview.sample.QSampleContainer.sampleContainer;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
@@ -28,6 +30,7 @@ import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.QAcquisition;
+import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -448,6 +451,54 @@ public class AuthorizationService {
     query.where(submission.id.eq(submissionParam.getId()));
     query.where(submissionSample.status.ne(SampleStatus.TO_APPROVE));
     return query.fetchCount() == 0;
+  }
+
+  /**
+   * Checks that current user can read plate.
+   *
+   * @param plate
+   *          plate
+   */
+  public void checkPlateReadPermission(Plate plate) {
+    if (plate != null) {
+      if (!hasPlateReadPermission(plate)) {
+        getSubject().checkPermission("plate:read:" + plate.getId());
+      }
+    }
+  }
+
+  private boolean hasPlateReadPermission(Plate plate) {
+    if (plate != null) {
+      if (getSubject().hasRole(ADMIN)) {
+        return true;
+      } else if (getSubject().hasRole(MANAGER)) {
+        return isPlateOwner(plate) || isPlateLaboratoryManager(plate);
+      } else if (getSubject().hasRole(USER)) {
+        return isPlateOwner(plate);
+      }
+    }
+    return false;
+  }
+
+  private boolean isPlateOwner(Plate plate) {
+    JPAQuery<Long> query = queryFactory.select(submissionSample.id);
+    query.from(submissionSample, well);
+    query.join(submissionSample.originalContainer, sampleContainer);
+    query.where(submissionSample.submission.user.eq(getCurrentUser()));
+    query.where(well.id.eq(sampleContainer.id));
+    query.where(well.plate.eq(plate));
+    return query.fetchCount() > 0;
+  }
+
+  private boolean isPlateLaboratoryManager(Plate plate) {
+    JPAQuery<Long> query = queryFactory.select(submissionSample.id);
+    query.from(submissionSample, well);
+    query.join(submissionSample.originalContainer, sampleContainer);
+    query.join(submissionSample.submission.laboratory, laboratory);
+    query.where(laboratory.managers.contains(getCurrentUser()));
+    query.where(well.id.eq(sampleContainer.id));
+    query.where(well.plate.eq(plate));
+    return query.fetchCount() > 0;
   }
 
   private boolean sampleOwnerByMsAnalysis(MsAnalysis msAnalysisParam) {

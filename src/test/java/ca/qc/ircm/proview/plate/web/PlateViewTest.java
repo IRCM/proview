@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.plate.web;
 
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
@@ -96,10 +97,21 @@ public class PlateViewTest extends PlateViewPageObject {
   }
 
   @Test
+  @WithSubject(userId = 10)
+  public void fieldsExistence_User() throws Throwable {
+    open();
+
+    assertTrue(optional(() -> header()).isPresent());
+    assertFalse(optional(() -> plate()).isPresent());
+    assertTrue(optional(() -> platePanel()).isPresent());
+  }
+
+  @Test
   public void fieldsExistence() throws Throwable {
     open();
 
     assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> plate()).isPresent());
     assertTrue(optional(() -> platePanel()).isPresent());
   }
 
@@ -108,6 +120,7 @@ public class PlateViewTest extends PlateViewPageObject {
     openWithPlate();
 
     assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> plate()).isPresent());
     assertTrue(optional(() -> platePanel()).isPresent());
   }
 }

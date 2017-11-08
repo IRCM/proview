@@ -30,6 +30,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
@@ -756,7 +757,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  public void checkSampleReadPermission_SubmissionSample_Proteomic() throws Exception {
+  public void checkSampleReadPermission_SubmissionSample_Admin() throws Exception {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     SubmissionSample sample = new SubmissionSample(446L);
@@ -826,7 +827,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  public void checkSampleReadPermission_Control_Proteomic() throws Exception {
+  public void checkSampleReadPermission_Control_Admin() throws Exception {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Control sample = new Control(444L);
@@ -900,7 +901,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  public void checkSubmissionReadPermission_Proteomic() {
+  public void checkSubmissionReadPermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(35L);
@@ -975,7 +976,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  public void hasSubmissionWritePermission_Proteomic_ToApprove() {
+  public void hasSubmissionWritePermission_Admin_ToApprove() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(36L);
@@ -988,7 +989,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  public void hasSubmissionWritePermission_Proteomic_Analysed() {
+  public void hasSubmissionWritePermission_Admin_Analysed() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(156L);
@@ -1088,7 +1089,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  public void checkSubmissionWritePermission_Proteomic_ToApprove() {
+  public void checkSubmissionWritePermission_Admin_ToApprove() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(36L);
@@ -1100,7 +1101,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  public void checkSubmissionWritePermission_Proteomic_Analysed() {
+  public void checkSubmissionWritePermission_Admin_Analysed() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(156L);
@@ -1215,7 +1216,105 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  public void checkMsAnalysisReadPermission_Proteomic() throws Exception {
+  public void checkPlateReadPermission_Admin() throws Exception {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Plate plate = new Plate(26L);
+
+    authorizationService.checkPlateReadPermission(plate);
+
+    verify(subject).hasRole("ADMIN");
+  }
+
+  @Test
+  public void checkPlateReadPermission_NotUser() throws Exception {
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Plate plate = new Plate(26L);
+
+    try {
+      authorizationService.checkPlateReadPermission(plate);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void checkPlateReadPermission_UserOwner() throws Exception {
+    when(subject.hasRole("USER")).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Plate plate = new Plate(123L);
+
+    authorizationService.checkPlateReadPermission(plate);
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void checkPlateReadPermission_UserNotOwner() throws Exception {
+    when(subject.hasRole("USER")).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Plate plate = new Plate(26L);
+
+    try {
+      authorizationService.checkPlateReadPermission(plate);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+  }
+
+  @Test
+  @WithSubject(userId = 3)
+  public void checkPlateReadPermission_LaboratoryManagerOwner() throws Exception {
+    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole("MANAGER")).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Plate plate = new Plate(123L);
+
+    authorizationService.checkPlateReadPermission(plate);
+
+    verify(subject).hasRole("MANAGER");
+  }
+
+  @Test
+  @WithSubject(userId = 3)
+  public void checkPlateReadPermission_LaboratoryManagerNotOwner() throws Exception {
+    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole("MANAGER")).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Plate plate = new Plate(26L);
+
+    try {
+      authorizationService.checkPlateReadPermission(plate);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+  }
+
+  @Test
+  @WithSubject(userId = 6)
+  public void checkPlateReadPermission_Other() throws Exception {
+    when(subject.hasRole("USER")).thenReturn(true);
+    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
+    Plate plate = new Plate(123L);
+
+    try {
+      authorizationService.checkPlateReadPermission(plate);
+      fail("Expected AuthorizationException");
+    } catch (AuthorizationException e) {
+      // Ignore.
+    }
+  }
+
+  @Test
+  public void checkPlateReadPermission_Null() throws Exception {
+    authorizationService.checkPlateReadPermission(null);
+  }
+
+  @Test
+  public void checkMsAnalysisReadPermission_Admin() throws Exception {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     MsAnalysis msAnalysis = new MsAnalysis(13L);
@@ -1289,7 +1388,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  public void checkDataAnalysisReadPermission_Proteomic() throws Exception {
+  public void checkDataAnalysisReadPermission_Admin() throws Exception {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     DataAnalysis dataAnalysis = new DataAnalysis(5L);

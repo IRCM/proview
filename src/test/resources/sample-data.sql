@@ -53,6 +53,8 @@ INSERT INTO submission (id,service,project,experience,goal,taxonomy,massDetectio
 VALUES (161,'LC_MS_MS','Flag','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'SILAC','Heavy:Lys8,Arg10\nMedium:Lys4,Arg6\nLight:None',NULL,'2015-05-27',NULL,NULL,NULL,2,10);
 INSERT INTO submission (id,service,project,experience,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationLabels,structureId,submissionDate,comment,price,additionalPrice,laboratoryId,userId)
 VALUES (162,'LC_MS_MS','Flag','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'LABEL_FREE',NULL,NULL,'2015-05-26',NULL,NULL,NULL,2,10);
+INSERT INTO submission (id,service,project,experience,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationLabels,structureId,submissionDate,comment,price,additionalPrice,laboratoryId,userId)
+VALUES (163,'LC_MS_MS','Flag','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'LABEL_FREE',NULL,NULL,'2017-11-08',NULL,NULL,NULL,2,10);
 INSERT INTO gelimages (id,submissionId,filename,content)
 VALUES (1,1,'frag.jpg',FILE_READ('${project.build.testOutputDirectory}/gelimages1'));
 INSERT INTO submissionfiles (id,submissionId,filename,content)
@@ -91,6 +93,8 @@ INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
 VALUES (121,'A_20141022_02',12,8,'2014-10-22 09:56:23');
 INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
 VALUES (122,'A_20141024_01',12,8,'2014-10-24 14:30:21');
+INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
+VALUES (123,'Andrew-20171108',12,8,'2017-11-08 10:30:15');
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
 VALUES (1,'TUBE','FAM119A_band_01',NULL,NULL,NULL,1,'2010-10-15 10:44:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
@@ -3532,6 +3536,198 @@ VALUES (1758,'WELL',NULL,122,10,7,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
 VALUES (1759,'WELL',NULL,122,11,7,NULL,'2014-10-24 14:30:21',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1760,'WELL',NULL,123,0,0,640,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1761,'WELL',NULL,123,1,0,641,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1762,'WELL',NULL,123,2,0,642,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1763,'WELL',NULL,123,3,0,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1764,'WELL',NULL,123,4,0,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1765,'WELL',NULL,123,5,0,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1766,'WELL',NULL,123,6,0,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1767,'WELL',NULL,123,7,0,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1768,'WELL',NULL,123,8,0,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1769,'WELL',NULL,123,9,0,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1770,'WELL',NULL,123,10,0,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1771,'WELL',NULL,123,11,0,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1772,'WELL',NULL,123,0,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1773,'WELL',NULL,123,1,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1774,'WELL',NULL,123,2,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1775,'WELL',NULL,123,3,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1776,'WELL',NULL,123,4,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1777,'WELL',NULL,123,5,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1778,'WELL',NULL,123,6,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1779,'WELL',NULL,123,7,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1780,'WELL',NULL,123,8,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1781,'WELL',NULL,123,9,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1782,'WELL',NULL,123,10,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1783,'WELL',NULL,123,11,1,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1784,'WELL',NULL,123,0,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1785,'WELL',NULL,123,1,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1786,'WELL',NULL,123,2,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1787,'WELL',NULL,123,3,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1788,'WELL',NULL,123,4,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1789,'WELL',NULL,123,5,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1790,'WELL',NULL,123,6,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1791,'WELL',NULL,123,7,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1792,'WELL',NULL,123,8,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1793,'WELL',NULL,123,9,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1794,'WELL',NULL,123,10,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1795,'WELL',NULL,123,11,2,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1796,'WELL',NULL,123,0,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1797,'WELL',NULL,123,1,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1798,'WELL',NULL,123,2,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1799,'WELL',NULL,123,3,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1800,'WELL',NULL,123,4,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1801,'WELL',NULL,123,5,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1802,'WELL',NULL,123,6,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1803,'WELL',NULL,123,7,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1804,'WELL',NULL,123,8,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1805,'WELL',NULL,123,9,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1806,'WELL',NULL,123,10,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1807,'WELL',NULL,123,11,3,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1808,'WELL',NULL,123,0,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1809,'WELL',NULL,123,1,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1810,'WELL',NULL,123,2,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1811,'WELL',NULL,123,3,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1812,'WELL',NULL,123,4,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1813,'WELL',NULL,123,5,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1814,'WELL',NULL,123,6,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1815,'WELL',NULL,123,7,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1816,'WELL',NULL,123,8,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1817,'WELL',NULL,123,9,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1818,'WELL',NULL,123,10,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1819,'WELL',NULL,123,11,4,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1820,'WELL',NULL,123,0,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1821,'WELL',NULL,123,1,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1822,'WELL',NULL,123,2,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1823,'WELL',NULL,123,3,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1824,'WELL',NULL,123,4,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1825,'WELL',NULL,123,5,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1826,'WELL',NULL,123,6,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1827,'WELL',NULL,123,7,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1828,'WELL',NULL,123,8,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1829,'WELL',NULL,123,9,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1830,'WELL',NULL,123,10,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1831,'WELL',NULL,123,11,5,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1832,'WELL',NULL,123,0,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1833,'WELL',NULL,123,1,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1834,'WELL',NULL,123,2,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1835,'WELL',NULL,123,3,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1836,'WELL',NULL,123,4,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1837,'WELL',NULL,123,5,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1838,'WELL',NULL,123,6,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1839,'WELL',NULL,123,7,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1840,'WELL',NULL,123,8,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1841,'WELL',NULL,123,9,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1842,'WELL',NULL,123,10,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1843,'WELL',NULL,123,11,6,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1844,'WELL',NULL,123,0,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1845,'WELL',NULL,123,1,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1846,'WELL',NULL,123,2,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1847,'WELL',NULL,123,3,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1848,'WELL',NULL,123,4,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1849,'WELL',NULL,123,5,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1850,'WELL',NULL,123,6,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1851,'WELL',NULL,123,7,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1852,'WELL',NULL,123,8,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1853,'WELL',NULL,123,9,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1854,'WELL',NULL,123,10,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
+VALUES (1855,'WELL',NULL,123,11,7,NULL,'2017-11-08 10:30:15',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
 VALUES (2278,'TUBE','POLR2B_20150527_01',NULL,NULL,NULL,638,'2015-05-27 13:33:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,time,banned)
 VALUES (2279,'TUBE','POLR2B_20150527_02',NULL,NULL,NULL,639,'2015-05-27 13:33:31',0);
@@ -3699,6 +3895,12 @@ INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,
 VALUES (638,'POLR2B_20150527_01',NULL,'DRY',2278,'RECEIVED',161,NULL,NULL,'SUBMISSION',NULL,NULL);
 INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
 VALUES (639,'POLR2B_20150527_02',NULL,'DRY',2279,'DIGESTED',162,NULL,NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (640,'POLR2B_20171108_01',NULL,'DRY',1760,'TO_APPROVE',163,NULL,NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (641,'POLR2B_20171108_02',NULL,'DRY',1761,'TO_APPROVE',163,NULL,NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,support,containerId,status,submissionId,quantity,volume,sampleType,numberProtein,molecularWeight)
+VALUES (642,'POLR2B_20171108_03',NULL,'DRY',1762,'TO_APPROVE',163,NULL,NULL,'SUBMISSION',NULL,NULL);
 INSERT INTO standard (id,name,quantity,sampleId,comment,deleted)
 VALUES (4,'std1','2 μg',445,NULL,0);
 INSERT INTO standard (id,name,quantity,sampleId,comment,deleted)

@@ -42,6 +42,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -81,12 +82,11 @@ public class PlateServiceTest {
   public void get() throws Exception {
     Plate plate = plateService.get(26L);
 
-    verify(authorizationService).checkAdminRole();
+    verify(authorizationService).checkPlateReadPermission(plate);
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
     assertEquals((Long) 26L, plate.getId());
     final List<Well> wells = plate.getWells();
-    verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
     assertEquals(96, wells.size());
@@ -114,12 +114,11 @@ public class PlateServiceTest {
   public void get_Name() throws Exception {
     Plate plate = plateService.get("A_20111108");
 
-    verify(authorizationService).checkAdminRole();
+    verify(authorizationService).checkPlateReadPermission(plate);
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
     assertEquals((Long) 26L, plate.getId());
     final List<Well> wells = plate.getWells();
-    verify(authorizationService).checkAdminRole();
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
     assertEquals(96, wells.size());
@@ -145,22 +144,22 @@ public class PlateServiceTest {
 
   @Test
   public void all() throws Exception {
-    PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
+    PlateFilter filter = new PlateFilter();
 
-    List<Plate> plates = plateService.all(filterBuilder.build());
+    List<Plate> plates = plateService.all(filter);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(17, plates.size());
+    assertEquals(18, plates.size());
   }
 
   @Test
   public void all_ContainsAnySamples() throws Exception {
-    PlateFilterBuilder filterBuilder = new PlateFilterBuilder();
+    PlateFilter filter = new PlateFilter();
     Sample sample1 = entityManager.find(Sample.class, 629L);
     Sample sample2 = entityManager.find(Sample.class, 444L);
-    filterBuilder.containsAnySamples(sample1, sample2);
+    filter.containsAnySamples = Arrays.asList(sample1, sample2);
 
-    List<Plate> plates = plateService.all(filterBuilder.build());
+    List<Plate> plates = plateService.all(filter);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(3, plates.size());
@@ -174,7 +173,7 @@ public class PlateServiceTest {
     List<Plate> plates = plateService.all(null);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(17, plates.size());
+    assertEquals(18, plates.size());
   }
 
   @Test

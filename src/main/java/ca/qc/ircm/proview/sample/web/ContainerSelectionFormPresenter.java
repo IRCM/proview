@@ -26,7 +26,7 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.NamedComparator;
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateFilterBuilder;
+import ca.qc.ircm.proview.plate.PlateFilter;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.WellService;
@@ -202,8 +202,9 @@ public class ContainerSelectionFormPresenter {
     } else {
       filterSamples = samples;
     }
-    List<Plate> plates =
-        plateService.all(new PlateFilterBuilder().containsAnySamples(filterSamples).build());
+    PlateFilter filter = new PlateFilter();
+    filter.containsAnySamples = filterSamples;
+    List<Plate> plates = plateService.all(filter);
     plates.sort(new NamedComparator(locale));
     design.plates.setItems(plates);
     if (!plates.isEmpty()) {
