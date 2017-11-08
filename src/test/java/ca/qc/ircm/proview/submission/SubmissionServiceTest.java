@@ -372,7 +372,7 @@ public class SubmissionServiceTest {
     List<Submission> submissions = submissionService.all();
 
     verify(authorizationService).checkUserRole();
-    assertEquals(17, submissions.size());
+    assertEquals(18, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
@@ -391,7 +391,7 @@ public class SubmissionServiceTest {
     List<Submission> submissions = submissionService.all();
 
     verify(authorizationService).checkUserRole();
-    assertEquals(18, submissions.size());
+    assertEquals(19, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
