@@ -38,7 +38,6 @@ import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
-import ca.qc.ircm.proview.msanalysis.MsAnalysis.DeletionType;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -55,6 +54,7 @@ import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.Treatment.DeletionType;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.tube.Tube;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -753,9 +753,7 @@ public class ActivityService {
       MsAnalysis msAnalysis, Collection<Acquisition> acquisitions) {
     StringBuilder message = new StringBuilder();
     String key = "MSAnalysis";
-    message.append(message(bundle, key + "." + activity.getActionType(),
-        msAnalysis.isDeleted() ? msAnalysis.getDeletionType().ordinal()
-            : DeletionType.ERRONEOUS.ordinal()));
+    message.append(message(bundle, key + "." + activity.getActionType()));
     for (Acquisition acquisition : acquisitions) {
       String container = containerMessage(bundle, acquisition.getContainer());
       message.append("\n");

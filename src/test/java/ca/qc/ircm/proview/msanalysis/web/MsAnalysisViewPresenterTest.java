@@ -828,7 +828,7 @@ public class MsAnalysisViewPresenterTest {
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         design.explanation.getErrorMessage().getFormattedHtmlMessage());
-    verify(msAnalysisService, never()).undoFailed(any(), any(), anyBoolean());
+    verify(msAnalysisService, never()).undo(any(), any(), anyBoolean());
   }
 
   @Test
@@ -843,7 +843,7 @@ public class MsAnalysisViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(msAnalysisService).undoFailed(msAnalysisCaptor.capture(), eq("test explanation"),
+    verify(msAnalysisService).undo(msAnalysisCaptor.capture(), eq("test explanation"),
         eq(false));
     MsAnalysis savedMsAnalysis = msAnalysisCaptor.getValue();
     assertEquals((Long) 14L, savedMsAnalysis.getId());
@@ -865,7 +865,7 @@ public class MsAnalysisViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(msAnalysisService).undoFailed(msAnalysisCaptor.capture(), eq("test explanation"),
+    verify(msAnalysisService).undo(msAnalysisCaptor.capture(), eq("test explanation"),
         eq(true));
     MsAnalysis savedMsAnalysis = msAnalysisCaptor.getValue();
     assertEquals((Long) 14L, savedMsAnalysis.getId());

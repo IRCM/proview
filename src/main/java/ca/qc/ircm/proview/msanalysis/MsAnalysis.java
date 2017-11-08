@@ -42,21 +42,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = MsAnalysis.TABLE_NAME)
 public class MsAnalysis implements Data, Serializable {
-  /**
-   * Type of errors that forces Digestion to be deleted.
-   */
-  public static enum DeletionType {
-    /**
-     * Digestion information was not entered correctly.
-     */
-    ERRONEOUS,
-    /**
-     * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
-     * something went wrong.
-     */
-    FAILED;
-  }
-
   public static final String TABLE_NAME = "msanalysis";
   private static final long serialVersionUID = 7334138327920441104L;
 
@@ -89,12 +74,6 @@ public class MsAnalysis implements Data, Serializable {
    */
   @Column(name = "deleted", nullable = false)
   private boolean deleted;
-  /**
-   * Type of error that forces MS analysis to be deleted.
-   */
-  @Column(name = "deletionType")
-  @Enumerated(STRING)
-  private DeletionType deletionType;
   /**
    * Description of what caused the MS analysis to be deleted.
    */
@@ -150,14 +129,6 @@ public class MsAnalysis implements Data, Serializable {
 
   public void setInsertTime(Instant insertTime) {
     this.insertTime = insertTime;
-  }
-
-  public DeletionType getDeletionType() {
-    return deletionType;
-  }
-
-  public void setDeletionType(DeletionType deletionType) {
-    this.deletionType = deletionType;
   }
 
   public String getDeletionExplanation() {

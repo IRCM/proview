@@ -109,7 +109,6 @@ public class MsAnalysisServiceTest {
         LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
         msAnalysis.getInsertTime());
     assertEquals(false, msAnalysis.isDeleted());
-    assertEquals(null, msAnalysis.getDeletionType());
     assertEquals(null, msAnalysis.getDeletionExplanation());
   }
 
@@ -353,33 +352,13 @@ public class MsAnalysisServiceTest {
   }
 
   @Test
-  public void undoErroneous() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 12L);
-    entityManager.detach(msAnalysis);
-    when(msAnalysisActivityService.undoErroneous(any(MsAnalysis.class), any(String.class)))
-        .thenReturn(activity);
-
-    msAnalysisService.undoErroneous(msAnalysis, "undo unit test");
-
-    entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(msAnalysisActivityService).undoErroneous(eq(msAnalysis), eq("undo unit test"));
-    verify(activityService).insert(activity);
-    msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
-    assertNotNull(msAnalysis);
-    assertEquals(true, msAnalysis.isDeleted());
-    assertEquals(MsAnalysis.DeletionType.ERRONEOUS, msAnalysis.getDeletionType());
-    assertEquals("undo unit test", msAnalysis.getDeletionExplanation());
-  }
-
-  @Test
-  public void undoFailed_NoBan() {
+  public void undo_NoBan() {
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 12L);
     entityManager.detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undoFailed(msAnalysis, "fail unit test", false);
+    msAnalysisService.undo(msAnalysis, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -389,20 +368,19 @@ public class MsAnalysisServiceTest {
     msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
-    assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
   }
 
   @Test
-  public void undoFailed_Ban() {
+  public void undo_Ban() {
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 12L);
     entityManager.detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undo(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -412,7 +390,6 @@ public class MsAnalysisServiceTest {
     msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
-    assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 2L);
     assertEquals(true, tube.isBanned());
@@ -422,13 +399,13 @@ public class MsAnalysisServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer() {
+  public void undo_Ban_Transfer() {
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 22L);
     entityManager.detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undo(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -438,7 +415,6 @@ public class MsAnalysisServiceTest {
     msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
-    assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 85L);
     assertEquals(true, tube.isBanned());
@@ -451,13 +427,13 @@ public class MsAnalysisServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation() {
+  public void undo_Ban_Fractionation() {
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 23L);
     entityManager.detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undo(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -467,7 +443,6 @@ public class MsAnalysisServiceTest {
     msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
-    assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 86L);
     assertEquals(true, tube.isBanned());
@@ -483,13 +458,13 @@ public class MsAnalysisServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer_Fractionation() {
+  public void undo_Ban_Transfer_Fractionation() {
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 24L);
     entityManager.detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undo(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -499,7 +474,6 @@ public class MsAnalysisServiceTest {
     msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
-    assertEquals(MsAnalysis.DeletionType.FAILED, msAnalysis.getDeletionType());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 87L);
     assertEquals(true, tube.isBanned());
@@ -518,13 +492,13 @@ public class MsAnalysisServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation_Transfer() {
+  public void undo_Ban_Fractionation_Transfer() {
     MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 25L);
     entityManager.detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undoFailed(msAnalysis, "fail unit test", true);
+    msAnalysisService.undo(msAnalysis, "fail unit test", true);
 
     entityManager.flush();
     verify(msAnalysisActivityService).undoFailed(eq(msAnalysis), eq("fail unit test"),
@@ -533,7 +507,6 @@ public class MsAnalysisServiceTest {
     MsAnalysis test = entityManager.find(MsAnalysis.class, msAnalysis.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(MsAnalysis.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 88L);
     assertEquals(true, tube.isBanned());

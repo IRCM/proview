@@ -409,7 +409,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     if (validateRemove()) {
       logger.debug("Removing MS analysis {}", binder.getBean());
       MsAnalysis msAnalysis = binder.getBean();
-      msAnalysisService.undoFailed(msAnalysis, design.explanation.getValue(),
+      msAnalysisService.undo(msAnalysis, design.explanation.getValue(),
           design.banContainers.getValue());
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(REMOVED,

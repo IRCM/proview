@@ -233,49 +233,21 @@ public class MsAnalysisService extends BaseTreatmentService {
   }
 
   /**
-   * Undo erroneous MS analysis that never actually occurred. This method is usually called shortly
-   * after action was inserted into the database. The user realises that the samples checked for MS
-   * analysis are not the right ones. So, in practice, the MS analysis never actually occurred.
+   * Undo MS analysis.
    *
    * @param msAnalysis
-   *          erroneous MS analysis to undo
+   *          MS analysis to undo
    * @param explanation
-   *          explanation of what was incorrect with the MS analysis
-   */
-  public void undoErroneous(MsAnalysis msAnalysis, String explanation) {
-    authorizationService.checkAdminRole();
-
-    msAnalysis.setDeleted(true);
-    msAnalysis.setDeletionType(MsAnalysis.DeletionType.ERRONEOUS);
-    msAnalysis.setDeletionExplanation(explanation);
-
-    // Log changes.
-    Activity activity = msAnalysisActivityService.undoErroneous(msAnalysis, explanation);
-    activityService.insert(activity);
-
-    entityManager.merge(msAnalysis);
-  }
-
-  /**
-   * Report that a problem occurred during MS analysis causing it to fail. Problems usually occur
-   * because of an experimental error. In this case, the MS analysis was done but the incorrect MS
-   * analysis could only be detected later in the sample processing. Thus the MS analysis is not
-   * undone but flagged as having failed.
-   *
-   * @param msAnalysis
-   *          MS analysis to flag as having failed
-   * @param failedDescription
-   *          description of the problem that occurred
+   *          explanation
    * @param banContainers
    *          true if containers used in MS analysis should be banned, this will also ban any
    *          container were samples were transfered after MS analysis
    */
-  public void undoFailed(MsAnalysis msAnalysis, String failedDescription, boolean banContainers) {
+  public void undo(MsAnalysis msAnalysis, String explanation, boolean banContainers) {
     authorizationService.checkAdminRole();
 
     msAnalysis.setDeleted(true);
-    msAnalysis.setDeletionType(MsAnalysis.DeletionType.FAILED);
-    msAnalysis.setDeletionExplanation(failedDescription);
+    msAnalysis.setDeletionExplanation(explanation);
 
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
@@ -293,7 +265,7 @@ public class MsAnalysisService extends BaseTreatmentService {
 
     // Log changes.
     Activity activity =
-        msAnalysisActivityService.undoFailed(msAnalysis, failedDescription, bannedContainers);
+        msAnalysisActivityService.undoFailed(msAnalysis, explanation, bannedContainers);
     activityService.insert(activity);
 
     entityManager.merge(msAnalysis);
