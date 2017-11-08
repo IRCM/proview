@@ -18,18 +18,15 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.submission.QSubmission.submission;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -100,42 +97,6 @@ public class SubmissionSampleService {
     query.from(submissionSample);
     query.where(submissionSample.name.eq(name));
     return query.fetchCount() > 0;
-  }
-
-  /**
-   * Selects all projects of signed user.
-   *
-   * @return all projects of signed user
-   */
-  public List<String> projects() {
-    authorizationService.checkUserRole();
-    User user = authorizationService.getCurrentUser();
-
-    JPAQuery<String> query = queryFactory.select(submission.project);
-    query.from(submission);
-    query.where(submission.project.isNotNull());
-    query.where(submission.user.eq(user));
-    return query.distinct().fetch();
-  }
-
-  /**
-   * Updates sample's information in database.
-   *
-   * @param sample
-   *          sample containing new information
-   * @param explanation
-   *          explanation for changes made to sample
-   */
-  public void update(SubmissionSample sample, String explanation) {
-    authorizationService.checkAdminRole();
-
-    // Log changes.
-    Optional<Activity> activity = sampleActivityService.update(sample, explanation);
-    if (activity.isPresent()) {
-      activityService.insert(activity.get());
-    }
-
-    entityManager.merge(sample);
   }
 
   /**
