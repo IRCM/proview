@@ -19,10 +19,6 @@ package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.plate.QWell.well;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
-import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
-import static ca.qc.ircm.proview.sample.SampleStatus.DATA_ANALYSIS;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -33,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -89,26 +84,6 @@ public class PlateService {
   }
 
   /**
-   * Returns plate with specified name.
-   *
-   * @param name
-   *          plate's name
-   * @return plate
-   */
-  public Plate get(String name) {
-    if (name == null) {
-      return null;
-    }
-
-    JPAQuery<Plate> query = queryFactory.select(plate);
-    query.from(plate);
-    query.where(plate.name.eq(name));
-    Plate plate = query.fetchOne();
-    authorizationService.checkPlateReadPermission(plate);
-    return plate;
-  }
-
-  /**
    * Selects all plates passing filter.
    *
    * @param filter
@@ -128,30 +103,6 @@ public class PlateService {
       query.where(well.sample.in(filter.containsAnySamples));
     }
     return query.distinct().fetch();
-  }
-
-  /**
-   * Returns true if plate is available, false otherwise. A plate is considered available when all
-   * it's samples are analyzed.
-   *
-   * @param plateParam
-   *          plate
-   * @return true if plate is available, false otherwise
-   */
-  public boolean available(Plate plateParam) {
-    if (plateParam == null) {
-      return false;
-    }
-    authorizationService.checkAdminRole();
-
-    JPAQuery<Long> query = queryFactory.select(plate.id);
-    query.from(plate);
-    query.join(plate.wells, well);
-    query.from(submissionSample);
-    query.where(submissionSample.eq(well.sample));
-    query.where(plate.eq(plateParam));
-    query.where(submissionSample.status.notIn(Arrays.asList(DATA_ANALYSIS, ANALYSED, CANCELLED)));
-    return query.fetchCount() == 0;
   }
 
   /**

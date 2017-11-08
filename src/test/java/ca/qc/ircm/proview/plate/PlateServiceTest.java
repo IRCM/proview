@@ -111,38 +111,6 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void get_Name() throws Exception {
-    Plate plate = plateService.get("A_20111108");
-
-    verify(authorizationService).checkPlateReadPermission(plate);
-    assertEquals((Long) 26L, plate.getId());
-    assertEquals("A_20111108", plate.getName());
-    assertEquals((Long) 26L, plate.getId());
-    final List<Well> wells = plate.getWells();
-    assertEquals((Long) 26L, plate.getId());
-    assertEquals("A_20111108", plate.getName());
-    assertEquals(96, wells.size());
-    final int rowCount = plate.getRowCount();
-    List<Well> someWells = plate.wells(new WellLocation(0, 1), new WellLocation(rowCount, 1));
-    assertEquals(plate.getRowCount(), someWells.size());
-    for (Well testWell : someWells) {
-      assertEquals(1, testWell.getColumn());
-    }
-    Well well = plate.well(2, 3);
-    assertEquals(2, well.getRow());
-    assertEquals(3, well.getColumn());
-    assertEquals(91, plate.getEmptyWellCount());
-    assertEquals(2, plate.getSampleCount());
-  }
-
-  @Test
-  public void get_NullName() throws Exception {
-    Plate plate = plateService.get((String) null);
-
-    assertNull(plate);
-  }
-
-  @Test
   public void all() throws Exception {
     PlateFilter filter = new PlateFilter();
 
@@ -174,42 +142,6 @@ public class PlateServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(18, plates.size());
-  }
-
-  @Test
-  public void available_True() throws Exception {
-    Plate plate = new Plate(26L);
-
-    boolean available = plateService.available(plate);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(true, available);
-  }
-
-  @Test
-  public void available_New() throws Exception {
-    Plate plate = new Plate(122L);
-
-    boolean available = plateService.available(plate);
-
-    assertEquals(true, available);
-  }
-
-  @Test
-  public void available_False() throws Exception {
-    Plate plate = new Plate(108L);
-
-    boolean available = plateService.available(plate);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(false, available);
-  }
-
-  @Test
-  public void available_Null() throws Exception {
-    boolean available = plateService.available(null);
-
-    assertEquals(false, available);
   }
 
   @Test
