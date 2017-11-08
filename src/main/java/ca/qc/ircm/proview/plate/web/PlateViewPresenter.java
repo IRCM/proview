@@ -83,7 +83,11 @@ public class PlateViewPresenter {
     design.plate.setVisible(authorizationService.hasAdminRole());
     design.plate.setEmptySelectionAllowed(false);
     design.plate.setItemCaptionGenerator(plate -> plate.getName());
-    design.plate.setItems(plateService.all(null));
+    if (authorizationService.hasAdminRole()) {
+      design.plate.setItems(plateService.all(null));
+    } else {
+      design.plate.setItems();
+    }
     design.plate.addValueChangeListener(e -> updatePlate(e.getValue()));
     design.plateComponentPanel.addStyleName(PLATE_PANEL);
   }

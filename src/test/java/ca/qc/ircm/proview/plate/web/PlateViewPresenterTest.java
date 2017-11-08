@@ -135,15 +135,7 @@ public class PlateViewPresenterTest {
     assertFalse(design.plate.isEmptySelectionAllowed());
     assertNull(design.plate.getNewItemHandler());
     List<Plate> plates = items(design.plate);
-    assertEquals(this.plates.size(), plates.size());
-    for (Plate plate : this.plates) {
-      assertTrue(plates.contains(plate));
-      assertEquals(plate.getName(), design.plate.getItemCaptionGenerator().apply(plate));
-    }
-    Plate plate = plates.get(1);
-    design.plate.setValue(plate);
-    assertEquals(plate.getName(), design.plateComponentPanel.getCaption());
-    verify(plateComponent).setValue(plate);
+    assertTrue(plates.isEmpty());
   }
 
   @Test
@@ -153,6 +145,18 @@ public class PlateViewPresenterTest {
     presenter.enter("");
 
     assertTrue(design.plate.isVisible());
+    assertFalse(design.plate.isEmptySelectionAllowed());
+    assertNull(design.plate.getNewItemHandler());
+    List<Plate> plates = items(design.plate);
+    assertEquals(this.plates.size(), plates.size());
+    for (Plate plate : this.plates) {
+      assertTrue(plates.contains(plate));
+      assertEquals(plate.getName(), design.plate.getItemCaptionGenerator().apply(plate));
+    }
+    Plate plate = plates.get(1);
+    design.plate.setValue(plate);
+    assertEquals(plate.getName(), design.plateComponentPanel.getCaption());
+    verify(plateComponent).setValue(plate);
   }
 
   @Test
