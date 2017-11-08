@@ -37,7 +37,6 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -119,48 +118,6 @@ public class MsAnalysisServiceTest {
     MsAnalysis msAnalysis = msAnalysisService.get((Long) null);
 
     assertNull(msAnalysis);
-  }
-
-  @Test
-  public void get_Acquisition() {
-    MsAnalysis msAnalysis = msAnalysisService.get(new Acquisition(1L));
-
-    verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
-    assertNotNull(msAnalysis);
-    assertEquals((Long) 1L, msAnalysis.getId());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
-    assertEquals(MassDetectionInstrumentSource.NSI, msAnalysis.getSource());
-    assertEquals(
-        LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        msAnalysis.getInsertTime());
-    assertEquals(false, msAnalysis.isDeleted());
-    assertEquals(null, msAnalysis.getDeletionType());
-    assertEquals(null, msAnalysis.getDeletionExplanation());
-  }
-
-  @Test
-  public void get_Acquisition_Null() {
-    MsAnalysis msAnalysis = msAnalysisService.get((Acquisition) null);
-
-    assertNull(msAnalysis);
-  }
-
-  @Test
-  public void all() {
-    SubmissionSample sample = new SubmissionSample(442L);
-
-    List<MsAnalysis> msAnalyses = msAnalysisService.all(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(1, msAnalyses.size());
-    assertTrue(find(msAnalyses, 12).isPresent());
-  }
-
-  @Test
-  public void all_SampleNull() {
-    List<MsAnalysis> msAnalyses = msAnalysisService.all((Sample) null);
-
-    assertEquals(0, msAnalyses.size());
   }
 
   @Test

@@ -100,46 +100,6 @@ public class MsAnalysisService extends BaseTreatmentService {
   }
 
   /**
-   * Selects MS analysis of acquisition.
-   *
-   * @param acquisition
-   *          acquisition
-   * @return MS analysis of acquisition
-   */
-  public MsAnalysis get(Acquisition acquisition) {
-    if (acquisition == null) {
-      return null;
-    }
-
-    JPAQuery<MsAnalysis> query = queryFactory.select(msAnalysis);
-    query.from(msAnalysis);
-    query.where(msAnalysis.acquisitions.contains(acquisition));
-    MsAnalysis ret = query.fetchOne();
-    authorizationService.checkMsAnalysisReadPermission(ret);
-    return ret;
-  }
-
-  /**
-   * Selects all MS analysis made on sample.
-   *
-   * @param sample
-   *          sample
-   * @return all MS analysis made on sample
-   */
-  public List<MsAnalysis> all(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkSampleReadPermission(sample);
-
-    JPAQuery<MsAnalysis> query = queryFactory.select(msAnalysis);
-    query.from(msAnalysis, acquisition);
-    query.where(msAnalysis.acquisitions.contains(acquisition));
-    query.where(acquisition.sample.eq(sample));
-    return query.fetch();
-  }
-
-  /**
    * Selects all MS analysis made on submission.
    *
    * @param submissionParam
