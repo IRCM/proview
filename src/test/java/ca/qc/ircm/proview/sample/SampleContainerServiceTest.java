@@ -17,10 +17,8 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -34,7 +32,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -97,27 +94,5 @@ public class SampleContainerServiceTest {
     SampleContainer container = sampleContainerService.last(null);
 
     assertNull(container);
-  }
-
-  @Test
-  public void all() throws Throwable {
-    Sample sample = new SubmissionSample(1L);
-
-    List<SampleContainer> containers = sampleContainerService.all(sample);
-
-    verify(authorizationService).checkSampleReadPermission(sample);
-    assertEquals(5, containers.size());
-    assertTrue(find(containers, 1L).isPresent());
-    assertTrue(find(containers, 6L).isPresent());
-    assertTrue(find(containers, 7L).isPresent());
-    assertTrue(find(containers, 128L).isPresent());
-    assertTrue(find(containers, 129L).isPresent());
-  }
-
-  @Test
-  public void all_Null() throws Throwable {
-    List<SampleContainer> containers = sampleContainerService.all(null);
-
-    assertEquals(0, containers.size());
   }
 }

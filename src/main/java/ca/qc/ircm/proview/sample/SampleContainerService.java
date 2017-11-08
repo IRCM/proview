@@ -25,9 +25,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -93,24 +90,5 @@ public class SampleContainerService {
     query.orderBy(sampleContainer.timestamp.desc());
     query.limit(1);
     return query.fetchOne();
-  }
-
-  /**
-   * Returns sample containers containing sample.
-   *
-   * @param sample
-   *          sample
-   * @return sample containers containing sample
-   */
-  public List<SampleContainer> all(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-    authorizationService.checkSampleReadPermission(sample);
-
-    JPAQuery<SampleContainer> query = queryFactory.select(sampleContainer);
-    query.from(sampleContainer);
-    query.where(sampleContainer.sample.eq(sample));
-    return query.fetch();
   }
 }
