@@ -125,7 +125,7 @@ public class ContainerSelectionFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new ContainerSelectionFormPresenter(tubeService, plateService, wellService);
+    presenter = new ContainerSelectionFormPresenter(tubeService, plateService);
     view.design = design;
     view.plateComponent = mock(PlateComponent.class);
     when(view.getLocale()).thenReturn(locale);
@@ -138,7 +138,8 @@ public class ContainerSelectionFormPresenterTest {
     when(tubeService.all(any())).thenAnswer(i -> sourceTubes.get(i.getArguments()[0]));
     sourcePlates.add(entityManager.find(Plate.class, 26L));
     sourcePlates.add(entityManager.find(Plate.class, 107L));
-    sourcePlates.forEach(plate -> plate.initWells());
+    sourcePlates.stream().flatMap(plate -> plate.getWells().stream())
+        .forEach(well -> well.setSample(null));
     when(plateService.all(any())).thenReturn(new ArrayList<>(sourcePlates));
     IntStream.range(0, samples.size()).forEach(i -> {
       Sample sample = samples.get(i);
@@ -151,13 +152,6 @@ public class ContainerSelectionFormPresenterTest {
       wellsMap.put(sourcePlates.get(1), wells);
       sourceWells.put(sample, wellsMap);
     });
-    when(wellService.location(any(), any())).thenAnswer(i -> i.getArguments()[0] != null
-        ? sourceWells.get(i.getArguments()[0]).get(i.getArguments()[1])
-        : null);
-    when(wellService.last(any()))
-        .thenAnswer(i -> i.getArguments()[0] != null && !sourcePlates.isEmpty()
-            ? sourceWells.get(i.getArguments()[0]).get(sourcePlates.get(0)).get(0)
-            : null);
     when(sampleService.get(any())).thenAnswer(i -> {
       Long id = i.getArgumentAt(0, Long.class);
       return id != null ? entityManager.find(Sample.class, id) : null;

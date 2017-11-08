@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.plate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import org.junit.Test;
 
@@ -128,6 +129,43 @@ public class PlateTest {
     }
     wells = plate.wells(new WellLocation(2, 6), new WellLocation(5, 2));
     assertEquals(0, wells.size());
+  }
+
+  @Test
+  public void wellsContainingSample() throws Exception {
+    Plate plate = new Plate();
+    plate.initWells();
+    Sample sample1 = new SubmissionSample(564L);
+    Sample sample2 = new SubmissionSample(565L);
+    plate.well(0, 0).setSample(sample1);
+    plate.well(0, 1).setSample(sample1);
+    plate.well(1, 1).setSample(sample1);
+    plate.well(1, 0).setSample(sample2);
+    plate.well(2, 1).setSample(sample2);
+
+    List<Well> wells = plate.wellsContainingSample(sample1);
+
+    assertEquals(3, wells.size());
+    assertTrue(wells.contains(plate.well(0, 0)));
+    assertTrue(wells.contains(plate.well(0, 1)));
+    assertTrue(wells.contains(plate.well(1, 1)));
+  }
+
+  @Test
+  public void wellsContainingSample_NullSample() throws Exception {
+    Plate plate = new Plate();
+    plate.initWells();
+    Sample sample1 = new SubmissionSample(564L);
+    Sample sample2 = new SubmissionSample(565L);
+    plate.well(0, 0).setSample(sample1);
+    plate.well(0, 1).setSample(sample1);
+    plate.well(1, 1).setSample(sample1);
+    plate.well(1, 0).setSample(sample2);
+    plate.well(2, 1).setSample(sample2);
+
+    List<Well> wells = plate.wellsContainingSample(null);
+
+    assertTrue(wells.isEmpty());
   }
 
   @Test

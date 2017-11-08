@@ -21,6 +21,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
+import ca.qc.ircm.proview.sample.Sample;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -172,6 +173,22 @@ public class Plate implements Data, Serializable, Named {
         s -> (s.getColumn() == to.getColumn() && s.getRow() <= to.getRow())
             || s.getColumn() < to.getColumn();
     return wells.stream().filter(afterOrEqualsFrom.and(beforeOrEqualsTo))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Returns wells containing sample.
+   *
+   * @param sample
+   *          sample
+   * @return wells containing sample
+   */
+  public List<Well> wellsContainingSample(Sample sample) {
+    if (sample == null) {
+      return new ArrayList<>();
+    }
+    return wells.stream().filter(well -> well.getSample() != null)
+        .filter(well -> well.getSample().getId().equals(sample.getId()))
         .collect(Collectors.toList());
   }
 

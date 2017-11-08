@@ -29,7 +29,6 @@ import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateFilter;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
-import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -84,17 +83,13 @@ public class ContainerSelectionFormPresenter {
   private TubeService tubeService;
   @Inject
   private PlateService plateService;
-  @Inject
-  private WellService wellService;
 
   protected ContainerSelectionFormPresenter() {
   }
 
-  protected ContainerSelectionFormPresenter(TubeService tubeService, PlateService plateService,
-      WellService wellService) {
+  protected ContainerSelectionFormPresenter(TubeService tubeService, PlateService plateService) {
     this.tubeService = tubeService;
     this.plateService = plateService;
-    this.wellService = wellService;
   }
 
   /**
@@ -173,7 +168,7 @@ public class ContainerSelectionFormPresenter {
     if (plate != null) {
       design.platePanel.setCaption(plate.getName());
       List<Well> wells =
-          samples.stream().flatMap(sample -> wellService.location(sample, plate).stream())
+          samples.stream().flatMap(sample -> plate.wellsContainingSample(sample).stream())
               .collect(Collectors.toList());
       view.plateComponent.setValue(plate);
       view.plateComponent.setSelectedWells(wells);
