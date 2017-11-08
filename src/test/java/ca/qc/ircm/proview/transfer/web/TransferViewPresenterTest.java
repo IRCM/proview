@@ -191,6 +191,7 @@ public class TransferViewPresenterTest {
     destinationPlates.add(entityManager.find(Plate.class, 26L));
     destinationPlates.add(entityManager.find(Plate.class, 107L));
     when(plateService.all(any())).thenReturn(new ArrayList<>(destinationPlates));
+    when(tubeService.nameAvailable(any())).thenReturn(true);
   }
 
   private void sourceTubes() {
@@ -979,7 +980,7 @@ public class TransferViewPresenterTest {
     ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
         .getValueProvider().apply(transfers.iterator().next());
     field.setValue(new Tube(null, "test"));
-    when(tubeService.get("test")).thenReturn(new Tube(null, "test"));
+    when(tubeService.nameAvailable("test")).thenReturn(false);
 
     design.save.click();
 
@@ -987,7 +988,7 @@ public class TransferViewPresenterTest {
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, "test")),
         field.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
-    verify(tubeService, atLeastOnce()).get("test");
+    verify(tubeService, atLeastOnce()).nameAvailable("test");
   }
 
   @Test

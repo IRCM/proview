@@ -350,7 +350,7 @@ public class TransferViewPresenter implements BinderValidator {
 
   private ValidationResult validateDestinationContainer(SampleContainer container) {
     if (container instanceof Tube) {
-      if (tubeService.get(container.getName()) != null) {
+      if (!tubeService.nameAvailable(container.getName())) {
         final MessageResource generalResources = view.getGeneralResources();
         return ValidationResult
             .error(generalResources.message(ALREADY_EXISTS, container.getName()));

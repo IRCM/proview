@@ -64,7 +64,7 @@ public class TubeServiceTest {
   }
 
   @Test
-  public void get_Id() throws Throwable {
+  public void get() throws Throwable {
     Tube tube = tubeService.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(tube.getSample());
@@ -78,31 +78,33 @@ public class TubeServiceTest {
   }
 
   @Test
-  public void get_NullId() throws Throwable {
+  public void get_Null() throws Throwable {
     Tube tube = tubeService.get((Long) null);
 
     assertNull(tube);
   }
 
   @Test
-  public void get_Name() throws Throwable {
-    Tube tube = tubeService.get("FAM119A_band_01");
+  public void nameAvailable_True() throws Throwable {
+    boolean available = tubeService.nameAvailable("FAM119A_band_01");
 
-    verify(authorizationService).checkSampleReadPermission(tube.getSample());
-    assertEquals((Long) 1L, tube.getId());
-    assertEquals("FAM119A_band_01", tube.getName());
-    assertEquals((Long) 1L, tube.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, tube.getType());
-    assertEquals(
-        LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        tube.getTimestamp());
+    verify(authorizationService).checkAdminRole();
+    assertFalse(available);
   }
 
   @Test
-  public void get_NullName() throws Throwable {
-    Tube tube = tubeService.get((String) null);
+  public void nameAvailable_False() throws Throwable {
+    boolean available = tubeService.nameAvailable("unit_test");
 
-    assertNull(tube);
+    verify(authorizationService).checkAdminRole();
+    assertTrue(available);
+  }
+
+  @Test
+  public void nameAvailable_Null() throws Throwable {
+    boolean available = tubeService.nameAvailable(null);
+
+    assertFalse(available);
   }
 
   @Test

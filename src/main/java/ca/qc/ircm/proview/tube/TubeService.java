@@ -78,25 +78,22 @@ public class TubeService {
   }
 
   /**
-   * Returns digestion tube.
+   * Returns true if name is available in database, false otherwise.
    *
    * @param name
-   *          tube name.
-   * @return digestion tube.
+   *          tube's name
+   * @return true if name is available in database, false otherwise
    */
-  public Tube get(String name) {
+  public boolean nameAvailable(String name) {
     if (name == null) {
-      return null;
+      return false;
     }
+    authorizationService.checkAdminRole();
 
-    JPAQuery<Tube> query = queryFactory.select(tube);
+    JPAQuery<Long> query = queryFactory.select(tube.id);
     query.from(tube);
     query.where(tube.name.eq(name));
-    Tube ret = query.fetchOne();
-    if (ret != null) {
-      authorizationService.checkSampleReadPermission(ret.getSample());
-    }
-    return ret;
+    return query.fetchCount() == 0;
   }
 
   /**
