@@ -41,7 +41,6 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -112,7 +111,6 @@ public class DigestionServiceTest {
         LocalDateTime.of(2011, 11, 9, 15, 15, 20).atZone(ZoneId.systemDefault()).toInstant(),
         digestion.getInsertTime());
     assertEquals(false, digestion.isDeleted());
-    assertEquals(null, digestion.getDeletionType());
     assertEquals(null, digestion.getDeletionExplanation());
     List<DigestedSample> digestedSamples = digestion.getTreatmentSamples();
     assertEquals(1, digestedSamples.size());
@@ -156,7 +154,6 @@ public class DigestionServiceTest {
     assertNotNull(digestion.getId());
     digestion = entityManager.find(Digestion.class, digestion.getId());
     assertEquals(false, digestion.isDeleted());
-    assertEquals(null, digestion.getDeletionType());
     assertEquals(null, digestion.getDeletionExplanation());
     assertEquals(user, digestion.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -199,7 +196,6 @@ public class DigestionServiceTest {
     assertNotNull(digestion.getId());
     digestion = digestionService.get(digestion.getId());
     assertEquals(false, digestion.isDeleted());
-    assertEquals(null, digestion.getDeletionType());
     assertEquals(null, digestion.getDeletionExplanation());
     assertEquals(user, digestion.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -311,7 +307,6 @@ public class DigestionServiceTest {
     assertNotNull(digestion.getId());
     digestion = entityManager.find(Digestion.class, digestion.getId());
     assertEquals(false, digestion.isDeleted());
-    assertEquals(null, digestion.getDeletionType());
     assertEquals(null, digestion.getDeletionExplanation());
     assertEquals(user, digestion.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -408,33 +403,13 @@ public class DigestionServiceTest {
   }
 
   @Test
-  public void undoErroneous() {
-    Digestion digestion = entityManager.find(Digestion.class, 195L);
-    entityManager.detach(digestion);
-    when(digestionActivityService.undoErroneous(any(Digestion.class), any(String.class)))
-        .thenReturn(activity);
-
-    digestionService.undoErroneous(digestion, "undo unit test");
-
-    entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(digestionActivityService).undoErroneous(eq(digestion), eq("undo unit test"));
-    verify(activityService).insert(activity);
-    digestion = digestionService.get(digestion.getId());
-    assertNotNull(digestion);
-    assertEquals(true, digestion.isDeleted());
-    assertEquals(Treatment.DeletionType.ERRONEOUS, digestion.getDeletionType());
-    assertEquals("undo unit test", digestion.getDeletionExplanation());
-  }
-
-  @Test
-  public void undoFailed_NoBan() {
+  public void undo_NoBan() {
     Digestion digestion = entityManager.find(Digestion.class, 195L);
     entityManager.detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undoFailed(digestion, "fail unit test", false);
+    digestionService.undo(digestion, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -444,7 +419,6 @@ public class DigestionServiceTest {
     digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -452,13 +426,13 @@ public class DigestionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban() {
+  public void undo_Ban() {
     Digestion digestion = entityManager.find(Digestion.class, 195L);
     entityManager.detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undoFailed(digestion, "fail unit test", true);
+    digestionService.undo(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -468,7 +442,6 @@ public class DigestionServiceTest {
     digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 224L);
     assertEquals(true, well.isBanned());
@@ -482,13 +455,13 @@ public class DigestionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer() {
+  public void undo_Ban_Transfer() {
     Digestion digestion = entityManager.find(Digestion.class, 196L);
     entityManager.detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undoFailed(digestion, "fail unit test", true);
+    digestionService.undo(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -498,7 +471,6 @@ public class DigestionServiceTest {
     Digestion test = digestionService.get(digestion.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 13L);
     assertEquals(true, tube.isBanned());
@@ -518,13 +490,13 @@ public class DigestionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation() {
+  public void undo_Ban_Fractionation() {
     Digestion digestion = entityManager.find(Digestion.class, 197L);
     entityManager.detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undoFailed(digestion, "fail unit test", true);
+    digestionService.undo(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -534,7 +506,6 @@ public class DigestionServiceTest {
     Digestion test = digestionService.get(digestion.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 15L);
     assertEquals(true, tube.isBanned());
@@ -560,13 +531,13 @@ public class DigestionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer_Fractionation() {
+  public void undo_Ban_Transfer_Fractionation() {
     Digestion digestion = entityManager.find(Digestion.class, 198L);
     entityManager.detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undoFailed(digestion, "fail unit test", true);
+    digestionService.undo(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -577,7 +548,6 @@ public class DigestionServiceTest {
     digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 17L);
     assertEquals(true, tube.isBanned());
@@ -609,13 +579,13 @@ public class DigestionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation_Transfer() {
+  public void undo_Ban_Fractionation_Transfer() {
     Digestion digestion = entityManager.find(Digestion.class, 199L);
     entityManager.detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undoFailed(digestion, "fail unit test", true);
+    digestionService.undo(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -626,7 +596,6 @@ public class DigestionServiceTest {
     digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 19L);
     assertEquals(true, tube.isBanned());
@@ -664,14 +633,14 @@ public class DigestionServiceTest {
   }
 
   @Test
-  public void undoFailed_NotBanErroneousTransfer() {
+  public void undo_NotBanErroneousTransfer() {
     Digestion digestion = entityManager.find(Digestion.class, 321L);
     entityManager.detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
     // Digestion failed.
-    digestionService.undoFailed(digestion, "fail unit test", true);
+    digestionService.undo(digestion, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -681,7 +650,6 @@ public class DigestionServiceTest {
     digestion = digestionService.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, digestion.getDeletionType());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 2279L);
     assertEquals(true, tube.isBanned());

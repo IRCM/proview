@@ -630,7 +630,7 @@ public class DilutionViewPresenterTest {
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         design.explanation.getErrorMessage().getFormattedHtmlMessage());
-    verify(dilutionService, never()).undoFailed(any(), any(), anyBoolean());
+    verify(dilutionService, never()).undo(any(), any(), anyBoolean());
   }
 
   @Test
@@ -646,7 +646,7 @@ public class DilutionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(dilutionService).undoFailed(dilutionCaptor.capture(), eq("test explanation"), eq(false));
+    verify(dilutionService).undo(dilutionCaptor.capture(), eq("test explanation"), eq(false));
     Dilution savedDilution = dilutionCaptor.getValue();
     assertEquals((Long) 4L, savedDilution.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, dilution.getTreatmentSamples()
@@ -668,7 +668,7 @@ public class DilutionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(dilutionService).undoFailed(dilutionCaptor.capture(), eq("test explanation"), eq(true));
+    verify(dilutionService).undo(dilutionCaptor.capture(), eq("test explanation"), eq(true));
     Dilution savedDilution = dilutionCaptor.getValue();
     assertEquals((Long) 4L, savedDilution.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, dilution.getTreatmentSamples()

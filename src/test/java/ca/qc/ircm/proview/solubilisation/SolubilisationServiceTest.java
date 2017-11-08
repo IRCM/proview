@@ -39,7 +39,6 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -108,7 +107,6 @@ public class SolubilisationServiceTest {
         LocalDateTime.of(2011, 10, 13, 11, 45, 0).atZone(ZoneId.systemDefault()).toInstant(),
         solubilisation.getInsertTime());
     assertEquals(false, solubilisation.isDeleted());
-    assertEquals(null, solubilisation.getDeletionType());
     assertEquals(null, solubilisation.getDeletionExplanation());
     List<SolubilisedSample> solubilisedSamples = solubilisation.getTreatmentSamples();
     assertEquals(1, solubilisedSamples.size());
@@ -154,7 +152,6 @@ public class SolubilisationServiceTest {
     assertNotNull(solubilisation.getId());
     solubilisation = solubilisationService.get(solubilisation.getId());
     assertEquals(false, solubilisation.isDeleted());
-    assertEquals(null, solubilisation.getDeletionType());
     assertEquals(null, solubilisation.getDeletionExplanation());
     assertEquals(user, solubilisation.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -196,7 +193,6 @@ public class SolubilisationServiceTest {
     assertNotNull(solubilisation.getId());
     solubilisation = solubilisationService.get(solubilisation.getId());
     assertEquals(false, solubilisation.isDeleted());
-    assertEquals(null, solubilisation.getDeletionType());
     assertEquals(null, solubilisation.getDeletionExplanation());
     assertEquals(user, solubilisation.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -313,33 +309,13 @@ public class SolubilisationServiceTest {
   }
 
   @Test
-  public void undoErroneous() {
-    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 1L);
-    entityManager.detach(solubilisation);
-    when(solubilisationActivityService.undoErroneous(any(Solubilisation.class), any(String.class)))
-        .thenReturn(activity);
-
-    solubilisationService.undoErroneous(solubilisation, "undo unit test");
-
-    entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(solubilisationActivityService).undoErroneous(eq(solubilisation), eq("undo unit test"));
-    verify(activityService).insert(eq(activity));
-    solubilisation = solubilisationService.get(solubilisation.getId());
-    assertNotNull(solubilisation);
-    assertEquals(true, solubilisation.isDeleted());
-    assertEquals(Treatment.DeletionType.ERRONEOUS, solubilisation.getDeletionType());
-    assertEquals("undo unit test", solubilisation.getDeletionExplanation());
-  }
-
-  @Test
-  public void undoFailed_NoBan() {
+  public void undo_NoBan() {
     Solubilisation solubilisation = entityManager.find(Solubilisation.class, 1L);
     entityManager.detach(solubilisation);
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationService.undoFailed(solubilisation, "fail unit test", false);
+    solubilisationService.undo(solubilisation, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -349,20 +325,19 @@ public class SolubilisationServiceTest {
     solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());
     assertEquals("fail unit test", solubilisation.getDeletionExplanation());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
   }
 
   @Test
-  public void undoFailed_Ban() {
+  public void undo_Ban() {
     Solubilisation solubilisation = entityManager.find(Solubilisation.class, 236L);
     entityManager.detach(solubilisation);
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undo(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -372,7 +347,6 @@ public class SolubilisationServiceTest {
     solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());
     assertEquals("fail unit test", solubilisation.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 992L);
     assertEquals(true, well.isBanned());
@@ -385,13 +359,13 @@ public class SolubilisationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer() {
+  public void undo_Ban_Transfer() {
     Solubilisation solubilisation = entityManager.find(Solubilisation.class, 237L);
     entityManager.detach(solubilisation);
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undo(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -401,7 +375,6 @@ public class SolubilisationServiceTest {
     solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());
     assertEquals("fail unit test", solubilisation.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 44L);
     assertEquals(true, tube.isBanned());
@@ -420,13 +393,13 @@ public class SolubilisationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation() {
+  public void undo_Ban_Fractionation() {
     Solubilisation solubilisation = entityManager.find(Solubilisation.class, 238L);
     entityManager.detach(solubilisation);
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undo(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -436,7 +409,6 @@ public class SolubilisationServiceTest {
     Solubilisation test = solubilisationService.get(solubilisation.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 45L);
     assertEquals(true, tube.isBanned());
@@ -461,13 +433,13 @@ public class SolubilisationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer_Fractionation() {
+  public void undo_Ban_Transfer_Fractionation() {
     Solubilisation solubilisation = entityManager.find(Solubilisation.class, 239L);
     entityManager.detach(solubilisation);
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undo(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -477,7 +449,6 @@ public class SolubilisationServiceTest {
     solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());
     assertEquals("fail unit test", solubilisation.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 47L);
     assertEquals(true, tube.isBanned());
@@ -508,13 +479,13 @@ public class SolubilisationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation_Transfer() {
+  public void undo_Ban_Fractionation_Transfer() {
     Solubilisation solubilisation = entityManager.find(Solubilisation.class, 240L);
     entityManager.detach(solubilisation);
     when(solubilisationActivityService.undoFailed(any(Solubilisation.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    solubilisationService.undoFailed(solubilisation, "fail unit test", true);
+    solubilisationService.undo(solubilisation, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -524,7 +495,6 @@ public class SolubilisationServiceTest {
     solubilisation = solubilisationService.get(solubilisation.getId());
     assertNotNull(solubilisation);
     assertEquals(true, solubilisation.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, solubilisation.getDeletionType());
     assertEquals("fail unit test", solubilisation.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 49L);
     assertEquals(true, tube.isBanned());

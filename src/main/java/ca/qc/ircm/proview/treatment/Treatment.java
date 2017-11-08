@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.treatment;
 
-import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
@@ -31,7 +30,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -89,12 +87,6 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
   @Column(name = "deleted", nullable = false)
   private boolean deleted;
   /**
-   * Type of error that forces treatment to be deleted.
-   */
-  @Column(name = "deletionType")
-  @Enumerated(STRING)
-  private DeletionType deletionType;
-  /**
    * Description of what caused the treatment to be deleted.
    */
   @Column(name = "deletionExplanation")
@@ -130,14 +122,6 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
 
   public void setDeleted(boolean deleted) {
     this.deleted = deleted;
-  }
-
-  public DeletionType getDeletionType() {
-    return deletionType;
-  }
-
-  public void setDeletionType(DeletionType deletionType) {
-    this.deletionType = deletionType;
   }
 
   public String getDeletionExplanation() {

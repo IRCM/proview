@@ -22,7 +22,6 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -134,49 +133,21 @@ public class DilutionService extends BaseTreatmentService {
   }
 
   /**
-   * Undo erroneous dilution that never actually occurred. This method is usually called shortly
-   * after action was inserted into the database. The user realises that the samples checked for
-   * dilution are not the right ones. So, in practice, the dilution never actually occurred.
+   * Undo dilution.
    *
    * @param dilution
-   *          erroneous dilution to undo
+   *          dilution to undo
    * @param explanation
-   *          explanation of what was incorrect with the dilution
-   */
-  public void undoErroneous(Dilution dilution, String explanation) {
-    authorizationService.checkAdminRole();
-
-    dilution.setDeleted(true);
-    dilution.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    dilution.setDeletionExplanation(explanation);
-
-    // Log changes.
-    Activity activity = dilutionActivityService.undoErroneous(dilution, explanation);
-    activityService.insert(activity);
-
-    entityManager.merge(dilution);
-  }
-
-  /**
-   * Report that a problem occurred during dilution causing it to fail. Problems usually occur
-   * because of an experimental error. In this case, the dilution was done but the incorrect
-   * dilution could only be detected later in the sample processing. Thus the dilution is not undone
-   * but flagged as having failed.
-   *
-   * @param dilution
-   *          dilution to flag as having failed
-   * @param failedDescription
-   *          description of the problem that occurred
+   *          explanation
    * @param banContainers
    *          true if containers used in dilution should be banned, this will also ban any container
    *          were samples were transfered after dilution
    */
-  public void undoFailed(Dilution dilution, String failedDescription, boolean banContainers) {
+  public void undo(Dilution dilution, String explanation, boolean banContainers) {
     authorizationService.checkAdminRole();
 
     dilution.setDeleted(true);
-    dilution.setDeletionType(Treatment.DeletionType.FAILED);
-    dilution.setDeletionExplanation(failedDescription);
+    dilution.setDeletionExplanation(explanation);
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during dilution.
@@ -191,8 +162,7 @@ public class DilutionService extends BaseTreatmentService {
     }
 
     // Log changes.
-    Activity activity =
-        dilutionActivityService.undoFailed(dilution, failedDescription, bannedContainers);
+    Activity activity = dilutionActivityService.undoFailed(dilution, explanation, bannedContainers);
     activityService.insert(activity);
 
     entityManager.merge(dilution);

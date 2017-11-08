@@ -22,7 +22,6 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -134,51 +133,21 @@ public class SolubilisationService extends BaseTreatmentService {
   }
 
   /**
-   * Undo erroneous solubilisation that never actually occurred. This method is usually called
-   * shortly after action was inserted into the database. The user realises that the samples checked
-   * for solubilisation are not the right ones. So, in practice, the solubilisation never actually
-   * occurred.
+   * Undo solubilisation.
    *
    * @param solubilisation
-   *          erroneous solubilisation to undo
+   *          solubilisation to undo
    * @param explanation
-   *          explanation of what was incorrect with the solubilisation
-   */
-  public void undoErroneous(Solubilisation solubilisation, String explanation) {
-    authorizationService.checkAdminRole();
-
-    solubilisation.setDeleted(true);
-    solubilisation.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    solubilisation.setDeletionExplanation(explanation);
-
-    // Log changes.
-    Activity activity = solubilisationActivityService.undoErroneous(solubilisation, explanation);
-    activityService.insert(activity);
-
-    entityManager.merge(solubilisation);
-  }
-
-  /**
-   * Report that a problem occurred during solubilisation causing it to fail. Problems usually occur
-   * because of an experimental error. In this case, the solubilisation was done but the incorrect
-   * solubilisation could only be detected later in the sample processing. Thus the solubilisation
-   * is not undone but flagged as having failed.
-   *
-   * @param solubilisation
-   *          solubilisation to flag as having failed
-   * @param failedDescription
-   *          description of the problem that occurred
+   *          explanation
    * @param banContainers
    *          true if containers used in solubilisation should be banned, this will also ban any
    *          container were samples were transfered after solubilisation
    */
-  public void undoFailed(Solubilisation solubilisation, String failedDescription,
-      boolean banContainers) {
+  public void undo(Solubilisation solubilisation, String explanation, boolean banContainers) {
     authorizationService.checkAdminRole();
 
     solubilisation.setDeleted(true);
-    solubilisation.setDeletionType(Treatment.DeletionType.FAILED);
-    solubilisation.setDeletionExplanation(failedDescription);
+    solubilisation.setDeletionExplanation(explanation);
 
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
@@ -194,8 +163,8 @@ public class SolubilisationService extends BaseTreatmentService {
     }
 
     // Log changes.
-    Activity activity = solubilisationActivityService.undoFailed(solubilisation, failedDescription,
-        bannedContainers);
+    Activity activity =
+        solubilisationActivityService.undoFailed(solubilisation, explanation, bannedContainers);
     activityService.insert(activity);
 
     entityManager.merge(solubilisation);

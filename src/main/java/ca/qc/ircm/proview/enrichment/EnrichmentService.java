@@ -24,7 +24,6 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -153,49 +152,21 @@ public class EnrichmentService extends BaseTreatmentService {
   }
 
   /**
-   * Undo erroneous enrichment that never actually occurred. This method is usually called shortly
-   * after action was inserted into the database. The user realises that the samples checked for
-   * enrichment are not the right ones. So, in practice, the enrichment never actually occurred.
+   * Undo enrichment.
    *
    * @param enrichment
-   *          erroneous enrichment to undo
+   *          enrichment to undo
    * @param explanation
-   *          explanation of what was incorrect with the enrichment
-   */
-  public void undoErroneous(Enrichment enrichment, String explanation) {
-    authorizationService.checkAdminRole();
-
-    enrichment.setDeleted(true);
-    enrichment.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    enrichment.setDeletionExplanation(explanation);
-
-    // Log changes.
-    Activity activity = enrichmentActivityService.undoErroneous(enrichment, explanation);
-    activityService.insert(activity);
-
-    entityManager.merge(enrichment);
-  }
-
-  /**
-   * Report that a problem occurred during enrichment causing it to fail. Problems usually occur
-   * because of an experimental error. In this case, the enrichment was done but the incorrect
-   * enrichment could only be detected later in the sample processing. Thus the enrichment is not
-   * undone but flagged as having failed.
-   *
-   * @param enrichment
-   *          enrichment to flag as having failed
-   * @param failedDescription
-   *          description of the problem that occurred
+   *          explanation
    * @param banContainers
    *          true if containers used in enrichment should be banned, this will also ban any
    *          container were samples were transfered after enrichment
    */
-  public void undoFailed(Enrichment enrichment, String failedDescription, boolean banContainers) {
+  public void undo(Enrichment enrichment, String explanation, boolean banContainers) {
     authorizationService.checkAdminRole();
 
     enrichment.setDeleted(true);
-    enrichment.setDeletionType(Treatment.DeletionType.FAILED);
-    enrichment.setDeletionExplanation(failedDescription);
+    enrichment.setDeletionExplanation(explanation);
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during enrichment.
@@ -211,7 +182,7 @@ public class EnrichmentService extends BaseTreatmentService {
 
     // Log changes.
     Activity activity =
-        enrichmentActivityService.undoFailed(enrichment, failedDescription, bannedContainers);
+        enrichmentActivityService.undoFailed(enrichment, explanation, bannedContainers);
     activityService.insert(activity);
 
     entityManager.merge(enrichment);

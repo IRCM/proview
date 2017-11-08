@@ -39,7 +39,6 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -108,7 +107,6 @@ public class StandardAdditionServiceTest {
         LocalDateTime.of(2011, 11, 9, 15, 12, 2).atZone(ZoneId.systemDefault()).toInstant(),
         standardAddition.getInsertTime());
     assertEquals(false, standardAddition.isDeleted());
-    assertEquals(null, standardAddition.getDeletionType());
     assertEquals(null, standardAddition.getDeletionExplanation());
     List<AddedStandard> addedStandards = standardAddition.getTreatmentSamples();
     assertEquals(1, addedStandards.size());
@@ -154,7 +152,6 @@ public class StandardAdditionServiceTest {
     standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
-    assertEquals(null, standardAddition.getDeletionType());
     assertEquals(null, standardAddition.getDeletionExplanation());
     assertEquals(user, standardAddition.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -196,7 +193,6 @@ public class StandardAdditionServiceTest {
     standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
-    assertEquals(null, standardAddition.getDeletionType());
     assertEquals(null, standardAddition.getDeletionExplanation());
     assertEquals(user, standardAddition.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -313,34 +309,13 @@ public class StandardAdditionServiceTest {
   }
 
   @Test
-  public void undoErroneous() {
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 5L);
-    entityManager.detach(standardAddition);
-    when(standardAdditionActivityService.undoErroneous(any(StandardAddition.class),
-        any(String.class))).thenReturn(activity);
-
-    standardAdditionService.undoErroneous(standardAddition, "undo unit test");
-
-    entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(standardAdditionActivityService).undoErroneous(eq(standardAddition),
-        eq("undo unit test"));
-    verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionService.get(standardAddition.getId());
-    assertNotNull(standardAddition);
-    assertEquals(true, standardAddition.isDeleted());
-    assertEquals(Treatment.DeletionType.ERRONEOUS, standardAddition.getDeletionType());
-    assertEquals("undo unit test", standardAddition.getDeletionExplanation());
-  }
-
-  @Test
-  public void undoFailed_NoBan() {
+  public void undo_NoBan() {
     StandardAddition standardAddition = entityManager.find(StandardAddition.class, 5L);
     entityManager.detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undoFailed(standardAddition, "fail unit test", false);
+    standardAdditionService.undo(standardAddition, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -350,20 +325,19 @@ public class StandardAdditionServiceTest {
     standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
   }
 
   @Test
-  public void undoFailed_Ban() {
+  public void undo_Ban() {
     StandardAddition standardAddition = entityManager.find(StandardAddition.class, 248L);
     entityManager.detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undo(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -373,7 +347,6 @@ public class StandardAdditionServiceTest {
     standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 997L);
     assertEquals(true, well.isBanned());
@@ -386,13 +359,13 @@ public class StandardAdditionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer() {
+  public void undo_Ban_Transfer() {
     StandardAddition standardAddition = entityManager.find(StandardAddition.class, 249L);
     entityManager.detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undo(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -402,7 +375,6 @@ public class StandardAdditionServiceTest {
     standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 53L);
     assertEquals(true, tube.isBanned());
@@ -421,13 +393,13 @@ public class StandardAdditionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation() {
+  public void undo_Ban_Fractionation() {
     StandardAddition standardAddition = entityManager.find(StandardAddition.class, 250L);
     entityManager.detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undo(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -437,7 +409,6 @@ public class StandardAdditionServiceTest {
     StandardAddition test = standardAdditionService.get(standardAddition.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 55L);
     assertEquals(true, tube.isBanned());
@@ -462,13 +433,13 @@ public class StandardAdditionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer_Fractionation() {
+  public void undo_Ban_Transfer_Fractionation() {
     StandardAddition standardAddition = entityManager.find(StandardAddition.class, 251L);
     entityManager.detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undo(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -478,7 +449,6 @@ public class StandardAdditionServiceTest {
     standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 57L);
     assertEquals(true, tube.isBanned());
@@ -509,13 +479,13 @@ public class StandardAdditionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation_Transfer() {
+  public void undo_Ban_Fractionation_Transfer() {
     StandardAddition standardAddition = entityManager.find(StandardAddition.class, 252L);
     entityManager.detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undoFailed(standardAddition, "fail unit test", true);
+    standardAdditionService.undo(standardAddition, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -525,7 +495,6 @@ public class StandardAdditionServiceTest {
     standardAddition = standardAdditionService.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, standardAddition.getDeletionType());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 60L);
     assertEquals(true, tube.isBanned());

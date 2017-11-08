@@ -278,7 +278,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     if (validateRemove()) {
       logger.debug("Removing standard addition {}", binder.getBean());
       Solubilisation solubilisation = binder.getBean();
-      solubilisationService.undoFailed(solubilisation, design.explanation.getValue(),
+      solubilisationService.undo(solubilisation, design.explanation.getValue(),
           design.banContainers.getValue());
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(REMOVED,

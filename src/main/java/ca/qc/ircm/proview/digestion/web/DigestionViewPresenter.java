@@ -257,7 +257,7 @@ public class DigestionViewPresenter implements BinderValidator {
     if (validateRemove()) {
       logger.debug("Removing digestion {}", binder.getBean());
       Digestion digestion = binder.getBean();
-      digestionService.undoFailed(digestion, design.explanation.getValue(),
+      digestionService.undo(digestion, design.explanation.getValue(),
           design.banContainers.getValue());
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(REMOVED,

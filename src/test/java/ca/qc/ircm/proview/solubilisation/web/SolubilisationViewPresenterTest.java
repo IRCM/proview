@@ -549,7 +549,7 @@ public class SolubilisationViewPresenterTest {
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         design.explanation.getErrorMessage().getFormattedHtmlMessage());
-    verify(solubilisationService, never()).undoFailed(any(), any(), anyBoolean());
+    verify(solubilisationService, never()).undo(any(), any(), anyBoolean());
   }
 
   @Test
@@ -566,7 +566,7 @@ public class SolubilisationViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(solubilisationService).undoFailed(solubilisationCaptor.capture(), eq("test explanation"),
+    verify(solubilisationService).undo(solubilisationCaptor.capture(), eq("test explanation"),
         eq(false));
     Solubilisation savedSolubilisation = solubilisationCaptor.getValue();
     assertEquals((Long) 1L, savedSolubilisation.getId());
@@ -590,7 +590,7 @@ public class SolubilisationViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(solubilisationService).undoFailed(solubilisationCaptor.capture(), eq("test explanation"),
+    verify(solubilisationService).undo(solubilisationCaptor.capture(), eq("test explanation"),
         eq(true));
     Solubilisation savedSolubilisation = solubilisationCaptor.getValue();
     assertEquals((Long) 1L, savedSolubilisation.getId());

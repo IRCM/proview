@@ -431,7 +431,7 @@ public class EnrichmentViewPresenterTest {
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         design.explanation.getErrorMessage().getFormattedHtmlMessage());
-    verify(enrichmentService, never()).undoFailed(any(), any(), anyBoolean());
+    verify(enrichmentService, never()).undo(any(), any(), anyBoolean());
   }
 
   @Test
@@ -449,7 +449,7 @@ public class EnrichmentViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(enrichmentService).undoFailed(enrichmentCaptor.capture(), eq("test explanation"),
+    verify(enrichmentService).undo(enrichmentCaptor.capture(), eq("test explanation"),
         eq(false));
     Enrichment savedEnrichment = enrichmentCaptor.getValue();
     assertEquals((Long) 7L, savedEnrichment.getId());
@@ -474,7 +474,7 @@ public class EnrichmentViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(enrichmentService).undoFailed(enrichmentCaptor.capture(), eq("test explanation"),
+    verify(enrichmentService).undo(enrichmentCaptor.capture(), eq("test explanation"),
         eq(true));
     Enrichment savedEnrichment = enrichmentCaptor.getValue();
     assertEquals((Long) 7L, savedEnrichment.getId());

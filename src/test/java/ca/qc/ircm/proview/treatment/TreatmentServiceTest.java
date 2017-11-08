@@ -75,7 +75,6 @@ public class TreatmentServiceTest {
         LocalDateTime.of(2011, 10, 13, 11, 45, 0).atZone(ZoneId.systemDefault()).toInstant(),
         treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
-    assertEquals(null, treatment.getDeletionType());
     assertEquals(null, treatment.getDeletionExplanation());
     assertEquals(true, treatment instanceof Solubilisation);
     Solubilisation solubilisation = (Solubilisation) treatment;
@@ -102,7 +101,6 @@ public class TreatmentServiceTest {
         LocalDateTime.of(2011, 10, 19, 12, 20, 33, 0).atZone(ZoneId.systemDefault()).toInstant(),
         treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
-    assertEquals(null, treatment.getDeletionType());
     assertEquals(null, treatment.getDeletionExplanation());
     assertEquals(true, treatment instanceof Fractionation);
     Fractionation fractionation = (Fractionation) treatment;

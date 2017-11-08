@@ -273,7 +273,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     if (validateRemove()) {
       logger.debug("Removing standard addition {}", binder.getBean());
       StandardAddition standardAddition = binder.getBean();
-      standardAdditionService.undoFailed(standardAddition, design.explanation.getValue(),
+      standardAdditionService.undo(standardAddition, design.explanation.getValue(),
           design.banContainers.getValue());
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(REMOVED,

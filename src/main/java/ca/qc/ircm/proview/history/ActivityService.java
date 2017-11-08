@@ -35,6 +35,7 @@ import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.dilution.DilutedSample;
 import ca.qc.ircm.proview.fractionation.Fraction;
+import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis.DeletionType;
@@ -50,6 +51,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
 import ca.qc.ircm.proview.standard.AddedStandard;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -633,9 +635,19 @@ public class ActivityService {
       Treatment<?> treatment, Collection<TreatmentSample> treatmentSamples) {
     StringBuilder message = new StringBuilder();
     String key = "Treatment." + treatment.getType();
-    message.append(message(bundle, key + "." + activity.getActionType(),
-        treatment.isDeleted() ? treatment.getDeletionType().ordinal()
-            : DeletionType.ERRONEOUS.ordinal()));
+    if (treatment instanceof Transfer) {
+      Transfer transfer = (Transfer) treatment;
+      message.append(message(bundle, key + "." + activity.getActionType(),
+          treatment.isDeleted() ? transfer.getDeletionType().ordinal()
+              : DeletionType.ERRONEOUS.ordinal()));
+    } else if (treatment instanceof Fractionation) {
+      Fractionation fractionation = (Fractionation) treatment;
+      message.append(message(bundle, key + "." + activity.getActionType(),
+          treatment.isDeleted() ? fractionation.getDeletionType().ordinal()
+              : DeletionType.ERRONEOUS.ordinal()));
+    } else {
+      message.append(message(bundle, key + "." + activity.getActionType()));
+    }
     for (TreatmentSample treatmentSample : treatmentSamples) {
       String container = containerMessage(bundle, treatmentSample.getContainer());
       message.append("\n");

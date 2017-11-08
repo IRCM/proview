@@ -300,7 +300,7 @@ public class DilutionViewPresenter implements BinderValidator {
     if (validateRemove()) {
       logger.debug("Removing dilution {}", binder.getBean());
       Dilution dilution = binder.getBean();
-      dilutionService.undoFailed(dilution, design.explanation.getValue(),
+      dilutionService.undo(dilution, design.explanation.getValue(),
           design.banContainers.getValue());
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(REMOVED,

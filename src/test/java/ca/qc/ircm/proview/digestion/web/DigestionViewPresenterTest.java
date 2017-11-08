@@ -430,7 +430,7 @@ public class DigestionViewPresenterTest {
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         design.explanation.getErrorMessage().getFormattedHtmlMessage());
-    verify(digestionService, never()).undoFailed(any(), any(), anyBoolean());
+    verify(digestionService, never()).undo(any(), any(), anyBoolean());
   }
 
   @Test
@@ -448,7 +448,7 @@ public class DigestionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(digestionService).undoFailed(digestionCaptor.capture(), eq("test explanation"),
+    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"),
         eq(false));
     Digestion savedDigestion = digestionCaptor.getValue();
     assertEquals((Long) 6L, savedDigestion.getId());
@@ -473,7 +473,7 @@ public class DigestionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(digestionService).undoFailed(digestionCaptor.capture(), eq("test explanation"),
+    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"),
         eq(true));
     Digestion savedDigestion = digestionCaptor.getValue();
     assertEquals((Long) 6L, savedDigestion.getId());

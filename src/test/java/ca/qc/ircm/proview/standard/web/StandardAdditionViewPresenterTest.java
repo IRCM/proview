@@ -511,7 +511,7 @@ public class StandardAdditionViewPresenterTest {
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         design.explanation.getErrorMessage().getFormattedHtmlMessage());
-    verify(standardAdditionService, never()).undoFailed(any(), any(), anyBoolean());
+    verify(standardAdditionService, never()).undo(any(), any(), anyBoolean());
   }
 
   @Test
@@ -528,7 +528,7 @@ public class StandardAdditionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(standardAdditionService).undoFailed(standardAdditionCaptor.capture(),
+    verify(standardAdditionService).undo(standardAdditionCaptor.capture(),
         eq("test explanation"), eq(false));
     StandardAddition savedStandardAddition = standardAdditionCaptor.getValue();
     assertEquals((Long) 5L, savedStandardAddition.getId());
@@ -552,7 +552,7 @@ public class StandardAdditionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(standardAdditionService).undoFailed(standardAdditionCaptor.capture(),
+    verify(standardAdditionService).undo(standardAdditionCaptor.capture(),
         eq("test explanation"), eq(true));
     StandardAddition savedStandardAddition = standardAdditionCaptor.getValue();
     assertEquals((Long) 5L, savedStandardAddition.getId());

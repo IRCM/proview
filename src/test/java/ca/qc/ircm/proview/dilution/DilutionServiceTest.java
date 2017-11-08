@@ -38,7 +38,6 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -107,7 +106,6 @@ public class DilutionServiceTest {
         LocalDateTime.of(2011, 11, 9, 15, 3, 54).atZone(ZoneId.systemDefault()).toInstant(),
         dilution.getInsertTime());
     assertEquals(false, dilution.isDeleted());
-    assertEquals(null, dilution.getDeletionType());
     assertEquals(null, dilution.getDeletionExplanation());
     List<DilutedSample> dilutedSamples = dilution.getTreatmentSamples();
     assertEquals(1, dilutedSamples.size());
@@ -152,7 +150,6 @@ public class DilutionServiceTest {
     assertNotNull(dilution.getId());
     dilution = dilutionService.get(dilution.getId());
     assertEquals(false, dilution.isDeleted());
-    assertEquals(null, dilution.getDeletionType());
     assertEquals(null, dilution.getDeletionExplanation());
     assertEquals(user, dilution.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -196,7 +193,6 @@ public class DilutionServiceTest {
     assertNotNull(dilution.getId());
     dilution = dilutionService.get(dilution.getId());
     assertEquals(false, dilution.isDeleted());
-    assertEquals(null, dilution.getDeletionType());
     assertEquals(null, dilution.getDeletionExplanation());
     assertEquals(user, dilution.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -320,33 +316,13 @@ public class DilutionServiceTest {
   }
 
   @Test
-  public void undoErroneous() {
-    Dilution dilution = entityManager.find(Dilution.class, 210L);
-    entityManager.detach(dilution);
-    when(dilutionActivityService.undoErroneous(any(Dilution.class), any(String.class)))
-        .thenReturn(activity);
-
-    dilutionService.undoErroneous(dilution, "undo unit test");
-
-    entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(dilutionActivityService).undoErroneous(eq(dilution), eq("undo unit test"));
-    verify(activityService).insert(eq(activity));
-    dilution = dilutionService.get(dilution.getId());
-    assertNotNull(dilution);
-    assertEquals(true, dilution.isDeleted());
-    assertEquals(Treatment.DeletionType.ERRONEOUS, dilution.getDeletionType());
-    assertEquals("undo unit test", dilution.getDeletionExplanation());
-  }
-
-  @Test
-  public void undoFailed_NoBan() {
+  public void undo_NoBan() {
     Dilution dilution = entityManager.find(Dilution.class, 210L);
     entityManager.detach(dilution);
     when(dilutionActivityService.undoFailed(any(Dilution.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    dilutionService.undoFailed(dilution, "fail unit test", false);
+    dilutionService.undo(dilution, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -356,7 +332,6 @@ public class DilutionServiceTest {
     dilution = dilutionService.get(dilution.getId());
     assertNotNull(dilution);
     assertEquals(true, dilution.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
     assertEquals("fail unit test", dilution.getDeletionExplanation());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -364,13 +339,13 @@ public class DilutionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban() {
+  public void undo_Ban() {
     Dilution dilution = entityManager.find(Dilution.class, 210L);
     entityManager.detach(dilution);
     when(dilutionActivityService.undoFailed(any(Dilution.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    dilutionService.undoFailed(dilution, "fail unit test", true);
+    dilutionService.undo(dilution, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -380,7 +355,6 @@ public class DilutionServiceTest {
     dilution = dilutionService.get(dilution.getId());
     assertNotNull(dilution);
     assertEquals(true, dilution.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
     assertEquals("fail unit test", dilution.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 608L);
     assertEquals(true, well.isBanned());
@@ -394,13 +368,13 @@ public class DilutionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer() {
+  public void undo_Ban_Transfer() {
     Dilution dilution = entityManager.find(Dilution.class, 211L);
     entityManager.detach(dilution);
     when(dilutionActivityService.undoFailed(any(Dilution.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    dilutionService.undoFailed(dilution, "fail unit test", true);
+    dilutionService.undo(dilution, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -410,7 +384,6 @@ public class DilutionServiceTest {
     dilution = dilutionService.get(dilution.getId());
     assertNotNull(dilution);
     assertEquals(true, dilution.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
     assertEquals("fail unit test", dilution.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 24L);
     assertEquals(true, tube.isBanned());
@@ -430,13 +403,13 @@ public class DilutionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation() {
+  public void undo_Ban_Fractionation() {
     Dilution dilution = entityManager.find(Dilution.class, 213L);
     entityManager.detach(dilution);
     when(dilutionActivityService.undoFailed(any(Dilution.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    dilutionService.undoFailed(dilution, "fail unit test", true);
+    dilutionService.undo(dilution, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -446,7 +419,6 @@ public class DilutionServiceTest {
     Dilution test = dilutionService.get(dilution.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 26L);
     assertEquals(true, tube.isBanned());
@@ -472,13 +444,13 @@ public class DilutionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer_Fractionation() {
+  public void undo_Ban_Transfer_Fractionation() {
     Dilution dilution = entityManager.find(Dilution.class, 216L);
     entityManager.detach(dilution);
     when(dilutionActivityService.undoFailed(any(Dilution.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    dilutionService.undoFailed(dilution, "fail unit test", true);
+    dilutionService.undo(dilution, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -488,7 +460,6 @@ public class DilutionServiceTest {
     dilution = dilutionService.get(dilution.getId());
     assertNotNull(dilution);
     assertEquals(true, dilution.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, dilution.getDeletionType());
     assertEquals("fail unit test", dilution.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 28L);
     assertEquals(true, tube.isBanned());
@@ -520,14 +491,14 @@ public class DilutionServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Fractionation_Transfer() {
+  public void undo_Ban_Fractionation_Transfer() {
     Dilution dilution = entityManager.find(Dilution.class, 219L);
     entityManager.detach(dilution);
     when(dilutionActivityService.undoFailed(any(Dilution.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
     // Dilution failed.
-    dilutionService.undoFailed(dilution, "fail unit test", true);
+    dilutionService.undo(dilution, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -537,7 +508,6 @@ public class DilutionServiceTest {
     Dilution test = dilutionService.get(dilution.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 29L);
     assertEquals(true, tube.isBanned());
@@ -575,14 +545,14 @@ public class DilutionServiceTest {
   }
 
   @Test
-  public void undoFailed_NotBanErroneousFractionation() {
+  public void undo_NotBanErroneousFractionation() {
     Dilution dilution = entityManager.find(Dilution.class, 322L);
     entityManager.detach(dilution);
     when(dilutionActivityService.undoFailed(any(Dilution.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
     // Dilution failed.
-    dilutionService.undoFailed(dilution, "fail unit test", true);
+    dilutionService.undo(dilution, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -592,7 +562,6 @@ public class DilutionServiceTest {
     Dilution test = dilutionService.get(dilution.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube tube = entityManager.find(Tube.class, 2278L);
     assertEquals(true, tube.isBanned());

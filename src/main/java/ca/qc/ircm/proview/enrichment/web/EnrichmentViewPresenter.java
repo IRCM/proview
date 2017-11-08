@@ -257,7 +257,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
     if (validateRemove()) {
       logger.debug("Removing enrichment {}", binder.getBean());
       Enrichment enrichment = binder.getBean();
-      enrichmentService.undoFailed(enrichment, design.explanation.getValue(),
+      enrichmentService.undo(enrichment, design.explanation.getValue(),
           design.banContainers.getValue());
       MessageResource resources = view.getResources();
       view.showTrayNotification(resources.message(REMOVED,

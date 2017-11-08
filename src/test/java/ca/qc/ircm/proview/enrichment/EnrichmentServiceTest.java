@@ -42,7 +42,6 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -115,7 +114,6 @@ public class EnrichmentServiceTest {
         LocalDateTime.of(2011, 11, 9, 15, 20, 21).atZone(ZoneId.systemDefault()).toInstant(),
         enrichment.getInsertTime());
     assertEquals(false, enrichment.isDeleted());
-    assertEquals(null, enrichment.getDeletionType());
     assertEquals(null, enrichment.getDeletionExplanation());
     List<EnrichedSample> enrichedSamples = enrichment.getTreatmentSamples();
     assertEquals(1, enrichedSamples.size());
@@ -159,7 +157,6 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment.getId());
     enrichment = enrichmentService.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
-    assertEquals(null, enrichment.getDeletionType());
     assertEquals(null, enrichment.getDeletionExplanation());
     assertEquals(user, enrichment.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -202,7 +199,6 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment.getId());
     enrichment = enrichmentService.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
-    assertEquals(null, enrichment.getDeletionType());
     assertEquals(null, enrichment.getDeletionExplanation());
     assertEquals(user, enrichment.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -313,7 +309,6 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment.getId());
     enrichment = enrichmentService.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
-    assertEquals(null, enrichment.getDeletionType());
     assertEquals(null, enrichment.getDeletionExplanation());
     assertEquals(user, enrichment.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -408,33 +403,13 @@ public class EnrichmentServiceTest {
   }
 
   @Test
-  public void undo_Erroneous() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
-    entityManager.detach(enrichment);
-    when(enrichmentActivityService.undoErroneous(any(Enrichment.class), any(String.class)))
-        .thenReturn(activity);
-
-    enrichmentService.undoErroneous(enrichment, "undo unit test");
-
-    entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(enrichmentActivityService).undoErroneous(eq(enrichment), eq("undo unit test"));
-    verify(activityService).insert(eq(activity));
-    enrichment = enrichmentService.get(enrichment.getId());
-    assertNotNull(enrichment);
-    assertEquals(true, enrichment.isDeleted());
-    assertEquals(Treatment.DeletionType.ERRONEOUS, enrichment.getDeletionType());
-    assertEquals("undo unit test", enrichment.getDeletionExplanation());
-  }
-
-  @Test
-  public void undo_Failed_NoBan() {
+  public void undo_NoBan() {
     Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
     entityManager.detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undoFailed(enrichment, "fail unit test", false);
+    enrichmentService.undo(enrichment, "fail unit test", false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -444,20 +419,19 @@ public class EnrichmentServiceTest {
     enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(true, bannedContainers.isEmpty());
   }
 
   @Test
-  public void undo_Failed_Ban() {
+  public void undo_Ban() {
     Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
     entityManager.detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undo(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -467,7 +441,6 @@ public class EnrichmentServiceTest {
     enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 800L);
     assertEquals(true, well.isBanned());
@@ -480,13 +453,13 @@ public class EnrichmentServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer() {
+  public void undo_Ban_Transfer() {
     Enrichment enrichment = entityManager.find(Enrichment.class, 225L);
     entityManager.detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undo(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -496,7 +469,6 @@ public class EnrichmentServiceTest {
     enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 801L);
     assertEquals(true, well.isBanned());
@@ -515,13 +487,13 @@ public class EnrichmentServiceTest {
   }
 
   @Test
-  public void undo_Failed_Ban_Fractionation() {
+  public void undo_Ban_Fractionation() {
     Enrichment enrichment = entityManager.find(Enrichment.class, 226L);
     entityManager.detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undo(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
@@ -531,7 +503,6 @@ public class EnrichmentServiceTest {
     enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 825L);
     assertEquals(true, well.isBanned());
@@ -556,13 +527,13 @@ public class EnrichmentServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Transfer_Fractionation() {
+  public void undo_Ban_Transfer_Fractionation() {
     Enrichment enrichment = entityManager.find(Enrichment.class, 227L);
     entityManager.detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undo(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
@@ -571,7 +542,6 @@ public class EnrichmentServiceTest {
     enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 849L);
     assertEquals(true, well.isBanned());
@@ -602,13 +572,13 @@ public class EnrichmentServiceTest {
   }
 
   @Test
-  public void undo_Failed_Ban_Fractionation_Transfer() {
+  public void undo_Ban_Fractionation_Transfer() {
     Enrichment enrichment = entityManager.find(Enrichment.class, 228L);
     entityManager.detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undoFailed(enrichment, "fail unit test", true);
+    enrichmentService.undo(enrichment, "fail unit test", true);
 
     entityManager.flush();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
@@ -617,7 +587,6 @@ public class EnrichmentServiceTest {
     enrichment = enrichmentService.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, enrichment.getDeletionType());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
     Well well = entityManager.find(Well.class, 873L);
     assertEquals(true, well.isBanned());

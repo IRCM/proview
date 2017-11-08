@@ -22,7 +22,6 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -136,52 +135,22 @@ public class StandardAdditionService extends BaseTreatmentService {
   }
 
   /**
-   * Undo erroneous standard addition that never actually occurred. This method is usually called
-   * shortly after action was inserted into the database. The user realises that the samples checked
-   * for standard addition are not the right ones. So, in practice, the standard addition never
-   * actually occurred.
+   * Undo standard addition.
    *
    * @param standardAddition
-   *          erroneous standard addition to undo
+   *          standard addition to undo
    * @param explanation
-   *          explanation of what was incorrect with the standard addition
-   */
-  public void undoErroneous(StandardAddition standardAddition, String explanation) {
-    authorizationService.checkAdminRole();
-
-    standardAddition.setDeleted(true);
-    standardAddition.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    standardAddition.setDeletionExplanation(explanation);
-
-    // Log changes.
-    Activity activity =
-        standardAdditionActivityService.undoErroneous(standardAddition, explanation);
-    activityService.insert(activity);
-
-    entityManager.merge(standardAddition);
-  }
-
-  /**
-   * Report that a problem occurred during standard addition causing it to fail. Problems usually
-   * occur because of an experimental error. In this case, the standard addition was done but the
-   * incorrect standard addition could only be detected later in the sample processing. Thus the
-   * standard addition is not undone but flagged as having failed.
-   *
-   * @param standardAddition
-   *          standard addition to flag as having failed
-   * @param failedDescription
-   *          description of the problem that occurred
+   *          explanation
    * @param banContainers
    *          true if containers used in standard addition should be banned, this will also ban any
    *          container were samples were transfered after standard addition
    */
-  public void undoFailed(StandardAddition standardAddition, String failedDescription,
+  public void undo(StandardAddition standardAddition, String explanation,
       boolean banContainers) {
     authorizationService.checkAdminRole();
 
     standardAddition.setDeleted(true);
-    standardAddition.setDeletionType(Treatment.DeletionType.FAILED);
-    standardAddition.setDeletionExplanation(failedDescription);
+    standardAddition.setDeletionExplanation(explanation);
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during standardAddition.
@@ -197,8 +166,8 @@ public class StandardAdditionService extends BaseTreatmentService {
     }
 
     // Log changes.
-    Activity activity = standardAdditionActivityService.undoFailed(standardAddition,
-        failedDescription, bannedContainers);
+    Activity activity =
+        standardAdditionActivityService.undoFailed(standardAddition, explanation, bannedContainers);
     activityService.insert(activity);
 
     entityManager.merge(standardAddition);
