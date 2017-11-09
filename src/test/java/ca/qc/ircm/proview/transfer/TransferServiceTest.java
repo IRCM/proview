@@ -462,7 +462,7 @@ public class TransferServiceTest {
     Transfer transfer = new Transfer();
     transfer.setTreatmentSamples(transferedSamples);
     when(transferActivityService.insert(any(Transfer.class))).thenReturn(activity);
-  
+
     try {
       transferService.insert(transfer);
     } catch (IllegalArgumentException e) {
@@ -538,10 +538,9 @@ public class TransferServiceTest {
 
     try {
       transferService.undoErroneous(transfer, "undo unit test");
-      fail("Expected DestinationUsedInTreatmentException to be thrown");
-    } catch (DestinationUsedInTreatmentException e) {
-      assertEquals(1, e.containers.size());
-      assertTrue(findContainer(e.containers, SampleContainerType.TUBE, 65L).isPresent());
+      fail("Expected IllegalArgumentException to be thrown");
+    } catch (IllegalArgumentException e) {
+      // Success.
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -553,10 +552,9 @@ public class TransferServiceTest {
 
     try {
       transferService.undoErroneous(transfer, "undo unit test");
-      fail("Expected DestinationUsedInTreatmentException to be thrown");
-    } catch (DestinationUsedInTreatmentException e) {
-      assertEquals(1, e.containers.size());
-      assertTrue(findContainer(e.containers, SampleContainerType.TUBE, 66L).isPresent());
+      fail("Expected IllegalArgumentException to be thrown");
+    } catch (IllegalArgumentException e) {
+      // Success.
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -568,10 +566,9 @@ public class TransferServiceTest {
 
     try {
       transferService.undoErroneous(transfer, "undo unit test");
-      fail("Expected DestinationUsedInTreatmentException to be thrown");
-    } catch (DestinationUsedInTreatmentException e) {
-      assertEquals(1, e.containers.size());
-      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1076L).isPresent());
+      fail("Expected IllegalArgumentException to be thrown");
+    } catch (IllegalArgumentException e) {
+      // Success.
     }
     verify(authorizationService).checkAdminRole();
   }
@@ -583,10 +580,9 @@ public class TransferServiceTest {
 
     try {
       transferService.undoErroneous(transfer, "undo unit test");
-      fail("Expected DestinationUsedInTreatmentException to be thrown");
-    } catch (DestinationUsedInTreatmentException e) {
-      assertEquals(1, e.containers.size());
-      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1077).isPresent());
+      fail("Expected IllegalArgumentException to be thrown");
+    } catch (IllegalArgumentException e) {
+      // Success.
     }
     verify(authorizationService).checkAdminRole();
   }

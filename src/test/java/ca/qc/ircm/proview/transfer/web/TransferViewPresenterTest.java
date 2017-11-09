@@ -23,7 +23,10 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.test.utils.TestBenchUtils.items;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.BAN_CONTAINERS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.CONTAINER;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DELETED;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_CONTAINER_DUPLICATE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE;
@@ -39,6 +42,10 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.HEADER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.INVALID_CONTAINERS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.INVALID_TRANSFER;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.NO_CONTAINERS;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.REMOVE;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.REMOVED;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.REMOVE_NOTHING;
+import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.REMOVE_SAMPLES_FROM_CONTAINERS;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAVE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.SAVED;
@@ -61,6 +68,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
@@ -85,6 +94,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.transfer.TransferedSample;
+import ca.qc.ircm.proview.treatment.Treatment.DeletionType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
@@ -208,6 +218,8 @@ public class TransferViewPresenterTest {
 
     assertTrue(design.headerLabel.getStyleName().contains(HEADER));
     assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.deleted.getStyleName().contains(DELETED));
+    assertTrue(design.deleted.getStyleName().contains(ValoTheme.LABEL_FAILURE));
     assertTrue(design.typePanel.getStyleName().contains(TRANSFER_TYPE_PANEL));
     assertTrue(design.type.getStyleName().contains(TRANSFER_TYPE));
     assertTrue(design.transfersPanel.getStyleName().contains(TRANSFERS_PANEL));
@@ -222,6 +234,8 @@ public class TransferViewPresenterTest {
     assertTrue(design.test.getStyleName().contains(TEST));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
+    assertTrue(design.remove.getStyleName().contains(REMOVE));
+    assertTrue(design.remove.getStyleName().contains(ValoTheme.BUTTON_DANGER));
   }
 
   @Test
@@ -230,6 +244,7 @@ public class TransferViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.headerLabel.getValue());
+    assertEquals(resources.message(DELETED), design.deleted.getValue());
     assertEquals(resources.message(TRANSFER_TYPE_PANEL), design.typePanel.getCaption());
     for (SampleContainerType type : SampleContainerType.values()) {
       assertEquals(type.getLabel(locale), design.type.getItemCaptionGenerator().apply(type));
@@ -241,6 +256,7 @@ public class TransferViewPresenterTest {
     assertEquals(resources.message(DESTINATION_PLATES), design.destinationPlatesField.getCaption());
     assertEquals(resources.message(TEST), design.test.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());
+    assertEquals(resources.message(REMOVE), design.remove.getCaption());
   }
 
   @Test
@@ -1591,10 +1607,114 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  public void containersModification() {
+    presenter.init(view);
+    presenter.enter("");
+
+    assertEquals(REMOVE_SAMPLES_FROM_CONTAINERS, design.containersModification.getValue());
+    List<String> values = items(design.containersModification);
+    assertEquals(3, values.size());
+    assertTrue(values.contains(REMOVE_SAMPLES_FROM_CONTAINERS));
+    assertTrue(values.contains(BAN_CONTAINERS));
+    assertTrue(values.contains(REMOVE_NOTHING));
+  }
+
+  @Test
+  public void remove_NoExplanation() {
+    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
+        realPlateService, sampleContainerService, applicationName);
+    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    when(transferService.get(any())).thenReturn(transfer);
+    presenter.init(view);
+    presenter.enter("3");
+
+    design.remove.click();
+
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        design.explanation.getErrorMessage().getFormattedHtmlMessage());
+    verify(transferService, never()).undoErroneous(any(), any());
+    verify(transferService, never()).undoFailed(any(), any(), anyBoolean());
+  }
+
+  @Test
+  public void remove() {
+    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
+        realPlateService, sampleContainerService, applicationName);
+    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    when(transferService.get(any())).thenReturn(transfer);
+    presenter.init(view);
+    presenter.enter("3");
+    design.explanation.setValue("test explanation");
+
+    design.remove.click();
+
+    verify(view, never()).showError(any());
+    verify(transferService).undoErroneous(transferCaptor.capture(), eq("test explanation"));
+    Transfer savedTransfer = transferCaptor.getValue();
+    assertEquals((Long) 3L, savedTransfer.getId());
+    verify(view).showTrayNotification(resources.message(REMOVED, transfer.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(TransferView.VIEW_NAME, "3");
+  }
+
+  @Test
+  public void remove_BanContainers() {
+    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
+        realPlateService, sampleContainerService, applicationName);
+    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    when(transferService.get(any())).thenReturn(transfer);
+    presenter.init(view);
+    presenter.enter("3");
+    design.explanation.setValue("test explanation");
+    design.containersModification.setValue(BAN_CONTAINERS);
+
+    design.remove.click();
+
+    verify(view, never()).showError(any());
+    verify(transferService).undoFailed(transferCaptor.capture(), eq("test explanation"), eq(true));
+    Transfer savedTransfer = transferCaptor.getValue();
+    assertEquals((Long) 3L, savedTransfer.getId());
+    verify(view).showTrayNotification(resources.message(REMOVED, transfer.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(TransferView.VIEW_NAME, "3");
+  }
+
+  @Test
+  public void remove_Nothing() {
+    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
+        realPlateService, sampleContainerService, applicationName);
+    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    when(transferService.get(any())).thenReturn(transfer);
+    presenter.init(view);
+    presenter.enter("3");
+    design.explanation.setValue("test explanation");
+    design.containersModification.setValue(REMOVE_NOTHING);
+
+    design.remove.click();
+
+    verify(view, never()).showError(any());
+    verify(transferService).undoFailed(transferCaptor.capture(), eq("test explanation"), eq(false));
+    Transfer savedTransfer = transferCaptor.getValue();
+    assertEquals((Long) 3L, savedTransfer.getId());
+    verify(view).showTrayNotification(resources.message(REMOVED, transfer.getTreatmentSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).navigateTo(TransferView.VIEW_NAME, "3");
+  }
+
+  @Test
   public void enter_Empty() {
     presenter.init(view);
     presenter.enter("");
 
+    assertTrue(design.typePanel.isVisible());
+    assertFalse(design.deleted.isVisible());
+    assertTrue(design.transfersPanel.isVisible());
+    assertTrue(design.destination.isVisible());
+    assertFalse(design.down.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.removeLayout.isVisible());
     ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
     assertEquals(samples.size(), tss.getItems().size());
     for (Sample sample : samples) {
@@ -1629,10 +1749,40 @@ public class TransferViewPresenterTest {
 
     verify(transferService).get(3L);
     assertFalse(design.typePanel.isVisible());
+    assertFalse(design.deleted.isVisible());
     assertTrue(design.transfersPanel.isVisible());
     assertFalse(design.destination.isVisible());
     assertFalse(design.down.isVisible());
+    assertTrue(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
+    assertTrue(design.removeLayout.isVisible());
+    List<TransferedSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
+    assertEquals(transfer.getTreatmentSamples().size(), tss.size());
+    for (int i = 0; i < transfer.getTreatmentSamples().size(); i++) {
+      assertEquals(transfer.getTreatmentSamples().get(i), tss.get(i));
+    }
+  }
+
+  @Test
+  public void enter_TransferDeleted() {
+    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
+        realPlateService, sampleContainerService, applicationName);
+    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    transfer.setDeleted(true);
+    transfer.setDeletionType(DeletionType.FAILED);
+    when(transferService.get(any())).thenReturn(transfer);
+    presenter.init(view);
+    presenter.enter("3");
+
+    verify(transferService).get(3L);
+    assertFalse(design.typePanel.isVisible());
+    assertTrue(design.deleted.isVisible());
+    assertTrue(design.transfersPanel.isVisible());
+    assertFalse(design.destination.isVisible());
+    assertFalse(design.down.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
+    assertFalse(design.save.isVisible());
+    assertFalse(design.removeLayout.isVisible());
     List<TransferedSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
     assertEquals(transfer.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < transfer.getTreatmentSamples().size(); i++) {

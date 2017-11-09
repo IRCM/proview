@@ -5,9 +5,11 @@ import com.vaadin.annotations.DesignRoot;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.RadioButtonGroup;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 
@@ -24,6 +26,7 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class TransferViewDesign extends VerticalLayout {
   protected Label headerLabel;
+  protected Label deleted;
   protected Panel typePanel;
   protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleContainerType> type;
   protected Panel transfersPanel;
@@ -35,7 +38,12 @@ public class TransferViewDesign extends VerticalLayout {
   protected Panel destinationPlatePanel;
   protected VerticalLayout destinationPlateFormLayout;
   protected Button test;
+  protected Panel explanationPanel;
+  protected TextArea explanation;
   protected Button save;
+  protected HorizontalLayout removeLayout;
+  protected Button remove;
+  protected RadioButtonGroup<java.lang.String> containersModification;
 
   public TransferViewDesign() {
     Design.read(this);

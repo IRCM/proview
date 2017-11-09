@@ -84,6 +84,7 @@ import javax.inject.Inject;
 public class TransferViewPresenter implements BinderValidator {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
+  public static final String DELETED = "deleted";
   public static final String TRANSFER_TYPE_PANEL = "typePanel";
   public static final String TRANSFER_TYPE = "type";
   public static final String TRANSFERS_PANEL = "transfersPanel";
@@ -104,20 +105,29 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE =
       "destinationPlate.notEnoughFreeSpace";
   public static final String TEST = "test";
+  public static final String EXPLANATION = "explanation";
+  public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
   public static final String DESTINATION_SAMPLE = sample.getMetadata().getName();
   public static final String DESTINATION_SAMPLE_NAME =
       DESTINATION_SAMPLE + "." + sample.name.getMetadata().getName();
   public static final String DOWN = "down";
+  public static final String REMOVE = "remove";
+  public static final String REMOVED = "removed";
+  public static final String REMOVE_SAMPLES_FROM_CONTAINERS = "removeSamplesFromContainers";
+  public static final String CONTAINERS_MODIFICATION = "containersModification";
+  public static final String BAN_CONTAINERS = "banContainers";
+  public static final String REMOVE_NOTHING = "removeNothing";
   public static final String NO_CONTAINERS = "containers.empty";
   public static final String INVALID_CONTAINERS = "containers.invalid";
   public static final String SPLIT_CONTAINER_PARAMETERS = ",";
   public static final String INVALID_TRANSFER = "transfer.invalid";
+  public static final String DESTINATION_IN_USE = "destinationInUse";
   private static final Logger logger = LoggerFactory.getLogger(TransferViewPresenter.class);
   private TransferView view;
   private TransferViewDesign design;
-  private boolean readOnly;
+  private Binder<Transfer> binder = new BeanValidationBinder<>(Transfer.class);
   private List<TransferedSample> transfers = new ArrayList<>();
   private Map<TransferedSample, Binder<TransferedSample>> transferBinders = new HashMap<>();
   private Map<TransferedSample, ComboBox<Tube>> destinationTubes = new HashMap<>();
@@ -159,6 +169,7 @@ public class TransferViewPresenter implements BinderValidator {
     logger.debug("Transfer view");
     this.view = view;
     design = view.design;
+    binder.setBean(new Transfer());
     prepareComponents();
     design.type.setValue(WELL);
     updateVisibility();
@@ -172,6 +183,9 @@ public class TransferViewPresenter implements BinderValidator {
     design.headerLabel.addStyleName(HEADER);
     design.headerLabel.addStyleName(ValoTheme.LABEL_H1);
     design.headerLabel.setValue(resources.message(HEADER));
+    design.deleted.addStyleName(DELETED);
+    design.deleted.setValue(resources.message(DELETED));
+    design.deleted.setVisible(false);
     design.typePanel.addStyleName(TRANSFER_TYPE_PANEL);
     design.typePanel.addStyleName(REQUIRED);
     design.typePanel.setCaption(resources.message(TRANSFER_TYPE_PANEL));
@@ -212,9 +226,22 @@ public class TransferViewPresenter implements BinderValidator {
     design.test.addStyleName(TEST);
     design.test.setCaption(resources.message(TEST));
     design.test.addClickListener(e -> test());
+    design.explanationPanel.addStyleName(EXPLANATION_PANEL);
+    design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
+    design.explanationPanel.setVisible(false);
+    design.explanation.addStyleName(EXPLANATION);
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));
     design.save.addClickListener(e -> save());
+    design.removeLayout.setVisible(false);
+    design.remove.addStyleName(REMOVE);
+    design.remove.setCaption(resources.message(REMOVE));
+    design.remove.addClickListener(e -> remove());
+    design.containersModification.addStyleName(CONTAINERS_MODIFICATION);
+    design.containersModification.setItemCaptionGenerator(item -> resources.message(item));
+    design.containersModification.setItems(REMOVE_SAMPLES_FROM_CONTAINERS, BAN_CONTAINERS,
+        REMOVE_NOTHING);
+    design.containersModification.setValue(REMOVE_SAMPLES_FROM_CONTAINERS);
   }
 
   private void prepareTransfersGrid() {
@@ -230,7 +257,7 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfers.addColumn(
         ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
             : "")
-        .setId(DESTINATION).setCaption(resources.message(DESTINATION));
+        .setId(DESTINATION).setCaption(resources.message(DESTINATION)).setHidden(true);
     design.transfers.addColumn(ts -> destinationTube(ts), new ComponentRenderer())
         .setId(DESTINATION_TUBE).setCaption(resources.message(DESTINATION_TUBE)).setSortable(false);
     design.transfers.addColumn(ts -> destinationWell(ts), new ComponentRenderer())
@@ -285,7 +312,7 @@ public class TransferViewPresenter implements BinderValidator {
     final MessageResource generalResources = view.getGeneralResources();
     final SampleContainerType destinationType = design.type.getValue();
     design.transfers.getDataProvider().refreshAll();
-    if (!readOnly) {
+    if (binder.getBean().getId() == null) {
       transfers.forEach(ts -> {
         HasValue<? extends SampleContainer> destination =
             destinationType == WELL ? destinationWell(ts) : destinationTube(ts);
@@ -301,15 +328,13 @@ public class TransferViewPresenter implements BinderValidator {
   private void updateVisibility() {
     final SampleContainerType sourceType = sourceType();
     final SampleContainerType destinationType = design.type.getValue();
-    design.typePanel.setVisible(!readOnly);
-    design.transfers.getColumn(DESTINATION).setHidden(!readOnly);
-    design.transfers.getColumn(DESTINATION_TUBE)
-        .setHidden(readOnly || sourceType != TUBE || destinationType != TUBE);
-    design.transfers.getColumn(DESTINATION_WELL)
-        .setHidden(readOnly || sourceType != TUBE || destinationType != WELL);
-    design.down.setVisible(!readOnly && sourceType == TUBE && destinationType == WELL);
-    design.destination.setVisible(!readOnly && destinationType == WELL);
-    design.save.setVisible(!readOnly);
+    design.transfers.getColumn(DESTINATION_TUBE).setHidden(
+        binder.getBean().getId() != null || sourceType != TUBE || destinationType != TUBE);
+    design.transfers.getColumn(DESTINATION_WELL).setHidden(
+        binder.getBean().getId() != null || sourceType != TUBE || destinationType != WELL);
+    design.down.setVisible(
+        binder.getBean().getId() == null && sourceType == TUBE && destinationType == WELL);
+    design.destination.setVisible(binder.getBean().getId() == null && destinationType == WELL);
   }
 
   private void updateDestinationPlate() {
@@ -546,6 +571,41 @@ public class TransferViewPresenter implements BinderValidator {
     }
   }
 
+  private boolean validateRemove() {
+    logger.trace("Validate remove digestion {}", binder.getBean());
+    if (design.explanation.getValue().isEmpty()) {
+      final MessageResource generalResources = view.getGeneralResources();
+      String message = generalResources.message(REQUIRED);
+      logger.debug("Validation error: {}", message);
+      design.explanation.setComponentError(new UserError(message));
+      view.showError(generalResources.message(FIELD_NOTIFICATION));
+      return false;
+    }
+    return true;
+  }
+
+  private void remove() {
+    if (validateRemove()) {
+      logger.debug("Removing digestion {}", binder.getBean());
+      final MessageResource resources = view.getResources();
+      Transfer transfer = binder.getBean();
+      if (design.containersModification.getValue() == REMOVE_SAMPLES_FROM_CONTAINERS) {
+        try {
+          transferService.undoErroneous(transfer, design.explanation.getValue());
+        } catch (IllegalArgumentException e) {
+          view.showError(resources.message(DESTINATION_IN_USE));
+          return;
+        }
+      } else {
+        transferService.undoFailed(transfer, design.explanation.getValue(),
+            design.containersModification.getValue() == BAN_CONTAINERS);
+      }
+      view.showTrayNotification(resources.message(REMOVED,
+          transfers.stream().map(ts -> ts.getSample().getId()).distinct().count()));
+      view.navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
+    }
+  }
+
   private boolean validateContainersParameters(String parameters) {
     boolean valid = true;
     String[] rawIds = parameters.split(SPLIT_CONTAINER_PARAMETERS, -1);
@@ -608,8 +668,14 @@ public class TransferViewPresenter implements BinderValidator {
         logger.debug("Set transfer {}", id);
         Transfer transfer = transferService.get(id);
         if (transfer != null) {
+          binder.setBean(transfer);
           transfers = transfer.getTreatmentSamples();
-          readOnly = true;
+          design.typePanel.setVisible(false);
+          design.transfers.getColumn(DESTINATION).setHidden(false);
+          design.deleted.setVisible(transfer.isDeleted());
+          design.explanationPanel.setVisible(!transfer.isDeleted());
+          design.save.setVisible(false);
+          design.removeLayout.setVisible(!transfer.isDeleted());
         } else {
           view.showWarning(resources.message(INVALID_TRANSFER));
         }

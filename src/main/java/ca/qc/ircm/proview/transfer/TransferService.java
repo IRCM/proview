@@ -151,11 +151,10 @@ public class TransferService extends BaseTreatmentService {
    *          erroneous transfer to undo
    * @param explanation
    *          explanation of what was incorrect with the transfer
-   * @throws DestinationUsedInTreatmentException
+   * @throws IllegalArgumentException
    *           destination container(s) is used in another treatment and sample cannot be remove
    */
-  public void undoErroneous(Transfer transfer, String explanation)
-      throws DestinationUsedInTreatmentException {
+  public void undoErroneous(Transfer transfer, String explanation) {
     authorizationService.checkAdminRole();
 
     transfer.setDeleted(true);
@@ -172,8 +171,7 @@ public class TransferService extends BaseTreatmentService {
       }
     }
     if (!removeFailed.isEmpty()) {
-      throw new DestinationUsedInTreatmentException("Cannot remove sample from all destinations",
-          removeFailed);
+      throw new IllegalArgumentException("Cannot remove sample from all destinations");
     }
     for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
       SampleContainer destination = transferedSample.getDestinationContainer();
