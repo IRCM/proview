@@ -61,14 +61,14 @@ public class SubmissionWindowTest extends SubmissionsViewPageObject {
   public void buttonExistence_Owner() throws Throwable {
     open();
 
-    clickViewSubmissionByRow(0);
+    clickViewSubmissionByRow(1);
     assertNotNull(findElement(className(WINDOW_STYLE)));
     WindowElement window1 =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
     assertFalse(optional(() -> window1.findElement(className(UPDATE))).isPresent());
     window1.close();
 
-    clickViewSubmissionByRow(12);
+    clickViewSubmissionByRow(13);
     assertNotNull(findElement(className(WINDOW_STYLE)));
     WindowElement window2 =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
@@ -82,14 +82,14 @@ public class SubmissionWindowTest extends SubmissionsViewPageObject {
     open();
     manager = true;
 
-    clickViewSubmissionByRow(0);
+    clickViewSubmissionByRow(1);
     assertNotNull(findElement(className(WINDOW_STYLE)));
     WindowElement window1 =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
     assertFalse(optional(() -> window1.findElement(className(UPDATE))).isPresent());
     window1.close();
 
-    clickViewSubmissionByRow(12);
+    clickViewSubmissionByRow(13);
     assertNotNull(findElement(className(WINDOW_STYLE)));
     WindowElement window2 =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
@@ -103,14 +103,14 @@ public class SubmissionWindowTest extends SubmissionsViewPageObject {
     open();
     admin = true;
 
-    clickViewSubmissionByRow(0);
+    clickViewSubmissionByRow(1);
     assertNotNull(findElement(className(WINDOW_STYLE)));
     WindowElement window1 =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
     assertTrue(optional(() -> window1.findElement(className(UPDATE))).isPresent());
     window1.close();
 
-    clickViewSubmissionByRow(12);
+    clickViewSubmissionByRow(13);
     assertNotNull(findElement(className(WINDOW_STYLE)));
     WindowElement window2 =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
@@ -122,12 +122,12 @@ public class SubmissionWindowTest extends SubmissionsViewPageObject {
   public void updateSubmission() throws Throwable {
     open();
 
-    clickViewSubmissionByRow(12);
+    clickViewSubmissionByRow(13);
 
     assertNotNull(findElement(className(SubmissionWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(12);
+    String experience = experienceByRow(13);
     assertTrue(resources(SubmissionWindow.class).message(SubmissionWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
     assertTrue(

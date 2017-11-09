@@ -142,12 +142,12 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void viewSubmission() throws Throwable {
     open();
 
-    clickViewSubmissionByRow(0);
+    clickViewSubmissionByRow(1);
 
     assertNotNull(findElement(className(SubmissionWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(0);
+    String experience = experienceByRow(1);
     assertTrue(resources(SubmissionWindow.class).message(SubmissionWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
     assertTrue(
@@ -158,12 +158,12 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void viewSubmissionResults() throws Throwable {
     open();
 
-    clickViewSubmissionResultsByRow(2);
+    clickViewSubmissionResultsByRow(3);
 
     assertNotNull(findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(2);
+    String experience = experienceByRow(3);
     assertTrue(resources(SubmissionAnalysesWindow.class)
         .message(SubmissionAnalysesWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
@@ -176,12 +176,12 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     admin = true;
     open();
 
-    clickViewSubmissionTreatmentsByRow(2);
+    clickViewSubmissionTreatmentsByRow(3);
 
     assertNotNull(findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(2);
+    String experience = experienceByRow(3);
     assertTrue(resources(SubmissionTreatmentsWindow.class)
         .message(SubmissionTreatmentsWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
@@ -194,12 +194,12 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     admin = true;
     open();
 
-    clickViewSubmissionHistoryByRow(2);
+    clickViewSubmissionHistoryByRow(3);
 
     assertNotNull(findElement(className(SubmissionHistoryWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionHistoryWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(2);
+    String experience = experienceByRow(3);
     assertTrue(
         resources(SubmissionHistoryWindow.class).message(SubmissionHistoryWindow.TITLE, experience)
             .contains(submissionWindow.getCaption()));
@@ -229,7 +229,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void selectContainers() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(1, 3);
+    selectSubmissions(2, 4);
 
     clickSelectContainersButton();
 
@@ -248,7 +248,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void updateStatus() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(1, 3);
+    selectSubmissions(2, 4);
 
     clickUpdateStatusButton();
 
@@ -260,7 +260,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void transfer() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(3);
+    selectSubmissions(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -276,7 +276,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void digestion() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(3);
+    selectSubmissions(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -292,7 +292,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void enrichment() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(3);
+    selectSubmissions(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -308,7 +308,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void solubilisation() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(3);
+    selectSubmissions(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -324,7 +324,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void dilution() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(3);
+    selectSubmissions(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -340,7 +340,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void standardAddition() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(3);
+    selectSubmissions(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -356,7 +356,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void msAnalysis() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(3);
+    selectSubmissions(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
