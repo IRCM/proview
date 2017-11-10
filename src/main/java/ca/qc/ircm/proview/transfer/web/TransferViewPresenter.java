@@ -589,16 +589,13 @@ public class TransferViewPresenter implements BinderValidator {
       logger.debug("Removing digestion {}", binder.getBean());
       final MessageResource resources = view.getResources();
       Transfer transfer = binder.getBean();
-      if (design.containersModification.getValue() == REMOVE_SAMPLES_FROM_CONTAINERS) {
-        try {
-          transferService.undoErroneous(transfer, design.explanation.getValue());
-        } catch (IllegalArgumentException e) {
-          view.showError(resources.message(DESTINATION_IN_USE));
-          return;
-        }
-      } else {
-        transferService.undoFailed(transfer, design.explanation.getValue(),
+      try {
+        transferService.undo(transfer, design.explanation.getValue(),
+            design.containersModification.getValue() == REMOVE_SAMPLES_FROM_CONTAINERS,
             design.containersModification.getValue() == BAN_CONTAINERS);
+      } catch (IllegalArgumentException e) {
+        view.showError(resources.message(DESTINATION_IN_USE));
+        return;
       }
       view.showTrayNotification(resources.message(REMOVED,
           transfers.stream().map(ts -> ts.getSample().getId()).distinct().count()));

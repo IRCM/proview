@@ -586,7 +586,7 @@ public class ActivityServiceTest {
 
     verify(authorizationService).checkAdminRole();
     assertEquals(
-        "Undone erroneous transfer\n"
+        "Undone transfer\n"
             + "Sample POLR2B_20150527_02 from tube POLR2B_20150527_02 to plate A_20141022_02 (A-3)",
         description);
   }

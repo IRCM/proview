@@ -141,14 +141,14 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoErroneous_Tube() {
+  public void undoRemoveSamples_Tube() {
     Fractionation fractionation = new Fractionation(2L);
     Tube destinationTube = new Tube(6L);
     Collection<SampleContainer> samplesRemoved = new ArrayList<>();
     samplesRemoved.add(destinationTube);
 
     Activity activity =
-        fractionationActivityService.undoErroneous(fractionation, "unit_test", samplesRemoved);
+        fractionationActivityService.undo(fractionation, "unit_test", samplesRemoved, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -165,7 +165,7 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoErroneous_Well() {
+  public void undoRemoveSamples_Well() {
     final Sample sample = new SubmissionSample(1L);
     Fractionation fractionation = new Fractionation(8L);
     Well destinationWell = new Well(128L);
@@ -173,7 +173,7 @@ public class FractionationActivityServiceTest {
     samplesRemoved.add(destinationWell);
 
     Activity activity =
-        fractionationActivityService.undoErroneous(fractionation, "unit_test", samplesRemoved);
+        fractionationActivityService.undo(fractionation, "unit_test", samplesRemoved, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -193,10 +193,10 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoFailed_NoBan_Tube() {
+  public void undo_NoBan_Tube() {
     Fractionation fractionation = new Fractionation(2L);
 
-    Activity activity = fractionationActivityService.undoFailed(fractionation, "unit_test", null);
+    Activity activity = fractionationActivityService.undo(fractionation, "unit_test", null, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -207,10 +207,10 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoFailed_NoBan_Well() {
+  public void undo_NoBan_Well() {
     Fractionation fractionation = new Fractionation(8L);
 
-    Activity activity = fractionationActivityService.undoFailed(fractionation, "unit_test", null);
+    Activity activity = fractionationActivityService.undo(fractionation, "unit_test", null, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -221,14 +221,14 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Tube() {
+  public void undo_Ban_Tube() {
     Fractionation fractionation = new Fractionation(2L);
     Tube destinationTube = new Tube(6L);
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationTube);
 
     Activity activity =
-        fractionationActivityService.undoFailed(fractionation, "unit_test", bannedContainers);
+        fractionationActivityService.undo(fractionation, "unit_test", null, bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -248,14 +248,14 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_Well() {
+  public void undo_Ban_Well() {
     Fractionation fractionation = new Fractionation(8L);
     Well destinationWell = new Well(128L);
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationWell);
 
     Activity activity =
-        fractionationActivityService.undoFailed(fractionation, "unit_test", bannedContainers);
+        fractionationActivityService.undo(fractionation, "unit_test", null, bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -275,7 +275,7 @@ public class FractionationActivityServiceTest {
   }
 
   @Test
-  public void undoFailed_LongDescription() throws Throwable {
+  public void undo_LongDescription() throws Throwable {
     Fractionation fractionation = new Fractionation(2L);
     Tube sourceTube = new Tube(1L);
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
@@ -287,7 +287,7 @@ public class FractionationActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     Activity activity =
-        fractionationActivityService.undoFailed(fractionation, reason, bannedContainers);
+        fractionationActivityService.undo(fractionation, reason, null, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

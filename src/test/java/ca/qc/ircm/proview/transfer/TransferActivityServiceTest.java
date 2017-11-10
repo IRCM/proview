@@ -136,14 +136,13 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoErroneous_Tube() {
+  public void undo_RemoveSamplesTube() {
     Transfer transfer = new Transfer(3L);
     Tube destinationTube = new Tube(7L);
     Collection<SampleContainer> samplesRemoved = new ArrayList<>();
     samplesRemoved.add(destinationTube);
 
-    Activity activity =
-        transferActivityService.undoErroneous(transfer, "unit_test", samplesRemoved);
+    Activity activity = transferActivityService.undo(transfer, "unit_test", samplesRemoved, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -160,14 +159,13 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoErroneous_Well() {
+  public void undo_RemoveSamplesWell() {
     Transfer transfer = new Transfer(9L);
     Well destinationWell = new Well(129L);
     Collection<SampleContainer> samplesRemoved = new ArrayList<>();
     samplesRemoved.add(destinationWell);
 
-    Activity activity =
-        transferActivityService.undoErroneous(transfer, "unit_test", samplesRemoved);
+    Activity activity = transferActivityService.undo(transfer, "unit_test", samplesRemoved, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -187,10 +185,10 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoFailed_NoBan_Tube() {
+  public void undo_NoBan_Tube() {
     Transfer transfer = new Transfer(3L);
 
-    Activity activity = transferActivityService.undoFailed(transfer, "unit_test", null);
+    Activity activity = transferActivityService.undo(transfer, "unit_test", null, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -201,10 +199,10 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoFailed_NoBan_Well() {
+  public void undo_NoBan_Well() {
     Transfer transfer = new Transfer(9L);
 
-    Activity activity = transferActivityService.undoFailed(transfer, "unit_test", null);
+    Activity activity = transferActivityService.undo(transfer, "unit_test", null, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -215,13 +213,13 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoFailed_Ban_Tube() {
+  public void undo_Ban_Tube() {
     Transfer transfer = new Transfer(3L);
     Tube destinationTube = new Tube(7L);
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationTube);
 
-    Activity activity = transferActivityService.undoFailed(transfer, "unit_test", bannedContainers);
+    Activity activity = transferActivityService.undo(transfer, "unit_test", null, bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -241,13 +239,13 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoFailed_Ban_Well() {
+  public void undo_Ban_Well() {
     Transfer transfer = new Transfer(9L);
     Well destinationWell = new Well(129L);
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationWell);
 
-    Activity activity = transferActivityService.undoFailed(transfer, "unit_test", bannedContainers);
+    Activity activity = transferActivityService.undo(transfer, "unit_test", null, bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -267,7 +265,7 @@ public class TransferActivityServiceTest {
   }
 
   @Test
-  public void logUndoFailed_LongDescription() throws Throwable {
+  public void undo_LongDescription() throws Throwable {
     Transfer transfer = new Transfer(9L);
     Tube sourceTube = new Tube(1L);
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
@@ -278,7 +276,7 @@ public class TransferActivityServiceTest {
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-    Activity activity = transferActivityService.undoFailed(transfer, reason, bannedContainers);
+    Activity activity = transferActivityService.undo(transfer, reason, null, bannedContainers);
 
     StringBuilder builder = new StringBuilder(reason);
     while (builder.toString().getBytes("UTF-8").length > 255) {

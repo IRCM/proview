@@ -39,12 +39,6 @@ public class Fractionation extends Treatment<Fraction> {
   @Column(name = "fractionationType", nullable = false)
   @Enumerated(STRING)
   private FractionationType fractionationType;
-  /**
-   * Type of error that forces treatment to be deleted.
-   */
-  @Column(name = "deletionType")
-  @Enumerated(STRING)
-  private DeletionType deletionType;
 
   public Fractionation() {
     super();
@@ -65,13 +59,5 @@ public class Fractionation extends Treatment<Fraction> {
 
   public void setFractionationType(FractionationType fractionationType) {
     this.fractionationType = fractionationType;
-  }
-
-  public DeletionType getDeletionType() {
-    return deletionType;
-  }
-
-  public void setDeletionType(DeletionType deletionType) {
-    this.deletionType = deletionType;
   }
 }

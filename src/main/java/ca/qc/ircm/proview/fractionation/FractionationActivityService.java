@@ -98,65 +98,35 @@ public class FractionationActivityService {
   }
 
   /**
-   * Creates an activity about fractionation being marked as erroneous.
+   * Creates an activity about fractionation being undone.
    *
    * @param fractionation
-   *          erroneous fractionation that was undone
+   *          fractionation that was undone
    * @param explanation
-   *          explanation of what was incorrect with the fractionation
+   *          explanation
    * @param samplesRemoved
    *          containers were sample was removed
-   * @return activity about fractionation being marked as erroneous
+   * @param bannedContainers
+   *          containers that were banned
+   * @return activity about fractionation being undone
    */
   @CheckReturnValue
-  public Activity undoErroneous(final Fractionation fractionation, final String explanation,
-      final Collection<SampleContainer> samplesRemoved) {
+  public Activity undo(final Fractionation fractionation, String explanation,
+      Collection<SampleContainer> samplesRemoved, Collection<SampleContainer> bannedContainers) {
     final User user = authorizationService.getCurrentUser();
 
-    // Log update for removed samples.
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (SampleContainer container : samplesRemoved) {
-      SampleContainer oldContainer = entityManager.find(SampleContainer.class, container.getId());
-      updateBuilders.add(
-          new RemoveSampleFromSampleContainerUpdateActivityBuilder().oldContainer(oldContainer));
-    }
 
-    // Keep updates that changed.
-    final List<UpdateActivity> updates = new ArrayList<>();
-    for (UpdateActivityBuilder builder : updateBuilders) {
-      if (builder.isChanged()) {
-        updates.add(builder.build());
+    // Log update for removed samples.
+    if (samplesRemoved != null) {
+      for (SampleContainer container : samplesRemoved) {
+        SampleContainer oldContainer = entityManager.find(SampleContainer.class, container.getId());
+        updateBuilders.add(
+            new RemoveSampleFromSampleContainerUpdateActivityBuilder().oldContainer(oldContainer));
       }
     }
 
-    Activity activity = new Activity();
-    activity.setActionType(ActionType.DELETE);
-    activity.setRecordId(fractionation.getId());
-    activity.setUser(user);
-    activity.setTableName("treatment");
-    activity.setExplanation(explanation);
-    activity.setUpdates(updates);
-    return activity;
-  }
-
-  /**
-   * Creates an activity about fractionation being marked as failed.
-   *
-   * @param fractionation
-   *          failed fractionation that was undone
-   * @param failedDescription
-   *          description of the problem that occurred
-   * @param bannedContainers
-   *          containers that were banned
-   * @return activity about fractionation being marked as failed
-   */
-  @CheckReturnValue
-  public Activity undoFailed(final Fractionation fractionation, String failedDescription,
-      final Collection<SampleContainer> bannedContainers) {
-    final User user = authorizationService.getCurrentUser();
-
     // Log update for banned containers.
-    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     if (bannedContainers != null) {
       for (SampleContainer container : bannedContainers) {
         SampleContainer oldContainer = entityManager.find(SampleContainer.class, container.getId());
@@ -173,13 +143,12 @@ public class FractionationActivityService {
       }
     }
 
-    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(fractionation.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setExplanation(explanation);
+    activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
     activity.setUpdates(updates);
     return activity;
   }

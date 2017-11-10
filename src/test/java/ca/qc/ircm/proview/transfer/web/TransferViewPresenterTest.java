@@ -94,7 +94,6 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.transfer.TransferedSample;
-import ca.qc.ircm.proview.treatment.Treatment.DeletionType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
@@ -1633,8 +1632,7 @@ public class TransferViewPresenterTest {
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         design.explanation.getErrorMessage().getFormattedHtmlMessage());
-    verify(transferService, never()).undoErroneous(any(), any());
-    verify(transferService, never()).undoFailed(any(), any(), anyBoolean());
+    verify(transferService, never()).undo(any(), any(), anyBoolean(), anyBoolean());
   }
 
   @Test
@@ -1650,7 +1648,8 @@ public class TransferViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(transferService).undoErroneous(transferCaptor.capture(), eq("test explanation"));
+    verify(transferService).undo(transferCaptor.capture(), eq("test explanation"), eq(true),
+        eq(false));
     Transfer savedTransfer = transferCaptor.getValue();
     assertEquals((Long) 3L, savedTransfer.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, transfer.getTreatmentSamples()
@@ -1672,7 +1671,8 @@ public class TransferViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(transferService).undoFailed(transferCaptor.capture(), eq("test explanation"), eq(true));
+    verify(transferService).undo(transferCaptor.capture(), eq("test explanation"), eq(false),
+        eq(true));
     Transfer savedTransfer = transferCaptor.getValue();
     assertEquals((Long) 3L, savedTransfer.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, transfer.getTreatmentSamples()
@@ -1694,7 +1694,8 @@ public class TransferViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(transferService).undoFailed(transferCaptor.capture(), eq("test explanation"), eq(false));
+    verify(transferService).undo(transferCaptor.capture(), eq("test explanation"), eq(false),
+        eq(false));
     Transfer savedTransfer = transferCaptor.getValue();
     assertEquals((Long) 3L, savedTransfer.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, transfer.getTreatmentSamples()
@@ -1769,7 +1770,6 @@ public class TransferViewPresenterTest {
         realPlateService, sampleContainerService, applicationName);
     Transfer transfer = entityManager.find(Transfer.class, 3L);
     transfer.setDeleted(true);
-    transfer.setDeletionType(DeletionType.FAILED);
     when(transferService.get(any())).thenReturn(transfer);
     presenter.init(view);
     presenter.enter("3");

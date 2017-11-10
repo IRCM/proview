@@ -25,7 +25,6 @@ import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -143,54 +142,6 @@ public class TransferService extends BaseTreatmentService {
   }
 
   /**
-   * Undo erroneous transfer that never actually occurred. This method is usually called shortly
-   * after action was inserted into the database. The user realises that the samples checked for
-   * transfer are not the right ones. So, in practice, the transfer never actually occurred.
-   *
-   * @param transfer
-   *          erroneous transfer to undo
-   * @param explanation
-   *          explanation of what was incorrect with the transfer
-   * @throws IllegalArgumentException
-   *           destination container(s) is used in another treatment and sample cannot be remove
-   */
-  public void undoErroneous(Transfer transfer, String explanation) {
-    authorizationService.checkAdminRole();
-
-    transfer.setDeleted(true);
-    transfer.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    transfer.setDeletionExplanation(explanation);
-
-    // Remove sample from destinations.
-    Collection<SampleContainer> samplesRemoved = new LinkedHashSet<>();
-    Collection<SampleContainer> removeFailed = new LinkedHashSet<>();
-    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
-      SampleContainer destination = transferedSample.getDestinationContainer();
-      if (containerUsedByTreatmentOrAnalysis(destination)) {
-        removeFailed.add(destination);
-      }
-    }
-    if (!removeFailed.isEmpty()) {
-      throw new IllegalArgumentException("Cannot remove sample from all destinations");
-    }
-    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
-      SampleContainer destination = transferedSample.getDestinationContainer();
-      destination.setSample(null);
-      samplesRemoved.add(destination);
-    }
-
-    // Log changes.
-    Activity activity =
-        transferActivityService.undoErroneous(transfer, explanation, samplesRemoved);
-    activityService.insert(activity);
-
-    entityManager.merge(transfer);
-    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
-      entityManager.merge(transferedSample.getDestinationContainer());
-    }
-  }
-
-  /**
    * Report that a problem occurred during transfer causing it to fail. Problems usually occur
    * because of an experimental error. In this case, the transfer was done but the incorrect
    * transfer could only be detected later in the sample processing. Thus the transfer is not undone
@@ -200,16 +151,42 @@ public class TransferService extends BaseTreatmentService {
    *          transfer to flag as having failed
    * @param failedDescription
    *          description of the problem that occurred
+   * @param removeSamplesFromDestinations
+   *          true if samples should be removed from destination containers
    * @param banContainers
    *          true if containers used in transfer should be banned, this will also ban any container
    *          were samples were transfered / fractionated after transfer
    */
-  public void undoFailed(Transfer transfer, String failedDescription, boolean banContainers) {
+  public void undo(Transfer transfer, String failedDescription,
+      boolean removeSamplesFromDestinations, boolean banContainers) {
+    if (removeSamplesFromDestinations && banContainers) {
+      throw new IllegalArgumentException(
+          "removeSamplesFromDestinations and banContainers cannot be both true");
+    }
     authorizationService.checkAdminRole();
 
     transfer.setDeleted(true);
-    transfer.setDeletionType(Treatment.DeletionType.FAILED);
     transfer.setDeletionExplanation(failedDescription);
+
+    Collection<SampleContainer> samplesRemoved = new LinkedHashSet<>();
+    if (removeSamplesFromDestinations) {
+      // Remove sample from destinations.
+      Collection<SampleContainer> removeFailed = new LinkedHashSet<>();
+      for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+        SampleContainer destination = transferedSample.getDestinationContainer();
+        if (containerUsedByTreatmentOrAnalysis(destination)) {
+          removeFailed.add(destination);
+        }
+      }
+      if (!removeFailed.isEmpty()) {
+        throw new IllegalArgumentException("Cannot remove sample from all destinations");
+      }
+      for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+        SampleContainer destination = transferedSample.getDestinationContainer();
+        destination.setSample(null);
+        samplesRemoved.add(destination);
+      }
+    }
 
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
@@ -226,7 +203,7 @@ public class TransferService extends BaseTreatmentService {
 
     // Log changes.
     Activity activity =
-        transferActivityService.undoFailed(transfer, failedDescription, bannedContainers);
+        transferActivityService.undo(transfer, failedDescription, samplesRemoved, bannedContainers);
     activityService.insert(activity);
 
     entityManager.merge(transfer);

@@ -39,8 +39,6 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.transfer.DestinationUsedInTreatmentException;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -108,7 +106,6 @@ public class FractionationServiceTest {
         LocalDateTime.of(2011, 10, 19, 12, 20, 33, 0).atZone(ZoneId.systemDefault()).toInstant(),
         fractionation.getInsertTime());
     assertEquals(false, fractionation.isDeleted());
-    assertEquals(null, fractionation.getDeletionType());
     assertEquals(null, fractionation.getDeletionExplanation());
     Fraction fraction = fractionation.getTreatmentSamples().get(0);
     assertEquals((Long) 2L, fraction.getId());
@@ -212,9 +209,9 @@ public class FractionationServiceTest {
     Fractionation fractionation = new Fractionation();
     fractionation.setTreatmentSamples(fractions);
     when(fractionationActivityService.insert(any(Fractionation.class))).thenReturn(activity);
-  
+
     fractionationService.insert(fractionation);
-  
+
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).insert(eq(fractionation));
@@ -222,7 +219,6 @@ public class FractionationServiceTest {
     fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(false, fractionation.isDeleted());
-    assertEquals(null, fractionation.getDeletionType());
     assertEquals(null, fractionation.getDeletionExplanation());
     assertEquals(user, fractionation.getUser());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -308,135 +304,136 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoErroneous_WellDestination() throws Throwable {
+  public void undo_RemoveSamplesWellDestination() throws Throwable {
     Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
     entityManager.detach(fractionation);
-    when(fractionationActivityService.undoErroneous(any(Fractionation.class), any(String.class),
-        anyCollectionOf(SampleContainer.class))).thenReturn(activity);
+    when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
+        anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
+            .thenReturn(activity);
 
-    fractionationService.undoErroneous(fractionation, "undo unit test");
+    fractionationService.undo(fractionation, "undo unit test", true, false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(fractionationActivityService).undoErroneous(eq(fractionation), eq("undo unit test"),
-        containersCaptor.capture());
+    verify(fractionationActivityService).undo(eq(fractionation), eq("undo unit test"),
+        containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
     fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
-    assertEquals(Treatment.DeletionType.ERRONEOUS, fractionation.getDeletionType());
     assertEquals("undo unit test", fractionation.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 1L);
     assertEquals((Long) 1L, sourceTube.getSample().getId());
     Well destinationWell = entityManager.find(Well.class, 128L);
     assertNull(destinationWell.getSample());
-    Collection<SampleContainer> samplesRemoved = containersCaptor.getValue();
+    Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertEquals(1, samplesRemoved.size());
     assertTrue(findContainer(samplesRemoved, SampleContainerType.WELL, 128L).isPresent());
+    Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
+    assertEquals(0, bannedContainers.size());
   }
 
   @Test
-  public void undoErroneous_UsedContainer_WellDestination_Enrichment() throws Throwable {
+  public void undo_RemoveSamplesUsedContainer_WellDestination_Enrichment() throws Throwable {
     Fractionation fractionation = entityManager.find(Fractionation.class, 285L);
     entityManager.detach(fractionation);
 
     try {
-      fractionationService.undoErroneous(fractionation, "undo unit test");
-      fail("Expected DestinationUsedInTreatmentException to be thrown");
-    } catch (DestinationUsedInTreatmentException e) {
-      assertEquals(2, e.containers.size());
-      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1280L).isPresent());
-      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1292L).isPresent());
+      fractionationService.undo(fractionation, "undo unit test", true, false);
+      fail("Expected IllegalArgumentException to be thrown");
+    } catch (IllegalArgumentException e) {
+      // Success.
     }
     verify(authorizationService).checkAdminRole();
   }
 
   @Test
-  public void undoErroneous_UsedContainer_WellDestination_MsAnalysis() throws Throwable {
+  public void undo_RemoveSamplesUsedContainer_WellDestination_MsAnalysis() throws Throwable {
     Fractionation fractionation = entityManager.find(Fractionation.class, 286L);
     entityManager.detach(fractionation);
 
     try {
-      fractionationService.undoErroneous(fractionation, "undo unit test");
-      fail("Expected DestinationUsedInTreatmentException to be thrown");
-    } catch (DestinationUsedInTreatmentException e) {
-      assertEquals(2, e.containers.size());
-      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1281L).isPresent());
-      assertTrue(findContainer(e.containers, SampleContainerType.WELL, 1293L).isPresent());
+      fractionationService.undo(fractionation, "undo unit test", true, false);
+      fail("Expected IllegalArgumentException to be thrown");
+    } catch (IllegalArgumentException e) {
     }
     verify(authorizationService).checkAdminRole();
   }
 
   @Test
-  public void undoFailed_NoBan_Well() {
+  public void undo_NoBan_Well() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
     entityManager.detach(fractionation);
-    when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
-        anyCollectionOf(SampleContainer.class))).thenReturn(activity);
+    when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
+        anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
+            .thenReturn(activity);
 
-    fractionationService.undoFailed(fractionation, "fail unit test", false);
+    fractionationService.undo(fractionation, "fail unit test", false, false);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
-        containersCaptor.capture());
+    verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
+        containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
     fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
     assertEquals("fail unit test", fractionation.getDeletionExplanation());
-    Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
+    Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
+    assertTrue(samplesRemoved.isEmpty());
+    Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
     assertEquals(true, bannedContainers.isEmpty());
   }
 
   @Test
-  public void undoFailed_Ban_WellDestination() {
+  public void undo_Ban_WellDestination() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
     entityManager.detach(fractionation);
-    when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
-        anyCollectionOf(SampleContainer.class))).thenReturn(activity);
+    when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
+        anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
+            .thenReturn(activity);
 
-    fractionationService.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undo(fractionation, "fail unit test", false, true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
-        containersCaptor.capture());
+    verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
+        containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
     Fractionation test = fractionationService.get(fractionation.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 1L);
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 128L);
     assertEquals(true, destinationWell.isBanned());
-    Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
+    Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
+    assertTrue(samplesRemoved.isEmpty());
+    Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
     assertEquals(1, bannedContainers.size());
     assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 1L).isPresent());
     assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 128L).isPresent());
   }
 
   @Test
-  public void undoFailed_Ban_WellDestination_Transfer() {
+  public void undo_Ban_WellDestination_Transfer() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 288L);
     entityManager.detach(fractionation);
-    when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
-        anyCollectionOf(SampleContainer.class))).thenReturn(activity);
+    when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
+        anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
+            .thenReturn(activity);
 
-    fractionationService.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undo(fractionation, "fail unit test", false, true);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
-        containersCaptor.capture());
+    verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
+        containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
     fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
     assertEquals("fail unit test", fractionation.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 81L);
     assertEquals(false, sourceTube.isBanned());
@@ -448,7 +445,9 @@ public class FractionationServiceTest {
     assertEquals(true, destinationWell.isBanned());
     destinationWell = entityManager.find(Well.class, 1388L);
     assertEquals(true, destinationWell.isBanned());
-    Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
+    Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
+    assertTrue(samplesRemoved.isEmpty());
+    Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
     assertEquals(4, bannedContainers.size());
     assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 81L).isPresent());
     assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1282L).isPresent());
@@ -458,22 +457,22 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_WellDestination_Fractionation() {
+  public void undo_Ban_WellDestination_Fractionation() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 289L);
     entityManager.detach(fractionation);
-    when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
-        anyCollectionOf(SampleContainer.class))).thenReturn(activity);
+    when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
+        anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
+            .thenReturn(activity);
 
-    fractionationService.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undo(fractionation, "fail unit test", false, true);
 
     entityManager.flush();
-    verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
-        containersCaptor.capture());
+    verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
+        containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
     fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
     assertEquals("fail unit test", fractionation.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 82L);
     assertEquals(false, sourceTube.isBanned());
@@ -489,7 +488,9 @@ public class FractionationServiceTest {
     assertEquals(true, destinationWell.isBanned());
     destinationWell = entityManager.find(Well.class, 1414L);
     assertEquals(true, destinationWell.isBanned());
-    Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
+    Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
+    assertTrue(samplesRemoved.isEmpty());
+    Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
     assertEquals(6, bannedContainers.size());
     assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 82L).isPresent());
     assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1283L).isPresent());
@@ -501,22 +502,22 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_WellDestination_Transfer_Fractionation() {
+  public void undo_Ban_WellDestination_Transfer_Fractionation() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 290L);
     entityManager.detach(fractionation);
-    when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
-        anyCollectionOf(SampleContainer.class))).thenReturn(activity);
+    when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
+        anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
+            .thenReturn(activity);
 
-    fractionationService.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undo(fractionation, "fail unit test", false, true);
 
     entityManager.flush();
-    verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
-        containersCaptor.capture());
+    verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
+        containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
     fractionation = fractionationService.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, fractionation.getDeletionType());
     assertEquals("fail unit test", fractionation.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 83L);
     assertEquals(false, sourceTube.isBanned());
@@ -536,7 +537,9 @@ public class FractionationServiceTest {
     assertEquals(true, destinationWell.isBanned());
     destinationWell = entityManager.find(Well.class, 1364L);
     assertEquals(true, destinationWell.isBanned());
-    Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
+    Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
+    assertTrue(samplesRemoved.isEmpty());
+    Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
     assertEquals(8, bannedContainers.size());
     assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 83L).isPresent());
     assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1284L).isPresent());
@@ -550,22 +553,22 @@ public class FractionationServiceTest {
   }
 
   @Test
-  public void undoFailed_Ban_WellDestination_Fractionation_Transfer() {
+  public void undo_Ban_WellDestination_Fractionation_Transfer() {
     Fractionation fractionation = entityManager.find(Fractionation.class, 291L);
     entityManager.detach(fractionation);
-    when(fractionationActivityService.undoFailed(any(Fractionation.class), any(String.class),
-        anyCollectionOf(SampleContainer.class))).thenReturn(activity);
+    when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
+        anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
+            .thenReturn(activity);
 
-    fractionationService.undoFailed(fractionation, "fail unit test", true);
+    fractionationService.undo(fractionation, "fail unit test", false, true);
 
     entityManager.flush();
-    verify(fractionationActivityService).undoFailed(eq(fractionation), eq("fail unit test"),
-        containersCaptor.capture());
+    verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
+        containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
     Fractionation test = fractionationService.get(fractionation.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
-    assertEquals(Treatment.DeletionType.FAILED, test.getDeletionType());
     assertEquals("fail unit test", test.getDeletionExplanation());
     Tube sourceTube = entityManager.find(Tube.class, 84L);
     assertEquals(false, sourceTube.isBanned());
@@ -589,7 +592,9 @@ public class FractionationServiceTest {
     assertEquals(true, destinationWell.isBanned());
     destinationWell = entityManager.find(Well.class, 1365L);
     assertEquals(true, destinationWell.isBanned());
-    Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
+    Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
+    assertTrue(samplesRemoved.isEmpty());
+    Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
     assertEquals(10, bannedContainers.size());
     assertFalse(findContainer(bannedContainers, SampleContainerType.TUBE, 84L).isPresent());
     assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1285L).isPresent());
@@ -602,5 +607,21 @@ public class FractionationServiceTest {
     assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1341L).isPresent());
     assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1353L).isPresent());
     assertTrue(findContainer(bannedContainers, SampleContainerType.WELL, 1365L).isPresent());
+  }
+
+  @Test
+  public void undo_RemoveSamplesAndBanContainers() throws Throwable {
+    Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
+    entityManager.detach(fractionation);
+    when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
+        anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
+            .thenReturn(activity);
+
+    try {
+      fractionationService.undo(fractionation, "undo unit test", true, true);
+      fail("Expected IllegalArgumentException to be thrown");
+    } catch (IllegalArgumentException e) {
+      // Success.
+    }
   }
 }

@@ -17,15 +17,11 @@
 
 package ca.qc.ircm.proview.transfer;
 
-import static javax.persistence.EnumType.STRING;
-
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 
 /**
  * Transfer samples from one plate to another.
@@ -33,13 +29,6 @@ import javax.persistence.Enumerated;
 @Entity
 @DiscriminatorValue("TRANSFER")
 public class Transfer extends Treatment<TransferedSample> {
-  /**
-   * Type of error that forces treatment to be deleted.
-   */
-  @Column(name = "deletionType")
-  @Enumerated(STRING)
-  private DeletionType deletionType;
-
   public Transfer() {
     super();
   }
@@ -56,13 +45,5 @@ public class Transfer extends Treatment<TransferedSample> {
   @Override
   public TreatmentType getType() {
     return TreatmentType.TRANSFER;
-  }
-
-  public DeletionType getDeletionType() {
-    return deletionType;
-  }
-
-  public void setDeletionType(DeletionType deletionType) {
-    this.deletionType = deletionType;
   }
 }

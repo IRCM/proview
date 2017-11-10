@@ -25,10 +25,8 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.transfer.DestinationUsedInTreatmentException;
 import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -210,76 +208,48 @@ public class FractionationService extends BaseTreatmentService {
   }
 
   /**
-   * Undo erroneous fractionation that never actually occurred. This method is usually called
-   * shortly after action was inserted into the database. The user realises that the samples checked
-   * for fractionation are not the right ones. So, in practice, the fractionation never actually
-   * occurred.
+   * Undo fractionation.
    *
    * @param fractionation
-   *          erroneous fractionation to undo
+   *          fractionation to undo
    * @param explanation
-   *          explanation of what was incorrect with the fractionation
-   * @throws DestinationUsedInTreatmentException
-   *           destination container(s) is used in another treatment and sample cannot be remove
-   */
-  public void undoErroneous(Fractionation fractionation, String explanation)
-      throws DestinationUsedInTreatmentException {
-    authorizationService.checkAdminRole();
-
-    fractionation.setDeleted(true);
-    fractionation.setDeletionType(Treatment.DeletionType.ERRONEOUS);
-    fractionation.setDeletionExplanation(explanation);
-    // Remove sample from destinations.
-    Collection<SampleContainer> samplesRemoved = new LinkedHashSet<>();
-    Collection<SampleContainer> removeFailed = new LinkedHashSet<>();
-    for (Fraction fraction : fractionation.getTreatmentSamples()) {
-      SampleContainer destination = fraction.getDestinationContainer();
-      if (containerUsedByTreatmentOrAnalysis(destination)) {
-        removeFailed.add(destination);
-      }
-    }
-    if (!removeFailed.isEmpty()) {
-      throw new DestinationUsedInTreatmentException("Cannot remove sample from all destinations",
-          removeFailed);
-    }
-    for (Fraction fraction : fractionation.getTreatmentSamples()) {
-      SampleContainer destination = fraction.getDestinationContainer();
-      destination.setSample(null);
-      samplesRemoved.add(destination);
-    }
-
-    // Log changes.
-    Activity activity =
-        fractionationActivityService.undoErroneous(fractionation, explanation, samplesRemoved);
-    activityService.insert(activity);
-
-    entityManager.merge(fractionation);
-    for (Fraction fraction : fractionation.getTreatmentSamples()) {
-      entityManager.merge(fraction.getDestinationContainer());
-    }
-  }
-
-  /**
-   * Report that a problem occurred during fractionation causing it to fail. Problems usually occur
-   * because of an experimental error. In this case, the fractionation was done but the incorrect
-   * fractionation could only be detected later in the sample processing. Thus the fractionation is
-   * not undone but flagged as having failed.
-   *
-   * @param fractionation
-   *          fractionation to flag as having failed
-   * @param failedDescription
    *          description of the problem that occurred
+   * @param removeSamplesFromDestinations
+   *          true if samples should be removed from destination containers
    * @param banContainers
    *          true if containers used in fractionation should be banned, this will also ban any
    *          container were samples were transfered / fractionated after fractionation
    */
-  public void undoFailed(Fractionation fractionation, String failedDescription,
-      boolean banContainers) {
+  public void undo(Fractionation fractionation, String explanation,
+      boolean removeSamplesFromDestinations, boolean banContainers) {
+    if (removeSamplesFromDestinations && banContainers) {
+      throw new IllegalArgumentException(
+          "removeSamplesFromDestinations and banContainers cannot be both true");
+    }
     authorizationService.checkAdminRole();
 
     fractionation.setDeleted(true);
-    fractionation.setDeletionType(Treatment.DeletionType.FAILED);
-    fractionation.setDeletionExplanation(failedDescription);
+    fractionation.setDeletionExplanation(explanation);
+
+    // Remove sample from destinations.
+    Collection<SampleContainer> samplesRemoved = new LinkedHashSet<>();
+    if (removeSamplesFromDestinations) {
+      Collection<SampleContainer> removeFailed = new LinkedHashSet<>();
+      for (Fraction fraction : fractionation.getTreatmentSamples()) {
+        SampleContainer destination = fraction.getDestinationContainer();
+        if (containerUsedByTreatmentOrAnalysis(destination)) {
+          removeFailed.add(destination);
+        }
+      }
+      if (!removeFailed.isEmpty()) {
+        throw new IllegalArgumentException("Cannot remove sample from all destinations");
+      }
+      for (Fraction fraction : fractionation.getTreatmentSamples()) {
+        SampleContainer destination = fraction.getDestinationContainer();
+        destination.setSample(null);
+        samplesRemoved.add(destination);
+      }
+    }
 
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
@@ -295,8 +265,8 @@ public class FractionationService extends BaseTreatmentService {
     }
 
     // Log changes.
-    Activity activity =
-        fractionationActivityService.undoFailed(fractionation, failedDescription, bannedContainers);
+    Activity activity = fractionationActivityService.undo(fractionation, explanation,
+        samplesRemoved, bannedContainers);
     activityService.insert(activity);
 
     entityManager.merge(fractionation);

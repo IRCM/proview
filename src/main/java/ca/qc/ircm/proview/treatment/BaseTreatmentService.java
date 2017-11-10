@@ -30,7 +30,6 @@ import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.transfer.TransferedSample;
-import ca.qc.ircm.proview.treatment.Treatment.DeletionType;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -103,11 +102,14 @@ public abstract class BaseTreatmentService {
     List<TransferedSample> transferedSamples = selectTransfersBySource(source);
     for (TransferedSample transferedSample : transferedSamples) {
       SampleContainer destination = transferedSample.getDestinationContainer();
-      // Failsafe: skip if destination is already in containers.
-      if (bannedContainers.add(destination)) {
-        destination.setBanned(true);
+      if (destination.getSample() != null
+          && source.getSample().getId().equals(destination.getSample().getId())) {
+        // Failsafe: skip if destination is already in containers.
+        if (bannedContainers.add(destination)) {
+          destination.setBanned(true);
 
-        this.banDestinations(destination, bannedContainers);
+          this.banDestinations(destination, bannedContainers);
+        }
       }
     }
 
@@ -115,11 +117,14 @@ public abstract class BaseTreatmentService {
     List<Fraction> fractions = selectFractionationsBySource(source);
     for (Fraction fraction : fractions) {
       SampleContainer destination = fraction.getDestinationContainer();
-      // Failsafe: skip if destination is already in containers.
-      if (bannedContainers.add(destination)) {
-        destination.setBanned(true);
+      if (destination.getSample() != null
+          && source.getSample().getId().equals(destination.getSample().getId())) {
+        // Failsafe: skip if destination is already in containers.
+        if (bannedContainers.add(destination)) {
+          destination.setBanned(true);
 
-        this.banDestinations(destination, bannedContainers);
+          this.banDestinations(destination, bannedContainers);
+        }
       }
     }
   }
@@ -129,7 +134,6 @@ public abstract class BaseTreatmentService {
     query.from(transfer, transferedSample);
     query.where(transferedSample._super.in(transfer.treatmentSamples));
     query.where(transferedSample.container.eq(source));
-    query.where(transfer.deleted.eq(false).or(transfer.deletionType.ne(DeletionType.ERRONEOUS)));
     return query.fetch();
   }
 
@@ -138,8 +142,6 @@ public abstract class BaseTreatmentService {
     query.from(fractionation, fraction);
     query.where(fraction._super.in(fractionation.treatmentSamples));
     query.where(fraction.container.eq(source));
-    query.where(
-        fractionation.deleted.eq(false).or(fractionation.deletionType.ne(DeletionType.ERRONEOUS)));
     return query.fetch();
   }
 }
