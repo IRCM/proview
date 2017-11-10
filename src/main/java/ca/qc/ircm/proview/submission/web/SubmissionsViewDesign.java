@@ -39,6 +39,7 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected Button standardAddition;
   protected HorizontalLayout analysisButtons;
   protected Button msAnalysis;
+  protected Button dataAnalysis;
 
   public SubmissionsViewDesign() {
     Design.read(this);

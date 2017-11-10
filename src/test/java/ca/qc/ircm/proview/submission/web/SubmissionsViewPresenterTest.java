@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
@@ -31,6 +32,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.MS_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.NO_CONTAINERS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.NO_SELECTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES;
@@ -64,6 +66,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
+import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
 import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
@@ -681,6 +684,7 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.dilution.getStyleName().contains(DILUTION));
     assertTrue(design.standardAddition.getStyleName().contains(STANDARD_ADDITION));
     assertTrue(design.msAnalysis.getStyleName().contains(MS_ANALYSIS));
+    assertTrue(design.dataAnalysis.getStyleName().contains(DATA_ANALYSIS));
   }
 
   @Test
@@ -709,6 +713,7 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(DILUTION), design.dilution.getCaption());
     assertEquals(resources.message(STANDARD_ADDITION), design.standardAddition.getCaption());
     assertEquals(resources.message(MS_ANALYSIS), design.msAnalysis.getCaption());
+    assertEquals(resources.message(DATA_ANALYSIS), design.dataAnalysis.getCaption());
   }
 
   @Test
@@ -720,7 +725,8 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.containerSelectionLayout.isVisible());
     assertFalse(design.updateStatusButton.isVisible());
     assertFalse(design.treatmentButtons.isVisible());
-    assertFalse(design.analysisButtons.isVisible());
+    assertFalse(design.msAnalysis.isVisible());
+    assertTrue(design.dataAnalysis.isVisible());
   }
 
   @Test
@@ -733,7 +739,8 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.containerSelectionLayout.isVisible());
     assertTrue(design.updateStatusButton.isVisible());
     assertTrue(design.treatmentButtons.isVisible());
-    assertTrue(design.analysisButtons.isVisible());
+    assertTrue(design.msAnalysis.isVisible());
+    assertFalse(design.dataAnalysis.isVisible());
   }
 
   @Test
@@ -1176,5 +1183,27 @@ public class SubmissionsViewPresenterTest {
 
     verify(view).showError(resources.message(NO_CONTAINERS));
     verify(view, never()).navigateTo(MsAnalysisView.VIEW_NAME);
+  }
+
+  @Test
+  public void dataAnalysis() {
+    presenter.init(view);
+    Submission submission = submissions.get(0);
+    design.submissionsGrid.select(submission);
+
+    design.dataAnalysis.click();
+
+    verify(view).saveSamples(submission.getSamples());
+    verify(view).navigateTo(DataAnalysisView.VIEW_NAME);
+  }
+
+  @Test
+  public void dataAnalysis_NoSelection() {
+    presenter.init(view);
+
+    design.dataAnalysis.click();
+
+    verify(view).showError(resources.message(NO_SELECTION));
+    verify(view, never()).navigateTo(DataAnalysisView.VIEW_NAME);
   }
 }

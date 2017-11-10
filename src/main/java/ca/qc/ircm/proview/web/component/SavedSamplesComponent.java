@@ -31,7 +31,7 @@ import java.util.List;
  * Gets/sets saved samples in session.
  */
 public interface SavedSamplesComponent extends Component {
-  default void saveSamples(Collection<Sample> samples) {
+  default void saveSamples(Collection<? extends Sample> samples) {
     getUI().getSession().setAttribute(SAVED_SAMPLES, samples);
   }
 
@@ -49,7 +49,7 @@ public interface SavedSamplesComponent extends Component {
 
   /**
    * Returns true if saved samples are from multiple users, false otherwise.
-   * 
+   *
    * @return true if saved samples are from multiple users, false otherwise
    */
   default boolean savedSampleFromMultipleUsers() {

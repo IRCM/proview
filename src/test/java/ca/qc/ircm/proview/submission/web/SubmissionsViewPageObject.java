@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHMENT;
@@ -89,12 +90,16 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void selectSubmissions(int... rows) {
     GridElement grid = submissionsGrid();
-    Set<Integer> rowsSet = IntStream.of(rows).mapToObj(v -> v).collect(Collectors.toSet());
-    processGridRows(grid, row -> {
-      if (rowsSet.contains(row)) {
-        grid.getCell(row, 0).findElement(tagName("input")).click();
-      }
-    });
+    if (isAdmin()) {
+      Set<Integer> rowsSet = IntStream.of(rows).mapToObj(v -> v).collect(Collectors.toSet());
+      processGridRows(grid, row -> {
+        if (rowsSet.contains(row)) {
+          grid.getCell(row, 0).findElement(tagName("input")).click();
+        }
+      });
+    } else if (rows.length > 0) {
+      grid.getRow(rows[0]).getCell(1).click();
+    }
   }
 
   protected void clickViewSubmissionByRow(int row) {
@@ -207,5 +212,13 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickMsAnalysisButton() {
     msAnalysisButton().click();
+  }
+
+  protected ButtonElement dataAnalysisButton() {
+    return wrap(ButtonElement.class, findElement(className(DATA_ANALYSIS)));
+  }
+
+  protected void clickDataAnalysisButton() {
+    dataAnalysisButton().click();
   }
 }

@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import com.google.common.collect.Range;
 
+import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
 import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
@@ -71,6 +72,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -116,6 +118,8 @@ public class SubmissionsViewPresenter {
   public static final String DILUTION = "dilution";
   public static final String STANDARD_ADDITION = "standardAddition";
   public static final String MS_ANALYSIS = "msAnalysis";
+  public static final String DATA_ANALYSIS = "dataAnalysis";
+  public static final String NO_SELECTION = "noSelection";
   public static final String NO_CONTAINERS = "noContainers";
   public static final String CONDITION_FALSE = "condition-false";
   public static final String COLUMN_ORDER = "columnOrder";
@@ -229,10 +233,14 @@ public class SubmissionsViewPresenter {
     design.standardAddition.addStyleName(STANDARD_ADDITION);
     design.standardAddition.setCaption(resources.message(STANDARD_ADDITION));
     design.standardAddition.addClickListener(e -> standardAddition());
-    design.analysisButtons.setVisible(authorizationService.hasAdminRole());
     design.msAnalysis.addStyleName(MS_ANALYSIS);
     design.msAnalysis.setCaption(resources.message(MS_ANALYSIS));
     design.msAnalysis.addClickListener(e -> msAnalysis());
+    design.msAnalysis.setVisible(authorizationService.hasAdminRole());
+    design.dataAnalysis.addStyleName(DATA_ANALYSIS);
+    design.dataAnalysis.setCaption(resources.message(DATA_ANALYSIS));
+    design.dataAnalysis.addClickListener(e -> dataAnalysis());
+    design.dataAnalysis.setVisible(!authorizationService.hasAdminRole());
   }
 
   private void prepareSumissionsGrid() {
@@ -601,6 +609,17 @@ public class SubmissionsViewPresenter {
     } else {
       MessageResource resources = view.getResources();
       view.showError(resources.message(NO_CONTAINERS));
+    }
+  }
+
+  private void dataAnalysis() {
+    Set<Submission> selections = design.submissionsGrid.getSelectedItems();
+    if (!selections.isEmpty()) {
+      view.saveSamples(selections.iterator().next().getSamples());
+      view.navigateTo(DataAnalysisView.VIEW_NAME);
+    } else {
+      MessageResource resources = view.getResources();
+      view.showError(resources.message(NO_SELECTION));
     }
   }
 
