@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.submission;
 
 import static javax.persistence.EnumType.STRING;
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
@@ -28,7 +27,6 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleSolvent;
-import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryData;
@@ -48,7 +46,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -358,18 +355,6 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<SubmissionSample> samples;
   /**
-   * Gel images.
-   */
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "submissionId")
-  private List<GelImage> gelImages;
-  /**
-   * Molecule structure.
-   */
-  @OneToOne(fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "structureId")
-  private Structure structure;
-  /**
    * Additional files related to submission.
    */
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -428,14 +413,6 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setSamples(List<SubmissionSample> samples) {
     this.samples = samples;
-  }
-
-  public List<GelImage> getGelImages() {
-    return gelImages;
-  }
-
-  public void setGelImages(List<GelImage> gelImages) {
-    this.gelImages = gelImages;
   }
 
   public String getProject() {
@@ -764,14 +741,6 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setSolutionSolvent(String solutionSolvent) {
     this.solutionSolvent = solutionSolvent;
-  }
-
-  public Structure getStructure() {
-    return structure;
-  }
-
-  public void setStructure(Structure structure) {
-    this.structure = structure;
   }
 
   public List<SampleSolvent> getSolvents() {

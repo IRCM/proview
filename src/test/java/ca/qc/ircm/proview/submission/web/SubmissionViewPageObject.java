@@ -39,8 +39,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CON
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_TABLE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_LABEL;
@@ -86,8 +85,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COUNT_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_UPLOADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY_PROPERTY;
@@ -170,18 +168,6 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected TextFieldElement formulaField() {
     return wrap(TextFieldElement.class, findElement(className(FORMULA_PROPERTY)));
-  }
-
-  protected ButtonElement structureButton() {
-    return wrap(ButtonElement.class, findElement(className(STRUCTURE_PROPERTY)));
-  }
-
-  protected WebElement structureUploader() {
-    return findElement(className(STRUCTURE_UPLOADER));
-  }
-
-  protected void uploadStructure(Path file) {
-    uploadFile(structureUploader(), file);
   }
 
   protected TextFieldElement monoisotopicMassField() {
@@ -432,14 +418,6 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(TextFieldElement.class, findElement(className(PROTEIN_QUANTITY_PROPERTY)));
   }
 
-  protected WebElement gelImagesUploader() {
-    return findElement(className(GEL_IMAGES_PROPERTY));
-  }
-
-  protected GridElement gelImagesGrid() {
-    return wrap(GridElement.class, findElement(className(GEL_IMAGES_TABLE)));
-  }
-
   protected PanelElement servicesPanel() {
     return wrap(PanelElement.class, findElement(className(SERVICES_PANEL)));
   }
@@ -564,6 +542,14 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected void setComment(String comment) {
     commentField().setValue(comment);
+  }
+
+  protected LabelElement structureFile() {
+    return wrap(LabelElement.class, findElement(className(STRUCTURE_FILE)));
+  }
+
+  protected LabelElement gelImageFile() {
+    return wrap(LabelElement.class, findElement(className(GEL_IMAGE_FILE)));
   }
 
   protected PanelElement filesPanel() {

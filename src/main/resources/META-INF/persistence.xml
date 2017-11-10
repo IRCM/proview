@@ -50,13 +50,11 @@
     <class>ca.qc.ircm.proview.sample.SampleContainer</class>
     <class>ca.qc.ircm.proview.sample.SampleSolvent</class>
     <class>ca.qc.ircm.proview.sample.Standard</class>
-    <class>ca.qc.ircm.proview.sample.Structure</class>
     <class>ca.qc.ircm.proview.sample.SubmissionSample</class>
     <class>ca.qc.ircm.proview.solubilisation.Solubilisation</class>
     <class>ca.qc.ircm.proview.solubilisation.SolubilisedSample</class>
     <class>ca.qc.ircm.proview.standard.AddedStandard</class>
     <class>ca.qc.ircm.proview.standard.StandardAddition</class>
-    <class>ca.qc.ircm.proview.submission.GelImage</class>
     <class>ca.qc.ircm.proview.submission.Submission</class>
     <class>ca.qc.ircm.proview.submission.SubmissionFile</class>
     <class>ca.qc.ircm.proview.treatment.Protocol</class>

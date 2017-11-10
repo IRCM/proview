@@ -31,7 +31,6 @@ import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
 import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
 import static ca.qc.ircm.proview.submission.GelSeparation.ONE_DIMENSION;
 import static ca.qc.ircm.proview.submission.GelThickness.ONE;
-import static ca.qc.ircm.proview.submission.QGelImage.gelImage;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.QSubmissionFile.submissionFile;
 import static ca.qc.ircm.proview.submission.Quantification.SILAC;
@@ -67,12 +66,10 @@ import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.Standard;
-import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.GelColoration;
-import ca.qc.ircm.proview.submission.GelImage;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
@@ -85,7 +82,6 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
-import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -108,10 +104,6 @@ import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Upload.ProgressListener;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
@@ -123,7 +115,6 @@ import org.springframework.stereotype.Controller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -162,10 +153,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final int SAMPLES_NAMES_TABLE_LENGTH = 8;
   public static final String SAMPLE_NAME_PROPERTY = submissionSample.name.getMetadata().getName();
   public static final String FORMULA_PROPERTY = submission.formula.getMetadata().getName();
-  public static final String STRUCTURE_PROPERTY = submission.structure.getMetadata().getName();
-  public static final String STRUCTURE_UPLOADER =
-      submission.structure.getMetadata().getName() + "Uploader";
-  public static final int MAXIMUM_STRUCTURE_SIZE = 10 * 1024 * 1024; // 10MB
   public static final String MONOISOTOPIC_MASS_PROPERTY =
       submission.monoisotopicMass.getMetadata().getName();
   public static final String AVERAGE_MASS_PROPERTY = submission.averageMass.getMetadata().getName();
@@ -228,16 +215,6 @@ public class SubmissionFormPresenter implements BinderValidator {
       submission.weightMarkerQuantity.getMetadata().getName();
   public static final String PROTEIN_QUANTITY_PROPERTY =
       submission.proteinQuantity.getMetadata().getName();
-  public static final String GEL_IMAGES_PROPERTY = submission.gelImages.getMetadata().getName();
-  public static final String GEL_IMAGES_UPLOADER =
-      submission.gelImages.getMetadata().getName() + "Uploader";
-  public static final String GEL_IMAGES_TABLE = GEL_IMAGES_PROPERTY + "Table";
-  public static final int MAXIMUM_GEL_IMAGES_SIZE = 10 * 1024 * 1024; // 10MB;
-  public static final int MAXIMUM_GEL_IMAGES_COUNT = 4;
-  public static final int GEL_IMAGES_TABLE_LENGTH = 3;
-  public static final String GEL_IMAGE_FILENAME_PROPERTY =
-      gelImage.filename.getMetadata().getName();
-  public static final String REMOVE_GEL_IMAGE = "removeGelImage";
   public static final String SERVICES_PANEL = "servicesPanel";
   public static final String DIGESTION_PROPERTY =
       submission.proteolyticDigestionMethod.getMetadata().getName();
@@ -271,13 +248,15 @@ public class SubmissionFormPresenter implements BinderValidator {
       submission.otherSolvent.getMetadata().getName() + ".note";
   public static final String COMMENT_PANEL = "commentPanel";
   public static final String COMMENT_PROPERTY = submission.comment.getMetadata().getName();
+  public static final String STRUCTURE_FILE = "structureFile";
+  public static final String GEL_IMAGE_FILE = "gelImageFile";
   public static final String FILES_PROPERTY = submission.files.getMetadata().getName();
   public static final String FILES_UPLOADER = submission.files.getMetadata().getName() + "Uploader";
   public static final String FILES_GRID = FILES_PROPERTY + "Grid";
   public static final String EXPLANATION_PANEL = "explanationPanel";
   public static final String EXPLANATION = "explanation";
   public static final int MAXIMUM_FILES_SIZE = 10 * 1024 * 1024; // 10MB
-  public static final int MAXIMUM_FILES_COUNT = 4;
+  public static final int MAXIMUM_FILES_COUNT = 6;
   public static final int FILES_TABLE_LENGTH = 3;
   public static final String FILE_FILENAME_PROPERTY =
       submissionFile.filename.getMetadata().getName();
@@ -319,8 +298,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   private Map<Contaminant, TextField> contaminantNameFields = new HashMap<>();
   private Map<Contaminant, TextField> contaminantQuantityFields = new HashMap<>();
   private Map<Contaminant, TextField> contaminantCommentFields = new HashMap<>();
-  private ListDataProvider<GelImage> gelImagesDataProvider =
-      DataProvider.ofCollection(new ArrayList<>());
   private ListDataProvider<SubmissionFile> filesDataProvider =
       DataProvider.ofCollection(new ArrayList<>());
   @Inject
@@ -353,12 +330,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   public void init(SubmissionForm view) {
     this.view = view;
     design = view.design;
-    view.createStructureUploader();
-    StructureUploaderReceiver structureUploaderReceiver = new StructureUploaderReceiver();
-    view.structureUploader.setReceiver(structureUploaderReceiver);
-    view.structureUploader.addSucceededListener(structureUploaderReceiver);
-    view.structureUploader.addProgressListener(structureUploaderReceiver);
-    view.createGelImagesUploader(gelImageFileHandler());
     view.createFilesUploader(fileHandler());
     prepareComponents();
     setValue(null);
@@ -401,6 +372,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.commentField.addStyleName(COMMENT_PROPERTY);
     submissionBinder.forField(design.commentField).withNullRepresentation("")
         .bind(COMMENT_PROPERTY);
+    design.structureFile.addStyleName(STRUCTURE_FILE);
+    design.structureFile.setValue(resources.message(STRUCTURE_FILE));
+    design.gelImageFile.addStyleName(GEL_IMAGE_FILE);
+    design.gelImageFile.setValue(resources.message(GEL_IMAGE_FILE));
     design.filesPanel.addStyleName(FILES_PROPERTY);
     design.filesPanel.setCaption(resources.message(FILES_PROPERTY));
     view.filesUploader.addStyleName(FILES_UPLOADER);
@@ -483,13 +458,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     submissionBinder.forField(design.formulaField)
         .withValidator(requiredTextIfVisible(design.formulaField)).withNullRepresentation("")
         .bind(FORMULA_PROPERTY);
-    design.structureLayout.addStyleName(REQUIRED);
-    design.structureLayout.setCaption(resources.message(STRUCTURE_PROPERTY));
-    design.structureButton.addStyleName(STRUCTURE_PROPERTY);
-    design.structureButton.setVisible(false);
-    view.structureUploader.addStyleName(STRUCTURE_UPLOADER);
-    view.structureUploader.setButtonCaption(resources.message(STRUCTURE_UPLOADER));
-    view.structureUploader.setImmediateMode(true);
     design.monoisotopicMassField.addStyleName(MONOISOTOPIC_MASS_PROPERTY);
     design.monoisotopicMassField.setCaption(resources.message(MONOISOTOPIC_MASS_PROPERTY));
     design.monoisotopicMassField.setRequiredIndicatorVisible(true);
@@ -934,42 +902,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setPlaceholder(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE));
     submissionBinder.forField(design.proteinQuantityField).withNullRepresentation("")
         .bind(PROTEIN_QUANTITY_PROPERTY);
-    design.gelImagesLayout.addStyleName(REQUIRED);
-    design.gelImagesLayout.setCaption(resources.message(GEL_IMAGES_PROPERTY));
-    view.gelImagesUploader.addStyleName(GEL_IMAGES_PROPERTY);
-    view.gelImagesUploader.setUploadButtonCaption(resources.message(GEL_IMAGES_UPLOADER));
-    view.gelImagesUploader.setMaxFileCount(1000000); // Count is required if size is set.
-    view.gelImagesUploader.setMaxFileSize(MAXIMUM_GEL_IMAGES_SIZE);
-    design.gelImagesGrid.addStyleName(GEL_IMAGES_TABLE);
-    design.gelImagesGrid.addStyleName(COMPONENTS);
-    design.gelImagesGrid.addColumn(image -> downloadGelImageButton(image))
-        .setId(GEL_IMAGE_FILENAME_PROPERTY)
-        .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + GEL_IMAGE_FILENAME_PROPERTY))
-        .setSortable(false);
-    design.gelImagesGrid.addColumn(image -> removeGelImageButton(image)).setId(REMOVE_GEL_IMAGE)
-        .setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE))
-        .setSortable(false);
-    design.gelImagesGrid.setDataProvider(gelImagesDataProvider);
-  }
-
-  private Button downloadGelImageButton(GelImage file) {
-    Button button = new Button();
-    button.setCaption(file.getFilename());
-    button.setIcon(VaadinIcons.DOWNLOAD);
-    StreamResource resource =
-        new StreamResource(() -> new ByteArrayInputStream(file.getContent()), file.getFilename());
-    FileDownloader fileDownloader = new FileDownloader(resource);
-    fileDownloader.extend(button);
-    return button;
-  }
-
-  private Button removeGelImageButton(GelImage file) {
-    MessageResource resources = view.getResources();
-    Button button = new Button();
-    button.setCaption(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE));
-    button.addClickListener(e -> gelImagesDataProvider.getItems().remove(file));
-    gelImagesDataProvider.refreshAll();
-    return button;
   }
 
   private void prepareServicesComponents() {
@@ -1179,11 +1111,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setVisible(service == SMALL_MOLECULE && support == SampleSupport.SOLUTION);
     design.sampleNameField.setVisible(service == SMALL_MOLECULE);
     design.formulaField.setVisible(service == SMALL_MOLECULE);
-    design.structureLayout.setVisible(service == SMALL_MOLECULE);
-    view.structureUploader.setVisible(service == SMALL_MOLECULE && !readOnly);
-    design.structureButton
-        .setVisible(service == SMALL_MOLECULE && design.structureButton.getCaption() != null
-            && !design.structureButton.getCaption().isEmpty());
     design.monoisotopicMassField.setVisible(service == SMALL_MOLECULE);
     design.averageMassField.setVisible(service == SMALL_MOLECULE);
     design.toxicityField.setVisible(service == SMALL_MOLECULE);
@@ -1245,9 +1172,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.decolorationField.setVisible(service == LC_MS_MS && support == GEL);
     design.weightMarkerQuantityField.setVisible(service == LC_MS_MS && support == GEL);
     design.proteinQuantityField.setVisible(service == LC_MS_MS && support == GEL);
-    design.gelImagesLayout.setVisible(service == LC_MS_MS && support == GEL);
-    view.gelImagesUploader.setVisible(service == LC_MS_MS && support == GEL && !readOnly);
-    design.gelImagesGrid.setVisible(service == LC_MS_MS && support == GEL);
     design.digestionOptions.setVisible(service == LC_MS_MS);
     design.usedProteolyticDigestionMethodField.setVisible(
         design.digestionOptions.isVisible() && design.digestionOptions.getValue() == DIGESTED);
@@ -1276,6 +1200,8 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setVisible(service == SMALL_MOLECULE && design.otherSolventsField.getValue());
     design.otherSolventNoteLabel
         .setVisible(service == SMALL_MOLECULE && design.otherSolventsField.getValue());
+    design.structureFile.setVisible(service == SMALL_MOLECULE);
+    design.gelImageFile.setVisible(service == LC_MS_MS && support == GEL);
     view.filesUploader.setVisible(!readOnly);
     design.buttonsLayout.setVisible(!readOnly);
   }
@@ -1317,7 +1243,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.decolorationField.setReadOnly(readOnly);
     design.weightMarkerQuantityField.setReadOnly(readOnly);
     design.proteinQuantityField.setReadOnly(readOnly);
-    design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).setHidden(readOnly);
     design.digestionOptions.setReadOnly(readOnly);
     design.usedProteolyticDigestionMethodField.setReadOnly(readOnly);
     design.otherProteolyticDigestionMethodField.setReadOnly(readOnly);
@@ -1437,55 +1362,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     contaminantsDataProvider.refreshAll();
   }
 
-  private void updateStructureButton(Structure structure) {
-    design.structureButton.getExtensions().stream().collect(Collectors.toList())
-        .forEach(e -> e.remove());
-    if (structure != null) {
-      design.structureButton.setCaption(structure.getFilename());
-      StreamResource resource = new StreamResource(
-          () -> new ByteArrayInputStream(structure.getContent()), structure.getFilename());
-      FileDownloader fileDownloader = new FileDownloader(resource);
-      fileDownloader.extend(design.structureButton);
-    } else {
-      design.structureButton.setCaption("");
-    }
-  }
-
-  private MultiFileUploadFileHandler gelImageFileHandler() {
-    return (file, fileName, mimetype, length) -> {
-      if (gelImagesDataProvider.getItems().size() >= MAXIMUM_GEL_IMAGES_COUNT) {
-        return;
-      }
-
-      ByteArrayOutputStream content = new ByteArrayOutputStream();
-      try {
-        Files.copy(file.toPath(), content);
-      } catch (IOException e) {
-        MessageResource resources = view.getResources();
-        view.showError(resources.message(GEL_IMAGES_PROPERTY + ".error", fileName));
-        return;
-      }
-
-      GelImage gelImage = new GelImage();
-      gelImage.setFilename(fileName);
-      gelImage.setContent(content.toByteArray());
-      gelImagesDataProvider.getItems().add(gelImage);
-      gelImagesDataProvider.refreshAll();
-      warnIfGelImageAtMaximum();
-    };
-  }
-
-  private void warnIfGelImageAtMaximum() {
-    if (gelImagesDataProvider.getItems().size() >= MAXIMUM_GEL_IMAGES_COUNT) {
-      MessageResource resources = view.getResources();
-      view.showWarning(
-          resources.message(GEL_IMAGES_PROPERTY + ".overMaximumCount", MAXIMUM_GEL_IMAGES_COUNT));
-    }
-  }
-
   private MultiFileUploadFileHandler fileHandler() {
     return (file, fileName, mimetype, length) -> {
-      if (filesDataProvider.getItems().size() >= MAXIMUM_GEL_IMAGES_COUNT) {
+      if (filesDataProvider.getItems().size() >= MAXIMUM_FILES_COUNT) {
         return;
       }
 
@@ -1578,11 +1457,8 @@ public class SubmissionFormPresenter implements BinderValidator {
         for (Contaminant contaminant : contaminantsDataProvider.getItems()) {
           valid &= validate(contaminantBinders.get(contaminant));
         }
-      } else if (sample.getSupport() == GEL) {
-        valid &= validate(() -> validateGelImages(submission));
       }
     } else if (submission.getService() == Service.SMALL_MOLECULE) {
-      valid &= validate(() -> validateStructure(submission));
       valid &= validate(() -> validateSolvents());
     }
     if (!valid) {
@@ -1637,28 +1513,6 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   }
 
-  private ValidationResult validateStructure(Submission submission) {
-    design.structureLayout.setComponentError(null);
-    if (submission.getStructure() == null || submission.getStructure().getFilename() == null) {
-      MessageResource resources = view.getResources();
-      String error = resources.message(STRUCTURE_PROPERTY + "." + REQUIRED);
-      design.structureLayout.setComponentError(new UserError(error));
-      return ValidationResult.error(error);
-    }
-    return ValidationResult.ok();
-  }
-
-  private ValidationResult validateGelImages(Submission submission) {
-    design.gelImagesLayout.setComponentError(null);
-    if (gelImagesDataProvider.getItems().size() == 0) {
-      MessageResource resources = view.getResources();
-      String error = resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED);
-      design.gelImagesLayout.setComponentError(new UserError(error));
-      return ValidationResult.error(error);
-    }
-    return ValidationResult.ok();
-  }
-
   private ValidationResult validateSolvents() {
     design.solventsLayout.setComponentError(null);
     if (!design.acetonitrileSolventsField.getValue() && !design.methanolSolventsField.getValue()
@@ -1696,9 +1550,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     clearInvisibleField(design.solutionSolventField);
     clearInvisibleField(design.sampleNameField);
     clearInvisibleField(design.formulaField);
-    if (!design.structureLayout.isVisible()) {
-      submissionBinder.getBean().setStructure(null);
-    }
     clearInvisibleField(design.monoisotopicMassField);
     clearInvisibleField(design.averageMassField);
     clearInvisibleField(design.toxicityField);
@@ -1740,10 +1591,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     clearInvisibleField(design.decolorationField);
     clearInvisibleField(design.weightMarkerQuantityField);
     clearInvisibleField(design.proteinQuantityField);
-    if (!design.gelImagesLayout.isVisible()) {
-      gelImagesDataProvider.getItems().clear();
-      gelImagesDataProvider.refreshAll();
-    }
     clearInvisibleField(design.digestionOptions);
     clearInvisibleField(design.usedProteolyticDigestionMethodField);
     clearInvisibleField(design.otherProteolyticDigestionMethodField);
@@ -1795,7 +1642,6 @@ public class SubmissionFormPresenter implements BinderValidator {
           submission.getSolvents().add(new SampleSolvent(Solvent.OTHER));
         }
       } else {
-        submission.setStructure(null);
         submission.setStorageTemperature(null);
       }
       if (submission.getService() == INTACT_PROTEIN) {
@@ -1803,9 +1649,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       } else {
         submission.setSource(null);
       }
-      if (firstSample.getSupport() == GEL) {
-        submission.setGelImages(new ArrayList<>(gelImagesDataProvider.getItems()));
-      } else {
+      if (firstSample.getSupport() != GEL) {
         submission.setSeparation(null);
         submission.setThickness(null);
       }
@@ -1974,8 +1818,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     sampleCountBinder.setBean(new ItemCount(samples.size()));
     design.sampleContainerTypeOptions.setReadOnly(false);
     design.sampleContainerTypeOptions.setValue(firstSample.getOriginalContainer().getType());
-    Structure structure = submission.getStructure();
-    updateStructureButton(structure);
     List<Standard> standards = firstSample.getStandards();
     if (standards == null) {
       standards = new ArrayList<>();
@@ -1994,13 +1836,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     contaminantsDataProvider.refreshAll();
     design.contaminantCountField.setReadOnly(false);
     contaminantCountBinder.setBean(new ItemCount(contaminants.size()));
-    List<GelImage> gelImages = submission.getGelImages();
-    if (gelImages == null) {
-      gelImages = new ArrayList<>();
-    }
-    gelImagesDataProvider.getItems().clear();
-    gelImagesDataProvider.getItems().addAll(gelImages);
-    gelImagesDataProvider.refreshAll();
     MassDetectionInstrumentSource source = submission.getSource();
     if (source != null && !source.available) {
       design.sourceOptions.setItems(
@@ -2061,43 +1896,6 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   private List<Quantification> quantificationValues() {
     return Arrays.asList(Quantification.values());
-  }
-
-  @SuppressWarnings("serial")
-  private class StructureUploaderReceiver implements Receiver, SucceededListener, ProgressListener {
-    private ByteArrayOutputStream output;
-
-    @Override
-    public void uploadSucceeded(SucceededEvent event) {
-      String fileName = event.getFilename();
-      logger.debug("Received structure file {}", fileName);
-
-      Structure structure = submissionBinder.getBean().getStructure();
-      if (structure == null) {
-        structure = new Structure();
-        submissionBinder.getBean().setStructure(structure);
-      }
-      structure.setFilename(fileName);
-      structure.setContent(output.toByteArray());
-      design.structureButton.setVisible(true);
-      updateStructureButton(structure);
-    }
-
-    @Override
-    public OutputStream receiveUpload(String filename, String mimeType) {
-      output = new ByteArrayOutputStream();
-      return output;
-    }
-
-    @Override
-    public void updateProgress(long readBytes, long contentLength) {
-      if (output != null && output.size() > MAXIMUM_STRUCTURE_SIZE) {
-        view.structureUploader.interruptUpload();
-        MessageResource generalResources = view.getGeneralResources();
-        view.showError(
-            generalResources.message(WebConstants.OVER_MAXIMUM_SIZE, MAXIMUM_STRUCTURE_SIZE));
-      }
-    }
   }
 
   private static class ItemCount {

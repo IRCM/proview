@@ -84,12 +84,6 @@ CREATE TABLE IF NOT EXISTS forgotpassword (
   PRIMARY KEY (id),
   CONSTRAINT forgotpassword_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE IF NOT EXISTS structure (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  filename varchar(255) NOT NULL,
-  content blob NOT NULL,
-  PRIMARY KEY (id)
-);
 CREATE TABLE IF NOT EXISTS submission (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   service varchar(50) DEFAULT NULL,
@@ -133,7 +127,6 @@ CREATE TABLE IF NOT EXISTS submission (
   storageTemperature varchar(50) DEFAULT NULL,
   quantification varchar(50) DEFAULT NULL,
   quantificationLabels clob DEFAULT NULL,
-  structureId bigint(20) DEFAULT NULL,
   comment clob,
   price double DEFAULT NULL,
   additionalPrice double DEFAULT NULL,
@@ -142,16 +135,7 @@ CREATE TABLE IF NOT EXISTS submission (
   userId bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   CONSTRAINT submission_ibfk_1 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE,
-  CONSTRAINT submission_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT submission_ibfk_3 FOREIGN KEY (structureId) REFERENCES structure (id) ON DELETE SET NULL ON UPDATE CASCADE
-);
-CREATE TABLE IF NOT EXISTS gelimages (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  submissionId bigint(20) DEFAULT NULL,
-  filename varchar(255) NOT NULL,
-  content blob,
-  PRIMARY KEY (id),
-  CONSTRAINT gelimages_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT submission_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS submissionfiles (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),

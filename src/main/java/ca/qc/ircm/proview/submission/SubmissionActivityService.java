@@ -25,7 +25,6 @@ import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
 import ca.qc.ircm.proview.sample.SampleSolvent;
-import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
@@ -270,23 +269,6 @@ public class SubmissionActivityService {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.INSERT)
             .tableName(Sample.TABLE_NAME).recordId(sample.getId()));
       }
-    }
-    // Gel images.
-    List<String> oldGelImages =
-        oldSubmission.getGelImages() != null ? oldSubmission.getGelImages().stream()
-            .map(image -> image.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
-    List<String> newGelImages =
-        newSubmission.getGelImages() != null ? newSubmission.getGelImages().stream()
-            .map(image -> image.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("gelimages")
-        .oldValue(DatabaseLogUtil.reduceLength(oldGelImages.toString(), 255))
-        .newValue(DatabaseLogUtil.reduceLength(newGelImages.toString(), 255)));
-    // Structure.
-    Structure oldStructure = oldSubmission.getStructure();
-    Structure newStructure = newSubmission.getStructure();
-    if (newStructure != null) {
-      updateBuilders.add(new SubmissionUpdateActivityBuilder().column("structure")
-          .oldValue(oldStructure.getFilename()).newValue(newStructure.getFilename()));
     }
     // Solvents.
     List<SampleSolvent> oldSolvents =

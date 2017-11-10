@@ -36,7 +36,6 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
 import ca.qc.ircm.proview.sample.SampleSolvent;
-import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -58,7 +57,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -163,9 +161,6 @@ public class SubmissionActivityServiceTest {
     newSubmission.setComment("new_comment");
     newSubmission.setSubmissionDate(Instant.now());
     newSubmission.setAdditionalPrice(new BigDecimal("21.50"));
-    newSubmission.setGelImages(new ArrayList<>());
-    newSubmission.getGelImages().add(new GelImage("image1.jpg"));
-    newSubmission.getGelImages().add(new GelImage("image2.jpg"));
     newSubmission.setFiles(new ArrayList<>());
     newSubmission.getFiles().add(new SubmissionFile("my_file.xlsx"));
     newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
@@ -235,9 +230,6 @@ public class SubmissionActivityServiceTest {
     newSubmission.setUser(newUser);
     newSubmission.setSubmissionDate(Instant.now());
     newSubmission.setAdditionalPrice(new BigDecimal("21.50"));
-    newSubmission.setGelImages(new ArrayList<>());
-    newSubmission.getGelImages().add(new GelImage("image1.jpg"));
-    newSubmission.getGelImages().add(new GelImage("image2.jpg"));
     newSubmission.setFiles(new ArrayList<>());
     newSubmission.getFiles().add(new SubmissionFile("my_file.xlsx"));
     newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
@@ -624,16 +616,6 @@ public class SubmissionActivityServiceTest {
     additionalPriceActivity.setOldValue(null);
     additionalPriceActivity.setNewValue("21.50");
     expectedUpdateActivities.add(additionalPriceActivity);
-    UpdateActivity gelImagesActivity = new UpdateActivity();
-    gelImagesActivity.setActionType(ActionType.UPDATE);
-    gelImagesActivity.setTableName("submission");
-    gelImagesActivity.setRecordId(newSubmission.getId());
-    gelImagesActivity.setColumn("gelimages");
-    gelImagesActivity.setOldValue(oldSubmission.getGelImages().stream()
-        .map(image -> image.getFilename()).collect(Collectors.toList()).toString());
-    gelImagesActivity.setNewValue(newSubmission.getGelImages().stream()
-        .map(image -> image.getFilename()).collect(Collectors.toList()).toString());
-    expectedUpdateActivities.add(gelImagesActivity);
     UpdateActivity filesActivity = new UpdateActivity();
     filesActivity.setActionType(ActionType.UPDATE);
     filesActivity.setTableName("submission");
@@ -759,42 +741,6 @@ public class SubmissionActivityServiceTest {
     removeSolventActivity.setActionType(ActionType.DELETE);
     removeSolventActivity.setTableName("solvent");
     removeSolventActivity.setRecordId(solventId);
-    expectedUpdateActivities.add(removeSolventActivity);
-    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
-  }
-
-  @Test
-  public void forceUpdate_UpdateStructure() throws Throwable {
-    Submission oldSubmission = entityManager.find(Submission.class, 33L);
-    entityManager.detach(oldSubmission);
-    Submission submission = entityManager.find(Submission.class, 33L);
-    entityManager.detach(submission);
-    Structure structure = submission.getStructure();
-    entityManager.detach(structure);
-    structure.setFilename("unit_test_structure_new.gif");
-    Random random = new Random();
-    byte[] bytes = new byte[1024];
-    random.nextBytes(bytes);
-    structure.setContent(bytes);
-
-    Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
-
-    assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("submission", activity.getTableName());
-    assertEquals(submission.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
-    UpdateActivity removeSolventActivity = new UpdateActivity();
-    removeSolventActivity.setActionType(ActionType.UPDATE);
-    removeSolventActivity.setTableName("submission");
-    removeSolventActivity.setRecordId(submission.getId());
-    removeSolventActivity.setColumn("structure");
-    removeSolventActivity.setOldValue("glucose.png");
-    removeSolventActivity.setNewValue(structure.getFilename());
     expectedUpdateActivities.add(removeSolventActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }

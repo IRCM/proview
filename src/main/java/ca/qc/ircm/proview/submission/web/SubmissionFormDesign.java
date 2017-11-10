@@ -37,9 +37,6 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextField sampleCountField;
   protected TextField sampleNameField;
   protected TextField formulaField;
-  protected VerticalLayout structureLayout;
-  protected Button structureButton;
-  protected VerticalLayout structureUploaderLayout;
   protected TextField monoisotopicMassField;
   protected TextField averageMassField;
   protected TextField toxicityField;
@@ -80,9 +77,6 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected CheckBox decolorationField;
   protected TextField weightMarkerQuantityField;
   protected TextField proteinQuantityField;
-  protected HorizontalLayout gelImagesLayout;
-  protected VerticalLayout gelImagesUploaderLayout;
-  protected Grid<ca.qc.ircm.proview.submission.GelImage> gelImagesGrid;
   protected Panel servicesPanel;
   protected RadioButtonGroup<ca.qc.ircm.proview.sample.ProteolyticDigestion> digestionOptions;
   protected TextField usedProteolyticDigestionMethodField;
@@ -108,6 +102,8 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Label otherSolventNoteLabel;
   protected Panel commentPanel;
   protected TextArea commentField;
+  protected Label structureFile;
+  protected Label gelImageFile;
   protected Panel filesPanel;
   protected VerticalLayout filesUploaderLayout;
   protected Grid<ca.qc.ircm.proview.submission.SubmissionFile> filesGrid;

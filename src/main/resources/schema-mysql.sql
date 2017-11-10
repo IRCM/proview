@@ -84,12 +84,6 @@ CREATE TABLE IF NOT EXISTS forgotpassword (
   PRIMARY KEY (id),
   FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE IF NOT EXISTS structure (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  filename varchar(255) NOT NULL,
-  content longblob NOT NULL,
-  PRIMARY KEY (id)
-);
 CREATE TABLE IF NOT EXISTS submission (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   service varchar(50) DEFAULT NULL,
@@ -133,7 +127,6 @@ CREATE TABLE IF NOT EXISTS submission (
   storageTemperature varchar(50) DEFAULT NULL,
   quantification varchar(50) DEFAULT NULL,
   quantificationLabels text DEFAULT NULL,
-  structureId bigint(20) DEFAULT NULL,
   comment text,
   price double DEFAULT NULL,
   additionalPrice double DEFAULT NULL,
@@ -142,16 +135,7 @@ CREATE TABLE IF NOT EXISTS submission (
   userId bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE,
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (structureId) REFERENCES structure (id) ON DELETE SET NULL ON UPDATE CASCADE
-);
-CREATE TABLE IF NOT EXISTS gelimages (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  submissionId bigint(20) DEFAULT NULL,
-  filename varchar(255) NOT NULL,
-  content longblob,
-  PRIMARY KEY (id),
-  FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS submissionfiles (
   id bigint(20) NOT NULL AUTO_INCREMENT,

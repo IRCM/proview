@@ -165,10 +165,6 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertTrue(optional(() -> solutionSolventField()).isPresent());
     assertTrue(optional(() -> sampleNameField()).isPresent());
     assertTrue(optional(() -> formulaField()).isPresent());
-    uploadStructure(Paths.get(getClass().getResource("/structure1").toURI()));
-    Thread.sleep(300); // Wait for structure to be uploaded.
-    assertTrue(optional(() -> structureButton()).isPresent());
-    assertTrue(optional(() -> structureUploader()).isPresent());
     assertTrue(optional(() -> monoisotopicMassField()).isPresent());
     assertTrue(optional(() -> averageMassField()).isPresent());
     assertTrue(optional(() -> toxicityField()).isPresent());
@@ -216,8 +212,6 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertTrue(optional(() -> decolorationField()).isPresent());
     assertTrue(optional(() -> weightMarkerQuantityField()).isPresent());
     assertTrue(optional(() -> proteinQuantityField()).isPresent());
-    assertTrue(optional(() -> gelImagesUploader()).isPresent());
-    assertTrue(optional(() -> gelImagesGrid()).isPresent());
     setSampleSupport(SOLUTION);
     assertTrue(optional(() -> servicesPanel()).isPresent());
     assertTrue(optional(() -> digestionOptions()).isPresent());
@@ -250,6 +244,11 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setService(LC_MS_MS);
     assertTrue(optional(() -> commentPanel()).isPresent());
     assertTrue(optional(() -> commentField()).isPresent());
+    setService(SMALL_MOLECULE);
+    assertTrue(optional(() -> structureFile()).isPresent());
+    setService(LC_MS_MS);
+    setSampleSupport(SampleSupport.GEL);
+    assertTrue(optional(() -> gelImageFile()).isPresent());
     assertTrue(optional(() -> filesPanel()).isPresent());
     assertTrue(optional(() -> filesUploader()).isPresent());
     assertTrue(optional(() -> filesGrid()).isPresent());

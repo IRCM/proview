@@ -23,7 +23,6 @@ import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Upload;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -40,8 +39,6 @@ import javax.inject.Inject;
 public class SubmissionForm extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
   protected SubmissionFormDesign design = new SubmissionFormDesign();
-  protected Upload structureUploader;
-  protected DefaultMultiFileUpload gelImagesUploader;
   protected DefaultMultiFileUpload filesUploader;
   @Inject
   protected PlateComponent plateComponent;
@@ -70,31 +67,6 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
   public void attach() {
     super.attach();
     presenter.init(this);
-  }
-
-  /**
-   * Creates uploader for molecule structure.
-   *
-   * @return uploader for molecule structure
-   */
-  public Upload createStructureUploader() {
-    structureUploader = new Upload();
-    design.structureUploaderLayout.addComponent(structureUploader);
-    return structureUploader;
-  }
-
-  /**
-   * Creates uploader for gel images.
-   *
-   * @param fileHandler
-   *          handles uploaded files
-   * @return uploader for gel images
-   */
-  public MultiFileUpload createGelImagesUploader(MultiFileUploadFileHandler fileHandler) {
-    gelImagesUploader = new DefaultMultiFileUpload();
-    gelImagesUploader.setFileHandler(fileHandler);
-    design.gelImagesUploaderLayout.addComponent(gelImagesUploader);
-    return gelImagesUploader;
   }
 
   /**

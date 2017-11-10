@@ -51,7 +51,6 @@ import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.Standard;
-import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -146,6 +145,10 @@ public class SubmissionServiceTest {
     optionalActivity = Optional.of(activity);
   }
 
+  private Optional<SubmissionFile> findFile(List<SubmissionFile> files, String filename) {
+    return files.stream().filter(file -> file.getFilename().equals(filename)).findFirst();
+  }
+
   private byte[] getResourceContent(String resource) throws IOException, URISyntaxException {
     Path path = Paths.get(getClass().getResource(resource).toURI());
     return Files.readAllBytes(path);
@@ -211,18 +214,17 @@ public class SubmissionServiceTest {
     assertEquals(null, sample.getNumberProtein());
     assertEquals(null, sample.getMolecularWeight());
     assertEquals(submission, sample.getSubmission());
-    assertEquals(1, submission.getGelImages().size());
-    GelImage gelImage = submission.getGelImages().get(0);
-    assertEquals((Long) 1L, gelImage.getId());
-    assertEquals("frag.jpg", gelImage.getFilename());
-    assertArrayEquals(Files.readAllBytes(Paths.get(getClass().getResource("/gelimages1").toURI())),
-        gelImage.getContent());
-    assertEquals(1, submission.getFiles().size());
+    assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals((Long) 1L, file.getId());
     assertEquals("protocol.txt", file.getFilename());
     assertArrayEquals(
         Files.readAllBytes(Paths.get(getClass().getResource("/submissionfile1.txt").toURI())),
+        file.getContent());
+    file = submission.getFiles().get(1);
+    assertEquals((Long) 2L, file.getId());
+    assertEquals("frag.jpg", file.getFilename());
+    assertArrayEquals(Files.readAllBytes(Paths.get(getClass().getResource("/gelimages1").toURI())),
         file.getContent());
   }
 
@@ -284,9 +286,6 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getAdditionalPrice());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals((Long) 3L, submission.getUser().getId());
-    Structure testStructure = submission.getStructure();
-    assertEquals("glucose.png", testStructure.getFilename());
-    assertArrayEquals(getResourceContent("/sample/glucose.png"), testStructure.getContent());
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample sample = samples.get(0);
@@ -300,8 +299,11 @@ public class SubmissionServiceTest {
     assertEquals(null, sample.getNumberProtein());
     assertEquals(null, sample.getMolecularWeight());
     assertEquals(submission, sample.getSubmission());
-    assertEquals(0, submission.getGelImages().size());
-    assertEquals(0, submission.getFiles().size());
+    assertEquals(1, submission.getFiles().size());
+    SubmissionFile file = submission.getFiles().get(0);
+    assertEquals((Long) 3L, file.getId());
+    assertEquals("glucose.png", file.getFilename());
+    assertArrayEquals(getResourceContent("/sample/glucose.png"), file.getContent());
   }
 
   @Test
@@ -409,15 +411,6 @@ public class SubmissionServiceTest {
     sample.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
-    GelImage gelImage = new GelImage();
-    gelImage.setFilename("my_gel_image.jpg");
-    byte[] imageContent = new byte[512];
-    for (int i = 0; i < 512; i++) {
-      imageContent[i] = (byte) random.nextInt();
-    }
-    gelImage.setContent(imageContent);
-    List<GelImage> gelImages = new LinkedList<>();
-    gelImages.add(gelImage);
     final Set<String> excludes = new HashSet<>();
     when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
         .thenAnswer(new Answer<String>() {
@@ -460,7 +453,6 @@ public class SubmissionServiceTest {
     submission.setProteinQuantity("20.0 μg");
     submission.setComment("comment");
     submission.setSamples(samples);
-    submission.setGelImages(gelImages);
     SubmissionFile file = new SubmissionFile();
     file.setFilename("my_file.docx");
     byte[] fileContent = new byte[512];
@@ -470,6 +462,14 @@ public class SubmissionServiceTest {
     file.setContent(fileContent);
     List<SubmissionFile> files = new LinkedList<>();
     files.add(file);
+    SubmissionFile gelImage = new SubmissionFile();
+    gelImage.setFilename("my_gel_image.jpg");
+    byte[] imageContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      imageContent[i] = (byte) random.nextInt();
+    }
+    gelImage.setContent(imageContent);
+    files.add(gelImage);
     submission.setFiles(files);
 
     submissionService.insert(submission);
@@ -529,16 +529,14 @@ public class SubmissionServiceTest {
     assertEquals("unit_test_gel_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
-    gelImages = submission.getGelImages();
-    assertEquals(1, gelImages.size());
-    gelImage = gelImages.get(0);
-    assertEquals("my_gel_image.jpg", gelImage.getFilename());
-    assertArrayEquals(imageContent, gelImage.getContent());
     files = submission.getFiles();
-    assertEquals(1, files.size());
-    file = files.get(0);
+    assertEquals(2, files.size());
+    file = findFile(files, "my_file.docx").get();
     assertEquals("my_file.docx", file.getFilename());
     assertArrayEquals(fileContent, file.getContent());
+    file = findFile(files, "my_gel_image.jpg").get();
+    assertEquals("my_gel_image.jpg", file.getFilename());
+    assertArrayEquals(imageContent, file.getContent());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -705,8 +703,6 @@ public class SubmissionServiceTest {
     assertEquals("unit_test_eluate_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
-    List<GelImage> gelImages = submission.getGelImages();
-    assertEquals(0, gelImages.size());
     files = submission.getFiles();
     assertEquals(1, files.size());
     file = files.get(0);
@@ -862,8 +858,6 @@ public class SubmissionServiceTest {
     assertEquals(0, well.getRow());
     assertEquals(0, well.getColumn());
     assertEquals(false, well.isBanned());
-    List<GelImage> gelImages = submission.getGelImages();
-    assertEquals(0, gelImages.size());
     files = submission.getFiles();
     assertEquals(1, files.size());
     file = files.get(0);
@@ -918,14 +912,6 @@ public class SubmissionServiceTest {
     submission.setToxicity("none");
     submission.setLightSensitive(true);
     submission.setStorageTemperature(StorageTemperature.LOW);
-    Structure structure = new Structure();
-    structure.setFilename("structure.jpg");
-    byte[] imageContent = new byte[512];
-    for (int i = 0; i < 512; i++) {
-      imageContent[i] = (byte) random.nextInt();
-    }
-    structure.setContent(imageContent);
-    submission.setStructure(structure);
     List<SampleSolvent> solvents = new ArrayList<>();
     solvents.add(new SampleSolvent(Solvent.ACETONITRILE));
     submission.setSolvents(solvents);
@@ -941,6 +927,14 @@ public class SubmissionServiceTest {
     file.setContent(fileContent);
     List<SubmissionFile> files = new LinkedList<>();
     files.add(file);
+    SubmissionFile structure = new SubmissionFile();
+    structure.setFilename("structure.jpg");
+    byte[] imageContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      imageContent[i] = (byte) random.nextInt();
+    }
+    structure.setContent(imageContent);
+    files.add(structure);
     submission.setFiles(files);
 
     submissionService.insert(submission);
@@ -982,9 +976,6 @@ public class SubmissionServiceTest {
     assertEquals("none", submission.getToxicity());
     assertEquals(true, submission.isLightSensitive());
     assertEquals(StorageTemperature.LOW, submission.getStorageTemperature());
-    structure = submission.getStructure();
-    assertEquals("structure.jpg", structure.getFilename());
-    assertArrayEquals(imageContent, structure.getContent());
     assertEquals("comment", submission.getComment());
     samples = submission.getSamples();
     assertEquals(1, samples.size());
@@ -996,13 +987,14 @@ public class SubmissionServiceTest {
     assertEquals("unit_test_molecule_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
-    List<GelImage> gelImages = submission.getGelImages();
-    assertEquals(0, gelImages.size());
     files = submission.getFiles();
-    assertEquals(1, files.size());
-    file = files.get(0);
+    assertEquals(2, files.size());
+    file = findFile(files, "my_file.docx").get();
     assertEquals("my_file.docx", file.getFilename());
     assertArrayEquals(fileContent, file.getContent());
+    file = findFile(files, "structure.jpg").get();
+    assertEquals("structure.jpg", file.getFilename());
+    assertArrayEquals(imageContent, file.getContent());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -1167,7 +1159,6 @@ public class SubmissionServiceTest {
     assertEquals("CAP_20111116_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
-    assertEquals(0, submission.getGelImages().size());
     assertEquals(0, submission.getFiles().size());
 
     // Validate log.
@@ -1227,7 +1218,6 @@ public class SubmissionServiceTest {
     assertEquals("unit_test_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
-    assertEquals(0, submission.getGelImages().size());
     assertEquals(0, submission.getFiles().size());
 
     // Validate log.
@@ -1502,16 +1492,6 @@ public class SubmissionServiceTest {
     submission.setMudPitFraction(MudPitFraction.EIGHT);
     submission.setProteinContent(ProteinContent.MEDIUM);
     submission.setComment("comment");
-    GelImage gelImage = new GelImage();
-    gelImage.setFilename("my_gel_image.jpg");
-    byte[] imageContent = new byte[512];
-    for (int i = 0; i < 512; i++) {
-      imageContent[i] = (byte) random.nextInt();
-    }
-    gelImage.setContent(imageContent);
-    List<GelImage> gelImages = new LinkedList<>();
-    gelImages.add(gelImage);
-    submission.setGelImages(gelImages);
     SubmissionFile file = new SubmissionFile();
     file.setFilename("my_file.docx");
     byte[] fileContent = new byte[512];
@@ -1521,6 +1501,14 @@ public class SubmissionServiceTest {
     file.setContent(fileContent);
     List<SubmissionFile> files = new LinkedList<>();
     files.add(file);
+    SubmissionFile gelImage = new SubmissionFile();
+    gelImage.setFilename("my_gel_image.jpg");
+    byte[] imageContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      imageContent[i] = (byte) random.nextInt();
+    }
+    gelImage.setContent(imageContent);
+    files.add(gelImage);
     submission.setFiles(files);
     User user = entityManager.find(User.class, 4L);
     submission.setUser(user);
@@ -1565,16 +1553,14 @@ public class SubmissionServiceTest {
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
     assertEquals("comment", submission.getComment());
     assertEquals(newInstant, submission.getSubmissionDate());
-    gelImages = submission.getGelImages();
-    assertEquals(1, gelImages.size());
-    gelImage = gelImages.get(0);
-    assertEquals("my_gel_image.jpg", gelImage.getFilename());
-    assertArrayEquals(imageContent, gelImage.getContent());
     files = submission.getFiles();
-    assertEquals(1, files.size());
-    file = files.get(0);
+    assertEquals(2, files.size());
+    file = findFile(files, "my_file.docx").get();
     assertEquals("my_file.docx", file.getFilename());
     assertArrayEquals(fileContent, file.getContent());
+    file = findFile(files, "my_gel_image.jpg").get();
+    assertEquals("my_gel_image.jpg", file.getFilename());
+    assertArrayEquals(imageContent, file.getContent());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getAllValues().get(0);

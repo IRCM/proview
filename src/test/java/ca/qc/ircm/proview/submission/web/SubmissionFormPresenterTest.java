@@ -57,10 +57,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CON
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_TABLE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILENAME_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_LABEL;
@@ -84,7 +81,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_LABELS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.REMOVE_FILE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.REMOVE_GEL_IMAGE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_CONTAINER_TYPE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PLATE;
@@ -112,8 +108,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_QUANTITY_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_UPLOADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY_PROPERTY;
@@ -134,7 +129,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -144,8 +138,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import com.google.common.io.ByteStreams;
 
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -163,12 +155,10 @@ import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.sample.Standard;
-import ca.qc.ircm.proview.sample.Structure;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.GelColoration;
-import ca.qc.ircm.proview.submission.GelImage;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
@@ -195,10 +185,6 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Rule;
@@ -212,7 +198,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -244,19 +229,9 @@ public class SubmissionFormPresenterTest {
   @Mock
   private SubmissionForm view;
   @Mock
-  private Upload structureUploader;
-  @Mock
-  private DefaultMultiFileUpload gelImagesUploader;
-  @Mock
   private DefaultMultiFileUpload filesUploader;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
-  @Captor
-  private ArgumentCaptor<Boolean> booleanCaptor;
-  @Captor
-  private ArgumentCaptor<Receiver> receiverCaptor;
-  @Captor
-  private ArgumentCaptor<SucceededListener> succeededListenerCaptor;
   @Captor
   private ArgumentCaptor<MultiFileUploadFileHandler> uploadFinishedHandlerCaptor;
   @Captor
@@ -282,9 +257,6 @@ public class SubmissionFormPresenterTest {
   private double proteinWeight1 = 207076;
   private double proteinWeight2 = 219076;
   private String formula = "ch3oh";
-  private String structureFilename = "ch3oh.png";
-  private String structureMimeType = "png";
-  private byte[] structureContent = new byte[2048];
   private double monoisotopicMass = 32.04;
   private double averageMass = 32.08;
   private String toxicity = "non-toxic";
@@ -323,12 +295,6 @@ public class SubmissionFormPresenterTest {
   private boolean decoloration = true;
   private double weightMarkerQuantity = 300;
   private String proteinQuantity = "30 ug";
-  private String gelImageFilename1 = "gel1.png";
-  private String gelImageMimeType1 = "png";
-  private byte[] gelImageContent1 = new byte[3072];
-  private String gelImageFilename2 = "gel2.png";
-  private String gelImageMimeType2 = "png";
-  private byte[] gelImageContent2 = new byte[4096];
   private ProteolyticDigestion digestion = DIGESTED;
   private String usedDigestion = "typsinP";
   private String otherDigestion = "typsinP/Y";
@@ -381,9 +347,7 @@ public class SubmissionFormPresenterTest {
         plateService, authorizationService);
     design = new SubmissionFormDesign();
     view.design = design;
-    view.structureUploader = structureUploader;
     view.plateComponent = mock(PlateComponent.class);
-    view.gelImagesUploader = gelImagesUploader;
     view.filesUploader = filesUploader;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -523,33 +487,6 @@ public class SubmissionFormPresenterTest {
         .apply(contaminant);
     field.setValue(value);
     return field;
-  }
-
-  private void uploadStructure() throws IOException {
-    verify(view.structureUploader).setReceiver(receiverCaptor.capture());
-    verify(view.structureUploader).addSucceededListener(succeededListenerCaptor.capture());
-    Receiver receiver = receiverCaptor.getValue();
-    SucceededListener listener = succeededListenerCaptor.getValue();
-    random.nextBytes(structureContent);
-    OutputStream output = receiver.receiveUpload(structureFilename, structureMimeType);
-    ByteStreams.copy(new ByteArrayInputStream(structureContent), output);
-    listener.uploadSucceeded(new SucceededEvent(view.structureUploader, structureFilename,
-        structureMimeType, structureContent.length));
-  }
-
-  private void uploadGelImages() throws IOException {
-    verify(view).createGelImagesUploader(uploadFinishedHandlerCaptor.capture());
-    MultiFileUploadFileHandler handler = uploadFinishedHandlerCaptor.getValue();
-    random.nextBytes(gelImageContent1);
-    Path gelImage1Path = temporaryFolder.getRoot().toPath().resolve("gelimage1.tmp");
-    Files.copy(new ByteArrayInputStream(gelImageContent1), gelImage1Path);
-    handler.handleFile(gelImage1Path.toFile(), gelImageFilename1, gelImageMimeType1,
-        gelImageContent1.length);
-    random.nextBytes(gelImageContent2);
-    Path gelImage2Path = temporaryFolder.getRoot().toPath().resolve("gelimage2.tmp");
-    Files.copy(new ByteArrayInputStream(gelImageContent2), gelImage2Path);
-    handler.handleFile(gelImage2Path.toFile(), gelImageFilename2, gelImageMimeType2,
-        gelImageContent2.length);
   }
 
   private void uploadFiles() throws IOException {
@@ -703,20 +640,6 @@ public class SubmissionFormPresenterTest {
     contaminant.setQuantity(contaminantQuantity2);
     contaminant.setComment(contaminantComment2);
     contaminants.add(contaminant);
-    List<GelImage> gelImages = new ArrayList<>();
-    submission.setGelImages(gelImages);
-    GelImage gelImage = new GelImage();
-    gelImage.setFilename(gelImageFilename1);
-    gelImage.setContent(gelImageContent1);
-    gelImages.add(gelImage);
-    gelImage = new GelImage();
-    gelImage.setFilename(gelImageFilename2);
-    gelImage.setContent(gelImageContent2);
-    gelImages.add(gelImage);
-    Structure structure = new Structure();
-    structure.setFilename(structureFilename);
-    structure.setContent(structureContent);
-    submission.setStructure(structure);
     List<SubmissionFile> files = new ArrayList<>();
     submission.setFiles(files);
     SubmissionFile file = new SubmissionFile();
@@ -791,33 +714,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY).isSortable());
     assertEquals(CONTAMINANT_COMMENT_PROPERTY, design.contaminantsGrid.getColumns().get(2).getId());
     assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY).isSortable());
-  }
-
-  @Test
-  public void gelImagesColumns_ReadOnly() {
-    presenter.init(view);
-    presenter.setReadOnly(true);
-
-    assertEquals(2, design.gelImagesGrid.getColumns().size());
-    assertEquals(GEL_IMAGE_FILENAME_PROPERTY, design.gelImagesGrid.getColumns().get(0).getId());
-    assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isHidden());
-    assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isSortable());
-    assertEquals(REMOVE_GEL_IMAGE, design.gelImagesGrid.getColumns().get(1).getId());
-    assertTrue(design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
-    assertFalse(design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isSortable());
-  }
-
-  @Test
-  public void gelImagesColumns() {
-    presenter.init(view);
-
-    assertEquals(2, design.gelImagesGrid.getColumns().size());
-    assertEquals(GEL_IMAGE_FILENAME_PROPERTY, design.gelImagesGrid.getColumns().get(0).getId());
-    assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isHidden());
-    assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isSortable());
-    assertEquals(REMOVE_GEL_IMAGE, design.gelImagesGrid.getColumns().get(1).getId());
-    assertFalse(design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
-    assertFalse(design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).isSortable());
   }
 
   @Test
@@ -1150,9 +1046,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.getStyleName().contains(SAMPLE_COUNT_PROPERTY));
     assertTrue(design.sampleNameField.getStyleName().contains(SAMPLE_NAME_PROPERTY));
     assertTrue(design.formulaField.getStyleName().contains(FORMULA_PROPERTY));
-    assertTrue(design.structureLayout.getStyleName().contains(REQUIRED));
-    assertTrue(design.structureButton.getStyleName().contains(STRUCTURE_PROPERTY));
-    verify(view.structureUploader).addStyleName(STRUCTURE_UPLOADER);
     assertTrue(design.monoisotopicMassField.getStyleName().contains(MONOISOTOPIC_MASS_PROPERTY));
     assertTrue(design.averageMassField.getStyleName().contains(AVERAGE_MASS_PROPERTY));
     assertTrue(design.toxicityField.getStyleName().contains(TOXICITY_PROPERTY));
@@ -1198,9 +1091,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(
         design.weightMarkerQuantityField.getStyleName().contains(WEIGHT_MARKER_QUANTITY_PROPERTY));
     assertTrue(design.proteinQuantityField.getStyleName().contains(PROTEIN_QUANTITY_PROPERTY));
-    assertTrue(design.gelImagesLayout.getStyleName().contains(REQUIRED));
-    verify(view.gelImagesUploader).addStyleName(GEL_IMAGES_PROPERTY);
-    assertTrue(design.gelImagesGrid.getStyleName().contains(GEL_IMAGES_TABLE));
     assertTrue(design.servicesPanel.getStyleName().contains(SERVICES_PANEL));
     assertTrue(design.digestionOptions.getStyleName().contains(DIGESTION_PROPERTY));
     assertTrue(design.usedProteolyticDigestionMethodField.getStyleName()
@@ -1235,6 +1125,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.otherSolventNoteLabel.getStyleName().contains(OTHER_SOLVENT_NOTE));
     assertTrue(design.commentPanel.getStyleName().contains(COMMENT_PANEL));
     assertTrue(design.commentField.getStyleName().contains(COMMENT_PROPERTY));
+    assertTrue(design.structureFile.getStyleName().contains(STRUCTURE_FILE));
+    assertTrue(design.gelImageFile.getStyleName().contains(GEL_IMAGE_FILE));
     assertTrue(design.filesPanel.getStyleName().contains(FILES_PROPERTY));
     verify(view.filesUploader).addStyleName(FILES_UPLOADER);
     assertTrue(design.filesGrid.getStyleName().contains(FILES_GRID));
@@ -1268,10 +1160,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(SAMPLE_COUNT_PROPERTY), design.sampleCountField.getCaption());
     assertEquals(resources.message(SAMPLE_NAME_PROPERTY), design.sampleNameField.getCaption());
     assertEquals(resources.message(FORMULA_PROPERTY), design.formulaField.getCaption());
-    assertEquals(resources.message(STRUCTURE_PROPERTY), design.structureLayout.getCaption());
-    assertEquals("", design.structureButton.getCaption());
-    verify(view.structureUploader).setButtonCaption(resources.message(STRUCTURE_UPLOADER));
-    verify(view.structureUploader).setImmediateMode(true);
     assertEquals(resources.message(MONOISOTOPIC_MASS_PROPERTY),
         design.monoisotopicMassField.getCaption());
     assertEquals(resources.message(AVERAGE_MASS_PROPERTY), design.averageMassField.getCaption());
@@ -1377,13 +1265,6 @@ public class SubmissionFormPresenterTest {
         design.proteinQuantityField.getCaption());
     assertEquals(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE),
         design.proteinQuantityField.getPlaceholder());
-    assertEquals(resources.message(GEL_IMAGES_PROPERTY), design.gelImagesLayout.getCaption());
-    verify(view.gelImagesUploader).setUploadButtonCaption(resources.message(GEL_IMAGES_UPLOADER));
-    assertEquals(null, design.gelImagesGrid.getCaption());
-    assertEquals(resources.message(GEL_IMAGES_PROPERTY + "." + GEL_IMAGE_FILENAME_PROPERTY),
-        design.gelImagesGrid.getColumn(GEL_IMAGE_FILENAME_PROPERTY).getCaption());
-    assertEquals(resources.message(GEL_IMAGES_PROPERTY + "." + REMOVE_GEL_IMAGE),
-        design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).getCaption());
     assertEquals(resources.message(SERVICES_PANEL), design.servicesPanel.getCaption());
     assertEquals(resources.message(DIGESTION_PROPERTY), design.digestionOptions.getCaption());
     for (ProteolyticDigestion digestion : ProteolyticDigestion.values()) {
@@ -1462,6 +1343,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(OTHER_SOLVENT_NOTE), design.otherSolventNoteLabel.getValue());
     assertEquals(resources.message(COMMENT_PANEL), design.commentPanel.getCaption());
     assertEquals(null, design.commentField.getCaption());
+    assertEquals(resources.message(STRUCTURE_FILE), design.structureFile.getValue());
+    assertEquals(resources.message(GEL_IMAGE_FILE), design.gelImageFile.getValue());
     assertEquals(resources.message(FILES_PROPERTY), design.filesPanel.getCaption());
     verify(view.filesUploader).setUploadButtonCaption(resources.message(FILES_UPLOADER));
     assertEquals(null, design.filesGrid.getCaption());
@@ -1540,7 +1423,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.decolorationField.isReadOnly());
     assertTrue(design.weightMarkerQuantityField.isReadOnly());
     assertTrue(design.proteinQuantityField.isReadOnly());
-    assertTrue(design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
     assertTrue(design.digestionOptions.isReadOnly());
     assertTrue(design.usedProteolyticDigestionMethodField.isReadOnly());
     assertTrue(design.otherProteolyticDigestionMethodField.isReadOnly());
@@ -1630,7 +1512,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isReadOnly());
     assertFalse(design.weightMarkerQuantityField.isReadOnly());
     assertFalse(design.proteinQuantityField.isReadOnly());
-    assertFalse(design.gelImagesGrid.getColumn(REMOVE_GEL_IMAGE).isHidden());
     assertFalse(design.digestionOptions.isReadOnly());
     assertFalse(design.usedProteolyticDigestionMethodField.isReadOnly());
     assertFalse(design.otherProteolyticDigestionMethodField.isReadOnly());
@@ -1692,10 +1573,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -1732,10 +1609,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertTrue(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -1759,6 +1632,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -1775,10 +1650,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -1815,10 +1686,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertTrue(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -1842,6 +1709,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -1902,10 +1771,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -1942,10 +1807,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertTrue(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -1969,6 +1830,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -1985,10 +1848,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -2025,10 +1884,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertTrue(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2052,6 +1907,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2074,10 +1931,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -2114,10 +1967,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.decolorationField.isVisible());
     assertTrue(design.weightMarkerQuantityField.isVisible());
     assertTrue(design.proteinQuantityField.isVisible());
-    assertTrue(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertTrue(design.gelImagesGrid.isVisible());
     assertTrue(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2141,6 +1990,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertTrue(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2157,10 +2008,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -2197,10 +2044,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.decolorationField.isVisible());
     assertTrue(design.weightMarkerQuantityField.isVisible());
     assertTrue(design.proteinQuantityField.isVisible());
-    assertTrue(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
-    assertTrue(design.gelImagesGrid.isVisible());
     assertTrue(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2224,6 +2067,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertTrue(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2245,8 +2090,6 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(SOLUTION);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    submission.setStructure(new Structure());
-    submission.getStructure().setFilename("structure.png");
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -2259,10 +2102,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleCountField.isVisible());
     assertTrue(design.sampleNameField.isVisible());
     assertTrue(design.formulaField.isVisible());
-    assertTrue(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertTrue(design.structureButton.isVisible());
     assertTrue(design.monoisotopicMassField.isVisible());
     assertTrue(design.averageMassField.isVisible());
     assertTrue(design.toxicityField.isVisible());
@@ -2299,10 +2138,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertFalse(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2326,6 +2161,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.buttonsLayout.isVisible());
+    assertTrue(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2333,7 +2170,6 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     design.serviceOptions.setValue(SMALL_MOLECULE);
     design.sampleSupportOptions.setValue(support);
-    uploadStructure();
 
     assertTrue(design.sampleTypeLabel.isVisible());
     assertTrue(design.inactiveLabel.isVisible());
@@ -2343,10 +2179,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleCountField.isVisible());
     assertTrue(design.sampleNameField.isVisible());
     assertTrue(design.formulaField.isVisible());
-    assertTrue(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
-    assertTrue(design.structureButton.isVisible());
     assertTrue(design.monoisotopicMassField.isVisible());
     assertTrue(design.averageMassField.isVisible());
     assertTrue(design.toxicityField.isVisible());
@@ -2383,10 +2215,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertFalse(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2410,16 +2238,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.buttonsLayout.isVisible());
-  }
-
-  @Test
-  public void visible_Smallmolecule_Solution_NoStructure() {
-    presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
-    design.otherSolventsField.setValue(true);
-
-    assertFalse(design.structureButton.isVisible());
+    assertTrue(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2427,7 +2247,6 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     design.serviceOptions.setValue(SMALL_MOLECULE);
     design.sampleSupportOptions.setValue(support);
-    uploadStructure();
     design.otherSolventsField.setValue(true);
 
     assertTrue(design.otherSolventField.isVisible());
@@ -2442,8 +2261,6 @@ public class SubmissionFormPresenterTest {
     sample.setSupport(DRY);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
-    submission.setStructure(new Structure());
-    submission.getStructure().setFilename("structure.png");
     presenter.init(view);
     presenter.setReadOnly(true);
     presenter.setValue(submission);
@@ -2456,10 +2273,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleCountField.isVisible());
     assertTrue(design.sampleNameField.isVisible());
     assertTrue(design.formulaField.isVisible());
-    assertTrue(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertTrue(design.structureButton.isVisible());
     assertTrue(design.monoisotopicMassField.isVisible());
     assertTrue(design.averageMassField.isVisible());
     assertTrue(design.toxicityField.isVisible());
@@ -2496,10 +2309,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertFalse(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2523,6 +2332,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.buttonsLayout.isVisible());
+    assertTrue(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2530,7 +2341,6 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     design.serviceOptions.setValue(SMALL_MOLECULE);
     design.sampleSupportOptions.setValue(DRY);
-    uploadStructure();
 
     assertTrue(design.sampleTypeLabel.isVisible());
     assertTrue(design.inactiveLabel.isVisible());
@@ -2540,10 +2350,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleCountField.isVisible());
     assertTrue(design.sampleNameField.isVisible());
     assertTrue(design.formulaField.isVisible());
-    assertTrue(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
-    assertTrue(design.structureButton.isVisible());
     assertTrue(design.monoisotopicMassField.isVisible());
     assertTrue(design.averageMassField.isVisible());
     assertTrue(design.toxicityField.isVisible());
@@ -2580,10 +2386,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertFalse(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2607,6 +2409,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.buttonsLayout.isVisible());
+    assertTrue(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2629,10 +2433,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -2669,10 +2469,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertFalse(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2696,6 +2492,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2712,10 +2510,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -2752,10 +2546,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertFalse(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2779,6 +2569,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2801,10 +2593,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -2841,10 +2629,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertFalse(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2868,6 +2652,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2884,10 +2670,6 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleCountField.isVisible());
     assertFalse(design.sampleNameField.isVisible());
     assertFalse(design.formulaField.isVisible());
-    assertFalse(design.structureLayout.isVisible());
-    verify(view.structureUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.structureButton.isVisible());
     assertFalse(design.monoisotopicMassField.isVisible());
     assertFalse(design.averageMassField.isVisible());
     assertFalse(design.toxicityField.isVisible());
@@ -2924,10 +2706,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.decolorationField.isVisible());
     assertFalse(design.weightMarkerQuantityField.isVisible());
     assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.gelImagesLayout.isVisible());
-    verify(view.gelImagesUploader, atLeastOnce()).setVisible(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
-    assertFalse(design.gelImagesGrid.isVisible());
     assertFalse(design.digestionOptions.isVisible());
     assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
@@ -2951,6 +2729,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolventNoteLabel.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.buttonsLayout.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
@@ -2959,8 +2739,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(null);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -2978,8 +2756,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(null);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -2998,8 +2774,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.solutionSolventField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3018,8 +2792,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleCountField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3038,8 +2810,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleCountField.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3058,8 +2828,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleCountField.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3078,8 +2846,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleCountField.setValue("200000");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3098,8 +2864,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleCountField.setValue("1.3");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3118,8 +2882,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleNameField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3137,8 +2899,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(SMALL_MOLECULE);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
     when(submissionSampleService.exists(any())).thenReturn(true);
 
@@ -3159,8 +2919,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.formulaField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3173,32 +2931,12 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_MissingStructure() throws Throwable {
-    presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
-    setFields();
-    uploadGelImages();
-    uploadFiles();
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(resources.message(STRUCTURE_PROPERTY + "." + REQUIRED)),
-        design.structureLayout.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
   public void save_MissingMonoisotopicMass() throws Throwable {
     presenter.init(view);
     design.serviceOptions.setValue(SMALL_MOLECULE);
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.monoisotopicMassField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3217,8 +2955,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.monoisotopicMassField.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3237,8 +2973,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.monoisotopicMassField.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3256,8 +2990,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.averageMassField.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3276,8 +3008,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.averageMassField.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3295,8 +3025,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.storageTemperatureOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3316,8 +3044,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
     design.plateNameField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3336,8 +3062,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
     when(plateService.nameAvailable(any())).thenReturn(false);
 
@@ -3358,8 +3082,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNameField1.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
     design.saveButton.click();
 
@@ -3376,8 +3098,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
 
@@ -3398,8 +3118,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNameField2.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3417,8 +3135,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
 
@@ -3439,8 +3155,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNameField2.setValue(sampleName1);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3460,8 +3174,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
     plate.well(0, 0).setSample(new SubmissionSample(null, ""));
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3481,8 +3193,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
 
@@ -3500,8 +3210,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
     plate.well(1, 0).setSample(new SubmissionSample(null, ""));
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3521,8 +3229,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
 
@@ -3540,8 +3246,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
     plate.well(1, 0).setSample(new SubmissionSample(null, sampleName1));
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3561,8 +3265,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNumberProteinField1.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3581,8 +3283,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNumberProteinField1.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3601,8 +3301,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNumberProteinField1.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3620,8 +3318,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNumberProteinField1.setValue("1.2");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3640,8 +3336,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNumberProteinField2.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3660,8 +3354,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNumberProteinField2.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3680,8 +3372,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNumberProteinField2.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3699,8 +3389,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleNumberProteinField2.setValue("1.2");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3719,8 +3407,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleProteinWeightField1.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3739,8 +3425,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleProteinWeightField1.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3759,8 +3443,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleProteinWeightField1.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3778,8 +3460,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleProteinWeightField2.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3798,8 +3478,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleProteinWeightField2.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3818,8 +3496,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     sampleProteinWeightField2.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3837,8 +3513,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.experienceField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3857,8 +3531,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.taxonomyField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3877,8 +3549,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.proteinWeightField.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3897,8 +3567,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.proteinWeightField.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3916,8 +3584,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleQuantityField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3936,8 +3602,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleVolumeField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3956,8 +3620,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleVolumeField.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3976,8 +3638,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleVolumeField.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -3995,8 +3655,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.standardCountField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4012,8 +3670,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.standardCountField.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4032,8 +3688,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.standardCountField.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4052,8 +3706,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.standardCountField.setValue("200");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4072,8 +3724,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.standardCountField.setValue("1.2");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4092,8 +3742,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     standardNameField1.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4112,8 +3760,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     standardNameField2.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4132,8 +3778,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     standardQuantityField1.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4152,8 +3796,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     standardQuantityField2.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4172,8 +3814,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.contaminantCountField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4189,8 +3829,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.contaminantCountField.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4209,8 +3847,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.contaminantCountField.setValue("-1");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4229,8 +3865,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.contaminantCountField.setValue("200");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4249,8 +3883,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.contaminantCountField.setValue("1.2");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4269,8 +3901,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     contaminantNameField1.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4289,8 +3919,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     contaminantNameField2.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4309,8 +3937,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     contaminantQuantityField1.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4329,8 +3955,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     contaminantQuantityField2.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4349,8 +3973,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(GEL);
     setFields();
     design.separationField.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4369,8 +3991,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(GEL);
     setFields();
     design.thicknessField.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4390,8 +4010,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.colorationField.setValue(GelColoration.OTHER);
     design.otherColorationField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4410,8 +4028,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(GEL);
     setFields();
     design.weightMarkerQuantityField.setValue("a");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4424,32 +4040,12 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_MissingGelImages() throws Throwable {
-    presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(GEL);
-    setFields();
-    uploadStructure();
-    uploadFiles();
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(resources.message(GEL_IMAGES_PROPERTY + "." + REQUIRED)),
-        design.gelImagesLayout.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
   public void save_MissingDigestion() throws Throwable {
     presenter.init(view);
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.digestionOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4469,8 +4065,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.digestionOptions.setValue(DIGESTED);
     design.usedProteolyticDigestionMethodField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4490,8 +4084,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.digestionOptions.setValue(ProteolyticDigestion.OTHER);
     design.otherProteolyticDigestionMethodField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4510,8 +4102,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.injectionTypeOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4530,8 +4120,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sourceOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4550,8 +4138,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.proteinContentOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4570,8 +4156,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.instrumentOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4587,8 +4171,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.proteinIdentificationOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4608,8 +4190,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.proteinIdentificationOptions.setValue(ProteinIdentification.OTHER);
     design.proteinIdentificationLinkField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4629,8 +4209,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.quantificationOptions.setValue(Quantification.SILAC);
     design.quantificationLabelsField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4649,8 +4227,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.highResolutionOptions.setValue(null);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4672,8 +4248,6 @@ public class SubmissionFormPresenterTest {
     design.methanolSolventsField.setValue(false);
     design.chclSolventsField.setValue(false);
     design.otherSolventsField.setValue(false);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4693,8 +4267,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.otherSolventsField.setValue(true);
     design.otherSolventField.setValue("");
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4733,8 +4305,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -4852,8 +4422,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
     assertEquals(contaminantComment2, contaminant.getComment());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -4872,8 +4440,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -5003,8 +4569,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
     assertEquals(contaminantComment2, contaminant.getComment());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -5025,8 +4589,6 @@ public class SubmissionFormPresenterTest {
     setFields();
     design.digestionOptions.setValue(digestion);
     design.otherProteolyticDigestionMethodField.setValue(otherDigestion);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -5144,8 +4706,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
     assertEquals(contaminantComment2, contaminant.getComment());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -5164,8 +4724,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -5283,8 +4841,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
     assertEquals(contaminantComment2, contaminant.getComment());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -5304,8 +4860,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -5435,8 +4989,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
     assertEquals(contaminantComment2, contaminant.getComment());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -5454,8 +5006,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(GEL);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -5541,14 +5091,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertTrue(sample.getContaminants() == null || sample.getContaminants().isEmpty());
-    assertEquals(2, submission.getGelImages().size());
-    GelImage gelImage = submission.getGelImages().get(0);
-    assertEquals(gelImageFilename1, gelImage.getFilename());
-    assertArrayEquals(gelImageContent1, gelImage.getContent());
-    gelImage = submission.getGelImages().get(1);
-    assertEquals(gelImageFilename2, gelImage.getFilename());
-    assertArrayEquals(gelImageContent2, gelImage.getContent());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -5567,8 +5109,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(GEL);
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -5666,14 +5206,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertTrue(sample.getContaminants() == null || sample.getContaminants().isEmpty());
-    assertEquals(2, submission.getGelImages().size());
-    GelImage gelImage = submission.getGelImages().get(0);
-    assertEquals(gelImageFilename1, gelImage.getFilename());
-    assertArrayEquals(gelImageContent1, gelImage.getContent());
-    gelImage = submission.getGelImages().get(1);
-    assertEquals(gelImageFilename2, gelImage.getFilename());
-    assertArrayEquals(gelImageContent2, gelImage.getContent());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -5691,8 +5223,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(SMALL_MOLECULE);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -5780,11 +5310,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertTrue(sample.getContaminants() == null || sample.getContaminants().isEmpty());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNotNull(submission.getStructure());
-    Structure structure = submission.getStructure();
-    assertEquals(structureFilename, structure.getFilename());
-    assertArrayEquals(structureContent, structure.getContent());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -5803,8 +5328,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(SMALL_MOLECULE);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -5892,11 +5415,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getStatus());
     assertEquals(null, sample.getSubmission());
     assertTrue(sample.getContaminants() == null || sample.getContaminants().isEmpty());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNotNull(submission.getStructure());
-    Structure structure = submission.getStructure();
-    assertEquals(structureFilename, structure.getFilename());
-    assertArrayEquals(structureContent, structure.getContent());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -5915,8 +5433,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -5936,8 +5452,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(INTACT_PROTEIN);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -6055,8 +5569,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
     assertEquals(contaminantComment2, contaminant.getComment());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -6075,8 +5587,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(INTACT_PROTEIN);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -6194,8 +5704,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
     assertEquals(contaminantComment2, contaminant.getComment());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -6214,8 +5722,6 @@ public class SubmissionFormPresenterTest {
     design.sampleSupportOptions.setValue(support);
     setFields();
     design.sampleContainerTypeOptions.setValue(WELL);
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -6247,8 +5753,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -6369,8 +5873,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
     assertEquals(contaminantComment2, contaminant.getComment());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -6391,8 +5893,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
 
     design.saveButton.click();
@@ -6516,8 +6016,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
     assertEquals(contaminantComment2, contaminant.getComment());
-    assertTrue(submission.getGelImages() == null || submission.getGelImages().isEmpty());
-    assertNull(submission.getStructure());
     assertEquals(2, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(filesFilename1, file.getFilename());
@@ -6538,8 +6036,6 @@ public class SubmissionFormPresenterTest {
     design.serviceOptions.setValue(LC_MS_MS);
     design.sampleSupportOptions.setValue(support);
     setFields();
-    uploadStructure();
-    uploadGelImages();
     uploadFiles();
     doThrow(new PersistenceException("Could not update submission")).when(submissionService)
         .forceUpdate(any(), any());
