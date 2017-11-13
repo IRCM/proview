@@ -17,10 +17,18 @@
 
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.digestion.web.DigestionView;
+import ca.qc.ircm.proview.dilution.web.DilutionView;
+import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
+import ca.qc.ircm.proview.plate.web.PlateView;
 import ca.qc.ircm.proview.sample.web.ControlView;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
+import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
+import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.web.AccessView;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.SignasView;
@@ -53,7 +61,16 @@ import javax.inject.Inject;
 public class Menu extends CustomComponent implements BaseComponent, ViewChangeListener {
   public static final String HOME = "home";
   public static final String SUBMISSION = "submission";
+  public static final String TREATMENT = "treatment";
+  public static final String TRANSFER = "transfer";
+  public static final String DIGESTION = "digestion";
+  public static final String ENRICHMENT = "enrichment";
+  public static final String SOLUBILISATION = "solubilisation";
+  public static final String DILUTION = "dilution";
+  public static final String STANDARD_ADDITION = "standardAddition";
+  public static final String MS_ANALYSIS = "msAnalysis";
   public static final String CONTROL = "control";
+  public static final String PLATE = "plate";
   public static final String PROFILE = "profile";
   public static final String SIGNOUT = "signout";
   public static final String CHANGE_LANGUAGE = "changeLanguage";
@@ -70,7 +87,16 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
   private MenuBar menu = new MenuBar();
   private MenuItem home;
   private MenuItem submission;
+  private MenuItem treatment;
+  private MenuItem transfer;
+  private MenuItem digestion;
+  private MenuItem enrichment;
+  private MenuItem solubilisation;
+  private MenuItem dilution;
+  private MenuItem standardAddition;
+  private MenuItem msAnalysis;
   private MenuItem control;
+  private MenuItem plate;
   private MenuItem profile;
   private MenuItem signout;
   private MenuItem changeLanguage;
@@ -93,30 +119,6 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
   @PostConstruct
   public void init() {
     setCompositionRoot(menu);
-    home = menu.addItem("Home", item -> changeView(MainView.VIEW_NAME));
-    submission = menu.addItem("Submission", item -> changeView(SubmissionView.VIEW_NAME));
-    submission.setVisible(false);
-    control = menu.addItem("Control", item -> changeView(ControlView.VIEW_NAME));
-    control.setVisible(false);
-    profile = menu.addItem("Profile", item -> changeView(UserView.VIEW_NAME));
-    profile.setVisible(false);
-    signout = menu.addItem("Sign out", item -> signout());
-    signout.setVisible(false);
-    changeLanguage = menu.addItem("Change language", item -> changeLanguage());
-    manager = menu.addItem("Manager", null);
-    manager.setVisible(false);
-    validateUsers = manager.addItem("Validate users", item -> changeView(ValidateView.VIEW_NAME));
-    validateUsers.setVisible(false);
-    access = manager.addItem("Users access", item -> changeView(AccessView.VIEW_NAME));
-    access.setVisible(false);
-    signas = manager.addItem("Sign as", item -> changeView(SignasView.VIEW_NAME));
-    signas.setVisible(false);
-    register = manager.addItem("Register user", item -> changeView(RegisterView.VIEW_NAME));
-    register.setVisible(false);
-    stopSignas = manager.addItem("Stop sign as", item -> stopSignas());
-    stopSignas.setVisible(false);
-    contact = menu.addItem("Help", item -> changeView(ContactView.VIEW_NAME));
-    help = menu.addItem("Help", item -> changeView(MainView.VIEW_NAME));
   }
 
   @Override
@@ -134,39 +136,81 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
 
   private void prepareComponents() {
     MessageResource resources = getResources();
+    home = menu.addItem(resources.message(HOME), item -> changeView(MainView.VIEW_NAME));
     home.setStyleName(HOME);
-    home.setText(resources.message(HOME));
+    submission =
+        menu.addItem(resources.message(SUBMISSION), item -> changeView(SubmissionView.VIEW_NAME));
     submission.setStyleName(SUBMISSION);
-    submission.setText(resources.message(SUBMISSION));
+    submission.setVisible(false);
+    treatment = menu.addItem(resources.message(TREATMENT), null);
+    treatment.setStyleName(TREATMENT);
+    treatment.setVisible(false);
+    transfer =
+        treatment.addItem(resources.message(TRANSFER), item -> changeView(TransferView.VIEW_NAME));
+    transfer.setStyleName(TRANSFER);
+    digestion = treatment.addItem(resources.message(DIGESTION),
+        item -> changeView(DigestionView.VIEW_NAME));
+    digestion.setStyleName(DIGESTION);
+    enrichment = treatment.addItem(resources.message(ENRICHMENT),
+        item -> changeView(EnrichmentView.VIEW_NAME));
+    enrichment.setStyleName(ENRICHMENT);
+    solubilisation = treatment.addItem(resources.message(SOLUBILISATION),
+        item -> changeView(SolubilisationView.VIEW_NAME));
+    solubilisation.setStyleName(SOLUBILISATION);
+    dilution =
+        treatment.addItem(resources.message(DILUTION), item -> changeView(DilutionView.VIEW_NAME));
+    dilution.setStyleName(DILUTION);
+    standardAddition = treatment.addItem(resources.message(STANDARD_ADDITION),
+        item -> changeView(StandardAdditionView.VIEW_NAME));
+    standardAddition.setStyleName(STANDARD_ADDITION);
+    msAnalysis = treatment.addItem(resources.message(MS_ANALYSIS),
+        item -> changeView(MsAnalysisView.VIEW_NAME));
+    msAnalysis.setStyleName(MS_ANALYSIS);
+    control = menu.addItem(resources.message(CONTROL), item -> changeView(ControlView.VIEW_NAME));
     control.setStyleName(CONTROL);
-    control.setText(resources.message(CONTROL));
+    control.setVisible(false);
+    plate = menu.addItem(resources.message(PLATE), item -> changeView(PlateView.VIEW_NAME));
+    plate.setStyleName(PLATE);
+    plate.setVisible(false);
+    profile = menu.addItem(resources.message(PROFILE), item -> changeView(UserView.VIEW_NAME));
     profile.setStyleName(PROFILE);
-    profile.setText(resources.message(PROFILE));
+    profile.setVisible(false);
+    signout = menu.addItem(resources.message(SIGNOUT), item -> signout());
     signout.setStyleName(SIGNOUT);
-    signout.setText(resources.message(SIGNOUT));
+    signout.setVisible(false);
+    changeLanguage = menu.addItem(resources.message(CHANGE_LANGUAGE), item -> changeLanguage());
     changeLanguage.setStyleName(CHANGE_LANGUAGE);
-    changeLanguage.setText(resources.message(CHANGE_LANGUAGE));
+    manager = menu.addItem(resources.message(MANAGER), null);
     manager.setStyleName(MANAGER);
-    manager.setText(resources.message(MANAGER));
+    manager.setVisible(false);
+    validateUsers = manager.addItem(resources.message(VALIDATE_USERS),
+        item -> changeView(ValidateView.VIEW_NAME));
     validateUsers.setStyleName(VALIDATE_USERS);
-    validateUsers.setText(resources.message(VALIDATE_USERS));
+    validateUsers.setVisible(false);
+    access = manager.addItem(resources.message(ACCESS), item -> changeView(AccessView.VIEW_NAME));
     access.setStyleName(ACCESS);
-    access.setText(resources.message(ACCESS));
+    access.setVisible(false);
+    signas = manager.addItem(resources.message(SIGN_AS), item -> changeView(SignasView.VIEW_NAME));
     signas.setStyleName(SIGN_AS);
-    signas.setText(resources.message(SIGN_AS));
+    signas.setVisible(false);
+    register =
+        manager.addItem(resources.message(REGISTER), item -> changeView(RegisterView.VIEW_NAME));
     register.setStyleName(REGISTER);
-    register.setText(resources.message(REGISTER));
+    register.setVisible(false);
+    stopSignas = manager.addItem(resources.message(STOP_SIGN_AS), item -> stopSignas());
     stopSignas.setStyleName(STOP_SIGN_AS);
-    stopSignas.setText(resources.message(STOP_SIGN_AS));
+    stopSignas.setVisible(false);
+    contact = menu.addItem(resources.message(CONTACT), item -> changeView(ContactView.VIEW_NAME));
     contact.setStyleName(CONTACT);
-    contact.setText(resources.message(CONTACT));
+    help = menu.addItem(resources.message(HELP), item -> changeView(MainView.VIEW_NAME));
     help.setStyleName(HELP);
-    help.setText(resources.message(HELP));
   }
 
   private void updateVisible() {
     submission.setVisible(authorizationService.hasUserRole());
+    treatment.setVisible(authorizationService.hasAdminRole());
     control.setVisible(authorizationService.hasAdminRole());
+    plate.setVisible(authorizationService.hasAdminRole());
     profile.setVisible(authorizationService.isUser());
     signout.setVisible(authorizationService.isUser());
     manager.setVisible(authorizationService.isRunAs() || authorizationService.hasManagerRole()

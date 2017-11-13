@@ -22,25 +22,42 @@ import static ca.qc.ircm.proview.web.Menu.ACCESS;
 import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.Menu.CONTACT;
 import static ca.qc.ircm.proview.web.Menu.CONTROL;
+import static ca.qc.ircm.proview.web.Menu.DIGESTION;
+import static ca.qc.ircm.proview.web.Menu.DILUTION;
+import static ca.qc.ircm.proview.web.Menu.ENRICHMENT;
 import static ca.qc.ircm.proview.web.Menu.HELP;
 import static ca.qc.ircm.proview.web.Menu.HOME;
 import static ca.qc.ircm.proview.web.Menu.MANAGER;
+import static ca.qc.ircm.proview.web.Menu.MS_ANALYSIS;
+import static ca.qc.ircm.proview.web.Menu.PLATE;
 import static ca.qc.ircm.proview.web.Menu.PROFILE;
 import static ca.qc.ircm.proview.web.Menu.REGISTER;
 import static ca.qc.ircm.proview.web.Menu.SIGNOUT;
 import static ca.qc.ircm.proview.web.Menu.SIGN_AS;
+import static ca.qc.ircm.proview.web.Menu.SOLUBILISATION;
+import static ca.qc.ircm.proview.web.Menu.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS;
 import static ca.qc.ircm.proview.web.Menu.SUBMISSION;
+import static ca.qc.ircm.proview.web.Menu.TRANSFER;
+import static ca.qc.ircm.proview.web.Menu.TREATMENT;
 import static ca.qc.ircm.proview.web.Menu.VALIDATE_USERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.digestion.web.DigestionView;
+import ca.qc.ircm.proview.dilution.web.DilutionView;
+import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
+import ca.qc.ircm.proview.plate.web.PlateView;
 import ca.qc.ircm.proview.sample.web.ControlView;
+import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
+import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.web.AccessView;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.proview.user.web.SignasView;
@@ -70,7 +87,16 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertFalse(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> treatmentMenuItem()).isPresent());
+    assertFalse(optional(() -> transferMenuItem()).isPresent());
+    assertFalse(optional(() -> digestionMenuItem()).isPresent());
+    assertFalse(optional(() -> enrichmentMenuItem()).isPresent());
+    assertFalse(optional(() -> solubilisationMenuItem()).isPresent());
+    assertFalse(optional(() -> dilutionMenuItem()).isPresent());
+    assertFalse(optional(() -> standardAdditionMenuItem()).isPresent());
+    assertFalse(optional(() -> msAnalysisMenuItem()).isPresent());
     assertFalse(optional(() -> controlMenuItem()).isPresent());
+    assertFalse(optional(() -> plateMenuItem()).isPresent());
     assertFalse(optional(() -> profileMenuItem()).isPresent());
     assertFalse(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -91,7 +117,16 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> treatmentMenuItem()).isPresent());
+    assertFalse(optional(() -> transferMenuItem()).isPresent());
+    assertFalse(optional(() -> digestionMenuItem()).isPresent());
+    assertFalse(optional(() -> enrichmentMenuItem()).isPresent());
+    assertFalse(optional(() -> solubilisationMenuItem()).isPresent());
+    assertFalse(optional(() -> dilutionMenuItem()).isPresent());
+    assertFalse(optional(() -> standardAdditionMenuItem()).isPresent());
+    assertFalse(optional(() -> msAnalysisMenuItem()).isPresent());
     assertFalse(optional(() -> controlMenuItem()).isPresent());
+    assertFalse(optional(() -> plateMenuItem()).isPresent());
     assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -112,7 +147,16 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> treatmentMenuItem()).isPresent());
+    assertFalse(optional(() -> transferMenuItem()).isPresent());
+    assertFalse(optional(() -> digestionMenuItem()).isPresent());
+    assertFalse(optional(() -> enrichmentMenuItem()).isPresent());
+    assertFalse(optional(() -> solubilisationMenuItem()).isPresent());
+    assertFalse(optional(() -> dilutionMenuItem()).isPresent());
+    assertFalse(optional(() -> standardAdditionMenuItem()).isPresent());
+    assertFalse(optional(() -> msAnalysisMenuItem()).isPresent());
     assertFalse(optional(() -> controlMenuItem()).isPresent());
+    assertFalse(optional(() -> plateMenuItem()).isPresent());
     assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -134,7 +178,17 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertTrue(optional(() -> treatmentMenuItem()).isPresent());
+    clickTreatment();
+    assertTrue(optional(() -> transferMenuItem()).isPresent());
+    assertTrue(optional(() -> digestionMenuItem()).isPresent());
+    assertTrue(optional(() -> enrichmentMenuItem()).isPresent());
+    assertTrue(optional(() -> solubilisationMenuItem()).isPresent());
+    assertTrue(optional(() -> dilutionMenuItem()).isPresent());
+    assertTrue(optional(() -> standardAdditionMenuItem()).isPresent());
+    assertTrue(optional(() -> msAnalysisMenuItem()).isPresent());
     assertTrue(optional(() -> controlMenuItem()).isPresent());
+    assertTrue(optional(() -> plateMenuItem()).isPresent());
     assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -158,7 +212,16 @@ public class MenuTest extends MenuPageObject {
 
     assertTrue(optional(() -> homeMenuItem()).isPresent());
     assertTrue(optional(() -> submissionMenuItem()).isPresent());
+    assertFalse(optional(() -> treatmentMenuItem()).isPresent());
+    assertFalse(optional(() -> transferMenuItem()).isPresent());
+    assertFalse(optional(() -> digestionMenuItem()).isPresent());
+    assertFalse(optional(() -> enrichmentMenuItem()).isPresent());
+    assertFalse(optional(() -> solubilisationMenuItem()).isPresent());
+    assertFalse(optional(() -> dilutionMenuItem()).isPresent());
+    assertFalse(optional(() -> standardAdditionMenuItem()).isPresent());
+    assertFalse(optional(() -> msAnalysisMenuItem()).isPresent());
     assertFalse(optional(() -> controlMenuItem()).isPresent());
+    assertFalse(optional(() -> plateMenuItem()).isPresent());
     assertTrue(optional(() -> profileMenuItem()).isPresent());
     assertTrue(optional(() -> signoutMenuItem()).isPresent());
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
@@ -182,7 +245,18 @@ public class MenuTest extends MenuPageObject {
     MessageResource resources = resources(Menu.class);
     assertEquals(resources.message(HOME), homeMenuItem().getText());
     assertEquals(resources.message(SUBMISSION), submissionMenuItem().getText());
+    assertEquals(resources.message(TREATMENT), treatmentMenuItem().getText());
+    clickTreatment();
+    assertEquals(resources.message(TRANSFER), transferMenuItem().getText());
+    assertEquals(resources.message(DIGESTION), digestionMenuItem().getText());
+    assertEquals(resources.message(ENRICHMENT), enrichmentMenuItem().getText());
+    assertEquals(resources.message(SOLUBILISATION), solubilisationMenuItem().getText());
+    assertEquals(resources.message(DILUTION), dilutionMenuItem().getText());
+    assertEquals(resources.message(STANDARD_ADDITION), standardAdditionMenuItem().getText());
+    assertEquals(resources.message(MS_ANALYSIS), msAnalysisMenuItem().getText());
+    clickTreatment();
     assertEquals(resources.message(CONTROL), controlMenuItem().getText());
+    assertEquals(resources.message(PLATE), plateMenuItem().getText());
     assertEquals(resources.message(PROFILE), profileMenuItem().getText());
     assertEquals(resources.message(SIGNOUT), signoutMenuItem().getText());
     assertEquals(resources.message(CHANGE_LANGUAGE), changeLanguageMenuItem().getText());
@@ -192,6 +266,7 @@ public class MenuTest extends MenuPageObject {
     assertEquals(resources.message(ACCESS), accessMenuItem().getText());
     assertEquals(resources.message(SIGN_AS), signasMenuItem().getText());
     assertEquals(resources.message(REGISTER), registerMenuItem().getText());
+    clickManager();
     assertEquals(resources.message(CONTACT), contactMenuItem().getText());
     assertEquals(resources.message(HELP), helpMenuItem().getText());
     signas("christopher.anderson@ircm.qc.ca");
@@ -205,7 +280,18 @@ public class MenuTest extends MenuPageObject {
     resources = resources(Menu.class);
     assertEquals(resources.message(HOME), homeMenuItem().getText());
     assertEquals(resources.message(SUBMISSION), submissionMenuItem().getText());
+    assertEquals(resources.message(TREATMENT), treatmentMenuItem().getText());
+    clickTreatment();
+    assertEquals(resources.message(TRANSFER), transferMenuItem().getText());
+    assertEquals(resources.message(DIGESTION), digestionMenuItem().getText());
+    assertEquals(resources.message(ENRICHMENT), enrichmentMenuItem().getText());
+    assertEquals(resources.message(SOLUBILISATION), solubilisationMenuItem().getText());
+    assertEquals(resources.message(DILUTION), dilutionMenuItem().getText());
+    assertEquals(resources.message(STANDARD_ADDITION), standardAdditionMenuItem().getText());
+    assertEquals(resources.message(MS_ANALYSIS), msAnalysisMenuItem().getText());
+    clickTreatment();
     assertEquals(resources.message(CONTROL), controlMenuItem().getText());
+    assertEquals(resources.message(PLATE), plateMenuItem().getText());
     assertEquals(resources.message(PROFILE), profileMenuItem().getText());
     assertEquals(resources.message(SIGNOUT), signoutMenuItem().getText());
     assertEquals(resources.message(CHANGE_LANGUAGE), changeLanguageMenuItem().getText());
@@ -215,6 +301,7 @@ public class MenuTest extends MenuPageObject {
     assertEquals(resources.message(ACCESS), accessMenuItem().getText());
     assertEquals(resources.message(SIGN_AS), signasMenuItem().getText());
     assertEquals(resources.message(REGISTER), registerMenuItem().getText());
+    clickManager();
     assertEquals(resources.message(CONTACT), contactMenuItem().getText());
     assertEquals(resources.message(HELP), helpMenuItem().getText());
     signas("christopher.anderson@ircm.qc.ca");
@@ -243,12 +330,99 @@ public class MenuTest extends MenuPageObject {
 
   @Test
   @WithSubject
+  public void transfer() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickTreatment();
+    clickTransfer();
+
+    assertEquals(viewUrl(TransferView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void digestion() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickTreatment();
+    clickDigestion();
+
+    assertEquals(viewUrl(DigestionView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void enrichment() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickTreatment();
+    clickEnrichment();
+
+    assertEquals(viewUrl(EnrichmentView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void solubilisation() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickTreatment();
+    clickSolubilisation();
+
+    assertEquals(viewUrl(SolubilisationView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void dilution() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickTreatment();
+    clickDilution();
+
+    assertEquals(viewUrl(DilutionView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void standardAddition() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickTreatment();
+    clickStandardAddition();
+
+    assertEquals(viewUrl(StandardAdditionView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void msAnalysis() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickTreatment();
+    clickMsAnalysis();
+
+    assertEquals(viewUrl(MsAnalysisView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
   public void control() throws Throwable {
     openView(ContactView.VIEW_NAME);
 
     clickControl();
 
     assertEquals(viewUrl(ControlView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void plate() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickPlate();
+
+    assertEquals(viewUrl(PlateView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
