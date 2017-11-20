@@ -106,6 +106,7 @@ public class ForgotPasswordViewPresenterTest {
     assertTrue(design.passwordField.getStyleName().contains(PASSWORD));
     assertTrue(design.confirmPasswordField.getStyleName().contains(CONFIRM_PASSWORD));
     assertTrue(design.saveButton.getStyleName().contains(SAVE));
+    assertTrue(design.saveButton.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }
 
   @Test
