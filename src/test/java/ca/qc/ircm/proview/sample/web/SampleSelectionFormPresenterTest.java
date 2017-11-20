@@ -55,6 +55,7 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -135,6 +136,7 @@ public class SampleSelectionFormPresenterTest {
     assertTrue(design.controlsPanel.getStyleName().contains(CONTROLS_PANEL));
     assertTrue(design.controlsGrid.getStyleName().contains(CONTROLS));
     assertTrue(design.selectButton.getStyleName().contains(SELECT));
+    assertTrue(design.selectButton.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
     assertTrue(design.clearButton.getStyleName().contains(CLEAR));
   }
 
