@@ -24,6 +24,7 @@ import com.vaadin.testbench.TestBenchTestCase;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -88,7 +89,11 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
       WebDriver driver = driver();
       TestBenchTestCase target = getInstance(testContext);
       target.setDriver(driver);
-      driver.manage().window().setSize(new Dimension(1280, 960));
+      try {
+        driver.manage().window().setSize(new Dimension(1280, 960));
+      } catch (WebDriverException e) {
+        logger.warn("Could not resize browser", e);
+      }
     }
   }
 
