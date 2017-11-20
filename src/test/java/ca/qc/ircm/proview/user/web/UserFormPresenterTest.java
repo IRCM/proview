@@ -46,6 +46,7 @@ import static ca.qc.ircm.proview.user.web.UserFormPresenter.USER;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
+import static ca.qc.ircm.proview.web.WebConstants.LABEL_WARNING;
 import static ca.qc.ircm.proview.web.WebConstants.PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
@@ -71,13 +72,13 @@ import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -260,7 +261,9 @@ public class UserFormPresenterTest {
     assertTrue(removePhoneNumberButton(0).getStyleName().contains(REMOVE_PHONE_NUMBER));
     assertTrue(design.addPhoneNumberButton.getStyleName().contains(ADD_PHONE_NUMBER));
     assertTrue(design.registerWarningLabel.getStyleName().contains(REGISTER_WARNING));
+    assertTrue(design.registerWarningLabel.getStyleName().contains(LABEL_WARNING));
     assertTrue(design.saveButton.getStyleName().contains(SAVE));
+    assertTrue(design.saveButton.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }
 
   @Test
@@ -319,7 +322,6 @@ public class UserFormPresenterTest {
     assertEquals(resources.message(REMOVE_PHONE_NUMBER), removePhoneNumberButton(0).getCaption());
     assertEquals(resources.message(ADD_PHONE_NUMBER), design.addPhoneNumberButton.getCaption());
     assertEquals(resources.message(REGISTER_WARNING), design.registerWarningLabel.getValue());
-    assertEquals(VaadinIcons.WARNING, design.registerWarningLabel.getIcon());
     assertEquals(resources.message(SAVE), design.saveButton.getCaption());
   }
 

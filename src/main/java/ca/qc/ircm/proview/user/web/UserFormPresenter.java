@@ -41,7 +41,6 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -239,7 +238,6 @@ public class UserFormPresenter implements BinderValidator {
     design.addPhoneNumberButton.setCaption(resources.message(ADD_PHONE_NUMBER));
     design.registerWarningLabel.addStyleName(REGISTER_WARNING);
     design.registerWarningLabel.setValue(resources.message(REGISTER_WARNING));
-    design.registerWarningLabel.setIcon(VaadinIcons.WARNING);
     design.saveButton.addStyleName(SAVE);
     design.saveButton.setCaption(resources.message(SAVE));
   }
