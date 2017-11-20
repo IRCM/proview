@@ -61,6 +61,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.components.grid.NoSelectionModel;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -139,6 +140,7 @@ public class SampleStatusViewPresenterTest {
     assertTrue(design.samplesGrid.getStyleName().contains(SAMPLES));
     assertTrue(design.samplesGrid.getStyleName().contains(COMPONENTS));
     assertTrue(design.saveButton.getStyleName().contains(SAVE));
+    assertTrue(design.saveButton.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }
 
   @Test
