@@ -151,6 +151,7 @@ public class DataAnalysisViewPresenterTest {
     assertTrue(design.analyses.getStyleName().contains(ANALYSES));
     assertTrue(design.analyses.getStyleName().contains(COMPONENTS));
     assertTrue(design.save.getStyleName().contains(SAVE));
+    assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }
 
   @Test
