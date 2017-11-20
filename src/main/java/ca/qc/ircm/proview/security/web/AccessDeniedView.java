@@ -27,6 +27,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,6 +66,7 @@ public class AccessDeniedView extends VerticalLayout implements BaseView {
       }
     });
     addComponent(button);
+    button.addStyleName(ValoTheme.BUTTON_PRIMARY);
   }
 
   @Override
