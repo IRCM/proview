@@ -121,7 +121,7 @@
       </vaadin-label>
       <vaadin-radio-button-group caption="Injection type" data-item-type="ca.qc.ircm.proview.msanalysis.InjectionType" _id="injectionTypeOptions"></vaadin-radio-button-group>
       <vaadin-radio-button-group caption="Source" data-item-type="ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource" _id="sourceOptions"></vaadin-radio-button-group>
-      <vaadin-radio-button-group caption="Protein content" data-item-type="ca.qc.ircm.proview.submission.ProteinContent" _id="proteinContentOptions"></vaadin-radio-button-group>
+      <vaadin-radio-button-group caption-as-html caption="Protein content" data-item-type="ca.qc.ircm.proview.submission.ProteinContent" _id="proteinContentOptions"></vaadin-radio-button-group>
       <vaadin-radio-button-group caption="Instrument" data-item-type="ca.qc.ircm.proview.msanalysis.MassDetectionInstrument" _id="instrumentOptions"></vaadin-radio-button-group>
       <vaadin-radio-button-group caption="Protein identification database" data-item-type="ca.qc.ircm.proview.sample.ProteinIdentification" _id="proteinIdentificationOptions"></vaadin-radio-button-group>
       <vaadin-text-field caption="Link to download protein database" null-representation="" _id="proteinIdentificationLinkField"></vaadin-text-field>
@@ -146,14 +146,14 @@
      <vaadin-text-area rows="10" null-representation="" _id="commentField"></vaadin-text-area>
     </vaadin-vertical-layout>
    </vaadin-panel>
-   <vaadin-label style-name="success" plain-text _id="structureFile">
-     Upload an image of the structure 
-   </vaadin-label>
-   <vaadin-label style-name="success" plain-text _id="gelImageFile">
-     Upload an image of the gel 
-   </vaadin-label>
    <vaadin-panel caption="Additional files" width="600px" _id="filesPanel">
     <vaadin-vertical-layout>
+     <vaadin-label style-name="success" plain-text _id="gelImageFile">
+       Upload an image of the gel 
+     </vaadin-label>
+     <vaadin-label style-name="success" plain-text _id="structureFile">
+       Upload an image of the structure 
+     </vaadin-label>
      <vaadin-vertical-layout spacing="false" size-auto margin="false" _id="filesUploaderLayout"></vaadin-vertical-layout>
      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.submission.SubmissionFile" _id="filesGrid"></vaadin-grid>
     </vaadin-vertical-layout>

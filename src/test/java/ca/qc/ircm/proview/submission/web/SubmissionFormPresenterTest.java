@@ -1297,6 +1297,7 @@ public class SubmissionFormPresenterTest {
     }
     assertEquals(resources.message(PROTEIN_CONTENT_PROPERTY),
         design.proteinContentOptions.getCaption());
+    assertTrue(design.proteinContentOptions.isCaptionAsHtml());
     for (ProteinContent proteinContent : ProteinContent.values()) {
       assertEquals(proteinContent.getLabel(locale),
           design.proteinContentOptions.getItemCaptionGenerator().apply(proteinContent));
