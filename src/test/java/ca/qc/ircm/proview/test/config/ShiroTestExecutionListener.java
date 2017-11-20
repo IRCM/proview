@@ -85,7 +85,9 @@ public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener
 
   @Override
   public void afterTestMethod(TestContext testContext) throws Exception {
-    threadState.restore();
+    if (threadState != null) {
+      threadState.restore();
+    }
   }
 
   private void setSubjectInThread(Optional<Long> userId) {
