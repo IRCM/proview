@@ -104,6 +104,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
 
     assertTrue(optional(() -> header()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
+    assertTrue(optional(() -> addSubmissionButton()).isPresent());
     assertFalse(optional(() -> selectSamplesButton()).isPresent());
     assertFalse(optional(() -> selectedSamplesLabel()).isPresent());
     assertFalse(optional(() -> selectContainersButton()).isPresent());
@@ -126,6 +127,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
 
     assertTrue(optional(() -> header()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
+    assertFalse(optional(() -> addSubmissionButton()).isPresent());
     assertTrue(optional(() -> selectSamplesButton()).isPresent());
     assertTrue(optional(() -> selectedSamplesLabel()).isPresent());
     assertTrue(optional(() -> selectContainersButton()).isPresent());
@@ -207,6 +209,15 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
         resources(SubmissionHistoryWindow.class).message(SubmissionHistoryWindow.TITLE, experience)
             .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(SAMPLES_PANEL))).isPresent());
+  }
+
+  @Test
+  public void addSubmission() throws Throwable {
+    open();
+
+    clickAddSubmissionButton();
+
+    assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test

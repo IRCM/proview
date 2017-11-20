@@ -105,6 +105,7 @@ public class SubmissionsViewPresenter {
   public static final String TREATMENTS = "treatments";
   public static final String HISTORY = "history";
   public static final String ALL = "all";
+  public static final String ADD_SUBMISSION = "addSubmission";
   public static final String SELECT_SAMPLES = "selectSamples";
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
   public static final String SELECT_CONTAINERS = "selectContainers";
@@ -196,6 +197,10 @@ public class SubmissionsViewPresenter {
     design.headerLabel.addStyleName(HEADER);
     design.headerLabel.setValue(resources.message(HEADER));
     prepareSumissionsGrid();
+    design.addSubmission.addStyleName(ADD_SUBMISSION);
+    design.addSubmission.setCaption(resources.message(ADD_SUBMISSION));
+    design.addSubmission.setVisible(!authorizationService.hasAdminRole());
+    design.addSubmission.addClickListener(e -> addSubmission());
     design.sampleSelectionLayout.setVisible(authorizationService.hasAdminRole());
     design.selectSamplesButton.addStyleName(SELECT_SAMPLES);
     design.selectSamplesButton.setCaption(resources.message(SELECT_SAMPLES));
@@ -487,6 +492,10 @@ public class SubmissionsViewPresenter {
     window.setValue(submission);
     window.center();
     view.addWindow(window);
+  }
+
+  private void addSubmission() {
+    view.navigateTo(SubmissionView.VIEW_NAME);
   }
 
   private void selectSamples() {

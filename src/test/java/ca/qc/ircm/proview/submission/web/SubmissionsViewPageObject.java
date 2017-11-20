@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
@@ -124,6 +125,14 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     GridElement submissionsGrid = submissionsGrid();
     submissionsGrid.getCell(row, gridColumnIndex(HISTORY_COLUMN));
     submissionsGrid.getRow(row).findElement(className(HISTORY)).click();
+  }
+
+  protected ButtonElement addSubmissionButton() {
+    return wrap(ButtonElement.class, findElement(className(ADD_SUBMISSION)));
+  }
+
+  protected void clickAddSubmissionButton() {
+    addSubmissionButton().click();
   }
 
   protected ButtonElement selectSamplesButton() {

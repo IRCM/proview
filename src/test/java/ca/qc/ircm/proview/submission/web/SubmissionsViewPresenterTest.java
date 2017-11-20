@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
@@ -672,6 +673,7 @@ public class SubmissionsViewPresenterTest {
     Button designResultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
         .getValueProvider().apply(submission);
     assertTrue(designResultsButton.getStyleName().contains(LINKED_TO_RESULTS));
+    assertTrue(design.addSubmission.getStyleName().contains(ADD_SUBMISSION));
     assertTrue(design.selectSamplesButton.getStyleName().contains(SELECT_SAMPLES));
     assertTrue(design.selectedSamplesLabel.getStyleName().contains(SELECT_SAMPLES_LABEL));
     assertTrue(design.selectContainers.getStyleName().contains(SELECT_CONTAINERS));
@@ -699,6 +701,7 @@ public class SubmissionsViewPresenterTest {
     Submission manyStatuses = entityManager.find(Submission.class, 153L);
     assertEquals(statusesValue(manyStatuses),
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(manyStatuses));
+    assertEquals(resources.message(ADD_SUBMISSION), design.addSubmission.getCaption());
     assertEquals(resources.message(SELECT_SAMPLES), design.selectSamplesButton.getCaption());
     assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0),
         design.selectedSamplesLabel.getValue());
@@ -721,6 +724,7 @@ public class SubmissionsViewPresenterTest {
     presenter.init(view);
 
     assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Single);
+    assertTrue(design.addSubmission.isVisible());
     assertFalse(design.sampleSelectionLayout.isVisible());
     assertFalse(design.containerSelectionLayout.isVisible());
     assertFalse(design.updateStatusButton.isVisible());
@@ -735,6 +739,7 @@ public class SubmissionsViewPresenterTest {
     presenter.init(view);
 
     assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Multi);
+    assertFalse(design.addSubmission.isVisible());
     assertTrue(design.sampleSelectionLayout.isVisible());
     assertTrue(design.containerSelectionLayout.isVisible());
     assertTrue(design.updateStatusButton.isVisible());
@@ -870,6 +875,15 @@ public class SubmissionsViewPresenterTest {
     verify(submissionHistoryWindow).setValue(submission);
     verify(submissionHistoryWindow).center();
     verify(view).addWindow(submissionHistoryWindow);
+  }
+
+  @Test
+  public void addSubmission() {
+    presenter.init(view);
+
+    design.addSubmission.click();
+
+    verify(view).navigateTo(SubmissionView.VIEW_NAME);
   }
 
   @Test
