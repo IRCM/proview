@@ -196,6 +196,7 @@ public class ControlFormPresenterTest {
     assertTrue(design.explanationPanel.getStyleName().contains(REQUIRED));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
     assertTrue(design.saveButton.getStyleName().contains(SAVE));
+    assertTrue(design.saveButton.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }
 
   @Test
