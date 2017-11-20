@@ -66,6 +66,7 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -185,6 +186,7 @@ public class ContainerSelectionFormPresenterTest {
     assertTrue(design.plates.getStyleName().contains(PLATES));
     assertTrue(design.platePanel.getStyleName().contains(PLATE_PANEL));
     assertTrue(design.select.getStyleName().contains(SELECT));
+    assertTrue(design.select.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
     assertTrue(design.clear.getStyleName().contains(CLEAR));
   }
 
