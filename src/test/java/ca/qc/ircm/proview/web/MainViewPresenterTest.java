@@ -55,6 +55,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.LoginForm.LoginListener;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 import org.apache.shiro.authc.AuthenticationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -133,6 +134,7 @@ public class MainViewPresenterTest {
     assertTrue(signFormUsername.getStyleName().contains(SIGN_USERNAME));
     assertTrue(signFormPassword.getStyleName().contains(SIGN_PASSWORD));
     assertTrue(signButton.getStyleName().contains(SIGN_BUTTON));
+    assertTrue(signButton.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
     assertTrue(design.forgotPasswordPanel.getStyleName().contains(FORGOT_PASSWORD));
     assertTrue(design.forgotPasswordEmailField.getStyleName().contains(FORGOT_PASSWORD_EMAIL));
     assertTrue(design.forgotPasswordButton.getStyleName().contains(FORGOT_PASSWORD_BUTTON));

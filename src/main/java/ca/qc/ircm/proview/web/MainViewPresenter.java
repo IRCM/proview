@@ -31,6 +31,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.ui.themes.ValoTheme;
 import org.apache.shiro.authc.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,6 +122,7 @@ public class MainViewPresenter {
         .asRequired(generalResources.message(REQUIRED))
         .bind(SigninInformation::getPassword, SigninInformation::setPassword);
     view.signForm.getLoginButton().addStyleName(SIGN_BUTTON);
+    view.signForm.getLoginButton().addStyleName(ValoTheme.BUTTON_PRIMARY);
     view.signForm.getLoginButton().setCaption(resources.message(SIGN_BUTTON));
     design.forgotPasswordPanel.addStyleName(FORGOT_PASSWORD);
     design.forgotPasswordPanel.setCaption(resources.message(FORGOT_PASSWORD));
