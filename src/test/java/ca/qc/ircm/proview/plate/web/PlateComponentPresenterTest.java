@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.plate.web;
 
 import static ca.qc.ircm.proview.plate.web.PlateComponentPresenter.PLATE;
+import static ca.qc.ircm.proview.plate.web.PlateComponentPresenter.PLATE_EXCEPTION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -25,10 +26,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -38,7 +43,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.addon.spreadsheet.Spreadsheet;
 import com.vaadin.addon.spreadsheet.Spreadsheet.CellValueChangeEvent;
 import com.vaadin.addon.spreadsheet.Spreadsheet.CellValueChangeListener;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -51,6 +55,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,14 +64,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class PlateComponentPresenterTest {
   private PlateComponentPresenter presenter;
   @Mock
   private PlateComponent view;
+  @Mock
+  private PlateService plateService;
+  @Inject
+  private ApplicationConfiguration applicationConfiguration;
+  @Inject
+  private PlateService realPlateService;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(PlateComponent.class, locale);
+  private MessageResource serviceResources = new MessageResource(PlateService.class, locale);
   private MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
 
@@ -75,11 +89,13 @@ public class PlateComponentPresenterTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    presenter = new PlateComponentPresenter();
-    view.spreadsheet = new Spreadsheet(getClass().getResourceAsStream("/Plate-Template.xlsx"));
+    presenter = new PlateComponentPresenter(plateService);
+    view.spreadsheet = new Spreadsheet(applicationConfiguration.getPlateTemplate());
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
+    when(plateService.workbook(any(), any())).thenAnswer(i -> realPlateService
+        .workbook(i.getArgumentAt(0, Plate.class), i.getArgumentAt(1, Locale.class)));
   }
 
   @Test
@@ -91,9 +107,10 @@ public class PlateComponentPresenterTest {
   }
 
   @Test
-  public void spreadsheet() {
+  public void spreadsheet() throws Throwable {
     presenter.init(view);
 
+    verify(plateService).workbook(any(), eq(locale));
     assertFalse(view.spreadsheet.isFunctionBarVisible());
     assertFalse(view.spreadsheet.isSheetSelectionBarVisible());
     assertTrue(view.spreadsheet.isRowColHeadingsVisible());
@@ -108,7 +125,8 @@ public class PlateComponentPresenterTest {
         CellStyle style = cell.getCellStyle();
         assertEquals(rowIndex + "-" + column, rowIndex == 0 || column == 0, style.getLocked());
         if (rowIndex == 0 && column == 0) {
-          assertEquals(resources.message(PLATE), view.spreadsheet.getCellValue(cell));
+          assertEquals(serviceResources.message(PlateService.PLATE),
+              view.spreadsheet.getCellValue(cell));
         } else if (rowIndex == 0) {
           assertEquals(Plate.columnLabel(column - 1), view.spreadsheet.getCellValue(cell));
         } else if (column == 0) {
@@ -120,6 +138,16 @@ public class PlateComponentPresenterTest {
     }
     assertEquals(1, view.spreadsheet.getSelectedCellReference().getCol());
     assertEquals(1, view.spreadsheet.getSelectedCellReference().getRow());
+  }
+
+  @Test
+  public void spreadsheet_ServiceException() throws Throwable {
+    when(plateService.workbook(any(), any())).thenThrow(new IOException("test"));
+
+    presenter.init(view);
+
+    verify(plateService).workbook(any(), eq(locale));
+    verify(view).showWarning(resources.message(PLATE_EXCEPTION));
   }
 
   @Test
@@ -359,7 +387,7 @@ public class PlateComponentPresenterTest {
   }
 
   @Test
-  public void setValue() {
+  public void setValue() throws Throwable {
     presenter.init(view);
     Plate plate = new Plate();
     plate.initWells();
@@ -374,6 +402,7 @@ public class PlateComponentPresenterTest {
 
     presenter.setValue(plate);
 
+    verify(plateService).workbook(plate, locale);
     assertSame(plate, presenter.getValue());
     Sheet sheet = view.spreadsheet.getActiveSheet();
     assertEquals(well1.getSample().getName(), view.spreadsheet
@@ -384,54 +413,6 @@ public class PlateComponentPresenterTest {
         .getCellValue(sheet.getRow(well3.getRow() + 1).getCell(well3.getColumn() + 1)));
     assertEquals(well4.getSample().getName(), view.spreadsheet
         .getCellValue(sheet.getRow(well4.getRow() + 1).getCell(well4.getColumn() + 1)));
-  }
-
-  @Test
-  public void setValue_BannedContainers() {
-    presenter.init(view);
-    Plate plate = new Plate();
-    plate.initWells();
-    Well well1 = plate.well(0, 0);
-    well1.setSample(new SubmissionSample(1L, "test 1"));
-    Well well2 = plate.well(0, 1);
-    well2.setSample(new Control(1L, "test control 1"));
-    well2.setBanned(true);
-    Well well3 = plate.well(0, 2);
-    well3.setSample(new SubmissionSample(2L, "test control 2"));
-    well3.setBanned(true);
-    Well well4 = plate.well(1, 0);
-    well4.setSample(new SubmissionSample(4L, "test control 4"));
-    well4.setBanned(true);
-
-    presenter.setValue(plate);
-
-    assertSame(plate, presenter.getValue());
-    Sheet sheet = view.spreadsheet.getActiveSheet();
-    assertEquals(well1.getSample().getName(), view.spreadsheet
-        .getCellValue(sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)));
-    CellStyle style =
-        view.spreadsheet.getCell(well1.getRow() + 1, well1.getColumn() + 1).getCellStyle();
-    assertEquals(HSSFColor.WHITE.index, style.getFillBackgroundColor());
-    assertEquals(HSSFColor.BLACK.index,
-        view.spreadsheet.getWorkbook().getFontAt(style.getFontIndex()).getColor());
-    assertEquals(well2.getSample().getName(), view.spreadsheet
-        .getCellValue(sheet.getRow(well2.getRow() + 1).getCell(well2.getColumn() + 1)));
-    style = view.spreadsheet.getCell(well2.getRow() + 1, well2.getColumn() + 1).getCellStyle();
-    assertEquals(HSSFColor.RED.index, style.getFillBackgroundColor());
-    assertEquals(HSSFColor.WHITE.index,
-        view.spreadsheet.getWorkbook().getFontAt(style.getFontIndex()).getColor());
-    assertEquals(well3.getSample().getName(), view.spreadsheet
-        .getCellValue(sheet.getRow(well3.getRow() + 1).getCell(well3.getColumn() + 1)));
-    style = view.spreadsheet.getCell(well3.getRow() + 1, well3.getColumn() + 1).getCellStyle();
-    assertEquals(HSSFColor.RED.index, style.getFillBackgroundColor());
-    assertEquals(HSSFColor.WHITE.index,
-        view.spreadsheet.getWorkbook().getFontAt(style.getFontIndex()).getColor());
-    assertEquals(well4.getSample().getName(), view.spreadsheet
-        .getCellValue(sheet.getRow(well4.getRow() + 1).getCell(well4.getColumn() + 1)));
-    style = view.spreadsheet.getCell(well4.getRow() + 1, well4.getColumn() + 1).getCellStyle();
-    assertEquals(HSSFColor.RED.index, style.getFillBackgroundColor());
-    assertEquals(HSSFColor.WHITE.index,
-        view.spreadsheet.getWorkbook().getFontAt(style.getFontIndex()).getColor());
   }
 
   @Test

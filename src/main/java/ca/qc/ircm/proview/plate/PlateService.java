@@ -20,18 +20,33 @@ package ca.qc.ircm.proview.plate;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.plate.QWell.well;
 
+import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
+import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -42,6 +57,7 @@ import javax.persistence.PersistenceContext;
 @Service
 @Transactional
 public class PlateService {
+  public static final String PLATE = "plate";
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -52,18 +68,22 @@ public class PlateService {
   private ActivityService activityService;
   @Inject
   private AuthorizationService authorizationService;
+  @Inject
+  private ApplicationConfiguration applicationConfiguration;
 
   protected PlateService() {
   }
 
   protected PlateService(EntityManager entityManager, JPAQueryFactory queryFactory,
       PlateActivityService plateActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
+      AuthorizationService authorizationService,
+      ApplicationConfiguration applicationConfiguration) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.plateActivityService = plateActivityService;
     this.activityService = activityService;
     this.authorizationService = authorizationService;
+    this.applicationConfiguration = applicationConfiguration;
   }
 
   /**
@@ -122,6 +142,56 @@ public class PlateService {
     query.from(plate);
     query.where(plate.name.eq(name));
     return query.fetchCount() == 0;
+  }
+
+  /**
+   * Creates an Excel workbook for plate.
+   *
+   * @param plate
+   *          plate
+   * @param locale
+   *          user's locale
+   * @return workbook for plate
+   * @throws IOException
+   *           could not create workbook
+   */
+  @CheckReturnValue
+  public Workbook workbook(Plate plate, Locale locale) throws IOException {
+    if (plate == null) {
+      plate = new Plate();
+      plate.initWells();
+    }
+    if (locale == null) {
+      locale = Locale.getDefault();
+    }
+    final MessageResource resources = new MessageResource(PlateService.class, locale);
+    Workbook workbook = new XSSFWorkbook(applicationConfiguration.getPlateTemplate());
+    Font normalFont = workbook.createFont();
+    normalFont.setColor(HSSFColor.BLACK.index);
+    CellStyle normalStyle = workbook.createCellStyle();
+    normalStyle.setFillBackgroundColor(HSSFColor.WHITE.index);
+    normalStyle.setFont(normalFont);
+    Font bannedFont = workbook.createFont();
+    bannedFont.setColor(HSSFColor.WHITE.index);
+    CellStyle bannedStyle = workbook.createCellStyle();
+    bannedStyle.setFillBackgroundColor(HSSFColor.RED.index);
+    bannedStyle.setFont(bannedFont);
+    Sheet sheet = workbook.getSheetAt(0);
+    sheet.getRow(0).getCell(0).setCellValue(resources.message(PLATE));
+    for (int row = 0; row < plate.getRowCount(); row++) {
+      Row wrow = sheet.getRow(row + 1);
+      if (wrow == null) {
+        wrow = sheet.createRow(row);
+      }
+      for (int column = 0; column < plate.getColumnCount(); column++) {
+        Well well = plate.well(row, column);
+        Sample sample = plate.well(row, column).getSample();
+        Cell cell = wrow.getCell(column + 1, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        cell.setCellValue(sample != null ? sample.getName() : "");
+        cell.setCellStyle(well.isBanned() ? bannedStyle : normalStyle);
+      }
+    }
+    return workbook;
   }
 
   /**

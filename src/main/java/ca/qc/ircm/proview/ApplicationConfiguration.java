@@ -22,6 +22,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -37,6 +38,7 @@ public class ApplicationConfiguration {
   @Value("${logging.path:${user.dir}}/${logging.file:" + APPLICATION_NAME + "log}")
   private String logfile;
   private String serverUrl;
+  private String plateTemplateResource = "/Plate-Template.xlsx";
 
   public Path getLogFile() {
     return Paths.get(logfile);
@@ -55,6 +57,10 @@ public class ApplicationConfiguration {
    */
   public String getUrl(String urlEnd) {
     return serverUrl + urlEnd;
+  }
+
+  public InputStream getPlateTemplate() {
+    return getClass().getResourceAsStream(plateTemplateResource);
   }
 
   public String getServerUrl() {

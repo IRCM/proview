@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.plate.web;
 
+import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.web.component.BaseComponent;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Controller;
 import java.io.IOException;
 import java.util.Collection;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -44,25 +46,31 @@ public class PlateComponent extends CustomComponent implements BaseComponent {
   private static final Logger logger = LoggerFactory.getLogger(PlateComponent.class);
   @Inject
   private transient PlateComponentPresenter presenter;
+  @Inject
+  private transient ApplicationConfiguration applicationConfiguration;
   protected Spreadsheet spreadsheet;
 
+  protected PlateComponent() {
+  }
+
+  protected PlateComponent(PlateComponentPresenter presenter,
+      ApplicationConfiguration applicationConfiguration) {
+    this.presenter = presenter;
+    this.applicationConfiguration = applicationConfiguration;
+  }
+
   /**
-   * Creates a plate component.
+   * Initializes component.
    */
-  public PlateComponent() {
+  @PostConstruct
+  public void init() {
     try {
-      spreadsheet =
-          new Spreadsheet(new XSSFWorkbook(getClass().getResourceAsStream("/Plate-Template.xlsx")));
+      spreadsheet = new Spreadsheet(new XSSFWorkbook(applicationConfiguration.getPlateTemplate()));
     } catch (IOException e) {
       logger.error("Could not load plate-template");
       spreadsheet = new Spreadsheet();
     }
     setCompositionRoot(spreadsheet);
-  }
-
-  public PlateComponent(PlateComponentPresenter presenter) {
-    this();
-    this.presenter = presenter;
   }
 
   @Override

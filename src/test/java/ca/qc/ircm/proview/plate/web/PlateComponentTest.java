@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
@@ -44,6 +45,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.inject.Inject;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class PlateComponentTest {
@@ -54,6 +57,8 @@ public class PlateComponentTest {
   private ValueChangeListener<Plate> valueChangeListener;
   @Captor
   private ArgumentCaptor<ValueChangeEvent<Plate>> valueChangeEventCaptor;
+  @Inject
+  private ApplicationConfiguration applicationConfiguration;
   private Plate plate;
 
   /**
@@ -61,15 +66,15 @@ public class PlateComponentTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    view = new PlateComponent(presenter);
+    view = new PlateComponent(presenter, applicationConfiguration);
+    view.init();
     plate = new Plate();
     plate.initWells();
   }
 
   @Test
   public void init() throws Throwable {
-    try (Workbook workbook =
-        new XSSFWorkbook(getClass().getResourceAsStream("/Plate-Template.xlsx"))) {
+    try (Workbook workbook = new XSSFWorkbook(applicationConfiguration.getPlateTemplate())) {
       Sheet sheet = workbook.getSheetAt(0);
       Sheet viewSheet = view.spreadsheet.getActiveSheet();
       Row firstRow = sheet.getRow(0);
