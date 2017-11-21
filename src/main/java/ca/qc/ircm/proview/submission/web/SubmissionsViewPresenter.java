@@ -267,11 +267,14 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
     design.submissionsGrid.addColumn(submission -> submission.getSamples().get(0).getName())
-        .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME));
+        .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME))
+        .setDescriptionGenerator(submission -> submission.getSamples().stream()
+            .map(sample -> sample.getName()).sorted(collator).collect(Collectors.joining("\n")));
     design.submissionsGrid.addColumn(Submission::getGoal).setId(EXPERIENCE_GOAL)
         .setCaption(resources.message(EXPERIENCE_GOAL));
     design.submissionsGrid.addColumn(submission -> statusesLabel(submission)).setId(SAMPLE_STATUSES)
-        .setCaption(resources.message(SAMPLE_STATUSES));
+        .setCaption(resources.message(SAMPLE_STATUSES))
+        .setDescriptionGenerator(submission -> statusesDescription(submission));
     design.submissionsGrid
         .addColumn(submission -> dateFormatter.format(submission.getSubmissionDate())).setId(DATE)
         .setCaption(resources.message(DATE));
@@ -385,6 +388,13 @@ public class SubmissionsViewPresenter {
         .collect(Collectors.joining(resources.message(SAMPLE_STATUSES_SEPARATOR)));
   }
 
+  private String statusesDescription(Submission submission) {
+    Locale locale = view.getLocale();
+    return submission.getSamples().stream().map(sample -> sample.getStatus())
+        .filter(status -> status != null).distinct().sorted().map(status -> status.getLabel(locale))
+        .collect(Collectors.joining("\n"));
+  }
+
   private Button viewResultsButton(Submission submission) {
     MessageResource resources = view.getResources();
     boolean results = linkedToResults(submission);
@@ -394,7 +404,7 @@ public class SubmissionsViewPresenter {
     if (results) {
       button.addClickListener(e -> viewSubmissionResults(submission));
     } else {
-      button.setStyleName(ValoTheme.BUTTON_BORDERLESS);
+      button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
       button.addStyleName(CONDITION_FALSE);
     }
     return button;

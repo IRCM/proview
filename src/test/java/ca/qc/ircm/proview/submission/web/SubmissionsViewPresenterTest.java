@@ -231,9 +231,68 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
+  public void styles() {
+    presenter.init(view);
+
+    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(design.submissionsGrid.getStyleName().contains(SUBMISSIONS));
+    assertTrue(design.submissionsGrid.getStyleName().contains(COMPONENTS));
+    final Submission submission = submissions.get(0);
+    Button designButton =
+        (Button) design.submissionsGrid.getColumn(EXPERIENCE).getValueProvider().apply(submission);
+    assertTrue(designButton.getStyleName().contains(EXPERIENCE));
+    Button designResultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
+        .getValueProvider().apply(submission);
+    assertTrue(designResultsButton.getStyleName().contains(LINKED_TO_RESULTS));
+    assertTrue(design.addSubmission.getStyleName().contains(ADD_SUBMISSION));
+    assertTrue(design.selectSamplesButton.getStyleName().contains(SELECT_SAMPLES));
+    assertTrue(design.selectedSamplesLabel.getStyleName().contains(SELECT_SAMPLES_LABEL));
+    assertTrue(design.selectContainers.getStyleName().contains(SELECT_CONTAINERS));
+    assertTrue(design.selectedContainersLabel.getStyleName().contains(SELECT_CONTAINERS_LABEL));
+    assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
+    assertTrue(design.transfer.getStyleName().contains(TRANSFER));
+    assertTrue(design.digestion.getStyleName().contains(DIGESTION));
+    assertTrue(design.enrichment.getStyleName().contains(ENRICHMENT));
+    assertTrue(design.solubilisation.getStyleName().contains(SOLUBILISATION));
+    assertTrue(design.dilution.getStyleName().contains(DILUTION));
+    assertTrue(design.standardAddition.getStyleName().contains(STANDARD_ADDITION));
+    assertTrue(design.msAnalysis.getStyleName().contains(MS_ANALYSIS));
+    assertTrue(design.dataAnalysis.getStyleName().contains(DATA_ANALYSIS));
+  }
+
+  @Test
+  public void captions() {
+    presenter.init(view);
+
+    verify(view).setTitle(resources.message(TITLE, applicationName));
+    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
+    for (Column<Submission, ?> column : design.submissionsGrid.getColumns()) {
+      assertEquals(resources.message(column.getId()), column.getCaption());
+    }
+    Submission manyStatuses = entityManager.find(Submission.class, 153L);
+    assertEquals(statusesValue(manyStatuses),
+        design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(manyStatuses));
+    assertEquals(resources.message(ADD_SUBMISSION), design.addSubmission.getCaption());
+    assertEquals(resources.message(SELECT_SAMPLES), design.selectSamplesButton.getCaption());
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0),
+        design.selectedSamplesLabel.getValue());
+    assertEquals(resources.message(SELECT_CONTAINERS), design.selectContainers.getCaption());
+    assertEquals(resources.message(SELECT_CONTAINERS_LABEL, 0),
+        design.selectedContainersLabel.getValue());
+    assertEquals(resources.message(UPDATE_STATUS), design.updateStatusButton.getCaption());
+    assertEquals(resources.message(TRANSFER), design.transfer.getCaption());
+    assertEquals(resources.message(DIGESTION), design.digestion.getCaption());
+    assertEquals(resources.message(ENRICHMENT), design.enrichment.getCaption());
+    assertEquals(resources.message(SOLUBILISATION), design.solubilisation.getCaption());
+    assertEquals(resources.message(DILUTION), design.dilution.getCaption());
+    assertEquals(resources.message(STANDARD_ADDITION), design.standardAddition.getCaption());
+    assertEquals(resources.message(MS_ANALYSIS), design.msAnalysis.getCaption());
+    assertEquals(resources.message(DATA_ANALYSIS), design.dataAnalysis.getCaption());
+  }
+
+  @Test
   public void submissionsGrid() {
     presenter.init(view);
-    final Submission submission = submissions.get(0);
 
     final List<Column<Submission, ?>> columns = design.submissionsGrid.getColumns();
     final List<GridSortOrder<Submission>> sortOrders = design.submissionsGrid.getSortOrder();
@@ -242,10 +301,12 @@ public class SubmissionsViewPresenterTest {
     assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
     assertEquals(resources.message(EXPERIENCE),
         design.submissionsGrid.getColumn(EXPERIENCE).getCaption());
-    Button experienceButton =
-        (Button) design.submissionsGrid.getColumn(EXPERIENCE).getValueProvider().apply(submission);
-    assertTrue(experienceButton.getStyleName().contains(EXPERIENCE));
-    assertEquals(submission.getExperience(), experienceButton.getCaption());
+    for (Submission submission : submissions) {
+      Button experienceButton = (Button) design.submissionsGrid.getColumn(EXPERIENCE)
+          .getValueProvider().apply(submission);
+      assertTrue(experienceButton.getStyleName().contains(EXPERIENCE));
+      assertEquals(submission.getExperience(), experienceButton.getCaption());
+    }
     assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidable());
     assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());
     assertTrue(design.submissionsGrid.getColumn(EXPERIENCE).isSortable());
@@ -265,73 +326,94 @@ public class SubmissionsViewPresenterTest {
     assertEquals(expectedSortedSubmissions, sortedSubmissions);
     assertEquals(USER, columns.get(1).getId());
     assertEquals(resources.message(USER), design.submissionsGrid.getColumn(USER).getCaption());
-    assertEquals(submission.getUser().getName(),
-        design.submissionsGrid.getColumn(USER).getValueProvider().apply(submission));
-    assertEquals(submission.getUser().getEmail(),
-        design.submissionsGrid.getColumn(USER).getDescriptionGenerator().apply(submission));
+    for (Submission submission : submissions) {
+      assertEquals(submission.getUser().getName(),
+          design.submissionsGrid.getColumn(USER).getValueProvider().apply(submission));
+      assertEquals(submission.getUser().getEmail(),
+          design.submissionsGrid.getColumn(USER).getDescriptionGenerator().apply(submission));
+    }
     assertFalse(design.submissionsGrid.getColumn(USER).isHidable());
     assertTrue(design.submissionsGrid.getColumn(USER).isHidden());
     assertTrue(design.submissionsGrid.getColumn(USER).isSortable());
     assertEquals(SAMPLE_COUNT, columns.get(2).getId());
     assertEquals(resources.message(SAMPLE_COUNT),
         design.submissionsGrid.getColumn(SAMPLE_COUNT).getCaption());
-    assertEquals(submission.getSamples().size(),
-        design.submissionsGrid.getColumn(SAMPLE_COUNT).getValueProvider().apply(submission));
+    for (Submission submission : submissions) {
+      assertEquals(submission.getSamples().size(),
+          design.submissionsGrid.getColumn(SAMPLE_COUNT).getValueProvider().apply(submission));
+    }
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isSortable());
     assertEquals(SAMPLE_NAME, columns.get(3).getId());
     assertEquals(resources.message(SAMPLE_NAME),
         design.submissionsGrid.getColumn(SAMPLE_NAME).getCaption());
-    assertEquals(submission.getSamples().get(0).getName(),
-        design.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
+    for (Submission submission : submissions) {
+      assertEquals(submission.getSamples().get(0).getName(),
+          design.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
+      assertEquals(
+          submission.getSamples().stream().map(sample -> sample.getName()).sorted(collator)
+              .collect(Collectors.joining("\n")),
+          design.submissionsGrid.getColumn(SAMPLE_NAME).getDescriptionGenerator()
+              .apply(submission));
+    }
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isSortable());
     assertEquals(EXPERIENCE_GOAL, columns.get(4).getId());
     assertEquals(resources.message(EXPERIENCE_GOAL),
         design.submissionsGrid.getColumn(EXPERIENCE_GOAL).getCaption());
-    assertEquals(submission.getGoal(),
-        design.submissionsGrid.getColumn(EXPERIENCE_GOAL).getValueProvider().apply(submission));
+    for (Submission submission : submissions) {
+      assertEquals(submission.getGoal(),
+          design.submissionsGrid.getColumn(EXPERIENCE_GOAL).getValueProvider().apply(submission));
+    }
     assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
     assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isSortable());
     assertEquals(SAMPLE_STATUSES, columns.get(5).getId());
     assertEquals(resources.message(SAMPLE_STATUSES),
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getCaption());
-    assertEquals(
-        submission.getSamples().stream().map(sample -> sample.getStatus()).distinct()
-            .map(status -> status.getLabel(locale))
-            .collect(Collectors.joining(resources.message(SAMPLE_STATUSES_SEPARATOR))),
-        design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(submission));
+    for (Submission submission : submissions) {
+      assertEquals(
+          submission.getSamples().stream().map(sample -> sample.getStatus()).distinct().sorted()
+              .map(status -> status.getLabel(locale))
+              .collect(Collectors.joining(resources.message(SAMPLE_STATUSES_SEPARATOR))),
+          design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(submission));
+      assertEquals(
+          submission.getSamples().stream().map(sample -> sample.getStatus()).distinct().sorted()
+              .map(status -> status.getLabel(locale)).collect(Collectors.joining("\n")),
+          design.submissionsGrid.getColumn(SAMPLE_STATUSES).getDescriptionGenerator()
+              .apply(submission));
+    }
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isSortable());
     assertEquals(DATE, columns.get(6).getId());
     assertEquals(resources.message(DATE), design.submissionsGrid.getColumn(DATE).getCaption());
     final DateTimeFormatter dateFormatter =
         DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
-    assertEquals(dateFormatter.format(submission.getSubmissionDate()),
-        design.submissionsGrid.getColumn(DATE).getValueProvider().apply(submission));
+    for (Submission submission : submissions) {
+      assertEquals(dateFormatter.format(submission.getSubmissionDate()),
+          design.submissionsGrid.getColumn(DATE).getValueProvider().apply(submission));
+    }
     assertTrue(design.submissionsGrid.getColumn(DATE).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DATE).isSortable());
     assertEquals(LINKED_TO_RESULTS, columns.get(7).getId());
     assertTrue(containsInstanceOf(columns.get(7).getExtensions(), ComponentRenderer.class));
     assertEquals(resources.message(LINKED_TO_RESULTS),
         design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getCaption());
-    boolean results = submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
-        .filter(sample -> SampleStatus.ANALYSED.equals(sample.getStatus())
-            || SampleStatus.DATA_ANALYSIS.equals(sample.getStatus()))
-        .count() > 0;
-    Button resultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
-        .getValueProvider().apply(submission);
-    assertEquals(resources.message(LINKED_TO_RESULTS + "." + results), resultsButton.getCaption());
-    assertTrue(resultsButton.getStyleName().contains(LINKED_TO_RESULTS));
-    assertEquals(!results, resultsButton.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
-    assertEquals(!results, resultsButton.getStyleName().contains(CONDITION_FALSE));
-    resultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getValueProvider()
-        .apply(entityManager.find(Submission.class, 35L));
-    assertTrue(resultsButton.getStyleName().contains(LINKED_TO_RESULTS));
+    for (Submission submission : submissions) {
+      boolean results =
+          submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
+              .filter(sample -> SampleStatus.ANALYSED.equals(sample.getStatus())
+                  || SampleStatus.DATA_ANALYSIS.equals(sample.getStatus()))
+              .count() > 0;
+      Button resultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
+          .getValueProvider().apply(submission);
+      assertEquals(resources.message(LINKED_TO_RESULTS + "." + results),
+          resultsButton.getCaption());
+      assertTrue(resultsButton.getStyleName().contains(LINKED_TO_RESULTS));
+      assertEquals(!results, resultsButton.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
+      assertEquals(!results, resultsButton.getStyleName().contains(CONDITION_FALSE));
+    }
     assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
     assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isSortable());
-    assertFalse(resultsButton.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
-    assertFalse(resultsButton.getStyleName().contains(CONDITION_FALSE));
     assertEquals(Boolean.compare(true, false),
         design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getComparator(SortDirection.ASCENDING)
             .compare(entityManager.find(Submission.class, 156L),
@@ -340,10 +422,12 @@ public class SubmissionsViewPresenterTest {
     assertTrue(containsInstanceOf(columns.get(8).getExtensions(), ComponentRenderer.class));
     assertEquals(resources.message(TREATMENTS),
         design.submissionsGrid.getColumn(TREATMENTS).getCaption());
-    Button treatmentsButton =
-        (Button) design.submissionsGrid.getColumn(TREATMENTS).getValueProvider().apply(submission);
-    assertTrue(treatmentsButton.getStyleName().contains(TREATMENTS));
-    assertEquals(resources.message(TREATMENTS), treatmentsButton.getCaption());
+    for (Submission submission : submissions) {
+      Button treatmentsButton = (Button) design.submissionsGrid.getColumn(TREATMENTS)
+          .getValueProvider().apply(submission);
+      assertTrue(treatmentsButton.getStyleName().contains(TREATMENTS));
+      assertEquals(resources.message(TREATMENTS), treatmentsButton.getCaption());
+    }
     assertFalse(design.submissionsGrid.getColumn(TREATMENTS).isHidable());
     assertTrue(design.submissionsGrid.getColumn(TREATMENTS).isHidden());
     assertFalse(design.submissionsGrid.getColumn(TREATMENTS).isSortable());
@@ -351,10 +435,12 @@ public class SubmissionsViewPresenterTest {
     assertTrue(containsInstanceOf(columns.get(9).getExtensions(), ComponentRenderer.class));
     assertEquals(resources.message(HISTORY),
         design.submissionsGrid.getColumn(HISTORY).getCaption());
-    Button historyButton =
-        (Button) design.submissionsGrid.getColumn(HISTORY).getValueProvider().apply(submission);
-    assertTrue(historyButton.getStyleName().contains(HISTORY));
-    assertEquals(resources.message(HISTORY), historyButton.getCaption());
+    for (Submission submission : submissions) {
+      Button historyButton =
+          (Button) design.submissionsGrid.getColumn(HISTORY).getValueProvider().apply(submission);
+      assertTrue(historyButton.getStyleName().contains(HISTORY));
+      assertEquals(resources.message(HISTORY), historyButton.getCaption());
+    }
     assertFalse(design.submissionsGrid.getColumn(HISTORY).isHidable());
     assertTrue(design.submissionsGrid.getColumn(HISTORY).isHidden());
     assertFalse(design.submissionsGrid.getColumn(HISTORY).isSortable());
@@ -657,66 +743,6 @@ public class SubmissionsViewPresenterTest {
     verify(submissionsDataProvider).refreshAll();
     SubmissionWebFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.results);
-  }
-
-  @Test
-  public void styles() {
-    presenter.init(view);
-
-    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(design.submissionsGrid.getStyleName().contains(SUBMISSIONS));
-    assertTrue(design.submissionsGrid.getStyleName().contains(COMPONENTS));
-    final Submission submission = submissions.get(0);
-    Button designButton =
-        (Button) design.submissionsGrid.getColumn(EXPERIENCE).getValueProvider().apply(submission);
-    assertTrue(designButton.getStyleName().contains(EXPERIENCE));
-    Button designResultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
-        .getValueProvider().apply(submission);
-    assertTrue(designResultsButton.getStyleName().contains(LINKED_TO_RESULTS));
-    assertTrue(design.addSubmission.getStyleName().contains(ADD_SUBMISSION));
-    assertTrue(design.selectSamplesButton.getStyleName().contains(SELECT_SAMPLES));
-    assertTrue(design.selectedSamplesLabel.getStyleName().contains(SELECT_SAMPLES_LABEL));
-    assertTrue(design.selectContainers.getStyleName().contains(SELECT_CONTAINERS));
-    assertTrue(design.selectedContainersLabel.getStyleName().contains(SELECT_CONTAINERS_LABEL));
-    assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
-    assertTrue(design.transfer.getStyleName().contains(TRANSFER));
-    assertTrue(design.digestion.getStyleName().contains(DIGESTION));
-    assertTrue(design.enrichment.getStyleName().contains(ENRICHMENT));
-    assertTrue(design.solubilisation.getStyleName().contains(SOLUBILISATION));
-    assertTrue(design.dilution.getStyleName().contains(DILUTION));
-    assertTrue(design.standardAddition.getStyleName().contains(STANDARD_ADDITION));
-    assertTrue(design.msAnalysis.getStyleName().contains(MS_ANALYSIS));
-    assertTrue(design.dataAnalysis.getStyleName().contains(DATA_ANALYSIS));
-  }
-
-  @Test
-  public void captions() {
-    presenter.init(view);
-
-    verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
-    for (Column<Submission, ?> column : design.submissionsGrid.getColumns()) {
-      assertEquals(resources.message(column.getId()), column.getCaption());
-    }
-    Submission manyStatuses = entityManager.find(Submission.class, 153L);
-    assertEquals(statusesValue(manyStatuses),
-        design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(manyStatuses));
-    assertEquals(resources.message(ADD_SUBMISSION), design.addSubmission.getCaption());
-    assertEquals(resources.message(SELECT_SAMPLES), design.selectSamplesButton.getCaption());
-    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0),
-        design.selectedSamplesLabel.getValue());
-    assertEquals(resources.message(SELECT_CONTAINERS), design.selectContainers.getCaption());
-    assertEquals(resources.message(SELECT_CONTAINERS_LABEL, 0),
-        design.selectedContainersLabel.getValue());
-    assertEquals(resources.message(UPDATE_STATUS), design.updateStatusButton.getCaption());
-    assertEquals(resources.message(TRANSFER), design.transfer.getCaption());
-    assertEquals(resources.message(DIGESTION), design.digestion.getCaption());
-    assertEquals(resources.message(ENRICHMENT), design.enrichment.getCaption());
-    assertEquals(resources.message(SOLUBILISATION), design.solubilisation.getCaption());
-    assertEquals(resources.message(DILUTION), design.dilution.getCaption());
-    assertEquals(resources.message(STANDARD_ADDITION), design.standardAddition.getCaption());
-    assertEquals(resources.message(MS_ANALYSIS), design.msAnalysis.getCaption());
-    assertEquals(resources.message(DATA_ANALYSIS), design.dataAnalysis.getCaption());
   }
 
   @Test
