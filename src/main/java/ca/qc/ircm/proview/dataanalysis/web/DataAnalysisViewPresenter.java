@@ -79,7 +79,7 @@ public class DataAnalysisViewPresenter implements BinderValidator {
   public static final String SAVED = "saved";
   public static final String INVALID_SAMPLES = "samples.invalid";
   public static final String SPLIT_SAMPLES_PARAMETERS = ",";
-  public static final Double[] MAX_WORK_TIME_VALUES = new Double[] { 0.5, 1.0, 2.0, 3.0 };
+  private static final Double[] MAX_WORK_TIME_VALUES = new Double[] { 0.5, 1.0, 2.0, 3.0 };
   private static final Logger logger = LoggerFactory.getLogger(DataAnalysisViewPresenter.class);
   private DataAnalysisView view;
   private DataAnalysisViewDesign design;
@@ -321,5 +321,9 @@ public class DataAnalysisViewPresenter implements BinderValidator {
     analysis.setType(DataAnalysisType.PROTEIN);
     analysis.setMaxWorkTime(MAX_WORK_TIME_VALUES[0]);
     return analysis;
+  }
+
+  public static Double[] getMaxWorkTimeValues() {
+    return MAX_WORK_TIME_VALUES.clone();
   }
 }

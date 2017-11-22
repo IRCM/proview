@@ -32,7 +32,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME_VALUES;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.items;
@@ -312,8 +311,8 @@ public class SubmissionAnalysesFormPresenterTest {
     assertTrue(workTimeEditor.getStyleName().contains(WORK_TIME));
     assertFalse(workTimeEditor.isEmptySelectionAllowed());
     List<Double> workTimeValues = items(workTimeEditor);
-    assertEquals(WORK_TIME_VALUES.length, workTimeValues.size());
-    for (Double value : WORK_TIME_VALUES) {
+    assertEquals(SubmissionAnalysesFormPresenter.getWorkTimeValues().length, workTimeValues.size());
+    for (Double value : SubmissionAnalysesFormPresenter.getWorkTimeValues()) {
       assertTrue(workTimeValues.contains(value));
     }
     assertNotNull(design.dataAnalyses.getColumn(STATUS).getEditorBinding());
@@ -341,9 +340,9 @@ public class SubmissionAnalysesFormPresenterTest {
         (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
     field.getNewItemHandler().accept("8.0");
     List<Double> values = items(field);
-    assertEquals(WORK_TIME_VALUES.length + 1, values.size());
+    assertEquals(SubmissionAnalysesFormPresenter.getWorkTimeValues().length + 1, values.size());
     assertTrue(values.contains(8.0));
-    for (Double value : WORK_TIME_VALUES) {
+    for (Double value : SubmissionAnalysesFormPresenter.getWorkTimeValues()) {
       assertTrue(values.contains(value));
     }
   }

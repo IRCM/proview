@@ -86,7 +86,7 @@ public class SubmissionAnalysesFormPresenter {
   public static final String STATUS = dataAnalysis.status.getMetadata().getName();
   public static final String DESCRIPTION = "description";
   public static final String VALUE = "value";
-  public static final Double[] WORK_TIME_VALUES;
+  private static final Double[] WORK_TIME_VALUES;
 
   static {
     WORK_TIME_VALUES = new Double[11];
@@ -264,5 +264,9 @@ public class SubmissionAnalysesFormPresenter {
     List<DataAnalysis> dataAnalyses = dataAnalysisService.all(submission);
     design.dataAnalyses.setItems(dataAnalyses);
     design.dataAnalysesPanel.setVisible(!dataAnalyses.isEmpty());
+  }
+
+  public static Double[] getWorkTimeValues() {
+    return WORK_TIME_VALUES.clone();
   }
 }

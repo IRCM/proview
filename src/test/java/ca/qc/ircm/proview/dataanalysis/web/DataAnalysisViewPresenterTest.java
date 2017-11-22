@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.dataanalysis.web;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.ANALYSES;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.HEADER;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.MAX_WORK_TIME;
-import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.MAX_WORK_TIME_VALUES;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.MULTIPLE_PROTEINS;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.PEPTIDE;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.PEPTIDE_ANALYSIS;
@@ -243,8 +242,8 @@ public class DataAnalysisViewPresenterTest {
       assertTrue(field.getStyleName().contains(MAX_WORK_TIME));
       assertFalse(field.isEmptySelectionAllowed());
       List<Double> values = new ArrayList<>(dataProvider(field).getItems());
-      assertEquals(MAX_WORK_TIME_VALUES.length, values.size());
-      for (Double value : MAX_WORK_TIME_VALUES) {
+      assertEquals(DataAnalysisViewPresenter.getMaxWorkTimeValues().length, values.size());
+      for (Double value : DataAnalysisViewPresenter.getMaxWorkTimeValues()) {
         assertTrue(values.contains(value));
       }
     }
@@ -267,9 +266,9 @@ public class DataAnalysisViewPresenterTest {
     field.getNewItemHandler().accept("8");
     assertEquals(8.0, field.getValue(), 0.00001);
     List<Double> values = new ArrayList<>(dataProvider(field).getItems());
-    assertEquals(MAX_WORK_TIME_VALUES.length + 1, values.size());
+    assertEquals(DataAnalysisViewPresenter.getMaxWorkTimeValues().length + 1, values.size());
     assertTrue(values.contains(8.0));
-    for (Double value : MAX_WORK_TIME_VALUES) {
+    for (Double value : DataAnalysisViewPresenter.getMaxWorkTimeValues()) {
       assertTrue(values.contains(value));
     }
   }
@@ -287,8 +286,8 @@ public class DataAnalysisViewPresenterTest {
     assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
         field.getErrorMessage().getFormattedHtmlMessage());
     List<Double> values = new ArrayList<>(dataProvider(field).getItems());
-    assertEquals(MAX_WORK_TIME_VALUES.length, values.size());
-    for (Double value : MAX_WORK_TIME_VALUES) {
+    assertEquals(DataAnalysisViewPresenter.getMaxWorkTimeValues().length, values.size());
+    for (Double value : DataAnalysisViewPresenter.getMaxWorkTimeValues()) {
       assertTrue(values.contains(value));
     }
   }
