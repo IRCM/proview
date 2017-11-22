@@ -60,11 +60,11 @@ public class PlateImageRendererSwing implements PlateImageRenderer {
     }
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(plateHeader(plate.getName()), BorderLayout.NORTH);
-    GridBagConstraints constraints = new GridBagConstraints();
     JPanel wellsPanel = new JPanel(new GridBagLayout());
     wellsPanel.setBorder(new LineBorder(Color.BLACK));
     wellsPanel.setBackground(Color.WHITE);
     panel.add(wellsPanel, BorderLayout.CENTER);
+    GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.BOTH;
     {
       constraints.gridx = 0;
