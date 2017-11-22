@@ -19,14 +19,22 @@ package ca.qc.ircm.proview.plate.web;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
+import ca.qc.ircm.proview.plate.render.PlateImageRenderer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.server.BrowserWindowOpener;
+import com.vaadin.server.StreamResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -40,12 +48,20 @@ public class PlateViewPresenter {
   public static final String HEADER = "header";
   public static final String PLATE_PANEL = "platePanel";
   public static final String PLATE = "plate";
+  public static final String PRINT = "print";
   public static final String INVALID_PLATE = "plate.invalid";
+  public static final String PRINT_TYPE = "png";
+  public static final String PRINT_FILENAME = "%s." + PRINT_TYPE;
+  public static final String PRINT_NULL_NAME = "template";
+  public static final String PRINT_MIME = "image/" + PRINT_TYPE;
+  public static final String PRINT_EXCEPTION = "print.exception";
   private static final Logger logger = LoggerFactory.getLogger(PlateViewPresenter.class);
   private PlateView view;
   private PlateViewDesign design;
   @Inject
   private PlateService plateService;
+  @Inject
+  private PlateImageRenderer plateImageRenderer;
   @Inject
   private AuthorizationService authorizationService;
   @Value("${spring.application.name}")
@@ -54,9 +70,10 @@ public class PlateViewPresenter {
   protected PlateViewPresenter() {
   }
 
-  protected PlateViewPresenter(PlateService plateService, AuthorizationService authorizationService,
-      String applicationName) {
+  protected PlateViewPresenter(PlateService plateService, PlateImageRenderer plateImageRenderer,
+      AuthorizationService authorizationService, String applicationName) {
     this.plateService = plateService;
+    this.plateImageRenderer = plateImageRenderer;
     this.authorizationService = authorizationService;
     this.applicationName = applicationName;
   }
@@ -72,6 +89,7 @@ public class PlateViewPresenter {
     this.view = view;
     design = view.design;
     prepareComponents();
+    updatePlate(null);
   }
 
   private void prepareComponents() {
@@ -90,6 +108,8 @@ public class PlateViewPresenter {
     }
     design.plate.addValueChangeListener(e -> updatePlate(e.getValue()));
     design.plateComponentPanel.addStyleName(PLATE_PANEL);
+    design.print.addStyleName(PRINT);
+    design.print.setCaption(resources.message(PRINT));
   }
 
   private void updatePlate(Plate plate) {
@@ -98,6 +118,25 @@ public class PlateViewPresenter {
       view.plateComponent.setValue(plate);
     } else {
       design.plateComponentPanel.setCaption("");
+    }
+    preparePrint(plate);
+  }
+
+  private void preparePrint(Plate plate) {
+    final Locale locale = view.getLocale();
+    try {
+      byte[] image = plateImageRenderer.render(plate, locale, PRINT_TYPE);
+      String filename =
+          String.format(PRINT_FILENAME, plate != null ? plate.getName() : PRINT_NULL_NAME);
+      new ArrayList<>(design.print.getExtensions()).stream().forEach(ext -> ext.remove());
+      StreamResource printResource =
+          new StreamResource(() -> new ByteArrayInputStream(image), filename);
+      printResource.setMIMEType(PRINT_MIME);
+      BrowserWindowOpener opener = new BrowserWindowOpener(printResource);
+      opener.extend(design.print);
+    } catch (IOException e) {
+      MessageResource resources = view.getResources();
+      view.showWarning(resources.message(PRINT_EXCEPTION, plate != null ? plate.getName() : ""));
     }
   }
 

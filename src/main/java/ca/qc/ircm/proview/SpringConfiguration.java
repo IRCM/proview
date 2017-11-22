@@ -18,6 +18,8 @@
 package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.mail.MailConfiguration;
+import ca.qc.ircm.proview.plate.render.PlateImageRenderer;
+import ca.qc.ircm.proview.plate.render.PlateImageRendererSwing;
 import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -67,6 +69,11 @@ public class SpringConfiguration {
   @Bean
   public PlatformTransactionManager txManager() {
     return new JpaTransactionManager(entityManagerFactory());
+  }
+
+  @Bean
+  public PlateImageRenderer plateImageRenderer() {
+    return new PlateImageRendererSwing();
   }
 
   /**

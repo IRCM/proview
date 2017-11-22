@@ -20,8 +20,15 @@ package ca.qc.ircm.proview.plate.web;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.HEADER;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PLATE;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PLATE_PANEL;
+import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PRINT;
+import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PRINT_EXCEPTION;
+import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PRINT_MIME;
+import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PRINT_NULL_NAME;
+import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PRINT_TYPE;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.TITLE;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.TestBenchUtils.items;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -33,11 +40,16 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
+import ca.qc.ircm.proview.plate.render.PlateImageRenderer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.server.BrowserWindowOpener;
+import com.vaadin.server.Resource;
+import com.vaadin.server.StreamResource;
 import com.vaadin.ui.themes.ValoTheme;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,11 +57,16 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
@@ -60,9 +77,13 @@ public class PlateViewPresenterTest {
   @Mock
   private PlateService plateService;
   @Mock
+  private PlateImageRenderer plateImageRenderer;
+  @Mock
   private AuthorizationService authorizationService;
   @Mock
   private PlateComponent plateComponent;
+  @PersistenceContext
+  private EntityManager entityManager;
   @Inject
   private PlateService realPlateService;
   @Value("${spring.application.name}")
@@ -73,13 +94,16 @@ public class PlateViewPresenterTest {
   private MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private List<Plate> plates;
+  private byte[] plateImage;
+  private Random random;
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() throws Throwable {
-    presenter = new PlateViewPresenter(plateService, authorizationService, applicationName);
+    presenter = new PlateViewPresenter(plateService, plateImageRenderer, authorizationService,
+        applicationName);
     design = new PlateViewDesign();
     view.design = design;
     view.plateComponent = plateComponent;
@@ -92,6 +116,10 @@ public class PlateViewPresenterTest {
     plates.add(realPlateService.get(26L));
     plates.add(realPlateService.get(107L));
     when(plateService.all(any())).thenReturn(plates);
+    plateImage = new byte[2048];
+    random = new Random();
+    random.nextBytes(plateImage);
+    when(plateImageRenderer.render(any(), any(), any())).thenReturn(plateImage);
   }
 
   @Test
@@ -103,6 +131,7 @@ public class PlateViewPresenterTest {
     assertTrue(design.header.getStyleName().contains(ValoTheme.LABEL_H1));
     assertTrue(design.plateComponentPanel.getStyleName().contains(PLATE_PANEL));
     assertTrue(design.plate.getStyleName().contains(PLATE));
+    assertTrue(design.print.getStyleName().contains(PRINT));
   }
 
   @Test
@@ -114,6 +143,7 @@ public class PlateViewPresenterTest {
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
     assertEquals(plate.getName(), design.plateComponentPanel.getCaption());
+    assertEquals(resources.message(PRINT), design.print.getCaption());
   }
 
   @Test
@@ -123,7 +153,7 @@ public class PlateViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
-    assertEquals(null, design.plateComponentPanel.getCaption());
+    assertEquals("", design.plateComponentPanel.getCaption());
   }
 
   @Test
@@ -160,12 +190,88 @@ public class PlateViewPresenterTest {
   }
 
   @Test
+  public void print() throws Throwable {
+    presenter.init(view);
+    presenter.enter("");
+
+    verify(plateImageRenderer).render(null, locale, PRINT_TYPE);
+    assertEquals(1, design.print.getExtensions().size());
+    containsInstanceOf(design.print.getExtensions(), BrowserWindowOpener.class);
+    BrowserWindowOpener opener =
+        (BrowserWindowOpener) design.print.getExtensions().iterator().next();
+    Resource resource = opener.getResource();
+    assertEquals(PRINT_MIME, resource.getMIMEType());
+    assertTrue(resource instanceof StreamResource);
+    StreamResource streamResource = (StreamResource) resource;
+    assertEquals(PRINT_NULL_NAME + ".png", streamResource.getStream().getFileName());
+    ByteArrayOutputStream actualOutput = new ByteArrayOutputStream();
+    IOUtils.copy(streamResource.getStream().getStream(), actualOutput);
+    assertArrayEquals(plateImage, actualOutput.toByteArray());
+  }
+
+  @Test
+  public void print_Plate() throws Throwable {
+    presenter.init(view);
+    presenter.enter("26");
+    final Plate plate = entityManager.find(Plate.class, 26L);
+
+    verify(plateImageRenderer).render(plate, locale, PRINT_TYPE);
+    assertEquals(1, design.print.getExtensions().size());
+    containsInstanceOf(design.print.getExtensions(), BrowserWindowOpener.class);
+    BrowserWindowOpener opener =
+        (BrowserWindowOpener) design.print.getExtensions().iterator().next();
+    Resource resource = opener.getResource();
+    assertEquals(PRINT_MIME, resource.getMIMEType());
+    assertTrue(resource instanceof StreamResource);
+    StreamResource streamResource = (StreamResource) resource;
+    assertEquals(plate.getName() + ".png", streamResource.getStream().getFileName());
+    ByteArrayOutputStream actualOutput = new ByteArrayOutputStream();
+    IOUtils.copy(streamResource.getStream().getStream(), actualOutput);
+    assertArrayEquals(plateImage, actualOutput.toByteArray());
+  }
+
+  @Test
+  public void print_UpdatePlate() throws Throwable {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.enter("");
+    Plate plate = items(design.plate).get(0);
+    design.plate.setValue(plate);
+
+    verify(plateImageRenderer).render(plate, locale, PRINT_TYPE);
+    assertEquals(1, design.print.getExtensions().size());
+    containsInstanceOf(design.print.getExtensions(), BrowserWindowOpener.class);
+    BrowserWindowOpener opener =
+        (BrowserWindowOpener) design.print.getExtensions().iterator().next();
+    Resource resource = opener.getResource();
+    assertEquals(PRINT_MIME, resource.getMIMEType());
+    assertTrue(resource instanceof StreamResource);
+    StreamResource streamResource = (StreamResource) resource;
+    assertEquals(plate.getName() + ".png", streamResource.getStream().getFileName());
+    ByteArrayOutputStream actualOutput = new ByteArrayOutputStream();
+    IOUtils.copy(streamResource.getStream().getStream(), actualOutput);
+    assertArrayEquals(plateImage, actualOutput.toByteArray());
+  }
+
+  @Test
+  public void print_Exception() throws Throwable {
+    when(plateImageRenderer.render(any(), any(), any())).thenThrow(new IOException("test"));
+    presenter.init(view);
+    presenter.enter("26");
+    final Plate plate = entityManager.find(Plate.class, 26L);
+
+    verify(plateImageRenderer).render(plate, locale, PRINT_TYPE);
+    assertEquals(0, design.print.getExtensions().size());
+    verify(view).showWarning(resources.message(PRINT_EXCEPTION, plate.getName()));
+  }
+
+  @Test
   public void enter() {
     presenter.init(view);
     presenter.enter("");
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(null, design.plateComponentPanel.getCaption());
+    assertEquals("", design.plateComponentPanel.getCaption());
     verify(plateComponent, never()).setValue(any());
   }
 
