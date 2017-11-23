@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.TITLE;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -26,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlType;
 import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
@@ -39,6 +41,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -197,12 +200,18 @@ public class ControlViewTest extends ControlViewPageObject {
     assertEquals(volume, control.getVolume());
     assertEquals(controlType, control.getControlType());
     assertEquals(standardCount, control.getStandards().size());
-    assertEquals(standardName1, control.getStandards().get(0).getName());
-    assertEquals(standardQuantity1, control.getStandards().get(0).getQuantity());
-    assertEquals(standardComment1, control.getStandards().get(0).getComment());
-    assertEquals(standardName2, control.getStandards().get(1).getName());
-    assertEquals(standardQuantity2, control.getStandards().get(1).getQuantity());
-    assertEquals(standardComment2, control.getStandards().get(1).getComment());
+    Optional<Standard> optStandard = find(control.getStandards(), standardName1);
+    assertTrue(optStandard.isPresent());
+    Standard standard = optStandard.get();
+    assertEquals(standardName1, standard.getName());
+    assertEquals(standardQuantity1, standard.getQuantity());
+    assertEquals(standardComment1, standard.getComment());
+    optStandard = find(control.getStandards(), standardName2);
+    assertTrue(optStandard.isPresent());
+    standard = optStandard.get();
+    assertEquals(standardName2, standard.getName());
+    assertEquals(standardQuantity2, standard.getQuantity());
+    assertEquals(standardComment2, standard.getComment());
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
     assertNotNull(notification.getCaption());

@@ -119,6 +119,12 @@ public abstract class TransferViewPageObject extends AbstractTestBenchTestCase {
     return findElement(className(DESTINATION_PLATE)).findElement(className("v-spreadsheet"));
   }
 
+  protected void selectDestinationPlateCell(int row, int column) {
+    destinationPlate().findElements(className("row" + (row + 1))).stream()
+        .filter(element -> element.getAttribute("class").contains("col" + (column + 1)))
+        .forEach(element -> element.click());
+  }
+
   protected ButtonElement test() {
     return wrap(ButtonElement.class, findElement(className(TEST)));
   }

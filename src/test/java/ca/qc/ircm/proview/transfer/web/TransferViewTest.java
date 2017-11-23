@@ -182,6 +182,7 @@ public class TransferViewTest extends TransferViewPageObject {
     openWithWells();
     String plateName = "test_plate";
     setDestinationPlate(plateName);
+    selectDestinationPlateCell(1, 1);
 
     clickSave();
 
