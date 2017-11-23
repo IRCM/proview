@@ -94,6 +94,7 @@ public class MainViewPresenter {
    *          view
    */
   public void init(MainView view) {
+    logger.debug("Main view");
     this.view = view;
     design = view.design;
     signBinder.setBean(new SigninInformation());

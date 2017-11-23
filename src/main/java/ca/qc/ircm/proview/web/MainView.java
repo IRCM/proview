@@ -21,8 +21,6 @@ import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.CustomComponent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -33,7 +31,6 @@ import javax.inject.Inject;
 public class MainView extends CustomComponent implements BaseView {
   private static final long serialVersionUID = -2537732272999926530L;
   public static final String VIEW_NAME = "";
-  private static final Logger logger = LoggerFactory.getLogger(MainView.class);
   protected MainViewDesign design = new MainViewDesign();
   protected CustomLoginForm signForm = new CustomLoginForm();
   @Inject
@@ -49,7 +46,6 @@ public class MainView extends CustomComponent implements BaseView {
 
   @Override
   public void attach() {
-    logger.debug("Main view");
     super.attach();
     signForm.getLayout().setMargin(false);
     presenter.init(this);
