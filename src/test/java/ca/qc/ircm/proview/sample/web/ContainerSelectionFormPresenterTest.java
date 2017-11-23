@@ -32,8 +32,8 @@ import static ca.qc.ircm.proview.sample.web.ContainerSelectionFormPresenter.TUBE
 import static ca.qc.ircm.proview.sample.web.ContainerSelectionFormPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.ContainerSelectionFormPresenter.TYPE_PANEL;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;

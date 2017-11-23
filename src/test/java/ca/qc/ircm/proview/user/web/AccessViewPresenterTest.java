@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVATE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.CLEAR;

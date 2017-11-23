@@ -27,7 +27,7 @@ import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PRINT_NULL_NAME;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PRINT_TYPE;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.items;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

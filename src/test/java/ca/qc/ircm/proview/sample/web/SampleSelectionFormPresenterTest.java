@@ -30,7 +30,7 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SELECT;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.UPDATE;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

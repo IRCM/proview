@@ -30,7 +30,7 @@ import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.SA
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.TITLE;
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.TYPE;
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.TYPE_PANEL;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

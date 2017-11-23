@@ -26,7 +26,7 @@ import com.vaadin.ui.RadioButtonGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestBenchUtils {
+public class VaadinTestUtils {
   @SuppressWarnings("unchecked")
   public static <V> ListDataProvider<V> dataProvider(Grid<V> grid) {
     return (ListDataProvider<V>) grid.getDataProvider();

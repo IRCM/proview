@@ -39,8 +39,8 @@ import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SOLVENT_VOLUME;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;

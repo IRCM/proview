@@ -32,8 +32,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.T
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.VIEW;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.items;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;

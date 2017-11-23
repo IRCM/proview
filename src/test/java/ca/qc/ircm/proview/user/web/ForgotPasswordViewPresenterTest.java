@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.errorMessage;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.CONFIRM_PASSWORD;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.INVALID_FORGOT_PASSWORD;

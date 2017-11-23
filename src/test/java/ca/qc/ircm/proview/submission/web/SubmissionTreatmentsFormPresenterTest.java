@@ -27,7 +27,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresente
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TREATMENT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TREATMENT_TIME;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TREATMENT_TYPE;
-import static ca.qc.ircm.proview.test.utils.TestBenchUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
