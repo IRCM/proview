@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.test.config;
 
 import static ca.qc.ircm.proview.web.Menu.HOME;
 import static org.openqa.selenium.By.className;
-import static org.openqa.selenium.By.tagName;
 
 import com.google.common.base.Predicate;
 
@@ -155,16 +154,9 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase
     }
   }
 
-  // Workaround for Vaadin referring to wrong element when doing isSelected test.
-  protected boolean getCheckBoxValue(CheckBoxElement field) {
-    String value = field.getValue();
-    return value.equals("checked");
-  }
-
-  // Workaround for Vaadin referring to wrong element when doing click.
   protected void setCheckBoxValue(CheckBoxElement field, boolean value) {
-    if (value != getCheckBoxValue(field)) {
-      field.findElement(tagName("label")).click();
+    if (value != field.isChecked()) {
+      field.click();
     }
   }
 }

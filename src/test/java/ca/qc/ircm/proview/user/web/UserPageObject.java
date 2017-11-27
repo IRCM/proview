@@ -47,7 +47,6 @@ import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.user.PhoneNumberType;
-import ca.qc.ircm.proview.user.web.UserView;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
@@ -132,7 +131,7 @@ public abstract class UserPageObject extends AbstractTestBenchTestCase {
   }
 
   protected boolean isNewLaboratory() {
-    return getCheckBoxValue(newLaboratoryField());
+    return newLaboratoryField().isChecked();
   }
 
   protected void setNewLaboratory(boolean value) {
