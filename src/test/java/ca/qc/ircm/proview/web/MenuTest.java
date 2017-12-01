@@ -227,7 +227,6 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> changeLanguageMenuItem()).isPresent());
     assertTrue(optional(() -> managerMenuItem()).isPresent());
     clickManager();
-    Thread.sleep(1000);
     assertFalse(optional(() -> validateUsersMenuItem()).isPresent());
     assertFalse(optional(() -> accessMenuItem()).isPresent());
     assertFalse(optional(() -> signasMenuItem()).isPresent());

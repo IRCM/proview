@@ -77,8 +77,8 @@ public class ControlViewTest extends ControlViewPageObject {
     setVolume(Objects.toString(volume));
     setControlType(controlType.getLabel(currentLocale()));
     setStandardCount(Objects.toString(standardCount));
-    waitFor(() -> standardsGrid());
-    waitFor(() -> standardNameField(0));
+    //waitFor(() -> standardsGrid());
+    //waitFor(() -> standardNameField(0));
     setStandardName(0, standardName1);
     setStandardQuantity(0, standardQuantity1);
     setStandardComment(0, standardComment1);
