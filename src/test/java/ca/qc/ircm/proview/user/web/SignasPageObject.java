@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   @SuppressWarnings("unused")
@@ -56,23 +56,15 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
     return wrap(GridElement.class, findElement(className(USERS_GRID)));
   }
 
-  private void processUsersGridRow(String email, Consumer<Integer> consumer) {
+  private IntStream usersGridRows(String email) {
     GridElement usersGrid = usersGrid();
-    processGridRows(usersGrid, row -> {
-      GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
-      try {
-        if (email.equals(emailCell.getText())) {
-          consumer.accept(row);
-        }
-      } catch (RuntimeException e) {
-        throw e;
-      }
-    });
+    return IntStream.range(0, (int) usersGrid.getRowCount())
+        .filter(row -> email.equals(usersGrid.getCell(row, EMAIL_COLUMN).getText()));
   }
 
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
-    processUsersGridRow(email, row -> {
+    usersGridRows(email).forEach(row -> {
       usersGrid.getCell(row, EMAIL_COLUMN);
       ButtonElement button =
           wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(EMAIL)));
@@ -82,7 +74,7 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
 
   protected void clickSignas(String email) {
     GridElement usersGrid = usersGrid();
-    processUsersGridRow(email, row -> {
+    usersGridRows(email).findFirst().ifPresent(row -> {
       usersGrid.getCell(row, SIGN_AS_COLUMN);
       ButtonElement button =
           wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(SIGN_AS)));
@@ -93,7 +85,7 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   protected List<String> getUserEmails() {
     GridElement usersGrid = usersGrid();
     List<String> selectedFiles = new ArrayList<>();
-    processGridRows(usersGrid, row -> {
+    IntStream.range(0, (int) usersGrid.getRowCount()).forEach(row -> {
       GridCellElement cell = usersGrid.getCell(row, EMAIL_COLUMN);
       selectedFiles.add(cell.getText());
     });

@@ -25,9 +25,7 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.CheckBoxElement;
-import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.MenuBarElement;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.slf4j.Logger;
@@ -38,9 +36,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
 
 /**
  * Additional functions for TestBenchTestCase.
@@ -112,32 +108,6 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase
     } else {
       WebElement input = uploader.findElement(className("gwt-FileUpload"));
       input.sendKeys(file.toAbsolutePath().toString());
-    }
-  }
-
-  protected IntStream gridRows(GridElement grid) {
-    int row = 0;
-    try {
-      while (true) {
-        grid.getRow(row);
-        row++;
-      }
-    } catch (NoSuchElementException e) {
-      // No more rows.
-    }
-    return IntStream.range(0, row);
-  }
-
-  protected void processGridRows(GridElement grid, Consumer<Integer> consumer) {
-    int row = 0;
-    try {
-      while (true) {
-        grid.getRow(row);
-        consumer.accept(row);
-        row++;
-      }
-    } catch (NoSuchElementException e) {
-      // No more rows.
     }
   }
 

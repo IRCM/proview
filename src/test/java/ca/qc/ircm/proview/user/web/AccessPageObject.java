@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public abstract class AccessPageObject extends AbstractTestBenchTestCase {
@@ -58,23 +57,15 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
     return wrap(GridElement.class, findElement(className(USERS_GRID)));
   }
 
-  private void processUsersGridRow(String email, Consumer<Integer> consumer) {
+  private IntStream usersGridRows(String email) {
     GridElement usersGrid = usersGrid();
-    processGridRows(usersGrid, row -> {
-      GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
-      try {
-        if (email.equals(emailCell.getText())) {
-          consumer.accept(row);
-        }
-      } catch (RuntimeException e) {
-        throw e;
-      }
-    });
+    return IntStream.range(0, (int) usersGrid.getRowCount())
+        .filter(row -> email.equals(usersGrid.getCell(row, EMAIL_COLUMN).getText()));
   }
 
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
-    processUsersGridRow(email, row -> {
+    usersGridRows(email).forEach(row -> {
       ButtonElement button = wrap(ButtonElement.class,
           usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
       button.click();
@@ -84,8 +75,7 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
   protected void selectUsers(String... emails) {
     GridElement usersGrid = usersGrid();
     Arrays.asList(emails).forEach(email -> {
-      processUsersGridRow(email, row -> {
-        IntStream.range(0, SELECT_COLUMN).forEach(i -> usersGrid.getCell(row, i));
+      usersGridRows(email).forEach(row -> {
         GridCellElement checkboxCell = usersGrid.getCell(row, SELECT_COLUMN);
         checkboxCell.$(CheckBoxElement.class).first().click();
       });
@@ -95,7 +85,7 @@ public abstract class AccessPageObject extends AbstractTestBenchTestCase {
   protected List<String> getUserEmails() {
     GridElement usersGrid = usersGrid();
     List<String> selectedFiles = new ArrayList<>();
-    processGridRows(usersGrid, row -> {
+    IntStream.range(0, (int) usersGrid.getRowCount()).forEach(row -> {
       GridCellElement cell = usersGrid.getCell(row, EMAIL_COLUMN);
       selectedFiles.add(cell.getText());
     });

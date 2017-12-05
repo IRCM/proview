@@ -93,7 +93,7 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     GridElement grid = submissionsGrid();
     if (isAdmin()) {
       Set<Integer> rowsSet = IntStream.of(rows).mapToObj(v -> v).collect(Collectors.toSet());
-      processGridRows(grid, row -> {
+      IntStream.range(0, (int) grid.getRowCount()).forEach(row -> {
         if (rowsSet.contains(row)) {
           grid.getCell(row, 0).findElement(tagName("input")).click();
         }

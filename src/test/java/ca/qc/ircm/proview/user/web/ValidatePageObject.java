@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   private static final Logger logger = LoggerFactory.getLogger(ValidatePageObject.class);
@@ -55,24 +55,16 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
     return wrap(GridElement.class, findElement(className(USERS_GRID)));
   }
 
-  private void processUsersGridRow(String email, Consumer<Integer> consumer) {
+  private IntStream usersGridRows(String email) {
     GridElement usersGrid = usersGrid();
-    processGridRows(usersGrid, row -> {
-      ButtonElement button = wrap(ButtonElement.class,
-          usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
-      try {
-        if (email.equals(button.getCaption())) {
-          consumer.accept(row);
-        }
-      } catch (RuntimeException e) {
-        throw e;
-      }
-    });
+    return IntStream.range(0, (int) usersGrid.getRowCount())
+        .filter(row -> email.equals(wrap(ButtonElement.class,
+            usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL))).getCaption()));
   }
 
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
-    processUsersGridRow(email, row -> {
+    usersGridRows(email).forEach(row -> {
       ButtonElement button = wrap(ButtonElement.class,
           usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
       button.click();
@@ -82,7 +74,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   protected void clickValidateUser(String email) {
     logger.debug("clickValidateUser for user {}", email);
     GridElement usersGrid = usersGrid();
-    processUsersGridRow(email, row -> {
+    usersGridRows(email).findFirst().ifPresent(row -> {
       ButtonElement button = wrap(ButtonElement.class,
           usersGrid.getCell(row, VALIDATE_COLUMN).findElement(className(VALIDATE)));
       button.click();
@@ -92,7 +84,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   protected void selectUsers(String... emails) {
     GridElement usersGrid = usersGrid();
     Arrays.asList(emails).forEach(email -> {
-      processUsersGridRow(email, row -> {
+      usersGridRows(email).forEach(row -> {
         GridCellElement checkboxCell = usersGrid.getCell(row, SELECT_COLUMN);
         checkboxCell.click();
       });
@@ -102,7 +94,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   protected List<String> getUserEmails() {
     GridElement usersGrid = usersGrid();
     List<String> emails = new ArrayList<>();
-    processGridRows(usersGrid, row -> {
+    IntStream.range(0, (int) usersGrid.getRowCount()).forEach(row -> {
       ButtonElement button = wrap(ButtonElement.class,
           usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
       emails.add(button.getCaption());

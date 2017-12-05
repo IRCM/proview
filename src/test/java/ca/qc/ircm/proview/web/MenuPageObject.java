@@ -48,9 +48,10 @@ import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.SignasViewPresenter;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
-import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.MenuBarElement;
 import org.openqa.selenium.WebElement;
+
+import java.util.stream.IntStream;
 
 public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   private static final int EMAIL_COLUMN = 0;
@@ -256,18 +257,12 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   protected void signas(String email) {
     openView(SignasView.VIEW_NAME);
     GridElement usersGrid = wrap(GridElement.class, findElement(className(USERS_GRID)));
-    processGridRows(usersGrid, row -> {
-      GridCellElement emailCell = usersGrid.getCell(row, EMAIL_COLUMN);
-      try {
-        if (email.equals(emailCell.getText())) {
-          usersGrid.getCell(row, SIGN_AS_COLUMN);
-          ButtonElement button = wrap(ButtonElement.class,
-              usersGrid.getRow(row).findElement(className(SignasViewPresenter.SIGN_AS)));
+    IntStream.range(0, (int) usersGrid.getRowCount())
+        .filter(row -> email.equals(usersGrid.getCell(row, EMAIL_COLUMN).getText())).findFirst()
+        .ifPresent(row -> {
+          ButtonElement button = wrap(ButtonElement.class, usersGrid.getCell(row, SIGN_AS_COLUMN)
+              .findElement(className(SignasViewPresenter.SIGN_AS)));
           button.click();
-        }
-      } catch (RuntimeException e) {
-        throw e;
-      }
-    });
+        });
   }
 }
