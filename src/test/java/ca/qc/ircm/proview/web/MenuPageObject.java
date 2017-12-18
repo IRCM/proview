@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.web.Menu.CONTROL;
 import static ca.qc.ircm.proview.web.Menu.DIGESTION;
 import static ca.qc.ircm.proview.web.Menu.DILUTION;
 import static ca.qc.ircm.proview.web.Menu.ENRICHMENT;
-import static ca.qc.ircm.proview.web.Menu.HELP;
 import static ca.qc.ircm.proview.web.Menu.HOME;
 import static ca.qc.ircm.proview.web.Menu.MANAGER;
 import static ca.qc.ircm.proview.web.Menu.MS_ANALYSIS;
@@ -244,14 +243,6 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
 
   protected void clickContact() {
     contactMenuItem().click();
-  }
-
-  protected WebElement helpMenuItem() {
-    return menuItemByStyle(HELP);
-  }
-
-  protected void clickHelp() {
-    helpMenuItem().click();
   }
 
   protected void signas(String email) {

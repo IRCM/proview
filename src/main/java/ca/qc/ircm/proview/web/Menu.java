@@ -81,7 +81,6 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
   public static final String REGISTER = "register";
   public static final String STOP_SIGN_AS = "stopSignas";
   public static final String CONTACT = "contact";
-  public static final String HELP = "help";
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
   private MenuBar menu = new MenuBar();
@@ -107,7 +106,6 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
   private MenuItem register;
   private MenuItem stopSignas;
   private MenuItem contact;
-  private MenuItem help;
   @Inject
   private transient AuthorizationService authorizationService;
   @Inject
@@ -202,8 +200,6 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
     stopSignas.setVisible(false);
     contact = menu.addItem(resources.message(CONTACT), item -> changeView(ContactView.VIEW_NAME));
     contact.setStyleName(CONTACT);
-    help = menu.addItem(resources.message(HELP), item -> changeView(MainView.VIEW_NAME));
-    help.setStyleName(HELP);
   }
 
   private void updateVisible() {
