@@ -48,7 +48,9 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -87,6 +89,7 @@ public class SubmissionsViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
   public static final String SUBMISSIONS = "submissions";
+  public static final String SUBMISSIONS_DESCRIPTION = SUBMISSIONS + ".description";
   public static final String SAMPLE_COUNT = "sampleCount";
   public static final String SUBMISSION = submission.getMetadata().getName();
   public static final String SAMPLE = sample.getMetadata().getName();
@@ -120,6 +123,7 @@ public class SubmissionsViewPresenter {
   public static final String STANDARD_ADDITION = "standardAddition";
   public static final String MS_ANALYSIS = "msAnalysis";
   public static final String DATA_ANALYSIS = "dataAnalysis";
+  public static final String DATA_ANALYSIS_DESCRIPTION = DATA_ANALYSIS + ".description";
   public static final String NO_SELECTION = "noSelection";
   public static final String NO_CONTAINERS = "noContainers";
   public static final String CONDITION_FALSE = "condition-false";
@@ -244,6 +248,7 @@ public class SubmissionsViewPresenter {
     design.msAnalysis.setVisible(authorizationService.hasAdminRole());
     design.dataAnalysis.addStyleName(DATA_ANALYSIS);
     design.dataAnalysis.setCaption(resources.message(DATA_ANALYSIS));
+    design.dataAnalysis.setDescription(resources.message(DATA_ANALYSIS_DESCRIPTION));
     design.dataAnalysis.addClickListener(e -> dataAnalysis());
     design.dataAnalysis.setVisible(!authorizationService.hasAdminRole());
   }
@@ -256,6 +261,10 @@ public class SubmissionsViewPresenter {
     final Collator collator = Collator.getInstance(locale);
     design.submissionsGrid.addStyleName(SUBMISSIONS);
     design.submissionsGrid.addStyleName(COMPONENTS);
+    System.out.println(resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()));
+    System.out.println(VaadinIcons.MENU.getHtml());
+    design.submissionsGrid.setDescription(
+        resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()), ContentMode.HTML);
     design.submissionsGrid.setDataProvider(searchSubmissions());
     design.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
         .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE))

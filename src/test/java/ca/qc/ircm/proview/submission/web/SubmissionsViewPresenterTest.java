@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUB
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS_DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
@@ -46,6 +47,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SOLUBILISATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS_DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TITLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TRANSFER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
@@ -98,6 +100,7 @@ import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.SelectionModel;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -266,6 +269,8 @@ public class SubmissionsViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.headerLabel.getValue());
+    assertEquals(resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()),
+        design.submissionsGrid.getDescription());
     for (Column<Submission, ?> column : design.submissionsGrid.getColumns()) {
       assertEquals(resources.message(column.getId()), column.getCaption());
     }
@@ -288,6 +293,8 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(STANDARD_ADDITION), design.standardAddition.getCaption());
     assertEquals(resources.message(MS_ANALYSIS), design.msAnalysis.getCaption());
     assertEquals(resources.message(DATA_ANALYSIS), design.dataAnalysis.getCaption());
+    assertEquals(resources.message(DATA_ANALYSIS_DESCRIPTION),
+        design.dataAnalysis.getDescription());
   }
 
   @Test
