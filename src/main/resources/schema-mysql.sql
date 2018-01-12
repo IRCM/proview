@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS users (
   registerTime datetime DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY usersEmail (email),
-  FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT users_ibfk_1 FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS phonenumber (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -56,15 +56,15 @@ CREATE TABLE IF NOT EXISTS phonenumber (
   number varchar(50) NOT NULL,
   extension varchar(20) DEFAULT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT phonenumber_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS laboratoryuser (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT laboratoryuser_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT laboratoryuser_ibfk_2 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS laboratorymanager (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -72,8 +72,8 @@ CREATE TABLE IF NOT EXISTS laboratorymanager (
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (userId, laboratoryId),
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT laboratorymanager_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT laboratorymanager_ibfk_2 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS forgotpassword (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS forgotpassword (
   confirmNumber int(11) NOT NULL,
   used tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT forgotpassword_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS submission (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -134,8 +134,8 @@ CREATE TABLE IF NOT EXISTS submission (
   laboratoryId bigint(20) NOT NULL,
   userId bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE,
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT submission_ibfk_1 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE,
+  CONSTRAINT submission_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS submissionfiles (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS submissionfiles (
   filename varchar(255) NOT NULL,
   content longblob,
   PRIMARY KEY (id),
-  FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT submissionfiles_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS plate (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS samplecontainer (
   PRIMARY KEY (id),
   UNIQUE KEY samplecontainerName (name),
   UNIQUE KEY samplecontainerPlateId (plateId,locationColumn,locationRow),
-  FOREIGN KEY (plateId) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT samplecontainer_ibfk_1 FOREIGN KEY (plateId) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS sample (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -184,12 +184,12 @@ CREATE TABLE IF NOT EXISTS sample (
   molecularWeight double DEFAULT NULL,
   PRIMARY KEY (id),
   KEY sampleName (name),
-  FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT sample_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT sample_ibfk_2 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 -- TODO fix for test
 -- ALTER TABLE samplecontainer
--- ADD FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
+-- ADD CONSTRAINT samplecontainer_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
 CREATE TABLE IF NOT EXISTS standard (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS standard (
   comment text,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT standard_ibfk_1 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS contaminant (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS contaminant (
   comment text,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT contaminant_ibfk_1 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS solvent (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -216,7 +216,7 @@ CREATE TABLE IF NOT EXISTS solvent (
   solvent varchar(150) NOT NULL,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT solvent_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS protocol (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -233,11 +233,11 @@ CREATE TABLE IF NOT EXISTS treatment (
   userId bigint(20) DEFAULT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted tinyint(4) NOT NULL DEFAULT '0',
-  deletionType enum('ERRONEOUS','FAILED') DEFAULT NULL,
+  deletionType varchar(50) DEFAULT NULL,
   deletionExplanation text,
   PRIMARY KEY (id),
-  FOREIGN KEY (protocolId) REFERENCES protocol (id) ON UPDATE CASCADE,
-  FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT treatment_ibfk_1 FOREIGN KEY (protocolId) REFERENCES protocol (id) ON UPDATE CASCADE,
+  CONSTRAINT treatment_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS treatmentsample (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -256,10 +256,10 @@ CREATE TABLE IF NOT EXISTS treatmentsample (
   number int(11) DEFAULT NULL,
   piInterval varchar(50) DEFAULT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (treatmentId) REFERENCES treatment (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
-  FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE,
-  FOREIGN KEY (destinationContainerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
+  CONSTRAINT treatmentsample_ibfk_1 FOREIGN KEY (treatmentId) REFERENCES treatment (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT treatmentsample_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
+  CONSTRAINT treatmentsample_ibfk_3 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE,
+  CONSTRAINT treatmentsample_ibfk_4 FOREIGN KEY (destinationContainerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS msanalysis (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS msanalysis (
   massDetectionInstrument varchar(50) NOT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted tinyint(4) NOT NULL DEFAULT '0',
-  deletionType enum('ERRONEOUS','FAILED') DEFAULT NULL,
+  deletionType varchar(50) DEFAULT NULL,
   deletionExplanation text,
   PRIMARY KEY (id)
 );
@@ -285,9 +285,9 @@ CREATE TABLE IF NOT EXISTS acquisition (
   PRIMARY KEY (id),
   UNIQUE (sampleId,position),
   KEY acquisitionFile (acquisitionFile,sampleId),
-  FOREIGN KEY (msAnalysisId) REFERENCES msanalysis (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
-  FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
+  CONSTRAINT acquisition_ibfk_1 FOREIGN KEY (msAnalysisId) REFERENCES msanalysis (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT acquisition_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
+  CONSTRAINT acquisition_ibfk_3 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS dataanalysis (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -300,14 +300,14 @@ CREATE TABLE IF NOT EXISTS dataanalysis (
   status varchar(50) NOT NULL,
   analysisType varchar(50) NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT dataanalysis_ibfk_1 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS activity (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   userId bigint(20) NOT NULL,
   tableName varchar(50) NOT NULL,
   recordId bigint(20) NOT NULL,
-  actionType enum('INSERT','UPDATE','DELETE') NOT NULL,
+  actionType varchar(50) NOT NULL,
   time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   explanation text,
   PRIMARY KEY (id),
@@ -318,12 +318,12 @@ CREATE TABLE IF NOT EXISTS activityupdate (
   activityId bigint(20) DEFAULT NULL,
   tableName varchar(50) NOT NULL,
   recordId bigint(20) NOT NULL,
-  actionType enum('INSERT','UPDATE','DELETE') NOT NULL,
+  actionType varchar(50) NOT NULL,
   actionColumn varchar(70) DEFAULT NULL,
   oldValue varchar(255) DEFAULT NULL,
   newValue varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (activityId) REFERENCES activity (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT activityupdate_ibfk_1 FOREIGN KEY (activityId) REFERENCES activity (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS preference (
   id bigint(20) NOT NULL AUTO_INCREMENT,
