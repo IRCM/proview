@@ -4320,7 +4320,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -4455,7 +4454,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -4604,7 +4602,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -4739,7 +4736,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -4875,7 +4871,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -5021,7 +5016,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -5124,7 +5118,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -5237,7 +5230,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(SMALL_MOLECULE, submission.getService());
     assertEquals(null, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(sampleName, submission.getExperience());
     assertEquals(null, submission.getGoal());
     assertEquals(null, submission.getMassDetectionInstrument());
@@ -5342,7 +5334,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(SMALL_MOLECULE, submission.getService());
     assertEquals(null, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(sampleName, submission.getExperience());
     assertEquals(null, submission.getGoal());
     assertEquals(null, submission.getMassDetectionInstrument());
@@ -5467,7 +5458,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(INTACT_PROTEIN, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -5602,7 +5592,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(INTACT_PROTEIN, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(null, submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -5768,7 +5757,6 @@ public class SubmissionFormPresenterTest {
     assertEquals((Long) 36L, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals("cap_project", submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
@@ -5908,7 +5896,6 @@ public class SubmissionFormPresenterTest {
     assertEquals((Long) 147L, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals("Flag", submission.getProject());
     assertEquals(experience, submission.getExperience());
     assertEquals(experienceGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());

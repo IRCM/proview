@@ -119,7 +119,6 @@ public class SubmissionActivityServiceTest {
     entityManager.detach(newSubmission);
     newSubmission.setService(Service.MALDI_MS);
     newSubmission.setTaxonomy("mouse");
-    newSubmission.setProject("new_project");
     newSubmission.setExperience("new_experience");
     newSubmission.setGoal("new_goal");
     newSubmission.setMassDetectionInstrument(MassDetectionInstrument.TOF);
@@ -186,7 +185,6 @@ public class SubmissionActivityServiceTest {
     Laboratory newLaboratory = new Laboratory(1L);
     newSubmission.setService(Service.MALDI_MS);
     newSubmission.setTaxonomy("mouse");
-    newSubmission.setProject("new_project");
     newSubmission.setExperience("new_experience");
     newSubmission.setGoal("new_goal");
     newSubmission.setMassDetectionInstrument(MassDetectionInstrument.TOF);
@@ -261,14 +259,6 @@ public class SubmissionActivityServiceTest {
     taxonomyActivity.setOldValue("Human");
     taxonomyActivity.setNewValue("mouse");
     expectedUpdateActivities.add(taxonomyActivity);
-    UpdateActivity projectActivity = new UpdateActivity();
-    projectActivity.setActionType(ActionType.UPDATE);
-    projectActivity.setTableName("submission");
-    projectActivity.setRecordId(newSubmission.getId());
-    projectActivity.setColumn("project");
-    projectActivity.setOldValue(oldSubmission.getProject());
-    projectActivity.setNewValue(newSubmission.getProject());
-    expectedUpdateActivities.add(projectActivity);
     UpdateActivity experienceActivity = new UpdateActivity();
     experienceActivity.setActionType(ActionType.UPDATE);
     experienceActivity.setTableName("submission");

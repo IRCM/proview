@@ -79,12 +79,6 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Size(max = 100)
   private String taxonomy;
   /**
-   * User's project.
-   */
-  @Column(name = "project")
-  @Size(max = 100)
-  private String project;
-  /**
    * User's experience.
    */
   @Column(name = "experience")
@@ -413,14 +407,6 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setSamples(List<SubmissionSample> samples) {
     this.samples = samples;
-  }
-
-  public String getProject() {
-    return project;
-  }
-
-  public void setProject(String project) {
-    this.project = project;
   }
 
   public String getExperience() {

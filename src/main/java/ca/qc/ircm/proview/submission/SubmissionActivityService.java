@@ -144,8 +144,6 @@ public class SubmissionActivityService {
         .oldValue(oldSubmission.getService()).newValue(newSubmission.getService()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("taxonomy")
         .oldValue(oldSubmission.getTaxonomy()).newValue(newSubmission.getTaxonomy()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("project")
-        .oldValue(oldSubmission.getProject()).newValue(newSubmission.getProject()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("experience")
         .oldValue(oldSubmission.getExperience()).newValue(newSubmission.getExperience()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("goal")

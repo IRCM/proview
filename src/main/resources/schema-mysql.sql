@@ -87,7 +87,6 @@ CREATE TABLE IF NOT EXISTS forgotpassword (
 CREATE TABLE IF NOT EXISTS submission (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   service varchar(50) DEFAULT NULL,
-  project varchar(100) DEFAULT NULL,
   experience varchar(100) DEFAULT NULL,
   goal varchar(150) DEFAULT NULL,
   taxonomy varchar(100) DEFAULT NULL,
