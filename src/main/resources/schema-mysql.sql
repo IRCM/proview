@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS submission (
   comment text,
   price double DEFAULT NULL,
   additionalPrice double DEFAULT NULL,
-  submissionDate timestamp NOT NULL,
+  submissionDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   laboratoryId bigint(20) NOT NULL,
   userId bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
