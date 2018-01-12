@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS submission (
   experience varchar(100) DEFAULT NULL,
   goal varchar(150) DEFAULT NULL,
   taxonomy varchar(100) DEFAULT NULL,
-  massDetectionInstrument varchar(50) DEFAULT NULL,
-  source varchar(50) DEFAULT NULL,
+  massDetectionInstrument varchar(100) DEFAULT NULL,
+  source varchar(100) DEFAULT NULL,
   injectionType varchar(50) DEFAULT NULL,
   proteolyticDigestionMethod varchar(50) DEFAULT NULL,
   usedProteolyticDigestionMethod varchar(100) DEFAULT NULL,
@@ -262,8 +262,8 @@ CREATE TABLE IF NOT EXISTS treatmentsample (
 );
 CREATE TABLE IF NOT EXISTS msanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  source varchar(50) DEFAULT NULL,
-  massDetectionInstrument varchar(50) NOT NULL,
+  source varchar(100) DEFAULT NULL,
+  massDetectionInstrument varchar(100) NOT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   deletionType varchar(50) DEFAULT NULL,
