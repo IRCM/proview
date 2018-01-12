@@ -162,6 +162,7 @@ CREATE TABLE IF NOT EXISTS samplecontainer (
   locationColumn int(11) DEFAULT NULL,
   locationRow int(11) DEFAULT NULL,
   sampleId bigint(20) DEFAULT NULL,
+  version int(11) DEFAULT 0,
   time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   banned tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),

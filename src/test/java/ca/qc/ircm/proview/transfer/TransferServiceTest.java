@@ -169,6 +169,7 @@ public class TransferServiceTest {
     assertEquals(SampleContainerType.TUBE, transferedSample.getDestinationContainer().getType());
     assertNotNull(destinationTube.getId());
     assertEquals(destinationTube.getId(), transferedSample.getDestinationContainer().getId());
+    assertEquals(1, transferedSample.getDestinationContainer().getVersion());
     assertTrue(before.isBefore(transferedSample.getDestinationContainer().getTimestamp()));
     assertTrue(after.isAfter(transferedSample.getDestinationContainer().getTimestamp()));
   }
@@ -178,7 +179,8 @@ public class TransferServiceTest {
     final List<TransferedSample> transferedSamples = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
-    Well destinationWell = new Well(134L);
+    Well destinationWell = entityManager.find(Well.class, 134L);
+    entityManager.detach(destinationWell);
     TransferedSample transferedSample = new TransferedSample();
     transferedSample.setSample(sample);
     transferedSample.setContainer(sourceTube);
@@ -206,6 +208,9 @@ public class TransferServiceTest {
     assertEquals((Long) 1L, transferedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, transferedSample.getDestinationContainer().getType());
     assertEquals((Long) 134L, transferedSample.getDestinationContainer().getId());
+    destinationWell = entityManager.find(Well.class, 134L);
+    assertEquals(sample.getId(), destinationWell.getSample().getId());
+    assertEquals(2, destinationWell.getVersion());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(transferedSample.getDestinationContainer().getTimestamp()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -257,7 +262,10 @@ public class TransferServiceTest {
     assertEquals((Long) 1L, transferedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, transferedSample.getDestinationContainer().getType());
     assertNotNull(transferedSample.getDestinationContainer().getId());
-    destinationWell = (Well) transferedSample.getDestinationContainer();
+    destinationWell =
+        entityManager.find(Well.class, transferedSample.getDestinationContainer().getId());
+    assertEquals(sample.getId(), destinationWell.getSample().getId());
+    assertTrue(destinationWell.getVersion() >= 1);
     assertNotNull(destinationWell.getPlate().getId());
     assertEquals("test_plate", destinationWell.getPlate().getName());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -299,6 +307,10 @@ public class TransferServiceTest {
     assertEquals(SampleContainerType.WELL, transferedSample.getContainer().getType());
     assertEquals((Long) 128L, transferedSample.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, transferedSample.getDestinationContainer().getType());
+    destinationTube =
+        entityManager.find(Tube.class, transferedSample.getDestinationContainer().getId());
+    assertEquals(sample.getId(), destinationTube.getSample().getId());
+    assertEquals(1, destinationTube.getVersion());
     assertNotNull(destinationTube.getId());
     assertEquals(destinationTube.getId(), transferedSample.getDestinationContainer().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -312,7 +324,8 @@ public class TransferServiceTest {
     final List<TransferedSample> transferedSamples = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Well sourceWell = new Well(128L);
-    Well destinationWell = new Well(134L);
+    Well destinationWell = entityManager.find(Well.class, 134L);
+    entityManager.detach(destinationWell);
     TransferedSample transferedSample = new TransferedSample();
     transferedSample.setSample(sample);
     transferedSample.setContainer(sourceWell);
@@ -340,6 +353,9 @@ public class TransferServiceTest {
     assertEquals((Long) 128L, transferedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, transferedSample.getDestinationContainer().getType());
     assertEquals((Long) 134L, transferedSample.getDestinationContainer().getId());
+    destinationWell = entityManager.find(Well.class, 134L);
+    assertEquals(sample.getId(), destinationWell.getSample().getId());
+    assertEquals(2, destinationWell.getVersion());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(transferedSample.getDestinationContainer().getTimestamp()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -390,8 +406,11 @@ public class TransferServiceTest {
     assertEquals(SampleContainerType.WELL, transferedSample.getContainer().getType());
     assertEquals((Long) 128L, transferedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, transferedSample.getDestinationContainer().getType());
-    assertEquals(SampleContainerType.WELL, transferedSample.getDestinationContainer().getType());
     assertNotNull(transferedSample.getDestinationContainer().getId());
+    destinationWell =
+        entityManager.find(Well.class, transferedSample.getDestinationContainer().getId());
+    assertEquals(sample.getId(), destinationWell.getSample().getId());
+    assertTrue(destinationWell.getVersion() >= 1);
     destinationWell = (Well) transferedSample.getDestinationContainer();
     assertNotNull(destinationWell.getPlate().getId());
     assertEquals("test_plate", destinationWell.getPlate().getName());
@@ -485,6 +504,7 @@ public class TransferServiceTest {
     assertEquals((Long) 1L, sourceTube.getSample().getId());
     Tube destinationTube = entityManager.find(Tube.class, 7L);
     assertNull(destinationTube.getSample());
+    assertEquals(2, destinationTube.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertEquals(1, samplesRemoved.size());
     assertTrue(findContainer(samplesRemoved, SampleContainerType.TUBE, 7L).isPresent());
@@ -519,6 +539,7 @@ public class TransferServiceTest {
     assertNull(destinationWell.getSample());
     destinationWell = entityManager.find(Well.class, 1010L);
     assertNull(destinationWell.getSample());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertEquals(2, samplesRemoved.size());
     assertTrue(findContainer(samplesRemoved, SampleContainerType.WELL, 998L).isPresent());
@@ -604,6 +625,7 @@ public class TransferServiceTest {
     assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube destinationTube = entityManager.find(Tube.class, 7L);
     assertEquals(false, destinationTube.isBanned());
+    assertEquals(1, destinationTube.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -631,8 +653,10 @@ public class TransferServiceTest {
     assertEquals("fail unit test", transfer.getDeletionExplanation());
     Well destinationWell = entityManager.find(Well.class, 998L);
     assertEquals(false, destinationWell.isBanned());
+    assertEquals(2, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1010L);
     assertEquals(false, destinationWell.isBanned());
+    assertEquals(2, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -660,6 +684,7 @@ public class TransferServiceTest {
     assertEquals("fail unit test", transfer.getDeletionExplanation());
     Tube destinationTube = entityManager.find(Tube.class, 7L);
     assertEquals(true, destinationTube.isBanned());
+    assertEquals(2, destinationTube.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -688,8 +713,10 @@ public class TransferServiceTest {
     assertEquals("fail unit test", transfer.getDeletionExplanation());
     Well destinationWell = entityManager.find(Well.class, 998L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1010L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -721,8 +748,10 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 75L);
     assertEquals(true, destinationTube.isBanned());
+    assertEquals(2, destinationTube.getVersion());
     Well destinationWell = entityManager.find(Well.class, 1208L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -755,8 +784,10 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1184L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1160L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -789,10 +820,13 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 76L);
     assertEquals(true, destinationTube.isBanned());
+    assertEquals(2, destinationTube.getVersion());
     Well destinationWell = entityManager.find(Well.class, 1188L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1200L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -826,10 +860,13 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1185L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1161L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1173L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -863,12 +900,16 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 77L);
     assertEquals(true, destinationTube.isBanned());
+    assertEquals(2, destinationTube.getVersion());
     Well destinationWell = entityManager.find(Well.class, 1189L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1163L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1175L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -903,12 +944,16 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1186L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1162L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1190L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1202L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -943,14 +988,19 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Tube destinationTube = entityManager.find(Tube.class, 78L);
     assertEquals(true, destinationTube.isBanned());
+    assertEquals(2, destinationTube.getVersion());
     Well destinationWell = entityManager.find(Well.class, 1191L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1203L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1165L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1177L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);
@@ -985,12 +1035,16 @@ public class TransferServiceTest {
     assertEquals(false, sourceTube.isBanned());
     Well destinationWell = entityManager.find(Well.class, 1164L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1176L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1192L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     destinationWell = entityManager.find(Well.class, 1204L);
     assertEquals(true, destinationWell.isBanned());
+    assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
     assertTrue(samplesRemoved.isEmpty());
     Collection<SampleContainer> bannedContainers = containersCaptor.getAllValues().get(1);

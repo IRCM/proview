@@ -104,10 +104,15 @@ public class TransferService extends BaseTreatmentService {
     final User user = authorizationService.getCurrentUser();
     Instant now = Instant.now();
 
+    // Link container to sample.
+    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+      transferedSample.getDestinationContainer().setSample(transferedSample.getSample());
+      transferedSample.getDestinationContainer().setTimestamp(now);
+    }
+
     // Insert destination tubes.
     for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
       if (transferedSample.getDestinationContainer() instanceof Tube) {
-        transferedSample.getDestinationContainer().setTimestamp(Instant.now());
         entityManager.persist(transferedSample.getDestinationContainer());
       }
     }
@@ -123,17 +128,15 @@ public class TransferService extends BaseTreatmentService {
         }
       }
     }
+    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+      entityManager.merge(transferedSample.getDestinationContainer());
+    }
 
     // Insert transfer.
     transfer.setInsertTime(now);
     transfer.setUser(user);
 
     entityManager.persist(transfer);
-    // Link container to sample and treatment sample.
-    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
-      transferedSample.getDestinationContainer().setSample(transferedSample.getSample());
-      transferedSample.getDestinationContainer().setTimestamp(now);
-    }
 
     // Log insertion of transfer.
     entityManager.flush();

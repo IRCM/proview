@@ -529,6 +529,7 @@ public class SubmissionServiceTest {
     assertEquals("unit_test_gel_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
+    assertEquals(1, tube.getVersion());
     files = submission.getFiles();
     assertEquals(2, files.size());
     file = findFile(files, "my_file.docx").get();
@@ -703,6 +704,7 @@ public class SubmissionServiceTest {
     assertEquals("unit_test_eluate_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
+    assertEquals(1, tube.getVersion());
     files = submission.getFiles();
     assertEquals(1, files.size());
     file = files.get(0);
@@ -854,10 +856,18 @@ public class SubmissionServiceTest {
     assertNotNull(well);
     assertEquals("unit_test_plate", well.getPlate().getName());
     assertEquals(96, well.getPlate().getWells().size());
+    for (Well plateWell : well.getPlate().getWells()) {
+      if (plateWell != well.getPlate().well(0, 0) && plateWell != well.getPlate().well(1, 0)) {
+        assertNull(plateWell.getSample());
+      }
+      assertEquals(1, plateWell.getVersion());
+    }
     assertEquals(submissionSample, well.getSample());
+    assertEquals(sample2, well.getPlate().well(1, 0).getSample());
     assertEquals(0, well.getRow());
     assertEquals(0, well.getColumn());
     assertEquals(false, well.isBanned());
+    assertEquals(1, well.getVersion());
     files = submission.getFiles();
     assertEquals(1, files.size());
     file = files.get(0);
@@ -987,6 +997,7 @@ public class SubmissionServiceTest {
     assertEquals("unit_test_molecule_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
+    assertEquals(1, tube.getVersion());
     files = submission.getFiles();
     assertEquals(2, files.size());
     file = findFile(files, "my_file.docx").get();
@@ -1325,6 +1336,7 @@ public class SubmissionServiceTest {
     assertEquals("unit_test_eluate_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
+    assertEquals(1, tube.getVersion());
     assertNull(entityManager.find(SubmissionSample.class, 447L));
     assertNull(entityManager.find(Tube.class, 9L));
 
@@ -1420,6 +1432,7 @@ public class SubmissionServiceTest {
     assertEquals(0, well.getRow());
     assertEquals(0, well.getColumn());
     assertEquals(false, well.isBanned());
+    assertEquals(1, well.getVersion());
     assertNull(entityManager.find(SubmissionSample.class, 447L));
     assertNull(entityManager.find(Tube.class, 9L));
 

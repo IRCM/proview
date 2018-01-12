@@ -35,6 +35,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 /**
  * An object that contains a {@link Sample}.
@@ -59,6 +60,12 @@ public abstract class SampleContainer implements Data, Named, Serializable {
   @ManyToOne
   @JoinColumn(name = "sampleId")
   private Sample sample;
+  /**
+   * Version number.
+   */
+  @Version
+  @Column(name = "version", nullable = false)
+  private int version;
   /**
    * Timestamp of this container. This property should not be set.
    */
@@ -119,5 +126,13 @@ public abstract class SampleContainer implements Data, Named, Serializable {
 
   public void setBanned(boolean banned) {
     this.banned = banned;
+  }
+
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
   }
 }
