@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS users (
   name varchar(255) NOT NULL,
   password varchar(255) DEFAULT NULL,
   salt varchar(255) DEFAULT NULL,
-  passwordVersion int(10) DEFAULT NULL,
+  passwordVersion int(10) NOT NULL,
   signAttempts int(10) DEFAULT NULL,
   lastSignAttempt datetime DEFAULT NULL,
   locale varchar(50) DEFAULT NULL,
