@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS address (
   postalCode varchar(50) NOT NULL,
   PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS user (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   email varchar(255) NOT NULL,
   name varchar(255) NOT NULL,
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS users (
   admin tinyint(1) NOT NULL DEFAULT '0',
   registerTime datetime DEFAULT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY usersEmail (email),
-  CONSTRAINT users_ibfk_1 FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE
+  UNIQUE KEY userEmail (email),
+  CONSTRAINT user_ibfk_1 FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS phonenumber (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -56,14 +56,14 @@ CREATE TABLE IF NOT EXISTS phonenumber (
   number varchar(50) NOT NULL,
   extension varchar(20) DEFAULT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT phonenumber_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT phonenumber_ibfk_1 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS laboratoryuser (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT laboratoryuser_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT laboratoryuser_ibfk_1 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT laboratoryuser_ibfk_2 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS laboratorymanager (
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS laboratorymanager (
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (userId, laboratoryId),
-  CONSTRAINT laboratorymanager_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT laboratorymanager_ibfk_1 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT laboratorymanager_ibfk_2 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS forgotpassword (
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS forgotpassword (
   confirmNumber int(11) NOT NULL,
   used tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  CONSTRAINT forgotpassword_ibfk_1 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT forgotpassword_ibfk_1 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS submission (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS submission (
   userId bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   CONSTRAINT submission_ibfk_1 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE,
-  CONSTRAINT submission_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT submission_ibfk_2 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS submissionfiles (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS treatment (
   deletionExplanation text,
   PRIMARY KEY (id),
   CONSTRAINT treatment_ibfk_1 FOREIGN KEY (protocolId) REFERENCES protocol (id) ON UPDATE CASCADE,
-  CONSTRAINT treatment_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT treatment_ibfk_2 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS treatmentsample (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -340,5 +340,5 @@ CREATE TABLE IF NOT EXISTS userpreference (
   PRIMARY KEY (id),
   UNIQUE (preferenceId, userId),
   CONSTRAINT userpreference_ibfk_1 FOREIGN KEY (preferenceId) REFERENCES preference (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT userpreference_ibfk_2 FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT userpreference_ibfk_2 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
