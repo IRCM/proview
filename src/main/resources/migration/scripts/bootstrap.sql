@@ -305,7 +305,7 @@ CREATE TABLE acquisition (
   listIndex int(11) NOT NULL,
   comment varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
-  UNIQUE (sampleId,position),
+  UNIQUE samplePosition (sampleId,position),
   KEY file (acquisitionFile,sampleId),
   KEY msAnalysis (msAnalysisId),
   KEY sample (sampleId),
