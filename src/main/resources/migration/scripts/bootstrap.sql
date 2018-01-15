@@ -187,9 +187,8 @@ CREATE TABLE IF NOT EXISTS sample (
   CONSTRAINT sample_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT sample_ibfk_2 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
--- TODO fix for test
--- ALTER TABLE samplecontainer
--- ADD CONSTRAINT samplecontainer_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE samplecontainer
+ADD CONSTRAINT samplecontainer_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
 CREATE TABLE IF NOT EXISTS standard (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
