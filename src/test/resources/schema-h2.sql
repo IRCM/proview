@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS user (
   active tinyint(1) NOT NULL DEFAULT '0',
   valid tinyint(1) NOT NULL DEFAULT '0',
   admin tinyint(1) NOT NULL DEFAULT '0',
-  registerTime datetime DEFAULT NULL,
+  registerTime timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY userEmail (email),
   CONSTRAINT user_ibfk_1 FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE

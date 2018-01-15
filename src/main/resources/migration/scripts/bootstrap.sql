@@ -44,7 +44,7 @@ CREATE TABLE user (
   active tinyint(1) NOT NULL DEFAULT '0',
   valid tinyint(1) NOT NULL DEFAULT '0',
   admin tinyint(1) NOT NULL DEFAULT '0',
-  registerTime datetime DEFAULT NULL,
+  registerTime timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY email (email),
   KEY address (addressId),
