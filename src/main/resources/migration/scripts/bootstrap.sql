@@ -177,6 +177,7 @@ CREATE TABLE samplecontainer (
   PRIMARY KEY (id),
   UNIQUE KEY name (name),
   UNIQUE KEY plateLocation (plateId,locationColumn,locationRow),
+  KEY plate (plateId),
   KEY sample (sampleId),
   CONSTRAINT samplecontainerPlate_ibfk FOREIGN KEY (plateId) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
