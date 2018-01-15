@@ -608,6 +608,7 @@
               <java>JAVACOMMENT_STYLE</java>
               <ini>SEMICOLON_STYLE</ini>
               <scss>JAVADOC_STYLE</scss>
+              <yml>SCRIPT_STYLE</yml>
             </mapping>
             <excludes>
               <exclude>**/README</exclude>
