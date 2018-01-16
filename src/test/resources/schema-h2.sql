@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS laboratoryuser (
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
+  UNIQUE (userId, laboratoryId),
   CONSTRAINT laboratoryuser_ibfk_1 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT laboratoryuser_ibfk_2 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
