@@ -48,7 +48,7 @@ CREATE TABLE user (
   PRIMARY KEY (id),
   UNIQUE KEY email (email),
   KEY address (addressId),
-  CONSTRAINT userAddress_ibfk FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT userAddress_ibfk FOREIGN KEY (addressId) REFERENCES address (id) ON UPDATE CASCADE
 );
 CREATE TABLE phonenumber (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -143,8 +143,8 @@ CREATE TABLE submission (
   PRIMARY KEY (id),
   KEY laboratory (laboratoryId),
   KEY user (userId),
-  CONSTRAINT submissionLaboratory_ibfk FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE,
-  CONSTRAINT submissionUser_ibfk FOREIGN KEY (userId) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT submissionUser_ibfk FOREIGN KEY (userId) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT submissionLaboratory_ibfk FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE
 );
 CREATE TABLE submissionfiles (
   id bigint(20) NOT NULL AUTO_INCREMENT,
