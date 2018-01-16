@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS user (
   active tinyint(1) NOT NULL DEFAULT '0',
   valid tinyint(1) NOT NULL DEFAULT '0',
   admin tinyint(1) NOT NULL DEFAULT '0',
-  registerTime timestamp DEFAULT CURRENT_TIMESTAMP,
+  registerTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY userEmail (email),
   CONSTRAINT user_ibfk_1 FOREIGN KEY (addressId) REFERENCES address (id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS laboratoryuser (
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE (userId, laboratoryId),
+  UNIQUE (userId,laboratoryId),
   CONSTRAINT laboratoryuser_ibfk_1 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT laboratoryuser_ibfk_2 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS laboratorymanager (
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE (userId, laboratoryId),
+  UNIQUE (userId,laboratoryId),
   CONSTRAINT laboratorymanager_ibfk_1 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT laboratorymanager_ibfk_2 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
