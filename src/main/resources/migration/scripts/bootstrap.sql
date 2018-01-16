@@ -65,7 +65,7 @@ CREATE TABLE laboratoryuser (
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE member (userId, laboratoryId),
+  UNIQUE KEY member (userId, laboratoryId),
   KEY user (userId),
   KEY laboratory (laboratoryId),
   CONSTRAINT laboratoryuserUser_ibfk FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -76,7 +76,7 @@ CREATE TABLE laboratorymanager (
   userId bigint(20) NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE manager (userId, laboratoryId),
+  UNIQUE KEY manager (userId, laboratoryId),
   KEY user (userId),
   KEY laboratory (laboratoryId),
   CONSTRAINT laboratorymanagerUser_ibfk FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -306,7 +306,7 @@ CREATE TABLE acquisition (
   listIndex int(11) NOT NULL,
   comment varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
-  UNIQUE samplePosition (sampleId,position),
+  UNIQUE KEY samplePosition (sampleId,position),
   KEY file (acquisitionFile,sampleId),
   KEY msAnalysis (msAnalysisId),
   KEY sample (sampleId),
@@ -358,8 +358,8 @@ CREATE TABLE preference (
   referer varchar(255) NOT NULL,
   name varchar(255) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE (referer, name),
-  INDEX (name)
+  UNIQUE KEY referer (referer,name),
+  KEY name (name)
 );
 CREATE TABLE userpreference (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -367,9 +367,9 @@ CREATE TABLE userpreference (
   userId bigint(20) NOT NULL,
   value longblob,
   PRIMARY KEY (id),
-  UNIQUE (preferenceId, userId),
-  KEY user (userId),
+  UNIQUE KEY userpreference (preferenceId,userId),
   KEY preference (preferenceId),
+  KEY user (userId),
   CONSTRAINT userpreferencePreference_ibfk FOREIGN KEY (preferenceId) REFERENCES preference (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT userpreferenceUser_ibfk FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
