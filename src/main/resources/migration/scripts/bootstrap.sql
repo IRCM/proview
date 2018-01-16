@@ -158,8 +158,8 @@ CREATE TABLE submissionfiles (
 CREATE TABLE plate (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,
-  columnCount int NOT NULL,
-  rowCount int NOT NULL,
+  columnCount int(11) NOT NULL,
+  rowCount int(11) NOT NULL,
   insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY name (name)
