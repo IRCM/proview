@@ -92,33 +92,6 @@ logging:
 ---
 spring:
   profiles: integration-test
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password: 
-security:
-  cipherKey: 'AcEG7RqLxcP6enoSBJKNjA=='
-  passwords:
-    - version: 1
-      algorithm: SHA-256
-      iterations: 1000
 
 email:
   enabled: false
-
----
-spring:
-  profiles: poitrac
-  datasource:
-    platform: mariadb
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://pro01:3306/proview_dev2
-    username: poitrac_dev
-    password: VRd6YoXwaUO3UCejRreA
-security:
-  cipherKey: '0xb31667d84c6c83d66f1bf29b33fa9ade'
-  passwords:
-    - version: 1
-      algorithm: SHA-512
-      iterations: 1281
