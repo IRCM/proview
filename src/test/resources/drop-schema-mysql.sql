@@ -16,7 +16,7 @@
 --
 
 ALTER TABLE samplecontainer
-DROP FOREIGN KEY samplecontainer_ibfk_3;
+DROP FOREIGN KEY samplecontainerPlate_ibfk;
 DROP TABLE IF EXISTS userpreference;
 DROP TABLE IF EXISTS preference;
 DROP TABLE IF EXISTS activityupdate;
