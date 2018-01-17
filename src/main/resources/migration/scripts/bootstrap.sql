@@ -373,3 +373,9 @@ CREATE TABLE userpreference (
   CONSTRAINT userpreferencePreference_ibfk FOREIGN KEY (preferenceId) REFERENCES preference (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT userpreferenceUser_ibfk FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE TABLE changelog (
+  id NUMERIC(20,0) NOT NULL,
+  applied_at VARCHAR(25) NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
