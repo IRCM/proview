@@ -54,7 +54,7 @@ VALUES ('13', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H
 INSERT INTO address (id,line,town,state,country,postalCode)
 VALUES ('14', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
 INSERT INTO user (id,email,password,salt,passwordVersion,signAttempts,lastSignAttempt,name,locale,addressId,active,valid,admin,registerTime)
-VALUES ('1', 'proview@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', null, null, 'Robot', null, null, '1', '1', '1', NULL);
+VALUES ('1', 'proview@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', null, null, 'Robot', null, null, '1', '1', '1', '2008-08-10 12:34:22');
 INSERT INTO user (id,email,password,salt,passwordVersion,signAttempts,lastSignAttempt,name,locale,addressId,active,valid,admin,registerTime)
 VALUES ('2', 'christian.poitras@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', null, null, 'Christian Poitras', 	'fr_CA', 1, '1', '1', '1', '2008-08-11 13:43:51');
 INSERT INTO user (id,email,password,salt,passwordVersion,signAttempts,lastSignAttempt,name,locale,addressId,active,valid,admin,registerTime)

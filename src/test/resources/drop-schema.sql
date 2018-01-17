@@ -39,6 +39,6 @@ DROP TABLE forgotpassword IF EXISTS;
 DROP TABLE laboratorymanager IF EXISTS;
 DROP TABLE laboratoryuser IF EXISTS;
 DROP TABLE phonenumber IF EXISTS;
-DROP TABLE users IF EXISTS;
+DROP TABLE user IF EXISTS;
 DROP TABLE address IF EXISTS;
 DROP TABLE laboratory IF EXISTS;

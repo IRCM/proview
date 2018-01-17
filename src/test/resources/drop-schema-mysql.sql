@@ -17,8 +17,6 @@
 
 ALTER TABLE samplecontainer
 DROP FOREIGN KEY samplecontainer_ibfk_3;
-ALTER TABLE submission
-DROP FOREIGN KEY submission_ibfk_3;
 DROP TABLE IF EXISTS userpreference;
 DROP TABLE IF EXISTS preference;
 DROP TABLE IF EXISTS activityupdate;
@@ -35,14 +33,12 @@ DROP TABLE IF EXISTS standard;
 DROP TABLE IF EXISTS sample;
 DROP TABLE IF EXISTS samplecontainer;
 DROP TABLE IF EXISTS plate;
-DROP TABLE IF EXISTS structure;
 DROP TABLE IF EXISTS submissionfiles;
-DROP TABLE IF EXISTS gelimages;
 DROP TABLE IF EXISTS submission;
 DROP TABLE IF EXISTS forgotpassword;
 DROP TABLE IF EXISTS laboratorymanager;
 DROP TABLE IF EXISTS laboratoryuser;
 DROP TABLE IF EXISTS phonenumber;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS address;
 DROP TABLE IF EXISTS laboratory;
