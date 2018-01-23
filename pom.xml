@@ -49,7 +49,7 @@
     <url>https://bitbucket.org/ircm/proview-2/issues</url>
   </issueManagement>
   <properties>
-    <start-class>ca.qc.ircm.proview.Main</start-class>
+    <main-class>ca.qc.ircm.proview.Main</main-class>
     <javac.version>1.8</javac.version>
     <javax.inject.version>1</javax.inject.version>
     <jsr250-api.version>1.0</jsr250-api.version>
@@ -571,7 +571,7 @@
           <artifactId>spring-boot-maven-plugin</artifactId>
           <version>${spring-boot-maven-plugin.version}</version>
           <configuration>
-            <mainClass>${start-class}</mainClass>
+            <mainClass>${main-class}</mainClass>
             <executable>true</executable>
           </configuration>
           <executions>
