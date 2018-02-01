@@ -223,7 +223,8 @@ public class SubmissionServiceTest {
     file = submission.getFiles().get(1);
     assertEquals((Long) 2L, file.getId());
     assertEquals("frag.jpg", file.getFilename());
-    assertArrayEquals(Files.readAllBytes(Paths.get(getClass().getResource("/gelimages1").toURI())),
+    assertArrayEquals(
+        Files.readAllBytes(Paths.get(getClass().getResource("/gelimages1.png").toURI())),
         file.getContent());
   }
 

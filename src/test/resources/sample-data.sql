@@ -56,9 +56,9 @@ VALUES (163,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYP
 INSERT INTO submissionfiles (id,submissionId,filename,content)
 VALUES (1,1,'protocol.txt',FILE_READ('${project.build.testOutputDirectory}/submissionfile1.txt'));
 INSERT INTO submissionfiles (id,submissionId,filename,content)
-VALUES (2,1,'frag.jpg',FILE_READ('${project.build.testOutputDirectory}/gelimages1'));
+VALUES (2,1,'frag.jpg',FILE_READ('${project.build.testOutputDirectory}/gelimages1.png'));
 INSERT INTO submissionfiles (id,submissionId,filename,content)
-VALUES (3,33,'glucose.png',FILE_READ('${project.build.testOutputDirectory}/structure1'));
+VALUES (3,33,'glucose.png',FILE_READ('${project.build.testOutputDirectory}/structure1.png'));
 INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
 VALUES (26,'A_20111108',12,8,'2011-11-08 13:33:21');
 INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
