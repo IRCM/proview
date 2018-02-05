@@ -81,6 +81,8 @@ public class UserPreferenceService {
   /**
    * Returns current user's preference value.
    *
+   * @param <T>
+   *          type of preference's value
    * @param referer
    *          object that gets / saves preference
    * @param name

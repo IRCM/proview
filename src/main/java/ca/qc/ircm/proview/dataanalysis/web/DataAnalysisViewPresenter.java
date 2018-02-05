@@ -107,6 +107,9 @@ public class DataAnalysisViewPresenter implements BinderValidator {
 
   /**
    * Initializes presenter.
+   * 
+   * @param view
+   *          view
    */
   public void init(DataAnalysisView view) {
     logger.debug("DataAnalysis view");

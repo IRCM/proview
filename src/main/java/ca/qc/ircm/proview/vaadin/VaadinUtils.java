@@ -50,6 +50,8 @@ public class VaadinUtils {
   /**
    * Returns grid items filtered and sorted base on grid's current state.
    *
+   * @param <T>
+   *          grid item type
    * @param grid
    *          grid using an instance of ListDataProvider as data provider
    * @return grid items filtered and sorted base on grid's current state

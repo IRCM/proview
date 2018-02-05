@@ -54,6 +54,8 @@ public interface BinderValidator {
   /**
    * Validates values using validator and reports errors to component.
    *
+   * @param <V>
+   *          type of values
    * @param validator
    *          binder
    * @param component
