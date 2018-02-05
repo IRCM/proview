@@ -52,7 +52,6 @@
     <main-class>ca.qc.ircm.proview.Main</main-class>
     <javac.version>1.8</javac.version>
     <javax.inject.version>1</javax.inject.version>
-    <jsr250-api.version>1.0</jsr250-api.version>
     <spring-boot.version>1.5.8.RELEASE</spring-boot.version>
     <validation.version>1.1.0.Final</validation.version>
     <javax.persistence.version>2.1.1</javax.persistence.version>
@@ -171,11 +170,6 @@
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>${javax.inject.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>jsr250-api</artifactId>
-      <version>${jsr250-api.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
