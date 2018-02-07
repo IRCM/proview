@@ -261,8 +261,6 @@ public class SubmissionsViewPresenter {
     final Collator collator = Collator.getInstance(locale);
     design.submissionsGrid.addStyleName(SUBMISSIONS);
     design.submissionsGrid.addStyleName(COMPONENTS);
-    System.out.println(resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()));
-    System.out.println(VaadinIcons.MENU.getHtml());
     design.submissionsGrid.setDescription(
         resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()), ContentMode.HTML);
     design.submissionsGrid.setDataProvider(searchSubmissions());
