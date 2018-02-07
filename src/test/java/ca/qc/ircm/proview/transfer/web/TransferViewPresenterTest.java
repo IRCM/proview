@@ -635,6 +635,23 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  public void test_NoDestinationWell() {
+    presenter.init(view);
+    presenter.enter("");
+    Plate plate = new Plate(null, "test");
+    plate.initWells();
+    design.destinationPlatesField.setValue(plate);
+    when(plateService.get(any(Long.class))).thenReturn(null);
+
+    when(view.destinationPlateForm.getSelectedWell()).thenReturn(null);
+    design.test.click();
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(resources.message(DESTINATION_PLATE_NO_SELECTION)),
+        design.destinationPlatesField.getErrorMessage().getFormattedHtmlMessage());
+    verify(transferService, never()).insert(any());
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void test_TubeToNewPlate() {
     sourceTubes();
