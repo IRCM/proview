@@ -21,6 +21,7 @@
   <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator" />
 
   <logger name="ca.qc.ircm.proview" level="DEBUG"/>
+  <logger name="ca.qc.ircm.proview.security.web.ShiroViewAccessControl" level="INFO"/>
   <logger name="org.springframework" level="INFO"/>
   <logger name="com.vaadin" level="WARN"/>
 </configuration>
