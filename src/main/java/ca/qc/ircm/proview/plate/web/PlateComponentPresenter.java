@@ -151,10 +151,10 @@ public class PlateComponentPresenter {
       throw new IllegalStateException("getSelectedWell cannot be called in multi select mode");
     }
     CellReference reference = view.spreadsheet.getSelectedCellReference();
-    if (reference == null) {
-      return null;
-    } else {
+    if (reference != null && reference.getRow() > 0 && reference.getCol() > 0) {
       return plate.well(reference.getRow() - 1, reference.getCol() - 1);
+    } else {
+      return null;
     }
   }
 
@@ -165,8 +165,8 @@ public class PlateComponentPresenter {
    */
   Collection<Well> getSelectedWells() {
     Set<CellReference> references = view.spreadsheet.getSelectedCellReferences();
-    return references.stream().map(ref -> plate.well(ref.getRow() - 1, ref.getCol() - 1))
-        .collect(Collectors.toList());
+    return references.stream().filter(ref -> ref != null && ref.getRow() > 0 && ref.getCol() > 0)
+        .map(ref -> plate.well(ref.getRow() - 1, ref.getCol() - 1)).collect(Collectors.toList());
   }
 
   /**

@@ -199,6 +199,36 @@ public class PlateComponentPresenterTest {
   }
 
   @Test
+  public void getSelectedWell_InvalidTopLeft() {
+    presenter.init(view);
+    view.spreadsheet.setSelection(0, 0);
+
+    Well well = presenter.getSelectedWell();
+
+    assertNull(well);
+  }
+
+  @Test
+  public void getSelectedWell_InvalidTop() {
+    presenter.init(view);
+    view.spreadsheet.setSelection(0, 2);
+
+    Well well = presenter.getSelectedWell();
+
+    assertNull(well);
+  }
+
+  @Test
+  public void getSelectedWell_InvalidLeft() {
+    presenter.init(view);
+    view.spreadsheet.setSelection(2, 0);
+
+    Well well = presenter.getSelectedWell();
+
+    assertNull(well);
+  }
+
+  @Test
   public void getSelectedWell_NotMulti() {
     presenter.init(view);
     Plate plate = presenter.getValue();
@@ -243,6 +273,39 @@ public class PlateComponentPresenterTest {
     } catch (IllegalStateException e) {
       // Success.
     }
+  }
+
+  @Test
+  public void getSelectedWells_InvalidTopLeft() {
+    presenter.init(view);
+    presenter.setMultiSelect(true);
+    view.spreadsheet.setSelection(0, 0);
+
+    Collection<Well> wells = presenter.getSelectedWells();
+
+    assertTrue(wells.isEmpty());
+  }
+
+  @Test
+  public void getSelectedWells_InvalidTop() {
+    presenter.init(view);
+    presenter.setMultiSelect(true);
+    view.spreadsheet.setSelection(0, 2);
+
+    Collection<Well> wells = presenter.getSelectedWells();
+
+    assertTrue(wells.isEmpty());
+  }
+
+  @Test
+  public void getSelectedWells_InvalidLeft() {
+    presenter.init(view);
+    presenter.setMultiSelect(true);
+    view.spreadsheet.setSelection(2, 0);
+
+    Collection<Well> wells = presenter.getSelectedWells();
+
+    assertTrue(wells.isEmpty());
   }
 
   @Test
