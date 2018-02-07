@@ -346,7 +346,6 @@ public class DigestionViewPresenter implements BinderValidator {
         Digestion digestion = digestionService.get(id);
         binder.setBean(digestion);
         if (digestion != null) {
-          logger.debug("Digestion deleted? {}", digestion.isDeleted());
           digestions = digestion.getTreatmentSamples();
           design.protocol.setReadOnly(digestion.isDeleted());
           design.deleted.setVisible(digestion.isDeleted());
