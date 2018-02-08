@@ -118,6 +118,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_M
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
@@ -202,6 +203,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -2742,6 +2744,123 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
+  }
+
+  @Test
+  public void fillSamples_Lcmsms() throws Throwable {
+    presenter.init(view);
+    design.sampleCount.setValue("3");
+    List<SubmissionSample> samples = items(design.samples);
+    for (SubmissionSample sample : samples) {
+      design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample);
+      design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).getValueProvider().apply(sample);
+      design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(sample);
+    }
+    ((TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(samples.get(0)))
+        .setValue("sample-09");
+
+    design.fillSamples.click();
+
+    int count = 9;
+    DecimalFormat format = new DecimalFormat("00");
+    for (SubmissionSample sample : samples) {
+      assertEquals("sample-" + format.format(count++),
+          ((TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample))
+              .getValue());
+    }
+  }
+
+  @Test
+  public void fillSamples_IntactProtein() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleCount.setValue("3");
+    List<SubmissionSample> samples = items(design.samples);
+    for (SubmissionSample sample : samples) {
+      design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample);
+      design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).getValueProvider().apply(sample);
+      design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(sample);
+    }
+    ((TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(samples.get(0)))
+        .setValue("sample-09");
+    ((TextField) design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).getValueProvider()
+        .apply(samples.get(0))).setValue("10 proteins");
+    ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(samples.get(0)))
+        .setValue("200 MW");
+
+    design.fillSamples.click();
+
+    int count = 9;
+    DecimalFormat format = new DecimalFormat("00");
+    for (SubmissionSample sample : samples) {
+      assertEquals("sample-" + format.format(count++),
+          ((TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample))
+              .getValue());
+      assertEquals("10 proteins", ((TextField) design.samples.getColumn(SAMPLE_NUMBER_PROTEIN)
+          .getValueProvider().apply(sample)).getValue());
+      assertEquals("200 MW",
+          ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(sample))
+              .getValue());
+    }
+  }
+
+  @Test
+  public void fillStandards() throws Throwable {
+    presenter.init(view);
+    design.standardCount.setValue("3");
+    List<Standard> standards = items(design.standards);
+    for (Standard standard : standards) {
+      design.standards.getColumn(STANDARD_NAME).getValueProvider().apply(standard);
+      design.standards.getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
+      design.standards.getColumn(STANDARD_COMMENT).getValueProvider().apply(standard);
+    }
+    ((TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider()
+        .apply(standards.get(0))).setValue("std-09");
+    ((TextField) design.standards.getColumn(STANDARD_QUANTITY).getValueProvider()
+        .apply(standards.get(0))).setValue("10 ug");
+    ((TextField) design.standards.getColumn(STANDARD_COMMENT).getValueProvider()
+        .apply(standards.get(0))).setValue("test_comment");
+
+    design.fillStandards.click();
+
+    for (Standard standard : standards) {
+      assertEquals("std-09",
+          ((TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider().apply(standard))
+              .getValue());
+      assertEquals("10 ug", ((TextField) design.standards.getColumn(STANDARD_QUANTITY)
+          .getValueProvider().apply(standard)).getValue());
+      assertEquals("test_comment", ((TextField) design.standards.getColumn(STANDARD_COMMENT)
+          .getValueProvider().apply(standard)).getValue());
+    }
+  }
+
+  @Test
+  public void fillContaminants() throws Throwable {
+    presenter.init(view);
+    design.contaminantCount.setValue("3");
+    List<Contaminant> contaminants = items(design.contaminants);
+    for (Contaminant contaminant : contaminants) {
+      design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider().apply(contaminant);
+      design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider().apply(contaminant);
+      design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider().apply(contaminant);
+    }
+    ((TextField) design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider()
+        .apply(contaminants.get(0))).setValue("cont-09");
+    ((TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider()
+        .apply(contaminants.get(0))).setValue("10 ug");
+    ((TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider()
+        .apply(contaminants.get(0))).setValue("test_comment");
+
+    design.fillContaminants.click();
+
+    for (Contaminant contaminant : contaminants) {
+      assertEquals("cont-09", ((TextField) design.contaminants.getColumn(CONTAMINANT_NAME)
+          .getValueProvider().apply(contaminant)).getValue());
+      assertEquals("10 ug", ((TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY)
+          .getValueProvider().apply(contaminant)).getValue());
+      assertEquals("test_comment", ((TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT)
+          .getValueProvider().apply(contaminant)).getValue());
+    }
   }
 
   @Test

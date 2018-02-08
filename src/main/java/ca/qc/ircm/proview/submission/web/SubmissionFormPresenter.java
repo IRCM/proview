@@ -81,6 +81,7 @@ import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -310,7 +311,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.createFilesUploader(fileHandler());
     prepareComponents();
     setValue(null);
-    addFieldListeners();
     updateVisible();
     updateReadOnly();
     updateSampleCount(design.sampleCount.getValue());
@@ -334,6 +334,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.service.setItems(Service.availables());
     design.service.setItemCaptionGenerator(service -> service.getLabel(locale));
     design.service.setItemEnabledProvider(service -> service.available);
+    design.service.addValueChangeListener(e -> updateVisible());
     design.service
         .addValueChangeListener(e -> design.sampleSupport.getDataProvider().refreshItem(GEL));
     submissionBinder.forField(design.service).asRequired(generalResources.message(REQUIRED))
@@ -373,6 +374,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.explanation.addStyleName(EXPLANATION);
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));
+    design.save.addClickListener(e -> save());
   }
 
   private Button downloadFileButton(SubmissionFile file) {
@@ -405,6 +407,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.sampleSupport.setCaption(resources.message(SAMPLE_SUPPORT));
     design.sampleSupport.setItems(SampleSupport.values());
     design.sampleSupport.setItemCaptionGenerator(support -> support.getLabel(locale));
+    design.sampleSupport.addValueChangeListener(e -> updateVisible());
     firstSampleBinder.forField(design.sampleSupport).asRequired(generalResources.message(REQUIRED))
         .bind(SAMPLE_SUPPORT);
     design.solutionSolvent.addStyleName(SOLUTION_SOLVENT);
@@ -421,6 +424,9 @@ public class SubmissionFormPresenter implements BinderValidator {
         .withValidator(new IntegerRangeValidator(
             generalResources.message(OUT_OF_RANGE, 1, MAX_SAMPLE_COUNT), 1, MAX_SAMPLE_COUNT))
         .bind(ItemCount::getCount, ItemCount::setCount);
+    design.sampleCount
+        .addValueChangeListener(e -> updateSampleCount(design.sampleCount.getValue()));
+    design.sampleCount.addValueChangeListener(e -> updateSampleCount(e.getValue()));
     design.sampleName.addStyleName(SAMPLE_NAME);
     design.sampleName.setCaption(resources.message(SAMPLE_NAME));
     design.sampleName.setRequiredIndicatorVisible(true);
@@ -464,6 +470,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.sampleContainerType
         .setItemCaptionGenerator(sampleContainerType -> sampleContainerType.getLabel(locale));
     design.sampleContainerType.setRequiredIndicatorVisible(true);
+    design.sampleContainerType.addValueChangeListener(e -> updateVisible());
     design.plateName.addStyleName(PLATE + "-" + PLATE_NAME);
     design.plateName.setCaption(resources.message(PLATE + "." + PLATE_NAME));
     design.plateName.setRequiredIndicatorVisible(true);
@@ -474,24 +481,24 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.samples.addStyleName(SAMPLES);
     design.samples.addStyleName(COMPONENTS);
     design.samples.setDataProvider(samplesDataProvider);
-    design.samples.addColumn(sample -> sampleNameTextField(sample), new ComponentRenderer())
+    design.samples.addColumn(sample -> sampleNameField(sample), new ComponentRenderer())
         .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME)).setWidth(230)
         .setSortable(false);
-    design.samples
-        .addColumn(sample -> sampleNumberProteinTextField(sample), new ComponentRenderer())
+    design.samples.addColumn(sample -> sampleNumberProteinField(sample), new ComponentRenderer())
         .setId(SAMPLE_NUMBER_PROTEIN).setCaption(resources.message(SAMPLE_NUMBER_PROTEIN))
         .setWidth(230).setSortable(false);
-    design.samples.addColumn(sample -> proteinWeightTextField(sample), new ComponentRenderer())
+    design.samples.addColumn(sample -> proteinWeightField(sample), new ComponentRenderer())
         .setId(PROTEIN_WEIGHT).setCaption(resources.message(PROTEIN_WEIGHT)).setWidth(230)
         .setSortable(false);
     design.fillSamples.addStyleName(FILL_SAMPLES);
     design.fillSamples.addStyleName(BUTTON_SKIP_ROW);
     design.fillSamples.setCaption(resources.message(FILL_SAMPLES));
     design.fillSamples.setIcon(VaadinIcons.ARROW_DOWN);
+    design.fillSamples.addClickListener(e -> fillSamples());
     view.plateComponent.addStyleName(SAMPLES_PLATE);
   }
 
-  private TextField sampleNameTextField(SubmissionSample sample) {
+  private TextField sampleNameField(SubmissionSample sample) {
     if (sampleNameFields.containsKey(sample)) {
       return sampleNameFields.get(sample);
     } else {
@@ -512,7 +519,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
   }
 
-  private TextField sampleNumberProteinTextField(SubmissionSample sample) {
+  private TextField sampleNumberProteinField(SubmissionSample sample) {
     if (sampleNumberProteinFields.containsKey(sample)) {
       return sampleNumberProteinFields.get(sample);
     } else {
@@ -537,7 +544,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
   }
 
-  private TextField proteinWeightTextField(SubmissionSample sample) {
+  private TextField proteinWeightField(SubmissionSample sample) {
     if (sampleMolecularWeightFields.containsKey(sample)) {
       return sampleMolecularWeightFields.get(sample);
     } else {
@@ -622,6 +629,9 @@ public class SubmissionFormPresenter implements BinderValidator {
         .withValidator(new IntegerRangeValidator(
             generalResources.message(OUT_OF_RANGE, 0, MAX_STANDARD_COUNT), 0, MAX_STANDARD_COUNT))
         .bind(ItemCount::getCount, ItemCount::setCount);
+    design.standardCount
+        .addValueChangeListener(e -> updateStandardsTable(design.standardCount.getValue()));
+    design.standardCount.addValueChangeListener(e -> updateStandardsTable(e.getValue()));
     design.standards.addStyleName(STANDARDS);
     design.standards.addStyleName(COMPONENTS);
     design.standards.setDataProvider(standardsDataProvider);
@@ -640,6 +650,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.fillStandards.addStyleName(BUTTON_SKIP_ROW);
     design.fillStandards.setCaption(resources.message(FILL_STANDARDS));
     design.fillStandards.setIcon(VaadinIcons.ARROW_DOWN);
+    design.fillStandards.addClickListener(e -> fillStandards());
   }
 
   private TextField standardNameTextField(Standard standard) {
@@ -721,6 +732,9 @@ public class SubmissionFormPresenter implements BinderValidator {
             generalResources.message(OUT_OF_RANGE, 0, MAX_CONTAMINANT_COUNT), 0,
             MAX_CONTAMINANT_COUNT))
         .bind(ItemCount::getCount, ItemCount::setCount);
+    design.contaminantCount
+        .addValueChangeListener(e -> updateContaminantsTable(design.contaminantCount.getValue()));
+    design.contaminantCount.addValueChangeListener(e -> updateContaminantsTable(e.getValue()));
     design.contaminants.addStyleName(CONTAMINANTS);
     design.contaminants.addStyleName(COMPONENTS);
     design.contaminants.setDataProvider(contaminantsDataProvider);
@@ -742,6 +756,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.fillContaminants.addStyleName(BUTTON_SKIP_ROW);
     design.fillContaminants.setCaption(resources.message(FILL_CONTAMINANTS));
     design.fillContaminants.setIcon(VaadinIcons.ARROW_DOWN);
+    design.fillContaminants.addClickListener(e -> fillContaminants());
   }
 
   private TextField contaminantNameTextField(Contaminant contaminant) {
@@ -839,6 +854,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.coloration.setEmptySelectionCaption(GelColoration.getNullLabel(locale));
     design.coloration.setItems(GelColoration.values());
     design.coloration.setItemCaptionGenerator(coloration -> coloration.getLabel(locale));
+    design.coloration.addValueChangeListener(e -> updateVisible());
     submissionBinder.forField(design.coloration).bind(COLORATION);
     design.otherColoration.addStyleName(OTHER_COLORATION);
     design.otherColoration.setCaption(resources.message(OTHER_COLORATION));
@@ -879,6 +895,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.digestion.setItemCaptionGenerator(digestion -> digestion.getLabel(locale));
     design.digestion.setItems(ProteolyticDigestion.values());
     design.digestion.setRequiredIndicatorVisible(true);
+    design.digestion.addValueChangeListener(e -> updateVisible());
     submissionBinder.forField(design.digestion).withValidator(requiredIfVisible(design.digestion))
         .bind(DIGESTION);
     design.usedProteolyticDigestionMethod.addStyleName(USED_DIGESTION);
@@ -942,6 +959,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.proteinIdentification
         .setItemEnabledProvider(proteinIdentification -> proteinIdentification.available);
     design.proteinIdentification.setRequiredIndicatorVisible(true);
+    design.proteinIdentification.addValueChangeListener(e -> updateVisible());
     submissionBinder.forField(design.proteinIdentification)
         .withValidator(requiredIfVisible(design.proteinIdentification))
         .bind(PROTEIN_IDENTIFICATION);
@@ -957,6 +975,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.quantification.setItemCaptionGenerator(
         quantification -> quantification != null ? quantification.getLabel(locale)
             : Quantification.getNullLabel(locale));
+    design.quantification.addValueChangeListener(e -> design.quantificationLabels
+        .setRequiredIndicatorVisible(design.quantification.getValue() == SILAC));
     submissionBinder.forField(design.quantification).withNullRepresentation(Quantification.NULL)
         .bind(QUANTIFICATION);
     design.quantificationLabels.addStyleName(QUANTIFICATION_LABELS);
@@ -992,6 +1012,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.otherSolvent.addStyleName(OTHER_SOLVENT);
     design.otherSolvent.addStyleName(ValoTheme.TEXTFIELD_SMALL);
     design.otherSolvent.setRequiredIndicatorVisible(true);
+    design.otherSolvents.addValueChangeListener(e -> updateVisible());
     submissionBinder.forField(design.otherSolvent)
         .withValidator(requiredTextIfVisible(design.otherSolvent)).withNullRepresentation("")
         .bind(OTHER_SOLVENT);
@@ -1028,31 +1049,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         return ValidationResult.ok();
       }
     };
-  }
-
-  private void addFieldListeners() {
-    design.service.addValueChangeListener(e -> updateVisible());
-    design.sampleSupport.addValueChangeListener(e -> updateVisible());
-    design.sampleCount
-        .addValueChangeListener(e -> updateSampleCount(design.sampleCount.getValue()));
-    design.sampleCount.addValueChangeListener(e -> updateSampleCount(e.getValue()));
-    design.sampleContainerType.addValueChangeListener(e -> updateVisible());
-    design.fillSamples.addClickListener(e -> fillSamples());
-    design.standardCount
-        .addValueChangeListener(e -> updateStandardsTable(design.standardCount.getValue()));
-    design.standardCount.addValueChangeListener(e -> updateStandardsTable(e.getValue()));
-    design.fillStandards.addClickListener(e -> fillStandards());
-    design.contaminantCount
-        .addValueChangeListener(e -> updateContaminantsTable(design.contaminantCount.getValue()));
-    design.contaminantCount.addValueChangeListener(e -> updateContaminantsTable(e.getValue()));
-    design.fillContaminants.addClickListener(e -> fillContaminants());
-    design.coloration.addValueChangeListener(e -> updateVisible());
-    design.digestion.addValueChangeListener(e -> updateVisible());
-    design.proteinIdentification.addValueChangeListener(e -> updateVisible());
-    design.quantification.addValueChangeListener(e -> design.quantificationLabels
-        .setRequiredIndicatorVisible(design.quantification.getValue() == SILAC));
-    design.otherSolvents.addValueChangeListener(e -> updateVisible());
-    design.save.addClickListener(e -> save());
   }
 
   private void updateVisible() {
@@ -1280,37 +1276,53 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private void fillSamples() {
-    SubmissionSample first = samplesDataProvider.getItems().iterator().next();
-    String name = first.getName();
-    samplesDataProvider.getItems()
-        .forEach(sample -> sample.setName(Named.incrementLastNumber(name)));
-    samplesDataProvider.refreshAll();
+    List<SubmissionSample> samples =
+        VaadinUtils.gridItems(design.samples).collect(Collectors.toList());
+    if (!samples.isEmpty()) {
+      SubmissionSample first = samples.get(0);
+      String name = sampleNameFields.get(first).getValue();
+      String numberProtein = sampleNumberProteinFields.get(first).getValue();
+      String molecularWeight = sampleMolecularWeightFields.get(first).getValue();
+      for (SubmissionSample sample : samples.subList(1, samples.size())) {
+        name = Named.incrementLastNumber(name);
+        sampleNameFields.get(sample).setValue(name);
+        if (design.service.getValue() == INTACT_PROTEIN) {
+          sampleNumberProteinFields.get(sample).setValue(numberProtein);
+          sampleMolecularWeightFields.get(sample).setValue(molecularWeight);
+        }
+      }
+    }
   }
 
   private void fillStandards() {
-    Standard first = standardsDataProvider.getItems().iterator().next();
-    String name = first.getName();
-    String quantity = first.getQuantity();
-    String comment = first.getComment();
-    standardsDataProvider.getItems().forEach(standard -> {
-      standard.setName(name);
-      standard.setQuantity(quantity);
-      standard.setComment(comment);
-    });
-    standardsDataProvider.refreshAll();
+    List<Standard> standards = VaadinUtils.gridItems(design.standards).collect(Collectors.toList());
+    if (!standards.isEmpty()) {
+      Standard first = standards.get(0);
+      String name = standardNameFields.get(first).getValue();
+      String quantity = standardQuantityFields.get(first).getValue();
+      String comment = standardCommentFields.get(first).getValue();
+      for (Standard standard : standards.subList(1, standards.size())) {
+        standardNameFields.get(standard).setValue(name);
+        standardQuantityFields.get(standard).setValue(quantity);
+        standardCommentFields.get(standard).setValue(comment);
+      }
+    }
   }
 
   private void fillContaminants() {
-    Contaminant first = contaminantsDataProvider.getItems().iterator().next();
-    String name = first.getName();
-    String quantity = first.getQuantity();
-    String comment = first.getComment();
-    contaminantsDataProvider.getItems().forEach(contaminant -> {
-      contaminant.setName(name);
-      contaminant.setQuantity(quantity);
-      contaminant.setComment(comment);
-    });
-    contaminantsDataProvider.refreshAll();
+    List<Contaminant> contaminants =
+        VaadinUtils.gridItems(design.contaminants).collect(Collectors.toList());
+    if (!contaminants.isEmpty()) {
+      Contaminant first = contaminants.get(0);
+      String name = contaminantNameFields.get(first).getValue();
+      String quantity = contaminantQuantityFields.get(first).getValue();
+      String comment = contaminantCommentFields.get(first).getValue();
+      for (Contaminant contaminant : contaminants.subList(1, contaminants.size())) {
+        contaminantNameFields.get(contaminant).setValue(name);
+        contaminantQuantityFields.get(contaminant).setValue(quantity);
+        contaminantCommentFields.get(contaminant).setValue(comment);
+      }
+    }
   }
 
   private MultiFileUploadFileHandler fileHandler() {
