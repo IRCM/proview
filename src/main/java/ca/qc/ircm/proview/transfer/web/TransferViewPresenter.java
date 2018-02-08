@@ -326,14 +326,12 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private void updateVisibility() {
-    final SampleContainerType sourceType = sourceType();
     final SampleContainerType destinationType = design.type.getValue();
-    design.transfers.getColumn(DESTINATION_TUBE).setHidden(
-        binder.getBean().getId() != null || sourceType != TUBE || destinationType != TUBE);
-    design.transfers.getColumn(DESTINATION_WELL).setHidden(
-        binder.getBean().getId() != null || sourceType != TUBE || destinationType != WELL);
-    design.down.setVisible(
-        binder.getBean().getId() == null && sourceType == TUBE && destinationType == WELL);
+    design.transfers.getColumn(DESTINATION_TUBE)
+        .setHidden(binder.getBean().getId() != null || destinationType != TUBE);
+    design.transfers.getColumn(DESTINATION_WELL)
+        .setHidden(binder.getBean().getId() != null || destinationType != WELL);
+    design.down.setVisible(binder.getBean().getId() == null && destinationType == WELL);
     design.destination.setVisible(binder.getBean().getId() == null && destinationType == WELL);
   }
 
@@ -401,10 +399,8 @@ public class TransferViewPresenter implements BinderValidator {
       return false;
     }
     boolean valid = true;
-    if (sourceType() == TUBE) {
-      for (Binder<TransferedSample> binder : transferBinders.values()) {
-        valid &= validate(binder);
-      }
+    for (Binder<TransferedSample> binder : transferBinders.values()) {
+      valid &= validate(binder);
     }
     valid &= validate(() -> validateDestinations());
     if (!valid) {
@@ -427,49 +423,19 @@ public class TransferViewPresenter implements BinderValidator {
 
   private ValidationResult validateDestinations() {
     final MessageResource resources = view.getResources();
-    if (sourceType() == TUBE) {
-      Set<String> containerNames = new HashSet<>();
-      for (TransferedSample ts : transfers) {
-        if (ts.getDestinationContainer() != null
-            && !containerNames.add(ts.getDestinationContainer().getName())) {
-          String message = resources.message(DESTINATION_CONTAINER_DUPLICATE,
-              ts.getDestinationContainer().getType().ordinal(),
-              ts.getDestinationContainer().getName());
-          if (ts.getDestinationContainer() instanceof Tube) {
-            destinationTubes.get(ts).setComponentError(new UserError(message));
-          } else {
-            destinationWells.get(ts).setComponentError(new UserError(message));
-          }
-          return ValidationResult.error(message);
+    Set<String> containerNames = new HashSet<>();
+    for (TransferedSample ts : transfers) {
+      if (ts.getDestinationContainer() != null
+          && !containerNames.add(ts.getDestinationContainer().getName())) {
+        String message = resources.message(DESTINATION_CONTAINER_DUPLICATE,
+            ts.getDestinationContainer().getType().ordinal(),
+            ts.getDestinationContainer().getName());
+        if (ts.getDestinationContainer() instanceof Tube) {
+          destinationTubes.get(ts).setComponentError(new UserError(message));
+        } else {
+          destinationWells.get(ts).setComponentError(new UserError(message));
         }
-      }
-    } else {
-      design.destinationPlatesField.setComponentError(null);
-      Plate plate = design.destinationPlatesField.getValue();
-      Well well = view.destinationPlateForm.getSelectedWell();
-      if (well == null) {
-        String message = resources.message(DESTINATION_PLATE_NO_SELECTION);
-        design.destinationPlatesField.setComponentError(new UserError(message));
         return ValidationResult.error(message);
-      }
-      List<SampleContainer> sources = sources();
-      List<Well> wells = plate.wells(new WellLocation(well.getRow(), well.getColumn()),
-          new WellLocation(plate.getRowCount() - 1, plate.getColumnCount() - 1));
-      Collections.sort(wells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
-      for (int i = 0; i < sources.size(); i++) {
-        if (i >= wells.size()) {
-          String message =
-              resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, transfers.size());
-          design.destinationPlatesField.setComponentError(new UserError(message));
-          return ValidationResult.error(message);
-        }
-        Well destination = wells.get(i);
-        if (destination.getSample() != null) {
-          String message =
-              resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, transfers.size());
-          design.destinationPlatesField.setComponentError(new UserError(message));
-          return ValidationResult.error(message);
-        }
       }
     }
     return ValidationResult.ok();
@@ -480,37 +446,13 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private List<SampleContainer> sources() {
-    List<SampleContainer> containers = new ArrayList<>(
+    return new ArrayList<>(
         transfers.stream().map(ts -> ts.getContainer()).collect(Collectors.toList()));
-    if (sourceType() == WELL) {
-      containers = containers.stream().map(well -> (Well) well)
-          .sorted(new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN))
-          .collect(Collectors.toList());
-    }
-    return containers;
   }
 
   private List<SampleContainer> destinations() {
-    if (sourceType() == TUBE) {
-      return new ArrayList<>(
-          transfers.stream().map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
-    } else {
-      Plate plate = design.destinationPlatesField.getValue();
-      Well well = view.destinationPlateForm.getSelectedWell();
-      int column = well.getColumn();
-      int row = well.getRow();
-      List<SampleContainer> destinations = new ArrayList<>();
-      List<SampleContainer> sources = sources();
-      for (int i = 0; i < sources.size(); i++) {
-        destinations.add(plate.well(row, column));
-        row++;
-        if (row >= plate.getRowCount()) {
-          row = 0;
-          column++;
-        }
-      }
-      return destinations;
-    }
+    return new ArrayList<>(
+        transfers.stream().map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
   }
 
   private void test() {

@@ -116,7 +116,7 @@ public class TransferViewTest extends TransferViewPageObject {
     assertTrue(optional(() -> transferType()).isPresent());
     assertTrue(optional(() -> transfersPanel()).isPresent());
     assertTrue(optional(() -> transfers()).isPresent());
-    assertFalse(optional(() -> down()).isPresent());
+    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> destinationPanel()).isPresent());
     assertTrue(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());
@@ -182,7 +182,9 @@ public class TransferViewTest extends TransferViewPageObject {
     openWithWells();
     String plateName = "test_plate";
     setDestinationPlate(plateName);
-    selectDestinationPlateCell(1, 1);
+    setDestinationWell(0, "A-1");
+    setDestinationWell(1, "B-1");
+    setDestinationWell(2, "C-1");
 
     clickSave();
 

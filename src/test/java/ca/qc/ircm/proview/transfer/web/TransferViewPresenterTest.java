@@ -31,8 +31,6 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_CONTAINER_DUPLICATE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATES;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE;
-import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_NO_SELECTION;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_PLATE_PANEL;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_TUBE;
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.DESTINATION_WELL;
@@ -316,9 +314,9 @@ public class TransferViewPresenterTest {
     assertTrue(design.typePanel.isVisible());
     assertTrue(design.transfersPanel.isVisible());
     assertTrue(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
-    assertTrue(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertFalse(design.transfers.getColumn(DESTINATION_WELL).isHidden());
     assertTrue(design.destination.isVisible());
-    assertFalse(design.down.isVisible());
+    assertTrue(design.down.isVisible());
   }
 
   @Test
@@ -380,7 +378,7 @@ public class TransferViewPresenterTest {
         ComponentRenderer.class));
     assertEquals(resources.message(DESTINATION_WELL),
         design.transfers.getColumn(DESTINATION_WELL).getCaption());
-    assertTrue(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertFalse(design.transfers.getColumn(DESTINATION_WELL).isHidden());
     assertFalse(design.transfers.getColumn(DESTINATION_WELL).isSortable());
     for (TransferedSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
@@ -635,23 +633,6 @@ public class TransferViewPresenterTest {
   }
 
   @Test
-  public void test_NoDestinationWell() {
-    presenter.init(view);
-    presenter.enter("");
-    Plate plate = new Plate(null, "test");
-    plate.initWells();
-    design.destinationPlatesField.setValue(plate);
-    when(plateService.get(any(Long.class))).thenReturn(null);
-
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(null);
-    design.test.click();
-    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
-    assertEquals(errorMessage(resources.message(DESTINATION_PLATE_NO_SELECTION)),
-        design.destinationPlatesField.getErrorMessage().getFormattedHtmlMessage());
-    verify(transferService, never()).insert(any());
-  }
-
-  @Test
   @SuppressWarnings("unchecked")
   public void test_TubeToNewPlate() {
     sourceTubes();
@@ -662,7 +643,6 @@ public class TransferViewPresenterTest {
     design.destinationPlatesField.setValue(plate);
     when(plateService.get(any(Long.class))).thenReturn(null);
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
     int count = 0;
     Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
     for (TransferedSample ts : transfers) {
@@ -681,7 +661,6 @@ public class TransferViewPresenterTest {
       assertNull(well.getSample());
     }
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
     count = 2;
     for (TransferedSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
@@ -720,7 +699,6 @@ public class TransferViewPresenterTest {
         .forEach(well -> well.setSample(plate.well(well.getRow(), well.getColumn()).getSample()));
     when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
     int count = 0;
     Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
     for (TransferedSample ts : transfers) {
@@ -742,7 +720,6 @@ public class TransferViewPresenterTest {
       assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
     }
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
     count = 2;
     for (TransferedSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
@@ -765,6 +742,7 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void test_PlateToNewPlate() {
     presenter.init(view);
     presenter.enter("");
@@ -773,7 +751,13 @@ public class TransferViewPresenterTest {
     design.destinationPlatesField.setValue(plate);
     when(plateService.get(any(Long.class))).thenReturn(null);
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    int count = 0;
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 0));
+    }
     design.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -785,7 +769,12 @@ public class TransferViewPresenterTest {
       assertNull(well.getSample());
     }
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    count = 2;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 3));
+    }
     design.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -802,6 +791,7 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void test_PlateToExistingPlate() {
     presenter.init(view);
     presenter.enter("");
@@ -816,7 +806,13 @@ public class TransferViewPresenterTest {
         .forEach(well -> well.setSample(plate.well(well.getRow(), well.getColumn()).getSample()));
     when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
+    int count = 0;
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 2));
+    }
     design.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -831,7 +827,12 @@ public class TransferViewPresenterTest {
       assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
     }
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    count = 2;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 3));
+    }
     design.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -848,6 +849,7 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void test_PlateToNewPlate_MultipleWellPerSample() {
     Plate sourcePlate = entityManager.find(Plate.class, 26L);
     sourceWells.clear();
@@ -857,6 +859,7 @@ public class TransferViewPresenterTest {
       wells.stream().forEach(well -> well.setSample(sample));
       sourceWells.addAll(wells);
     });
+    Collections.sort(sourceWells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
     when(view.savedContainers()).thenReturn(new ArrayList<>(sourceWells));
     presenter.init(view);
     presenter.enter("");
@@ -865,7 +868,13 @@ public class TransferViewPresenterTest {
     design.destinationPlatesField.setValue(plate);
     when(plateService.get(any(Long.class))).thenReturn(null);
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    int count = 0;
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 0));
+    }
     design.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -880,7 +889,12 @@ public class TransferViewPresenterTest {
       assertNull(well.getSample());
     }
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    count = 2;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 3));
+    }
     design.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -900,6 +914,7 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void test_PlateToExistingPlate_MultipleWellPerSample() {
     Plate sourcePlate = entityManager.find(Plate.class, 26L);
     sourceWells.clear();
@@ -909,6 +924,7 @@ public class TransferViewPresenterTest {
       wells.stream().forEach(well -> well.setSample(sample));
       sourceWells.addAll(wells);
     });
+    Collections.sort(sourceWells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
     when(view.savedContainers()).thenReturn(new ArrayList<>(sourceWells));
     presenter.init(view);
     presenter.enter("");
@@ -923,7 +939,13 @@ public class TransferViewPresenterTest {
         .forEach(well -> well.setSample(plate.well(well.getRow(), well.getColumn()).getSample()));
     when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 2));
+    int count = 0;
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 2));
+    }
     design.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -941,7 +963,12 @@ public class TransferViewPresenterTest {
       assertEquals(plateCopy.well(well.getRow(), well.getColumn()).getSample(), well.getSample());
     }
 
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(2, 3));
+    count = 2;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 3));
+    }
     design.test.click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
@@ -1054,7 +1081,7 @@ public class TransferViewPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void save_DestinationWellUsed() {
+  public void save_Tube_DestinationWellUsed() {
     sourceTubes();
     presenter.init(view);
     presenter.enter("");
@@ -1087,7 +1114,7 @@ public class TransferViewPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void save_NoDestinationWell() {
+  public void save_Tube_NoDestinationWell() {
     sourceTubes();
     presenter.init(view);
     presenter.enter("");
@@ -1108,7 +1135,7 @@ public class TransferViewPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void save_DestinationWellDuplicate() {
+  public void save_Tube_DestinationWellDuplicate() {
     sourceTubes();
     presenter.init(view);
     presenter.enter("");
@@ -1137,56 +1164,83 @@ public class TransferViewPresenterTest {
   }
 
   @Test
-  public void save_DestinationPlateNoSelectedWell() {
+  @SuppressWarnings("unchecked")
+  public void save_Plate_DestinationWellUsed() {
     presenter.init(view);
     presenter.enter("");
-    Plate plate = new Plate(null, "test");
-    plate.initWells();
-    design.destinationPlatesField.setValue(plate);
-
-    design.save.click();
-
-    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
-    assertEquals(errorMessage(resources.message(DESTINATION_PLATE_NO_SELECTION)),
-        design.destinationPlatesField.getErrorMessage().getFormattedHtmlMessage());
-    verify(transferService, never()).insert(any());
-  }
-
-  @Test
-  public void save_DestinationPlateNotEnoughFreeSpace_Overflow() {
-    presenter.init(view);
-    presenter.enter("");
-    Plate plate = new Plate(null, "test");
-    plate.initWells();
-    design.destinationPlatesField.setValue(plate);
-    when(view.destinationPlateForm.getSelectedWell())
-        .thenReturn(plate.well(plate.getRowCount() - 2, plate.getColumnCount() - 1));
+    Plate destination = new Plate();
+    destination.initWells();
+    design.destinationPlatesField.setValue(destination);
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    int count = 0;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(destination.well(count++, 0));
+    }
+    destination.well(0, 0).setId(2000L);
+    Well used = new Well(0, 0);
+    used.setSample(new SubmissionSample());
+    when(wellService.get(2000L)).thenReturn(used);
+    ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+        .getValueProvider().apply(transfers.iterator().next());
 
     design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
     assertEquals(
-        errorMessage(resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, samples.size())),
-        design.destinationPlatesField.getErrorMessage().getFormattedHtmlMessage());
+        errorMessage(resources.message(DESTINATION_WELL_IN_USE, field.getValue().getName())),
+        field.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
+    verify(wellService).get(2000L);
   }
 
   @Test
-  public void save_DestinationPlateNotEnoughFreeSpace_WellHasSample() {
+  @SuppressWarnings("unchecked")
+  public void save_Plate_NoDestinationWell() {
     presenter.init(view);
     presenter.enter("");
-    Plate plate = new Plate(null, "test");
-    plate.initWells();
-    plate.well(1, 0).setSample(samples.get(0));
-    design.destinationPlatesField.setValue(plate);
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    Plate destination = new Plate();
+    destination.initWells();
+    design.destinationPlatesField.setValue(destination);
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+        .getValueProvider().apply(transfers.iterator().next());
 
     design.save.click();
 
     verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
-    assertEquals(
-        errorMessage(resources.message(DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE, samples.size())),
-        design.destinationPlatesField.getErrorMessage().getFormattedHtmlMessage());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        field.getErrorMessage().getFormattedHtmlMessage());
+    verify(transferService, never()).insert(any());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void save_Plate_DestinationWellDuplicate() {
+    presenter.init(view);
+    presenter.enter("");
+    Plate destination = new Plate();
+    destination.initWells();
+    design.destinationPlatesField.setValue(destination);
+    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    int count = 0;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(destination.well(count++, 0));
+    }
+    ComboBox<Well> field1 = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+        .getValueProvider().apply(transfers.get(0));
+    ComboBox<Well> field2 = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+        .getValueProvider().apply(transfers.get(1));
+    field2.setValue(field1.getValue());
+
+    design.save.click();
+
+    verify(view).showError(generalResources.message(FIELD_NOTIFICATION));
+    assertEquals(errorMessage(resources.message(DESTINATION_CONTAINER_DUPLICATE, WELL.ordinal(),
+        field2.getValue().getName())), field2.getErrorMessage().getFormattedHtmlMessage());
     verify(transferService, never()).insert(any());
   }
 
@@ -1242,7 +1296,6 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 4));
     Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
     for (TransferedSample ts : transfers) {
@@ -1288,10 +1341,9 @@ public class TransferViewPresenterTest {
     sourceTubes();
     presenter.init(view);
     presenter.enter("");
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
     Plate plate = destinationPlates.get(0);
     design.destinationPlatesField.setValue(plate);
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 4));
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
     for (TransferedSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
@@ -1368,13 +1420,20 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_PlateToNewPlate() {
     presenter.init(view);
     presenter.enter("");
     Plate plate = new Plate(null, "test");
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    int count = 0;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 0));
+    }
     doAnswer(i -> {
       Transfer transfer = i.getArgumentAt(0, Transfer.class);
       assertNull(transfer.getId());
@@ -1408,12 +1467,19 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_PlateToExistingPlate() {
     presenter.init(view);
     presenter.enter("");
     Plate plate = destinationPlates.get(0);
     design.destinationPlatesField.setValue(plate);
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 4));
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    int count = 0;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 4));
+    }
     doAnswer(i -> {
       Transfer transfer = i.getArgumentAt(0, Transfer.class);
       assertNull(transfer.getId());
@@ -1502,6 +1568,7 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_PlateToNewPlate_MultipleWellPerSample() {
     Plate sourcePlate = entityManager.find(Plate.class, 26L);
     sourceWells.clear();
@@ -1511,13 +1578,20 @@ public class TransferViewPresenterTest {
       wells.stream().forEach(well -> well.setSample(sample));
       sourceWells.addAll(wells);
     });
+    Collections.sort(sourceWells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
     when(view.savedContainers()).thenReturn(new ArrayList<>(sourceWells));
     presenter.init(view);
     presenter.enter("");
     Plate plate = new Plate(null, "test");
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 0));
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    int count = 0;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 0));
+    }
     doAnswer(i -> {
       Transfer transfer = i.getArgumentAt(0, Transfer.class);
       assertNull(transfer.getId());
@@ -1532,7 +1606,7 @@ public class TransferViewPresenterTest {
     Transfer transfer = transferCaptor.getValue();
     assertEquals(samples.size() * 2, transfer.getTreatmentSamples().size());
     Collections.sort(sourceWells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
-    int count = 0;
+    count = 0;
     for (int i = 0; i < sourceWells.size(); i++) {
       Well source = sourceWells.get(i);
       Sample sample = source.getSample();
@@ -1552,6 +1626,7 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void save_PlateToExistingPlate_MultipleWellPerSample() {
     Plate sourcePlate = entityManager.find(Plate.class, 26L);
     sourceWells.clear();
@@ -1561,12 +1636,19 @@ public class TransferViewPresenterTest {
       wells.stream().forEach(well -> well.setSample(sample));
       sourceWells.addAll(wells);
     });
+    Collections.sort(sourceWells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
     when(view.savedContainers()).thenReturn(new ArrayList<>(sourceWells));
     presenter.init(view);
     presenter.enter("");
     Plate plate = destinationPlates.get(0);
     design.destinationPlatesField.setValue(plate);
-    when(view.destinationPlateForm.getSelectedWell()).thenReturn(plate.well(0, 4));
+    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    int count = 0;
+    for (TransferedSample ts : transfers) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      field.setValue(plate.well(count++, 4));
+    }
     doAnswer(i -> {
       Transfer transfer = i.getArgumentAt(0, Transfer.class);
       assertNull(transfer.getId());
@@ -1581,7 +1663,7 @@ public class TransferViewPresenterTest {
     Transfer transfer = transferCaptor.getValue();
     assertEquals(samples.size() * 2, transfer.getTreatmentSamples().size());
     Collections.sort(sourceWells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
-    int count = 0;
+    count = 0;
     for (int i = 0; i < sourceWells.size(); i++) {
       Well source = sourceWells.get(i);
       Sample sample = source.getSample();
@@ -1729,7 +1811,7 @@ public class TransferViewPresenterTest {
     assertFalse(design.deleted.isVisible());
     assertTrue(design.transfersPanel.isVisible());
     assertTrue(design.destination.isVisible());
-    assertFalse(design.down.isVisible());
+    assertTrue(design.down.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
