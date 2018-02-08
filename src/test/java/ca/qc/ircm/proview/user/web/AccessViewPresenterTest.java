@@ -142,12 +142,8 @@ public class AccessViewPresenterTest {
   public void usersGrid() {
     presenter.init(view);
 
+    assertEquals(6, design.usersGrid.getColumns().size());
     assertEquals(SELECT, design.usersGrid.getColumns().get(0).getId());
-    assertEquals(EMAIL, design.usersGrid.getColumns().get(1).getId());
-    assertEquals(NAME, design.usersGrid.getColumns().get(2).getId());
-    assertEquals(LABORATORY_NAME, design.usersGrid.getColumns().get(3).getId());
-    assertEquals(ORGANIZATION, design.usersGrid.getColumns().get(4).getId());
-    assertEquals(ACTIVE, design.usersGrid.getColumns().get(5).getId());
     assertEquals(resources.message(SELECT), design.usersGrid.getColumn(SELECT).getCaption());
     assertTrue(containsInstanceOf(design.usersGrid.getColumn(SELECT).getExtensions(),
         ComponentRenderer.class));
@@ -156,6 +152,7 @@ public class AccessViewPresenterTest {
       CheckBox field = (CheckBox) design.usersGrid.getColumn(SELECT).getValueProvider().apply(user);
       assertTrue(field.getStyleName().contains(SELECT));
     }
+    assertEquals(EMAIL, design.usersGrid.getColumns().get(1).getId());
     assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
     assertTrue(containsInstanceOf(design.usersGrid.getColumn(EMAIL).getExtensions(),
         ComponentRenderer.class));
@@ -173,22 +170,26 @@ public class AccessViewPresenterTest {
       assertEquals(user.getEmail(), button.getCaption());
       assertTrue(button.getStyleName().contains(EMAIL));
     }
+    assertEquals(NAME, design.usersGrid.getColumns().get(2).getId());
     assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
     for (User user : users) {
       assertEquals(user.getName(), design.usersGrid.getColumn(NAME).getValueProvider().apply(user));
     }
+    assertEquals(LABORATORY_NAME, design.usersGrid.getColumns().get(3).getId());
     assertEquals(resources.message(LABORATORY_NAME),
         design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
     for (User user : users) {
       assertEquals(user.getLaboratory().getName(),
           design.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
     }
+    assertEquals(ORGANIZATION, design.usersGrid.getColumns().get(4).getId());
     assertEquals(resources.message(ORGANIZATION),
         design.usersGrid.getColumn(ORGANIZATION).getCaption());
     for (User user : users) {
       assertEquals(user.getLaboratory().getOrganization(),
           design.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
     }
+    assertEquals(ACTIVE, design.usersGrid.getColumns().get(5).getId());
     assertEquals(resources.message(ACTIVE), design.usersGrid.getColumn(ACTIVE).getCaption());
     assertTrue(containsInstanceOf(design.usersGrid.getColumn(ACTIVE).getExtensions(),
         ComponentRenderer.class));
@@ -214,6 +215,19 @@ public class AccessViewPresenterTest {
     GridSortOrder<User> sortOrder = sortOrders.get(0);
     assertEquals(EMAIL, sortOrder.getSorted().getId());
     assertEquals(SortDirection.ASCENDING, sortOrder.getDirection());
+  }
+
+  @Test
+  public void users_SelectVisiblity() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.getCurrentUser()).thenReturn(users.get(0));
+    presenter.init(view);
+
+    for (User user : users) {
+      assertEquals(user.getId() != users.get(0).getId(),
+          ((CheckBox) (design.usersGrid.getColumn(SELECT).getValueProvider().apply(user)))
+              .isVisible());
+    }
   }
 
   @Test
