@@ -115,6 +115,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.UPDATE_ERROR;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY_PROPERTY;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
@@ -185,6 +186,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Rule;
@@ -695,11 +697,35 @@ public class SubmissionFormPresenterTest {
 
     assertEquals(3, design.standardsGrid.getColumns().size());
     assertEquals(STANDARD_NAME_PROPERTY, design.standardsGrid.getColumns().get(0).getId());
+    assertTrue(
+        containsInstanceOf(design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).getExtensions(),
+            ComponentRenderer.class));
     assertFalse(design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).isSortable());
+    {
+      TextField field = (TextField) design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY)
+          .getValueProvider().apply(new Standard());
+      assertTrue(field.getStyleName().contains(STANDARD_NAME_PROPERTY));
+    }
     assertEquals(STANDARD_QUANTITY_PROPERTY, design.standardsGrid.getColumns().get(1).getId());
+    assertTrue(containsInstanceOf(
+        design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY).getExtensions(),
+        ComponentRenderer.class));
     assertFalse(design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY).isSortable());
+    {
+      TextField field = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY)
+          .getValueProvider().apply(new Standard());
+      assertTrue(field.getStyleName().contains(STANDARD_QUANTITY_PROPERTY));
+    }
     assertEquals(STANDARD_COMMENT_PROPERTY, design.standardsGrid.getColumns().get(2).getId());
+    assertTrue(containsInstanceOf(
+        design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY).getExtensions(),
+        ComponentRenderer.class));
     assertFalse(design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY).isSortable());
+    {
+      TextField field = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY)
+          .getValueProvider().apply(new Standard());
+      assertTrue(field.getStyleName().contains(STANDARD_COMMENT_PROPERTY));
+    }
   }
 
   @Test
@@ -708,12 +734,36 @@ public class SubmissionFormPresenterTest {
 
     assertEquals(3, design.contaminantsGrid.getColumns().size());
     assertEquals(CONTAMINANT_NAME_PROPERTY, design.contaminantsGrid.getColumns().get(0).getId());
+    assertTrue(containsInstanceOf(
+        design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY).getExtensions(),
+        ComponentRenderer.class));
     assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY).isSortable());
+    {
+      TextField field = (TextField) design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY)
+          .getValueProvider().apply(new Contaminant());
+      assertTrue(field.getStyleName().contains(CONTAMINANT_NAME_PROPERTY));
+    }
     assertEquals(CONTAMINANT_QUANTITY_PROPERTY,
         design.contaminantsGrid.getColumns().get(1).getId());
+    assertTrue(containsInstanceOf(
+        design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY).getExtensions(),
+        ComponentRenderer.class));
     assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY).isSortable());
+    {
+      TextField field = (TextField) design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY)
+          .getValueProvider().apply(new Contaminant());
+      assertTrue(field.getStyleName().contains(CONTAMINANT_QUANTITY_PROPERTY));
+    }
     assertEquals(CONTAMINANT_COMMENT_PROPERTY, design.contaminantsGrid.getColumns().get(2).getId());
+    assertTrue(containsInstanceOf(
+        design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY).getExtensions(),
+        ComponentRenderer.class));
     assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY).isSortable());
+    {
+      TextField field = (TextField) design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY)
+          .getValueProvider().apply(new Contaminant());
+      assertTrue(field.getStyleName().contains(CONTAMINANT_COMMENT_PROPERTY));
+    }
   }
 
   @Test

@@ -694,6 +694,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         binder.setBean(standard);
       }
       TextField field = new TextField();
+      field.addStyleName(STANDARD_NAME_PROPERTY);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
@@ -716,6 +717,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         binder.setBean(standard);
       }
       TextField field = new TextField();
+      field.addStyleName(STANDARD_QUANTITY_PROPERTY);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       field.setPlaceholder(
@@ -738,6 +740,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         binder.setBean(standard);
       }
       TextField field = new TextField();
+      field.addStyleName(STANDARD_COMMENT_PROPERTY);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       binder.forField(field).withNullRepresentation("").bind(STANDARD_COMMENT_PROPERTY);
@@ -763,15 +766,19 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.contaminantsGrid.addStyleName(CONTAMINANT_PROPERTY);
     design.contaminantsGrid.addStyleName(COMPONENTS);
     design.contaminantsGrid.setDataProvider(contaminantsDataProvider);
-    design.contaminantsGrid.addColumn(contaminant -> contaminantNameTextField(contaminant))
+    design.contaminantsGrid
+        .addColumn(contaminant -> contaminantNameTextField(contaminant), new ComponentRenderer())
         .setId(CONTAMINANT_NAME_PROPERTY)
         .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_NAME_PROPERTY))
         .setSortable(false);
-    design.contaminantsGrid.addColumn(contaminant -> contaminantQuantityTextField(contaminant))
+    design.contaminantsGrid
+        .addColumn(contaminant -> contaminantQuantityTextField(contaminant),
+            new ComponentRenderer())
         .setId(CONTAMINANT_QUANTITY_PROPERTY)
         .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY))
         .setSortable(false);
-    design.contaminantsGrid.addColumn(contaminant -> contaminantCommentTextField(contaminant))
+    design.contaminantsGrid
+        .addColumn(contaminant -> contaminantCommentTextField(contaminant), new ComponentRenderer())
         .setId(CONTAMINANT_COMMENT_PROPERTY)
         .setCaption(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENT_PROPERTY))
         .setSortable(false);
@@ -792,6 +799,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         binder.setBean(contaminant);
       }
       TextField field = new TextField();
+      field.addStyleName(CONTAMINANT_NAME_PROPERTY);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
@@ -814,6 +822,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         binder.setBean(contaminant);
       }
       TextField field = new TextField();
+      field.addStyleName(CONTAMINANT_QUANTITY_PROPERTY);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       field.setPlaceholder(resources
@@ -836,6 +845,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         binder.setBean(contaminant);
       }
       TextField field = new TextField();
+      field.addStyleName(CONTAMINANT_COMMENT_PROPERTY);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       binder.forField(field).withNullRepresentation("").bind(CONTAMINANT_COMMENT_PROPERTY);
