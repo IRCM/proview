@@ -278,6 +278,8 @@ public class SubmissionFormPresenter implements BinderValidator {
   private Map<Contaminant, TextField> contaminantCommentFields = new HashMap<>();
   private ListDataProvider<SubmissionFile> filesDataProvider =
       DataProvider.ofCollection(new ArrayList<>());
+  private Map<SubmissionFile, Button> fileDownloads = new HashMap<>();
+  private Map<SubmissionFile, Button> fileRemoves = new HashMap<>();
   @Inject
   private SubmissionService submissionService;
   @Inject
@@ -378,23 +380,37 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private Button downloadFileButton(SubmissionFile file) {
-    Button button = new Button();
-    button.setCaption(file.getFilename());
-    button.setIcon(VaadinIcons.DOWNLOAD);
-    StreamResource resource =
-        new StreamResource(() -> new ByteArrayInputStream(file.getContent()), file.getFilename());
-    FileDownloader fileDownloader = new FileDownloader(resource);
-    fileDownloader.extend(button);
-    return button;
+    if (fileDownloads.containsKey(file)) {
+      return fileDownloads.get(file);
+    } else {
+      Button button = new Button();
+      button.addStyleName(FILE_FILENAME);
+      button.setCaption(file.getFilename());
+      button.setIcon(VaadinIcons.DOWNLOAD);
+      StreamResource resource =
+          new StreamResource(() -> new ByteArrayInputStream(file.getContent()), file.getFilename());
+      FileDownloader fileDownloader = new FileDownloader(resource);
+      fileDownloader.extend(button);
+      fileDownloads.put(file, button);
+      return button;
+    }
   }
 
   private Button removeFileButton(SubmissionFile file) {
-    MessageResource resources = view.getResources();
-    Button button = new Button();
-    button.setCaption(resources.message(FILES_PANEL + "." + REMOVE_FILE));
-    button.addClickListener(e -> filesDataProvider.getItems().remove(file));
-    filesDataProvider.refreshAll();
-    return button;
+    if (fileRemoves.containsKey(file)) {
+      return fileRemoves.get(file);
+    } else {
+      MessageResource resources = view.getResources();
+      Button button = new Button();
+      button.addStyleName(REMOVE_FILE);
+      button.setCaption(resources.message(FILES_PANEL + "." + REMOVE_FILE));
+      button.addClickListener(e -> {
+        filesDataProvider.getItems().remove(file);
+        filesDataProvider.refreshAll();
+      });
+      fileRemoves.put(file, button);
+      return button;
+    }
   }
 
   private void prepareSamplesComponents() {

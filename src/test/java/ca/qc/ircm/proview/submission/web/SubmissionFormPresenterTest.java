@@ -185,10 +185,15 @@ import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.FileDownloader;
 import com.vaadin.server.SerializableFunction;
+import com.vaadin.server.StreamResource;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+import org.apache.commons.io.IOUtils;
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -763,30 +768,73 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void filesColumns_ReadOnly() {
+  public void filesColumns_ReadOnly() throws Throwable {
     presenter.init(view);
     presenter.setReadOnly(true);
 
+    SubmissionFile file = new SubmissionFile("test.xlsx");
+    file.setContent(filesContent1);
     assertEquals(2, design.files.getColumns().size());
     assertEquals(FILE_FILENAME, design.files.getColumns().get(0).getId());
+    assertTrue(containsInstanceOf(design.files.getColumn(FILE_FILENAME).getExtensions(),
+        ComponentRenderer.class));
     assertFalse(design.files.getColumn(FILE_FILENAME).isHidden());
     assertFalse(design.files.getColumn(FILE_FILENAME).isSortable());
+    Button download = (Button) design.files.getColumn(FILE_FILENAME).getValueProvider().apply(file);
+    assertTrue(download.getStyleName().contains(FILE_FILENAME));
+    assertEquals(file.getFilename(), download.getCaption());
+    assertEquals(VaadinIcons.DOWNLOAD, download.getIcon());
+    assertTrue(containsInstanceOf(download.getExtensions(), FileDownloader.class));
+    FileDownloader fileDownloader = (FileDownloader) download.getExtensions().iterator().next();
+    StreamResource fileResource = (StreamResource) fileDownloader.getFileDownloadResource();
+    assertEquals(file.getFilename(), fileResource.getFilename());
+    ByteArrayOutputStream fileOutput = new ByteArrayOutputStream();
+    IOUtils.copy(fileResource.getStream().getStream(), fileOutput);
+    assertArrayEquals(file.getContent(), fileOutput.toByteArray());
     assertEquals(REMOVE_FILE, design.files.getColumns().get(1).getId());
+    assertTrue(containsInstanceOf(design.files.getColumn(REMOVE_FILE).getExtensions(),
+        ComponentRenderer.class));
     assertTrue(design.files.getColumn(REMOVE_FILE).isHidden());
     assertFalse(design.files.getColumn(REMOVE_FILE).isSortable());
+    Button remove = (Button) design.files.getColumn(REMOVE_FILE).getValueProvider().apply(file);
+    assertTrue(remove.getStyleName().contains(REMOVE_FILE));
+    assertEquals(resources.message(FILES_PANEL + "." + REMOVE_FILE), remove.getCaption());
   }
 
   @Test
-  public void filesColumns() {
+  public void filesColumns() throws Throwable {
     presenter.init(view);
 
+    SubmissionFile file = new SubmissionFile("test.xlsx");
+    file.setContent(filesContent1);
+    dataProvider(design.files).getItems().add(file);
     assertEquals(2, design.files.getColumns().size());
     assertEquals(FILE_FILENAME, design.files.getColumns().get(0).getId());
+    assertTrue(containsInstanceOf(design.files.getColumn(FILE_FILENAME).getExtensions(),
+        ComponentRenderer.class));
     assertFalse(design.files.getColumn(FILE_FILENAME).isHidden());
     assertFalse(design.files.getColumn(FILE_FILENAME).isSortable());
+    Button download = (Button) design.files.getColumn(FILE_FILENAME).getValueProvider().apply(file);
+    assertTrue(download.getStyleName().contains(FILE_FILENAME));
+    assertEquals(file.getFilename(), download.getCaption());
+    assertEquals(VaadinIcons.DOWNLOAD, download.getIcon());
+    assertTrue(containsInstanceOf(download.getExtensions(), FileDownloader.class));
+    FileDownloader fileDownloader = (FileDownloader) download.getExtensions().iterator().next();
+    StreamResource fileResource = (StreamResource) fileDownloader.getFileDownloadResource();
+    assertEquals(file.getFilename(), fileResource.getFilename());
+    ByteArrayOutputStream fileOutput = new ByteArrayOutputStream();
+    IOUtils.copy(fileResource.getStream().getStream(), fileOutput);
+    assertArrayEquals(file.getContent(), fileOutput.toByteArray());
     assertEquals(REMOVE_FILE, design.files.getColumns().get(1).getId());
+    assertTrue(containsInstanceOf(design.files.getColumn(REMOVE_FILE).getExtensions(),
+        ComponentRenderer.class));
     assertFalse(design.files.getColumn(REMOVE_FILE).isHidden());
     assertFalse(design.files.getColumn(REMOVE_FILE).isSortable());
+    Button remove = (Button) design.files.getColumn(REMOVE_FILE).getValueProvider().apply(file);
+    assertTrue(remove.getStyleName().contains(REMOVE_FILE));
+    assertEquals(resources.message(FILES_PANEL + "." + REMOVE_FILE), remove.getCaption());
+    remove.click();
+    assertEquals(0, items(design.files).size());
   }
 
   @Test
