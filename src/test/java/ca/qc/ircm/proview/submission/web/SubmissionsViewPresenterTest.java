@@ -56,6 +56,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.USER;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -706,6 +707,10 @@ public class SubmissionsViewPresenterTest {
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(SAMPLE_STATUSES);
     ComboBox<SampleStatus> comboBox = (ComboBox<SampleStatus>) cell.getComponent();
+    List<SampleStatus> statuses = items(comboBox);
+    for (SampleStatus status : statuses) {
+      assertEquals(status.getLabel(locale), comboBox.getItemCaptionGenerator().apply(status));
+    }
     SampleStatus filterValue = SampleStatus.ANALYSED;
 
     comboBox.setValue(filterValue);
@@ -743,6 +748,11 @@ public class SubmissionsViewPresenterTest {
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(LINKED_TO_RESULTS);
     ComboBox<Boolean> comboBox = (ComboBox<Boolean>) cell.getComponent();
+    List<Boolean> values = items(comboBox);
+    for (Boolean value : values) {
+      assertEquals(resources.message(LINKED_TO_RESULTS + "." + value),
+          comboBox.getItemCaptionGenerator().apply(value));
+    }
     Boolean filterValue = true;
 
     comboBox.setValue(filterValue);

@@ -462,6 +462,7 @@ public class SubmissionsViewPresenter {
     filter.setPlaceholder(resources.message(ALL));
     filter.setItems(values);
     filter.setSelectedItem(null);
+    filter.setItemCaptionGenerator(itemCaptionGenerator);
     filter.addValueChangeListener(listener);
     filter.setWidth("100%");
     filter.addStyleName(ValoTheme.COMBOBOX_TINY);
