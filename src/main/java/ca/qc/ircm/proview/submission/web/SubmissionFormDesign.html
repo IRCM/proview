@@ -11,38 +11,38 @@
  </head>
  <body>
   <vaadin-vertical-layout margin="false">
-   <vaadin-label width="1000px" plain-text _id="sampleTypeLabel">
+   <vaadin-label width="1000px" plain-text _id="sampleTypeWarning">
      Before filling this form, make sure all samples are of the same type. 
    </vaadin-label>
-   <vaadin-label width="1000px" plain-text _id="inactiveLabel">
+   <vaadin-label width="1000px" plain-text _id="inactiveWarning">
      If browser is inactive for more than 30 minutes, submission data may be lost. 
    </vaadin-label>
    <vaadin-panel caption="Service" size-auto _id="servicePanel">
     <vaadin-vertical-layout size-auto>
-     <vaadin-radio-button-group data-item-type="ca.qc.ircm.proview.submission.Service" _id="serviceOptions"></vaadin-radio-button-group>
+     <vaadin-radio-button-group data-item-type="ca.qc.ircm.proview.submission.Service" _id="service"></vaadin-radio-button-group>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Samples" size-auto _id="samplesPanel">
     <vaadin-vertical-layout>
      <vaadin-form-layout size-auto margin="false">
-      <vaadin-radio-button-group caption="Sample type" data-item-type="ca.qc.ircm.proview.sample.SampleSupport" _id="sampleSupportOptions"></vaadin-radio-button-group>
-      <vaadin-text-field caption="Sample solvent" null-representation="" _id="solutionSolventField"></vaadin-text-field>
-      <vaadin-text-field caption="Number of samples" null-representation="" _id="sampleCountField"></vaadin-text-field>
-      <vaadin-text-field caption="Sample name" null-representation="" _id="sampleNameField"></vaadin-text-field>
-      <vaadin-text-field caption="Formula" null-representation="" _id="formulaField"></vaadin-text-field>
-      <vaadin-text-field caption="Monoisotopic molecular mass" null-representation="" _id="monoisotopicMassField"></vaadin-text-field>
-      <vaadin-text-field caption="Average mass" null-representation="" _id="averageMassField"></vaadin-text-field>
-      <vaadin-text-field caption="Toxicity" null-representation="" _id="toxicityField"></vaadin-text-field>
-      <vaadin-check-box caption="Light sensitive" _id="lightSensitiveField"></vaadin-check-box>
-      <vaadin-radio-button-group caption="Storage temperature" data-item-type="ca.qc.ircm.proview.submission.StorageTemperature" _id="storageTemperatureOptions"></vaadin-radio-button-group>
-      <vaadin-radio-button-group caption="Samples are submitted in" data-item-type="ca.qc.ircm.proview.sample.SampleContainerType" _id="sampleContainerTypeOptions"></vaadin-radio-button-group>
-      <vaadin-text-field caption="Plate name" null-representation="" _id="plateNameField"></vaadin-text-field>
+      <vaadin-radio-button-group caption="Sample type" data-item-type="ca.qc.ircm.proview.sample.SampleSupport" _id="sampleSupport"></vaadin-radio-button-group>
+      <vaadin-text-field caption="Sample solvent" null-representation="" _id="solutionSolvent"></vaadin-text-field>
+      <vaadin-text-field caption="Number of samples" null-representation="" _id="sampleCount"></vaadin-text-field>
+      <vaadin-text-field caption="Sample name" null-representation="" _id="sampleName"></vaadin-text-field>
+      <vaadin-text-field caption="Formula" null-representation="" _id="formula"></vaadin-text-field>
+      <vaadin-text-field caption="Monoisotopic molecular mass" null-representation="" _id="monoisotopicMass"></vaadin-text-field>
+      <vaadin-text-field caption="Average mass" null-representation="" _id="averageMass"></vaadin-text-field>
+      <vaadin-text-field caption="Toxicity" null-representation="" _id="toxicity"></vaadin-text-field>
+      <vaadin-check-box caption="Light sensitive" _id="lightSensitive"></vaadin-check-box>
+      <vaadin-radio-button-group caption="Storage temperature" data-item-type="ca.qc.ircm.proview.submission.StorageTemperature" _id="storageTemperature"></vaadin-radio-button-group>
+      <vaadin-radio-button-group caption="Samples are submitted in" data-item-type="ca.qc.ircm.proview.sample.SampleContainerType" _id="sampleContainerType"></vaadin-radio-button-group>
+      <vaadin-text-field caption="Plate name" null-representation="" _id="plateName"></vaadin-text-field>
       <vaadin-label caption="Samples" _id="samplesLabel"></vaadin-label>
      </vaadin-form-layout>
-     <vaadin-horizontal-layout _id="samplesGridLayout">
-      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samplesGrid"></vaadin-grid>
+     <vaadin-horizontal-layout _id="samplesLayout">
+      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.sample.SubmissionSample" _id="samples"></vaadin-grid>
       <vaadin-vertical-layout margin="false">
-       <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillSamplesButton">
+       <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillSamples">
          Fill Down 
        </vaadin-button>
       </vaadin-vertical-layout>
@@ -53,25 +53,25 @@
    <vaadin-panel caption="Experience" size-auto _id="experiencePanel">
     <vaadin-vertical-layout size-auto>
      <vaadin-form-layout size-auto margin="false">
-      <vaadin-text-field caption="Experience" null-representation="" _id="experienceField"></vaadin-text-field>
-      <vaadin-text-field caption="Experience goal" null-representation="" _id="experienceGoalField"></vaadin-text-field>
-      <vaadin-text-field caption="Taxonomy (specie)" null-representation="" _id="taxonomyField"></vaadin-text-field>
-      <vaadin-text-field caption="Protein name" null-representation="" _id="proteinNameField"></vaadin-text-field>
-      <vaadin-text-field caption="Protein weight" null-representation="" _id="proteinWeightField"></vaadin-text-field>
-      <vaadin-text-field caption="Post translational modification" null-representation="" _id="postTranslationModificationField"></vaadin-text-field>
-      <vaadin-text-field caption="Sample quantity" null-representation="" _id="sampleQuantityField"></vaadin-text-field>
-      <vaadin-text-field caption="Volume" null-representation="" _id="sampleVolumeField"></vaadin-text-field>
+      <vaadin-text-field caption="Experience" null-representation="" _id="experience"></vaadin-text-field>
+      <vaadin-text-field caption="Experience goal" null-representation="" _id="experienceGoal"></vaadin-text-field>
+      <vaadin-text-field caption="Taxonomy (specie)" null-representation="" _id="taxonomy"></vaadin-text-field>
+      <vaadin-text-field caption="Protein name" null-representation="" _id="proteinName"></vaadin-text-field>
+      <vaadin-text-field caption="Protein weight" null-representation="" _id="proteinWeight"></vaadin-text-field>
+      <vaadin-text-field caption="Post translational modification" null-representation="" _id="postTranslationModification"></vaadin-text-field>
+      <vaadin-text-field caption="Sample quantity" null-representation="" _id="sampleQuantity"></vaadin-text-field>
+      <vaadin-text-field caption="Volume" null-representation="" _id="sampleVolume"></vaadin-text-field>
      </vaadin-form-layout>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Standards" size-auto _id="standardsPanel">
     <vaadin-vertical-layout size-auto>
      <vaadin-form-layout spacing="false" size-auto margin="false">
-      <vaadin-text-field caption="Number of standards" null-representation="" _id="standardCountField"></vaadin-text-field>
+      <vaadin-text-field caption="Number of standards" null-representation="" _id="standardCount"></vaadin-text-field>
      </vaadin-form-layout>
-     <vaadin-horizontal-layout _id="standardsTableLayout">
-      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.Standard" _id="standardsGrid"></vaadin-grid>
-      <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillStandardsButton">
+     <vaadin-horizontal-layout _id="standardsLayout">
+      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.Standard" _id="standards"></vaadin-grid>
+      <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillStandards">
         Fill down 
       </vaadin-button>
      </vaadin-horizontal-layout>
@@ -80,11 +80,11 @@
    <vaadin-panel caption="Contaminants" size-auto _id="contaminantsPanel">
     <vaadin-vertical-layout size-auto>
      <vaadin-form-layout size-auto margin="false">
-      <vaadin-text-field caption="Number of contaminants" null-representation="" _id="contaminantCountField"></vaadin-text-field>
+      <vaadin-text-field caption="Number of contaminants" null-representation="" _id="contaminantCount"></vaadin-text-field>
      </vaadin-form-layout>
-     <vaadin-horizontal-layout _id="contaminantsTableLayout">
-      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.Contaminant" _id="contaminantsGrid"></vaadin-grid>
-      <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillContaminantsButton">
+     <vaadin-horizontal-layout _id="contaminantsLayout">
+      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.Contaminant" _id="contaminants"></vaadin-grid>
+      <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillContaminants">
         Fill down 
       </vaadin-button>
      </vaadin-horizontal-layout>
@@ -93,49 +93,49 @@
    <vaadin-panel caption="Gel details" size-auto _id="gelPanel">
     <vaadin-vertical-layout size-auto>
      <vaadin-form-layout size-auto margin="false">
-      <vaadin-combo-box caption="Electrophoresis gel separation" data-item-type="ca.qc.ircm.proview.submission.GelSeparation" item-caption-mode="id" _id="separationField"></vaadin-combo-box>
-      <vaadin-combo-box caption="Gel thickness (mm)" data-item-type="ca.qc.ircm.proview.submission.GelThickness" item-caption-mode="id" _id="thicknessField"></vaadin-combo-box>
-      <vaadin-combo-box caption="Coloration" data-item-type="ca.qc.ircm.proview.submission.GelColoration" item-caption-mode="id" _id="colorationField"></vaadin-combo-box>
-      <vaadin-text-field caption="Other coloration" null-representation="" _id="otherColorationField"></vaadin-text-field>
-      <vaadin-text-field caption="Development time" null-representation="" _id="developmentTimeField"></vaadin-text-field>
-      <vaadin-check-box caption="Destained" width="100px" _id="decolorationField"></vaadin-check-box>
-      <vaadin-text-field caption="Weight marker quantity (µg)" null-representation="" _id="weightMarkerQuantityField"></vaadin-text-field>
-      <vaadin-text-field caption="Total protein quantity in gel" null-representation="" _id="proteinQuantityField"></vaadin-text-field>
+      <vaadin-combo-box caption="Electrophoresis gel separation" data-item-type="ca.qc.ircm.proview.submission.GelSeparation" item-caption-mode="id" _id="separation"></vaadin-combo-box>
+      <vaadin-combo-box caption="Gel thickness (mm)" data-item-type="ca.qc.ircm.proview.submission.GelThickness" item-caption-mode="id" _id="thickness"></vaadin-combo-box>
+      <vaadin-combo-box caption="Coloration" data-item-type="ca.qc.ircm.proview.submission.GelColoration" item-caption-mode="id" _id="coloration"></vaadin-combo-box>
+      <vaadin-text-field caption="Other coloration" null-representation="" _id="otherColoration"></vaadin-text-field>
+      <vaadin-text-field caption="Development time" null-representation="" _id="developmentTime"></vaadin-text-field>
+      <vaadin-check-box caption="Destained" width="100px" _id="decoloration"></vaadin-check-box>
+      <vaadin-text-field caption="Weight marker quantity (µg)" null-representation="" _id="weightMarkerQuantity"></vaadin-text-field>
+      <vaadin-text-field caption="Total protein quantity in gel" null-representation="" _id="proteinQuantity"></vaadin-text-field>
      </vaadin-form-layout>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Services" size-auto _id="servicesPanel">
     <vaadin-vertical-layout size-auto>
      <vaadin-form-layout size-auto margin="false">
-      <vaadin-radio-button-group caption="Digestion" data-item-type="ca.qc.ircm.proview.sample.ProteolyticDigestion" _id="digestionOptions"></vaadin-radio-button-group>
-      <vaadin-text-field caption="Enzyme used for digestion" null-representation="" _id="usedProteolyticDigestionMethodField"></vaadin-text-field>
-      <vaadin-text-field caption="Enzyme to use for digestion" null-representation="" _id="otherProteolyticDigestionMethodField"></vaadin-text-field>
+      <vaadin-radio-button-group caption="Digestion" data-item-type="ca.qc.ircm.proview.sample.ProteolyticDigestion" _id="digestion"></vaadin-radio-button-group>
+      <vaadin-text-field caption="Enzyme used for digestion" null-representation="" _id="usedProteolyticDigestionMethod"></vaadin-text-field>
+      <vaadin-text-field caption="Enzyme to use for digestion" null-representation="" _id="otherProteolyticDigestionMethod"></vaadin-text-field>
       <vaadin-label plain-text _id="otherProteolyticDigestionMethodNote">
         (enzymes, reactors and protocol must be supplied with samples) 
       </vaadin-label>
-      <vaadin-label caption="Enrichment" plain-text _id="enrichmentLabel">
+      <vaadin-label caption="Enrichment" plain-text _id="enrichment">
         Coming soon 
       </vaadin-label>
-      <vaadin-label caption="Exclusions and inclusions" width="600px" plain-text _id="exclusionsLabel">
+      <vaadin-label caption="Exclusions and inclusions" width="600px" plain-text _id="exclusions">
         Coming soon 
       </vaadin-label>
-      <vaadin-radio-button-group caption="Injection type" data-item-type="ca.qc.ircm.proview.msanalysis.InjectionType" _id="injectionTypeOptions"></vaadin-radio-button-group>
-      <vaadin-radio-button-group caption="Source" data-item-type="ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource" _id="sourceOptions"></vaadin-radio-button-group>
-      <vaadin-radio-button-group caption-as-html caption="Protein content" data-item-type="ca.qc.ircm.proview.submission.ProteinContent" _id="proteinContentOptions"></vaadin-radio-button-group>
-      <vaadin-radio-button-group caption="Instrument" data-item-type="ca.qc.ircm.proview.msanalysis.MassDetectionInstrument" _id="instrumentOptions"></vaadin-radio-button-group>
-      <vaadin-radio-button-group caption="Protein identification database" data-item-type="ca.qc.ircm.proview.sample.ProteinIdentification" _id="proteinIdentificationOptions"></vaadin-radio-button-group>
-      <vaadin-text-field caption="Link to download protein database" null-representation="" _id="proteinIdentificationLinkField"></vaadin-text-field>
-      <vaadin-radio-button-group caption="Quantification" data-item-type="ca.qc.ircm.proview.submission.Quantification" _id="quantificationOptions"></vaadin-radio-button-group>
-      <vaadin-text-area caption="Quantification labels (if Silac)" null-representation="" _id="quantificationLabelsField"></vaadin-text-area>
-      <vaadin-radio-button-group caption="Analysis" data-item-type="java.lang.Boolean" _id="highResolutionOptions"></vaadin-radio-button-group>
+      <vaadin-radio-button-group caption="Injection type" data-item-type="ca.qc.ircm.proview.msanalysis.InjectionType" _id="injectionType"></vaadin-radio-button-group>
+      <vaadin-radio-button-group caption="Source" data-item-type="ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource" _id="source"></vaadin-radio-button-group>
+      <vaadin-radio-button-group caption-as-html caption="Protein content" data-item-type="ca.qc.ircm.proview.submission.ProteinContent" _id="proteinContent"></vaadin-radio-button-group>
+      <vaadin-radio-button-group caption="Instrument" data-item-type="ca.qc.ircm.proview.msanalysis.MassDetectionInstrument" _id="instrument"></vaadin-radio-button-group>
+      <vaadin-radio-button-group caption="Protein identification database" data-item-type="ca.qc.ircm.proview.sample.ProteinIdentification" _id="proteinIdentification"></vaadin-radio-button-group>
+      <vaadin-text-field caption="Link to download protein database" null-representation="" _id="proteinIdentificationLink"></vaadin-text-field>
+      <vaadin-radio-button-group caption="Quantification" data-item-type="ca.qc.ircm.proview.submission.Quantification" _id="quantification"></vaadin-radio-button-group>
+      <vaadin-text-area caption="Quantification labels (if Silac)" null-representation="" _id="quantificationLabels"></vaadin-text-area>
+      <vaadin-radio-button-group caption="Analysis" data-item-type="java.lang.Boolean" _id="highResolution"></vaadin-radio-button-group>
       <vaadin-vertical-layout caption="Soluble in" spacing="false" size-auto margin="false" _id="solventsLayout">
-       <vaadin-check-box caption="Acetonitrile" _id="acetonitrileSolventsField"></vaadin-check-box>
-       <vaadin-check-box caption="Methanol" _id="methanolSolventsField"></vaadin-check-box>
-       <vaadin-check-box caption="CHCL3" _id="chclSolventsField"></vaadin-check-box>
-       <vaadin-check-box caption="Other" _id="otherSolventsField" :middle></vaadin-check-box>
+       <vaadin-check-box caption="Acetonitrile" _id="acetonitrileSolvents"></vaadin-check-box>
+       <vaadin-check-box caption="Methanol" _id="methanolSolvents"></vaadin-check-box>
+       <vaadin-check-box caption="CHCL3" _id="chclSolvents"></vaadin-check-box>
+       <vaadin-check-box caption="Other" _id="otherSolvents" :middle></vaadin-check-box>
       </vaadin-vertical-layout>
-      <vaadin-text-field caption="Specify other solvent" null-representation="" _id="otherSolventField"></vaadin-text-field>
-      <vaadin-label plain-text _id="otherSolventNoteLabel">
+      <vaadin-text-field caption="Specify other solvent" null-representation="" _id="otherSolvent"></vaadin-text-field>
+      <vaadin-label plain-text _id="otherSolventNote">
         (DMSO is not compatible with MS analysis) 
       </vaadin-label>
      </vaadin-form-layout>
@@ -143,7 +143,7 @@
    </vaadin-panel>
    <vaadin-panel caption="Comment" size-auto _id="commentPanel">
     <vaadin-vertical-layout size-auto>
-     <vaadin-text-area rows="10" null-representation="" _id="commentField"></vaadin-text-area>
+     <vaadin-text-area rows="10" null-representation="" _id="comment"></vaadin-text-area>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Additional files" width="600px" _id="filesPanel">
@@ -155,7 +155,7 @@
        Upload an image of the structure 
      </vaadin-label>
      <vaadin-vertical-layout spacing="false" size-auto margin="false" _id="filesUploaderLayout"></vaadin-vertical-layout>
-     <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.submission.SubmissionFile" _id="filesGrid"></vaadin-grid>
+     <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.submission.SubmissionFile" _id="files"></vaadin-grid>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Explanation" size-auto _id="explanationPanel">
@@ -163,8 +163,8 @@
      <vaadin-text-area _id="explanation"></vaadin-text-area>
     </vaadin-vertical-layout>
    </vaadin-panel>
-   <vaadin-horizontal-layout _id="buttonsLayout">
-    <vaadin-button style-name="primary" plain-text _id="saveButton">
+   <vaadin-horizontal-layout _id="buttons">
+    <vaadin-button style-name="primary" plain-text _id="save">
       Save 
     </vaadin-button>
    </vaadin-horizontal-layout>

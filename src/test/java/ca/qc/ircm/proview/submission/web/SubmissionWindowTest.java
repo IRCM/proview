@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionWindow.UPDATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionWindow.WINDOW_STYLE;
 import static org.junit.Assert.assertEquals;
@@ -131,7 +131,7 @@ public class SubmissionWindowTest extends SubmissionsViewPageObject {
     assertTrue(resources(SubmissionWindow.class).message(SubmissionWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
     assertTrue(
-        optional(() -> submissionWindow.findElement(className(SERVICE_PROPERTY))).isPresent());
+        optional(() -> submissionWindow.findElement(className(SERVICE))).isPresent());
     submissionWindow.findElement(className(UPDATE)).click();
     assertEquals(viewUrl(SubmissionView.VIEW_NAME, "36"), getDriver().getCurrentUrl());
   }

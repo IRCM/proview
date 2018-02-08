@@ -28,93 +28,93 @@ import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COMMENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COUNT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_NAME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_QUANTITY_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DECOLORATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DEVELOPMENT_TIME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COMMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DECOLORATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXAMPLE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PROPERTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPLANATION_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_GRID;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILE_FILENAME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILE_FILENAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_LABEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTION_TYPE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_WARNING;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTION_TYPE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NAME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_QUANTITY_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_LABELS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_LABELS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.REMOVE_FILE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_CONTAINER_TYPE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_CONTAINER_TYPE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PLATE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_TABLE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_COUNT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NAME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NUMBER_PROTEIN_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_QUANTITY_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_SUPPORT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_LABEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NUMBER_PROTEIN;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_SUPPORT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_WARNING;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COMMENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COUNT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_NAME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_QUANTITY_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COMMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.UPDATE_ERROR;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
@@ -361,58 +361,58 @@ public class SubmissionFormPresenterTest {
   }
 
   private void setFields() {
-    design.solutionSolventField.setValue(solutionSolvent);
-    design.sampleNameField.setValue(sampleName);
-    design.formulaField.setValue(formula);
-    design.monoisotopicMassField.setValue(String.valueOf(monoisotopicMass));
-    design.averageMassField.setValue(String.valueOf(averageMass));
-    design.toxicityField.setValue(toxicity);
-    design.lightSensitiveField.setValue(lightSensitive);
-    design.storageTemperatureOptions.setValue(storageTemperature);
-    design.sampleContainerTypeOptions.setValue(sampleContainerType);
-    design.plateNameField.setValue(plateName);
-    design.sampleCountField.setValue(String.valueOf(sampleCount));
+    design.solutionSolvent.setValue(solutionSolvent);
+    design.sampleName.setValue(sampleName);
+    design.formula.setValue(formula);
+    design.monoisotopicMass.setValue(String.valueOf(monoisotopicMass));
+    design.averageMass.setValue(String.valueOf(averageMass));
+    design.toxicity.setValue(toxicity);
+    design.lightSensitive.setValue(lightSensitive);
+    design.storageTemperature.setValue(storageTemperature);
+    design.sampleContainerType.setValue(sampleContainerType);
+    design.plateName.setValue(plateName);
+    design.sampleCount.setValue(String.valueOf(sampleCount));
     setValuesInSamplesTable();
     plate.well(0, 0).setSample(new SubmissionSample(null, sampleName1));
     plate.well(1, 0).setSample(new SubmissionSample(null, sampleName2));
-    design.experienceField.setValue(experience);
-    design.experienceGoalField.setValue(experienceGoal);
-    design.taxonomyField.setValue(taxonomy);
-    design.proteinNameField.setValue(proteinName);
-    design.proteinWeightField.setValue(String.valueOf(proteinWeight));
-    design.postTranslationModificationField.setValue(postTranslationModification);
-    design.sampleQuantityField.setValue(sampleQuantity);
-    design.sampleVolumeField.setValue(String.valueOf(sampleVolume));
-    design.standardCountField.setValue(String.valueOf(standardsCount));
+    design.experience.setValue(experience);
+    design.experienceGoal.setValue(experienceGoal);
+    design.taxonomy.setValue(taxonomy);
+    design.proteinName.setValue(proteinName);
+    design.proteinWeight.setValue(String.valueOf(proteinWeight));
+    design.postTranslationModification.setValue(postTranslationModification);
+    design.sampleQuantity.setValue(sampleQuantity);
+    design.sampleVolume.setValue(String.valueOf(sampleVolume));
+    design.standardCount.setValue(String.valueOf(standardsCount));
     setValuesInStandardsTable();
-    design.contaminantCountField.setValue(String.valueOf(contaminantsCount));
+    design.contaminantCount.setValue(String.valueOf(contaminantsCount));
     setValuesInContaminantsTable();
-    design.separationField.setValue(gelSeparation);
-    design.thicknessField.setValue(gelThickness);
-    design.colorationField.setValue(gelColoration);
-    design.otherColorationField.setValue(otherColoration);
-    design.developmentTimeField.setValue(developmentTime);
-    design.decolorationField.setValue(decoloration);
-    design.weightMarkerQuantityField.setValue(String.valueOf(weightMarkerQuantity));
-    design.proteinQuantityField.setValue(proteinQuantity);
-    design.digestionOptions.setValue(digestion);
-    design.usedProteolyticDigestionMethodField.setValue(usedDigestion);
-    design.otherProteolyticDigestionMethodField.setValue(otherDigestion);
-    design.injectionTypeOptions.setValue(injectionType);
-    design.sourceOptions.setValue(source);
-    design.proteinContentOptions.setValue(proteinContent);
-    design.instrumentOptions.setValue(instrument);
-    design.proteinIdentificationOptions.setValue(proteinIdentification);
-    design.proteinIdentificationLinkField.setValue(proteinIdentificationLink);
-    design.quantificationOptions.setValue(quantification);
-    design.quantificationLabelsField.setValue(quantificationLabels);
-    design.highResolutionOptions.setValue(highResolution);
-    design.acetonitrileSolventsField.setValue(acetonitrileSolvents);
-    design.methanolSolventsField.setValue(methanolSolvents);
-    design.chclSolventsField.setValue(chclSolvents);
-    design.otherSolventsField.setValue(otherSolvents);
-    design.otherSolventField.setValue(otherSolvent);
-    design.commentField.setValue(comment);
+    design.separation.setValue(gelSeparation);
+    design.thickness.setValue(gelThickness);
+    design.coloration.setValue(gelColoration);
+    design.otherColoration.setValue(otherColoration);
+    design.developmentTime.setValue(developmentTime);
+    design.decoloration.setValue(decoloration);
+    design.weightMarkerQuantity.setValue(String.valueOf(weightMarkerQuantity));
+    design.proteinQuantity.setValue(proteinQuantity);
+    design.digestion.setValue(digestion);
+    design.usedProteolyticDigestionMethod.setValue(usedDigestion);
+    design.otherProteolyticDigestionMethod.setValue(otherDigestion);
+    design.injectionType.setValue(injectionType);
+    design.source.setValue(source);
+    design.proteinContent.setValue(proteinContent);
+    design.instrument.setValue(instrument);
+    design.proteinIdentification.setValue(proteinIdentification);
+    design.proteinIdentificationLink.setValue(proteinIdentificationLink);
+    design.quantification.setValue(quantification);
+    design.quantificationLabels.setValue(quantificationLabels);
+    design.highResolution.setValue(highResolution);
+    design.acetonitrileSolvents.setValue(acetonitrileSolvents);
+    design.methanolSolvents.setValue(methanolSolvents);
+    design.chclSolvents.setValue(chclSolvents);
+    design.otherSolvents.setValue(otherSolvents);
+    design.otherSolvent.setValue(otherSolvent);
+    design.comment.setValue(comment);
     design.explanation.setValue(explanation);
   }
 
@@ -423,70 +423,69 @@ public class SubmissionFormPresenterTest {
   }
 
   private void setValuesInSamplesTable() {
-    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samplesGrid).getItems());
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samples).getItems());
     SubmissionSample sample = samples.get(0);
-    sampleNameField1 = setValueInSamplesGrid(sample, sampleName1, SAMPLE_NAME_PROPERTY);
-    sampleNumberProteinField1 = setValueInSamplesGrid(sample, String.valueOf(sampleNumberProtein1),
-        SAMPLE_NUMBER_PROTEIN_PROPERTY);
+    sampleNameField1 = setValueInSamplesGrid(sample, sampleName1, SAMPLE_NAME);
+    sampleNumberProteinField1 =
+        setValueInSamplesGrid(sample, String.valueOf(sampleNumberProtein1), SAMPLE_NUMBER_PROTEIN);
     sampleProteinWeightField1 =
-        setValueInSamplesGrid(sample, String.valueOf(proteinWeight1), PROTEIN_WEIGHT_PROPERTY);
+        setValueInSamplesGrid(sample, String.valueOf(proteinWeight1), PROTEIN_WEIGHT);
     sample = samples.get(1);
-    sampleNameField2 = setValueInSamplesGrid(sample, sampleName2, SAMPLE_NAME_PROPERTY);
-    sampleNumberProteinField2 = setValueInSamplesGrid(sample, String.valueOf(sampleNumberProtein2),
-        SAMPLE_NUMBER_PROTEIN_PROPERTY);
+    sampleNameField2 = setValueInSamplesGrid(sample, sampleName2, SAMPLE_NAME);
+    sampleNumberProteinField2 =
+        setValueInSamplesGrid(sample, String.valueOf(sampleNumberProtein2), SAMPLE_NUMBER_PROTEIN);
     sampleProteinWeightField2 =
-        setValueInSamplesGrid(sample, String.valueOf(proteinWeight2), PROTEIN_WEIGHT_PROPERTY);
+        setValueInSamplesGrid(sample, String.valueOf(proteinWeight2), PROTEIN_WEIGHT);
   }
 
   private TextField setValueInSamplesGrid(SubmissionSample sample, String value, String columnId) {
     TextField field =
-        (TextField) design.samplesGrid.getColumn(columnId).getValueProvider().apply(sample);
+        (TextField) design.samples.getColumn(columnId).getValueProvider().apply(sample);
     field.setValue(value);
     return field;
   }
 
   private void setValuesInStandardsTable() {
-    List<Standard> standards = new ArrayList<>(dataProvider(design.standardsGrid).getItems());
+    List<Standard> standards = new ArrayList<>(dataProvider(design.standards).getItems());
     Standard standard = standards.get(0);
-    standardNameField1 = setValueInStandardsGrid(standard, standardName1, STANDARD_NAME_PROPERTY);
+    standardNameField1 = setValueInStandardsGrid(standard, standardName1, STANDARD_NAME);
     standardQuantityField1 =
-        setValueInStandardsGrid(standard, standardQuantity1, STANDARD_QUANTITY_PROPERTY);
-    setValueInStandardsGrid(standard, standardComment1, STANDARD_COMMENT_PROPERTY);
+        setValueInStandardsGrid(standard, standardQuantity1, STANDARD_QUANTITY);
+    setValueInStandardsGrid(standard, standardComment1, STANDARD_COMMENT);
     standard = standards.get(1);
-    standardNameField2 = setValueInStandardsGrid(standard, standardName2, STANDARD_NAME_PROPERTY);
+    standardNameField2 = setValueInStandardsGrid(standard, standardName2, STANDARD_NAME);
     standardQuantityField2 =
-        setValueInStandardsGrid(standard, standardQuantity2, STANDARD_QUANTITY_PROPERTY);
-    setValueInStandardsGrid(standard, standardComment2, STANDARD_COMMENT_PROPERTY);
+        setValueInStandardsGrid(standard, standardQuantity2, STANDARD_QUANTITY);
+    setValueInStandardsGrid(standard, standardComment2, STANDARD_COMMENT);
   }
 
   private TextField setValueInStandardsGrid(Standard standard, String value, String columnId) {
     TextField field =
-        (TextField) design.standardsGrid.getColumn(columnId).getValueProvider().apply(standard);
+        (TextField) design.standards.getColumn(columnId).getValueProvider().apply(standard);
     field.setValue(value);
     return field;
   }
 
   private void setValuesInContaminantsTable() {
-    List<Contaminant> contaminants =
-        new ArrayList<>(dataProvider(design.contaminantsGrid).getItems());
+    List<Contaminant> contaminants = new ArrayList<>(dataProvider(design.contaminants).getItems());
     Contaminant contaminant = contaminants.get(0);
     contaminantNameField1 =
-        setValueInContaminantsGrid(contaminant, contaminantName1, CONTAMINANT_NAME_PROPERTY);
-    contaminantQuantityField1 = setValueInContaminantsGrid(contaminant, contaminantQuantity1,
-        CONTAMINANT_QUANTITY_PROPERTY);
-    setValueInContaminantsGrid(contaminant, contaminantComment1, CONTAMINANT_COMMENT_PROPERTY);
+        setValueInContaminantsGrid(contaminant, contaminantName1, CONTAMINANT_NAME);
+    contaminantQuantityField1 =
+        setValueInContaminantsGrid(contaminant, contaminantQuantity1, CONTAMINANT_QUANTITY);
+    setValueInContaminantsGrid(contaminant, contaminantComment1, CONTAMINANT_COMMENT);
     contaminant = contaminants.get(1);
     contaminantNameField2 =
-        setValueInContaminantsGrid(contaminant, contaminantName2, CONTAMINANT_NAME_PROPERTY);
-    contaminantQuantityField2 = setValueInContaminantsGrid(contaminant, contaminantQuantity2,
-        CONTAMINANT_QUANTITY_PROPERTY);
-    setValueInContaminantsGrid(contaminant, contaminantComment2, CONTAMINANT_COMMENT_PROPERTY);
+        setValueInContaminantsGrid(contaminant, contaminantName2, CONTAMINANT_NAME);
+    contaminantQuantityField2 =
+        setValueInContaminantsGrid(contaminant, contaminantQuantity2, CONTAMINANT_QUANTITY);
+    setValueInContaminantsGrid(contaminant, contaminantComment2, CONTAMINANT_COMMENT);
   }
 
   private TextField setValueInContaminantsGrid(Contaminant contaminant, String value,
       String columnId) {
-    TextField field = (TextField) design.contaminantsGrid.getColumn(columnId).getValueProvider()
-        .apply(contaminant);
+    TextField field =
+        (TextField) design.contaminants.getColumn(columnId).getValueProvider().apply(contaminant);
     field.setValue(value);
     return field;
   }
@@ -662,69 +661,66 @@ public class SubmissionFormPresenterTest {
   public void samplesTableColumns() {
     presenter.init(view);
 
-    assertEquals(3, design.samplesGrid.getColumns().size());
-    assertEquals(SAMPLE_NAME_PROPERTY, design.samplesGrid.getColumns().get(0).getId());
-    assertFalse(design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isHidden());
-    assertFalse(design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isSortable());
-    assertEquals(SAMPLE_NUMBER_PROTEIN_PROPERTY, design.samplesGrid.getColumns().get(1).getId());
-    assertTrue(design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isHidden());
-    assertFalse(design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isSortable());
-    assertEquals(PROTEIN_WEIGHT_PROPERTY, design.samplesGrid.getColumns().get(2).getId());
-    assertTrue(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
-    assertFalse(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isSortable());
+    assertEquals(3, design.samples.getColumns().size());
+    assertEquals(SAMPLE_NAME, design.samples.getColumns().get(0).getId());
+    assertFalse(design.samples.getColumn(SAMPLE_NAME).isHidden());
+    assertFalse(design.samples.getColumn(SAMPLE_NAME).isSortable());
+    assertEquals(SAMPLE_NUMBER_PROTEIN, design.samples.getColumns().get(1).getId());
+    assertTrue(design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).isHidden());
+    assertFalse(design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).isSortable());
+    assertEquals(PROTEIN_WEIGHT, design.samples.getColumns().get(2).getId());
+    assertTrue(design.samples.getColumn(PROTEIN_WEIGHT).isHidden());
+    assertFalse(design.samples.getColumn(PROTEIN_WEIGHT).isSortable());
   }
 
   @Test
   public void samplesTableColumns_IntactProtein() {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
+    design.service.setValue(INTACT_PROTEIN);
 
-    assertEquals(3, design.samplesGrid.getColumns().size());
-    assertEquals(SAMPLE_NAME_PROPERTY, design.samplesGrid.getColumns().get(0).getId());
-    assertFalse(design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isHidden());
-    assertFalse(design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).isSortable());
-    assertEquals(SAMPLE_NUMBER_PROTEIN_PROPERTY, design.samplesGrid.getColumns().get(1).getId());
-    assertFalse(design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isHidden());
-    assertFalse(design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).isSortable());
-    assertEquals(PROTEIN_WEIGHT_PROPERTY, design.samplesGrid.getColumns().get(2).getId());
-    assertFalse(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
-    assertFalse(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isSortable());
+    assertEquals(3, design.samples.getColumns().size());
+    assertEquals(SAMPLE_NAME, design.samples.getColumns().get(0).getId());
+    assertFalse(design.samples.getColumn(SAMPLE_NAME).isHidden());
+    assertFalse(design.samples.getColumn(SAMPLE_NAME).isSortable());
+    assertEquals(SAMPLE_NUMBER_PROTEIN, design.samples.getColumns().get(1).getId());
+    assertFalse(design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).isHidden());
+    assertFalse(design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).isSortable());
+    assertEquals(PROTEIN_WEIGHT, design.samples.getColumns().get(2).getId());
+    assertFalse(design.samples.getColumn(PROTEIN_WEIGHT).isHidden());
+    assertFalse(design.samples.getColumn(PROTEIN_WEIGHT).isSortable());
   }
 
   @Test
   public void standardsColumns() {
     presenter.init(view);
 
-    assertEquals(3, design.standardsGrid.getColumns().size());
-    assertEquals(STANDARD_NAME_PROPERTY, design.standardsGrid.getColumns().get(0).getId());
-    assertTrue(
-        containsInstanceOf(design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).getExtensions(),
-            ComponentRenderer.class));
-    assertFalse(design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).isSortable());
-    {
-      TextField field = (TextField) design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY)
-          .getValueProvider().apply(new Standard());
-      assertTrue(field.getStyleName().contains(STANDARD_NAME_PROPERTY));
-    }
-    assertEquals(STANDARD_QUANTITY_PROPERTY, design.standardsGrid.getColumns().get(1).getId());
-    assertTrue(containsInstanceOf(
-        design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY).getExtensions(),
+    assertEquals(3, design.standards.getColumns().size());
+    assertEquals(STANDARD_NAME, design.standards.getColumns().get(0).getId());
+    assertTrue(containsInstanceOf(design.standards.getColumn(STANDARD_NAME).getExtensions(),
         ComponentRenderer.class));
-    assertFalse(design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY).isSortable());
+    assertFalse(design.standards.getColumn(STANDARD_NAME).isSortable());
     {
-      TextField field = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY)
-          .getValueProvider().apply(new Standard());
-      assertTrue(field.getStyleName().contains(STANDARD_QUANTITY_PROPERTY));
+      TextField field = (TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider()
+          .apply(new Standard());
+      assertTrue(field.getStyleName().contains(STANDARD_NAME));
     }
-    assertEquals(STANDARD_COMMENT_PROPERTY, design.standardsGrid.getColumns().get(2).getId());
-    assertTrue(containsInstanceOf(
-        design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY).getExtensions(),
+    assertEquals(STANDARD_QUANTITY, design.standards.getColumns().get(1).getId());
+    assertTrue(containsInstanceOf(design.standards.getColumn(STANDARD_QUANTITY).getExtensions(),
         ComponentRenderer.class));
-    assertFalse(design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY).isSortable());
+    assertFalse(design.standards.getColumn(STANDARD_QUANTITY).isSortable());
     {
-      TextField field = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY)
-          .getValueProvider().apply(new Standard());
-      assertTrue(field.getStyleName().contains(STANDARD_COMMENT_PROPERTY));
+      TextField field = (TextField) design.standards.getColumn(STANDARD_QUANTITY).getValueProvider()
+          .apply(new Standard());
+      assertTrue(field.getStyleName().contains(STANDARD_QUANTITY));
+    }
+    assertEquals(STANDARD_COMMENT, design.standards.getColumns().get(2).getId());
+    assertTrue(containsInstanceOf(design.standards.getColumn(STANDARD_COMMENT).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.standards.getColumn(STANDARD_COMMENT).isSortable());
+    {
+      TextField field = (TextField) design.standards.getColumn(STANDARD_COMMENT).getValueProvider()
+          .apply(new Standard());
+      assertTrue(field.getStyleName().contains(STANDARD_COMMENT));
     }
   }
 
@@ -732,37 +728,35 @@ public class SubmissionFormPresenterTest {
   public void contaminantsColumns() {
     presenter.init(view);
 
-    assertEquals(3, design.contaminantsGrid.getColumns().size());
-    assertEquals(CONTAMINANT_NAME_PROPERTY, design.contaminantsGrid.getColumns().get(0).getId());
-    assertTrue(containsInstanceOf(
-        design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY).getExtensions(),
+    assertEquals(3, design.contaminants.getColumns().size());
+    assertEquals(CONTAMINANT_NAME, design.contaminants.getColumns().get(0).getId());
+    assertTrue(containsInstanceOf(design.contaminants.getColumn(CONTAMINANT_NAME).getExtensions(),
         ComponentRenderer.class));
-    assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY).isSortable());
+    assertFalse(design.contaminants.getColumn(CONTAMINANT_NAME).isSortable());
     {
-      TextField field = (TextField) design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY)
+      TextField field = (TextField) design.contaminants.getColumn(CONTAMINANT_NAME)
           .getValueProvider().apply(new Contaminant());
-      assertTrue(field.getStyleName().contains(CONTAMINANT_NAME_PROPERTY));
+      assertTrue(field.getStyleName().contains(CONTAMINANT_NAME));
     }
-    assertEquals(CONTAMINANT_QUANTITY_PROPERTY,
-        design.contaminantsGrid.getColumns().get(1).getId());
-    assertTrue(containsInstanceOf(
-        design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY).getExtensions(),
-        ComponentRenderer.class));
-    assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY).isSortable());
+    assertEquals(CONTAMINANT_QUANTITY, design.contaminants.getColumns().get(1).getId());
+    assertTrue(
+        containsInstanceOf(design.contaminants.getColumn(CONTAMINANT_QUANTITY).getExtensions(),
+            ComponentRenderer.class));
+    assertFalse(design.contaminants.getColumn(CONTAMINANT_QUANTITY).isSortable());
     {
-      TextField field = (TextField) design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY)
+      TextField field = (TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY)
           .getValueProvider().apply(new Contaminant());
-      assertTrue(field.getStyleName().contains(CONTAMINANT_QUANTITY_PROPERTY));
+      assertTrue(field.getStyleName().contains(CONTAMINANT_QUANTITY));
     }
-    assertEquals(CONTAMINANT_COMMENT_PROPERTY, design.contaminantsGrid.getColumns().get(2).getId());
-    assertTrue(containsInstanceOf(
-        design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY).getExtensions(),
-        ComponentRenderer.class));
-    assertFalse(design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY).isSortable());
+    assertEquals(CONTAMINANT_COMMENT, design.contaminants.getColumns().get(2).getId());
+    assertTrue(
+        containsInstanceOf(design.contaminants.getColumn(CONTAMINANT_COMMENT).getExtensions(),
+            ComponentRenderer.class));
+    assertFalse(design.contaminants.getColumn(CONTAMINANT_COMMENT).isSortable());
     {
-      TextField field = (TextField) design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY)
+      TextField field = (TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT)
           .getValueProvider().apply(new Contaminant());
-      assertTrue(field.getStyleName().contains(CONTAMINANT_COMMENT_PROPERTY));
+      assertTrue(field.getStyleName().contains(CONTAMINANT_COMMENT));
     }
   }
 
@@ -771,166 +765,165 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setReadOnly(true);
 
-    assertEquals(2, design.filesGrid.getColumns().size());
-    assertEquals(FILE_FILENAME_PROPERTY, design.filesGrid.getColumns().get(0).getId());
-    assertFalse(design.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isHidden());
-    assertFalse(design.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isSortable());
-    assertEquals(REMOVE_FILE, design.filesGrid.getColumns().get(1).getId());
-    assertTrue(design.filesGrid.getColumn(REMOVE_FILE).isHidden());
-    assertFalse(design.filesGrid.getColumn(REMOVE_FILE).isSortable());
+    assertEquals(2, design.files.getColumns().size());
+    assertEquals(FILE_FILENAME, design.files.getColumns().get(0).getId());
+    assertFalse(design.files.getColumn(FILE_FILENAME).isHidden());
+    assertFalse(design.files.getColumn(FILE_FILENAME).isSortable());
+    assertEquals(REMOVE_FILE, design.files.getColumns().get(1).getId());
+    assertTrue(design.files.getColumn(REMOVE_FILE).isHidden());
+    assertFalse(design.files.getColumn(REMOVE_FILE).isSortable());
   }
 
   @Test
   public void filesColumns() {
     presenter.init(view);
 
-    assertEquals(2, design.filesGrid.getColumns().size());
-    assertEquals(FILE_FILENAME_PROPERTY, design.filesGrid.getColumns().get(0).getId());
-    assertFalse(design.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isHidden());
-    assertFalse(design.filesGrid.getColumn(FILE_FILENAME_PROPERTY).isSortable());
-    assertEquals(REMOVE_FILE, design.filesGrid.getColumns().get(1).getId());
-    assertFalse(design.filesGrid.getColumn(REMOVE_FILE).isHidden());
-    assertFalse(design.filesGrid.getColumn(REMOVE_FILE).isSortable());
+    assertEquals(2, design.files.getColumns().size());
+    assertEquals(FILE_FILENAME, design.files.getColumns().get(0).getId());
+    assertFalse(design.files.getColumn(FILE_FILENAME).isHidden());
+    assertFalse(design.files.getColumn(FILE_FILENAME).isSortable());
+    assertEquals(REMOVE_FILE, design.files.getColumns().get(1).getId());
+    assertFalse(design.files.getColumn(REMOVE_FILE).isHidden());
+    assertFalse(design.files.getColumn(REMOVE_FILE).isSortable());
   }
 
   @Test
   public void requiredFields() {
     presenter.init(view);
 
-    assertTrue(design.serviceOptions.isRequiredIndicatorVisible());
-    assertTrue(design.sampleSupportOptions.isRequiredIndicatorVisible());
-    assertTrue(design.solutionSolventField.isRequiredIndicatorVisible());
-    assertTrue(design.sampleCountField.isRequiredIndicatorVisible());
-    assertTrue(design.sampleNameField.isRequiredIndicatorVisible());
-    assertTrue(design.formulaField.isRequiredIndicatorVisible());
-    assertTrue(design.monoisotopicMassField.isRequiredIndicatorVisible());
-    assertFalse(design.averageMassField.isRequiredIndicatorVisible());
-    assertFalse(design.toxicityField.isRequiredIndicatorVisible());
-    assertFalse(design.lightSensitiveField.isRequiredIndicatorVisible());
-    assertTrue(design.storageTemperatureOptions.isRequiredIndicatorVisible());
-    assertTrue(design.sampleContainerTypeOptions.isRequiredIndicatorVisible());
-    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samplesGrid);
+    assertTrue(design.service.isRequiredIndicatorVisible());
+    assertTrue(design.sampleSupport.isRequiredIndicatorVisible());
+    assertTrue(design.solutionSolvent.isRequiredIndicatorVisible());
+    assertTrue(design.sampleCount.isRequiredIndicatorVisible());
+    assertTrue(design.sampleName.isRequiredIndicatorVisible());
+    assertTrue(design.formula.isRequiredIndicatorVisible());
+    assertTrue(design.monoisotopicMass.isRequiredIndicatorVisible());
+    assertFalse(design.averageMass.isRequiredIndicatorVisible());
+    assertFalse(design.toxicity.isRequiredIndicatorVisible());
+    assertFalse(design.lightSensitive.isRequiredIndicatorVisible());
+    assertTrue(design.storageTemperature.isRequiredIndicatorVisible());
+    assertTrue(design.sampleContainerType.isRequiredIndicatorVisible());
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samples);
     if (samplesDataProvider.getItems().size() < 1) {
       samplesDataProvider.getItems().add(new SubmissionSample());
     }
-    assertTrue(design.plateNameField.isRequiredIndicatorVisible());
+    assertTrue(design.plateName.isRequiredIndicatorVisible());
     SubmissionSample firstSample = samplesDataProvider.getItems().iterator().next();
-    TextField sampleNameTableField = (TextField) design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY)
-        .getValueProvider().apply(firstSample);
+    TextField sampleNameTableField =
+        (TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(firstSample);
     assertTrue(sampleNameTableField.isRequiredIndicatorVisible());
-    TextField sampleNumberProteinTableField = (TextField) design.samplesGrid
-        .getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).getValueProvider().apply(firstSample);
+    TextField sampleNumberProteinTableField = (TextField) design.samples
+        .getColumn(SAMPLE_NUMBER_PROTEIN).getValueProvider().apply(firstSample);
     assertTrue(sampleNumberProteinTableField.isRequiredIndicatorVisible());
-    TextField sampleProteinWeightTableField = (TextField) design.samplesGrid
-        .getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider().apply(firstSample);
+    TextField sampleProteinWeightTableField =
+        (TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample);
     assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
-    assertTrue(design.experienceField.isRequiredIndicatorVisible());
-    assertFalse(design.experienceGoalField.isRequiredIndicatorVisible());
-    assertTrue(design.taxonomyField.isRequiredIndicatorVisible());
-    assertFalse(design.proteinNameField.isRequiredIndicatorVisible());
-    assertFalse(design.proteinWeightField.isRequiredIndicatorVisible());
-    assertFalse(design.postTranslationModificationField.isRequiredIndicatorVisible());
-    assertTrue(design.sampleQuantityField.isRequiredIndicatorVisible());
-    assertTrue(design.sampleVolumeField.isRequiredIndicatorVisible());
-    assertFalse(design.standardCountField.isRequiredIndicatorVisible());
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standardsGrid);
+    assertTrue(design.experience.isRequiredIndicatorVisible());
+    assertFalse(design.experienceGoal.isRequiredIndicatorVisible());
+    assertTrue(design.taxonomy.isRequiredIndicatorVisible());
+    assertFalse(design.proteinName.isRequiredIndicatorVisible());
+    assertFalse(design.proteinWeight.isRequiredIndicatorVisible());
+    assertFalse(design.postTranslationModification.isRequiredIndicatorVisible());
+    assertTrue(design.sampleQuantity.isRequiredIndicatorVisible());
+    assertTrue(design.sampleVolume.isRequiredIndicatorVisible());
+    assertFalse(design.standardCount.isRequiredIndicatorVisible());
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
     if (standardsDataProvider.getItems().size() < 1) {
       standardsDataProvider.getItems().add(new Standard());
     }
     Standard firstStandard = standardsDataProvider.getItems().iterator().next();
-    TextField standardNameTableField = (TextField) design.standardsGrid
-        .getColumn(STANDARD_NAME_PROPERTY).getValueProvider().apply(firstStandard);
+    TextField standardNameTableField = (TextField) design.standards.getColumn(STANDARD_NAME)
+        .getValueProvider().apply(firstStandard);
     assertTrue(standardNameTableField.isRequiredIndicatorVisible());
-    TextField standardQuantityTableField = (TextField) design.standardsGrid
-        .getColumn(STANDARD_QUANTITY_PROPERTY).getValueProvider().apply(firstStandard);
+    TextField standardQuantityTableField = (TextField) design.standards.getColumn(STANDARD_QUANTITY)
+        .getValueProvider().apply(firstStandard);
     assertTrue(standardQuantityTableField.isRequiredIndicatorVisible());
-    TextField standardCommentTableField = (TextField) design.standardsGrid
-        .getColumn(STANDARD_COMMENT_PROPERTY).getValueProvider().apply(firstStandard);
+    TextField standardCommentTableField = (TextField) design.standards.getColumn(STANDARD_COMMENT)
+        .getValueProvider().apply(firstStandard);
     assertFalse(standardCommentTableField.isRequiredIndicatorVisible());
-    assertFalse(design.contaminantCountField.isRequiredIndicatorVisible());
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminantsGrid);
+    assertFalse(design.contaminantCount.isRequiredIndicatorVisible());
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
     if (contaminantsDataProvider.getItems().size() < 1) {
       contaminantsDataProvider.getItems().add(new Contaminant());
     }
     Contaminant firstContaminant = contaminantsDataProvider.getItems().iterator().next();
-    TextField contaminantNameTableField = (TextField) design.contaminantsGrid
-        .getColumn(CONTAMINANT_NAME_PROPERTY).getValueProvider().apply(firstContaminant);
+    TextField contaminantNameTableField = (TextField) design.contaminants
+        .getColumn(CONTAMINANT_NAME).getValueProvider().apply(firstContaminant);
     assertTrue(contaminantNameTableField.isRequiredIndicatorVisible());
-    TextField contaminantQuantityTableField = (TextField) design.contaminantsGrid
-        .getColumn(CONTAMINANT_QUANTITY_PROPERTY).getValueProvider().apply(firstContaminant);
+    TextField contaminantQuantityTableField = (TextField) design.contaminants
+        .getColumn(CONTAMINANT_QUANTITY).getValueProvider().apply(firstContaminant);
     assertTrue(contaminantQuantityTableField.isRequiredIndicatorVisible());
-    TextField contaminantCommentTableField = (TextField) design.contaminantsGrid
-        .getColumn(CONTAMINANT_COMMENT_PROPERTY).getValueProvider().apply(firstContaminant);
+    TextField contaminantCommentTableField = (TextField) design.contaminants
+        .getColumn(CONTAMINANT_COMMENT).getValueProvider().apply(firstContaminant);
     assertFalse(contaminantCommentTableField.isRequiredIndicatorVisible());
-    assertTrue(design.separationField.isRequiredIndicatorVisible());
-    assertTrue(design.thicknessField.isRequiredIndicatorVisible());
-    assertFalse(design.colorationField.isRequiredIndicatorVisible());
-    assertTrue(design.otherColorationField.isRequiredIndicatorVisible());
-    assertFalse(design.developmentTimeField.isRequiredIndicatorVisible());
-    assertFalse(design.decolorationField.isRequiredIndicatorVisible());
-    assertFalse(design.weightMarkerQuantityField.isRequiredIndicatorVisible());
-    assertFalse(design.proteinQuantityField.isRequiredIndicatorVisible());
-    assertTrue(design.digestionOptions.isRequiredIndicatorVisible());
-    assertTrue(design.usedProteolyticDigestionMethodField.isRequiredIndicatorVisible());
-    assertTrue(design.otherProteolyticDigestionMethodField.isRequiredIndicatorVisible());
-    assertTrue(design.injectionTypeOptions.isRequiredIndicatorVisible());
-    assertTrue(design.sourceOptions.isRequiredIndicatorVisible());
-    assertTrue(design.proteinContentOptions.isRequiredIndicatorVisible());
-    assertFalse(design.instrumentOptions.isRequiredIndicatorVisible());
-    assertTrue(design.proteinIdentificationOptions.isRequiredIndicatorVisible());
-    assertTrue(design.proteinIdentificationLinkField.isRequiredIndicatorVisible());
-    assertFalse(design.quantificationOptions.isRequiredIndicatorVisible());
-    assertFalse(design.quantificationLabelsField.isRequiredIndicatorVisible());
-    assertTrue(design.highResolutionOptions.isRequiredIndicatorVisible());
-    assertFalse(design.acetonitrileSolventsField.isRequiredIndicatorVisible());
-    assertFalse(design.methanolSolventsField.isRequiredIndicatorVisible());
-    assertFalse(design.chclSolventsField.isRequiredIndicatorVisible());
-    assertFalse(design.otherSolventsField.isRequiredIndicatorVisible());
-    assertTrue(design.otherSolventField.isRequiredIndicatorVisible());
+    assertTrue(design.separation.isRequiredIndicatorVisible());
+    assertTrue(design.thickness.isRequiredIndicatorVisible());
+    assertFalse(design.coloration.isRequiredIndicatorVisible());
+    assertTrue(design.otherColoration.isRequiredIndicatorVisible());
+    assertFalse(design.developmentTime.isRequiredIndicatorVisible());
+    assertFalse(design.decoloration.isRequiredIndicatorVisible());
+    assertFalse(design.weightMarkerQuantity.isRequiredIndicatorVisible());
+    assertFalse(design.proteinQuantity.isRequiredIndicatorVisible());
+    assertTrue(design.digestion.isRequiredIndicatorVisible());
+    assertTrue(design.usedProteolyticDigestionMethod.isRequiredIndicatorVisible());
+    assertTrue(design.otherProteolyticDigestionMethod.isRequiredIndicatorVisible());
+    assertTrue(design.injectionType.isRequiredIndicatorVisible());
+    assertTrue(design.source.isRequiredIndicatorVisible());
+    assertTrue(design.proteinContent.isRequiredIndicatorVisible());
+    assertFalse(design.instrument.isRequiredIndicatorVisible());
+    assertTrue(design.proteinIdentification.isRequiredIndicatorVisible());
+    assertTrue(design.proteinIdentificationLink.isRequiredIndicatorVisible());
+    assertFalse(design.quantification.isRequiredIndicatorVisible());
+    assertFalse(design.quantificationLabels.isRequiredIndicatorVisible());
+    assertTrue(design.highResolution.isRequiredIndicatorVisible());
+    assertFalse(design.acetonitrileSolvents.isRequiredIndicatorVisible());
+    assertFalse(design.methanolSolvents.isRequiredIndicatorVisible());
+    assertFalse(design.chclSolvents.isRequiredIndicatorVisible());
+    assertFalse(design.otherSolvents.isRequiredIndicatorVisible());
+    assertTrue(design.otherSolvent.isRequiredIndicatorVisible());
   }
 
   @Test
   public void required_ProteinWeight_Lcmsms() {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samplesGrid);
+    design.service.setValue(INTACT_PROTEIN);
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samples);
     if (samplesDataProvider.getItems().size() < 1) {
       samplesDataProvider.getItems().add(new SubmissionSample());
     }
     SubmissionSample firstSample = samplesDataProvider.getItems().iterator().next();
-    TextField sampleProteinWeightTableField = (TextField) design.samplesGrid
-        .getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider().apply(firstSample);
-    design.serviceOptions.setValue(LC_MS_MS); // Force field update.
+    TextField sampleProteinWeightTableField =
+        (TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample);
+    design.service.setValue(LC_MS_MS); // Force field update.
 
     assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
-    assertTrue(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
+    assertTrue(design.samples.getColumn(PROTEIN_WEIGHT).isHidden());
   }
 
   @Test
   public void required_ProteinWeight_IntactProtein() {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samplesGrid);
+    design.service.setValue(INTACT_PROTEIN);
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samples);
     if (samplesDataProvider.getItems().size() < 1) {
       samplesDataProvider.getItems().add(new SubmissionSample());
     }
     SubmissionSample firstSample = samplesDataProvider.getItems().iterator().next();
-    TextField sampleProteinWeightTableField = (TextField) design.samplesGrid
-        .getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider().apply(firstSample);
-    design.serviceOptions.setValue(INTACT_PROTEIN); // Force field update.
+    TextField sampleProteinWeightTableField =
+        (TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample);
+    design.service.setValue(INTACT_PROTEIN); // Force field update.
 
     assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
-    assertFalse(design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).isHidden());
+    assertFalse(design.samples.getColumn(PROTEIN_WEIGHT).isHidden());
   }
 
   @Test
   public void service_Options() {
     presenter.init(view);
 
-    assertEquals(Service.availables().size(),
-        dataProvider(design.serviceOptions).getItems().size());
+    assertEquals(Service.availables().size(), dataProvider(design.service).getItems().size());
     for (Service service : Service.availables()) {
-      assertTrue(service.name(), dataProvider(design.serviceOptions).getItems().contains(service));
+      assertTrue(service.name(), dataProvider(design.service).getItems().contains(service));
     }
   }
 
@@ -943,41 +936,41 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertTrue(dataProvider(design.serviceOptions).getItems().contains(service));
-    assertFalse(design.serviceOptions.getItemEnabledProvider().test(service));
+    assertTrue(dataProvider(design.service).getItems().contains(service));
+    assertFalse(design.service.getItemEnabledProvider().test(service));
   }
 
   @Test
   public void gelSupportDisabled_Smallmolecule() {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
+    design.service.setValue(SMALL_MOLECULE);
 
-    assertFalse(design.sampleSupportOptions.getItemEnabledProvider().test(GEL));
+    assertFalse(design.sampleSupport.getItemEnabledProvider().test(GEL));
   }
 
   @Test
   public void gelSupportDisabled_Intactprotein() {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
+    design.service.setValue(INTACT_PROTEIN);
 
-    assertFalse(design.sampleSupportOptions.getItemEnabledProvider().test(GEL));
+    assertFalse(design.sampleSupport.getItemEnabledProvider().test(GEL));
   }
 
   @Test
   public void digestion_RequiredText() {
     presenter.init(view);
 
-    design.digestionOptions.setValue(TRYPSIN);
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    design.digestion.setValue(TRYPSIN);
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    design.digestionOptions.setValue(DIGESTED);
-    assertTrue(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    design.digestion.setValue(DIGESTED);
+    assertTrue(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    design.digestionOptions.setValue(ProteolyticDigestion.OTHER);
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertTrue(design.otherProteolyticDigestionMethodField.isVisible());
+    design.digestion.setValue(ProteolyticDigestion.OTHER);
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertTrue(design.otherProteolyticDigestionMethod.isVisible());
     assertTrue(design.otherProteolyticDigestionMethodNote.isVisible());
   }
 
@@ -986,9 +979,9 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
 
     assertEquals(MassDetectionInstrumentSource.availables().size(),
-        dataProvider(design.sourceOptions).getItems().size());
+        dataProvider(design.source).getItems().size());
     for (MassDetectionInstrumentSource source : MassDetectionInstrumentSource.availables()) {
-      assertTrue(source.name(), dataProvider(design.sourceOptions).getItems().contains(source));
+      assertTrue(source.name(), dataProvider(design.source).getItems().contains(source));
     }
   }
 
@@ -1001,8 +994,8 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertTrue(dataProvider(design.sourceOptions).getItems().contains(source));
-    assertFalse(design.sourceOptions.getItemEnabledProvider().test(source));
+    assertTrue(dataProvider(design.source).getItems().contains(source));
+    assertFalse(design.source.getItemEnabledProvider().test(source));
   }
 
   @Test
@@ -1010,10 +1003,10 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
 
     assertEquals(MassDetectionInstrument.userChoices().size(),
-        dataProvider(design.instrumentOptions).getItems().size());
+        dataProvider(design.instrument).getItems().size());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertTrue(instrument.name(),
-          dataProvider(design.instrumentOptions).getItems().contains(instrument));
+          dataProvider(design.instrument).getItems().contains(instrument));
     }
   }
 
@@ -1026,8 +1019,8 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertTrue(dataProvider(design.instrumentOptions).getItems().contains(instrument));
-    assertFalse(design.instrumentOptions.getItemEnabledProvider().test(instrument));
+    assertTrue(dataProvider(design.instrument).getItems().contains(instrument));
+    assertFalse(design.instrument.getItemEnabledProvider().test(instrument));
   }
 
   @Test
@@ -1035,10 +1028,10 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
 
     assertEquals(ProteinIdentification.availables().size(),
-        dataProvider(design.proteinIdentificationOptions).getItems().size());
+        dataProvider(design.proteinIdentification).getItems().size());
     for (ProteinIdentification proteinIdentification : ProteinIdentification.availables()) {
-      assertTrue(proteinIdentification.name(), dataProvider(design.proteinIdentificationOptions)
-          .getItems().contains(proteinIdentification));
+      assertTrue(proteinIdentification.name(),
+          dataProvider(design.proteinIdentification).getItems().contains(proteinIdentification));
     }
   }
 
@@ -1051,361 +1044,325 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertTrue(dataProvider(design.proteinIdentificationOptions).getItems()
-        .contains(proteinIdentification));
-    assertFalse(
-        design.proteinIdentificationOptions.getItemEnabledProvider().test(proteinIdentification));
+    assertTrue(
+        dataProvider(design.proteinIdentification).getItems().contains(proteinIdentification));
+    assertFalse(design.proteinIdentification.getItemEnabledProvider().test(proteinIdentification));
   }
 
   @Test
   public void proteinIdentification_RequiredText() {
     presenter.init(view);
 
-    design.proteinIdentificationOptions.setValue(REFSEQ);
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    design.proteinIdentificationOptions.setValue(UNIPROT);
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    design.proteinIdentificationOptions.setValue(ProteinIdentification.OTHER);
-    assertTrue(design.proteinIdentificationLinkField.isVisible());
+    design.proteinIdentification.setValue(REFSEQ);
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    design.proteinIdentification.setValue(UNIPROT);
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    design.proteinIdentification.setValue(ProteinIdentification.OTHER);
+    assertTrue(design.proteinIdentificationLink.isVisible());
   }
 
   @Test
   public void quantification_RequiredText() {
     presenter.init(view);
 
-    design.quantificationOptions.setValue(null);
-    assertFalse(design.quantificationLabelsField.isRequiredIndicatorVisible());
-    design.quantificationOptions.setValue(Quantification.LABEL_FREE);
-    assertFalse(design.quantificationLabelsField.isRequiredIndicatorVisible());
-    design.quantificationOptions.setValue(Quantification.SILAC);
-    assertTrue(design.quantificationLabelsField.isRequiredIndicatorVisible());
+    design.quantification.setValue(null);
+    assertFalse(design.quantificationLabels.isRequiredIndicatorVisible());
+    design.quantification.setValue(Quantification.LABEL_FREE);
+    assertFalse(design.quantificationLabels.isRequiredIndicatorVisible());
+    design.quantification.setValue(Quantification.SILAC);
+    assertTrue(design.quantificationLabels.isRequiredIndicatorVisible());
   }
 
   @Test
   public void styles() {
     presenter.init(view);
 
-    assertTrue(design.sampleTypeLabel.getStyleName().contains(SAMPLE_TYPE_LABEL));
-    assertTrue(design.inactiveLabel.getStyleName().contains(INACTIVE_LABEL));
+    assertTrue(design.sampleTypeWarning.getStyleName().contains(SAMPLE_TYPE_WARNING));
+    assertTrue(design.inactiveWarning.getStyleName().contains(INACTIVE_WARNING));
     assertTrue(design.servicePanel.getStyleName().contains(SERVICE_PANEL));
     assertTrue(design.servicePanel.getStyleName().contains(REQUIRED));
-    assertTrue(design.serviceOptions.getStyleName().contains(SERVICE_PROPERTY));
+    assertTrue(design.service.getStyleName().contains(SERVICE));
     assertTrue(design.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
-    assertTrue(design.sampleSupportOptions.getStyleName().contains(SAMPLE_SUPPORT_PROPERTY));
-    assertTrue(design.solutionSolventField.getStyleName().contains(SOLUTION_SOLVENT_PROPERTY));
-    assertTrue(design.sampleCountField.getStyleName().contains(SAMPLE_COUNT_PROPERTY));
-    assertTrue(design.sampleNameField.getStyleName().contains(SAMPLE_NAME_PROPERTY));
-    assertTrue(design.formulaField.getStyleName().contains(FORMULA_PROPERTY));
-    assertTrue(design.monoisotopicMassField.getStyleName().contains(MONOISOTOPIC_MASS_PROPERTY));
-    assertTrue(design.averageMassField.getStyleName().contains(AVERAGE_MASS_PROPERTY));
-    assertTrue(design.toxicityField.getStyleName().contains(TOXICITY_PROPERTY));
-    assertTrue(design.lightSensitiveField.getStyleName().contains(LIGHT_SENSITIVE_PROPERTY));
-    assertTrue(
-        design.storageTemperatureOptions.getStyleName().contains(STORAGE_TEMPERATURE_PROPERTY));
-    assertTrue(
-        design.sampleContainerTypeOptions.getStyleName().contains(SAMPLES_CONTAINER_TYPE_PROPERTY));
-    assertTrue(
-        design.plateNameField.getStyleName().contains(PLATE_PROPERTY + "-" + PLATE_NAME_PROPERTY));
-    assertTrue(design.samplesLabel.getStyleName().contains(SAMPLES_PROPERTY));
-    assertTrue(design.samplesGrid.getStyleName().contains(SAMPLES_TABLE));
-    assertTrue(design.fillSamplesButton.getStyleName().contains(FILL_SAMPLES_PROPERTY));
-    assertTrue(design.fillSamplesButton.getStyleName().contains(BUTTON_SKIP_ROW));
+    assertTrue(design.sampleSupport.getStyleName().contains(SAMPLE_SUPPORT));
+    assertTrue(design.solutionSolvent.getStyleName().contains(SOLUTION_SOLVENT));
+    assertTrue(design.sampleCount.getStyleName().contains(SAMPLE_COUNT));
+    assertTrue(design.sampleName.getStyleName().contains(SAMPLE_NAME));
+    assertTrue(design.formula.getStyleName().contains(FORMULA));
+    assertTrue(design.monoisotopicMass.getStyleName().contains(MONOISOTOPIC_MASS));
+    assertTrue(design.averageMass.getStyleName().contains(AVERAGE_MASS));
+    assertTrue(design.toxicity.getStyleName().contains(TOXICITY));
+    assertTrue(design.lightSensitive.getStyleName().contains(LIGHT_SENSITIVE));
+    assertTrue(design.storageTemperature.getStyleName().contains(STORAGE_TEMPERATURE));
+    assertTrue(design.sampleContainerType.getStyleName().contains(SAMPLES_CONTAINER_TYPE));
+    assertTrue(design.plateName.getStyleName().contains(PLATE + "-" + PLATE_NAME));
+    assertTrue(design.samplesLabel.getStyleName().contains(SAMPLES_LABEL));
+    assertTrue(design.samples.getStyleName().contains(SAMPLES));
+    assertTrue(design.fillSamples.getStyleName().contains(FILL_SAMPLES));
+    assertTrue(design.fillSamples.getStyleName().contains(BUTTON_SKIP_ROW));
     verify(view.plateComponent).addStyleName(SAMPLES_PLATE);
     assertTrue(design.experiencePanel.getStyleName().contains(EXPERIENCE_PANEL));
-    assertTrue(design.experienceField.getStyleName().contains(EXPERIENCE_PROPERTY));
-    assertTrue(design.experienceGoalField.getStyleName().contains(EXPERIENCE_GOAL_PROPERTY));
-    assertTrue(design.taxonomyField.getStyleName().contains(TAXONOMY_PROPERTY));
-    assertTrue(design.proteinNameField.getStyleName().contains(PROTEIN_NAME_PROPERTY));
-    assertTrue(design.proteinWeightField.getStyleName().contains(PROTEIN_WEIGHT_PROPERTY));
-    assertTrue(design.postTranslationModificationField.getStyleName()
-        .contains(POST_TRANSLATION_MODIFICATION_PROPERTY));
-    assertTrue(design.sampleQuantityField.getStyleName().contains(SAMPLE_QUANTITY_PROPERTY));
-    assertTrue(design.sampleVolumeField.getStyleName().contains(SAMPLE_VOLUME_PROPERTY));
+    assertTrue(design.experience.getStyleName().contains(EXPERIENCE));
+    assertTrue(design.experienceGoal.getStyleName().contains(EXPERIENCE_GOAL));
+    assertTrue(design.taxonomy.getStyleName().contains(TAXONOMY));
+    assertTrue(design.proteinName.getStyleName().contains(PROTEIN_NAME));
+    assertTrue(design.proteinWeight.getStyleName().contains(PROTEIN_WEIGHT));
+    assertTrue(
+        design.postTranslationModification.getStyleName().contains(POST_TRANSLATION_MODIFICATION));
+    assertTrue(design.sampleQuantity.getStyleName().contains(SAMPLE_QUANTITY));
+    assertTrue(design.sampleVolume.getStyleName().contains(SAMPLE_VOLUME));
     assertTrue(design.standardsPanel.getStyleName().contains(STANDARDS_PANEL));
-    assertTrue(design.standardCountField.getStyleName().contains(STANDARD_COUNT_PROPERTY));
-    assertTrue(design.standardsGrid.getStyleName().contains(STANDARD_PROPERTY));
-    assertTrue(design.fillStandardsButton.getStyleName().contains(FILL_STANDARDS_PROPERTY));
-    assertTrue(design.fillStandardsButton.getStyleName().contains(BUTTON_SKIP_ROW));
+    assertTrue(design.standardCount.getStyleName().contains(STANDARD_COUNT));
+    assertTrue(design.standards.getStyleName().contains(STANDARDS));
+    assertTrue(design.fillStandards.getStyleName().contains(FILL_STANDARDS));
+    assertTrue(design.fillStandards.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.contaminantsPanel.getStyleName().contains(CONTAMINANTS_PANEL));
-    assertTrue(design.contaminantCountField.getStyleName().contains(CONTAMINANT_COUNT_PROPERTY));
-    assertTrue(design.contaminantsGrid.getStyleName().contains(CONTAMINANT_PROPERTY));
-    assertTrue(design.fillContaminantsButton.getStyleName().contains(FILL_CONTAMINANTS_PROPERTY));
-    assertTrue(design.fillContaminantsButton.getStyleName().contains(BUTTON_SKIP_ROW));
+    assertTrue(design.contaminantCount.getStyleName().contains(CONTAMINANT_COUNT));
+    assertTrue(design.contaminants.getStyleName().contains(CONTAMINANTS));
+    assertTrue(design.fillContaminants.getStyleName().contains(FILL_CONTAMINANTS));
+    assertTrue(design.fillContaminants.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.gelPanel.getStyleName().contains(GEL_PANEL));
-    assertTrue(design.separationField.getStyleName().contains(SEPARATION_PROPERTY));
-    assertTrue(design.thicknessField.getStyleName().contains(THICKNESS_PROPERTY));
-    assertTrue(design.colorationField.getStyleName().contains(COLORATION_PROPERTY));
-    assertTrue(design.otherColorationField.getStyleName().contains(OTHER_COLORATION_PROPERTY));
-    assertTrue(design.developmentTimeField.getStyleName().contains(DEVELOPMENT_TIME_PROPERTY));
-    assertTrue(design.decolorationField.getStyleName().contains(DECOLORATION_PROPERTY));
-    assertTrue(
-        design.weightMarkerQuantityField.getStyleName().contains(WEIGHT_MARKER_QUANTITY_PROPERTY));
-    assertTrue(design.proteinQuantityField.getStyleName().contains(PROTEIN_QUANTITY_PROPERTY));
+    assertTrue(design.separation.getStyleName().contains(SEPARATION));
+    assertTrue(design.thickness.getStyleName().contains(THICKNESS));
+    assertTrue(design.coloration.getStyleName().contains(COLORATION));
+    assertTrue(design.otherColoration.getStyleName().contains(OTHER_COLORATION));
+    assertTrue(design.developmentTime.getStyleName().contains(DEVELOPMENT_TIME));
+    assertTrue(design.decoloration.getStyleName().contains(DECOLORATION));
+    assertTrue(design.weightMarkerQuantity.getStyleName().contains(WEIGHT_MARKER_QUANTITY));
+    assertTrue(design.proteinQuantity.getStyleName().contains(PROTEIN_QUANTITY));
     assertTrue(design.servicesPanel.getStyleName().contains(SERVICES_PANEL));
-    assertTrue(design.digestionOptions.getStyleName().contains(DIGESTION_PROPERTY));
-    assertTrue(design.usedProteolyticDigestionMethodField.getStyleName()
-        .contains(USED_DIGESTION_PROPERTY));
-    assertTrue(design.otherProteolyticDigestionMethodField.getStyleName()
-        .contains(OTHER_DIGESTION_PROPERTY));
-    assertTrue(design.enrichmentLabel.getStyleName().contains(ENRICHEMENT_PROPERTY));
-    assertTrue(design.exclusionsLabel.getStyleName().contains(EXCLUSIONS_PROPERTY));
-    assertTrue(design.injectionTypeOptions.getStyleName().contains(INJECTION_TYPE_PROPERTY));
-    assertTrue(design.sourceOptions.getStyleName().contains(SOURCE_PROPERTY));
-    assertTrue(design.proteinContentOptions.getStyleName().contains(PROTEIN_CONTENT_PROPERTY));
-    assertTrue(design.instrumentOptions.getStyleName().contains(INSTRUMENT_PROPERTY));
-    assertTrue(design.proteinIdentificationOptions.getStyleName()
-        .contains(PROTEIN_IDENTIFICATION_PROPERTY));
-    assertTrue(design.proteinIdentificationLinkField.getStyleName()
-        .contains(PROTEIN_IDENTIFICATION_LINK_PROPERTY));
-    assertTrue(design.quantificationOptions.getStyleName().contains(QUANTIFICATION_PROPERTY));
+    assertTrue(design.digestion.getStyleName().contains(DIGESTION));
+    assertTrue(design.usedProteolyticDigestionMethod.getStyleName().contains(USED_DIGESTION));
+    assertTrue(design.otherProteolyticDigestionMethod.getStyleName().contains(OTHER_DIGESTION));
+    assertTrue(design.enrichment.getStyleName().contains(ENRICHEMENT));
+    assertTrue(design.exclusions.getStyleName().contains(EXCLUSIONS));
+    assertTrue(design.injectionType.getStyleName().contains(INJECTION_TYPE));
+    assertTrue(design.source.getStyleName().contains(SOURCE));
+    assertTrue(design.proteinContent.getStyleName().contains(PROTEIN_CONTENT));
+    assertTrue(design.instrument.getStyleName().contains(INSTRUMENT));
+    assertTrue(design.proteinIdentification.getStyleName().contains(PROTEIN_IDENTIFICATION));
     assertTrue(
-        design.quantificationLabelsField.getStyleName().contains(QUANTIFICATION_LABELS_PROPERTY));
-    assertTrue(design.highResolutionOptions.getStyleName().contains(HIGH_RESOLUTION_PROPERTY));
+        design.proteinIdentificationLink.getStyleName().contains(PROTEIN_IDENTIFICATION_LINK));
+    assertTrue(design.quantification.getStyleName().contains(QUANTIFICATION));
+    assertTrue(design.quantificationLabels.getStyleName().contains(QUANTIFICATION_LABELS));
+    assertTrue(design.highResolution.getStyleName().contains(HIGH_RESOLUTION));
     assertTrue(design.solventsLayout.getStyleName().contains(REQUIRED));
-    assertTrue(design.acetonitrileSolventsField.getStyleName()
-        .contains(SOLVENTS_PROPERTY + "-" + Solvent.ACETONITRILE.name()));
-    assertTrue(design.methanolSolventsField.getStyleName()
-        .contains(SOLVENTS_PROPERTY + "-" + Solvent.METHANOL.name()));
-    assertTrue(design.chclSolventsField.getStyleName()
-        .contains(SOLVENTS_PROPERTY + "-" + Solvent.CHCL3.name()));
-    assertTrue(design.otherSolventsField.getStyleName()
-        .contains(SOLVENTS_PROPERTY + "-" + Solvent.OTHER.name()));
-    assertTrue(design.otherSolventField.getStyleName().contains(OTHER_SOLVENT_PROPERTY));
-    assertTrue(design.otherSolventField.getStyleName().contains(ValoTheme.TEXTFIELD_SMALL));
-    assertTrue(design.otherSolventNoteLabel.getStyleName().contains(OTHER_SOLVENT_NOTE));
+    assertTrue(design.acetonitrileSolvents.getStyleName()
+        .contains(SOLVENTS + "-" + Solvent.ACETONITRILE.name()));
+    assertTrue(
+        design.methanolSolvents.getStyleName().contains(SOLVENTS + "-" + Solvent.METHANOL.name()));
+    assertTrue(design.chclSolvents.getStyleName().contains(SOLVENTS + "-" + Solvent.CHCL3.name()));
+    assertTrue(design.otherSolvents.getStyleName().contains(SOLVENTS + "-" + Solvent.OTHER.name()));
+    assertTrue(design.otherSolvent.getStyleName().contains(OTHER_SOLVENT));
+    assertTrue(design.otherSolvent.getStyleName().contains(ValoTheme.TEXTFIELD_SMALL));
+    assertTrue(design.otherSolventNote.getStyleName().contains(OTHER_SOLVENT_NOTE));
     assertTrue(design.commentPanel.getStyleName().contains(COMMENT_PANEL));
-    assertTrue(design.commentField.getStyleName().contains(COMMENT_PROPERTY));
+    assertTrue(design.comment.getStyleName().contains(COMMENT));
     assertTrue(design.structureFile.getStyleName().contains(STRUCTURE_FILE));
     assertTrue(design.gelImageFile.getStyleName().contains(GEL_IMAGE_FILE));
-    assertTrue(design.filesPanel.getStyleName().contains(FILES_PROPERTY));
+    assertTrue(design.filesPanel.getStyleName().contains(FILES_PANEL));
     verify(view.filesUploader).addStyleName(FILES_UPLOADER);
-    assertTrue(design.filesGrid.getStyleName().contains(FILES_GRID));
+    assertTrue(design.files.getStyleName().contains(FILES));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanationPanel.getStyleName().contains(REQUIRED));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
-    assertTrue(design.saveButton.getStyleName().contains(SAVE));
-    assertTrue(design.saveButton.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
+    assertTrue(design.save.getStyleName().contains(SAVE));
+    assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
   }
 
   @Test
   public void captions() {
     presenter.init(view);
 
-    assertEquals(resources.message(SAMPLE_TYPE_LABEL), design.sampleTypeLabel.getValue());
-    assertEquals(resources.message(INACTIVE_LABEL), design.inactiveLabel.getValue());
-    assertEquals(resources.message(SERVICE_PROPERTY), design.servicePanel.getCaption());
-    assertEquals(null, design.serviceOptions.getCaption());
+    assertEquals(resources.message(SAMPLE_TYPE_WARNING), design.sampleTypeWarning.getValue());
+    assertEquals(resources.message(INACTIVE_WARNING), design.inactiveWarning.getValue());
+    assertEquals(resources.message(SERVICE), design.servicePanel.getCaption());
+    assertEquals(null, design.service.getCaption());
     for (Service service : Service.availables()) {
       assertEquals(service.getLabel(locale),
-          design.serviceOptions.getItemCaptionGenerator().apply(service));
+          design.service.getItemCaptionGenerator().apply(service));
     }
     assertEquals(resources.message(SAMPLES_PANEL), design.samplesPanel.getCaption());
-    assertEquals(resources.message(SAMPLE_SUPPORT_PROPERTY),
-        design.sampleSupportOptions.getCaption());
+    assertEquals(resources.message(SAMPLE_SUPPORT), design.sampleSupport.getCaption());
     for (SampleSupport support : SampleSupport.values()) {
       assertEquals(support.getLabel(locale),
-          design.sampleSupportOptions.getItemCaptionGenerator().apply(support));
+          design.sampleSupport.getItemCaptionGenerator().apply(support));
     }
-    assertEquals(resources.message(SOLUTION_SOLVENT_PROPERTY),
-        design.solutionSolventField.getCaption());
-    assertEquals(resources.message(SAMPLE_COUNT_PROPERTY), design.sampleCountField.getCaption());
-    assertEquals(resources.message(SAMPLE_NAME_PROPERTY), design.sampleNameField.getCaption());
-    assertEquals(resources.message(FORMULA_PROPERTY), design.formulaField.getCaption());
-    assertEquals(resources.message(MONOISOTOPIC_MASS_PROPERTY),
-        design.monoisotopicMassField.getCaption());
-    assertEquals(resources.message(AVERAGE_MASS_PROPERTY), design.averageMassField.getCaption());
-    assertEquals(resources.message(TOXICITY_PROPERTY), design.toxicityField.getCaption());
-    assertEquals(resources.message(LIGHT_SENSITIVE_PROPERTY),
-        design.lightSensitiveField.getCaption());
-    assertEquals(resources.message(STORAGE_TEMPERATURE_PROPERTY),
-        design.storageTemperatureOptions.getCaption());
+    assertEquals(resources.message(SOLUTION_SOLVENT), design.solutionSolvent.getCaption());
+    assertEquals(resources.message(SAMPLE_COUNT), design.sampleCount.getCaption());
+    assertEquals(resources.message(SAMPLE_NAME), design.sampleName.getCaption());
+    assertEquals(resources.message(FORMULA), design.formula.getCaption());
+    assertEquals(resources.message(MONOISOTOPIC_MASS), design.monoisotopicMass.getCaption());
+    assertEquals(resources.message(AVERAGE_MASS), design.averageMass.getCaption());
+    assertEquals(resources.message(TOXICITY), design.toxicity.getCaption());
+    assertEquals(resources.message(LIGHT_SENSITIVE), design.lightSensitive.getCaption());
+    assertEquals(resources.message(STORAGE_TEMPERATURE), design.storageTemperature.getCaption());
     for (StorageTemperature storageTemperature : StorageTemperature.values()) {
       assertEquals(storageTemperature.getLabel(locale),
-          design.storageTemperatureOptions.getItemCaptionGenerator().apply(storageTemperature));
+          design.storageTemperature.getItemCaptionGenerator().apply(storageTemperature));
     }
-    assertEquals(resources.message(SAMPLES_CONTAINER_TYPE_PROPERTY),
-        design.sampleContainerTypeOptions.getCaption());
+    assertEquals(resources.message(SAMPLES_CONTAINER_TYPE),
+        design.sampleContainerType.getCaption());
     for (SampleContainerType containerType : SampleContainerType.values()) {
       assertEquals(containerType.getLabel(locale),
-          design.sampleContainerTypeOptions.getItemCaptionGenerator().apply(containerType));
+          design.sampleContainerType.getItemCaptionGenerator().apply(containerType));
     }
-    assertEquals(resources.message(PLATE_PROPERTY + "." + PLATE_NAME_PROPERTY),
-        design.plateNameField.getCaption());
-    assertEquals(resources.message(SAMPLES_PROPERTY), design.samplesLabel.getCaption());
-    assertEquals(null, design.samplesGrid.getCaption());
-    assertEquals(resources.message(SAMPLE_NAME_PROPERTY),
-        design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).getCaption());
-    assertEquals(resources.message(SAMPLE_NUMBER_PROTEIN_PROPERTY),
-        design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY).getCaption());
-    assertEquals(resources.message(PROTEIN_WEIGHT_PROPERTY),
-        design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).getCaption());
-    assertEquals(resources.message(FILL_SAMPLES_PROPERTY), design.fillSamplesButton.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.fillSamplesButton.getIcon());
+    assertEquals(resources.message(PLATE + "." + PLATE_NAME), design.plateName.getCaption());
+    assertEquals(resources.message(SAMPLES_LABEL), design.samplesLabel.getCaption());
+    assertEquals(null, design.samples.getCaption());
+    assertEquals(resources.message(SAMPLE_NAME),
+        design.samples.getColumn(SAMPLE_NAME).getCaption());
+    assertEquals(resources.message(SAMPLE_NUMBER_PROTEIN),
+        design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).getCaption());
+    assertEquals(resources.message(PROTEIN_WEIGHT),
+        design.samples.getColumn(PROTEIN_WEIGHT).getCaption());
+    assertEquals(resources.message(FILL_SAMPLES), design.fillSamples.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.fillSamples.getIcon());
     assertEquals(null, view.plateComponent.getCaption());
     assertEquals(resources.message(EXPERIENCE_PANEL), design.experiencePanel.getCaption());
-    assertEquals(resources.message(EXPERIENCE_PROPERTY), design.experienceField.getCaption());
-    assertEquals(resources.message(EXPERIENCE_GOAL_PROPERTY),
-        design.experienceGoalField.getCaption());
-    assertEquals(resources.message(TAXONOMY_PROPERTY), design.taxonomyField.getCaption());
-    assertEquals(resources.message(PROTEIN_NAME_PROPERTY), design.proteinNameField.getCaption());
-    assertEquals(resources.message(PROTEIN_WEIGHT_PROPERTY),
-        design.proteinWeightField.getCaption());
-    assertEquals(resources.message(POST_TRANSLATION_MODIFICATION_PROPERTY),
-        design.postTranslationModificationField.getCaption());
-    assertEquals(resources.message(SAMPLE_QUANTITY_PROPERTY),
-        design.sampleQuantityField.getCaption());
-    assertEquals(resources.message(SAMPLE_QUANTITY_PROPERTY + "." + EXAMPLE),
-        design.sampleQuantityField.getPlaceholder());
-    assertEquals(resources.message(SAMPLE_VOLUME_PROPERTY), design.sampleVolumeField.getCaption());
+    assertEquals(resources.message(EXPERIENCE), design.experience.getCaption());
+    assertEquals(resources.message(EXPERIENCE_GOAL), design.experienceGoal.getCaption());
+    assertEquals(resources.message(TAXONOMY), design.taxonomy.getCaption());
+    assertEquals(resources.message(PROTEIN_NAME), design.proteinName.getCaption());
+    assertEquals(resources.message(PROTEIN_WEIGHT), design.proteinWeight.getCaption());
+    assertEquals(resources.message(POST_TRANSLATION_MODIFICATION),
+        design.postTranslationModification.getCaption());
+    assertEquals(resources.message(SAMPLE_QUANTITY), design.sampleQuantity.getCaption());
+    assertEquals(resources.message(SAMPLE_QUANTITY + "." + EXAMPLE),
+        design.sampleQuantity.getPlaceholder());
+    assertEquals(resources.message(SAMPLE_VOLUME), design.sampleVolume.getCaption());
     assertEquals(resources.message(STANDARDS_PANEL), design.standardsPanel.getCaption());
-    assertEquals(resources.message(STANDARD_COUNT_PROPERTY),
-        design.standardCountField.getCaption());
-    assertEquals(null, design.standardsGrid.getCaption());
-    assertEquals(resources.message(STANDARD_PROPERTY + "." + STANDARD_NAME_PROPERTY),
-        design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY).getCaption());
-    assertEquals(resources.message(STANDARD_PROPERTY + "." + STANDARD_QUANTITY_PROPERTY),
-        design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY).getCaption());
-    assertEquals(resources.message(STANDARD_PROPERTY + "." + STANDARD_COMMENT_PROPERTY),
-        design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY).getCaption());
-    assertEquals(resources.message(FILL_STANDARDS_PROPERTY),
-        design.fillStandardsButton.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.fillStandardsButton.getIcon());
+    assertEquals(resources.message(STANDARD_COUNT), design.standardCount.getCaption());
+    assertEquals(null, design.standards.getCaption());
+    assertEquals(resources.message(STANDARDS + "." + STANDARD_NAME),
+        design.standards.getColumn(STANDARD_NAME).getCaption());
+    assertEquals(resources.message(STANDARDS + "." + STANDARD_QUANTITY),
+        design.standards.getColumn(STANDARD_QUANTITY).getCaption());
+    assertEquals(resources.message(STANDARDS + "." + STANDARD_COMMENT),
+        design.standards.getColumn(STANDARD_COMMENT).getCaption());
+    assertEquals(resources.message(FILL_STANDARDS), design.fillStandards.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.fillStandards.getIcon());
     assertEquals(resources.message(CONTAMINANTS_PANEL), design.contaminantsPanel.getCaption());
-    assertEquals(resources.message(CONTAMINANT_COUNT_PROPERTY),
-        design.contaminantCountField.getCaption());
-    assertEquals(null, design.contaminantsGrid.getCaption());
-    assertEquals(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_NAME_PROPERTY),
-        design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY).getCaption());
-    assertEquals(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_QUANTITY_PROPERTY),
-        design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY).getCaption());
-    assertEquals(resources.message(CONTAMINANT_PROPERTY + "." + CONTAMINANT_COMMENT_PROPERTY),
-        design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY).getCaption());
-    assertEquals(resources.message(FILL_CONTAMINANTS_PROPERTY),
-        design.fillContaminantsButton.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.fillContaminantsButton.getIcon());
+    assertEquals(resources.message(CONTAMINANT_COUNT), design.contaminantCount.getCaption());
+    assertEquals(null, design.contaminants.getCaption());
+    assertEquals(resources.message(CONTAMINANTS + "." + CONTAMINANT_NAME),
+        design.contaminants.getColumn(CONTAMINANT_NAME).getCaption());
+    assertEquals(resources.message(CONTAMINANTS + "." + CONTAMINANT_QUANTITY),
+        design.contaminants.getColumn(CONTAMINANT_QUANTITY).getCaption());
+    assertEquals(resources.message(CONTAMINANTS + "." + CONTAMINANT_COMMENT),
+        design.contaminants.getColumn(CONTAMINANT_COMMENT).getCaption());
+    assertEquals(resources.message(FILL_CONTAMINANTS), design.fillContaminants.getCaption());
+    assertEquals(VaadinIcons.ARROW_DOWN, design.fillContaminants.getIcon());
     assertEquals(resources.message(GEL_PANEL), design.gelPanel.getCaption());
-    assertEquals(resources.message(SEPARATION_PROPERTY), design.separationField.getCaption());
+    assertEquals(resources.message(SEPARATION), design.separation.getCaption());
     for (GelSeparation separation : GelSeparation.values()) {
       assertEquals(separation.getLabel(locale),
-          design.separationField.getItemCaptionGenerator().apply(separation));
+          design.separation.getItemCaptionGenerator().apply(separation));
     }
-    assertEquals(resources.message(THICKNESS_PROPERTY), design.thicknessField.getCaption());
+    assertEquals(resources.message(THICKNESS), design.thickness.getCaption());
     for (GelThickness thickness : GelThickness.values()) {
       assertEquals(thickness.getLabel(locale),
-          design.thicknessField.getItemCaptionGenerator().apply(thickness));
+          design.thickness.getItemCaptionGenerator().apply(thickness));
     }
-    assertEquals(resources.message(COLORATION_PROPERTY), design.colorationField.getCaption());
-    assertEquals(GelColoration.getNullLabel(locale),
-        design.colorationField.getEmptySelectionCaption());
+    assertEquals(resources.message(COLORATION), design.coloration.getCaption());
+    assertEquals(GelColoration.getNullLabel(locale), design.coloration.getEmptySelectionCaption());
     for (GelColoration coloration : GelColoration.values()) {
       assertEquals(coloration.getLabel(locale),
-          design.colorationField.getItemCaptionGenerator().apply(coloration));
+          design.coloration.getItemCaptionGenerator().apply(coloration));
     }
-    assertEquals(resources.message(OTHER_COLORATION_PROPERTY),
-        design.otherColorationField.getCaption());
-    assertEquals(resources.message(DEVELOPMENT_TIME_PROPERTY),
-        design.developmentTimeField.getCaption());
-    assertEquals(resources.message(DEVELOPMENT_TIME_PROPERTY + "." + EXAMPLE),
-        design.developmentTimeField.getPlaceholder());
-    assertEquals(resources.message(DECOLORATION_PROPERTY), design.decolorationField.getCaption());
-    assertEquals(resources.message(WEIGHT_MARKER_QUANTITY_PROPERTY),
-        design.weightMarkerQuantityField.getCaption());
-    assertEquals(resources.message(WEIGHT_MARKER_QUANTITY_PROPERTY + "." + EXAMPLE),
-        design.weightMarkerQuantityField.getPlaceholder());
-    assertEquals(resources.message(PROTEIN_QUANTITY_PROPERTY),
-        design.proteinQuantityField.getCaption());
-    assertEquals(resources.message(PROTEIN_QUANTITY_PROPERTY + "." + EXAMPLE),
-        design.proteinQuantityField.getPlaceholder());
+    assertEquals(resources.message(OTHER_COLORATION), design.otherColoration.getCaption());
+    assertEquals(resources.message(DEVELOPMENT_TIME), design.developmentTime.getCaption());
+    assertEquals(resources.message(DEVELOPMENT_TIME + "." + EXAMPLE),
+        design.developmentTime.getPlaceholder());
+    assertEquals(resources.message(DECOLORATION), design.decoloration.getCaption());
+    assertEquals(resources.message(WEIGHT_MARKER_QUANTITY),
+        design.weightMarkerQuantity.getCaption());
+    assertEquals(resources.message(WEIGHT_MARKER_QUANTITY + "." + EXAMPLE),
+        design.weightMarkerQuantity.getPlaceholder());
+    assertEquals(resources.message(PROTEIN_QUANTITY), design.proteinQuantity.getCaption());
+    assertEquals(resources.message(PROTEIN_QUANTITY + "." + EXAMPLE),
+        design.proteinQuantity.getPlaceholder());
     assertEquals(resources.message(SERVICES_PANEL), design.servicesPanel.getCaption());
-    assertEquals(resources.message(DIGESTION_PROPERTY), design.digestionOptions.getCaption());
+    assertEquals(resources.message(DIGESTION), design.digestion.getCaption());
     for (ProteolyticDigestion digestion : ProteolyticDigestion.values()) {
       assertEquals(digestion.getLabel(locale),
-          design.digestionOptions.getItemCaptionGenerator().apply(digestion));
+          design.digestion.getItemCaptionGenerator().apply(digestion));
     }
-    assertEquals(resources.message(USED_DIGESTION_PROPERTY),
-        design.usedProteolyticDigestionMethodField.getCaption());
-    assertEquals(resources.message(OTHER_DIGESTION_PROPERTY),
-        design.otherProteolyticDigestionMethodField.getCaption());
-    assertEquals(resources.message(OTHER_DIGESTION_PROPERTY + ".note"),
+    assertEquals(resources.message(USED_DIGESTION),
+        design.usedProteolyticDigestionMethod.getCaption());
+    assertEquals(resources.message(OTHER_DIGESTION),
+        design.otherProteolyticDigestionMethod.getCaption());
+    assertEquals(resources.message(OTHER_DIGESTION + ".note"),
         design.otherProteolyticDigestionMethodNote.getValue());
-    assertEquals(resources.message(ENRICHEMENT_PROPERTY), design.enrichmentLabel.getCaption());
-    assertEquals(resources.message(ENRICHEMENT_PROPERTY + ".value"),
-        design.enrichmentLabel.getValue());
-    assertEquals(resources.message(EXCLUSIONS_PROPERTY), design.exclusionsLabel.getCaption());
-    assertEquals(resources.message(EXCLUSIONS_PROPERTY + ".value"),
-        design.exclusionsLabel.getValue());
-    assertEquals(resources.message(INJECTION_TYPE_PROPERTY),
-        design.injectionTypeOptions.getCaption());
+    assertEquals(resources.message(ENRICHEMENT), design.enrichment.getCaption());
+    assertEquals(resources.message(ENRICHEMENT + ".value"), design.enrichment.getValue());
+    assertEquals(resources.message(EXCLUSIONS), design.exclusions.getCaption());
+    assertEquals(resources.message(EXCLUSIONS + ".value"), design.exclusions.getValue());
+    assertEquals(resources.message(INJECTION_TYPE), design.injectionType.getCaption());
     for (InjectionType injectionType : InjectionType.values()) {
       assertEquals(injectionType.getLabel(locale),
-          design.injectionTypeOptions.getItemCaptionGenerator().apply(injectionType));
+          design.injectionType.getItemCaptionGenerator().apply(injectionType));
     }
-    assertEquals(resources.message(SOURCE_PROPERTY), design.sourceOptions.getCaption());
+    assertEquals(resources.message(SOURCE), design.source.getCaption());
     for (MassDetectionInstrumentSource source : MassDetectionInstrumentSource.values()) {
-      assertEquals(source.getLabel(locale),
-          design.sourceOptions.getItemCaptionGenerator().apply(source));
+      assertEquals(source.getLabel(locale), design.source.getItemCaptionGenerator().apply(source));
     }
-    assertEquals(resources.message(PROTEIN_CONTENT_PROPERTY),
-        design.proteinContentOptions.getCaption());
-    assertTrue(design.proteinContentOptions.isCaptionAsHtml());
+    assertEquals(resources.message(PROTEIN_CONTENT), design.proteinContent.getCaption());
+    assertTrue(design.proteinContent.isCaptionAsHtml());
     for (ProteinContent proteinContent : ProteinContent.values()) {
       assertEquals(proteinContent.getLabel(locale),
-          design.proteinContentOptions.getItemCaptionGenerator().apply(proteinContent));
+          design.proteinContent.getItemCaptionGenerator().apply(proteinContent));
     }
-    assertEquals(resources.message(INSTRUMENT_PROPERTY), design.instrumentOptions.getCaption());
+    assertEquals(resources.message(INSTRUMENT), design.instrument.getCaption());
     assertEquals(MassDetectionInstrument.getNullLabel(locale),
-        design.instrumentOptions.getItemCaptionGenerator().apply(null));
+        design.instrument.getItemCaptionGenerator().apply(null));
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
-          design.instrumentOptions.getItemCaptionGenerator().apply(instrument));
+          design.instrument.getItemCaptionGenerator().apply(instrument));
     }
-    assertEquals(resources.message(PROTEIN_IDENTIFICATION_PROPERTY),
-        design.proteinIdentificationOptions.getCaption());
+    assertEquals(resources.message(PROTEIN_IDENTIFICATION),
+        design.proteinIdentification.getCaption());
     for (ProteinIdentification proteinIdentification : ProteinIdentification.availables()) {
-      assertEquals(proteinIdentification.getLabel(locale), design.proteinIdentificationOptions
-          .getItemCaptionGenerator().apply(proteinIdentification));
+      assertEquals(proteinIdentification.getLabel(locale),
+          design.proteinIdentification.getItemCaptionGenerator().apply(proteinIdentification));
     }
-    assertEquals(resources.message(PROTEIN_IDENTIFICATION_LINK_PROPERTY),
-        design.proteinIdentificationLinkField.getCaption());
-    assertEquals(resources.message(QUANTIFICATION_PROPERTY),
-        design.quantificationOptions.getCaption());
+    assertEquals(resources.message(PROTEIN_IDENTIFICATION_LINK),
+        design.proteinIdentificationLink.getCaption());
+    assertEquals(resources.message(QUANTIFICATION), design.quantification.getCaption());
     assertEquals(Quantification.getNullLabel(locale),
-        design.quantificationOptions.getItemCaptionGenerator().apply(null));
+        design.quantification.getItemCaptionGenerator().apply(null));
     for (Quantification quantification : Quantification.values()) {
       assertEquals(quantification.getLabel(locale),
-          design.quantificationOptions.getItemCaptionGenerator().apply(quantification));
+          design.quantification.getItemCaptionGenerator().apply(quantification));
     }
-    assertEquals(resources.message(QUANTIFICATION_LABELS_PROPERTY),
-        design.quantificationLabelsField.getCaption());
-    assertEquals(resources.message(QUANTIFICATION_LABELS_PROPERTY + "." + EXAMPLE),
-        design.quantificationLabelsField.getPlaceholder());
-    assertEquals(resources.message(HIGH_RESOLUTION_PROPERTY),
-        design.highResolutionOptions.getCaption());
+    assertEquals(resources.message(QUANTIFICATION_LABELS),
+        design.quantificationLabels.getCaption());
+    assertEquals(resources.message(QUANTIFICATION_LABELS + "." + EXAMPLE),
+        design.quantificationLabels.getPlaceholder());
+    assertEquals(resources.message(HIGH_RESOLUTION), design.highResolution.getCaption());
     for (boolean value : new boolean[] { false, true }) {
-      assertEquals(resources.message(HIGH_RESOLUTION_PROPERTY + "." + value),
-          design.highResolutionOptions.getItemCaptionGenerator().apply(value));
+      assertEquals(resources.message(HIGH_RESOLUTION + "." + value),
+          design.highResolution.getItemCaptionGenerator().apply(value));
     }
-    assertEquals(resources.message(SOLVENTS_PROPERTY), design.solventsLayout.getCaption());
-    assertEquals(Solvent.ACETONITRILE.getLabel(locale),
-        design.acetonitrileSolventsField.getCaption());
-    assertEquals(Solvent.METHANOL.getLabel(locale), design.methanolSolventsField.getCaption());
-    assertEquals(Solvent.CHCL3.getLabel(locale), design.chclSolventsField.getCaption());
-    assertEquals(Solvent.OTHER.getLabel(locale), design.otherSolventsField.getCaption());
-    assertEquals(resources.message(OTHER_SOLVENT_PROPERTY), design.otherSolventField.getCaption());
-    assertEquals(resources.message(OTHER_SOLVENT_NOTE), design.otherSolventNoteLabel.getValue());
+    assertEquals(resources.message(SOLVENTS), design.solventsLayout.getCaption());
+    assertEquals(Solvent.ACETONITRILE.getLabel(locale), design.acetonitrileSolvents.getCaption());
+    assertEquals(Solvent.METHANOL.getLabel(locale), design.methanolSolvents.getCaption());
+    assertEquals(Solvent.CHCL3.getLabel(locale), design.chclSolvents.getCaption());
+    assertEquals(Solvent.OTHER.getLabel(locale), design.otherSolvents.getCaption());
+    assertEquals(resources.message(OTHER_SOLVENT), design.otherSolvent.getCaption());
+    assertEquals(resources.message(OTHER_SOLVENT_NOTE), design.otherSolventNote.getValue());
     assertEquals(resources.message(COMMENT_PANEL), design.commentPanel.getCaption());
-    assertEquals(null, design.commentField.getCaption());
+    assertEquals(null, design.comment.getCaption());
     assertEquals(resources.message(STRUCTURE_FILE), design.structureFile.getValue());
     assertEquals(resources.message(GEL_IMAGE_FILE), design.gelImageFile.getValue());
-    assertEquals(resources.message(FILES_PROPERTY), design.filesPanel.getCaption());
+    assertEquals(resources.message(FILES_PANEL), design.filesPanel.getCaption());
     verify(view.filesUploader).setUploadButtonCaption(resources.message(FILES_UPLOADER));
-    assertEquals(null, design.filesGrid.getCaption());
-    assertEquals(resources.message(FILES_PROPERTY + "." + FILE_FILENAME_PROPERTY),
-        design.filesGrid.getColumn(FILE_FILENAME_PROPERTY).getCaption());
-    assertEquals(resources.message(FILES_PROPERTY + "." + REMOVE_FILE),
-        design.filesGrid.getColumn(REMOVE_FILE).getCaption());
+    assertEquals(null, design.files.getCaption());
+    assertEquals(resources.message(FILES_PANEL + "." + FILE_FILENAME),
+        design.files.getColumn(FILE_FILENAME).getCaption());
+    assertEquals(resources.message(FILES_PANEL + "." + REMOVE_FILE),
+        design.files.getColumn(REMOVE_FILE).getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
-    assertEquals(resources.message(SAVE), design.saveButton.getCaption());
+    assertEquals(resources.message(SAVE), design.save.getCaption());
   }
 
   @Test
@@ -1422,80 +1379,81 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertTrue(design.serviceOptions.isReadOnly());
-    assertTrue(design.sampleSupportOptions.isReadOnly());
-    assertTrue(design.solutionSolventField.isReadOnly());
-    assertTrue(design.sampleCountField.isReadOnly());
-    assertTrue(design.sampleNameField.isReadOnly());
-    assertTrue(design.formulaField.isReadOnly());
-    assertTrue(design.monoisotopicMassField.isReadOnly());
-    assertTrue(design.averageMassField.isReadOnly());
-    assertTrue(design.toxicityField.isReadOnly());
-    assertTrue(design.lightSensitiveField.isReadOnly());
-    assertTrue(design.storageTemperatureOptions.isReadOnly());
-    assertTrue(design.sampleContainerTypeOptions.isReadOnly());
-    assertTrue(design.plateNameField.isReadOnly());
-    SubmissionSample firstSample = dataProvider(design.samplesGrid).getItems().iterator().next();
-    assertTrue(((TextField) design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).getValueProvider()
+    assertTrue(design.service.isReadOnly());
+    assertTrue(design.sampleSupport.isReadOnly());
+    assertTrue(design.solutionSolvent.isReadOnly());
+    assertTrue(design.sampleCount.isReadOnly());
+    assertTrue(design.sampleName.isReadOnly());
+    assertTrue(design.formula.isReadOnly());
+    assertTrue(design.monoisotopicMass.isReadOnly());
+    assertTrue(design.averageMass.isReadOnly());
+    assertTrue(design.toxicity.isReadOnly());
+    assertTrue(design.lightSensitive.isReadOnly());
+    assertTrue(design.storageTemperature.isReadOnly());
+    assertTrue(design.sampleContainerType.isReadOnly());
+    assertTrue(design.plateName.isReadOnly());
+    SubmissionSample firstSample = dataProvider(design.samples).getItems().iterator().next();
+    assertTrue(
+        ((TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(firstSample))
+            .isReadOnly());
+    assertTrue(((TextField) design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).getValueProvider()
         .apply(firstSample)).isReadOnly());
-    assertTrue(((TextField) design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY)
-        .getValueProvider().apply(firstSample)).isReadOnly());
-    assertTrue(((TextField) design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY).getValueProvider()
-        .apply(firstSample)).isReadOnly());
-    assertTrue(design.experienceField.isReadOnly());
-    assertTrue(design.experienceGoalField.isReadOnly());
-    assertTrue(design.taxonomyField.isReadOnly());
-    assertTrue(design.proteinNameField.isReadOnly());
-    assertTrue(design.proteinWeightField.isReadOnly());
-    assertTrue(design.postTranslationModificationField.isReadOnly());
-    assertTrue(design.sampleQuantityField.isReadOnly());
-    assertTrue(design.sampleVolumeField.isReadOnly());
-    assertTrue(design.standardCountField.isReadOnly());
-    Standard firstStandard = dataProvider(design.standardsGrid).getItems().iterator().next();
-    assertTrue(((TextField) design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY)
-        .getValueProvider().apply(firstStandard)).isReadOnly());
-    assertTrue(((TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY)
-        .getValueProvider().apply(firstStandard)).isReadOnly());
-    assertTrue(((TextField) design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY)
-        .getValueProvider().apply(firstStandard)).isReadOnly());
-    assertTrue(design.contaminantCountField.isReadOnly());
-    Contaminant firstContaminant =
-        dataProvider(design.contaminantsGrid).getItems().iterator().next();
-    assertTrue(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY)
-        .getValueProvider().apply(firstContaminant)).isReadOnly());
-    assertTrue(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY)
-        .getValueProvider().apply(firstContaminant)).isReadOnly());
-    assertTrue(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY)
-        .getValueProvider().apply(firstContaminant)).isReadOnly());
-    assertTrue(design.separationField.isReadOnly());
-    assertTrue(design.thicknessField.isReadOnly());
-    assertTrue(design.colorationField.isReadOnly());
-    assertTrue(design.otherColorationField.isReadOnly());
-    assertTrue(design.developmentTimeField.isReadOnly());
-    assertTrue(design.decolorationField.isReadOnly());
-    assertTrue(design.weightMarkerQuantityField.isReadOnly());
-    assertTrue(design.proteinQuantityField.isReadOnly());
-    assertTrue(design.digestionOptions.isReadOnly());
-    assertTrue(design.usedProteolyticDigestionMethodField.isReadOnly());
-    assertTrue(design.otherProteolyticDigestionMethodField.isReadOnly());
-    assertTrue(design.injectionTypeOptions.isReadOnly());
-    assertTrue(design.sourceOptions.isReadOnly());
-    assertTrue(design.proteinContentOptions.isReadOnly());
-    assertTrue(design.instrumentOptions.isReadOnly());
-    assertTrue(design.proteinIdentificationOptions.isReadOnly());
-    assertTrue(design.proteinIdentificationLinkField.isReadOnly());
-    assertTrue(design.quantificationOptions.isReadOnly());
-    assertTrue(design.quantificationLabelsField.isReadOnly());
-    assertTrue(design.highResolutionOptions.isReadOnly());
-    assertTrue(design.acetonitrileSolventsField.isReadOnly());
-    assertTrue(design.methanolSolventsField.isReadOnly());
-    assertTrue(design.chclSolventsField.isReadOnly());
-    assertTrue(design.otherSolventsField.isReadOnly());
-    assertTrue(design.otherSolventField.isReadOnly());
-    assertTrue(design.commentField.isReadOnly());
-    assertTrue(design.filesGrid.getColumn(REMOVE_FILE).isHidden());
+    assertTrue(
+        ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample))
+            .isReadOnly());
+    assertTrue(design.experience.isReadOnly());
+    assertTrue(design.experienceGoal.isReadOnly());
+    assertTrue(design.taxonomy.isReadOnly());
+    assertTrue(design.proteinName.isReadOnly());
+    assertTrue(design.proteinWeight.isReadOnly());
+    assertTrue(design.postTranslationModification.isReadOnly());
+    assertTrue(design.sampleQuantity.isReadOnly());
+    assertTrue(design.sampleVolume.isReadOnly());
+    assertTrue(design.standardCount.isReadOnly());
+    Standard firstStandard = dataProvider(design.standards).getItems().iterator().next();
+    assertTrue(((TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider()
+        .apply(firstStandard)).isReadOnly());
+    assertTrue(((TextField) design.standards.getColumn(STANDARD_QUANTITY).getValueProvider()
+        .apply(firstStandard)).isReadOnly());
+    assertTrue(((TextField) design.standards.getColumn(STANDARD_COMMENT).getValueProvider()
+        .apply(firstStandard)).isReadOnly());
+    assertTrue(design.contaminantCount.isReadOnly());
+    Contaminant firstContaminant = dataProvider(design.contaminants).getItems().iterator().next();
+    assertTrue(((TextField) design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider()
+        .apply(firstContaminant)).isReadOnly());
+    assertTrue(((TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider()
+        .apply(firstContaminant)).isReadOnly());
+    assertTrue(((TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider()
+        .apply(firstContaminant)).isReadOnly());
+    assertTrue(design.separation.isReadOnly());
+    assertTrue(design.thickness.isReadOnly());
+    assertTrue(design.coloration.isReadOnly());
+    assertTrue(design.otherColoration.isReadOnly());
+    assertTrue(design.developmentTime.isReadOnly());
+    assertTrue(design.decoloration.isReadOnly());
+    assertTrue(design.weightMarkerQuantity.isReadOnly());
+    assertTrue(design.proteinQuantity.isReadOnly());
+    assertTrue(design.digestion.isReadOnly());
+    assertTrue(design.usedProteolyticDigestionMethod.isReadOnly());
+    assertTrue(design.otherProteolyticDigestionMethod.isReadOnly());
+    assertTrue(design.injectionType.isReadOnly());
+    assertTrue(design.source.isReadOnly());
+    assertTrue(design.proteinContent.isReadOnly());
+    assertTrue(design.instrument.isReadOnly());
+    assertTrue(design.proteinIdentification.isReadOnly());
+    assertTrue(design.proteinIdentificationLink.isReadOnly());
+    assertTrue(design.quantification.isReadOnly());
+    assertTrue(design.quantificationLabels.isReadOnly());
+    assertTrue(design.highResolution.isReadOnly());
+    assertTrue(design.acetonitrileSolvents.isReadOnly());
+    assertTrue(design.methanolSolvents.isReadOnly());
+    assertTrue(design.chclSolvents.isReadOnly());
+    assertTrue(design.otherSolvents.isReadOnly());
+    assertTrue(design.otherSolvent.isReadOnly());
+    assertTrue(design.comment.isReadOnly());
+    assertTrue(design.files.getColumn(REMOVE_FILE).isHidden());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.buttons.isVisible());
   }
 
   @Test
@@ -1511,80 +1469,81 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
-    assertFalse(design.serviceOptions.isReadOnly());
-    assertFalse(design.sampleSupportOptions.isReadOnly());
-    assertFalse(design.solutionSolventField.isReadOnly());
-    assertFalse(design.sampleCountField.isReadOnly());
-    assertFalse(design.sampleNameField.isReadOnly());
-    assertFalse(design.formulaField.isReadOnly());
-    assertFalse(design.monoisotopicMassField.isReadOnly());
-    assertFalse(design.averageMassField.isReadOnly());
-    assertFalse(design.toxicityField.isReadOnly());
-    assertFalse(design.lightSensitiveField.isReadOnly());
-    assertFalse(design.storageTemperatureOptions.isReadOnly());
-    assertFalse(design.sampleContainerTypeOptions.isReadOnly());
-    assertFalse(design.plateNameField.isReadOnly());
-    SubmissionSample firstSample = dataProvider(design.samplesGrid).getItems().iterator().next();
-    assertFalse(((TextField) design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).getValueProvider()
+    assertFalse(design.service.isReadOnly());
+    assertFalse(design.sampleSupport.isReadOnly());
+    assertFalse(design.solutionSolvent.isReadOnly());
+    assertFalse(design.sampleCount.isReadOnly());
+    assertFalse(design.sampleName.isReadOnly());
+    assertFalse(design.formula.isReadOnly());
+    assertFalse(design.monoisotopicMass.isReadOnly());
+    assertFalse(design.averageMass.isReadOnly());
+    assertFalse(design.toxicity.isReadOnly());
+    assertFalse(design.lightSensitive.isReadOnly());
+    assertFalse(design.storageTemperature.isReadOnly());
+    assertFalse(design.sampleContainerType.isReadOnly());
+    assertFalse(design.plateName.isReadOnly());
+    SubmissionSample firstSample = dataProvider(design.samples).getItems().iterator().next();
+    assertFalse(
+        ((TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(firstSample))
+            .isReadOnly());
+    assertFalse(((TextField) design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).getValueProvider()
         .apply(firstSample)).isReadOnly());
-    assertFalse(((TextField) design.samplesGrid.getColumn(SAMPLE_NUMBER_PROTEIN_PROPERTY)
-        .getValueProvider().apply(firstSample)).isReadOnly());
-    assertFalse(((TextField) design.samplesGrid.getColumn(PROTEIN_WEIGHT_PROPERTY)
-        .getValueProvider().apply(firstSample)).isReadOnly());
-    assertFalse(design.experienceField.isReadOnly());
-    assertFalse(design.experienceGoalField.isReadOnly());
-    assertFalse(design.taxonomyField.isReadOnly());
-    assertFalse(design.proteinNameField.isReadOnly());
-    assertFalse(design.proteinWeightField.isReadOnly());
-    assertFalse(design.postTranslationModificationField.isReadOnly());
-    assertFalse(design.sampleQuantityField.isReadOnly());
-    assertFalse(design.sampleVolumeField.isReadOnly());
-    assertFalse(design.standardCountField.isReadOnly());
-    Standard firstStandard = dataProvider(design.standardsGrid).getItems().iterator().next();
-    assertFalse(((TextField) design.standardsGrid.getColumn(STANDARD_NAME_PROPERTY)
-        .getValueProvider().apply(firstStandard)).isReadOnly());
-    assertFalse(((TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY_PROPERTY)
-        .getValueProvider().apply(firstStandard)).isReadOnly());
-    assertFalse(((TextField) design.standardsGrid.getColumn(STANDARD_COMMENT_PROPERTY)
-        .getValueProvider().apply(firstStandard)).isReadOnly());
-    assertFalse(design.contaminantCountField.isReadOnly());
-    Contaminant firstContaminant =
-        dataProvider(design.contaminantsGrid).getItems().iterator().next();
-    assertFalse(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_NAME_PROPERTY)
-        .getValueProvider().apply(firstContaminant)).isReadOnly());
-    assertFalse(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_QUANTITY_PROPERTY)
-        .getValueProvider().apply(firstContaminant)).isReadOnly());
-    assertFalse(((TextField) design.contaminantsGrid.getColumn(CONTAMINANT_COMMENT_PROPERTY)
-        .getValueProvider().apply(firstContaminant)).isReadOnly());
-    assertFalse(design.separationField.isReadOnly());
-    assertFalse(design.thicknessField.isReadOnly());
-    assertFalse(design.colorationField.isReadOnly());
-    assertFalse(design.otherColorationField.isReadOnly());
-    assertFalse(design.developmentTimeField.isReadOnly());
-    assertFalse(design.decolorationField.isReadOnly());
-    assertFalse(design.weightMarkerQuantityField.isReadOnly());
-    assertFalse(design.proteinQuantityField.isReadOnly());
-    assertFalse(design.digestionOptions.isReadOnly());
-    assertFalse(design.usedProteolyticDigestionMethodField.isReadOnly());
-    assertFalse(design.otherProteolyticDigestionMethodField.isReadOnly());
-    assertFalse(design.injectionTypeOptions.isReadOnly());
-    assertFalse(design.sourceOptions.isReadOnly());
-    assertFalse(design.proteinContentOptions.isReadOnly());
-    assertFalse(design.instrumentOptions.isReadOnly());
-    assertFalse(design.proteinIdentificationOptions.isReadOnly());
-    assertFalse(design.proteinIdentificationLinkField.isReadOnly());
-    assertFalse(design.quantificationOptions.isReadOnly());
-    assertFalse(design.quantificationLabelsField.isReadOnly());
-    assertFalse(design.highResolutionOptions.isReadOnly());
-    assertFalse(design.acetonitrileSolventsField.isReadOnly());
-    assertFalse(design.methanolSolventsField.isReadOnly());
-    assertFalse(design.chclSolventsField.isReadOnly());
-    assertFalse(design.otherSolventsField.isReadOnly());
-    assertFalse(design.otherSolventField.isReadOnly());
-    assertFalse(design.commentField.isReadOnly());
-    assertFalse(design.filesGrid.getColumn(REMOVE_FILE).isHidden());
+    assertFalse(
+        ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample))
+            .isReadOnly());
+    assertFalse(design.experience.isReadOnly());
+    assertFalse(design.experienceGoal.isReadOnly());
+    assertFalse(design.taxonomy.isReadOnly());
+    assertFalse(design.proteinName.isReadOnly());
+    assertFalse(design.proteinWeight.isReadOnly());
+    assertFalse(design.postTranslationModification.isReadOnly());
+    assertFalse(design.sampleQuantity.isReadOnly());
+    assertFalse(design.sampleVolume.isReadOnly());
+    assertFalse(design.standardCount.isReadOnly());
+    Standard firstStandard = dataProvider(design.standards).getItems().iterator().next();
+    assertFalse(((TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider()
+        .apply(firstStandard)).isReadOnly());
+    assertFalse(((TextField) design.standards.getColumn(STANDARD_QUANTITY).getValueProvider()
+        .apply(firstStandard)).isReadOnly());
+    assertFalse(((TextField) design.standards.getColumn(STANDARD_COMMENT).getValueProvider()
+        .apply(firstStandard)).isReadOnly());
+    assertFalse(design.contaminantCount.isReadOnly());
+    Contaminant firstContaminant = dataProvider(design.contaminants).getItems().iterator().next();
+    assertFalse(((TextField) design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider()
+        .apply(firstContaminant)).isReadOnly());
+    assertFalse(((TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider()
+        .apply(firstContaminant)).isReadOnly());
+    assertFalse(((TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider()
+        .apply(firstContaminant)).isReadOnly());
+    assertFalse(design.separation.isReadOnly());
+    assertFalse(design.thickness.isReadOnly());
+    assertFalse(design.coloration.isReadOnly());
+    assertFalse(design.otherColoration.isReadOnly());
+    assertFalse(design.developmentTime.isReadOnly());
+    assertFalse(design.decoloration.isReadOnly());
+    assertFalse(design.weightMarkerQuantity.isReadOnly());
+    assertFalse(design.proteinQuantity.isReadOnly());
+    assertFalse(design.digestion.isReadOnly());
+    assertFalse(design.usedProteolyticDigestionMethod.isReadOnly());
+    assertFalse(design.otherProteolyticDigestionMethod.isReadOnly());
+    assertFalse(design.injectionType.isReadOnly());
+    assertFalse(design.source.isReadOnly());
+    assertFalse(design.proteinContent.isReadOnly());
+    assertFalse(design.instrument.isReadOnly());
+    assertFalse(design.proteinIdentification.isReadOnly());
+    assertFalse(design.proteinIdentificationLink.isReadOnly());
+    assertFalse(design.quantification.isReadOnly());
+    assertFalse(design.quantificationLabels.isReadOnly());
+    assertFalse(design.highResolution.isReadOnly());
+    assertFalse(design.acetonitrileSolvents.isReadOnly());
+    assertFalse(design.methanolSolvents.isReadOnly());
+    assertFalse(design.chclSolvents.isReadOnly());
+    assertFalse(design.otherSolvents.isReadOnly());
+    assertFalse(design.otherSolvent.isReadOnly());
+    assertFalse(design.comment.isReadOnly());
+    assertFalse(design.files.getColumn(REMOVE_FILE).isHidden());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttonsLayout.isVisible());
+    assertTrue(design.buttons.isVisible());
   }
 
   @Test
@@ -1617,73 +1576,73 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeLabel.isVisible());
-    assertFalse(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertTrue(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertTrue(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertTrue(design.sampleQuantityField.isVisible());
-    assertTrue(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCountField.isVisible());
-    assertTrue(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCountField.isVisible());
-    assertTrue(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertTrue(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertTrue(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertTrue(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertTrue(design.quantificationOptions.isVisible());
-    assertTrue(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -1691,76 +1650,76 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Lcmsms_Solution() {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
 
-    assertTrue(design.sampleTypeLabel.isVisible());
-    assertTrue(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertTrue(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertTrue(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertTrue(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertTrue(design.sampleQuantityField.isVisible());
-    assertTrue(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCountField.isVisible());
-    assertTrue(design.standardsGrid.isVisible());
-    assertTrue(design.fillStandardsButton.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCountField.isVisible());
-    assertTrue(design.contaminantsGrid.isVisible());
-    assertTrue(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertTrue(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertTrue(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertTrue(design.enrichmentLabel.isVisible());
-    assertTrue(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertTrue(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertTrue(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertTrue(design.quantificationOptions.isVisible());
-    assertTrue(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertTrue(design.enrichment.isVisible());
+    assertTrue(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttonsLayout.isVisible());
+    assertTrue(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -1768,38 +1727,38 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Lcmsms_UsedDigestion() {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
 
-    design.digestionOptions.setValue(DIGESTED);
+    design.digestion.setValue(DIGESTED);
 
-    assertTrue(design.usedProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.usedProteolyticDigestionMethod.isVisible());
   }
 
   @Test
   public void visible_Lcmsms_OtherDigestion() {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
 
-    design.digestionOptions.setValue(ProteolyticDigestion.OTHER);
+    design.digestion.setValue(ProteolyticDigestion.OTHER);
 
-    assertTrue(design.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.otherProteolyticDigestionMethod.isVisible());
     assertTrue(design.otherProteolyticDigestionMethodNote.isVisible());
   }
 
   @Test
   public void visible_Lcmsms_Plate() {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
 
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
 
-    assertTrue(design.plateNameField.isVisible());
-    assertFalse(design.samplesGridLayout.isVisible());
-    assertFalse(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertTrue(design.plateName.isVisible());
+    assertFalse(design.samplesLayout.isVisible());
+    assertFalse(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertTrue(design.samplesPlateContainer.isVisible());
   }
 
@@ -1815,73 +1774,73 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeLabel.isVisible());
-    assertFalse(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertTrue(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertTrue(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertTrue(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCountField.isVisible());
-    assertTrue(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCountField.isVisible());
-    assertTrue(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertTrue(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertTrue(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertTrue(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertTrue(design.quantificationOptions.isVisible());
-    assertTrue(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -1889,76 +1848,76 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Lcmsms_Dry() {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(DRY);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(DRY);
 
-    assertTrue(design.sampleTypeLabel.isVisible());
-    assertTrue(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertTrue(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertTrue(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertTrue(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertTrue(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCountField.isVisible());
-    assertTrue(design.standardsGrid.isVisible());
-    assertTrue(design.fillStandardsButton.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCountField.isVisible());
-    assertTrue(design.contaminantsGrid.isVisible());
-    assertTrue(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertTrue(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertTrue(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertTrue(design.enrichmentLabel.isVisible());
-    assertTrue(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertTrue(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertTrue(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertTrue(design.quantificationOptions.isVisible());
-    assertTrue(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertTrue(design.enrichment.isVisible());
+    assertTrue(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttonsLayout.isVisible());
+    assertTrue(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -1975,73 +1934,73 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeLabel.isVisible());
-    assertFalse(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertTrue(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertTrue(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertFalse(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertFalse(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCountField.isVisible());
-    assertFalse(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertFalse(design.standardCount.isVisible());
+    assertFalse(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCountField.isVisible());
-    assertFalse(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertTrue(design.separationField.isVisible());
-    assertTrue(design.thicknessField.isVisible());
-    assertTrue(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertTrue(design.developmentTimeField.isVisible());
-    assertTrue(design.decolorationField.isVisible());
-    assertTrue(design.weightMarkerQuantityField.isVisible());
-    assertTrue(design.proteinQuantityField.isVisible());
-    assertTrue(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(design.contaminantCount.isVisible());
+    assertFalse(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertTrue(design.separation.isVisible());
+    assertTrue(design.thickness.isVisible());
+    assertTrue(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertTrue(design.developmentTime.isVisible());
+    assertTrue(design.decoloration.isVisible());
+    assertTrue(design.weightMarkerQuantity.isVisible());
+    assertTrue(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertTrue(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertTrue(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertTrue(design.quantificationOptions.isVisible());
-    assertTrue(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertTrue(design.gelImageFile.isVisible());
   }
@@ -2049,76 +2008,76 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Lcmsms_Gel() {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(GEL);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(GEL);
 
-    assertTrue(design.sampleTypeLabel.isVisible());
-    assertTrue(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertTrue(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertTrue(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertTrue(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertFalse(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertFalse(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCountField.isVisible());
-    assertFalse(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertFalse(design.standardCount.isVisible());
+    assertFalse(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCountField.isVisible());
-    assertFalse(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertTrue(design.separationField.isVisible());
-    assertTrue(design.thicknessField.isVisible());
-    assertTrue(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertTrue(design.developmentTimeField.isVisible());
-    assertTrue(design.decolorationField.isVisible());
-    assertTrue(design.weightMarkerQuantityField.isVisible());
-    assertTrue(design.proteinQuantityField.isVisible());
-    assertTrue(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(design.contaminantCount.isVisible());
+    assertFalse(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertTrue(design.separation.isVisible());
+    assertTrue(design.thickness.isVisible());
+    assertTrue(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertTrue(design.developmentTime.isVisible());
+    assertTrue(design.decoloration.isVisible());
+    assertTrue(design.weightMarkerQuantity.isVisible());
+    assertTrue(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertTrue(design.enrichmentLabel.isVisible());
-    assertTrue(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertTrue(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertTrue(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertTrue(design.quantificationOptions.isVisible());
-    assertTrue(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertTrue(design.enrichment.isVisible());
+    assertTrue(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttonsLayout.isVisible());
+    assertTrue(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertTrue(design.gelImageFile.isVisible());
   }
@@ -2126,12 +2085,12 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Lcmsms_Gel_OtherColoration() {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(GEL);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(GEL);
 
-    design.colorationField.setValue(GelColoration.OTHER);
+    design.coloration.setValue(GelColoration.OTHER);
 
-    assertTrue(design.otherColorationField.isVisible());
+    assertTrue(design.otherColoration.isVisible());
   }
 
   @Test
@@ -2146,73 +2105,73 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeLabel.isVisible());
-    assertFalse(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertTrue(design.solutionSolventField.isVisible());
-    assertFalse(design.sampleCountField.isVisible());
-    assertTrue(design.sampleNameField.isVisible());
-    assertTrue(design.formulaField.isVisible());
-    assertTrue(design.monoisotopicMassField.isVisible());
-    assertTrue(design.averageMassField.isVisible());
-    assertTrue(design.toxicityField.isVisible());
-    assertTrue(design.lightSensitiveField.isVisible());
-    assertTrue(design.storageTemperatureOptions.isVisible());
-    assertFalse(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.solutionSolvent.isVisible());
+    assertFalse(design.sampleCount.isVisible());
+    assertTrue(design.sampleName.isVisible());
+    assertTrue(design.formula.isVisible());
+    assertTrue(design.monoisotopicMass.isVisible());
+    assertTrue(design.averageMass.isVisible());
+    assertTrue(design.toxicity.isVisible());
+    assertTrue(design.lightSensitive.isVisible());
+    assertTrue(design.storageTemperature.isVisible());
+    assertFalse(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertFalse(design.samplesLabel.isVisible());
-    assertFalse(design.samplesGridLayout.isVisible());
-    assertFalse(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertFalse(design.samplesLayout.isVisible());
+    assertFalse(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertFalse(design.experienceField.isVisible());
-    assertFalse(design.experienceGoalField.isVisible());
-    assertFalse(design.taxonomyField.isVisible());
-    assertFalse(design.proteinNameField.isVisible());
-    assertFalse(design.proteinWeightField.isVisible());
-    assertFalse(design.postTranslationModificationField.isVisible());
-    assertFalse(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertFalse(design.experience.isVisible());
+    assertFalse(design.experienceGoal.isVisible());
+    assertFalse(design.taxonomy.isVisible());
+    assertFalse(design.proteinName.isVisible());
+    assertFalse(design.proteinWeight.isVisible());
+    assertFalse(design.postTranslationModification.isVisible());
+    assertFalse(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCountField.isVisible());
-    assertFalse(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertFalse(design.standardCount.isVisible());
+    assertFalse(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCountField.isVisible());
-    assertFalse(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(design.contaminantCount.isVisible());
+    assertFalse(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertFalse(design.proteinContentOptions.isVisible());
-    assertFalse(design.instrumentOptions.isVisible());
-    assertFalse(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertFalse(design.quantificationOptions.isVisible());
-    assertFalse(design.quantificationLabelsField.isVisible());
-    assertTrue(design.highResolutionOptions.isVisible());
-    assertTrue(design.acetonitrileSolventsField.isVisible());
-    assertTrue(design.methanolSolventsField.isVisible());
-    assertTrue(design.chclSolventsField.isVisible());
-    assertTrue(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertFalse(design.proteinContent.isVisible());
+    assertFalse(design.instrument.isVisible());
+    assertFalse(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertFalse(design.quantification.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
+    assertTrue(design.highResolution.isVisible());
+    assertTrue(design.acetonitrileSolvents.isVisible());
+    assertTrue(design.methanolSolvents.isVisible());
+    assertTrue(design.chclSolvents.isVisible());
+    assertTrue(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.buttons.isVisible());
     assertTrue(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2220,76 +2179,76 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Smallmolecule_Solution() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
 
-    assertTrue(design.sampleTypeLabel.isVisible());
-    assertTrue(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertTrue(design.solutionSolventField.isVisible());
-    assertFalse(design.sampleCountField.isVisible());
-    assertTrue(design.sampleNameField.isVisible());
-    assertTrue(design.formulaField.isVisible());
-    assertTrue(design.monoisotopicMassField.isVisible());
-    assertTrue(design.averageMassField.isVisible());
-    assertTrue(design.toxicityField.isVisible());
-    assertTrue(design.lightSensitiveField.isVisible());
-    assertTrue(design.storageTemperatureOptions.isVisible());
-    assertFalse(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.solutionSolvent.isVisible());
+    assertFalse(design.sampleCount.isVisible());
+    assertTrue(design.sampleName.isVisible());
+    assertTrue(design.formula.isVisible());
+    assertTrue(design.monoisotopicMass.isVisible());
+    assertTrue(design.averageMass.isVisible());
+    assertTrue(design.toxicity.isVisible());
+    assertTrue(design.lightSensitive.isVisible());
+    assertTrue(design.storageTemperature.isVisible());
+    assertFalse(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertFalse(design.samplesLabel.isVisible());
-    assertFalse(design.samplesGridLayout.isVisible());
-    assertFalse(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertFalse(design.samplesLayout.isVisible());
+    assertFalse(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertFalse(design.experienceField.isVisible());
-    assertFalse(design.experienceGoalField.isVisible());
-    assertFalse(design.taxonomyField.isVisible());
-    assertFalse(design.proteinNameField.isVisible());
-    assertFalse(design.proteinWeightField.isVisible());
-    assertFalse(design.postTranslationModificationField.isVisible());
-    assertFalse(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertFalse(design.experience.isVisible());
+    assertFalse(design.experienceGoal.isVisible());
+    assertFalse(design.taxonomy.isVisible());
+    assertFalse(design.proteinName.isVisible());
+    assertFalse(design.proteinWeight.isVisible());
+    assertFalse(design.postTranslationModification.isVisible());
+    assertFalse(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCountField.isVisible());
-    assertFalse(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertFalse(design.standardCount.isVisible());
+    assertFalse(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCountField.isVisible());
-    assertFalse(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(design.contaminantCount.isVisible());
+    assertFalse(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertFalse(design.proteinContentOptions.isVisible());
-    assertFalse(design.instrumentOptions.isVisible());
-    assertFalse(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertFalse(design.quantificationOptions.isVisible());
-    assertFalse(design.quantificationLabelsField.isVisible());
-    assertTrue(design.highResolutionOptions.isVisible());
-    assertTrue(design.acetonitrileSolventsField.isVisible());
-    assertTrue(design.methanolSolventsField.isVisible());
-    assertTrue(design.chclSolventsField.isVisible());
-    assertTrue(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertFalse(design.proteinContent.isVisible());
+    assertFalse(design.instrument.isVisible());
+    assertFalse(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertFalse(design.quantification.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
+    assertTrue(design.highResolution.isVisible());
+    assertTrue(design.acetonitrileSolvents.isVisible());
+    assertTrue(design.methanolSolvents.isVisible());
+    assertTrue(design.chclSolvents.isVisible());
+    assertTrue(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttonsLayout.isVisible());
+    assertTrue(design.buttons.isVisible());
     assertTrue(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2297,12 +2256,12 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Smallmolecule_Solution_OtherSolvents() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
-    design.otherSolventsField.setValue(true);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
+    design.otherSolvents.setValue(true);
 
-    assertTrue(design.otherSolventField.isVisible());
-    assertTrue(design.otherSolventNoteLabel.isVisible());
+    assertTrue(design.otherSolvent.isVisible());
+    assertTrue(design.otherSolventNote.isVisible());
   }
 
   @Test
@@ -2317,73 +2276,73 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeLabel.isVisible());
-    assertFalse(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertFalse(design.sampleCountField.isVisible());
-    assertTrue(design.sampleNameField.isVisible());
-    assertTrue(design.formulaField.isVisible());
-    assertTrue(design.monoisotopicMassField.isVisible());
-    assertTrue(design.averageMassField.isVisible());
-    assertTrue(design.toxicityField.isVisible());
-    assertTrue(design.lightSensitiveField.isVisible());
-    assertTrue(design.storageTemperatureOptions.isVisible());
-    assertFalse(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertFalse(design.sampleCount.isVisible());
+    assertTrue(design.sampleName.isVisible());
+    assertTrue(design.formula.isVisible());
+    assertTrue(design.monoisotopicMass.isVisible());
+    assertTrue(design.averageMass.isVisible());
+    assertTrue(design.toxicity.isVisible());
+    assertTrue(design.lightSensitive.isVisible());
+    assertTrue(design.storageTemperature.isVisible());
+    assertFalse(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertFalse(design.samplesLabel.isVisible());
-    assertFalse(design.samplesGridLayout.isVisible());
-    assertFalse(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertFalse(design.samplesLayout.isVisible());
+    assertFalse(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertFalse(design.experienceField.isVisible());
-    assertFalse(design.experienceGoalField.isVisible());
-    assertFalse(design.taxonomyField.isVisible());
-    assertFalse(design.proteinNameField.isVisible());
-    assertFalse(design.proteinWeightField.isVisible());
-    assertFalse(design.postTranslationModificationField.isVisible());
-    assertFalse(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertFalse(design.experience.isVisible());
+    assertFalse(design.experienceGoal.isVisible());
+    assertFalse(design.taxonomy.isVisible());
+    assertFalse(design.proteinName.isVisible());
+    assertFalse(design.proteinWeight.isVisible());
+    assertFalse(design.postTranslationModification.isVisible());
+    assertFalse(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCountField.isVisible());
-    assertFalse(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertFalse(design.standardCount.isVisible());
+    assertFalse(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCountField.isVisible());
-    assertFalse(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(design.contaminantCount.isVisible());
+    assertFalse(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertFalse(design.proteinContentOptions.isVisible());
-    assertFalse(design.instrumentOptions.isVisible());
-    assertFalse(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertFalse(design.quantificationOptions.isVisible());
-    assertFalse(design.quantificationLabelsField.isVisible());
-    assertTrue(design.highResolutionOptions.isVisible());
-    assertTrue(design.acetonitrileSolventsField.isVisible());
-    assertTrue(design.methanolSolventsField.isVisible());
-    assertTrue(design.chclSolventsField.isVisible());
-    assertTrue(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertFalse(design.proteinContent.isVisible());
+    assertFalse(design.instrument.isVisible());
+    assertFalse(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertFalse(design.quantification.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
+    assertTrue(design.highResolution.isVisible());
+    assertTrue(design.acetonitrileSolvents.isVisible());
+    assertTrue(design.methanolSolvents.isVisible());
+    assertTrue(design.chclSolvents.isVisible());
+    assertTrue(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.buttons.isVisible());
     assertTrue(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2391,76 +2350,76 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Smallmolecule_Dry() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(DRY);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(DRY);
 
-    assertTrue(design.sampleTypeLabel.isVisible());
-    assertTrue(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertFalse(design.sampleCountField.isVisible());
-    assertTrue(design.sampleNameField.isVisible());
-    assertTrue(design.formulaField.isVisible());
-    assertTrue(design.monoisotopicMassField.isVisible());
-    assertTrue(design.averageMassField.isVisible());
-    assertTrue(design.toxicityField.isVisible());
-    assertTrue(design.lightSensitiveField.isVisible());
-    assertTrue(design.storageTemperatureOptions.isVisible());
-    assertFalse(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertFalse(design.sampleCount.isVisible());
+    assertTrue(design.sampleName.isVisible());
+    assertTrue(design.formula.isVisible());
+    assertTrue(design.monoisotopicMass.isVisible());
+    assertTrue(design.averageMass.isVisible());
+    assertTrue(design.toxicity.isVisible());
+    assertTrue(design.lightSensitive.isVisible());
+    assertTrue(design.storageTemperature.isVisible());
+    assertFalse(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertFalse(design.samplesLabel.isVisible());
-    assertFalse(design.samplesGridLayout.isVisible());
-    assertFalse(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertFalse(design.samplesLayout.isVisible());
+    assertFalse(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertFalse(design.experienceField.isVisible());
-    assertFalse(design.experienceGoalField.isVisible());
-    assertFalse(design.taxonomyField.isVisible());
-    assertFalse(design.proteinNameField.isVisible());
-    assertFalse(design.proteinWeightField.isVisible());
-    assertFalse(design.postTranslationModificationField.isVisible());
-    assertFalse(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertFalse(design.experience.isVisible());
+    assertFalse(design.experienceGoal.isVisible());
+    assertFalse(design.taxonomy.isVisible());
+    assertFalse(design.proteinName.isVisible());
+    assertFalse(design.proteinWeight.isVisible());
+    assertFalse(design.postTranslationModification.isVisible());
+    assertFalse(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCountField.isVisible());
-    assertFalse(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertFalse(design.standardCount.isVisible());
+    assertFalse(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCountField.isVisible());
-    assertFalse(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertFalse(design.contaminantCount.isVisible());
+    assertFalse(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertFalse(design.injectionTypeOptions.isVisible());
-    assertFalse(design.sourceOptions.isVisible());
-    assertFalse(design.proteinContentOptions.isVisible());
-    assertFalse(design.instrumentOptions.isVisible());
-    assertFalse(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertFalse(design.quantificationOptions.isVisible());
-    assertFalse(design.quantificationLabelsField.isVisible());
-    assertTrue(design.highResolutionOptions.isVisible());
-    assertTrue(design.acetonitrileSolventsField.isVisible());
-    assertTrue(design.methanolSolventsField.isVisible());
-    assertTrue(design.chclSolventsField.isVisible());
-    assertTrue(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertFalse(design.proteinContent.isVisible());
+    assertFalse(design.instrument.isVisible());
+    assertFalse(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertFalse(design.quantification.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
+    assertTrue(design.highResolution.isVisible());
+    assertTrue(design.acetonitrileSolvents.isVisible());
+    assertTrue(design.methanolSolvents.isVisible());
+    assertTrue(design.chclSolvents.isVisible());
+    assertTrue(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttonsLayout.isVisible());
+    assertTrue(design.buttons.isVisible());
     assertTrue(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2477,73 +2436,73 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeLabel.isVisible());
-    assertFalse(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertFalse(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertFalse(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertFalse(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertTrue(design.sampleQuantityField.isVisible());
-    assertTrue(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertFalse(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCountField.isVisible());
-    assertTrue(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCountField.isVisible());
-    assertTrue(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertTrue(design.injectionTypeOptions.isVisible());
-    assertTrue(design.sourceOptions.isVisible());
-    assertFalse(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertFalse(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertFalse(design.quantificationOptions.isVisible());
-    assertFalse(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertTrue(design.injectionType.isVisible());
+    assertTrue(design.source.isVisible());
+    assertFalse(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertFalse(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertFalse(design.quantification.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2551,76 +2510,76 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Intactprotein_Solution() {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
 
-    assertTrue(design.sampleTypeLabel.isVisible());
-    assertTrue(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertFalse(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertFalse(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertTrue(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertFalse(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertTrue(design.sampleQuantityField.isVisible());
-    assertTrue(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertFalse(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCountField.isVisible());
-    assertTrue(design.standardsGrid.isVisible());
-    assertTrue(design.fillStandardsButton.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCountField.isVisible());
-    assertTrue(design.contaminantsGrid.isVisible());
-    assertTrue(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertTrue(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertTrue(design.injectionTypeOptions.isVisible());
-    assertTrue(design.sourceOptions.isVisible());
-    assertFalse(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertFalse(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertFalse(design.quantificationOptions.isVisible());
-    assertFalse(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertTrue(design.injectionType.isVisible());
+    assertTrue(design.source.isVisible());
+    assertFalse(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertFalse(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertFalse(design.quantification.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttonsLayout.isVisible());
+    assertTrue(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2637,73 +2596,73 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeLabel.isVisible());
-    assertFalse(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertFalse(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertFalse(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertFalse(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertFalse(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertTrue(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertFalse(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCountField.isVisible());
-    assertTrue(design.standardsGrid.isVisible());
-    assertFalse(design.fillStandardsButton.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCountField.isVisible());
-    assertTrue(design.contaminantsGrid.isVisible());
-    assertFalse(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertTrue(design.injectionTypeOptions.isVisible());
-    assertTrue(design.sourceOptions.isVisible());
-    assertFalse(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertFalse(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertFalse(design.quantificationOptions.isVisible());
-    assertFalse(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertTrue(design.injectionType.isVisible());
+    assertTrue(design.source.isVisible());
+    assertFalse(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertFalse(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertFalse(design.quantification.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttonsLayout.isVisible());
+    assertFalse(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2711,76 +2670,76 @@ public class SubmissionFormPresenterTest {
   @Test
   public void visible_Intactprotein_Dry() {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(DRY);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(DRY);
 
-    assertTrue(design.sampleTypeLabel.isVisible());
-    assertTrue(design.inactiveLabel.isVisible());
-    assertTrue(design.serviceOptions.isVisible());
-    assertTrue(design.sampleSupportOptions.isVisible());
-    assertFalse(design.solutionSolventField.isVisible());
-    assertTrue(design.sampleCountField.isVisible());
-    assertFalse(design.sampleNameField.isVisible());
-    assertFalse(design.formulaField.isVisible());
-    assertFalse(design.monoisotopicMassField.isVisible());
-    assertFalse(design.averageMassField.isVisible());
-    assertFalse(design.toxicityField.isVisible());
-    assertFalse(design.lightSensitiveField.isVisible());
-    assertFalse(design.storageTemperatureOptions.isVisible());
-    assertFalse(design.sampleContainerTypeOptions.isVisible());
-    assertFalse(design.plateNameField.isVisible());
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleSupport.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertFalse(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
     assertTrue(design.samplesLabel.isVisible());
-    assertTrue(design.samplesGridLayout.isVisible());
-    assertTrue(design.samplesGrid.isVisible());
-    assertTrue(design.fillSamplesButton.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experienceField.isVisible());
-    assertTrue(design.experienceGoalField.isVisible());
-    assertTrue(design.taxonomyField.isVisible());
-    assertTrue(design.proteinNameField.isVisible());
-    assertFalse(design.proteinWeightField.isVisible());
-    assertTrue(design.postTranslationModificationField.isVisible());
-    assertTrue(design.sampleQuantityField.isVisible());
-    assertFalse(design.sampleVolumeField.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertFalse(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCountField.isVisible());
-    assertTrue(design.standardsGrid.isVisible());
-    assertTrue(design.fillStandardsButton.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCountField.isVisible());
-    assertTrue(design.contaminantsGrid.isVisible());
-    assertTrue(design.fillContaminantsButton.isVisible());
-    assertFalse(design.separationField.isVisible());
-    assertFalse(design.thicknessField.isVisible());
-    assertFalse(design.colorationField.isVisible());
-    assertFalse(design.otherColorationField.isVisible());
-    assertFalse(design.developmentTimeField.isVisible());
-    assertFalse(design.decolorationField.isVisible());
-    assertFalse(design.weightMarkerQuantityField.isVisible());
-    assertFalse(design.proteinQuantityField.isVisible());
-    assertFalse(design.digestionOptions.isVisible());
-    assertFalse(design.usedProteolyticDigestionMethodField.isVisible());
-    assertFalse(design.otherProteolyticDigestionMethodField.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertTrue(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
-    assertFalse(design.enrichmentLabel.isVisible());
-    assertFalse(design.exclusionsLabel.isVisible());
-    assertTrue(design.injectionTypeOptions.isVisible());
-    assertTrue(design.sourceOptions.isVisible());
-    assertFalse(design.proteinContentOptions.isVisible());
-    assertTrue(design.instrumentOptions.isVisible());
-    assertFalse(design.proteinIdentificationOptions.isVisible());
-    assertFalse(design.proteinIdentificationLinkField.isVisible());
-    assertFalse(design.quantificationOptions.isVisible());
-    assertFalse(design.quantificationLabelsField.isVisible());
-    assertFalse(design.highResolutionOptions.isVisible());
-    assertFalse(design.acetonitrileSolventsField.isVisible());
-    assertFalse(design.methanolSolventsField.isVisible());
-    assertFalse(design.chclSolventsField.isVisible());
-    assertFalse(design.otherSolventsField.isVisible());
-    assertFalse(design.otherSolventField.isVisible());
-    assertFalse(design.otherSolventNoteLabel.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertTrue(design.injectionType.isVisible());
+    assertTrue(design.source.isVisible());
+    assertFalse(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertFalse(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertFalse(design.quantification.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttonsLayout.isVisible());
+    assertTrue(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2788,354 +2747,354 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingService() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(null);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(null);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.serviceOptions.getErrorMessage().getFormattedHtmlMessage());
+        design.service.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingSupport() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(null);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(null);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.sampleSupportOptions.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleSupport.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingSolutionSolvent() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.solutionSolventField.setValue("");
+    design.solutionSolvent.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.solutionSolventField.getErrorMessage().getFormattedHtmlMessage());
+        design.solutionSolvent.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingSampleCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleCountField.setValue("");
+    design.sampleCount.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_InvalidSampleCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleCountField.setValue("a");
+    design.sampleCount.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_BelowOneSampleCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleCountField.setValue("-1");
+    design.sampleCount.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 1, 200)),
-        design.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_AboveMaxSampleCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleCountField.setValue("200000");
+    design.sampleCount.setValue("200000");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 1, 200)),
-        design.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_DoubleSampleCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleCountField.setValue("1.3");
+    design.sampleCount.setValue("1.3");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.sampleCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingSampleName() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleNameField.setValue("");
+    design.sampleName.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.sampleNameField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleName.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_ExistsSampleName() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
     when(submissionSampleService.exists(any())).thenReturn(true);
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(submissionSampleService, atLeastOnce()).exists(sampleName);
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS, sampleName)),
-        design.sampleNameField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleName.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingFormula() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.formulaField.setValue("");
+    design.formula.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.formulaField.getErrorMessage().getFormattedHtmlMessage());
+        design.formula.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingMonoisotopicMass() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.monoisotopicMassField.setValue("");
+    design.monoisotopicMass.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.monoisotopicMassField.getErrorMessage().getFormattedHtmlMessage());
+        design.monoisotopicMass.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_InvalidMonoisotopicMass() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.monoisotopicMassField.setValue("a");
+    design.monoisotopicMass.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
-        design.monoisotopicMassField.getErrorMessage().getFormattedHtmlMessage());
+        design.monoisotopicMass.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_BelowZeroMonoisotopicMass() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.monoisotopicMassField.setValue("-1");
+    design.monoisotopicMass.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertNotNull(design.monoisotopicMassField.getErrorMessage().getFormattedHtmlMessage());
+    assertNotNull(design.monoisotopicMass.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_InvalidAverageMass() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.averageMassField.setValue("a");
+    design.averageMass.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
-        design.averageMassField.getErrorMessage().getFormattedHtmlMessage());
+        design.averageMass.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_BelowZeroAverageMass() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.averageMassField.setValue("-1");
+    design.averageMass.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertNotNull(design.averageMassField.getErrorMessage().getFormattedHtmlMessage());
+    assertNotNull(design.averageMass.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingStorageTemperature() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.storageTemperatureOptions.setValue(null);
+    design.storageTemperature.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.storageTemperatureOptions.getErrorMessage().getFormattedHtmlMessage());
+        design.storageTemperature.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingPlateName() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
-    design.plateNameField.setValue("");
+    design.sampleContainerType.setValue(WELL);
+    design.plateName.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.plateNameField.getErrorMessage().getFormattedHtmlMessage());
+        design.plateName.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_ExistsPlateName() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     uploadFiles();
     when(plateService.nameAvailable(any())).thenReturn(false);
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(plateService, atLeastOnce()).nameAvailable(plateName);
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS)),
-        design.plateNameField.getErrorMessage().getFormattedHtmlMessage());
+        design.plateName.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingSampleNames_1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNameField1.setValue("");
     uploadFiles();
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3147,13 +3106,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_ExistsSampleNames_1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
     verify(view).showError(stringCaptor.capture());
@@ -3166,13 +3125,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingSampleNames_2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNameField2.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3184,13 +3143,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_ExistsSampleNames_2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
     verify(view).showError(stringCaptor.capture());
@@ -3203,17 +3162,17 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_DuplicateSampleNames() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNameField2.setValue(sampleName1);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, atLeastOnce()).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1)),
+    assertEquals(errorMessage(resources.message(SAMPLE_NAME + ".duplicate", sampleName1)),
         sampleNameField2.getComponentError().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
@@ -3221,19 +3180,19 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingPlateSampleNames_1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     plate.well(0, 0).setSample(new SubmissionSample(null, ""));
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     verify(view.plateComponent, atLeastOnce()).setComponentError(errorMessageCaptor.capture());
-    assertEquals(errorMessage(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount)),
+    assertEquals(errorMessage(resources.message(SAMPLES + ".missing", sampleCount)),
         errorMessageCaptor.getValue().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
@@ -3241,14 +3200,14 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_ExistsPlateSampleNames_1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     uploadFiles();
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -3257,19 +3216,19 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingPlateSampleNames_2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     plate.well(1, 0).setSample(new SubmissionSample(null, ""));
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     verify(view.plateComponent, atLeastOnce()).setComponentError(errorMessageCaptor.capture());
-    assertEquals(errorMessage(resources.message(SAMPLES_PROPERTY + ".missing", sampleCount)),
+    assertEquals(errorMessage(resources.message(SAMPLES + ".missing", sampleCount)),
         errorMessageCaptor.getValue().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
@@ -3277,14 +3236,14 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_ExistsPlateSampleNames_2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     uploadFiles();
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -3293,19 +3252,19 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_DuplicatePlateSampleNames() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     plate.well(1, 0).setSample(new SubmissionSample(null, sampleName1));
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, atLeastOnce()).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     verify(view.plateComponent, atLeastOnce()).setComponentError(errorMessageCaptor.capture());
-    assertEquals(errorMessage(resources.message(SAMPLE_NAME_PROPERTY + ".duplicate", sampleName1)),
+    assertEquals(errorMessage(resources.message(SAMPLE_NAME + ".duplicate", sampleName1)),
         errorMessageCaptor.getValue().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
@@ -3313,13 +3272,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingSampleNumberProtein1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNumberProteinField1.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3331,13 +3290,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_InvalidSampleNumberProtein1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNumberProteinField1.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3349,13 +3308,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_BelowZeroSampleNumberProtein1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNumberProteinField1.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3366,13 +3325,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_DoubleSampleNumberProtein1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNumberProteinField1.setValue("1.2");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3384,13 +3343,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingSampleNumberProtein2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNumberProteinField2.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3402,13 +3361,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_InvalidSampleNumberProtein2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNumberProteinField2.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3420,13 +3379,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_BelowZeroSampleNumberProtein2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNumberProteinField2.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3437,13 +3396,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_DoubleSampleNumberProtein2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleNumberProteinField2.setValue("1.2");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3455,13 +3414,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingProteinWeight1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleProteinWeightField1.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3473,13 +3432,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_InvalidProteinWeight1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleProteinWeightField1.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3491,13 +3450,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_BelowZeroProteinWeight1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleProteinWeightField1.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3508,13 +3467,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingProteinWeight2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleProteinWeightField2.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3526,13 +3485,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_InvalidProteinWeight2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleProteinWeightField2.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3544,13 +3503,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_BelowZeroProteinWeight2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     sampleProteinWeightField2.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3561,155 +3520,155 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingExperience() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.experienceField.setValue("");
+    design.experience.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.experienceField.getErrorMessage().getFormattedHtmlMessage());
+        design.experience.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingTaxonomy() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.taxonomyField.setValue("");
+    design.taxonomy.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.taxonomyField.getErrorMessage().getFormattedHtmlMessage());
+        design.taxonomy.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_InvalidProteinWeight() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.proteinWeightField.setValue("a");
+    design.proteinWeight.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
-        design.proteinWeightField.getErrorMessage().getFormattedHtmlMessage());
+        design.proteinWeight.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_BelowZeroProteinWeight() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.proteinWeightField.setValue("-1");
+    design.proteinWeight.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertNotNull(design.proteinWeightField.getErrorMessage().getFormattedHtmlMessage());
+    assertNotNull(design.proteinWeight.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingSampleQuantity() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleQuantityField.setValue("");
+    design.sampleQuantity.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.sampleQuantityField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleQuantity.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingSampleVolume() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleVolumeField.setValue("");
+    design.sampleVolume.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.sampleVolumeField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleVolume.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_InvalidSampleVolume() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleVolumeField.setValue("a");
+    design.sampleVolume.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
-        design.sampleVolumeField.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleVolume.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_BelowZeroSampleVolume() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleVolumeField.setValue("-1");
+    design.sampleVolume.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertNotNull(design.sampleVolumeField.getErrorMessage().getFormattedHtmlMessage());
+    assertNotNull(design.sampleVolume.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingStandardCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.standardCountField.setValue("");
+    design.standardCount.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -3718,85 +3677,85 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_InvalidStandardCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.standardCountField.setValue("a");
+    design.standardCount.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.standardCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.standardCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_BelowZeroStandardCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.standardCountField.setValue("-1");
+    design.standardCount.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.standardCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.standardCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_AboveMaxStandardCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.standardCountField.setValue("200");
+    design.standardCount.setValue("200");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.standardCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.standardCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_DoubleStandardCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.standardCountField.setValue("1.2");
+    design.standardCount.setValue("1.2");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.standardCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.standardCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingStandardName_1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     standardNameField1.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3808,13 +3767,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingStandardName_2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     standardNameField2.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3826,13 +3785,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingStandardQuantity_1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     standardQuantityField1.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3844,13 +3803,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingStandardQuantity_2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     standardQuantityField2.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3862,13 +3821,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingContaminantCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.contaminantCountField.setValue("");
+    design.contaminantCount.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -3877,85 +3836,85 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_InvalidContaminantCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.contaminantCountField.setValue("a");
+    design.contaminantCount.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.contaminantCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.contaminantCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_BelowZeroContaminantCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.contaminantCountField.setValue("-1");
+    design.contaminantCount.setValue("-1");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.contaminantCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.contaminantCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_AboveMaxContaminantCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.contaminantCountField.setValue("200");
+    design.contaminantCount.setValue("200");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.contaminantCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.contaminantCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_DoubleContaminantCount() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.contaminantCountField.setValue("1.2");
+    design.contaminantCount.setValue("1.2");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.contaminantCountField.getErrorMessage().getFormattedHtmlMessage());
+        design.contaminantCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingContaminantName_1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     contaminantNameField1.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3967,13 +3926,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingContaminantName_2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     contaminantNameField2.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -3985,13 +3944,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingContaminantQuantity_1() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     contaminantQuantityField1.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4003,13 +3962,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingContaminantQuantity_2() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     contaminantQuantityField2.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4021,196 +3980,196 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingGelSeparation() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(GEL);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(GEL);
     setFields();
-    design.separationField.setValue(null);
+    design.separation.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.separationField.getErrorMessage().getFormattedHtmlMessage());
+        design.separation.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingGelThickness() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(GEL);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(GEL);
     setFields();
-    design.thicknessField.setValue(null);
+    design.thickness.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.thicknessField.getErrorMessage().getFormattedHtmlMessage());
+        design.thickness.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingOtherGelColoration() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(GEL);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(GEL);
     setFields();
-    design.colorationField.setValue(GelColoration.OTHER);
-    design.otherColorationField.setValue("");
+    design.coloration.setValue(GelColoration.OTHER);
+    design.otherColoration.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.otherColorationField.getErrorMessage().getFormattedHtmlMessage());
+        design.otherColoration.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_InvalidWeightMarkerQuantity() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(GEL);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(GEL);
     setFields();
-    design.weightMarkerQuantityField.setValue("a");
+    design.weightMarkerQuantity.setValue("a");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
-        design.weightMarkerQuantityField.getErrorMessage().getFormattedHtmlMessage());
+        design.weightMarkerQuantity.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingDigestion() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.digestionOptions.setValue(null);
+    design.digestion.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.digestionOptions.getErrorMessage().getFormattedHtmlMessage());
+        design.digestion.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingUsedDigestion() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.digestionOptions.setValue(DIGESTED);
-    design.usedProteolyticDigestionMethodField.setValue("");
+    design.digestion.setValue(DIGESTED);
+    design.usedProteolyticDigestionMethod.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.usedProteolyticDigestionMethodField.getErrorMessage().getFormattedHtmlMessage());
+        design.usedProteolyticDigestionMethod.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingOtherDigestion() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.digestionOptions.setValue(ProteolyticDigestion.OTHER);
-    design.otherProteolyticDigestionMethodField.setValue("");
+    design.digestion.setValue(ProteolyticDigestion.OTHER);
+    design.otherProteolyticDigestionMethod.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.otherProteolyticDigestionMethodField.getErrorMessage().getFormattedHtmlMessage());
+        design.otherProteolyticDigestionMethod.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingInjectionType() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.injectionTypeOptions.setValue(null);
+    design.injectionType.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.injectionTypeOptions.getErrorMessage().getFormattedHtmlMessage());
+        design.injectionType.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingSource() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sourceOptions.setValue(null);
+    design.source.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.sourceOptions.getErrorMessage().getFormattedHtmlMessage());
+        design.source.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingProteinContent() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.proteinContentOptions.setValue(null);
+    design.proteinContent.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.proteinContentOptions.getErrorMessage().getFormattedHtmlMessage());
+        design.proteinContent.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingInstrument() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.instrumentOptions.setValue(null);
+    design.instrument.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(stringCaptor.capture());
     verify(submissionService).insert(any());
@@ -4219,94 +4178,94 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingProteinIdentification() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.proteinIdentificationOptions.setValue(null);
+    design.proteinIdentification.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.proteinIdentificationOptions.getErrorMessage().getFormattedHtmlMessage());
+        design.proteinIdentification.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingProteinIdentificationLink() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.proteinIdentificationOptions.setValue(ProteinIdentification.OTHER);
-    design.proteinIdentificationLinkField.setValue("");
+    design.proteinIdentification.setValue(ProteinIdentification.OTHER);
+    design.proteinIdentificationLink.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.proteinIdentificationLinkField.getErrorMessage().getFormattedHtmlMessage());
+        design.proteinIdentificationLink.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingQuantificationLabels() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.quantificationOptions.setValue(Quantification.SILAC);
-    design.quantificationLabelsField.setValue("");
+    design.quantification.setValue(Quantification.SILAC);
+    design.quantificationLabels.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.quantificationLabelsField.getErrorMessage().getFormattedHtmlMessage());
+        design.quantificationLabels.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingHighResolution() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.highResolutionOptions.setValue(null);
+    design.highResolution.setValue(null);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.highResolutionOptions.getErrorMessage().getFormattedHtmlMessage());
+        design.highResolution.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
   public void save_MissingSolvents() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.acetonitrileSolventsField.setValue(false);
-    design.methanolSolventsField.setValue(false);
-    design.chclSolventsField.setValue(false);
-    design.otherSolventsField.setValue(false);
+    design.acetonitrileSolvents.setValue(false);
+    design.methanolSolvents.setValue(false);
+    design.chclSolvents.setValue(false);
+    design.otherSolvents.setValue(false);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(resources.message(SOLVENTS_PROPERTY + "." + REQUIRED)),
+    assertEquals(errorMessage(resources.message(SOLVENTS + "." + REQUIRED)),
         design.solventsLayout.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
@@ -4314,19 +4273,19 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingOtherSolvent() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.otherSolventsField.setValue(true);
-    design.otherSolventField.setValue("");
+    design.otherSolvents.setValue(true);
+    design.otherSolvent.setValue("");
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.otherSolventField.getErrorMessage().getFormattedHtmlMessage());
+        design.otherSolvent.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4336,13 +4295,13 @@ public class SubmissionFormPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
-    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samplesGrid).getItems());
+    List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samples).getItems());
     samples.forEach(sample -> {
-      design.samplesGrid.getColumn(SAMPLE_NAME_PROPERTY).getValueProvider().apply(sample);
+      design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample);
     });
     design.explanation.setValue("");
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
@@ -4354,12 +4313,12 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_Lcmsms_Solution() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -4487,13 +4446,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_Lcmsms_Solution_Plate() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -4634,14 +4593,14 @@ public class SubmissionFormPresenterTest {
   public void save_Lcmsms_Solution_OtherDigestion() throws Throwable {
     final ProteolyticDigestion digestion = ProteolyticDigestion.OTHER;
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.digestionOptions.setValue(digestion);
-    design.otherProteolyticDigestionMethodField.setValue(otherDigestion);
+    design.digestion.setValue(digestion);
+    design.otherProteolyticDigestionMethod.setValue(otherDigestion);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -4770,12 +4729,12 @@ public class SubmissionFormPresenterTest {
   public void save_Lcmsms_Dry() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -4904,13 +4863,13 @@ public class SubmissionFormPresenterTest {
   public void save_Lcmsms_Dry_Plate() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5050,12 +5009,12 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_Lcmsms_Gel() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(GEL);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(GEL);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5151,13 +5110,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_Lcmsms_Gel_Plate() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(GEL);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(GEL);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5265,12 +5224,12 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_SmallMolecule_Solution() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5369,12 +5328,12 @@ public class SubmissionFormPresenterTest {
   public void save_SmallMolecule_Dry() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5472,13 +5431,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_SmallMolecule_Plate() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(SMALL_MOLECULE);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(SMALL_MOLECULE);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5492,12 +5451,12 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_Intactprotein_Solution() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5626,12 +5585,12 @@ public class SubmissionFormPresenterTest {
   public void save_Intactprotein_Dry() throws Throwable {
     final SampleSupport support = DRY;
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5759,13 +5718,13 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_IntactProtein_Plate() throws Throwable {
     presenter.init(view);
-    design.serviceOptions.setValue(INTACT_PROTEIN);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(INTACT_PROTEIN);
+    design.sampleSupport.setValue(support);
     setFields();
-    design.sampleContainerTypeOptions.setValue(WELL);
+    design.sampleContainerType.setValue(WELL);
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5791,12 +5750,12 @@ public class SubmissionFormPresenterTest {
     Submission submission = entityManager.find(Submission.class, 36L);
     presenter.init(view);
     presenter.setValue(submission);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -5930,12 +5889,12 @@ public class SubmissionFormPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
@@ -6072,14 +6031,14 @@ public class SubmissionFormPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
-    design.serviceOptions.setValue(LC_MS_MS);
-    design.sampleSupportOptions.setValue(support);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
     setFields();
     uploadFiles();
     doThrow(new PersistenceException("Could not update submission")).when(submissionService)
         .forceUpdate(any(), any());
 
-    design.saveButton.click();
+    design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(resources.message(UPDATE_ERROR, experience), stringCaptor.getValue());
@@ -6092,19 +6051,19 @@ public class SubmissionFormPresenterTest {
 
     presenter.setValue(submission);
 
-    assertEquals(LC_MS_MS, design.serviceOptions.getValue());
-    assertEquals(SOLUTION, design.sampleSupportOptions.getValue());
-    assertEquals(solutionSolvent, design.solutionSolventField.getValue());
-    assertEquals(sampleName1, design.sampleNameField.getValue());
-    assertEquals(formula, design.formulaField.getValue());
-    assertEquals(monoisotopicMass, convert(doubleConverter, design.monoisotopicMassField), 0.001);
-    assertEquals(averageMass, convert(doubleConverter, design.averageMassField), 0.001);
-    assertEquals(toxicity, design.toxicityField.getValue());
-    assertEquals(lightSensitive, design.lightSensitiveField.getValue());
-    assertEquals(storageTemperature, design.storageTemperatureOptions.getValue());
-    assertEquals(sampleContainerType, design.sampleContainerTypeOptions.getValue());
-    assertEquals((Integer) sampleCount, convert(integerConverter, design.sampleCountField));
-    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samplesGrid);
+    assertEquals(LC_MS_MS, design.service.getValue());
+    assertEquals(SOLUTION, design.sampleSupport.getValue());
+    assertEquals(solutionSolvent, design.solutionSolvent.getValue());
+    assertEquals(sampleName1, design.sampleName.getValue());
+    assertEquals(formula, design.formula.getValue());
+    assertEquals(monoisotopicMass, convert(doubleConverter, design.monoisotopicMass), 0.001);
+    assertEquals(averageMass, convert(doubleConverter, design.averageMass), 0.001);
+    assertEquals(toxicity, design.toxicity.getValue());
+    assertEquals(lightSensitive, design.lightSensitive.getValue());
+    assertEquals(storageTemperature, design.storageTemperature.getValue());
+    assertEquals(sampleContainerType, design.sampleContainerType.getValue());
+    assertEquals((Integer) sampleCount, convert(integerConverter, design.sampleCount));
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samples);
     List<SubmissionSample> samples = new ArrayList<>(samplesDataProvider.getItems());
     assertEquals(2, samples.size());
     SubmissionSample sample = samples.get(0);
@@ -6115,16 +6074,16 @@ public class SubmissionFormPresenterTest {
     assertEquals(sampleName2, sample.getName());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
-    assertEquals(experience, design.experienceField.getValue());
-    assertEquals(experienceGoal, design.experienceGoalField.getValue());
-    assertEquals(taxonomy, design.taxonomyField.getValue());
-    assertEquals(proteinName, design.proteinNameField.getValue());
-    assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeightField), 0.001);
-    assertEquals(postTranslationModification, design.postTranslationModificationField.getValue());
-    assertEquals(sampleQuantity, design.sampleQuantityField.getValue());
-    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolumeField), 0.001);
-    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCountField));
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standardsGrid);
+    assertEquals(experience, design.experience.getValue());
+    assertEquals(experienceGoal, design.experienceGoal.getValue());
+    assertEquals(taxonomy, design.taxonomy.getValue());
+    assertEquals(proteinName, design.proteinName.getValue());
+    assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
+    assertEquals(postTranslationModification, design.postTranslationModification.getValue());
+    assertEquals(sampleQuantity, design.sampleQuantity.getValue());
+    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolume), 0.001);
+    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
     List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
     assertEquals(2, standards.size());
     Standard standard = standards.get(0);
@@ -6133,9 +6092,8 @@ public class SubmissionFormPresenterTest {
     standard = standards.get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals((Integer) contaminantsCount,
-        convert(integerConverter, design.contaminantCountField));
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminantsGrid);
+    assertEquals((Integer) contaminantsCount, convert(integerConverter, design.contaminantCount));
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
     List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
     assertEquals(2, contaminants.size());
     Contaminant contaminant = contaminants.get(0);
@@ -6144,33 +6102,33 @@ public class SubmissionFormPresenterTest {
     contaminant = contaminants.get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(gelSeparation, design.separationField.getValue());
-    assertEquals(gelThickness, design.thicknessField.getValue());
-    assertEquals(gelColoration, design.colorationField.getValue());
-    assertEquals(otherColoration, design.otherColorationField.getValue());
-    assertEquals(developmentTime, design.developmentTimeField.getValue());
-    assertEquals(decoloration, design.decolorationField.getValue());
-    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantityField),
+    assertEquals(gelSeparation, design.separation.getValue());
+    assertEquals(gelThickness, design.thickness.getValue());
+    assertEquals(gelColoration, design.coloration.getValue());
+    assertEquals(otherColoration, design.otherColoration.getValue());
+    assertEquals(developmentTime, design.developmentTime.getValue());
+    assertEquals(decoloration, design.decoloration.getValue());
+    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantity),
         0.001);
-    assertEquals(proteinQuantity, design.proteinQuantityField.getValue());
-    assertEquals(digestion, design.digestionOptions.getValue());
-    assertEquals(usedDigestion, design.usedProteolyticDigestionMethodField.getValue());
-    assertEquals(otherDigestion, design.otherProteolyticDigestionMethodField.getValue());
-    assertEquals(injectionType, design.injectionTypeOptions.getValue());
-    assertEquals(source, design.sourceOptions.getValue());
-    assertEquals(proteinContent, design.proteinContentOptions.getValue());
-    assertEquals(instrument, design.instrumentOptions.getValue());
-    assertEquals(proteinIdentification, design.proteinIdentificationOptions.getValue());
-    assertEquals(proteinIdentificationLink, design.proteinIdentificationLinkField.getValue());
-    assertEquals(quantification, design.quantificationOptions.getValue());
-    assertEquals(quantificationLabels, design.quantificationLabelsField.getValue());
-    assertEquals(highResolution, design.highResolutionOptions.getValue());
-    assertEquals(acetonitrileSolvents, design.acetonitrileSolventsField.getValue());
-    assertEquals(methanolSolvents, design.methanolSolventsField.getValue());
-    assertEquals(chclSolvents, design.chclSolventsField.getValue());
-    assertEquals(otherSolvents, design.otherSolventsField.getValue());
-    assertEquals(otherSolvent, design.otherSolventField.getValue());
-    assertEquals(comment, design.commentField.getValue());
+    assertEquals(proteinQuantity, design.proteinQuantity.getValue());
+    assertEquals(digestion, design.digestion.getValue());
+    assertEquals(usedDigestion, design.usedProteolyticDigestionMethod.getValue());
+    assertEquals(otherDigestion, design.otherProteolyticDigestionMethod.getValue());
+    assertEquals(injectionType, design.injectionType.getValue());
+    assertEquals(source, design.source.getValue());
+    assertEquals(proteinContent, design.proteinContent.getValue());
+    assertEquals(instrument, design.instrument.getValue());
+    assertEquals(proteinIdentification, design.proteinIdentification.getValue());
+    assertEquals(proteinIdentificationLink, design.proteinIdentificationLink.getValue());
+    assertEquals(quantification, design.quantification.getValue());
+    assertEquals(quantificationLabels, design.quantificationLabels.getValue());
+    assertEquals(highResolution, design.highResolution.getValue());
+    assertEquals(acetonitrileSolvents, design.acetonitrileSolvents.getValue());
+    assertEquals(methanolSolvents, design.methanolSolvents.getValue());
+    assertEquals(chclSolvents, design.chclSolvents.getValue());
+    assertEquals(otherSolvents, design.otherSolvents.getValue());
+    assertEquals(otherSolvent, design.otherSolvent.getValue());
+    assertEquals(comment, design.comment.getValue());
   }
 
   @Test
@@ -6184,19 +6142,19 @@ public class SubmissionFormPresenterTest {
 
     presenter.setValue(submission);
 
-    assertEquals(LC_MS_MS, design.serviceOptions.getValue());
-    assertEquals(SOLUTION, design.sampleSupportOptions.getValue());
-    assertEquals(solutionSolvent, design.solutionSolventField.getValue());
-    assertEquals(sampleName1, design.sampleNameField.getValue());
-    assertEquals(formula, design.formulaField.getValue());
-    assertEquals(monoisotopicMass, convert(doubleConverter, design.monoisotopicMassField), 0.001);
-    assertEquals(averageMass, convert(doubleConverter, design.averageMassField), 0.001);
-    assertEquals(toxicity, design.toxicityField.getValue());
-    assertEquals(lightSensitive, design.lightSensitiveField.getValue());
-    assertEquals(storageTemperature, design.storageTemperatureOptions.getValue());
-    assertEquals(SampleContainerType.WELL, design.sampleContainerTypeOptions.getValue());
-    assertEquals((Integer) sampleCount, convert(integerConverter, design.sampleCountField));
-    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samplesGrid);
+    assertEquals(LC_MS_MS, design.service.getValue());
+    assertEquals(SOLUTION, design.sampleSupport.getValue());
+    assertEquals(solutionSolvent, design.solutionSolvent.getValue());
+    assertEquals(sampleName1, design.sampleName.getValue());
+    assertEquals(formula, design.formula.getValue());
+    assertEquals(monoisotopicMass, convert(doubleConverter, design.monoisotopicMass), 0.001);
+    assertEquals(averageMass, convert(doubleConverter, design.averageMass), 0.001);
+    assertEquals(toxicity, design.toxicity.getValue());
+    assertEquals(lightSensitive, design.lightSensitive.getValue());
+    assertEquals(storageTemperature, design.storageTemperature.getValue());
+    assertEquals(SampleContainerType.WELL, design.sampleContainerType.getValue());
+    assertEquals((Integer) sampleCount, convert(integerConverter, design.sampleCount));
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samples);
     List<SubmissionSample> samples = new ArrayList<>(samplesDataProvider.getItems());
     assertEquals(2, samples.size());
     SubmissionSample sample = samples.get(0);
@@ -6207,18 +6165,18 @@ public class SubmissionFormPresenterTest {
     assertEquals(sampleName2, sample.getName());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
-    assertEquals(plateName, design.plateNameField.getValue());
+    assertEquals(plateName, design.plateName.getValue());
     verify(view.plateComponent).setValue(plate);
-    assertEquals(experience, design.experienceField.getValue());
-    assertEquals(experienceGoal, design.experienceGoalField.getValue());
-    assertEquals(taxonomy, design.taxonomyField.getValue());
-    assertEquals(proteinName, design.proteinNameField.getValue());
-    assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeightField), 0.001);
-    assertEquals(postTranslationModification, design.postTranslationModificationField.getValue());
-    assertEquals(sampleQuantity, design.sampleQuantityField.getValue());
-    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolumeField), 0.001);
-    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCountField));
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standardsGrid);
+    assertEquals(experience, design.experience.getValue());
+    assertEquals(experienceGoal, design.experienceGoal.getValue());
+    assertEquals(taxonomy, design.taxonomy.getValue());
+    assertEquals(proteinName, design.proteinName.getValue());
+    assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
+    assertEquals(postTranslationModification, design.postTranslationModification.getValue());
+    assertEquals(sampleQuantity, design.sampleQuantity.getValue());
+    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolume), 0.001);
+    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
     List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
     assertEquals(2, standards.size());
     Standard standard = standards.get(0);
@@ -6227,9 +6185,8 @@ public class SubmissionFormPresenterTest {
     standard = standards.get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals((Integer) contaminantsCount,
-        convert(integerConverter, design.contaminantCountField));
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminantsGrid);
+    assertEquals((Integer) contaminantsCount, convert(integerConverter, design.contaminantCount));
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
     List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
     assertEquals(2, contaminants.size());
     Contaminant contaminant = contaminants.get(0);
@@ -6238,33 +6195,33 @@ public class SubmissionFormPresenterTest {
     contaminant = contaminants.get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(gelSeparation, design.separationField.getValue());
-    assertEquals(gelThickness, design.thicknessField.getValue());
-    assertEquals(gelColoration, design.colorationField.getValue());
-    assertEquals(otherColoration, design.otherColorationField.getValue());
-    assertEquals(developmentTime, design.developmentTimeField.getValue());
-    assertEquals(decoloration, design.decolorationField.getValue());
-    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantityField),
+    assertEquals(gelSeparation, design.separation.getValue());
+    assertEquals(gelThickness, design.thickness.getValue());
+    assertEquals(gelColoration, design.coloration.getValue());
+    assertEquals(otherColoration, design.otherColoration.getValue());
+    assertEquals(developmentTime, design.developmentTime.getValue());
+    assertEquals(decoloration, design.decoloration.getValue());
+    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantity),
         0.001);
-    assertEquals(proteinQuantity, design.proteinQuantityField.getValue());
-    assertEquals(digestion, design.digestionOptions.getValue());
-    assertEquals(usedDigestion, design.usedProteolyticDigestionMethodField.getValue());
-    assertEquals(otherDigestion, design.otherProteolyticDigestionMethodField.getValue());
-    assertEquals(injectionType, design.injectionTypeOptions.getValue());
-    assertEquals(source, design.sourceOptions.getValue());
-    assertEquals(proteinContent, design.proteinContentOptions.getValue());
-    assertEquals(instrument, design.instrumentOptions.getValue());
-    assertEquals(proteinIdentification, design.proteinIdentificationOptions.getValue());
-    assertEquals(proteinIdentificationLink, design.proteinIdentificationLinkField.getValue());
-    assertEquals(quantification, design.quantificationOptions.getValue());
-    assertEquals(quantificationLabels, design.quantificationLabelsField.getValue());
-    assertEquals(highResolution, design.highResolutionOptions.getValue());
-    assertEquals(acetonitrileSolvents, design.acetonitrileSolventsField.getValue());
-    assertEquals(methanolSolvents, design.methanolSolventsField.getValue());
-    assertEquals(chclSolvents, design.chclSolventsField.getValue());
-    assertEquals(otherSolvents, design.otherSolventsField.getValue());
-    assertEquals(otherSolvent, design.otherSolventField.getValue());
-    assertEquals(comment, design.commentField.getValue());
+    assertEquals(proteinQuantity, design.proteinQuantity.getValue());
+    assertEquals(digestion, design.digestion.getValue());
+    assertEquals(usedDigestion, design.usedProteolyticDigestionMethod.getValue());
+    assertEquals(otherDigestion, design.otherProteolyticDigestionMethod.getValue());
+    assertEquals(injectionType, design.injectionType.getValue());
+    assertEquals(source, design.source.getValue());
+    assertEquals(proteinContent, design.proteinContent.getValue());
+    assertEquals(instrument, design.instrument.getValue());
+    assertEquals(proteinIdentification, design.proteinIdentification.getValue());
+    assertEquals(proteinIdentificationLink, design.proteinIdentificationLink.getValue());
+    assertEquals(quantification, design.quantification.getValue());
+    assertEquals(quantificationLabels, design.quantificationLabels.getValue());
+    assertEquals(highResolution, design.highResolution.getValue());
+    assertEquals(acetonitrileSolvents, design.acetonitrileSolvents.getValue());
+    assertEquals(methanolSolvents, design.methanolSolvents.getValue());
+    assertEquals(chclSolvents, design.chclSolvents.getValue());
+    assertEquals(otherSolvents, design.otherSolvents.getValue());
+    assertEquals(otherSolvent, design.otherSolvent.getValue());
+    assertEquals(comment, design.comment.getValue());
   }
 
   @Test
@@ -6275,19 +6232,19 @@ public class SubmissionFormPresenterTest {
 
     presenter.setValue(submission);
 
-    assertEquals(SMALL_MOLECULE, design.serviceOptions.getValue());
-    assertEquals(SOLUTION, design.sampleSupportOptions.getValue());
-    assertEquals(solutionSolvent, design.solutionSolventField.getValue());
-    assertEquals(sampleName1, design.sampleNameField.getValue());
-    assertEquals(formula, design.formulaField.getValue());
-    assertEquals(monoisotopicMass, convert(doubleConverter, design.monoisotopicMassField), 0.001);
-    assertEquals(averageMass, convert(doubleConverter, design.averageMassField), 0.001);
-    assertEquals(toxicity, design.toxicityField.getValue());
-    assertEquals(lightSensitive, design.lightSensitiveField.getValue());
-    assertEquals(storageTemperature, design.storageTemperatureOptions.getValue());
-    assertEquals(sampleContainerType, design.sampleContainerTypeOptions.getValue());
-    assertEquals((Integer) sampleCount, convert(integerConverter, design.sampleCountField));
-    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samplesGrid);
+    assertEquals(SMALL_MOLECULE, design.service.getValue());
+    assertEquals(SOLUTION, design.sampleSupport.getValue());
+    assertEquals(solutionSolvent, design.solutionSolvent.getValue());
+    assertEquals(sampleName1, design.sampleName.getValue());
+    assertEquals(formula, design.formula.getValue());
+    assertEquals(monoisotopicMass, convert(doubleConverter, design.monoisotopicMass), 0.001);
+    assertEquals(averageMass, convert(doubleConverter, design.averageMass), 0.001);
+    assertEquals(toxicity, design.toxicity.getValue());
+    assertEquals(lightSensitive, design.lightSensitive.getValue());
+    assertEquals(storageTemperature, design.storageTemperature.getValue());
+    assertEquals(sampleContainerType, design.sampleContainerType.getValue());
+    assertEquals((Integer) sampleCount, convert(integerConverter, design.sampleCount));
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samples);
     List<SubmissionSample> samples = new ArrayList<>(samplesDataProvider.getItems());
     assertEquals(2, samples.size());
     SubmissionSample sample = samples.get(0);
@@ -6298,16 +6255,16 @@ public class SubmissionFormPresenterTest {
     assertEquals(sampleName2, sample.getName());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
-    assertEquals(experience, design.experienceField.getValue());
-    assertEquals(experienceGoal, design.experienceGoalField.getValue());
-    assertEquals(taxonomy, design.taxonomyField.getValue());
-    assertEquals(proteinName, design.proteinNameField.getValue());
-    assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeightField), 0.001);
-    assertEquals(postTranslationModification, design.postTranslationModificationField.getValue());
-    assertEquals(sampleQuantity, design.sampleQuantityField.getValue());
-    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolumeField), 0.001);
-    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCountField));
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standardsGrid);
+    assertEquals(experience, design.experience.getValue());
+    assertEquals(experienceGoal, design.experienceGoal.getValue());
+    assertEquals(taxonomy, design.taxonomy.getValue());
+    assertEquals(proteinName, design.proteinName.getValue());
+    assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
+    assertEquals(postTranslationModification, design.postTranslationModification.getValue());
+    assertEquals(sampleQuantity, design.sampleQuantity.getValue());
+    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolume), 0.001);
+    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
     List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
     assertEquals(2, standards.size());
     Standard standard = standards.get(0);
@@ -6316,9 +6273,8 @@ public class SubmissionFormPresenterTest {
     standard = standards.get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals((Integer) contaminantsCount,
-        convert(integerConverter, design.contaminantCountField));
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminantsGrid);
+    assertEquals((Integer) contaminantsCount, convert(integerConverter, design.contaminantCount));
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
     List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
     assertEquals(2, contaminants.size());
     Contaminant contaminant = contaminants.get(0);
@@ -6327,33 +6283,33 @@ public class SubmissionFormPresenterTest {
     contaminant = contaminants.get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(gelSeparation, design.separationField.getValue());
-    assertEquals(gelThickness, design.thicknessField.getValue());
-    assertEquals(gelColoration, design.colorationField.getValue());
-    assertEquals(otherColoration, design.otherColorationField.getValue());
-    assertEquals(developmentTime, design.developmentTimeField.getValue());
-    assertEquals(decoloration, design.decolorationField.getValue());
-    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantityField),
+    assertEquals(gelSeparation, design.separation.getValue());
+    assertEquals(gelThickness, design.thickness.getValue());
+    assertEquals(gelColoration, design.coloration.getValue());
+    assertEquals(otherColoration, design.otherColoration.getValue());
+    assertEquals(developmentTime, design.developmentTime.getValue());
+    assertEquals(decoloration, design.decoloration.getValue());
+    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantity),
         0.001);
-    assertEquals(proteinQuantity, design.proteinQuantityField.getValue());
-    assertEquals(digestion, design.digestionOptions.getValue());
-    assertEquals(usedDigestion, design.usedProteolyticDigestionMethodField.getValue());
-    assertEquals(otherDigestion, design.otherProteolyticDigestionMethodField.getValue());
-    assertEquals(injectionType, design.injectionTypeOptions.getValue());
-    assertEquals(source, design.sourceOptions.getValue());
-    assertEquals(proteinContent, design.proteinContentOptions.getValue());
-    assertEquals(instrument, design.instrumentOptions.getValue());
-    assertEquals(proteinIdentification, design.proteinIdentificationOptions.getValue());
-    assertEquals(proteinIdentificationLink, design.proteinIdentificationLinkField.getValue());
-    assertEquals(quantification, design.quantificationOptions.getValue());
-    assertEquals(quantificationLabels, design.quantificationLabelsField.getValue());
-    assertEquals(highResolution, design.highResolutionOptions.getValue());
-    assertEquals(acetonitrileSolvents, design.acetonitrileSolventsField.getValue());
-    assertEquals(methanolSolvents, design.methanolSolventsField.getValue());
-    assertEquals(chclSolvents, design.chclSolventsField.getValue());
-    assertEquals(otherSolvents, design.otherSolventsField.getValue());
-    assertEquals(otherSolvent, design.otherSolventField.getValue());
-    assertEquals(comment, design.commentField.getValue());
+    assertEquals(proteinQuantity, design.proteinQuantity.getValue());
+    assertEquals(digestion, design.digestion.getValue());
+    assertEquals(usedDigestion, design.usedProteolyticDigestionMethod.getValue());
+    assertEquals(otherDigestion, design.otherProteolyticDigestionMethod.getValue());
+    assertEquals(injectionType, design.injectionType.getValue());
+    assertEquals(source, design.source.getValue());
+    assertEquals(proteinContent, design.proteinContent.getValue());
+    assertEquals(instrument, design.instrument.getValue());
+    assertEquals(proteinIdentification, design.proteinIdentification.getValue());
+    assertEquals(proteinIdentificationLink, design.proteinIdentificationLink.getValue());
+    assertEquals(quantification, design.quantification.getValue());
+    assertEquals(quantificationLabels, design.quantificationLabels.getValue());
+    assertEquals(highResolution, design.highResolution.getValue());
+    assertEquals(acetonitrileSolvents, design.acetonitrileSolvents.getValue());
+    assertEquals(methanolSolvents, design.methanolSolvents.getValue());
+    assertEquals(chclSolvents, design.chclSolvents.getValue());
+    assertEquals(otherSolvents, design.otherSolvents.getValue());
+    assertEquals(otherSolvent, design.otherSolvent.getValue());
+    assertEquals(comment, design.comment.getValue());
   }
 
   @Test
@@ -6364,19 +6320,19 @@ public class SubmissionFormPresenterTest {
 
     presenter.setValue(submission);
 
-    assertEquals(INTACT_PROTEIN, design.serviceOptions.getValue());
-    assertEquals(SOLUTION, design.sampleSupportOptions.getValue());
-    assertEquals(solutionSolvent, design.solutionSolventField.getValue());
-    assertEquals(sampleName1, design.sampleNameField.getValue());
-    assertEquals(formula, design.formulaField.getValue());
-    assertEquals(monoisotopicMass, convert(doubleConverter, design.monoisotopicMassField), 0.001);
-    assertEquals(averageMass, convert(doubleConverter, design.averageMassField), 0.001);
-    assertEquals(toxicity, design.toxicityField.getValue());
-    assertEquals(lightSensitive, design.lightSensitiveField.getValue());
-    assertEquals(storageTemperature, design.storageTemperatureOptions.getValue());
-    assertEquals(sampleContainerType, design.sampleContainerTypeOptions.getValue());
-    assertEquals((Integer) sampleCount, convert(integerConverter, design.sampleCountField));
-    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samplesGrid);
+    assertEquals(INTACT_PROTEIN, design.service.getValue());
+    assertEquals(SOLUTION, design.sampleSupport.getValue());
+    assertEquals(solutionSolvent, design.solutionSolvent.getValue());
+    assertEquals(sampleName1, design.sampleName.getValue());
+    assertEquals(formula, design.formula.getValue());
+    assertEquals(monoisotopicMass, convert(doubleConverter, design.monoisotopicMass), 0.001);
+    assertEquals(averageMass, convert(doubleConverter, design.averageMass), 0.001);
+    assertEquals(toxicity, design.toxicity.getValue());
+    assertEquals(lightSensitive, design.lightSensitive.getValue());
+    assertEquals(storageTemperature, design.storageTemperature.getValue());
+    assertEquals(sampleContainerType, design.sampleContainerType.getValue());
+    assertEquals((Integer) sampleCount, convert(integerConverter, design.sampleCount));
+    ListDataProvider<SubmissionSample> samplesDataProvider = dataProvider(design.samples);
     List<SubmissionSample> samples = new ArrayList<>(samplesDataProvider.getItems());
     assertEquals(2, samples.size());
     SubmissionSample sample = samples.get(0);
@@ -6387,16 +6343,16 @@ public class SubmissionFormPresenterTest {
     assertEquals(sampleName2, sample.getName());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
-    assertEquals(experience, design.experienceField.getValue());
-    assertEquals(experienceGoal, design.experienceGoalField.getValue());
-    assertEquals(taxonomy, design.taxonomyField.getValue());
-    assertEquals(proteinName, design.proteinNameField.getValue());
-    assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeightField), 0.001);
-    assertEquals(postTranslationModification, design.postTranslationModificationField.getValue());
-    assertEquals(sampleQuantity, design.sampleQuantityField.getValue());
-    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolumeField), 0.001);
-    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCountField));
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standardsGrid);
+    assertEquals(experience, design.experience.getValue());
+    assertEquals(experienceGoal, design.experienceGoal.getValue());
+    assertEquals(taxonomy, design.taxonomy.getValue());
+    assertEquals(proteinName, design.proteinName.getValue());
+    assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
+    assertEquals(postTranslationModification, design.postTranslationModification.getValue());
+    assertEquals(sampleQuantity, design.sampleQuantity.getValue());
+    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolume), 0.001);
+    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
+    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
     List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
     assertEquals(2, standards.size());
     Standard standard = standards.get(0);
@@ -6405,9 +6361,8 @@ public class SubmissionFormPresenterTest {
     standard = standards.get(1);
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals((Integer) contaminantsCount,
-        convert(integerConverter, design.contaminantCountField));
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminantsGrid);
+    assertEquals((Integer) contaminantsCount, convert(integerConverter, design.contaminantCount));
+    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
     List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
     assertEquals(2, contaminants.size());
     Contaminant contaminant = contaminants.get(0);
@@ -6416,32 +6371,32 @@ public class SubmissionFormPresenterTest {
     contaminant = contaminants.get(1);
     assertEquals(contaminantName2, contaminant.getName());
     assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(gelSeparation, design.separationField.getValue());
-    assertEquals(gelThickness, design.thicknessField.getValue());
-    assertEquals(gelColoration, design.colorationField.getValue());
-    assertEquals(otherColoration, design.otherColorationField.getValue());
-    assertEquals(developmentTime, design.developmentTimeField.getValue());
-    assertEquals(decoloration, design.decolorationField.getValue());
-    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantityField),
+    assertEquals(gelSeparation, design.separation.getValue());
+    assertEquals(gelThickness, design.thickness.getValue());
+    assertEquals(gelColoration, design.coloration.getValue());
+    assertEquals(otherColoration, design.otherColoration.getValue());
+    assertEquals(developmentTime, design.developmentTime.getValue());
+    assertEquals(decoloration, design.decoloration.getValue());
+    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantity),
         0.001);
-    assertEquals(proteinQuantity, design.proteinQuantityField.getValue());
-    assertEquals(digestion, design.digestionOptions.getValue());
-    assertEquals(usedDigestion, design.usedProteolyticDigestionMethodField.getValue());
-    assertEquals(otherDigestion, design.otherProteolyticDigestionMethodField.getValue());
-    assertEquals(injectionType, design.injectionTypeOptions.getValue());
-    assertEquals(source, design.sourceOptions.getValue());
-    assertEquals(proteinContent, design.proteinContentOptions.getValue());
-    assertEquals(instrument, design.instrumentOptions.getValue());
-    assertEquals(proteinIdentification, design.proteinIdentificationOptions.getValue());
-    assertEquals(proteinIdentificationLink, design.proteinIdentificationLinkField.getValue());
-    assertEquals(quantification, design.quantificationOptions.getValue());
-    assertEquals(quantificationLabels, design.quantificationLabelsField.getValue());
-    assertEquals(highResolution, design.highResolutionOptions.getValue());
-    assertEquals(acetonitrileSolvents, design.acetonitrileSolventsField.getValue());
-    assertEquals(methanolSolvents, design.methanolSolventsField.getValue());
-    assertEquals(chclSolvents, design.chclSolventsField.getValue());
-    assertEquals(otherSolvents, design.otherSolventsField.getValue());
-    assertEquals(otherSolvent, design.otherSolventField.getValue());
-    assertEquals(comment, design.commentField.getValue());
+    assertEquals(proteinQuantity, design.proteinQuantity.getValue());
+    assertEquals(digestion, design.digestion.getValue());
+    assertEquals(usedDigestion, design.usedProteolyticDigestionMethod.getValue());
+    assertEquals(otherDigestion, design.otherProteolyticDigestionMethod.getValue());
+    assertEquals(injectionType, design.injectionType.getValue());
+    assertEquals(source, design.source.getValue());
+    assertEquals(proteinContent, design.proteinContent.getValue());
+    assertEquals(instrument, design.instrument.getValue());
+    assertEquals(proteinIdentification, design.proteinIdentification.getValue());
+    assertEquals(proteinIdentificationLink, design.proteinIdentificationLink.getValue());
+    assertEquals(quantification, design.quantification.getValue());
+    assertEquals(quantificationLabels, design.quantificationLabels.getValue());
+    assertEquals(highResolution, design.highResolution.getValue());
+    assertEquals(acetonitrileSolvents, design.acetonitrileSolvents.getValue());
+    assertEquals(methanolSolvents, design.methanolSolvents.getValue());
+    assertEquals(chclSolvents, design.chclSolvents.getValue());
+    assertEquals(otherSolvents, design.otherSolvents.getValue());
+    assertEquals(otherSolvent, design.otherSolvent.getValue());
+    assertEquals(comment, design.comment.getValue());
   }
 }

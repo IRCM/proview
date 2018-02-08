@@ -17,80 +17,80 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COUNT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DECOLORATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DEVELOPMENT_TIME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DECOLORATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_GRID;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_LABEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTION_TYPE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_WARNING;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTION_TYPE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NAME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_QUANTITY_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_LABELS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_CONTAINER_TYPE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_LABELS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_CONTAINER_TYPE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PLATE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_TABLE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_COUNT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NAME_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_QUANTITY_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_SUPPORT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_LABEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_LABEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_SUPPORT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_WARNING;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COUNT_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION_PROPERTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY_PROPERTY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.HEADER_STYLE;
 import static org.openqa.selenium.By.className;
 
@@ -127,11 +127,11 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected LabelElement sampleTypeLabel() {
-    return wrap(LabelElement.class, findElement(className(SAMPLE_TYPE_LABEL)));
+    return wrap(LabelElement.class, findElement(className(SAMPLE_TYPE_WARNING)));
   }
 
   protected LabelElement inactiveLabel() {
-    return wrap(LabelElement.class, findElement(className(INACTIVE_LABEL)));
+    return wrap(LabelElement.class, findElement(className(INACTIVE_WARNING)));
   }
 
   protected PanelElement servicePanel() {
@@ -139,7 +139,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected RadioButtonGroupElement serviceOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(SERVICE_PROPERTY)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(SERVICE)));
   }
 
   protected void setService(Service service) {
@@ -151,7 +151,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected RadioButtonGroupElement sampleSupportOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(SAMPLE_SUPPORT_PROPERTY)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(SAMPLE_SUPPORT)));
   }
 
   protected void setSampleSupport(SampleSupport support) {
@@ -159,40 +159,40 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement solutionSolventField() {
-    return wrap(TextFieldElement.class, findElement(className(SOLUTION_SOLVENT_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(SOLUTION_SOLVENT)));
   }
 
   protected TextFieldElement sampleNameField() {
-    return wrap(TextFieldElement.class, findElement(className(SAMPLE_NAME_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(SAMPLE_NAME)));
   }
 
   protected TextFieldElement formulaField() {
-    return wrap(TextFieldElement.class, findElement(className(FORMULA_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(FORMULA)));
   }
 
   protected TextFieldElement monoisotopicMassField() {
-    return wrap(TextFieldElement.class, findElement(className(MONOISOTOPIC_MASS_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(MONOISOTOPIC_MASS)));
   }
 
   protected TextFieldElement averageMassField() {
-    return wrap(TextFieldElement.class, findElement(className(AVERAGE_MASS_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(AVERAGE_MASS)));
   }
 
   protected TextFieldElement toxicityField() {
-    return wrap(TextFieldElement.class, findElement(className(TOXICITY_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(TOXICITY)));
   }
 
   protected CheckBoxElement lightSensitiveField() {
-    return wrap(CheckBoxElement.class, findElement(className(LIGHT_SENSITIVE_PROPERTY)));
+    return wrap(CheckBoxElement.class, findElement(className(LIGHT_SENSITIVE)));
   }
 
   protected RadioButtonGroupElement storageTemperatureOptions() {
     return wrap(RadioButtonGroupElement.class,
-        findElement(className(STORAGE_TEMPERATURE_PROPERTY)));
+        findElement(className(STORAGE_TEMPERATURE)));
   }
 
   protected TextFieldElement sampleCountField() {
-    return wrap(TextFieldElement.class, findElement(className(SAMPLE_COUNT_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(SAMPLE_COUNT)));
   }
 
   protected Integer getSampleCount() {
@@ -209,7 +209,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected RadioButtonGroupElement sampleContainerTypeOptions() {
     return wrap(RadioButtonGroupElement.class,
-        findElement(className(SAMPLES_CONTAINER_TYPE_PROPERTY)));
+        findElement(className(SAMPLES_CONTAINER_TYPE)));
   }
 
   protected void setSampleContainerType(SampleContainerType type) {
@@ -218,15 +218,15 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected TextFieldElement plateNameField() {
     return wrap(TextFieldElement.class,
-        findElement(className(PLATE_PROPERTY + "-" + PLATE_NAME_PROPERTY)));
+        findElement(className(PLATE + "-" + PLATE_NAME)));
   }
 
   protected LabelElement samplesLabel() {
-    return wrap(LabelElement.class, findElement(className(SAMPLES_PROPERTY)));
+    return wrap(LabelElement.class, findElement(className(SAMPLES)));
   }
 
   protected GridElement samplesGrid() {
-    return wrap(GridElement.class, findElement(className(SAMPLES_TABLE)));
+    return wrap(GridElement.class, findElement(className(SAMPLES_LABEL)));
   }
 
   protected void setSampleNameInGrid(int row, String name) {
@@ -234,7 +234,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected ButtonElement fillSamplesButton() {
-    return wrap(ButtonElement.class, findElement(className(FILL_SAMPLES_PROPERTY)));
+    return wrap(ButtonElement.class, findElement(className(FILL_SAMPLES)));
   }
 
   protected WebElement samplesPlate() {
@@ -246,7 +246,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement experienceField() {
-    return wrap(TextFieldElement.class, findElement(className(EXPERIENCE_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(EXPERIENCE)));
   }
 
   protected String getExperience() {
@@ -258,7 +258,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement experienceGoalField() {
-    return wrap(TextFieldElement.class, findElement(className(EXPERIENCE_GOAL_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(EXPERIENCE_GOAL)));
   }
 
   protected String getExperienceGoal() {
@@ -270,7 +270,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement taxonomyField() {
-    return wrap(TextFieldElement.class, findElement(className(TAXONOMY_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(TAXONOMY)));
   }
 
   protected String getTaxonomy() {
@@ -282,20 +282,20 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement proteinNameField() {
-    return wrap(TextFieldElement.class, findElement(className(PROTEIN_NAME_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(PROTEIN_NAME)));
   }
 
   protected TextFieldElement proteinWeightField() {
-    return wrap(TextFieldElement.class, findElement(className(PROTEIN_WEIGHT_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(PROTEIN_WEIGHT)));
   }
 
   protected TextFieldElement postTranslationModificationField() {
     return wrap(TextFieldElement.class,
-        findElement(className(POST_TRANSLATION_MODIFICATION_PROPERTY)));
+        findElement(className(POST_TRANSLATION_MODIFICATION)));
   }
 
   protected TextFieldElement quantityField() {
-    return wrap(TextFieldElement.class, findElement(className(SAMPLE_QUANTITY_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(SAMPLE_QUANTITY)));
   }
 
   protected String getQuantity() {
@@ -307,7 +307,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement volumeField() {
-    return wrap(TextFieldElement.class, findElement(className(SAMPLE_VOLUME_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(SAMPLE_VOLUME)));
   }
 
   protected Double getVolume() {
@@ -327,7 +327,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement standardCountField() {
-    return wrap(TextFieldElement.class, findElement(className(STANDARD_COUNT_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(STANDARD_COUNT)));
   }
 
   protected Integer getStandardCount() {
@@ -343,11 +343,11 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected GridElement standardsGrid() {
-    return wrap(GridElement.class, findElement(className(STANDARD_PROPERTY)));
+    return wrap(GridElement.class, findElement(className(STANDARDS)));
   }
 
   protected ButtonElement fillStandardsButton() {
-    return wrap(ButtonElement.class, findElement(className(FILL_STANDARDS_PROPERTY)));
+    return wrap(ButtonElement.class, findElement(className(FILL_STANDARDS)));
   }
 
   protected PanelElement contaminantsPanel() {
@@ -355,7 +355,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement contaminantCountField() {
-    return wrap(TextFieldElement.class, findElement(className(CONTAMINANT_COUNT_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(CONTAMINANT_COUNT)));
   }
 
   protected Integer getContaminantCount() {
@@ -371,11 +371,11 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected GridElement contaminantsGrid() {
-    return wrap(GridElement.class, findElement(className(CONTAMINANT_PROPERTY)));
+    return wrap(GridElement.class, findElement(className(CONTAMINANTS)));
   }
 
   protected ButtonElement fillContaminantsButton() {
-    return wrap(ButtonElement.class, findElement(className(FILL_CONTAMINANTS_PROPERTY)));
+    return wrap(ButtonElement.class, findElement(className(FILL_CONTAMINANTS)));
   }
 
   protected PanelElement gelPanel() {
@@ -383,15 +383,15 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected ComboBoxElement separationField() {
-    return wrap(ComboBoxElement.class, findElement(className(SEPARATION_PROPERTY)));
+    return wrap(ComboBoxElement.class, findElement(className(SEPARATION)));
   }
 
   protected ComboBoxElement thicknessField() {
-    return wrap(ComboBoxElement.class, findElement(className(THICKNESS_PROPERTY)));
+    return wrap(ComboBoxElement.class, findElement(className(THICKNESS)));
   }
 
   protected ComboBoxElement colorationField() {
-    return wrap(ComboBoxElement.class, findElement(className(COLORATION_PROPERTY)));
+    return wrap(ComboBoxElement.class, findElement(className(COLORATION)));
   }
 
   protected void setColoration(GelColoration coloration) {
@@ -399,23 +399,23 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement otherColorationField() {
-    return wrap(TextFieldElement.class, findElement(className(OTHER_COLORATION_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(OTHER_COLORATION)));
   }
 
   protected TextFieldElement developmentTimeField() {
-    return wrap(TextFieldElement.class, findElement(className(DEVELOPMENT_TIME_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(DEVELOPMENT_TIME)));
   }
 
   protected CheckBoxElement decolorationField() {
-    return wrap(CheckBoxElement.class, findElement(className(DECOLORATION_PROPERTY)));
+    return wrap(CheckBoxElement.class, findElement(className(DECOLORATION)));
   }
 
   protected TextFieldElement weightMarkerQuantityField() {
-    return wrap(TextFieldElement.class, findElement(className(WEIGHT_MARKER_QUANTITY_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(WEIGHT_MARKER_QUANTITY)));
   }
 
   protected TextFieldElement proteinQuantityField() {
-    return wrap(TextFieldElement.class, findElement(className(PROTEIN_QUANTITY_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(PROTEIN_QUANTITY)));
   }
 
   protected PanelElement servicesPanel() {
@@ -423,7 +423,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected RadioButtonGroupElement digestionOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(DIGESTION_PROPERTY)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(DIGESTION)));
   }
 
   protected void setDigestion(ProteolyticDigestion digestion) {
@@ -431,31 +431,31 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement usedDigestionField() {
-    return wrap(TextFieldElement.class, findElement(className(USED_DIGESTION_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(USED_DIGESTION)));
   }
 
   protected TextFieldElement otherDigestionField() {
-    return wrap(TextFieldElement.class, findElement(className(OTHER_DIGESTION_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(OTHER_DIGESTION)));
   }
 
   protected LabelElement enrichmentLabel() {
-    return wrap(LabelElement.class, findElement(className(ENRICHEMENT_PROPERTY)));
+    return wrap(LabelElement.class, findElement(className(ENRICHEMENT)));
   }
 
   protected LabelElement exclusionsLabel() {
-    return wrap(LabelElement.class, findElement(className(EXCLUSIONS_PROPERTY)));
+    return wrap(LabelElement.class, findElement(className(EXCLUSIONS)));
   }
 
   protected RadioButtonGroupElement injectionTypeOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(INJECTION_TYPE_PROPERTY)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(INJECTION_TYPE)));
   }
 
   protected RadioButtonGroupElement sourceOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(SOURCE_PROPERTY)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(SOURCE)));
   }
 
   protected RadioButtonGroupElement proteinContentOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(PROTEIN_CONTENT_PROPERTY)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(PROTEIN_CONTENT)));
   }
 
   protected void setProteinContent(ProteinContent proteinContent) {
@@ -463,7 +463,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected RadioButtonGroupElement instrumentOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(INSTRUMENT_PROPERTY)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(INSTRUMENT)));
   }
 
   protected void setInstrument(MassDetectionInstrument instrument) {
@@ -472,7 +472,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected RadioButtonGroupElement proteinIdentificationOptions() {
     return wrap(RadioButtonGroupElement.class,
-        findElement(className(PROTEIN_IDENTIFICATION_PROPERTY)));
+        findElement(className(PROTEIN_IDENTIFICATION)));
   }
 
   protected void setProteinIdentification(ProteinIdentification proteinIdentification) {
@@ -481,39 +481,39 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected TextFieldElement proteinIdentificationLinkField() {
     return wrap(TextFieldElement.class,
-        findElement(className(PROTEIN_IDENTIFICATION_LINK_PROPERTY)));
+        findElement(className(PROTEIN_IDENTIFICATION_LINK)));
   }
 
   protected RadioButtonGroupElement quantificationOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(QUANTIFICATION_PROPERTY)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(QUANTIFICATION)));
   }
 
   protected TextAreaElement quantificationLabelsField() {
-    return wrap(TextAreaElement.class, findElement(className(QUANTIFICATION_LABELS_PROPERTY)));
+    return wrap(TextAreaElement.class, findElement(className(QUANTIFICATION_LABELS)));
   }
 
   protected RadioButtonGroupElement highResolutionOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(HIGH_RESOLUTION_PROPERTY)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(HIGH_RESOLUTION)));
   }
 
   protected CheckBoxElement acetonitrileField() {
     return wrap(CheckBoxElement.class,
-        findElement(className(SOLVENTS_PROPERTY + "-" + Solvent.ACETONITRILE.name())));
+        findElement(className(SOLVENTS + "-" + Solvent.ACETONITRILE.name())));
   }
 
   protected CheckBoxElement methanolField() {
     return wrap(CheckBoxElement.class,
-        findElement(className(SOLVENTS_PROPERTY + "-" + Solvent.METHANOL.name())));
+        findElement(className(SOLVENTS + "-" + Solvent.METHANOL.name())));
   }
 
   protected CheckBoxElement chclField() {
     return wrap(CheckBoxElement.class,
-        findElement(className(SOLVENTS_PROPERTY + "-" + Solvent.CHCL3.name())));
+        findElement(className(SOLVENTS + "-" + Solvent.CHCL3.name())));
   }
 
   protected CheckBoxElement otherSolventsField() {
     return wrap(CheckBoxElement.class,
-        findElement(className(SOLVENTS_PROPERTY + "-" + Solvent.OTHER.name())));
+        findElement(className(SOLVENTS + "-" + Solvent.OTHER.name())));
   }
 
   protected void setOtherSolvents(boolean value) {
@@ -521,7 +521,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement otherSolventField() {
-    return wrap(TextFieldElement.class, findElement(className(OTHER_SOLVENT_PROPERTY)));
+    return wrap(TextFieldElement.class, findElement(className(OTHER_SOLVENT)));
   }
 
   protected LabelElement otherSolventNoteLabel() {
@@ -533,7 +533,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextAreaElement commentField() {
-    return wrap(TextAreaElement.class, findElement(className(COMMENT_PROPERTY)));
+    return wrap(TextAreaElement.class, findElement(className(COMMENT)));
   }
 
   protected String getComment() {
@@ -553,7 +553,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected PanelElement filesPanel() {
-    return wrap(PanelElement.class, findElement(className(FILES_PROPERTY)));
+    return wrap(PanelElement.class, findElement(className(FILES_PANEL)));
   }
 
   protected WebElement filesUploader() {
@@ -565,7 +565,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected GridElement filesGrid() {
-    return wrap(GridElement.class, findElement(className(FILES_GRID)));
+    return wrap(GridElement.class, findElement(className(FILES)));
   }
 
   protected ButtonElement saveButton() {
