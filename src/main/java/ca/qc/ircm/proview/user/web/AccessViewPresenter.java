@@ -196,7 +196,6 @@ public class AccessViewPresenter {
     });
     selectionCheckboxes.put(user, checkbox);
     checkbox.setValue(design.usersGrid.getSelectedItems().contains(user));
-    checkbox.setVisible(!authorizationService.hasManagerRole(user));
     return checkbox;
   }
 

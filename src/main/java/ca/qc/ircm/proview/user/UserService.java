@@ -503,8 +503,8 @@ public class UserService {
   public void deactivate(Collection<User> users) throws DeactivateManagerException {
     for (User user : users) {
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
-      if (authorizationService.hasManagerRole(user)) {
-        throw new DeactivateManagerException(user);
+      if (user.getId() == ROBOT_ID) {
+        throw new IllegalArgumentException("Robot cannot be deactivated");
       }
 
       user = entityManager.merge(user);

@@ -952,39 +952,68 @@ public class UserServiceTest {
   }
 
   @Test
+  public void deactivate() throws Throwable {
+    User user = entityManager.find(User.class, 10L);
+    entityManager.detach(user);
+    Collection<User> users = new LinkedList<>();
+    users.add(user);
+
+    userService.deactivate(users);
+
+    entityManager.flush();
+    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(cacheFlusher).flushShiroCache();
+    user = entityManager.find(User.class, 10L);
+    assertEquals(false, user.isActive());
+    assertEquals(true, user.isValid());
+    assertEquals(false, user.isAdmin());
+  }
+
+  @Test
   public void deactivate_Manager() throws Throwable {
     User user = entityManager.find(User.class, 3L);
     entityManager.detach(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
-    when(authorizationService.hasManagerRole(any(User.class))).thenReturn(true);
 
-    try {
-      userService.deactivate(users);
-      fail("Expected DeactivateManagerException");
-    } catch (DeactivateManagerException e) {
-      // Ignore.
-    }
+    userService.deactivate(users);
+
+    entityManager.flush();
+    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(cacheFlusher).flushShiroCache();
+    user = entityManager.find(User.class, 3L);
+    assertEquals(false, user.isActive());
+    assertEquals(true, user.isValid());
+    assertEquals(false, user.isAdmin());
   }
 
   @Test
-  public void deactivate() throws Throwable {
-    User user = entityManager.find(User.class, 10L);
+  public void deactivate_Admin() throws Throwable {
+    User user = entityManager.find(User.class, 4L);
+    entityManager.detach(user);
+    Collection<User> users = new LinkedList<>();
+    users.add(user);
+
+    userService.deactivate(users);
+
+    entityManager.flush();
+    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(cacheFlusher).flushShiroCache();
+    user = entityManager.find(User.class, 4L);
+    assertEquals(false, user.isActive());
+    assertEquals(true, user.isValid());
+    assertEquals(true, user.isAdmin());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void deactivate_Robot() throws Throwable {
+    User user = entityManager.find(User.class, 1L);
     entityManager.detach(user);
     assertEquals(true, user.isActive());
 
     Collection<User> users = new LinkedList<>();
     users.add(user);
     userService.deactivate(users);
-
-    entityManager.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(authorizationService).hasManagerRole(user);
-    verify(cacheFlusher).flushShiroCache();
-    user = entityManager.find(User.class, 10L);
-    assertEquals(false, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
   }
 
   @Test
